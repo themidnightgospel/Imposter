@@ -199,20 +199,15 @@ namespace Imposter
         }
 
         [Fact]
-        public void Mq()
+        public void WhenPropertyGetterIsSetup_PropertyIsAccessed_SetupValueReturned()
         {
-            var mock = new Mock<ICalculator>();
+            var imposter = new CalculatorImposter();
 
-            mock.Setup(m => m.Add(It.IsAny<int>(), It.IsAny<int>()))
-                         .Callback<int, int>((a, b) => _output.WriteLine("Callback generic"))
-                         .Returns((int a, int b) =>
-                         {
-                             throw new Exception();
-                         })
-                         .Callback<int, int>((a, b) => _output.WriteLine("Callback generic 2"));
+            imposter
+                .Age
+                .Returns(1);
 
-
-            Should.Throw<Exception>(() => mock.Object.Add(1, 2));
+            imposter.ImposterInstance().Age.ShouldBe(1);
         }
     }
 }
