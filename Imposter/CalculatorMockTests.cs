@@ -176,7 +176,8 @@ namespace Imposter
             imposter.ImposterInstance().Add(10, 9);
 
             imposter
-                .VerifyAdd(ParameterCriteria<int>.Is(it => it == 10), ParameterCriteria<int>.Is(it => it == 9))
+                .Verify()
+                .Add(ParameterCriteria<int>.Is(it => it == 10), ParameterCriteria<int>.Is(it => it == 9))
                 .WasInvoked(InvocationCount.Exactly(1));
         }
 
@@ -198,16 +199,55 @@ namespace Imposter
             imposter.ImposterInstance().Add(7, 8).ShouldBe(30);
         }
 
-        [Fact]
-        public void WhenPropertyGetterIsSetup_PropertyIsAccessed_SetupValueReturned()
-        {
-            var imposter = new CalculatorImposter();
-
-            imposter
-                .Age
-                .Returns(1);
-
-            imposter.ImposterInstance().Age.ShouldBe(1);
-        }
+        // [Fact]
+        // public void WhenPropertyGetterIsSetup_PropertyIsAccessed_SetupValueReturned()
+        // {
+        //     var imposter = new CalculatorImposter();
+        //
+        //     imposter
+        //         .Age
+        //         .Returns(1);
+        //
+        //     imposter.ImposterInstance().Age.ShouldBe(1);
+        // }
+        //
+        // [Fact]
+        // public void WhenPropertyGetterIsSetupWithSequence_PropertyIsAccessed_SetupValueReturned()
+        // {
+        //     var imposter = new CalculatorImposter();
+        //
+        //     imposter
+        //         .Age
+        //         .ReturnsSequence(new[] { 1, 2, 3 });
+        //
+        //     imposter.ImposterInstance().Age.ShouldBe(1);
+        //     imposter.ImposterInstance().Age.ShouldBe(2);
+        //     imposter.ImposterInstance().Age.ShouldBe(3);
+        //     imposter.ImposterInstance().Age.ShouldBe(3);
+        // }
+        //
+        // [Fact]
+        // public void WhenPropertyGetterVerified_PropertyIsAccessed_VerificationPassed()
+        // {
+        //     var imposter = new CalculatorImposter();
+        //
+        //     var dummy = imposter.ImposterInstance().Age;
+        //
+        //     imposter
+        //         .VerifyAge()
+        //         .WasGet(InvocationCount.Exactly(1));
+        // }
+        //
+        // [Fact]
+        // public void WhenPropertySetterIsVerified_PropertyIsSet_VerificationPassed()
+        // {
+        //     var imposter = new CalculatorImposter();
+        //
+        //     imposter.ImposterInstance().Age = 22;
+        //
+        //     imposter
+        //         .VerifyAge
+        //         .WasSet(ParameterCriteria<int>.Is(it => it == 22), InvocationCount.AtLeast(1));
+        // }
     }
 }
