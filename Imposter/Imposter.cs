@@ -29,19 +29,19 @@ namespace Imposter
         public Func<int> ResultGenerator { get; }
     }
 
-    public class ParameterCriteria<T>(Func<T, bool> predicate)
+    public class Arg<T>(Func<T, bool> predicate)
     {
         public Func<T, bool> Predicate = predicate;
 
-        public static implicit operator ParameterCriteria<T>(T value)
+        public static implicit operator Arg<T>(T value)
         {
             // TODO possible null check
-            return new ParameterCriteria<T>(t => t.Equals(value));
+            return new Arg<T>(t => t.Equals(value));
         }
 
-        public static ParameterCriteria<T> Is(Func<T, bool> predicate) => new(predicate);
+        public static Arg<T> Is(Func<T, bool> predicate) => new(predicate);
 
-        public static ParameterCriteria<T> IsAny() => new(_ => true);
+        public static Arg<T> IsAny() => new(_ => true);
 
         // TODO Add more utility factory methods similar to Moq.It
     }
@@ -62,7 +62,7 @@ namespace Imposter
             _addMethodBehaviour = addMethodBehaviour;
         }
 
-        public AddMethodInvocationVerifier Add(ParameterCriteria<int> leftCriteria, ParameterCriteria<int> rightCriteria)
+        public AddMethodInvocationVerifier Add(Arg<int> leftCriteria, Arg<int> rightCriteria)
             => new(_addMethodBehaviour, leftCriteria, rightCriteria);
     }
 
@@ -87,7 +87,7 @@ namespace Imposter
             _verifier = new CalculatorImposterVerifier(_addMethodBehaviour);
         }
 
-        public AddMethodInvocationBehaviour Add(ParameterCriteria<int> leftCriteria, ParameterCriteria<int> rightCriteria)
+        public AddMethodInvocationBehaviour Add(Arg<int> leftCriteria, Arg<int> rightCriteria)
         {
             var addMethodInvocationBehaviour = new AddMethodInvocationBehaviour((left, right) => leftCriteria.Predicate(left) && rightCriteria.Predicate(right));
             _addMethodBehaviour.InvocationBehaviours.Add(addMethodInvocationBehaviour);

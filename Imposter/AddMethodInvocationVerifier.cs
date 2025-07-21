@@ -2,8 +2,8 @@
 
 public class AddMethodInvocationVerifier(
     AddMethodBehaviour addMethodBehaviour,
-    ParameterCriteria<int> leftCriteria,
-    ParameterCriteria<int> rightCriteria)
+    Arg<int> leftCriteria,
+    Arg<int> rightCriteria)
 {
     public void WasInvoked(InvocationCount count)
     {

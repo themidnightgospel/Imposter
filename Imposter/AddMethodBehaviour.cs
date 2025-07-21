@@ -28,7 +28,7 @@ public class AddMethodBehaviour
         return result;
     }
 
-    public int CountInvocation(ParameterCriteria<int> leftCriteria, ParameterCriteria<int> rightCriteria)
+    public int CountInvocation(Arg<int> leftCriteria, Arg<int> rightCriteria)
     {
         return Invocations
             .Count(it => leftCriteria.Predicate(it.Arguments.left) && rightCriteria.Predicate(it.Arguments.right));
