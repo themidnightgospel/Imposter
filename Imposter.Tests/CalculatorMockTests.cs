@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel;
-using Moq;
 using Shouldly;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Imposter
+namespace Imposter.Tests
 {
     public class CalculatorMockTests
     {
