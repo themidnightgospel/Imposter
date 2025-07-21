@@ -21,7 +21,7 @@ namespace Imposter
             var imposter = new CalculatorImposter();
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Returns((left, right) => left * right);
 
             imposter.ImposterInstance().Add(10, 9).ShouldBe(10 * 9);
@@ -47,7 +47,7 @@ namespace Imposter
             var mock = new CalculatorImposter();
 
             mock
-                .Add(ParameterCriteria<int>.Is(it => it > 5), ParameterCriteria<int>.Is(it => it < 5))
+                .Add(Arg<int>.Is(it => it > 5), Arg<int>.Is(it => it < 5))
                 .Returns((left, right) => left * right);
 
             mock.ImposterInstance().Add(leftArgument, rightArgument).ShouldBe(default);
@@ -60,7 +60,7 @@ namespace Imposter
             var exception = new InvalidOperationException();
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Throws(exception);
 
             Should.Throw<InvalidOperationException>(() => imposter.ImposterInstance().Add(10, 9)).ShouldBe(exception);
@@ -72,7 +72,7 @@ namespace Imposter
             var imposter = new CalculatorImposter();
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Throws<InvalidOperationException>();
 
             Should.Throw<InvalidOperationException>(() => imposter.ImposterInstance().Add(10, 9));
@@ -90,7 +90,7 @@ namespace Imposter
             };
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .ThrowsSequence(exceptions);
 
             Should.Throw<InvalidOperationException>(() => imposter.ImposterInstance().Add(10, 9)).ShouldBe(exceptions[0]);
@@ -105,7 +105,7 @@ namespace Imposter
             var callbackInvokedBeforeReturn = false;
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Returns((left, right) =>
                 {
                     returnInvoked = true;
@@ -126,7 +126,7 @@ namespace Imposter
             var callbackInvokedAfterReturn = false;
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Returns((left, right) =>
                 {
                     returnInvoked = true;
@@ -149,7 +149,7 @@ namespace Imposter
             var callbackInvokedAfterReturn = false;
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Returns((left, right) =>
                 {
                     returnInvoked = true;
@@ -170,14 +170,14 @@ namespace Imposter
             var imposter = new CalculatorImposter();
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .Returns((left, right) => left * right);
 
             imposter.ImposterInstance().Add(10, 9);
 
             imposter
                 .Verify()
-                .Add(ParameterCriteria<int>.Is(it => it == 10), ParameterCriteria<int>.Is(it => it == 9))
+                .Add(Arg<int>.Is(it => it == 10), Arg<int>.Is(it => it == 9))
                 .WasInvoked(InvocationCount.Exactly(1));
         }
 
@@ -189,7 +189,7 @@ namespace Imposter
             var results = new[] { 10, 20, 30 };
 
             imposter
-                .Add(ParameterCriteria<int>.IsAny(), ParameterCriteria<int>.IsAny())
+                .Add(Arg<int>.IsAny(), Arg<int>.IsAny())
                 .ReturnsSequence(results);
 
             imposter.ImposterInstance().Add(1, 2).ShouldBe(10);
