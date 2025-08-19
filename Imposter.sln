@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Tests", "Imposter.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator", "Imposter.CodeGenerator\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj", "{BD6B1625-27C1-4DA3-9C1F-73F77773D78B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "Imposter.CodeGenerator\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{32405BF6-8F1D-4FCF-8953-0EEF7FBC7A2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{B0BB7B1E-4301-4D35-B675-C735A479D0BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{BD6B1625-27C1-4DA3-9C1F-73F77773D78B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD6B1625-27C1-4DA3-9C1F-73F77773D78B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD6B1625-27C1-4DA3-9C1F-73F77773D78B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32405BF6-8F1D-4FCF-8953-0EEF7FBC7A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32405BF6-8F1D-4FCF-8953-0EEF7FBC7A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32405BF6-8F1D-4FCF-8953-0EEF7FBC7A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32405BF6-8F1D-4FCF-8953-0EEF7FBC7A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0BB7B1E-4301-4D35-B675-C735A479D0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BB7B1E-4301-4D35-B675-C735A479D0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BB7B1E-4301-4D35-B675-C735A479D0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BB7B1E-4301-4D35-B675-C735A479D0BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
