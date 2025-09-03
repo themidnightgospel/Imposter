@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Moq;
 using Shouldly;
 using Xunit.Abstractions;
 
@@ -136,7 +135,6 @@ namespace Imposter.Tests
             imposter.ImposterInstance().Add(10, 9);
 
             callbackInvokedAfterReturn.ShouldBeTrue();
-
         }
 
         [Fact]
