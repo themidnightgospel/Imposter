@@ -11,7 +11,7 @@ public interface IPlaygroundService
 public class Playground
 {
     [Fact]
-    public void AfterCallbackThrowsException_InvocationIsStillRecorded()
+    public async Task AfterCallbackThrowsException_InvocationIsStillRecorded()
     {
         var mock = new Mock<IPlaygroundService>();
         mock.Setup(m => m.GetData(It.IsAny<int>()))
@@ -24,12 +24,11 @@ public class Playground
         }
         catch (Exception ex)
         {
-            
         }
-        
+
         mock.Verify(it => it.GetData(It.IsAny<int>()), Times.Exactly(1));
     }
-    
+
     [Fact]
     public void BeforeCallbackThrowsException_InvocationIsStillRecorded()
     {
@@ -44,12 +43,11 @@ public class Playground
         }
         catch (Exception ex)
         {
-            
         }
-        
+
         mock.Verify(it => it.GetData(It.IsAny<int>()), Times.Exactly(1));
     }
-    
+
     [Fact]
     public void ThrowingExceptionIsSetup_CallbackIsInvokedAndInvocationIsStillRecorded()
     {
@@ -65,9 +63,9 @@ public class Playground
         }
         catch (Exception ex)
         {
-            
         }
-        
+
         beforeCallbackInvoked.ShouldBeTrue();
         mock.Verify(it => it.GetData(It.IsAny<int>()), Times.Exactly(1));
-    }}
+    }
+}
