@@ -40,50 +40,26 @@ internal class ImposterReferent
     }
 }
 
-internal class ImposterReferentMethodParameter(IParameterSymbol symbol)
+internal class MethodClass
 {
-    public IParameterSymbol Symbol { get; } = symbol;
+    public string DeclaredAsParameterName { get; }
+    
+    public string DeclaredAsFieldName { get; }
+    
+    public string Name { get; }
 
-    private static readonly SymbolDisplayFormat FullyQualifiedIncludingNullabilityFormat = new SymbolDisplayFormat(
-        globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-    );
-
-    private static string GetParameterEnclosedInArgType(IParameterSymbol parameter)
+    public MethodClass(ImposterReferentMethod method)
     {
-        var argType = parameter.RefKind switch
-        {
-            RefKind.Out => "OutArg",
-            _ => "Arg"
-        };
-
-        return $"{argType}<{parameter.Type.ToDisplayString(FullyQualifiedIncludingNullabilityFormat)}>";
+        Name = $"{method.UniqueName}Method";
+        DeclaredAsParameterName = char.ToLower(Name[0]) + Name.Substring(1);
+        DeclaredAsFieldName = "_" + DeclaredAsParameterName;
     }
-
-    internal string TypeWithRefKind { get; } =
-        symbol.IsParams
-            ? "params "
-            : string.Empty
-              + symbol.RefKind switch
-              {
-                  RefKind.Out => "out ",
-                  RefKind.Ref => "ref ",
-                  RefKind.In => "in ",
-                  _ => string.Empty
-              }
-              + symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-
-    public string EnclosedInArgType { get; } = GetParameterEnclosedInArgType(symbol);
-
-    public string EnclosedInArgName { get; } = $"{symbol.Name}Arg";
 }
 
 internal class ImposterReferentMethod
 {
     // As method names aren't unique in the class, we add a number at the end to make it so
-    private string _uniqueName;
+    internal string UniqueName;
 
     internal IMethodSymbol Symbol { get; }
 
@@ -92,6 +68,8 @@ internal class ImposterReferentMethod
     internal bool HasReturnValue => !Symbol.ReturnsVoid;
 
     internal IReadOnlyList<ImposterReferentMethodParameter> Parameters { get; }
+
+    internal bool HasOutParameters { get; }
 
     internal const string CallBeforeCallbackFieldName = "_callBefore";
 
@@ -105,24 +83,28 @@ internal class ImposterReferentMethod
     {
         Symbol = symbol;
         Parameters = symbol.Parameters.Select(parameter => new ImposterReferentMethodParameter(parameter)).ToList();
-        uniqueName = uniqueName;
+        UniqueName = uniqueName;
         MethodInvocationHistoryClassName = $"{uniqueName}MethodInvocationHistory";
         InvocationBehaviorClassName = $"{uniqueName}MethodInvocationBehaviour";
         MethodInvocationVerifierClassName = $"{uniqueName}MethodInvocationVerifier";
-        MethodClassName = $"{uniqueName}Method";
         DelegateName = $"{uniqueName}Delegate";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
+        ParametersExceptOutDeclaration = string.Join(", ", Parameters
+            .Where(it => it.Symbol.RefKind is not RefKind.Out)
+            .Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
+        ParametersPassedAsArguments = string.Join(", ", Parameters.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
+        ParametersPassedAsArgumentsWithoutRefKind = string.Join(", ", Parameters.Select(parameter => $"{parameter.Symbol.Name}"));
         ParametersTupleDeclaration = GetParameterTupleType(symbol.Parameters);
         ReturnType = GetReturnType(symbol);
-        ParametersEnclosedInArgType = GetParametersEnclosedInArgType(Parameters);
+        ReturnTypeDefaultValue = $"default({ReturnType})";
+        ParametersEnclosedInArgType = string.Join(", ", Parameters.Select(p => $"{p.EnclosedInArgType} {p.EnclosedInArgName}"));
         InitializeOutParametersWithDefault = GetInitializeOutParametersWithDefault(symbol);
+        HasOutParameters = symbol.Parameters.Any(it => it.RefKind is RefKind.Out);
+        MethodClass = new MethodClass(this);
     }
-
-    private string GetParametersEnclosedInArgType(IEnumerable<ImposterReferentMethodParameter> parameters)
-    {
-        return string.Join(", ", parameters.Select(p => $"Arg<{p.EnclosedInArgType}> {p.EnclosedInArgName}"));
-    }
+    
+    internal MethodClass MethodClass { get; }
 
     internal string ParametersEnclosedInArgType { get; }
 
@@ -133,8 +115,6 @@ internal class ImposterReferentMethod
     internal string InvocationBehaviorClassName { get; }
 
     internal string MethodInvocationVerifierClassName { get; }
-
-    internal string MethodClassName { get; }
 
     internal string DelegateName { get; }
 
@@ -150,6 +130,8 @@ internal class ImposterReferentMethod
     }
 
     internal string ReturnType { get; }
+    
+    internal string ReturnTypeDefaultValue { get; }
 
     private static string GetReturnType(IMethodSymbol method)
     {
@@ -177,12 +159,20 @@ internal class ImposterReferentMethod
     /// This will contain <code> "in int input, out int output, ref int temp, params int[] parameters" </code>
     /// </example>>
     internal string ParametersDeclaration { get; }
-    
+
+    internal string ParametersExceptOutDeclaration { get; }
+
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
     /// This will contain <code> "in input, out output, ref temp, parameters" </code>
     /// </example>>
-    internal string ParametersPassedAsArgumentsDeclaration { get; }
+    internal string ParametersPassedAsArguments { get; }
+    
+    /// <example>
+    /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
+    /// This will contain <code> "input, output, temp, parameters" </code>
+    /// </example>>
+    internal string ParametersPassedAsArgumentsWithoutRefKind { get; }
 
     internal string GetSummaryTag(string description)
     {
