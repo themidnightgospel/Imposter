@@ -43,9 +43,9 @@ internal class ImposterReferent
 internal class MethodClass
 {
     public string DeclaredAsParameterName { get; }
-    
+
     public string DeclaredAsFieldName { get; }
-    
+
     public string Name { get; }
 
     public MethodClass(ImposterReferentMethod method)
@@ -69,6 +69,8 @@ internal class ImposterReferentMethod
 
     internal IReadOnlyList<ImposterReferentMethodParameter> Parameters { get; }
 
+    internal IReadOnlyList<ImposterReferentMethodParameter> ParametersExceptOut { get; }
+
     internal bool HasOutParameters { get; }
 
     internal const string CallBeforeCallbackFieldName = "_callBefore";
@@ -83,6 +85,7 @@ internal class ImposterReferentMethod
     {
         Symbol = symbol;
         Parameters = symbol.Parameters.Select(parameter => new ImposterReferentMethodParameter(parameter)).ToList();
+        ParametersExceptOut = Parameters.Where(it => it.Symbol.RefKind is not RefKind.Out).ToList();
         UniqueName = uniqueName;
         MethodInvocationHistoryClassName = $"{uniqueName}MethodInvocationHistory";
         InvocationBehaviorClassName = $"{uniqueName}MethodInvocationBehaviour";
@@ -90,9 +93,12 @@ internal class ImposterReferentMethod
         DelegateName = $"{uniqueName}Delegate";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
-        ParametersExceptOutDeclaration = string.Join(", ", Parameters
-            .Where(it => it.Symbol.RefKind is not RefKind.Out)
-            .Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
+        ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
+        CheckParametersMatchCriteria =
+            string.Join(" &&",
+                ParametersExceptOut
+                    .Select(it => $"{it.EnclosedInArgName}.Predicate({it.Symbol.Name})")
+            );
         ParametersPassedAsArguments = string.Join(", ", Parameters.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
         ParametersPassedAsArgumentsWithoutRefKind = string.Join(", ", Parameters.Select(parameter => $"{parameter.Symbol.Name}"));
         ParametersTupleDeclaration = GetParameterTupleType(symbol.Parameters);
@@ -103,7 +109,7 @@ internal class ImposterReferentMethod
         HasOutParameters = symbol.Parameters.Any(it => it.RefKind is RefKind.Out);
         MethodClass = new MethodClass(this);
     }
-    
+
     internal MethodClass MethodClass { get; }
 
     internal string ParametersEnclosedInArgType { get; }
@@ -130,7 +136,7 @@ internal class ImposterReferentMethod
     }
 
     internal string ReturnType { get; }
-    
+
     internal string ReturnTypeDefaultValue { get; }
 
     private static string GetReturnType(IMethodSymbol method)
@@ -162,12 +168,14 @@ internal class ImposterReferentMethod
 
     internal string ParametersExceptOutDeclaration { get; }
 
+    internal string CheckParametersMatchCriteria { get; }
+
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
     /// This will contain <code> "in input, out output, ref temp, parameters" </code>
     /// </example>>
     internal string ParametersPassedAsArguments { get; }
-    
+
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
     /// This will contain <code> "input, output, temp, parameters" </code>
