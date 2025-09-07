@@ -7,19 +7,20 @@ internal class ImposterReferentMethodParameter
     public ImposterReferentMethodParameter(IParameterSymbol symbol)
     {
         Symbol = symbol;
-        RefKindPrefix = symbol.IsParams
-            ? "params "
-            : string.Empty
-              + symbol.RefKind switch
-              {
-                  RefKind.Out => "out ",
-                  RefKind.Ref => "ref ",
-                  RefKind.In => "in ",
-                  _ => string.Empty
-              };
-        TypeWithRefKind = RefKindPrefix + symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        RefKindPrefix = symbol.RefKind switch
+        {
+            RefKind.Out => "out",
+            RefKind.Ref => "ref",
+            RefKind.In => "in",
+            _ => string.Empty
+        };
+
+        RefKindOrParamsPrefix = symbol.IsParams ? "params " : string.Empty + RefKindPrefix;
+        Type = symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        TypeWithRefKind = $"{RefKindOrParamsPrefix} {Type}";
         EnclosedInArgType = GetParameterEnclosedInArgType(symbol);
         EnclosedInArgName = $"{symbol.Name}Arg";
+        EnclosedInArgNameDeclaredAsField = $"_{EnclosedInArgName}";
     }
 
     public IParameterSymbol Symbol { get; }
@@ -41,6 +42,8 @@ internal class ImposterReferentMethodParameter
         return $"{argType}<{parameter.Type.ToDisplayString(FullyQualifiedIncludingNullabilityFormat)}>";
     }
 
+    internal string RefKindOrParamsPrefix { get; }
+
     internal string RefKindPrefix { get; }
 
     internal string TypeWithRefKind { get; }
@@ -48,4 +51,8 @@ internal class ImposterReferentMethodParameter
     public string EnclosedInArgType { get; }
 
     public string EnclosedInArgName { get; }
+    
+    public string EnclosedInArgNameDeclaredAsField { get; }
+    
+    internal string Type { get; }
 }

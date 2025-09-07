@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -10,14 +9,23 @@ internal class ImposterReferent
 {
     internal INamedTypeSymbol TypeSymbol { get; }
 
+    internal string FullName { get; }
+
     internal ImposterClass ImposterClass { get; }
+
+    internal ImposterVerifierClass VerifierClass { get; }
+
+    internal ImposterInstanceClass ImposterInstanceClass { get; }
 
     internal IReadOnlyList<ImposterReferentMethod> Methods { get; }
 
     internal ImposterReferent(INamedTypeSymbol typeSymbol)
     {
         TypeSymbol = typeSymbol;
+        FullName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ImposterClass = new ImposterClass(typeSymbol);
+        VerifierClass = new ImposterVerifierClass(this);
+        ImposterInstanceClass = new ImposterInstanceClass(this);
         Methods = GetMethods(typeSymbol, new MethodUniqueNames());
     }
 
@@ -37,6 +45,31 @@ internal class ImposterReferent
         if (typeSymbol.TypeKind is TypeKind.Class && typeSymbol.IsSealed is false)
         { }
     */
+    }
+}
+
+internal class ImposterInstanceClass
+{
+    internal string Name { get; }
+
+    internal string ImposterParameterName { get; } = "imposter";
+
+    internal string ImposterFieldName { get; }
+
+    internal ImposterInstanceClass(ImposterReferent referent)
+    {
+        Name = referent.ImposterClass.Name + "Instance";
+        ImposterFieldName = "_" + ImposterParameterName;
+    }
+}
+
+internal record ImposterVerifierClass
+{
+    internal string Name { get; }
+
+    internal ImposterVerifierClass(ImposterReferent referent)
+    {
+        Name = $"{referent.ImposterClass.Name}Verifier";
     }
 }
 
@@ -91,28 +124,27 @@ internal class ImposterReferentMethod
         InvocationBehaviorClassName = $"{uniqueName}MethodInvocationBehaviour";
         MethodInvocationVerifierClassName = $"{uniqueName}MethodInvocationVerifier";
         DelegateName = $"{uniqueName}Delegate";
+        ArgumentsClassName = $"{uniqueName}Arguments";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
         ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
-        CheckParametersMatchCriteria =
-            string.Join(" &&",
-                ParametersExceptOut
-                    .Select(it => $"{it.EnclosedInArgName}.Predicate({it.Symbol.Name})")
-            );
         ParametersPassedAsArguments = string.Join(", ", Parameters.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
+        ParametersExceptOutPassedAsArguments = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
         ParametersPassedAsArgumentsWithoutRefKind = string.Join(", ", Parameters.Select(parameter => $"{parameter.Symbol.Name}"));
-        ParametersTupleDeclaration = GetParameterTupleType(symbol.Parameters);
         ReturnType = GetReturnType(symbol);
         ReturnTypeDefaultValue = $"default({ReturnType})";
         ParametersEnclosedInArgType = string.Join(", ", Parameters.Select(p => $"{p.EnclosedInArgType} {p.EnclosedInArgName}"));
-        InitializeOutParametersWithDefault = GetInitializeOutParametersWithDefault(symbol);
+        ParametersEnclosedInArgTypePassedAsArgument = string.Join(", ", Parameters.Select(p => p.EnclosedInArgName));
+        InitializeOutParametersWithDefault = GetInitializeOutParametersWithDefault();
         HasOutParameters = symbol.Parameters.Any(it => it.RefKind is RefKind.Out);
         MethodClass = new MethodClass(this);
     }
 
     internal MethodClass MethodClass { get; }
-
+    
     internal string ParametersEnclosedInArgType { get; }
+
+    internal string ParametersEnclosedInArgTypePassedAsArgument { get; }
 
     internal string ReturnTypeInFullyQualifiedFormat { get; }
 
@@ -124,14 +156,16 @@ internal class ImposterReferentMethod
 
     internal string DelegateName { get; }
 
+    internal string ArgumentsClassName { get; }
+
     internal IReadOnlyList<string> InitializeOutParametersWithDefault { get; }
 
-    private static IReadOnlyList<string> GetInitializeOutParametersWithDefault(IMethodSymbol method)
+    private IReadOnlyList<string> GetInitializeOutParametersWithDefault()
     {
-        return method
-            .Parameters
-            .Where(parameter => parameter.RefKind is RefKind.Out)
-            .Select(parameter => $"{parameter.Name} = default!;")
+        return 
+            Parameters
+            .Where(parameter => parameter.Symbol.RefKind is RefKind.Out)
+            .Select(parameter => $"{parameter.Symbol.Name} = default({parameter.Type});")
             .ToList();
     }
 
@@ -144,21 +178,12 @@ internal class ImposterReferentMethod
         var formatWithNullability = new SymbolDisplayFormat(
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters
         );
 
         return method.ReturnsVoid ? "void" : method.ReturnType.ToDisplayString(formatWithNullability);
     }
-
-    internal string ParametersTupleDeclaration { get; }
-
-    private static string GetParameterTupleType(ImmutableArray<IParameterSymbol> parameters) =>
-        parameters.Length switch
-        {
-            0 => throw new InvalidOperationException("No parameters"), // TODO Log diagnostics instead,
-            1 => parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            _ => $"({string.Join(", ", parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))})"
-        };
 
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
@@ -168,13 +193,18 @@ internal class ImposterReferentMethod
 
     internal string ParametersExceptOutDeclaration { get; }
 
-    internal string CheckParametersMatchCriteria { get; }
+    internal string CheckParametersMatchCriteria(bool argsAreFields)
+    {
+        return string.Join(" && ", ParametersExceptOut.Select(parameter => $"{(argsAreFields ? parameter.EnclosedInArgNameDeclaredAsField : parameter.EnclosedInArgName)}.Predicate({parameter.Symbol.Name})"));
+    }
 
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
     /// This will contain <code> "in input, out output, ref temp, parameters" </code>
     /// </example>>
     internal string ParametersPassedAsArguments { get; }
+
+    internal string ParametersExceptOutPassedAsArguments { get; }
 
     /// <example>
     /// Given a method <code> void InOutRefParam(in int input, out int output, ref int temp, params int[] parameters)</code>
@@ -210,22 +240,43 @@ internal class ImposterReferentMethod
     );
 }
 
-public class ImposterClass
+internal class InvocationHistoryClass
 {
-    public string Name { get; }
+    internal const string ArgumentsPropertyName = "Arguments";
 
-    public string Namespace { get; }
+    internal const string ArgumentsParameterName = "arguments";
 
-    public ImposterClass(INamedTypeSymbol typeSymbol)
+    internal const string ResultPropertyName = "Result";
+
+    internal const string ResultParameterName = "result";
+}
+
+internal class ImposterClass
+{
+    internal string Name { get; }
+
+    internal string Namespace { get; }
+
+    internal string VerifierFieldName { get; }
+
+    internal string VerifierParameterName { get; } = "verifier";
+
+    internal string ImposterInstanceFieldName { get; }
+
+    internal string ImposterInstanceParameterName { get; } = "imposterInstance";
+
+    internal ImposterClass(INamedTypeSymbol typeSymbol)
     {
         Name = typeSymbol.Name + "Imposter";
         Namespace = $"Imposters{(typeSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : "." + typeSymbol.ContainingNamespace.ToDisplayString())}";
+        VerifierFieldName = "_" + VerifierParameterName;
+        ImposterInstanceFieldName = "_" + ImposterInstanceParameterName;
     }
 }
 
 internal class MethodUniqueNames
 {
-    private readonly Dictionary<IMethodSymbol, string> _methodUniqueNames = new();
+    private readonly Dictionary<IMethodSymbol, string> _methodUniqueNames = new(SymbolEqualityComparer.Default);
 
     internal string GetUniqueNameForMethod(IMethodSymbol method)
     {
