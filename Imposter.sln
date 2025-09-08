@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Playground", "Imposter.Playground\Imposter.Playground.csproj", "{978B70F9-414C-4327-9576-5A6AB1269BF0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B17741A2-7EB9-4988-B3E2-6ABF1F34DA40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions", "Imposter.Abstractions\Imposter.Abstractions.csproj", "{C2F00F31-995C-4FA3-BBBB-86AE70383E20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,11 +43,19 @@ Global
 		{978B70F9-414C-4327-9576-5A6AB1269BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{978B70F9-414C-4327-9576-5A6AB1269BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{978B70F9-414C-4327-9576-5A6AB1269BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F00F31-995C-4FA3-BBBB-86AE70383E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F00F31-995C-4FA3-BBBB-86AE70383E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F00F31-995C-4FA3-BBBB-86AE70383E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F00F31-995C-4FA3-BBBB-86AE70383E20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5BEFB60-D130-47E1-8BD8-FD9E2CA9546D}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0361BEF2-330A-4A39-99D9-002076937F7E} = {B17741A2-7EB9-4988-B3E2-6ABF1F34DA40}
+		{C2F00F31-995C-4FA3-BBBB-86AE70383E20} = {B17741A2-7EB9-4988-B3E2-6ABF1F34DA40}
 	EndGlobalSection
 EndGlobal

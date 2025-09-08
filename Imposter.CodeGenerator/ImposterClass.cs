@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator;
 
-internal class ImposterReferent
+internal class ImposterTarget
 {
     internal INamedTypeSymbol TypeSymbol { get; }
 
@@ -17,9 +17,9 @@ internal class ImposterReferent
 
     internal ImposterInstanceClass ImposterInstanceClass { get; }
 
-    internal IReadOnlyList<ImposterReferentMethod> Methods { get; }
+    internal IReadOnlyList<ImposterTargetMethod> Methods { get; }
 
-    internal ImposterReferent(INamedTypeSymbol typeSymbol)
+    internal ImposterTarget(INamedTypeSymbol typeSymbol)
     {
         TypeSymbol = typeSymbol;
         FullName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
@@ -29,13 +29,13 @@ internal class ImposterReferent
         Methods = GetMethods(typeSymbol, new MethodUniqueNames());
     }
 
-    private static IReadOnlyList<ImposterReferentMethod> GetMethods(INamedTypeSymbol typeSymbol, MethodUniqueNames methodUniqueNames)
+    private static IReadOnlyList<ImposterTargetMethod> GetMethods(INamedTypeSymbol typeSymbol, MethodUniqueNames methodUniqueNames)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(method => new ImposterReferentMethod(method, methodUniqueNames.GetUniqueNameForMethod(method)))
+                .Select(method => new ImposterTargetMethod(method, methodUniqueNames.GetUniqueNameForMethod(method)))
                 .ToList();
         }
 
@@ -56,9 +56,9 @@ internal class ImposterInstanceClass
 
     internal string ImposterFieldName { get; }
 
-    internal ImposterInstanceClass(ImposterReferent referent)
+    internal ImposterInstanceClass(ImposterTarget target)
     {
-        Name = referent.ImposterClass.Name + "Instance";
+        Name = target.ImposterClass.Name + "Instance";
         ImposterFieldName = "_" + ImposterParameterName;
     }
 }
@@ -67,9 +67,9 @@ internal record ImposterVerifierClass
 {
     internal string Name { get; }
 
-    internal ImposterVerifierClass(ImposterReferent referent)
+    internal ImposterVerifierClass(ImposterTarget target)
     {
-        Name = $"{referent.ImposterClass.Name}Verifier";
+        Name = $"{target.ImposterClass.Name}Verifier";
     }
 }
 
@@ -81,7 +81,7 @@ internal class MethodClass
 
     public string Name { get; }
 
-    public MethodClass(ImposterReferentMethod method)
+    public MethodClass(ImposterTargetMethod method)
     {
         Name = $"{method.UniqueName}Method";
         DeclaredAsParameterName = char.ToLower(Name[0]) + Name.Substring(1);
@@ -89,7 +89,7 @@ internal class MethodClass
     }
 }
 
-internal class ImposterReferentMethod
+internal class ImposterTargetMethod
 {
     // As method names aren't unique in the class, we add a number at the end to make it so
     internal string UniqueName;
@@ -114,7 +114,7 @@ internal class ImposterReferentMethod
 
     internal const string ResultGeneratorFieldName = "_resultGenerator";
 
-    internal ImposterReferentMethod(IMethodSymbol symbol, string uniqueName)
+    internal ImposterTargetMethod(IMethodSymbol symbol, string uniqueName)
     {
         Symbol = symbol;
         Parameters = symbol.Parameters.Select(parameter => new ImposterReferentMethodParameter(parameter)).ToList();
@@ -141,7 +141,7 @@ internal class ImposterReferentMethod
     }
 
     internal MethodClass MethodClass { get; }
-    
+
     internal string ParametersEnclosedInArgType { get; }
 
     internal string ParametersEnclosedInArgTypePassedAsArgument { get; }
@@ -162,11 +162,11 @@ internal class ImposterReferentMethod
 
     private IReadOnlyList<string> GetInitializeOutParametersWithDefault()
     {
-        return 
+        return
             Parameters
-            .Where(parameter => parameter.Symbol.RefKind is RefKind.Out)
-            .Select(parameter => $"{parameter.Symbol.Name} = default({parameter.Type});")
-            .ToList();
+                .Where(parameter => parameter.Symbol.RefKind is RefKind.Out)
+                .Select(parameter => $"{parameter.Symbol.Name} = default({parameter.Type});")
+                .ToList();
     }
 
     internal string ReturnType { get; }
