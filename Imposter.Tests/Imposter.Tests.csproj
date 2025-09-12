@@ -26,4 +26,8 @@
       <ProjectReference Include="..\Imposter\Imposter.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="IOrderApiServiceImposter.g.cs" />
+    </ItemGroup>
+
 </Project>
