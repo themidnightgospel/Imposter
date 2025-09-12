@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
-namespace Imposter.CodeGenerator;
+namespace Imposter.CodeGenerator.Helpers;
 
 public static class InterfaceSymbolExtensions
 {
