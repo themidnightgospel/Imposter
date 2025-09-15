@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <IsRoslynComponent>true</IsRoslynComponent>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+
+        <RootNamespace>Imposter.CodeGenerator</RootNamespace>
+        <PackageId>Imposter.CodeGenerator</PackageId>
+        <ROSLYN_VERSION Condition="'$(ROSLYN_VERSION)' == ''">4.14</ROSLYN_VERSION>
+        <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' &gt;= '4.4.0.0'">$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants>
+        <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' &gt;= '4.7.0.0'">$(DefineConstants);ROSLYN4_7_OR_GREATER</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="PolySharp" Version="*">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
+
+        <ProjectReference Include="..\Imposter.Abstractions\Imposter.Abstractions.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None
+                Include="$(OutputPath)\$(AssemblyName).dll"
+                Pack="true"
+                PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
+                Visible="false"
+        />
+        <None
+                Include="$(OutputPath)\$(AssemblyName).Abstractions.dll"
+                Pack="true"
+                PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
+                Visible="false"
+        />
+        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
+        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
+    </ItemGroup>
+
+</Project>

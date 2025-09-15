@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Imposter.CodeGenerator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Imposter.Playground\\Imposter.Playground.csproj"
+    }
+  }
+}
