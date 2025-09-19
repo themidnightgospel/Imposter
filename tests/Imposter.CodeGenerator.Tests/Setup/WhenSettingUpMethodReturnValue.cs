@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Xunit;
@@ -11,12 +10,6 @@ namespace Imposter.CodeGenerator.Tests.Setup;
 [GenerateImposter(typeof(ISut))]
 public class WhenSettingUpMethodReturnValue
 {
-    [Fact]
-    public async Task TimeoutTest()
-    {
-        await Task.Delay(TimeSpan.FromSeconds(4));
-    }
-    
     [Fact]
     public void MethodWithHasNoParameters_MethodIsInvoked_SetupReturnValueIsReturned()
     {
@@ -182,6 +175,7 @@ public class WhenSettingUpMethodReturnValue
 
         sut
             .ParameterAndReturnType(Arg<int>.Is(it => it == 5), Arg<int>.Is(it => it == 6))
+            .CallBefore((i, i1) => { })
             .Returns((a, b) => a + b);
 
         // Act
@@ -194,25 +188,37 @@ public class WhenSettingUpMethodReturnValue
     [Fact]
     public void MethodWithNoParametersIsSetupToReturnMultipleResults_MethodIsInvokedMultipleTimes_SetupValuesReturnedInOrder()
     {
+        var callBeforeResult = -1;
+        var callAfterResult = -1;
+
         // Arrange
         var sut = new ISutImposter();
         sut
             .NoParametersWithReturnType()
+            .CallBefore(() => { callBeforeResult = 1; })
             .Returns(1)
+            .CallAfter(() => { callAfterResult = 1; })
+            .CallBefore(() => { callBeforeResult = 2; })
             .Returns(2)
-            .Returns(3);
+            .CallAfter(() => { callAfterResult = 2; })
+            .CallBefore(() => { callBeforeResult = 3; })
+            .Returns(3)
+            .CallAfter(() => { callAfterResult = 3; });
 
-        // Act
-        var resultOne = sut.Instance().NoParametersWithReturnType();
-        var resultTWo = sut.Instance().NoParametersWithReturnType();
-        var resultThree = sut.Instance().NoParametersWithReturnType();
-        var resultFour = sut.Instance().NoParametersWithReturnType();
+        // Act & Assert
+        var sutInstance = sut.Instance();
 
-        // Assert
-        resultOne.ShouldBe(1);
-        resultTWo.ShouldBe(2);
-        resultThree.ShouldBe(3);
-        resultFour.ShouldBe(3);
+        for (var i = 1; i <= 3; i++)
+        {
+            sutInstance.NoParametersWithReturnType().ShouldBe(i);
+            callBeforeResult.ShouldBe(i);
+            callAfterResult.ShouldBe(i);
+        }
+
+        // should remain the same
+        sutInstance.NoParametersWithReturnType().ShouldBe(3);
+        callBeforeResult.ShouldBe(3);
+        callAfterResult.ShouldBe(3);
     }
 
     public interface ISut

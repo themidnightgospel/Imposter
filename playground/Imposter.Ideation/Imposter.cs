@@ -70,9 +70,9 @@ namespace Imposter.Ideation
             _verifier = new CalculatorImposterVerifier(_addMethodBehaviour);
         }
 
-        public AddMethodInvocationBehaviour Add(TestArg<int> leftCriteria, TestArg<int> rightCriteria)
+        public AddMethodInvocationSetupBuilder Add(TestArg<int> leftCriteria, TestArg<int> rightCriteria)
         {
-            var addMethodInvocationBehaviour = new AddMethodInvocationBehaviour((left, right) => leftCriteria.Predicate(left) && rightCriteria.Predicate(right));
+            var addMethodInvocationBehaviour = new AddMethodInvocationSetupBuilder((left, right) => leftCriteria.Predicate(left) && rightCriteria.Predicate(right));
             _addMethodBehaviour.InvocationBehaviours.Add(addMethodInvocationBehaviour);
 
             return addMethodInvocationBehaviour;

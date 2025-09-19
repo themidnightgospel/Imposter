@@ -126,10 +126,13 @@ internal class ImposterTargetMethod
         ParametersExceptOut = Parameters.Where(it => it.Symbol.RefKind is not RefKind.Out).ToList();
         UniqueName = uniqueName;
         MethodInvocationHistoryClassName = $"{uniqueName}MethodInvocationHistory";
-        InvocationBehaviorClassName = $"{uniqueName}InvocationSetup";
+        InvocationsSetupBuilder = $"{uniqueName}MethodInvocationsSetupBuilder";
         MethodInvocationVerifierClassName = $"{uniqueName}MethodInvocationVerifier";
         DelegateName = $"{uniqueName}Delegate";
+        CallbackDelegateName = $"{uniqueName}CallbackDelegate";
+        ExceptionGeneratorDelegateName = $"{uniqueName}ExceptionGeneratorDelegate";
         ArgumentsClassName = $"{uniqueName}Arguments";
+        ArgArgumentsClassName = $"{uniqueName}ArgArguments";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
         ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
@@ -157,14 +160,20 @@ internal class ImposterTargetMethod
 
     internal string MethodInvocationHistoryClassName { get; }
 
-    internal string InvocationBehaviorClassName { get; }
+    internal string InvocationsSetupBuilder { get; }
 
     internal string MethodInvocationVerifierClassName { get; }
 
     internal string DelegateName { get; }
 
+    internal string CallbackDelegateName { get; }
+
+    internal string ExceptionGeneratorDelegateName { get; }
+
     internal string ArgumentsClassName { get; }
 
+    internal string ArgArgumentsClassName { get; }
+    
     internal IReadOnlyList<string> InitializeOutParametersWithDefault { get; }
 
     private IReadOnlyList<string> GetInitializeOutParametersWithDefault()

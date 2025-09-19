@@ -2,12 +2,17 @@
 
 namespace Imposter.Abstractions;
 
+public interface IArg<in T>
+{
+    bool Matches(T value);
+}
+
 /// <summary>
 /// TODO add doc
 /// </summary>
-public class Arg<T>(Func<T, bool> matches)
+public class Arg<T>(Func<T, bool> matches) : IArg<T>
 {
-    public Func<T, bool> Matches = matches;
+    public bool Matches(T value) => matches(value);
 
     public static implicit operator Arg<T>(T value)
     {
@@ -33,7 +38,9 @@ public class Arg<T>(Func<T, bool> matches)
     // TODO Add more utility factory methods similar to Moq.It
 }
 
-public class OutArg<T>
+public class OutArg<T>() : IArg<T>
 {
-    public static OutArg<T> Any = new OutArg<T>();
+    public static OutArg<T> Any = new();
+
+    public bool Matches(T value) => true;
 }

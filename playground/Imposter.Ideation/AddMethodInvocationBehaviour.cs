@@ -1,91 +1,124 @@
-﻿namespace Imposter.Ideation;
+﻿using System.Collections.Concurrent;
 
-public class AddMethodInvocationBehaviour(Func<int, int, bool> parameterCriteria)
+namespace Imposter.Ideation;
+
+public class AddMethodInvocationArgCriteria
 {
-    public int InvocationCounter;
+    public TestArg<int> left { get; set; }
 
-    private readonly List<Func<int, int, int>> _returns = new();
-    private Action<int, int>? _callbackBeforeReturn;
-    private Action<int, int>? _callbackAfterReturn;
+    public TestArg<int> right { get; set; }
 
-    internal bool Matches(int left, int right) => parameterCriteria(left, right);
-
-    public AddMethodInvocationBehaviour Returns(Func<int, int, int> returns)
+    public bool Matches(AddMethodInvocationArguments arguments)
     {
-        _returns.Add(returns);
+        return left.Predicate(arguments.left) && right.Predicate(arguments.right);
+    }
+}
+
+public class AddMethodInvocationArguments
+{
+    public int left { get; set; }
+
+    public int right { get; set; }
+}
+
+public class AddMethodInvocationSetupBuilder(AddMethodInvocationArgCriteria argCriteria)
+{
+    private readonly ConcurrentQueue<MethodInvocationSetup> _callSetups = new();
+    private MethodInvocationSetup? _currentlySetupCall;
+
+    internal bool Matches(AddMethodInvocationArguments arguments) => argCriteria.Matches(arguments);
+
+    private MethodInvocationSetup GetMethodCallSetup(Func<MethodInvocationSetup, bool> addNew)
+    {
+        if (_currentlySetupCall is null || addNew(_currentlySetupCall))
+        {
+            _currentlySetupCall = new MethodInvocationSetup();
+            _callSetups.Enqueue(_currentlySetupCall);
+        }
+
+        return _currentlySetupCall;
+    }
+
+    public AddMethodInvocationSetupBuilder Returns(Func<int, int, int> returns)
+    {
+        GetMethodCallSetup(it => it.ResultGenerator is not null).ResultGenerator = returns;
         return this;
     }
 
-    public AddMethodInvocationBehaviour Throws<TException>()
+    public AddMethodInvocationSetupBuilder Throws<TException>()
         where TException : Exception, new()
     {
-        _returns.Add((_, _) => throw new TException());
+        GetMethodCallSetup(it => it.ResultGenerator is not null)
+            .ResultGenerator = (_, _) => throw new TException();
         return this;
     }
 
-    public AddMethodInvocationBehaviour Throws(Exception exception)
+    public AddMethodInvocationSetupBuilder Throws(Exception exception)
     {
-        _returns.Add((_, _) => throw exception);
+        GetMethodCallSetup(it => it.ResultGenerator is not null)
+            .ResultGenerator = (_, _) => throw exception;
         return this;
     }
 
-    public AddMethodInvocationBehaviour ThrowsSequence(IEnumerable<Exception> exceptions)
+    public AddMethodInvocationSetupBuilder Returns(int result)
     {
-        foreach (var exception in exceptions)
+        GetMethodCallSetup(it => it.ResultGenerator is not null)
+            .ResultGenerator = (_, _) => result;
+        return this;
+    }
+
+    public AddMethodInvocationSetupBuilder CallBeforeReturn(Action<int, int> callbackBeforeReturn)
+    {
+        GetMethodCallSetup(it => false).CallBefore = callbackBeforeReturn;
+        return this;
+    }
+
+    public AddMethodInvocationSetupBuilder CallAfterReturn(Action<int, int> callbackAfterReturn)
+    {
+        GetMethodCallSetup(it => false).CallAfter = callbackAfterReturn;
+        return this;
+    }
+
+    private MethodInvocationSetup? _nextMethodCallSetupToInvoke;
+
+    private MethodInvocationSetup? GetNextMethodCallSetupToInvoke()
+    {
+        if (_callSetups.TryDequeue(out var callSetup))
         {
-            _returns.Add((_, _) => throw exception);
+            _nextMethodCallSetupToInvoke = callSetup;
         }
 
-        return this;
+        return _nextMethodCallSetupToInvoke;
     }
 
-    public AddMethodInvocationBehaviour Returns(int result)
+    public int Invoke(int a, int b)
     {
-        _returns.Add((_, _) => result);
-        return this;
-    }
+        var nextMethodCallSetupToInvoke = GetNextMethodCallSetupToInvoke();
 
-    public AddMethodInvocationBehaviour ReturnsSequence(IEnumerable<int> results)
-    {
-        foreach (var result in results)
+        if (nextMethodCallSetupToInvoke is null)
         {
-            _returns.Add((_, _) => result);
+            return default(int);
         }
 
-        return this;
-    }
-
-    public AddMethodInvocationBehaviour CallBeforeReturn(Action<int, int> callbackBeforeReturn)
-    {
-        _callbackBeforeReturn = callbackBeforeReturn;
-        return this;
-    }
-
-    public AddMethodInvocationBehaviour CallAfterReturn(Action<int, int> callbackAfterReturn)
-    {
-        _callbackAfterReturn = callbackAfterReturn;
-        return this;
-    }
-
-    public int Invoke(int left, int right)
-    {
-        ++InvocationCounter;
-
-        if (_callbackBeforeReturn is not null)
+        if (nextMethodCallSetupToInvoke.CallBefore is not null)
         {
-            _callbackBeforeReturn.Invoke(left, right);
+            nextMethodCallSetupToInvoke.CallBefore(a, b);
         }
 
-        // TODO If exception happens
-        var result = _returns.Count >= InvocationCounter
-            ? _returns[InvocationCounter - 1].Invoke(left, right)
-            : _returns.Last().Invoke(left, right);
+        var result = nextMethodCallSetupToInvoke.ResultGenerator?.Invoke(a, b) ?? default(global::System.Int32);
 
-        if (_callbackAfterReturn is not null)
+        if (nextMethodCallSetupToInvoke.CallAfter is not null)
         {
-            _callbackAfterReturn.Invoke(left, right);
+            nextMethodCallSetupToInvoke.CallAfter(a, b);
         }
 
         return result;
+    }
+
+    private class MethodInvocationSetup
+    {
+        internal Func<int, int, int>? ResultGenerator { get; set; }
+        internal Action<int, int>? CallBefore { get; set; }
+        internal Action<int, int>? CallAfter { get; set; }
     }
 }

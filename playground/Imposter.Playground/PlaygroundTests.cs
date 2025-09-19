@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Threading;
 /*
 using System.Threading.Tasks;
 */
-using Imposter.Abstractions;
+using Imposter.Ideation;
+using Moq;
+using Shouldly;
+using Xunit;
+
 /*
 using Imposters.Imposter.Playground;
 using Shouldly;
@@ -11,29 +16,44 @@ using Xunit;
 
 namespace Imposter.Playground;
 
-public interface TestInterface
-{
-}
-
-public interface IOrderApiService
+public static class LinqReverse
 {
     
 }
 
-[GenerateImposter(typeof(IOrderApiService))]
-[GenerateImposter(typeof(TestInterface))]
-[GenerateImposter(typeof(TestInterface))]
-public class TestClass
-{
-}
-
-[GenerateImposter(typeof(IOrderApiService))]
-[GenerateImposter(typeof(IOrderApiService))]
-[GenerateImposter(typeof(IOrderApiService))]
-[GenerateImposter(typeof(IOrderApiService))]
-[Serializable]
 public class IOrderApiServiceImposterTests
 {
+    [Fact]
+    public void EmptySetup_OverwritesExistingOne()
+    {
+        var mock = new Mock<ICalculator>();
+
+        mock.Setup(x => x.Add(It.IsAny<int>(), It.IsAny<int>()))
+            .Returns(11);
+
+        mock.Setup(x => x.Add(It.IsAny<int>(), It.IsAny<int>()));
+
+        var res = mock.Object.Add(1, 1);
+        res.ShouldBe(0);
+    }
+
+    [Fact]
+    public void ThreadSleepInCallback_BlocksCall()
+    {
+        var mock = new Mock<ICalculator>();
+
+        mock.Setup(x => x.Add(It.IsAny<int>(), It.IsAny<int>()))
+            .Callback(() =>
+            {
+                Thread.Sleep(200000); // blocks 2 seconds
+                Console.WriteLine("Finished sleeping");
+            })
+            .Returns(11);
+
+        mock.Object.Add(1, 1);
+    }
+
+
     /*
     [Fact]
     public void DoWork_WhenSetup_ShouldInvokeCallbacks()

@@ -1,0 +1,82 @@
+﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Helpers.SyntaxBuilders;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
+
+internal static partial class InvocationSetupBuilder
+{
+    private static MethodDeclarationSyntax ReturnsMethodDeclarationSyntax(ImposterTargetMethod method) =>
+        MethodDeclaration(
+                IdentifierName(method.InvocationsSetupBuilder),
+                Identifier("Returns")
+            )
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .AddParameterListParameters(
+                Parameter(Identifier("resultGenerator"))
+                    .WithType(IdentifierName(method.DelegateName))
+            )
+            .WithBody(Block(
+                ExpressionStatement(
+                    AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        GetMethodCallSetupAccessExpressionSyntax,
+                        IdentifierName("resultGenerator"))
+                ),
+                ReturnStatement(ThisExpression())
+            ));
+
+    private static MethodDeclarationSyntax ReturnsValueMethodDeclarationSyntax(ImposterTargetMethod method)
+    {
+        return MethodDeclaration(
+                IdentifierName(method.InvocationsSetupBuilder),
+                Identifier("Returns")
+            )
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .AddParameterListParameters(
+                Parameter(Identifier("value"))
+                    .WithType(SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType))
+            )
+            .WithBody(Block(ExpressionStatement(
+                    AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        GetMethodCallSetupAccessExpressionSyntax,
+                        SyntaxFactoryHelper.Lambda(method.Symbol.Parameters,
+                            new BlockBuilder()
+                                .AddStatementsIf(method.HasOutParameters, InvokeInitializeOutParametersWithDefaultValuesMethod(method))
+                                .AddStatement(ReturnStatement(IdentifierName("value")))
+                                .Build())
+                    )),
+                ReturnStatement(ThisExpression())
+            ));
+    }
+
+    private static readonly MemberAccessExpressionSyntax GetMethodCallSetupAccessExpressionSyntax =
+        MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            InvocationExpression(
+                IdentifierName("GetMethodCallSetup"),
+                ArgumentList(
+                    SingletonSeparatedList(
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(Identifier("it")),
+                                BinaryExpression(
+                                    SyntaxKind.NotEqualsExpression,
+                                    MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        IdentifierName("it"),
+                                        IdentifierName("ResultGenerator")
+                                    ),
+                                    LiteralExpression(SyntaxKind.NullLiteralExpression)
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            IdentifierName("ResultGenerator")
+        );
+}

@@ -23,8 +23,10 @@
     <ItemGroup>
         <!--  OutputItemType="Analyzer" is necessary for generator to access it during generation.
           see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->
+<!--
         <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" OutputItemType="Analyzer"/>
         <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+-->
     </ItemGroup>
 
 </Project>
