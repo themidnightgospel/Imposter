@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Generation;
+namespace Imposter.CodeGenerator.Tests.Generator;
 
 public class WhenGenerateImposterAttributeIsUsed
 {
