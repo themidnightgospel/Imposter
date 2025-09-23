@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Xunit;
-using Imposters.Imposter.CodeGenerator.Tests.Setup;
 using Shouldly;
 
 namespace Imposter.CodeGenerator.Tests.Setup;
@@ -191,6 +190,12 @@ public class WhenSettingUpMethodReturnValue
         var callBeforeResult = -1;
         var callAfterResult = -1;
 
+        /* TODO do this style of verify
+        sut
+            .NoParametersWithReturnType()
+            .WasInvoked(InvocationCount.AtLeast(3));
+            */
+
         // Arrange
         var sut = new ISutImposter();
         sut
@@ -234,5 +239,7 @@ public class WhenSettingUpMethodReturnValue
         int MethodWithParamsParameter(params int[] a);
 
         Task ReturnsTypeTask();
+
+        void NoParametersNoReturnType(out int a);
     }
 }

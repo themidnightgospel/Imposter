@@ -74,7 +74,7 @@ internal record ImposterVerifierClass
     }
 }
 
-internal class MethodClass
+internal class MethodImposterType
 {
     public string DeclaredAsParameterName { get; }
 
@@ -82,9 +82,9 @@ internal class MethodClass
 
     public string Name { get; }
 
-    public MethodClass(ImposterTargetMethod method)
+    public MethodImposterType(ImposterTargetMethod method)
     {
-        Name = $"{method.UniqueName}Method";
+        Name = $"{method.UniqueName}MethodImposter";
         DeclaredAsParameterName = char.ToLower(Name[0]) + Name.Substring(1);
         DeclaredAsFieldName = "_" + DeclaredAsParameterName;
     }
@@ -100,10 +100,12 @@ internal class ImposterTargetMethod
     internal bool HasParameters => Symbol.Parameters.Length > 0;
 
     internal bool HasReturnValue => !Symbol.ReturnsVoid;
+    
+    internal IReadOnlyList<IParameterSymbol> ParametersExceptOut { get; }
 
     internal IReadOnlyList<ImposterReferentMethodParameter> Parameters { get; }
 
-    internal IReadOnlyList<ImposterReferentMethodParameter> ParametersExceptOut { get; }
+    internal IReadOnlyList<ImposterReferentMethodParameter> ParametersExceptOut__ { get; }
 
     internal bool HasOutParameters { get; }
 
@@ -122,8 +124,9 @@ internal class ImposterTargetMethod
     internal ImposterTargetMethod(IMethodSymbol symbol, string uniqueName)
     {
         Symbol = symbol;
+        ParametersExceptOut = symbol.Parameters.Where(it => it.RefKind is not RefKind.Out).ToList();
         Parameters = symbol.Parameters.Select(parameter => new ImposterReferentMethodParameter(parameter)).ToList();
-        ParametersExceptOut = Parameters.Where(it => it.Symbol.RefKind is not RefKind.Out).ToList();
+        ParametersExceptOut__ = Parameters.Where(it => it.Symbol.RefKind is not RefKind.Out).ToList();
         UniqueName = uniqueName;
         MethodInvocationHistoryClassName = $"{uniqueName}MethodInvocationHistory";
         InvocationsSetupBuilder = $"{uniqueName}MethodInvocationsSetupBuilder";
@@ -135,9 +138,9 @@ internal class ImposterTargetMethod
         ArgArgumentsClassName = $"{uniqueName}ArgArguments";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
-        ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
+        ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut__.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
         ParametersPassedAsArguments = string.Join(", ", Parameters.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
-        ParametersExceptOutPassedAsArguments = string.Join(", ", ParametersExceptOut.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
+        ParametersExceptOutPassedAsArguments = string.Join(", ", ParametersExceptOut__.Select(parameter => $"{parameter.RefKindPrefix} {parameter.Symbol.Name}"));
         ParametersPassedAsArgumentsWithoutRefKind = string.Join(", ", Parameters.Select(parameter => $"{parameter.Symbol.Name}"));
         ReturnType = GetReturnType(symbol);
         ReturnTypeDefaultValue = $"default({ReturnType})";
@@ -145,12 +148,12 @@ internal class ImposterTargetMethod
         ParametersEnclosedInArgTypePassedAsArgument = string.Join(", ", Parameters.Select(p => p.EnclosedInArgName));
         InitializeOutParametersWithDefault = GetInitializeOutParametersWithDefault();
         HasOutParameters = symbol.Parameters.Any(it => it.RefKind is RefKind.Out);
-        MethodClass = new MethodClass(this);
+        MethodImposter = new MethodImposterType(this);
         FullDisplayName = Symbol.ToDisplayString(MethodDisplayFormatForDebuggerDisplayName);
         Comment = "// " + FullDisplayName;
     }
 
-    internal MethodClass MethodClass { get; }
+    internal MethodImposterType MethodImposter { get; }
 
     internal string ParametersEnclosedInArgType { get; }
 
@@ -211,7 +214,7 @@ internal class ImposterTargetMethod
 
     internal string CheckParametersMatchCriteria(bool argsAreFields)
     {
-        return string.Join(" && ", ParametersExceptOut.Select(parameter => $"{(argsAreFields ? parameter.EnclosedInArgNameDeclaredAsField : parameter.EnclosedInArgName)}.Matches({parameter.Symbol.Name})"));
+        return string.Join(" && ", ParametersExceptOut__.Select(parameter => $"{(argsAreFields ? parameter.EnclosedInArgNameDeclaredAsField : parameter.EnclosedInArgName)}.Matches({parameter.Symbol.Name})"));
     }
 
     /// <example>

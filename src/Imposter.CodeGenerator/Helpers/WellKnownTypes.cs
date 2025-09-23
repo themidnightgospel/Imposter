@@ -13,5 +13,20 @@ internal static class WellKnownTypes
             Namespace,
             IdentifierName("Exception")
         );
+
+        public static class Threading
+        {
+            internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Threading"));
+
+            public static class Tasks
+            {
+                internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Threading.Namespace, IdentifierName("Tasks"));
+
+                internal static TypeSyntax Task = QualifiedName(
+                    Namespace,
+                    IdentifierName("Exception")
+                );
+            }
+        }
     }
 }

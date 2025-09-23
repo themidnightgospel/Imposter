@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.Helpers.SyntaxBuilders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.Helpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
 
@@ -25,7 +26,7 @@ internal static partial class InvocationSetupBuilder
                         GetMethodCallSetupAccessExpressionSyntax,
                         SyntaxFactoryHelper.Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, InvokeInitializeOutParametersWithDefaultValuesMethod(method))
+                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ThrowStatement(ObjectCreationExpression(IdentifierName("TException"), ArgumentList(), default)))
                                 .Build())
                     )),
@@ -53,9 +54,9 @@ internal static partial class InvocationSetupBuilder
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         GetMethodCallSetupAccessExpressionSyntax,
-                        SyntaxFactoryHelper.Lambda(method.Symbol.Parameters,
+                        Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, InvokeInitializeOutParametersWithDefaultValuesMethod(method))
+                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ThrowStatement(IdentifierName(exceptionParameter.Identifier)))
                                 .Build())
                     )),
@@ -79,13 +80,13 @@ internal static partial class InvocationSetupBuilder
                         AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
                             GetMethodCallSetupAccessExpressionSyntax,
-                            SyntaxFactoryHelper.Lambda(
+                            Lambda(
                                 method.Symbol.Parameters,
                                 Block(
                                     ThrowStatement(
                                         InvocationExpression(
                                             IdentifierName("exceptionGenerator"),
-                                            SyntaxFactoryHelper.ArgumentSyntaxList(method.Symbol.Parameters)
+                                            ArgumentSyntaxList(method.Symbol.Parameters)
                                         )
                                     ))
                             )

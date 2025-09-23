@@ -1,8 +1,8 @@
-﻿using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.Helpers.SyntaxBuilders;
+﻿using Imposter.CodeGenerator.Helpers.SyntaxBuilders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.Helpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
 
@@ -37,15 +37,15 @@ internal static partial class InvocationSetupBuilder
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(
                 Parameter(Identifier("value"))
-                    .WithType(SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType))
+                    .WithType(TypeSyntax(method.Symbol.ReturnType))
             )
             .WithBody(Block(ExpressionStatement(
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         GetMethodCallSetupAccessExpressionSyntax,
-                        SyntaxFactoryHelper.Lambda(method.Symbol.Parameters,
+                        Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, InvokeInitializeOutParametersWithDefaultValuesMethod(method))
+                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ReturnStatement(IdentifierName("value")))
                                 .Build())
                     )),
