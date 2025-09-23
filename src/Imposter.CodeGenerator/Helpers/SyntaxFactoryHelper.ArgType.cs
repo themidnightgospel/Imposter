@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,6 +23,16 @@ internal static partial class SyntaxFactoryHelper
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+
+    internal static ArgumentSyntax ArgAnyArgument(IParameterSymbol parameter) =>
+        Argument(
+            MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                ArgType(parameter),
+                IdentifierName("Any")
+            ));
+
+    internal static ArgumentListSyntax ArgAnyArgumentList(IEnumerable<IParameterSymbol> parameter) => ArgumentList(SeparatedList(parameter.Select(ArgAnyArgument)));
 
     internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
         Parameter(Identifier(parameter.Name)).WithType(ArgType(parameter));

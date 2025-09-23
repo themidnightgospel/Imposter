@@ -6,6 +6,7 @@ using Imposter.Abstractions;
 using Imposter.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.ImposterParts;
 using Imposter.CodeGenerator.ImposterParts.InvocationSetup;
+using Imposter.CodeGenerator.ImposterParts.MethodType;
 using Imposter.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -16,7 +17,8 @@ namespace Imposter.CodeGenerator;
 
 #pragma warning disable RS1014
 
-// Add auto-
+// Add auto-generated comment at the beggining
+// Async method
 // TODO Generic interface ?
 // TODO Generic methods
 // TODO Add benchamrks for the code generator itself.
@@ -30,6 +32,7 @@ namespace Imposter.CodeGenerator;
 // Create builder classes similar to BlockBuilder for better perf
 // Thread safety
 // Cache some of the syntaxes (add benchmark to validate)
+// Use fully qualified names for all the types
 [Generator]
 public class ImposterGenerator : IIncrementalGenerator
 {
@@ -40,8 +43,44 @@ public class ImposterGenerator : IIncrementalGenerator
     // TODO use it
     private static string MethodImplAggresiveInliningAttribute = "[MethodImpl(MethodImplOptions.AggressiveInlining)]";
 
+    // TODO do we need it ?
+    private const string EmptyArgumentsClass =
+        /* lang=c# */
+        $$"""
+          namespace {{ImposterNamespace}}
+          {    
+              internal class EmptyArguments
+              {
+                  internal EmptyArguments Instance = new EmptyArguments();
+                  
+                  private EmptyArguments()
+                  {}
+              }
+          }
+          """;
+
+    private const string EmptyArgArgumentsClass =
+        /* lang=c# */
+        $$"""
+          namespace {{ImposterNamespace}}
+          {    
+              internal class EmptyArgArguments
+              {
+                  internal EmptyArgArguments Instance = new EmptyArgArguments();
+                  
+                  private EmptyArgArguments()
+                  {}
+              }
+          }
+          """;
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterPostInitializationOutput(static initializationContext =>
+        {
+            initializationContext.AddSource("EmptyArguments.cs", EmptyArgumentsClass);
+            initializationContext.AddSource("EmptyArgArguments.cs", EmptyArgArgumentsClass);
+        });
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
         context.RegisterSourceOutput(context.GetGenerateImposterDeclarations(), GenerateImposter);
     }
@@ -72,7 +111,7 @@ public class ImposterGenerator : IIncrementalGenerator
                 new DiagnosticDescriptor(
                     id: "IMP001",
                     title: "Generator crash",
-                    messageFormat: $"Exception: {ex} \r\n {ex.StackTrace}",
+                    messageFormat: $"Exception: {ex.Message} {ex.StackTrace.Replace("\r", " ").Replace("\n", " ")}",
                     category: "ImposterGenerator",
                     DiagnosticSeverity.Error,
                     isEnabledByDefault: true),
@@ -80,7 +119,7 @@ public class ImposterGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AddUsingStatementsAndNamespace(ImposterGenerationContext imposterGenerationContext)
+    private static CompilationUnitSyntax CreateUsingStatementsAndNamespace(ImposterGenerationContext imposterGenerationContext)
     {
         // Create using directives
         var usingDirectives = new List<UsingDirectiveSyntax>
@@ -96,7 +135,6 @@ public class ImposterGenerator : IIncrementalGenerator
             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ImposterNamespace))
         };
 
-        // Add the containing namespace as a using directive if it's not the global namespace
         if (!imposterGenerationContext.Target.TypeSymbol.ContainingNamespace.IsGlobalNamespace)
         {
             usingDirectives.Add(
@@ -104,44 +142,41 @@ public class ImposterGenerator : IIncrementalGenerator
                     SyntaxFactory.ParseName(imposterGenerationContext.Target.TypeSymbol.ContainingNamespace.ToDisplayString())));
         }
 
-        // Create the namespace declaration
-        var namespaceDeclaration = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(imposterGenerationContext.Target.ImposterClass.Namespace));
+        var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(imposterGenerationContext.Target.ImposterClass.Namespace));
 
-        // Create the compilation unit with nullable enable directive
+        // TODO move to factory helper
         var nullableEnable = SyntaxFactory.PragmaWarningDirectiveTrivia(
             SyntaxFactory.Token(SyntaxKind.DisableKeyword),
             SyntaxFactory.SeparatedList<ExpressionSyntax>().Add(SyntaxFactory.ParseExpression("nullable")),
             true);
 
-        // Build the compilation unit with all components
-        var compilationUnit = SyntaxFactory
+        return SyntaxFactory
             .CompilationUnit()
             .WithUsings(SyntaxFactory.List(usingDirectives))
             .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDeclaration))
             .WithLeadingTrivia(SyntaxFactory.Trivia(nullableEnable));
-
-        // Format the syntax and append to the StringBuilder
-        imposterGenerationContext.SourceBuilder.AppendLine(compilationUnit.NormalizeWhitespace().ToFullString());
     }
 
     private static string GenerateImposter(ImposterGenerationContext imposterGenerationContext)
     {
         var sb = imposterGenerationContext.SourceBuilder;
 
-        AddUsingStatementsAndNamespace(imposterGenerationContext);
+        var imposterCompilationUnit = CreateUsingStatementsAndNamespace(imposterGenerationContext);
 
         foreach (var method in imposterGenerationContext.Target.Methods)
         {
-            DelegateTypeGenerator.AddMethodDelegate(imposterGenerationContext, method);
-            DelegateTypeGenerator.AddCallbackDelegate(imposterGenerationContext, method);
-            DelegateTypeGenerator.AddExceptionGeneratorDelegate(imposterGenerationContext, method);
-            ArgumentsTypeGenerator.AddArgumentsType(imposterGenerationContext, method);
-            ArgumentsTypeGenerator.AddArgArgumentsType(imposterGenerationContext, method);
-            MethodInvocationHistoryTypeGenerator.AddMethodInvocationHistoryClass(imposterGenerationContext, method);
-            InvocationSetupBuilder.AddInvocationSetupBuilder(imposterGenerationContext, method);
-            AddMethodClass(imposterGenerationContext, method);
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodDelegateTypeBuilder.BuildDelegateTypeDeclarations(method).ToArray());
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(ArgumentsTypeGenerator.GetArgumentsType(method).ToArray());
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodInvocationHistoryTypeGenerator.GetMethodInvocationHistoryClass(method));
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(InvocationSetupBuilder.GetInvocationSetupBuilder(method));
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodImposterBuilder.Build(method));
+
             AddMethodInvocationVerifierClass(imposterGenerationContext, method);
         }
+
+
+        // TODO
+        sb.Append(imposterCompilationUnit.NormalizeWhitespace().ToFullString());
 
         AddImposterVerifierClass(imposterGenerationContext);
         AddImposterClass(imposterGenerationContext);
@@ -165,7 +200,7 @@ public class ImposterGenerator : IIncrementalGenerator
 
         foreach (var method in referent.Methods)
         {
-            imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {method.MethodClass.Name} {method.MethodClass.DeclaredAsFieldName};");
+            imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {method.MethodImposter.Name} {method.MethodImposter.DeclaredAsFieldName};");
         }
 
         imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {referent.VerifierClass.Name} {referent.ImposterClass.VerifierFieldName};");
@@ -182,11 +217,11 @@ public class ImposterGenerator : IIncrementalGenerator
 
         foreach (var method in referent.Methods)
         {
-            imposterGenerationContext.SourceBuilder.AppendLine($"       {method.MethodClass.DeclaredAsFieldName} = new();");
+            imposterGenerationContext.SourceBuilder.AppendLine($"       {method.MethodImposter.DeclaredAsFieldName} = new();");
         }
 
         imposterGenerationContext.SourceBuilder.AppendLine($$"""
-                                                                    {{referent.ImposterClass.VerifierFieldName}} = new({{string.Join(",", referent.Methods.Select(it => it.MethodClass.DeclaredAsFieldName))}});
+                                                                    {{referent.ImposterClass.VerifierFieldName}} = new({{string.Join(",", referent.Methods.Select(it => it.MethodImposter.DeclaredAsFieldName))}});
                                                                     {{referent.ImposterClass.ImposterInstanceFieldName}} = new {{referent.ImposterInstanceClass.Name}}(this);
                                                                  }
 
@@ -210,7 +245,7 @@ public class ImposterGenerator : IIncrementalGenerator
                                 public {{method.InvocationsSetupBuilder}} {{method.Symbol.Name}}({{method.ParametersEnclosedInArgType}})
                                 {
                                     var invocationBehaviour = new {{method.InvocationsSetupBuilder}}({{method.ParametersEnclosedInArgTypePassedAsArgument}});
-                                    {{method.MethodClass.DeclaredAsFieldName}}.Behaviours.Add(invocationBehaviour);
+                                    {{method.MethodImposter.DeclaredAsFieldName}}.Behaviours.Add(invocationBehaviour);
                                     return invocationBehaviour;
                                 }
                                 
@@ -225,67 +260,11 @@ public class ImposterGenerator : IIncrementalGenerator
         sb.AppendLine("#nullable restore");
     }
 
-    private static void AddMethodClass(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
-    {
-        // todo
-        aa
-        var initializeOutParameters = method.InitializeOutParametersWithDefault.Aggregate(new StringBuilder(), (acc, cur) => acc.AppendLine(cur));
-        var createArgumentClassInstance = $"new {method.ArgumentsClassName}({method.ParametersPassedAsArgumentsWithoutRefKind})";
-
-        imposterGenerationContext.SourceBuilder
-            .AppendLine($$$"""
-                           {{{method.GetSummaryTag("method class")}}}
-                           public class {{{method.MethodClass.Name}}}
-                           {
-                               public List<{{{method.InvocationsSetupBuilder}}}> Behaviours { get; } = new();
-                               public List<{{{method.MethodInvocationHistoryClassName}}}> InvocationHistory { get; } = new();
-                               
-                               public {{{method.ReturnType}}} Invoke({{{method.ParametersDeclaration}}})
-                               {
-
-                                   try
-                                   {
-                                       {{{method.InvocationsSetupBuilder}}}? matchingBehaviour = null;
-                                       foreach(var behaviour in Enumerable.Reverse(Behaviours))
-                                       {
-                                           if(behaviour.Matches({{{method.ParametersExceptOutPassedAsArguments}}}))
-                                           {
-                                              matchingBehaviour = behaviour;
-                                              break;
-                                           }
-                                       }
-                                       {{{(method.HasReturnValue ? $"{method.ReturnType} result;" : string.Empty)}}}
-                                       
-                                       if(matchingBehaviour is not null)
-                                       {
-                                       {{{$"   {(method.HasReturnValue ? "result = " : string.Empty)}matchingBehaviour.Execute({method.ParametersPassedAsArguments});"}}}
-                                       }
-                                       else
-                                       {
-                                           {{{initializeOutParameters}}}
-                                           {{{(method.HasReturnValue ? $"result = {method.ReturnTypeDefaultValue};" : string.Empty)}}}
-                                       }
-                                       
-                                       InvocationHistory.Add(new {{{method.MethodInvocationHistoryClassName}}}({{{(method.HasParameters ? createArgumentClassInstance + "," : string.Empty)}}}{{{(method.HasReturnValue ? "result, " : string.Empty)}}}null));
-                                       {{{(method.HasReturnValue ? "return result;" : string.Empty)}}}
-                                   }
-                                   catch (Exception ex)
-                                   {
-                                       {{{initializeOutParameters}}}
-                                       InvocationHistory.Add(new {{{method.MethodInvocationHistoryClassName}}}({{{(method.HasParameters ? createArgumentClassInstance + "," : string.Empty)}}}{{{(method.HasReturnValue ? $"{method.ReturnTypeDefaultValue}, " : string.Empty)}}}ex));
-                                       throw;
-                                   }
-                               }
-                           }
-
-                           """);
-    }
-
     private static void AddMethodInvocationVerifierClass(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
     {
         var sb = imposterGenerationContext.SourceBuilder;
 
-        var constructorParameters = new[] { new ConstructorParameter(method.MethodClass.Name, method.MethodClass.DeclaredAsParameterName) }
+        var constructorParameters = new[] { new ConstructorParameter(method.MethodImposter.Name, method.MethodImposter.DeclaredAsParameterName) }
             .Concat(method
                 .Parameters
                 .Select(it => new ConstructorParameter(it.EnclosedInArgType, it.EnclosedInArgName)));
@@ -298,7 +277,7 @@ public class ImposterGenerator : IIncrementalGenerator
                             
                             public void WasInvoked(InvocationCount count)
                             {
-                                var invocationCount = {{method.MethodClass.DeclaredAsFieldName}}.InvocationHistory.Count({{(method.ParametersExceptOut.Count > 0 ? "it => Matches(it.Arguments)" : string.Empty)}});
+                                var invocationCount = {{method.MethodImposter.DeclaredAsFieldName}}.InvocationHistory.Count({{(method.ParametersExceptOut__.Count > 0 ? "it => Matches(it.Arguments)" : string.Empty)}});
                             
                                 if (!count.Matches(invocationCount))
                                 {
@@ -308,12 +287,12 @@ public class ImposterGenerator : IIncrementalGenerator
 
                         """);
 
-        if (method.ParametersExceptOut.Count > 0)
+        if (method.ParametersExceptOut__.Count > 0)
         {
             sb.AppendLine($$"""
                                 public bool Matches({{method.ArgumentsClassName}} arguments)
                                 {
-                                    return {{string.Join(" && ", method.ParametersExceptOut.Select(parameter => $"{parameter.EnclosedInArgNameDeclaredAsField}.Matches(arguments.{parameter.Symbol.Name})"))}};
+                                    return {{string.Join(" && ", method.ParametersExceptOut__.Select(parameter => $"{parameter.EnclosedInArgNameDeclaredAsField}.Matches(arguments.{parameter.Symbol.Name})"))}};
                                 }
                             """);
         }
@@ -333,7 +312,7 @@ public class ImposterGenerator : IIncrementalGenerator
                           {
                           {{GenerateFieldsAndInitializeFromConstructor(
                               imposterGenerationContext.Target.VerifierClass.Name,
-                              referent.Methods.Select(method => new ConstructorParameter(method.MethodClass.Name, method.MethodClass.DeclaredAsParameterName)).ToList(),
+                              referent.Methods.Select(method => new ConstructorParameter(method.MethodImposter.Name, method.MethodImposter.DeclaredAsParameterName)).ToList(),
                               numberOfTabs: 1)}}
 
                           """);
@@ -342,7 +321,7 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             sb.AppendLine($$"""
                                 public {{method.MethodInvocationVerifierClassName}} {{method.Symbol.Name}}({{method.ParametersEnclosedInArgType}})
-                                      => new({{method.MethodClass.DeclaredAsFieldName}}{{(method.Parameters.Any() ? $", {method.ParametersEnclosedInArgTypePassedAsArgument}" : string.Empty)}});
+                                      => new({{method.MethodImposter.DeclaredAsFieldName}}{{(method.Parameters.Any() ? $", {method.ParametersEnclosedInArgTypePassedAsArgument}" : string.Empty)}});
                             """);
         }
 
@@ -375,7 +354,7 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AppendLine($$"""
                                     public {{method.ReturnType}} {{method.Symbol.Name}}({{method.ParametersDeclaration}})
                                     {
-                                        {{(method.HasReturnValue ? "return " : string.Empty)}}{{referent.ImposterInstanceClass.ImposterFieldName}}.{{method.MethodClass.DeclaredAsFieldName}}.Invoke({{method.ParametersPassedAsArguments}});
+                                        {{(method.HasReturnValue ? "return " : string.Empty)}}{{referent.ImposterInstanceClass.ImposterFieldName}}.{{method.MethodImposter.DeclaredAsFieldName}}.Invoke({{method.ParametersPassedAsArguments}});
                                     }
                               """);
         }

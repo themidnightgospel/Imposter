@@ -32,10 +32,18 @@ internal static class GenerateImposterDeclarationsProvider
 
         foreach (var imposterTargetType in context
                      .Attributes
-                     .Where(it => it.ConstructorArguments.Length > 0 && it.ConstructorArguments[0].Value is ITypeSymbol)
-                     .Select(it => (ITypeSymbol)it.ConstructorArguments[0].Value)
-                     .Distinct<ITypeSymbol>(SymbolEqualityComparer.Default)
-                     .Select(symbol => new GenerateImposterDeclaration(symbol))
+                     .Select(it =>
+                     {
+                         if (it.ConstructorArguments.Length > 0 && it.ConstructorArguments[0].Value is ITypeSymbol imposterType)
+                         {
+                             return imposterType;
+                         }
+
+                         return null;
+                     })
+                     .Where(it => it is not null)
+                     .Distinct<ITypeSymbol?>(SymbolEqualityComparer.Default)
+                     .Select(symbol => new GenerateImposterDeclaration(symbol!))
                 )
         {
             yield return imposterTargetType;

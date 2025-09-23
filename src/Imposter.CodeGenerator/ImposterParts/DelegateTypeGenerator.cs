@@ -1,40 +1,33 @@
-﻿using Imposter.CodeGenerator.Helpers;
+﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.ImposterParts;
 
-internal class DelegateTypeGenerator
+internal static class MethodDelegateTypeBuilder
 {
-    internal static void AddMethodDelegate(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
+    internal static IEnumerable<DelegateDeclarationSyntax> BuildDelegateTypeDeclarations(ImposterTargetMethod method)
     {
-        var delegateDeclaration = CreateDelegateDeclaration(method, method.DelegateName, SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType));
-
-        imposterGenerationContext.SourceBuilder.AppendLine(delegateDeclaration.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
+        yield return GetMethodDelegateDeclaration(method);
+        yield return GetCallbackDelegateDeclaration(method);
+        yield return GetExceptionGeneratorDelegateDeclaration(method);
     }
 
-    internal static void AddCallbackDelegate(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
-    {
-        var delegateDeclaration = CreateDelegateDeclaration(
+    private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(ImposterTargetMethod method) => CreateDelegateDeclaration(method, method.DelegateName, SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType));
+
+    private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(ImposterTargetMethod method) =>
+        CreateDelegateDeclaration(
             method,
             method.CallbackDelegateName,
             SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)));
-        imposterGenerationContext.SourceBuilder.AppendLine(delegateDeclaration.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
-    }
 
-    internal static void AddExceptionGeneratorDelegate(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
-    {
-        var delegateDeclaration = CreateDelegateDeclaration(
+    private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(ImposterTargetMethod method) =>
+        CreateDelegateDeclaration(
             method,
             method.ExceptionGeneratorDelegateName,
             WellKnownTypes.System.Exception);
-
-        imposterGenerationContext.SourceBuilder.AppendLine(delegateDeclaration.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
-    }
 
     private static DelegateDeclarationSyntax CreateDelegateDeclaration(ImposterTargetMethod method, string delegateName, TypeSyntax returnType) =>
         SyntaxFactory.DelegateDeclaration(

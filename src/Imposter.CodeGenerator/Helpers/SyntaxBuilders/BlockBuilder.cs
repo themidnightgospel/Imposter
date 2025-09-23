@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,9 +18,9 @@ public class BlockBuilder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BlockBuilder AddStatementsIf(bool condition, StatementSyntax statements)
+    public BlockBuilder AddStatementsIf(bool condition, Func<StatementSyntax> statementGenerator)
     {
-        return condition ? AddStatement(statements) : this;
+        return condition ? AddStatement(statementGenerator()) : this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

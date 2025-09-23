@@ -8,4 +8,8 @@ public interface ICalculator
     int Multiply(int left, int right);
 
     int Age { get; set; }
+
+    Task DoAsync();
+    
+    Task<int> DoGenericAsync();
 }

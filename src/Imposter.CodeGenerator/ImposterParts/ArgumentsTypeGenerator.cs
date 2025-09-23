@@ -11,42 +11,26 @@ namespace Imposter.CodeGenerator.ImposterParts;
 
 internal static class ArgumentsTypeGenerator
 {
-    internal static void AddArgumentsType(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
+    internal static IEnumerable<ClassDeclarationSyntax> GetArgumentsType(ImposterTargetMethod method)
     {
-        if (method.Parameters.Count == 0)
+        if (method.ParametersExceptOut.Count == 0)
         {
-            return;
+            yield return CreateParameterType(
+                method.ArgumentsClassName,
+                method.ParametersExceptOut,
+                SyntaxFactoryHelper.ParameterAsProperty,
+                parameter => SyntaxFactoryHelper.ParameterSyntax(parameter, false));
         }
 
-        var argumentsClassDeclarationSyntax = CreateParameterType(
-            method.ArgumentsClassName,
-            method.Symbol.Parameters,
-            SyntaxFactoryHelper.ParameterAsProperty,
-            parameter => SyntaxFactoryHelper.ParameterSyntax(parameter, false));
-
-        // TODO To .ToFullString once
-        imposterGenerationContext.SourceBuilder.AppendLine(argumentsClassDeclarationSyntax.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
-    }
-
-    internal static void AddArgArgumentsType(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
-    {
-        if (method.Parameters.Count == 0)
+        if (method.ParametersExceptOut.Count == 0)
         {
-            return;
+            yield return CreateParameterType(
+                    method.ArgArgumentsClassName,
+                    method.ParametersExceptOut,
+                    SyntaxFactoryHelper.ParameterAsArgProperty,
+                    SyntaxFactoryHelper.ArgParameter)
+                .AddMembers(MatchesMethod(method.ParametersExceptOut));
         }
-
-        var argumentsClassDeclarationSyntax = CreateParameterType(
-                method.ArgArgumentsClassName,
-                method.Symbol.Parameters,
-                SyntaxFactoryHelper.ParameterAsArgProperty,
-                SyntaxFactoryHelper.ArgParameter)
-            .AddMembers(MatchesMethod(method.Symbol.Parameters));
-
-
-        // TODO To .ToFullString once
-        imposterGenerationContext.SourceBuilder.AppendLine(argumentsClassDeclarationSyntax.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
     }
 
     private static MethodDeclarationSyntax MatchesMethod(IReadOnlyList<IParameterSymbol> parameters)

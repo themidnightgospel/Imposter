@@ -2,8 +2,14 @@
 
 namespace Imposter.Ideation;
 
-public class AddMethodInvocationArgCriteria
+public class AddMethodInvocationArgArguments
 {
+    public AddMethodInvocationArgArguments(TestArg<int> left, TestArg<int> right)
+    {
+        this.left = left;
+        this.right = right;
+    }
+
     public TestArg<int> left { get; set; }
 
     public TestArg<int> right { get; set; }
@@ -16,17 +22,34 @@ public class AddMethodInvocationArgCriteria
 
 public class AddMethodInvocationArguments
 {
+    public AddMethodInvocationArguments(int left, int right)
+    {
+        this.left = left;
+        this.right = right;
+    }
+
     public int left { get; set; }
 
     public int right { get; set; }
 }
 
-public class AddMethodInvocationSetupBuilder(AddMethodInvocationArgCriteria argCriteria)
+public class AddMethodInvocationSetupBuilder(TestArg<int> left, TestArg<int> right)
 {
+    /*
+    internal static Lazy<AddMethodInvocationSetupBuilder> Default = new Lazy<AddMethodInvocationSetupBuilder>(
+        new AddMethodInvocationSetupBuilder(TestArg<int>.IsAny(), TestArg<int>.IsAny())
+            .Returns((int a, out int b) =>
+            {
+                return default(T);
+            })
+        );
+        */
+    
     private readonly ConcurrentQueue<MethodInvocationSetup> _callSetups = new();
     private MethodInvocationSetup? _currentlySetupCall;
+    private AddMethodInvocationArgArguments _argArguments = new(left, right);
 
-    internal bool Matches(AddMethodInvocationArguments arguments) => argCriteria.Matches(arguments);
+    internal bool Matches(AddMethodInvocationArguments arguments) => _argArguments.Matches(arguments);
 
     private MethodInvocationSetup GetMethodCallSetup(Func<MethodInvocationSetup, bool> addNew)
     {

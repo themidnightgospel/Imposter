@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -9,22 +8,19 @@ namespace Imposter.CodeGenerator.ImposterParts;
 
 public static class MethodInvocationHistoryTypeGenerator
 {
-    internal static void AddMethodInvocationHistoryClass(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
+    internal static ClassDeclarationSyntax GetMethodInvocationHistoryClass(ImposterTargetMethod method)
     {
         var properties = GetProperties(method).ToArray();
 
-        var methodInvocationHistoryClass = SyntaxFactory
+        return SyntaxFactory
             .ClassDeclaration(method.MethodInvocationHistoryClassName)
             .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
             .AddMembers(properties)
             .AddMembers(GetConstructor(method.MethodInvocationHistoryClassName, properties));
 
-        imposterGenerationContext.SourceBuilder.AppendLine(methodInvocationHistoryClass.NormalizeWhitespace().ToFullString());
-        imposterGenerationContext.SourceBuilder.AppendLine();
-
         static IEnumerable<PropertyDeclarationSyntax> GetProperties(ImposterTargetMethod method)
         {
-            if (method.HasParameters)
+            if (method.ParametersExceptOut.Count > 0)
             {
                 yield return SyntaxFactory
                     .PropertyDeclaration(SyntaxFactory.ParseTypeName(method.ArgumentsClassName), SyntaxFactory.Identifier("Arguments"))

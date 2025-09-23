@@ -11,7 +11,7 @@ public class AddMethodBehaviour
     {
         var methodCallSetup = Enumerable
             .Reverse(InvocationBehaviours)
-            .Where(it => it.Matches(left, right));
+            .Where(it => it.Matches(new AddMethodInvocationArguments(left, right)));
         
         int result = default;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 /*
 using System.Threading.Tasks;
 */
@@ -16,13 +17,42 @@ using Xunit;
 
 namespace Imposter.Playground;
 
-public static class LinqReverse
-{
-    
-}
-
 public class IOrderApiServiceImposterTests
 {
+    [Fact]
+    public void NoSetup_MethodWithTaskGenericReturnType_ReturnsTask()
+    {
+        var mock = new Mock<ICalculator>();
+        var res = mock.Object.DoGenericAsync();
+
+        res.IsCompleted.ShouldBeTrue();
+        res.Result.ShouldBe(0);
+    }
+
+    [Fact]
+    public void NoSetup_MethodWithTaskReturnType_ReturnsTask()
+    {
+        var mock = new Mock<ICalculator>();
+        Task res = mock.Object.DoAsync();
+
+        res.IsCompleted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void MultiSetup_FirstMatchInReverseInvoked()
+    {
+        var mock = new Mock<ICalculator>();
+
+        mock.Setup(x => x.Add(1, 2))
+            .Returns(1);
+
+        mock.Setup(x => x.Add(It.IsAny<int>(), It.IsAny<int>()))
+            .Returns(2);
+
+        var res = mock.Object.Add(1, 2);
+        res.ShouldBe(2);
+    }
+
     [Fact]
     public void EmptySetup_OverwritesExistingOne()
     {

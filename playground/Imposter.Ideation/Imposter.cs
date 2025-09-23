@@ -72,7 +72,7 @@ namespace Imposter.Ideation
 
         public AddMethodInvocationSetupBuilder Add(TestArg<int> leftCriteria, TestArg<int> rightCriteria)
         {
-            var addMethodInvocationBehaviour = new AddMethodInvocationSetupBuilder((left, right) => leftCriteria.Predicate(left) && rightCriteria.Predicate(right));
+            var addMethodInvocationBehaviour = new AddMethodInvocationSetupBuilder(new AddMethodInvocationArgArguments(leftCriteria, rightCriteria));
             _addMethodBehaviour.InvocationBehaviours.Add(addMethodInvocationBehaviour);
 
             return addMethodInvocationBehaviour;
@@ -98,14 +98,18 @@ namespace Imposter.Ideation
 
             public int Age
             {
-                get
-                {
-                    return 1;
-                }
-                set
-                {
+                get { return 1; }
+                set { }
+            }
 
-                }
+            public Task DoAsync()
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<int> DoGenericAsync()
+            {
+                throw new NotImplementedException();
             }
         }
     }
