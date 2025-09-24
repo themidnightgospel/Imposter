@@ -17,8 +17,8 @@ internal static partial class SyntaxFactoryHelper
             );
     }
 
-    internal static PropertyDeclarationSyntax ArgArgumentsProperty(string argArgumentTypeName) =>
-        PropertyDeclaration(IdentifierName(argArgumentTypeName), Identifier("ArgArguments"))
+    internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(string argArgumentTypeName) =>
+        PropertyDeclaration(IdentifierName(argArgumentTypeName), Identifier("ArgumentsCriteria"))
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
@@ -33,12 +33,15 @@ internal static partial class SyntaxFactoryHelper
             ));
 
     internal static ArgumentListSyntax ArgAnyArgumentList(IEnumerable<IParameterSymbol> parameter) => ArgumentList(SeparatedList(parameter.Select(ArgAnyArgument)));
+    
+    internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
+        ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
     internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
         Parameter(Identifier(parameter.Name)).WithType(ArgType(parameter));
 
-    internal static ObjectCreationExpressionSyntax CreateArgArgumentsInstance(ImposterTargetMethod method)
-        => ObjectCreationExpression(IdentifierName(method.ArgArgumentsClassName))
+    internal static ObjectCreationExpressionSyntax ArgumentCriteriaCreationExpression(ImposterTargetMethod method)
+        => ObjectCreationExpression(IdentifierName(method.ArgumentsCriteriaClassName))
             .WithArgumentList(
                 ArgumentList(
                     SeparatedList(

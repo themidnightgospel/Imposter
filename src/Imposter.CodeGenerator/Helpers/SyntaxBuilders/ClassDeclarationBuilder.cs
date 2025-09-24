@@ -17,6 +17,13 @@ internal class ClassDeclarationBuilder(string name)
         _members.Add(member);
         return this;
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ClassDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax> members)
+    {
+        _members.AddRange(members);
+        return this;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddMemberIf(bool condition, Func<MemberDeclarationSyntax> memberGenerator)
@@ -31,8 +38,10 @@ internal class ClassDeclarationBuilder(string name)
         TypeParameterListSyntax? typeParameterList = default,
         BaseListSyntax? baseList = default,
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default,
-        SyntaxList<MemberDeclarationSyntax> members = default) =>
-        ClassDeclaration(
+        SyntaxList<MemberDeclarationSyntax> members = default)
+    {
+        
+        return ClassDeclaration(
             attributeLists,
             modifiers,
             Identifier(name),
@@ -40,4 +49,5 @@ internal class ClassDeclarationBuilder(string name)
             baseList,
             constraintClauses,
             new SyntaxList<MemberDeclarationSyntax>(_members));
+    }
 }

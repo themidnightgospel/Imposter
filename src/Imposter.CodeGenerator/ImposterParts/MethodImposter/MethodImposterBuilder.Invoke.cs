@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.ImposterParts.MethodType;
+namespace Imposter.CodeGenerator.ImposterParts.MethodImposter;
 
 internal partial class MethodImposterBuilder
 {
@@ -18,34 +18,31 @@ internal partial class MethodImposterBuilder
             .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters))
             .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
             .WithBody(new BlockBuilder()
-                .AddStatementsIf(method.ParametersExceptOut.Count > 0, () => LocalDeclarationStatement(
-                    VariableDeclaration(IdentifierName(method.ArgumentsClassName))
-                        .AddVariables(
-                            VariableDeclarator(Identifier("arguments"))
-                                .WithInitializer(
-                                    EqualsValueClause(
-                                        ObjectCreationExpression(
-                                            IdentifierName(method.ArgumentsClassName),
-                                            SyntaxFactoryHelper.ArgumentSyntaxList(method.ParametersExceptOut),
-                                            default
-                                        )
-                                    )
-                                )
-                        )
-                ))
-                .AddStatement(LocalDeclarationStatement(
-                    VariableDeclaration(NullableType(IdentifierName(method.InvocationsSetupBuilder)))
-                        .AddVariables(
-                            VariableDeclarator(Identifier("matchingSetup"))
-                                .WithInitializer(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)))
-                        )
-                ))
-                .AddStatement(FindMatchingSetupSyntax())
+                .AddStatementsIf(method.ParametersExceptOut.Count > 0, () => DeclareAndInitializeArgumentsVariable(method))
+                .AddStatement(DeclareMatchingSetupVariable(method))
+                .AddStatementsIf(method.ParametersExceptOut.Count > 0, FindMatchingSetupSyntax)
                 .AddStatement(IfMatchingSetupIsNullAssignDefault(method))
                 .AddStatement(InvokeMatchingSetupAndRecordHistory(method))
                 .Build()
             );
     }
+
+    private static StatementSyntax DeclareAndInitializeArgumentsVariable(ImposterTargetMethod method) =>
+        LocalDeclarationStatement(
+            VariableDeclaration(IdentifierName(method.ArgumentsClassName))
+                .AddVariables(
+                    VariableDeclarator(Identifier("arguments"))
+                        .WithInitializer(
+                            EqualsValueClause(
+                                ObjectCreationExpression(
+                                    IdentifierName(method.ArgumentsClassName),
+                                    SyntaxFactoryHelper.ArgumentSyntaxList(method.ParametersExceptOut, includeRefKind: false),
+                                    null
+                                )
+                            )
+                        )
+                )
+        );
 
     internal static InvocationExpressionSyntax CreateInvocationHistory(ImposterTargetMethod method, bool includeException)
     {
@@ -71,10 +68,14 @@ internal partial class MethodImposterBuilder
 
         IEnumerable<ArgumentSyntax> GetArguments()
         {
-            yield return Argument(IdentifierName("arguments"));
+            if (method.ParametersExceptOut.Count > 0)
+            {
+                yield return Argument(IdentifierName("arguments"));
+            }
+
             if (method.HasReturnValue)
             {
-                yield return Argument(IdentifierName("result"));
+                yield return Argument(includeException ? LiteralExpression(SyntaxKind.NullLiteralExpression) : IdentifierName("result"));
             }
 
             if (includeException)
@@ -86,23 +87,20 @@ internal partial class MethodImposterBuilder
 
     internal static TryStatementSyntax InvokeMatchingSetupAndRecordHistory(ImposterTargetMethod method)
     {
-        var tryBlock = Block(
-            InvokeMatchingSetup(method),
-            ExpressionStatement(CreateInvocationHistory(method, false))
-        );
-
-        var catchBlock = Block(
-            ExpressionStatement(CreateInvocationHistory(method, true)),
-            ThrowStatement()
-        );
-
         return TryStatement(
-            tryBlock,
+            new BlockBuilder()
+                .AddStatement(InvokeMatchingSetup(method))
+                .AddStatement(ExpressionStatement(CreateInvocationHistory(method, false)))
+                .AddStatementsIf(method.HasReturnValue, () => ReturnStatement(IdentifierName("result")))
+                .Build(),
             SingletonList(
                 CatchClause(
                     CatchDeclaration(IdentifierName("Exception"), Identifier("ex")),
                     null,
-                    catchBlock
+                    Block(
+                        ExpressionStatement(CreateInvocationHistory(method, true)),
+                        ThrowStatement()
+                    )
                 )
             ),
             null
@@ -149,17 +147,64 @@ internal partial class MethodImposterBuilder
                         IdentifierName("matchingSetup"),
                         MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName(method.InvocationsSetupBuilder),
-                                IdentifierName("DefaultInvocationSetup")
-                            ),
-                            IdentifierName("Value")
+                            IdentifierName(method.InvocationsSetupBuilder),
+                            IdentifierName("DefaultInvocationSetup")
                         )
                     )
                 )
             )
         );
+
+    private static StatementSyntax DeclareMatchingSetupVariable(ImposterTargetMethod method)
+    {
+        return LocalDeclarationStatement(
+            VariableDeclaration(NullableType(IdentifierName(method.InvocationsSetupBuilder)))
+                .AddVariables(
+                    VariableDeclarator(Identifier("matchingSetup"))
+                        .WithInitializer(EqualsValueClause(
+                            method.ParametersExceptOut.Count == 0
+                                ? ConditionalExpression(
+                                    BinaryExpression(
+                                        SyntaxKind.EqualsExpression,
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            IdentifierName("_invocationSetups"),
+                                            IdentifierName("Count")
+                                        ),
+                                        LiteralExpression(
+                                            SyntaxKind.NumericLiteralExpression,
+                                            Literal(0)
+                                        )
+                                    ),
+                                    LiteralExpression(
+                                        SyntaxKind.NullLiteralExpression
+                                    ),
+                                    ElementAccessExpression(
+                                        IdentifierName("_invocationSetups"),
+                                        BracketedArgumentList(
+                                            SingletonSeparatedList(
+                                                Argument(
+                                                    BinaryExpression(
+                                                        SyntaxKind.SubtractExpression,
+                                                        MemberAccessExpression(
+                                                            SyntaxKind.SimpleMemberAccessExpression,
+                                                            IdentifierName("_invocationSetups"),
+                                                            IdentifierName("Count")
+                                                        ),
+                                                        LiteralExpression(
+                                                            SyntaxKind.NumericLiteralExpression,
+                                                            Literal(1)
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                                : LiteralExpression(SyntaxKind.NullLiteralExpression)))
+                )
+        );
+    }
 
     // TODO cache
     internal static StatementSyntax FindMatchingSetupSyntax()
@@ -194,7 +239,7 @@ internal partial class MethodImposterBuilder
                         MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             IdentifierName("setup"),
-                            IdentifierName("ArgArguments")
+                            IdentifierName("ArgumentsCriteria")
                         ),
                         IdentifierName("Matches")
                     )

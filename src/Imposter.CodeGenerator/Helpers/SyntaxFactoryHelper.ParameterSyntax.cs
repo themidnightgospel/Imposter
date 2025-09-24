@@ -9,22 +9,23 @@ namespace Imposter.CodeGenerator.Helpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ArgumentListSyntax ArgumentSyntaxList(IEnumerable<IParameterSymbol> parameters)
-        => ArgumentList(SeparatedList(parameters.Select(ArgumentSyntax)));
+    internal static ArgumentListSyntax ArgumentSyntaxList(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
+        => ArgumentList(SeparatedList(parameters.Select(it => ArgumentSyntax(it, includeRefKind))));
 
-    internal static ArgumentSyntax ArgumentSyntax(IParameterSymbol parameter)
+    internal static ArgumentSyntax ArgumentSyntax(IParameterSymbol parameter, bool includeRefKind = true)
     {
-        var refKindKeyword = parameter.RefKind switch
+        var refKindKeyword = (includeRefKind, parameter.RefKind) switch
         {
-            RefKind.Ref => Token(SyntaxKind.RefKeyword),
-            RefKind.Out => Token(SyntaxKind.OutKeyword),
-            RefKind.In => Token(SyntaxKind.InKeyword),
-            _ => default,
+            (false, _) => SyntaxKind.None,
+            (_, RefKind.Ref) => SyntaxKind.RefKeyword,
+            (_, RefKind.Out) => SyntaxKind.OutKeyword,
+            (_, RefKind.In) => SyntaxKind.InKeyword,
+            _ => SyntaxKind.None
         };
 
         return Argument(
             null,
-            refKindKeyword,
+            Token(refKindKeyword),
             IdentifierName(parameter.Name)
         );
     }

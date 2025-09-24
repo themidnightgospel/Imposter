@@ -5,8 +5,11 @@ using System.Text;
 using Imposter.Abstractions;
 using Imposter.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.ImposterParts;
-using Imposter.CodeGenerator.ImposterParts.InvocationSetup;
-using Imposter.CodeGenerator.ImposterParts.MethodType;
+using Imposter.CodeGenerator.ImposterParts.Arguments;
+using Imposter.CodeGenerator.ImposterParts.Delegates;
+using Imposter.CodeGenerator.ImposterParts.InvocationHistory;
+using Imposter.CodeGenerator.ImposterParts.InvocationSetupBuilder;
+using Imposter.CodeGenerator.ImposterParts.MethodImposter;
 using Imposter.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -161,6 +164,7 @@ public class ImposterGenerator : IIncrementalGenerator
     {
         var sb = imposterGenerationContext.SourceBuilder;
 
+        // TODO use builder
         var imposterCompilationUnit = CreateUsingStatementsAndNamespace(imposterGenerationContext);
 
         foreach (var method in imposterGenerationContext.Target.Methods)
@@ -168,18 +172,19 @@ public class ImposterGenerator : IIncrementalGenerator
             imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodDelegateTypeBuilder.BuildDelegateTypeDeclarations(method).ToArray());
             imposterCompilationUnit = imposterCompilationUnit.AddMembers(ArgumentsTypeGenerator.GetArgumentsType(method).ToArray());
             imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodInvocationHistoryTypeGenerator.GetMethodInvocationHistoryClass(method));
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(InvocationSetupBuilder.GetInvocationSetupBuilder(method));
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodImposterBuilder.Build(method));
-
-            AddMethodInvocationVerifierClass(imposterGenerationContext, method);
+            // TODO clean it up
+            var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetupBuilder.Build(method);
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(invocationSetupBuilder);
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(invocationSetupBuilderInterface);
+            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface).ToArray());
         }
 
+        imposterCompilationUnit = imposterCompilationUnit.AddMembers(ImposterBuilder.Build(imposterGenerationContext.Target));
 
         // TODO
         sb.Append(imposterCompilationUnit.NormalizeWhitespace().ToFullString());
 
-        AddImposterVerifierClass(imposterGenerationContext);
-        AddImposterClass(imposterGenerationContext);
+        // AddImposterClass(imposterGenerationContext);
 
         return sb.ToString();
     }
@@ -194,7 +199,7 @@ public class ImposterGenerator : IIncrementalGenerator
         imposterGenerationContext
             .SourceBuilder
             .AppendLine($$"""
-                          public class {{referent.ImposterClass.Name}} : IHaveImposterVerifier<{{referent.VerifierClass.Name}}>, IHaveImposterInstance<{{referent.FullName}}>
+                          public class {{referent.ImposterClass.Name}} : IHaveImposterInstance<{{referent.FullName}}>
                           {
                           """);
 
@@ -234,8 +239,6 @@ public class ImposterGenerator : IIncrementalGenerator
                 $$"""
                       {{referent.FullName}} IHaveImposterInstance<{{referent.FullName}}>.Instance() => {{referent.ImposterClass.ImposterInstanceFieldName}};
 
-                      {{referent.VerifierClass.Name}} IHaveImposterVerifier<{{referent.VerifierClass.Name}}>.Verify() => {{referent.ImposterClass.VerifierFieldName}};
-
                   """);
 
         // Generate setup methods
@@ -258,75 +261,6 @@ public class ImposterGenerator : IIncrementalGenerator
         sb.AppendLine("}");
 
         sb.AppendLine("#nullable restore");
-    }
-
-    private static void AddMethodInvocationVerifierClass(ImposterGenerationContext imposterGenerationContext, ImposterTargetMethod method)
-    {
-        var sb = imposterGenerationContext.SourceBuilder;
-
-        var constructorParameters = new[] { new ConstructorParameter(method.MethodImposter.Name, method.MethodImposter.DeclaredAsParameterName) }
-            .Concat(method
-                .Parameters
-                .Select(it => new ConstructorParameter(it.EnclosedInArgType, it.EnclosedInArgName)));
-
-        sb.AppendLine($$"""
-                        {{method.GetSummaryTag("invocation verifier class")}}
-                        public class {{method.MethodInvocationVerifierClassName}}
-                        {             
-                        {{GenerateFieldsAndInitializeFromConstructor(method.MethodInvocationVerifierClassName, constructorParameters.ToList(), numberOfTabs: 1)}}
-                            
-                            public void WasInvoked(InvocationCount count)
-                            {
-                                var invocationCount = {{method.MethodImposter.DeclaredAsFieldName}}.InvocationHistory.Count({{(method.ParametersExceptOut__.Count > 0 ? "it => Matches(it.Arguments)" : string.Empty)}});
-                            
-                                if (!count.Matches(invocationCount))
-                                {
-                                    throw new VerificationFailedException("TODO");
-                                }
-                            }
-
-                        """);
-
-        if (method.ParametersExceptOut__.Count > 0)
-        {
-            sb.AppendLine($$"""
-                                public bool Matches({{method.ArgumentsClassName}} arguments)
-                                {
-                                    return {{string.Join(" && ", method.ParametersExceptOut__.Select(parameter => $"{parameter.EnclosedInArgNameDeclaredAsField}.Matches(arguments.{parameter.Symbol.Name})"))}};
-                                }
-                            """);
-        }
-
-        sb.AppendLine("}");
-        sb.AppendLine();
-    }
-
-    private static void AddImposterVerifierClass(ImposterGenerationContext imposterGenerationContext)
-    {
-        var referent = imposterGenerationContext.Target;
-        var sb = imposterGenerationContext.SourceBuilder;
-
-        imposterGenerationContext.SourceBuilder
-            .AppendLine($$"""
-                          public class {{imposterGenerationContext.Target.VerifierClass.Name}}
-                          {
-                          {{GenerateFieldsAndInitializeFromConstructor(
-                              imposterGenerationContext.Target.VerifierClass.Name,
-                              referent.Methods.Select(method => new ConstructorParameter(method.MethodImposter.Name, method.MethodImposter.DeclaredAsParameterName)).ToList(),
-                              numberOfTabs: 1)}}
-
-                          """);
-
-        foreach (var method in referent.Methods)
-        {
-            sb.AppendLine($$"""
-                                public {{method.MethodInvocationVerifierClassName}} {{method.Symbol.Name}}({{method.ParametersEnclosedInArgType}})
-                                      => new({{method.MethodImposter.DeclaredAsFieldName}}{{(method.Parameters.Any() ? $", {method.ParametersEnclosedInArgTypePassedAsArgument}" : string.Empty)}});
-                            """);
-        }
-
-        sb.AppendLine("}");
-        sb.AppendLine();
     }
 
     private static void AddImposterInstanceClass(ImposterGenerationContext imposterGenerationContext)

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
+namespace Imposter.CodeGenerator.ImposterParts.InvocationSetupBuilder;
 
 internal static partial class InvocationSetupBuilder
 {

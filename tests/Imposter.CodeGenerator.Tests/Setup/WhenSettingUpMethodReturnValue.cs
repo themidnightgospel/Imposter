@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Xunit;
 using Shouldly;
+
 
 namespace Imposter.CodeGenerator.Tests.Setup;
 
