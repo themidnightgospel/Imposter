@@ -11,6 +11,13 @@ public class BlockBuilder
     private readonly List<StatementSyntax> _statements = new();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BlockBuilder AddStatements(IEnumerable<StatementSyntax> statementSyntaxes)
+    {
+        _statements.AddRange(statementSyntaxes);
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BlockBuilder AddStatement(StatementSyntax statementSyntax)
     {
         _statements.Add(statementSyntax);

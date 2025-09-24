@@ -5,14 +5,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.Helpers.SyntaxFactoryHelper;
 
-namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
+namespace Imposter.CodeGenerator.ImposterParts.InvocationSetupBuilder;
 
 internal static partial class InvocationSetupBuilder
 {
     private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(ImposterTargetMethod method)
     {
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupBuilder),
+                IdentifierName(method.InvocationsSetupBuilderInterface),
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -41,7 +41,7 @@ internal static partial class InvocationSetupBuilder
         ).WithType(WellKnownTypes.System.Exception);
 
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupBuilder),
+                IdentifierName(method.InvocationsSetupBuilderInterface),
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -67,7 +67,7 @@ internal static partial class InvocationSetupBuilder
     private static MethodDeclarationSyntax ThrowsExceptionWithGeneratorMethodDeclarationSyntax(ImposterTargetMethod method)
     {
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupBuilder),
+                IdentifierName(method.InvocationsSetupBuilderInterface),
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))

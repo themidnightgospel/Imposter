@@ -1,11 +1,16 @@
 ﻿namespace Imposter.Ideation;
 
-public class NoParametersWithReturnTypeMethodInvocationHistory
+public interface IOrderService
+{
+    int GetOrderCount(int filter);
+}
+
+public class GetOrderCountMethodInvocationHistory
 {
     public int Result { get; }
     public System.Exception Exception { get; }
 
-    public NoParametersWithReturnTypeMethodInvocationHistory(int result, System.Exception exception)
+    public GetOrderCountMethodInvocationHistory(int result, System.Exception exception)
     {
         Result = result;
         Exception = exception;
@@ -14,8 +19,11 @@ public class NoParametersWithReturnTypeMethodInvocationHistory
 
 public class MethodWithOutParameterArguments
 {
-    public MethodWithOutParameterArguments()
+    public int filter { get; }
+    
+    public MethodWithOutParameterArguments(int filter)
     {
+        this.filter = filter;
     }
 }
 
@@ -40,7 +48,7 @@ public delegate System.Exception NoParametersWithReturnTypeExceptionGeneratorDel
 
 public interface INoParametersWithReturnTypeMethodInvocationsSetupBuilder
 {
-    NoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(int value);
+    INoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(int value);
 }
 
 public interface INoParametersWithReturnTypeMethodInvocationVerifier
@@ -50,15 +58,12 @@ public interface INoParametersWithReturnTypeMethodInvocationVerifier
 
 public class NoParametersWithReturnTypeMethodInvocationsSetupBuilder : INoParametersWithReturnTypeMethodInvocationsSetupBuilder, INoParametersWithReturnTypeMethodInvocationVerifier
 {
-    internal static Lazy<NoParametersWithReturnTypeMethodInvocationsSetupBuilder> DefaultInvocationSetup =
-        new(new NoParametersWithReturnTypeMethodInvocationsSetupBuilder().Returns(DefaultResultGenerator));
-
     internal static int DefaultResultGenerator()
     {
         return default(int);
     }
 
-    public NoParametersWithReturnTypeMethodInvocationsSetupBuilder()
+    public NoParametersWithReturnTypeMethodInvocationsSetupBuilder(TestArg<int> aArg)
     {
         ArgArguments = new NoParametersWithReturnTypeArgArguments();
     }
@@ -79,7 +84,7 @@ public class NoParametersWithReturnTypeMethodInvocationsSetupBuilder : INoParame
         return _currentlySetupCall;
     }
 
-    public NoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(NoParametersWithReturnTypeDelegate resultGenerator)
+    public INoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(NoParametersWithReturnTypeDelegate resultGenerator)
     {
         GetMethodCallSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
         return this;
@@ -127,10 +132,41 @@ public class NoParametersWithReturnTypeMethodInvocationsSetupBuilder : INoParame
     }
 }
 
-public class NoParametersWithReturnTypeMethodImposter : INoParametersWithReturnTypeMethodInvocationsSetupBuilder, INoParametersWithReturnTypeMethodInvocationVerifier
+public interface INoParametersWithReturnTypeMethodImposter : INoParametersWithReturnTypeMethodInvocationsSetupBuilder, INoParametersWithReturnTypeMethodInvocationVerifier
+{
+}
+
+internal class NoParametersWithReturnTypeMethodImposter
 {
     private readonly List<NoParametersWithReturnTypeMethodInvocationsSetupBuilder> _invocationSetups = new List<NoParametersWithReturnTypeMethodInvocationsSetupBuilder>();
-    private readonly List<NoParametersWithReturnTypeMethodInvocationHistory> _invocationHistory = new List<NoParametersWithReturnTypeMethodInvocationHistory>();
+    private readonly List<GetOrderCountMethodInvocationHistory> _invocationHistory = new List<GetOrderCountMethodInvocationHistory>();
+
+    internal class Builder : INoParametersWithReturnTypeMethodImposter
+    {
+        private readonly NoParametersWithReturnTypeMethodImposter _imposter;
+        private readonly TestArg<int> aArg;
+
+        public Builder(
+            NoParametersWithReturnTypeMethodImposter imposter,
+            TestArg<int> aArg)
+        {
+            _imposter = imposter;
+            this.aArg = aArg;
+        }
+
+        public INoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(int value)
+        {
+            var setupB = new NoParametersWithReturnTypeMethodInvocationsSetupBuilder(aArg);
+            _imposter._invocationSetups.Add(setupB);
+            return setupB.Returns(() => value);
+        }
+
+        public bool WasInvoked(int a)
+        {
+            return _imposter.WasInvoked(a);
+        }
+    }
+
 
     private int Invoke()
     {
@@ -153,20 +189,13 @@ public class NoParametersWithReturnTypeMethodImposter : INoParametersWithReturnT
         try
         {
             var result = matchingSetup.Invoke();
-            _invocationHistory.Add(new NoParametersWithReturnTypeMethodInvocationHistory(arguments, result));
+            _invocationHistory.Add(new GetOrderCountMethodInvocationHistory(arguments, result));
         }
         catch (Exception ex)
         {
-            _invocationHistory.Add(new NoParametersWithReturnTypeMethodInvocationHistory(arguments, result, ex));
+            _invocationHistory.Add(new GetOrderCountMethodInvocationHistory(arguments, result, ex));
             throw;
         }
-    }
-
-    public INoParametersWithReturnTypeMethodInvocationsSetupBuilder Returns(int value)
-    {
-        var builder = new NoParametersWithReturnTypeMethodInvocationsSetupBuilder();
-        _invocationSetups.Add(builder);
-        return builder;
     }
 
     public bool WasInvoked(int a)
@@ -175,34 +204,30 @@ public class NoParametersWithReturnTypeMethodImposter : INoParametersWithReturnT
     }
 }
 
-public class ISutImposter
+public class TestSut
 {
     private readonly NoParametersWithReturnTypeMethodImposter _noParametersWithReturnTypeMethodImposter;
-    private readonly global::Imposter.CodeGenerator.Tests.Setup.WhenSettingUpMethodReturnValue.ISut _imposterInstance;
+    private readonly ISutImposterInstance _imposterInstance;
 
-    public ISutImposter()
+    public TestSut()
     {
         _noParametersWithReturnTypeMethodImposter = new();
         _imposterInstance = new ISutImposterInstance(this);
     }
 
-    global::Imposter.CodeGenerator.Tests.Setup.WhenSettingUpMethodReturnValue.ISut IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Setup.WhenSettingUpMethodReturnValue.ISut>.Instance() => _imposterInstance;
-
-    ISutImposterVerifier IHaveImposterVerifier<ISutImposterVerifier>.Verify() => _verifier;
-
-    public NoParametersWithReturnTypeMethodInvocationsSetupBuilder NoParametersWithReturnType()
+    public INoParametersWithReturnTypeMethodImposter NoParametersWithReturnType(TestArg<int> aArg)
     {
-        var invocationBehaviour = new NoParametersWithReturnTypeMethodInvocationsSetupBuilder();
-        _noParametersWithReturnTypeMethodImposter.Behaviours.Add(invocationBehaviour);
-        return invocationBehaviour;
+        return new NoParametersWithReturnTypeMethodImposter.Builder(_noParametersWithReturnTypeMethodImposter, aArg);
     }
+
+    public static implicit operator ISutImposterInstance(TestSut sut) => sut._imposterInstance;
 }
 
 public class ISutImposterInstance : global::Imposter.CodeGenerator.Tests.Setup.WhenSettingUpMethodReturnValue.ISut
 {
-    private readonly ISutImposter _imposter;
+    private readonly TestSut _imposter;
 
-    public ISutImposterInstance(ISutImposter imposter)
+    public ISutImposterInstance(TestSut imposter)
     {
         _imposter = imposter;
     }
@@ -210,5 +235,15 @@ public class ISutImposterInstance : global::Imposter.CodeGenerator.Tests.Setup.W
     public global::System.Int32 NoParametersWithReturnType()
     {
         return _imposter._noParametersWithReturnTypeMethodImposter.Invoke();
+    }
+}
+
+static class Test
+{
+    static void a()
+    {
+        new TestSut()
+            .NoParametersWithReturnType(TestArg<int>.IsAny())
+            .WasInvoked(Int32.MaxValue);
     }
 }

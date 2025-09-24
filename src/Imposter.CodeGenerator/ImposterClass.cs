@@ -81,6 +81,8 @@ internal class MethodImposterType
     public string DeclaredAsFieldName { get; }
 
     public string Name { get; }
+    
+    public string BuilderInterfaceName => $"I{Name}Builder";
 
     public MethodImposterType(ImposterTargetMethod method)
     {
@@ -135,7 +137,7 @@ internal class ImposterTargetMethod
         CallbackDelegateName = $"{uniqueName}CallbackDelegate";
         ExceptionGeneratorDelegateName = $"{uniqueName}ExceptionGeneratorDelegate";
         ArgumentsClassName = $"{uniqueName}Arguments";
-        ArgArgumentsClassName = $"{uniqueName}ArgArguments";
+        ArgumentsCriteriaClassName = $"{uniqueName}ArgumentsCriteria";
         ReturnTypeInFullyQualifiedFormat = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         ParametersDeclaration = string.Join(", ", Parameters.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
         ParametersExceptOutDeclaration = string.Join(", ", ParametersExceptOut__.Select(parameter => $"{parameter.TypeWithRefKind} {parameter.Symbol.Name}"));
@@ -165,7 +167,11 @@ internal class ImposterTargetMethod
 
     internal string InvocationsSetupBuilder { get; }
 
+    internal string InvocationsSetupBuilderInterface => $"I{InvocationsSetupBuilder}";
+
     internal string MethodInvocationVerifierClassName { get; }
+
+    internal string MethodInvocationVerifierInterfaceName => $"I{MethodInvocationVerifierClassName}";
 
     internal string DelegateName { get; }
 
@@ -175,7 +181,7 @@ internal class ImposterTargetMethod
 
     internal string ArgumentsClassName { get; }
 
-    internal string ArgArgumentsClassName { get; }
+    internal string ArgumentsCriteriaClassName { get; }
     
     internal IReadOnlyList<string> InitializeOutParametersWithDefault { get; }
 

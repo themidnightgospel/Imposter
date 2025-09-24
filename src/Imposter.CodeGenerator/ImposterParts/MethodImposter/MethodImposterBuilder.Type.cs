@@ -1,10 +1,12 @@
-﻿using Imposter.CodeGenerator.Helpers;
+﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Helpers.SyntaxBuilders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.ImposterParts.MethodType;
+namespace Imposter.CodeGenerator.ImposterParts.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
@@ -45,13 +47,39 @@ internal static partial class MethodImposterBuilder
             );
     }
 
-    internal static ClassDeclarationSyntax Build(ImposterTargetMethod method)
+    private static MemberDeclarationSyntax BuildMethodImposterBuilderInterface(ImposterTargetMethod method)
     {
-        return new ClassDeclarationBuilder(method.MethodImposter.Name)
+        return InterfaceDeclaration(method.MethodImposter.BuilderInterfaceName)
+            .WithBaseList(BaseList(SeparatedList<BaseTypeSyntax>(
+                [
+                    SimpleBaseType(IdentifierName(method.InvocationsSetupBuilderInterface)),
+                    SimpleBaseType(IdentifierName(method.MethodInvocationVerifierInterfaceName))
+                ]
+            )))
+            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+            .WithLeadingTrivia(
+                Comment(method.Comment),
+                CarriageReturnLineFeed
+            );
+    }
+
+    private static ClassDeclarationSyntax BuildMethodImposter(ImposterTargetMethod method, InterfaceDeclarationSyntax invocationSetupBuilderInterface) =>
+        new ClassDeclarationBuilder(method.MethodImposter.Name)
             .AddMember(GetInvocationSetupsField(method))
             .AddMember(GetInvocationHistoriesField(method))
             .AddMemberIf(method.HasOutParameters, () => SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters))
             .AddMember(InvokeMethod(method))
-            .Build();
+            .AddMember(BuildMethodImposterBuilderClass(method, invocationSetupBuilderInterface))
+            .Build()
+            .WithLeadingTrivia(
+                Comment(method.Comment),
+                CarriageReturnLineFeed
+            );
+
+    internal static IEnumerable<MemberDeclarationSyntax> Build(ImposterTargetMethod method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    {
+        yield return BuildMethodInvocationVerifierInterface(method);
+        yield return BuildMethodImposterBuilderInterface(method);
+        yield return BuildMethodImposter(method, invocationSetupBuilderInterface);
     }
 }

@@ -4,18 +4,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.ImposterParts.InvocationSetup;
+namespace Imposter.CodeGenerator.ImposterParts.InvocationSetupBuilder;
 
 internal static partial class InvocationSetupBuilder
 {
     internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(ImposterTargetMethod method)
     {
-        var fieldtype = GenericName(
-            Identifier("Lazy"),
-            TypeArgumentList(
-                SingletonSeparatedList<TypeSyntax>(IdentifierName(method.InvocationsSetupBuilder))
-            )
-        );
+        var fieldtype = IdentifierName(method.InvocationsSetupBuilder);
 
         return FieldDeclaration(
                 VariableDeclaration(fieldtype)
@@ -23,17 +18,19 @@ internal static partial class InvocationSetupBuilder
                         VariableDeclarator(Identifier("DefaultInvocationSetup"))
                             .WithInitializer(
                                 EqualsValueClause(
-                                    InvocationExpression(
-                                        MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            ObjectCreationExpression(fieldtype)
-                                                .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters)),
-                                            IdentifierName("Returns")
-                                        ),
-                                        ArgumentList(
-                                            SingletonSeparatedList(
-                                                Argument(IdentifierName("DefaultResultGenerator"))))
-                                    )
+                                    ObjectCreationExpression(fieldtype)
+                                        .WithArgumentList(
+                                            method.ParametersExceptOut.Count > 0
+                                                ? ArgumentList(
+                                                    SingletonSeparatedList(
+                                                        Argument(
+                                                            ObjectCreationExpression(IdentifierName(method.ArgumentsCriteriaClassName))
+                                                                .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters))
+                                                        )
+                                                    )
+                                                )
+                                                : ArgumentList()
+                                        )
                                 )
                             )
                     )

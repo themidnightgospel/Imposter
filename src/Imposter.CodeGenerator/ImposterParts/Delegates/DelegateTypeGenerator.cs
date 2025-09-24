@@ -3,8 +3,9 @@ using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.ImposterParts;
+namespace Imposter.CodeGenerator.ImposterParts.Delegates;
 
 internal static class MethodDelegateTypeBuilder
 {
@@ -21,7 +22,7 @@ internal static class MethodDelegateTypeBuilder
         CreateDelegateDeclaration(
             method,
             method.CallbackDelegateName,
-            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)));
+            PredefinedType(Token(SyntaxKind.VoidKeyword)));
 
     private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(ImposterTargetMethod method) =>
         CreateDelegateDeclaration(
@@ -30,16 +31,16 @@ internal static class MethodDelegateTypeBuilder
             WellKnownTypes.System.Exception);
 
     private static DelegateDeclarationSyntax CreateDelegateDeclaration(ImposterTargetMethod method, string delegateName, TypeSyntax returnType) =>
-        SyntaxFactory.DelegateDeclaration(
-                attributeLists: SyntaxFactory.List<AttributeListSyntax>(),
-                modifiers: SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+        DelegateDeclaration(
+                attributeLists: List<AttributeListSyntax>(),
+                modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
                 returnType: returnType,
-                identifier: SyntaxFactory.Identifier(delegateName),
+                identifier: Identifier(delegateName),
                 typeParameterList: null,
                 parameterList: SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters),
-                constraintClauses: SyntaxFactory.List<TypeParameterConstraintClauseSyntax>())
+                constraintClauses: List<TypeParameterConstraintClauseSyntax>())
             .WithLeadingTrivia(
-                SyntaxFactory.Comment(method.Comment),
-                SyntaxFactory.CarriageReturnLineFeed
+                Comment(method.Comment),
+                CarriageReturnLineFeed
             );
 }

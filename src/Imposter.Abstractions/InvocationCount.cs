@@ -3,42 +3,42 @@
 /// <summary>
 /// TODO Add docs
 /// </summary>
-public sealed class InvocationCount
+public sealed class Count
 {
     private readonly int? _exactly;
     private readonly int? _atLeast;
     private readonly int? _atMost;
 
-    private InvocationCount(int? exactly, int? atLeast, int? atMost)
+    private Count(int? exactly, int? atLeast, int? atMost)
     {
         _exactly = exactly;
         _atLeast = atLeast;
         _atMost = atMost;
     }
 
-    public static InvocationCount Exactly(int count)
+    public static Count Exactly(int count)
     {
         if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-        return new InvocationCount(exactly: count, atLeast: null, atMost: null);
+        return new Count(exactly: count, atLeast: null, atMost: null);
     }
 
-    public static InvocationCount AtLeast(int count)
+    public static Count AtLeast(int count)
     {
         if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-        return new InvocationCount(exactly: null, atLeast: count, atMost: null);
+        return new Count(exactly: null, atLeast: count, atMost: null);
     }
 
-    public static InvocationCount AtMost(int count)
+    public static Count AtMost(int count)
     {
         if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-        return new InvocationCount(exactly: null, atLeast: null, atMost: count);
+        return new Count(exactly: null, atLeast: null, atMost: count);
     }
 
-    public static InvocationCount Never => Exactly(0);
+    public static Count Never => Exactly(0);
 
-    public static InvocationCount Any = new InvocationCount(null, null, null);
+    public static Count Any = new Count(null, null, null);
 
-    public static InvocationCount Once = Exactly(1);
+    public static Count Once = Exactly(1);
 
     public bool Matches(int actualCount)
     {
