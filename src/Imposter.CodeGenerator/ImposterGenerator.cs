@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Imposter.Abstractions;
+using Imposter.CodeGenerator.Builders;
+using Imposter.CodeGenerator.Builders.Arguments;
+using Imposter.CodeGenerator.Builders.Delegates;
+using Imposter.CodeGenerator.Builders.Imposter;
+using Imposter.CodeGenerator.Builders.InvocationHistory;
+using Imposter.CodeGenerator.Builders.InvocationSetup;
+using Imposter.CodeGenerator.Builders.MethodImposter;
+using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.Diagnostics;
-using Imposter.CodeGenerator.ImposterParts;
-using Imposter.CodeGenerator.ImposterParts.Arguments;
-using Imposter.CodeGenerator.ImposterParts.Delegates;
-using Imposter.CodeGenerator.ImposterParts.InvocationHistory;
-using Imposter.CodeGenerator.ImposterParts.InvocationSetupBuilder;
-using Imposter.CodeGenerator.ImposterParts.MethodImposter;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Imposter.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator;
 
@@ -39,56 +40,19 @@ namespace Imposter.CodeGenerator;
 [Generator]
 public class ImposterGenerator : IIncrementalGenerator
 {
-    private const string ImposterNamespace = "Imposter";
-
-    private static string ArgTypeFullName = typeof(Arg<>).FullName!;
-
-    // TODO use it
-    private static string MethodImplAggresiveInliningAttribute = "[MethodImpl(MethodImplOptions.AggressiveInlining)]";
-
-    // TODO do we need it ?
-    private const string EmptyArgumentsClass =
-        /* lang=c# */
-        $$"""
-          namespace {{ImposterNamespace}}
-          {    
-              internal class EmptyArguments
-              {
-                  internal EmptyArguments Instance = new EmptyArguments();
-                  
-                  private EmptyArguments()
-                  {}
-              }
-          }
-          """;
-
-    private const string EmptyArgArgumentsClass =
-        /* lang=c# */
-        $$"""
-          namespace {{ImposterNamespace}}
-          {    
-              internal class EmptyArgArguments
-              {
-                  internal EmptyArgArguments Instance = new EmptyArgArguments();
-                  
-                  private EmptyArgArguments()
-                  {}
-              }
-          }
-          """;
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(static initializationContext =>
-        {
-            initializationContext.AddSource("EmptyArguments.cs", EmptyArgumentsClass);
-            initializationContext.AddSource("EmptyArgArguments.cs", EmptyArgArgumentsClass);
-        });
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
-        context.RegisterSourceOutput(context.GetGenerateImposterDeclarations(), GenerateImposter);
+        context.RegisterSourceOutput(context
+                .GetGenerateImposterDeclarations()
+                .Combine(context.GetCompilationContext()),
+            (sourceProductionContext, contexts) => GenerateImposter(sourceProductionContext, contexts.Left, contexts.Right));
     }
 
-    private static void GenerateImposter(SourceProductionContext sourceProductionContext, GenerateImposterDeclaration generateImposterDeclaration)
+    private static void GenerateImposter(
+        SourceProductionContext sourceProductionContext,
+        GenerateImposterDeclaration generateImposterDeclaration,
+        CompilationContext compilationContext)
     {
         if (sourceProductionContext.CancellationToken.IsCancellationRequested)
         {
@@ -102,10 +66,10 @@ public class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var imposterGenerationContext = new ImposterGenerationContext(new ImposterTarget((INamedTypeSymbol)generateImposterDeclaration.ImposterTarget), new StringBuilder());
-            var sourceText = GenerateImposter(imposterGenerationContext);
-            sourceProductionContext.AddSource($"{imposterGenerationContext.Target.ImposterClass.Name}.g.cs", SourceText.From(sourceText, Encoding.UTF8));
-            // Note: In the future, we'll fully transition to SyntaxFactory and return CompilationUnitSyntax instead of a string
+            var imposterGenerationContext = new ImposterGenerationContext((INamedTypeSymbol)generateImposterDeclaration.ImposterTarget);
+            sourceProductionContext.AddSource(
+                $"{compilationContext.GeneratedCsFileUniqueName.New(imposterGenerationContext.ImposterType.Name)}.g.cs",
+                SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
         }
         // TODO
         catch (Exception ex)
@@ -122,227 +86,45 @@ public class ImposterGenerator : IIncrementalGenerator
         }
     }
 
-    private static CompilationUnitSyntax CreateUsingStatementsAndNamespace(ImposterGenerationContext imposterGenerationContext)
+    private static CompilationUnitSyntax BuildImposter(ImposterGenerationContext imposterGenerationContext)
     {
-        // Create using directives
-        var usingDirectives = new List<UsingDirectiveSyntax>
+        var namespaceDeclarationBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.Namespace);
+
+        foreach (var method in imposterGenerationContext.Methods)
         {
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Linq")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Threading.Tasks")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Diagnostics")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Runtime.CompilerServices")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Imposter.Abstractions")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Concurrent")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ImposterNamespace))
-        };
-
-        if (!imposterGenerationContext.Target.TypeSymbol.ContainingNamespace.IsGlobalNamespace)
-        {
-            usingDirectives.Add(
-                SyntaxFactory.UsingDirective(
-                    SyntaxFactory.ParseName(imposterGenerationContext.Target.TypeSymbol.ContainingNamespace.ToDisplayString())));
-        }
-
-        var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(imposterGenerationContext.Target.ImposterClass.Namespace));
-
-        // TODO move to factory helper
-        var nullableEnable = SyntaxFactory.PragmaWarningDirectiveTrivia(
-            SyntaxFactory.Token(SyntaxKind.DisableKeyword),
-            SyntaxFactory.SeparatedList<ExpressionSyntax>().Add(SyntaxFactory.ParseExpression("nullable")),
-            true);
-
-        return SyntaxFactory
-            .CompilationUnit()
-            .WithUsings(SyntaxFactory.List(usingDirectives))
-            .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDeclaration))
-            .WithLeadingTrivia(SyntaxFactory.Trivia(nullableEnable));
-    }
-
-    private static string GenerateImposter(ImposterGenerationContext imposterGenerationContext)
-    {
-        var sb = imposterGenerationContext.SourceBuilder;
-
-        // TODO use builder
-        var imposterCompilationUnit = CreateUsingStatementsAndNamespace(imposterGenerationContext);
-
-        foreach (var method in imposterGenerationContext.Target.Methods)
-        {
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodDelegateTypeBuilder.BuildDelegateTypeDeclarations(method).ToArray());
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(ArgumentsTypeGenerator.GetArgumentsType(method).ToArray());
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodInvocationHistoryTypeGenerator.GetMethodInvocationHistoryClass(method));
+            namespaceDeclarationBuilder.AddMembers(MethodDelegateTypeBuilder.Build(method));
+            namespaceDeclarationBuilder.AddMembers(ArgumentsTypeGenerator.Build(method));
+            namespaceDeclarationBuilder.AddMember(MethodInvocationHistoryBuilder.Build(method));
             // TODO clean it up
-            var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetupBuilder.Build(method);
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(invocationSetupBuilder);
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(invocationSetupBuilderInterface);
-            imposterCompilationUnit = imposterCompilationUnit.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface).ToArray());
+            var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetup.Build(method);
+            namespaceDeclarationBuilder.AddMember(invocationSetupBuilder);
+            namespaceDeclarationBuilder.AddMember(invocationSetupBuilderInterface);
+            namespaceDeclarationBuilder.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
         }
 
-        imposterCompilationUnit = imposterCompilationUnit.AddMembers(ImposterBuilder.Build(imposterGenerationContext.Target));
+        namespaceDeclarationBuilder.AddMember(ImposterBuilder.Build(imposterGenerationContext));
 
-        // TODO
-        sb.Append(imposterCompilationUnit.NormalizeWhitespace().ToFullString());
-
-        // AddImposterClass(imposterGenerationContext);
-
-        return sb.ToString();
-    }
-
-    private static void AddImposterClass(ImposterGenerationContext imposterGenerationContext)
-    {
-        var sb = imposterGenerationContext.SourceBuilder;
-        var referent = imposterGenerationContext.Target;
-
-        // Generate main imposter class
-
-        imposterGenerationContext
-            .SourceBuilder
-            .AppendLine($$"""
-                          public class {{referent.ImposterClass.Name}} : IHaveImposterInstance<{{referent.FullName}}>
-                          {
-                          """);
-
-        foreach (var method in referent.Methods)
-        {
-            imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {method.MethodImposter.Name} {method.MethodImposter.DeclaredAsFieldName};");
-        }
-
-        imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {referent.VerifierClass.Name} {referent.ImposterClass.VerifierFieldName};");
-        imposterGenerationContext.SourceBuilder.AppendLine($"    private readonly {referent.FullName} {referent.ImposterClass.ImposterInstanceFieldName};");
-
-        imposterGenerationContext
-            .SourceBuilder
-            .AppendLine(
-                $$"""
-
-                      public {{referent.ImposterClass.Name}}()
-                      {
-                  """);
-
-        foreach (var method in referent.Methods)
-        {
-            imposterGenerationContext.SourceBuilder.AppendLine($"       {method.MethodImposter.DeclaredAsFieldName} = new();");
-        }
-
-        imposterGenerationContext.SourceBuilder.AppendLine($$"""
-                                                                    {{referent.ImposterClass.VerifierFieldName}} = new({{string.Join(",", referent.Methods.Select(it => it.MethodImposter.DeclaredAsFieldName))}});
-                                                                    {{referent.ImposterClass.ImposterInstanceFieldName}} = new {{referent.ImposterInstanceClass.Name}}(this);
-                                                                 }
-
-                                                             """);
-
-        // Generate explicit interface implementations
-        imposterGenerationContext
-            .SourceBuilder
-            .AppendLine(
-                $$"""
-                      {{referent.FullName}} IHaveImposterInstance<{{referent.FullName}}>.Instance() => {{referent.ImposterClass.ImposterInstanceFieldName}};
-
-                  """);
-
-        // Generate setup methods
-        foreach (var method in imposterGenerationContext.Target.Methods)
-        {
-            sb.AppendLine($$"""
-                                public {{method.InvocationsSetupBuilder}} {{method.Symbol.Name}}({{method.ParametersEnclosedInArgType}})
-                                {
-                                    var invocationBehaviour = new {{method.InvocationsSetupBuilder}}({{method.ParametersEnclosedInArgTypePassedAsArgument}});
-                                    {{method.MethodImposter.DeclaredAsFieldName}}.Behaviours.Add(invocationBehaviour);
-                                    return invocationBehaviour;
-                                }
-                                
-                            """);
-        }
-
-        // Add as an inner class
-        AddImposterInstanceClass(imposterGenerationContext);
-
-        sb.AppendLine("}");
-
-        sb.AppendLine("#nullable restore");
-    }
-
-    private static void AddImposterInstanceClass(ImposterGenerationContext imposterGenerationContext)
-    {
-        var referent = imposterGenerationContext.Target;
-
-        imposterGenerationContext
-            .SourceBuilder
-            .AppendLine($$"""
-                          public class {{referent.ImposterInstanceClass.Name}} : {{referent.FullName}}
-                          {
-                            private readonly {{referent.ImposterClass.Name}} {{referent.ImposterInstanceClass.ImposterFieldName}};
-                            public {{referent.ImposterInstanceClass.Name}}({{referent.ImposterClass.Name}} {{referent.ImposterInstanceClass.ImposterParameterName}})
-                            {
-                                {{referent.ImposterInstanceClass.ImposterFieldName}} = {{referent.ImposterInstanceClass.ImposterParameterName}};
-                            }
-                            
-                          """);
+        var namespaceDeclaration = namespaceDeclarationBuilder
+            .Build()
+            // TODO this will cause copying of enitere namespace syntax
+            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
 
 
-        foreach (var method in referent.Methods)
-        {
-            imposterGenerationContext
-                .SourceBuilder
-                .AppendLine($$"""
-                                    public {{method.ReturnType}} {{method.Symbol.Name}}({{method.ParametersDeclaration}})
-                                    {
-                                        {{(method.HasReturnValue ? "return " : string.Empty)}}{{referent.ImposterInstanceClass.ImposterFieldName}}.{{method.MethodImposter.DeclaredAsFieldName}}.Invoke({{method.ParametersPassedAsArguments}});
-                                    }
-                              """);
-        }
+        /* TODO
+        var imposterExtensionsNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder("Imposters.Extensions")
+            .AddMember(ImposterTargetExtensionsBuilder.Build(imposterGenerationContext))
+            .Build();
+            */
 
-        imposterGenerationContext
-            .SourceBuilder
-            .AppendLine("    }");
-    }
-
-    private record ConstructorParameter(string Type, string Name, bool DeclareAsField = true);
-
-    private static string GenerateFieldsAndInitializeFromConstructor(
-        string className,
-        IReadOnlyList<ConstructorParameter> constructorParameters,
-        int numberOfTabs)
-    {
-        var sb = new StringBuilder();
-        var tabsPrefix = new string(' ', numberOfTabs * 4);
-
-        void AppendLine(string line)
-        {
-            sb.AppendLine($"{tabsPrefix}{line}");
-        }
-
-        // Fields
-        foreach (var param in constructorParameters)
-        {
-            if (param.DeclareAsField)
-            {
-                AppendLine($"private readonly {param.Type} _{param.Name};");
-            }
-            else
-            {
-                AppendLine($"internal {param.Type} {param.Name} {{ get; }}");
-            }
-        }
-
-        sb.AppendLine();
-
-        // Constructor signature
-        AppendLine($"public {className}(");
-        AppendLine("    " + string.Join(", ", constructorParameters.Select(p => $"{p.Type} {p.Name}")));
-        AppendLine(")");
-        AppendLine("{");
-        // Assignments
-        foreach (var param in constructorParameters)
-        {
-            AppendLine($"    this.{(param.DeclareAsField ? "_" : string.Empty)}{param.Name} = {param.Name};");
-        }
-
-        AppendLine("}");
-
-        return sb.ToString();
+        return CompilationUnit(
+            externs: List<ExternAliasDirectiveSyntax>(),
+            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
+            attributeLists: List<AttributeListSyntax>(),
+            members: List<MemberDeclarationSyntax>(
+                [
+                    namespaceDeclaration
+                ]
+            )
+        );
     }
 }
-
-internal record ImposterGenerationContext(ImposterTarget Target, StringBuilder SourceBuilder);

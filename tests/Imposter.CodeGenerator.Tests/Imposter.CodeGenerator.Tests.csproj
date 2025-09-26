@@ -9,15 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Machine.Specifications" Version="1.1.3" />
+        <PackageReference Include="Machine.Specifications.Runner.VisualStudio" Version="2.10.2" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2"/>
         <PackageReference Include="Shouldly" Version="4.3.0"/>
-        <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
     </ItemGroup>
 
     <!-- Source code generation settings-->
@@ -36,11 +33,7 @@
           see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->
         <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" OutputItemType="Analyzer"/>
         <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-        <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+        <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>
