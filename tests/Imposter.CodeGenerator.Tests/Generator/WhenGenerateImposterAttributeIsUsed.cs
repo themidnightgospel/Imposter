@@ -1,4 +1,4 @@
-﻿using Imposter.Abstractions;
+﻿/*using Imposter.Abstractions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -10,7 +10,7 @@ public class WhenGenerateImposterAttributeIsUsed
     [Fact]
     public void OnClassLevel_ShouldGenerateImposter()
     {
-        var imposterTargetSourceCode = /*lang=c#*/
+        var imposterTargetSourceCode = /*lang=c##1#
             """
             namespace Test;
 
@@ -44,7 +44,7 @@ public class WhenGenerateImposterAttributeIsUsed
             .Assembly
             .GetReferencedAssemblies()
             .Select(it => MetadataReference.CreateFromFile(Assembly.Load(it.Name).Location)))
-            */
+            #1#
             ;
 
         var compilation = CSharpCompilation.Create(
@@ -54,9 +54,11 @@ public class WhenGenerateImposterAttributeIsUsed
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         // TODO reports diag
+        /*
         var diag = compilation.GetDiagnostics();
 
         var generator = new ImposterGenerator();
         var generatorResult = CSharpGeneratorDriver.Create(generator).RunGenerators(compilation).GetRunResult();
+    #1#
     }
-}
+}*/

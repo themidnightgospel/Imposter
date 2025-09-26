@@ -1,21 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-/*
-using System.Threading.Tasks;
-*/
-using Imposter.Ideation;
 using Moq;
 using Shouldly;
 using Xunit;
 
-/*
-using Imposters.Imposter.Playground;
-using Shouldly;
-using Xunit;
-*/
-
-namespace Imposter.Playground;
 
 public class IOrderApiServiceImposterTests
 {

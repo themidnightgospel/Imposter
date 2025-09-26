@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -7,6 +9,16 @@ namespace Imposter.CodeGenerator.SyntaxProviders;
 
 internal static class CompilationDiagnosticsProvider
 {
+    internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this IncrementalGeneratorInitializationContext context)
+    {
+        return context
+            .CompilationProvider
+            .Select(static (compilation, _) => new CompilationContext(
+                (CSharpCompilation)compilation,
+                new UniqueName([])
+            ));
+    }
+
     internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this IncrementalGeneratorInitializationContext context)
     {
         return context

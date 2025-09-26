@@ -6,9 +6,9 @@ namespace Imposter.CodeGenerator.Helpers;
 
 public static class InterfaceSymbolExtensions
 {
-    public static List<IMethodSymbol> GetAllInterfaceMethods(this INamedTypeSymbol interfaceSymbol)
+    public static IReadOnlyCollection<IMethodSymbol> GetAllInterfaceMethods(this INamedTypeSymbol interfaceSymbol)
     {
-        var methods = new List<IMethodSymbol>();
+        var methods = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
         var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
         CollectInterfaceMethodsRecursive(interfaceSymbol, methods, visitedInterfaces);
@@ -18,21 +18,22 @@ public static class InterfaceSymbolExtensions
 
     private static void CollectInterfaceMethodsRecursive(
         INamedTypeSymbol interfaceSymbol,
-        List<IMethodSymbol> methods,
+        HashSet<IMethodSymbol> methods,
         HashSet<INamedTypeSymbol> visitedInterfaces)
     {
-        // Avoid infinite recursion with circular interface inheritance
-        if (interfaceSymbol == null || !visitedInterfaces.Add(interfaceSymbol))
+        if (!visitedInterfaces.Add(interfaceSymbol))
         {
             return;
         }
 
-        // Get ordinary methods from current interface
-        methods.AddRange(interfaceSymbol.GetMembers()
-            .OfType<IMethodSymbol>()
-            .Where(m => m.MethodKind == MethodKind.Ordinary));
+        foreach (var methodSymbol in interfaceSymbol
+                     .GetMembers()
+                     .OfType<IMethodSymbol>()
+                     .Where(m => m.MethodKind == MethodKind.Ordinary))
+        {
+            methods.Add(methodSymbol);
+        }
 
-        // Recursively process all implemented interfaces
         foreach (var implementedInterface in interfaceSymbol.Interfaces)
         {
             CollectInterfaceMethodsRecursive(implementedInterface, methods, visitedInterfaces);
