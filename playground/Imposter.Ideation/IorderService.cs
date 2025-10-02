@@ -5,5 +5,5 @@ namespace Imposter.Ideation;
 [GenerateImposter(typeof(ISutWithGenericMethod))]
 public interface ISutWithGenericMethod
 {
-    TOut ConvertTo<TIn, TOut>(TIn input);
+    int Print<TIn>(TIn input, int age);
 }
