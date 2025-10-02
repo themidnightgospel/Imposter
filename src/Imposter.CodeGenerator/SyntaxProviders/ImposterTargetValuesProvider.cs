@@ -27,26 +27,47 @@ internal static class GenerateImposterDeclarationsProvider
     {
         if (token.IsCancellationRequested)
         {
-            yield break;
+            return [];
         }
 
-        foreach (var imposterTargetType in context
-                     .Attributes
-                     .Select(it =>
-                     {
-                         if (it.ConstructorArguments.Length > 0 && it.ConstructorArguments[0].Value is ITypeSymbol imposterType)
-                         {
-                             return imposterType;
-                         }
+        return context
+            .Attributes
+            .Select(it =>
+            {
+                if (it.ConstructorArguments.Length > 0 && it.ConstructorArguments[0].Value is INamedTypeSymbol imposterType)
+                {
+                    return new GenerateImposterDeclaration(imposterType, GetPutInTheSameNamespaceValue(it));
+                }
 
-                         return null;
-                     })
-                     .Where(it => it is not null)
-                     .Distinct<ITypeSymbol?>(SymbolEqualityComparer.Default)
-                     .Select(symbol => new GenerateImposterDeclaration(symbol!))
-                )
+                return null;
+            })
+            .Where(it => it is not null)
+            .Distinct()
+            .Select(it => it!);
+    }
+
+    // TODO refactor
+    static bool GetPutInTheSameNamespaceValue(AttributeData attributeData)
+    {
+        // The boolean value is the second constructor argument (index 1).
+        // The first argument (index 0) is the 'Type type'.
+
+        // Check if the argument list is long enough (it should be at least 2)
+        if (attributeData.ConstructorArguments.Length > 1)
         {
-            yield return imposterTargetType;
+            var arg = attributeData.ConstructorArguments[1];
+
+            // Ensure the argument is not null and is a boolean value
+            if (arg.Kind == TypedConstantKind.Primitive && arg.Type.SpecialType == SpecialType.System_Boolean)
+            {
+                // Safely cast the Value to bool
+                return (bool)arg.Value;
+            }
         }
+
+        // If the argument was omitted (using the default value in C# 9+), 
+        // the ConstructorArguments array will only contain the 'Type' argument.
+        // In this case, we return the default value defined in the constructor: 'true'.
+        return true;
     }
 }

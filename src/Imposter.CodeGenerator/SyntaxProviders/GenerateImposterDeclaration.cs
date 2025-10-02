@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.SyntaxProviders;
 
-internal sealed record GenerateImposterDeclaration(ITypeSymbol ImposterTarget)
+internal sealed record GenerateImposterDeclaration(INamedTypeSymbol ImposterTarget, bool PutInTheSameNamespace)
 {
     public bool Equals(GenerateImposterDeclaration? other)
     {

@@ -9,23 +9,21 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(ImposterTargetMethod method)
+    internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(ImposterTargetMethodMetadata method)
     {
-        var fieldtype = IdentifierName(method.InvocationSetup);
-
         return FieldDeclaration(
-                VariableDeclaration(fieldtype)
+                VariableDeclaration(method.InvocationSetupType.Syntax)
                     .AddVariables(
                         VariableDeclarator(Identifier("DefaultInvocationSetup"))
                             .WithInitializer(
                                 EqualsValueClause(
-                                    ObjectCreationExpression(fieldtype)
+                                    ObjectCreationExpression(method.InvocationSetupType.Syntax)
                                         .WithArgumentList(
                                             method.ParametersExceptOut.Count > 0
                                                 ? ArgumentList(
                                                     SingletonSeparatedList(
                                                         Argument(
-                                                            ObjectCreationExpression(IdentifierName(method.ArgumentsCriteriaClassName))
+                                                            ObjectCreationExpression(method.ArgumentsCriteriaType.Syntax)
                                                                 .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters))
                                                         )
                                                     )
@@ -42,7 +40,7 @@ internal static partial class InvocationSetup
             );
     }
 
-    internal static MethodDeclarationSyntax DefaultResultGenerator(ImposterTargetMethod method)
+    internal static MethodDeclarationSyntax DefaultResultGenerator(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),

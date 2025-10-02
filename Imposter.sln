@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Ideation", "playgr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "tests\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{33085C7F-CA21-48BF-A093-F95BC50225FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions.Tests", "tests\Imposter.Abstractions.Tests\Imposter.Abstractions.Tests.csproj", "{E843F42C-80F8-427D-84DD-8FC0CF7AF995}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{33085C7F-CA21-48BF-A093-F95BC50225FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33085C7F-CA21-48BF-A093-F95BC50225FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33085C7F-CA21-48BF-A093-F95BC50225FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E843F42C-80F8-427D-84DD-8FC0CF7AF995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E843F42C-80F8-427D-84DD-8FC0CF7AF995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E843F42C-80F8-427D-84DD-8FC0CF7AF995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E843F42C-80F8-427D-84DD-8FC0CF7AF995}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +73,6 @@ Global
 		{93894BE6-9A1C-4D57-86B7-9E31D25C448E} = {2E4F8B6F-8C60-4E96-9EA5-39D6992A6B8E}
 		{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89} = {2E4F8B6F-8C60-4E96-9EA5-39D6992A6B8E}
 		{33085C7F-CA21-48BF-A093-F95BC50225FB} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
+		{E843F42C-80F8-427D-84DD-8FC0CF7AF995} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 	EndGlobalSection
 EndGlobal

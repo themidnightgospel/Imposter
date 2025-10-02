@@ -11,11 +11,11 @@ namespace Imposter.CodeGenerator.Builders.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
-    private static IEnumerable<FieldDeclarationSyntax> GetBuilderClassFields(ImposterTargetMethod method)
+    private static IEnumerable<FieldDeclarationSyntax> GetBuilderClassFields(ImposterTargetMethodMetadata method)
     {
         yield return FieldDeclaration(
                 VariableDeclaration(
-                        IdentifierName(method.MethodImposter.Name)
+                        method.MethodImposter.Syntax
                     )
                     .WithVariables(
                         SingletonSeparatedList(
@@ -31,7 +31,7 @@ internal static partial class MethodImposterBuilder
         {
             yield return FieldDeclaration(
                     VariableDeclaration(
-                            IdentifierName(method.ArgumentsCriteriaClassName)
+                            method.ArgumentsCriteriaType.Syntax
                         )
                         .WithVariables(
                             SingletonSeparatedList(
@@ -45,13 +45,15 @@ internal static partial class MethodImposterBuilder
         }
     }
 
-    private static IEnumerable<MemberDeclarationSyntax> ImplementVerifierInterface(ImposterTargetMethod method)
+    private static IEnumerable<MemberDeclarationSyntax> ImplementVerifierInterface(ImposterTargetMethodMetadata method)
     {
         yield return CalledMethodDeclaration
             .Value
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(
-                IdentifierName(method.MethodInvocationVerifierInterfaceName)
-            ))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.InvocationVerifierInterface.Syntax
+                )
+            )
             .WithSemicolonToken(default)
             .WithBody(
                 Block(LocalDeclarationStatement(VariableDeclaration(
@@ -104,7 +106,7 @@ internal static partial class MethodImposterBuilder
                 ))
             );
 
-        static ExpressionSyntax CountInvocations(ImposterTargetMethod method)
+        static ExpressionSyntax CountInvocations(ImposterTargetMethodMetadata method)
         {
             var invocationHistoryExpression = MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
@@ -150,7 +152,7 @@ internal static partial class MethodImposterBuilder
         }
     }
 
-    private static IEnumerable<MemberDeclarationSyntax> ImplementInvocationSetupBuilderInterface(ImposterTargetMethod method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    private static IEnumerable<MemberDeclarationSyntax> ImplementInvocationSetupBuilderInterface(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
         foreach (var methodDeclaration in invocationSetupBuilderInterface.Members.OfType<MethodDeclarationSyntax>())
         {
@@ -159,7 +161,7 @@ internal static partial class MethodImposterBuilder
                 .WithSemicolonToken(default)
                 .WithConstraintClauses(List<TypeParameterConstraintClauseSyntax>())
                 .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(
-                    IdentifierName(invocationSetupBuilderInterface.Identifier.ValueText)
+                    method.InvocationSetupType.Interface.Syntax
                 ))
                 .WithBody(Block(
                     LocalDeclarationStatement(
@@ -170,7 +172,7 @@ internal static partial class MethodImposterBuilder
                                     .WithInitializer(
                                         EqualsValueClause(
                                             ObjectCreationExpression(
-                                                IdentifierName(method.InvocationSetup)
+                                                method.InvocationSetupType.Syntax
                                             ).WithArgumentList(
                                                 method.ParametersExceptOut.Count > 0
                                                     ? ArgumentList(
@@ -234,12 +236,12 @@ internal static partial class MethodImposterBuilder
         }
     }
 
-    private static ClassDeclarationSyntax BuildMethodImposterBuilderClass(ImposterTargetMethod method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    private static ClassDeclarationSyntax BuildMethodImposterBuilderClass(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
         var fields = GetBuilderClassFields(method).ToArray();
 
         return new ClassDeclarationBuilder("Builder")
-            .AddBaseType(SimpleBaseType(IdentifierName(method.MethodImposter.BuilderInterfaceName)))
+            .AddBaseType(SimpleBaseType(method.MethodImposter.BuilderInterface.Syntax))
             .AddMembers(fields)
             .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers("Builder", fields))
             .AddMembers(ImplementInvocationSetupBuilderInterface(method, invocationSetupBuilderInterface))

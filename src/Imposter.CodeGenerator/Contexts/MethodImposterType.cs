@@ -1,6 +1,7 @@
 namespace Imposter.CodeGenerator.Contexts;
 
-internal class MethodImposterType
+// TODO delete
+internal class MethodImposterType2
 {
     public string DeclaredAsParameterName { get; }
 
@@ -10,7 +11,7 @@ internal class MethodImposterType
 
     public string BuilderInterfaceName => $"I{Name}Builder";
 
-    public MethodImposterType(ImposterTargetMethod method)
+    public MethodImposterType2(ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodImposter";
         DeclaredAsParameterName = char.ToLower(Name[0]) + Name.Substring(1);

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Imposter.CodeGenerator.Contexts;
+﻿using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,34 +8,35 @@ namespace Imposter.CodeGenerator.Builders.Delegates;
 
 internal static class MethodDelegateTypeBuilder
 {
-    internal static IEnumerable<DelegateDeclarationSyntax> Build(ImposterTargetMethod method)
-    {
-        yield return GetMethodDelegateDeclaration(method);
-        yield return GetCallbackDelegateDeclaration(method);
-        yield return GetExceptionGeneratorDelegateDeclaration(method);
-    }
+    internal static DelegateDeclarationSyntax[] Build(in ImposterTargetMethodMetadata method) =>
+    [
+        GetMethodDelegateDeclaration(method),
+        GetCallbackDelegateDeclaration(method),
+        GetExceptionGeneratorDelegateDeclaration(method)
+    ];
 
-    private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(ImposterTargetMethod method) => CreateDelegateDeclaration(method, method.DelegateName, SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType));
+    private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(ImposterTargetMethodMetadata method)
+        => CreateDelegateDeclaration(method, method.Delegate.Name, SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType));
 
-    private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(ImposterTargetMethod method) =>
+    private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(ImposterTargetMethodMetadata method) =>
         CreateDelegateDeclaration(
             method,
-            method.CallbackDelegateName,
+            method.CallbackDelegate.Name,
             PredefinedType(Token(SyntaxKind.VoidKeyword)));
 
-    private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(ImposterTargetMethod method) =>
+    private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(ImposterTargetMethodMetadata method) =>
         CreateDelegateDeclaration(
             method,
-            method.ExceptionGeneratorDelegateName,
+            method.ExceptionGeneratorDelegate.Name,
             WellKnownTypes.System.Exception);
 
-    private static DelegateDeclarationSyntax CreateDelegateDeclaration(ImposterTargetMethod method, string delegateName, TypeSyntax returnType) =>
+    private static DelegateDeclarationSyntax CreateDelegateDeclaration(ImposterTargetMethodMetadata method, string delegateName, TypeSyntax returnType) =>
         DelegateDeclaration(
                 attributeLists: List<AttributeListSyntax>(),
                 modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
                 returnType: returnType,
                 identifier: Identifier(delegateName),
-                typeParameterList: null,
+                typeParameterList: SyntaxFactoryHelper.TypeParameterList(method.Symbol),
                 parameterList: SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters),
                 constraintClauses: List<TypeParameterConstraintClauseSyntax>())
             .WithLeadingTriviaComment(method.DisplayName);

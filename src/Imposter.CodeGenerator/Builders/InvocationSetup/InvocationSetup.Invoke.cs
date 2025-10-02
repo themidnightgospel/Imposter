@@ -28,7 +28,7 @@ internal static partial class InvocationSetup
     private static MethodDeclarationSyntax GetMethodDeclarationSyntax =>
         MethodDeclaration(
                 NullableType(IdentifierName("MethodInvocationSetup")),
-                Identifier("GetnextSetup")
+                Identifier("GetNextSetup")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
             .WithBody(
@@ -76,7 +76,7 @@ internal static partial class InvocationSetup
                         EqualsValueClause(
                             BinaryExpression(
                                 SyntaxKind.CoalesceExpression,
-                                InvocationExpression(IdentifierName("GetnextSetup"))
+                                InvocationExpression(IdentifierName("GetNextSetup"))
                                     .WithArgumentList(ArgumentList()),
                                 ThrowExpression(
                                     ObjectCreationExpression(IdentifierName("InvalidOperationException"))
@@ -148,7 +148,7 @@ internal static partial class InvocationSetup
             )
         );
 
-    private static IEnumerable<StatementSyntax> InvokeResultGenerator(ImposterTargetMethod method)
+    private static IEnumerable<StatementSyntax> InvokeResultGenerator(ImposterTargetMethodMetadata method)
     {
         var callInvokeMethodExpression = InvocationExpression(
             MemberAccessExpression(
@@ -192,7 +192,7 @@ internal static partial class InvocationSetup
             ;
     }
 
-    private static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
     {
         var parameterArgumentList = SyntaxFactoryHelper.ArgumentSyntaxList(method.Symbol.Parameters);
         return MethodDeclaration(
@@ -212,24 +212,24 @@ internal static partial class InvocationSetup
                 .Build());
     }
 
-    public static ClassDeclarationSyntax NestedMethodInvocationSetupType(ImposterTargetMethod method)
+    public static ClassDeclarationSyntax NestedMethodInvocationSetupType(ImposterTargetMethodMetadata method)
     {
         return ClassDeclaration("MethodInvocationSetup")
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddMembers(PropertyDeclaration(
-                IdentifierName(method.DelegateName),
+                method.Delegate.Syntax,
                 Identifier("ResultGenerator")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             ), PropertyDeclaration(
-                IdentifierName(method.CallbackDelegateName),
+                method.CallbackDelegate.Syntax,
                 Identifier("CallBefore")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             ), PropertyDeclaration(
-                IdentifierName(method.CallbackDelegateName),
+                method.CallbackDelegate.Syntax,
                 Identifier("CallAfter")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),

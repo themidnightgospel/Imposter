@@ -1,7 +1,6 @@
 ﻿using System;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -19,11 +18,10 @@ internal static partial class MethodImposterBuilder
                     .WithType(IdentifierName("Count")))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
 
-    private static MemberDeclarationSyntax BuildMethodInvocationVerifierInterface(ImposterTargetMethod method)
-    {
-        return new InterfaceDeclarationBuilder(method.MethodInvocationVerifierInterfaceName)
+    private static MemberDeclarationSyntax BuildMethodInvocationVerifierInterface(ImposterTargetMethodMetadata method) =>
+        SyntaxFactoryHelper
+            .InterfaceDeclarationBuilder(method.Symbol, method.InvocationVerifierInterface)
             .AddMember(CalledMethodDeclaration.Value)
             .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)
                 .WithLeadingTriviaComment(method.DisplayName)));
-    }
 }

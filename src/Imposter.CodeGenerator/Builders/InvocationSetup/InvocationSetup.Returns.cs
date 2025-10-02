@@ -9,15 +9,15 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static MethodDeclarationSyntax ReturnsMethodDeclarationSyntax(ImposterTargetMethod method) =>
+    private static MethodDeclarationSyntax ReturnsMethodDeclarationSyntax(ImposterTargetMethodMetadata method) =>
         MethodDeclaration(
-                IdentifierName(method.InvocationsSetupInterface),
+                method.InvocationSetupType.Interface.Syntax,
                 Identifier("Returns")
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(
                 Parameter(Identifier("resultGenerator"))
-                    .WithType(IdentifierName(method.DelegateName))
+                    .WithType(method.Delegate.Syntax)
             )
             .WithBody(Block(
                 ExpressionStatement(
@@ -29,10 +29,10 @@ internal static partial class InvocationSetup
                 ReturnStatement(ThisExpression())
             ));
 
-    private static MethodDeclarationSyntax ReturnsValueMethodDeclarationSyntax(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax ReturnsValueMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupInterface),
+                method.InvocationSetupType.Interface.Syntax,
                 Identifier("Returns")
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))

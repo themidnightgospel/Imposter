@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Imposter.Abstractions;
-using Imposters.Imposter.CodeGenerator.Tests.Setup.Methods.ISutForMethodSetups;
 using Machine.Specifications;
 using Shouldly;
 
