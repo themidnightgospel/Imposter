@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Imposter.Abstractions;
@@ -6,12 +7,23 @@ namespace Imposter.Abstractions;
 /// <summary>
 /// TODO Add coments
 /// </summary>
+#if DEBUG
+[DebuggerDisplay("{DisplayName}")]
+#endif
 public class TypeCriteria
 {
-    private Func<Type, bool> _matches;
+    private readonly Func<Type, bool> _matches;
 
-    public TypeCriteria(Func<Type, bool> matches)
+    private TypeCriteria(
+        Func<Type, bool> matches
+#if DEBUG
+        , string displayName
+#endif
+    )
     {
+#if DEBUG
+        DisplayName = displayName;
+#endif
         _matches = matches;
     }
 
@@ -19,40 +31,88 @@ public class TypeCriteria
 
     private static readonly ConcurrentDictionary<Type, MethodInfo> CustomMatchesMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
-    private static MethodInfo GetMatchesMethod(Type type)
+    public static TypeCriteria Create<TArg>() => new(
+        CreateInternal(typeof(TArg))
+#if DEBUG
+        , typeof(TArg).ToString()
+#endif
+    );
+
+    private static bool IsArgType(Type type)
     {
-        return CustomMatchesMethods
-            .GetOrAdd(type, t =>
+        return type.GetInterfaces()
+            .Any(interfaceType => interfaceType == typeof(IArgType) || (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IArgType<>)));
+    }
+
+    private static Func<Type, bool> CreateInternal(Type tArg)
+    {
+        if (IsArgType(tArg))
+        {
+            return type => ArgTypeMethodsAccessor.Matches(tArg, type);
+        }
+
+        if (tArg is { IsGenericType: true, IsGenericTypeDefinition: false })
+        {
+            return targetType =>
             {
-                var matchesMethodNotFoundException = new InvalidOperationException($"Type {t} does not have a static method called Matches(Type type) that returns bool");
-
-                var method = t.GetMethod("Matches", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(Type) }, null)
-                             ?? throw matchesMethodNotFoundException;
-
-                if (method.ReturnType != typeof(bool))
+                foreach (var currentType in GetAllTypesToExamine(targetType))
                 {
-                    throw matchesMethodNotFoundException;
+                    if (!currentType.IsGenericType || currentType.IsGenericTypeDefinition)
+                    {
+                        continue;
+                    }
+
+                    if (tArg.GetGenericTypeDefinition() == currentType.GetGenericTypeDefinition())
+                    {
+                        if (MatchGenericArgs(tArg, currentType))
+                        {
+                            return true;
+                        }
+                    }
                 }
 
-                return method;
-            });
-    }
+                return false;
+            };
+        }
 
-    public static TypeCriteria Create<TArg>()
-    {
-        Func<Type, bool> matches = typeof(TArg) switch
+        return tArg.IsAssignableFrom;
+
+        bool MatchGenericArgs(Type criteriaType, Type targetType)
         {
-            var tArg when tArg == typeof(ArgType.Any) => ArgType.Any.Matches,
-            { IsGenericType: true } tArg when tArg.GetGenericTypeDefinition() == typeof(ArgType.IsAssignableTo<>) => type => tArg.GetGenericArguments()[0].IsAssignableFrom(type),
-            { IsGenericType: true } tArg when tArg.GetGenericTypeDefinition() == typeof(ArgType.Is<>) => type => tArg.GetGenericArguments()[0] == type,
-            { IsGenericType: true } tArg when tArg.GetGenericTypeDefinition() == typeof(ArgType.IsSubclassOf<>) => type => type.IsSubclassOf(tArg.GetGenericArguments()[0]),
-            var tArg when tArg
-                    .GetInterfaces()
-                    .Any(interfaceType => interfaceType == typeof(IArgType) || (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IArgType<>)))
-                => type => (bool)GetMatchesMethod(tArg).Invoke(null, new[] { type }),
-            _ => _ => true
-        };
+            var argTypes = criteriaType.GetGenericArguments();
+            var matchingTypes = targetType.GetGenericArguments();
 
-        return new TypeCriteria(matches);
+            if (argTypes.Length != matchingTypes.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < argTypes.Length; i++)
+            {
+                var criteria = CreateInternal(argTypes[i]);
+                if (!criteria(matchingTypes[i])) return false;
+            }
+
+            return true;
+        }
+
+        static IEnumerable<Type> GetAllTypesToExamine(Type type)
+        {
+            var types = new HashSet<Type>();
+            types.UnionWith(type.GetInterfaces());
+
+            var current = type;
+            while (current != null && current != typeof(object))
+            {
+                types.Add(current);
+                current = current.BaseType;
+            }
+
+            return types;
+        }
     }
+
+#if DEBUG
+    private string DisplayName { get; }
+#endif
 }

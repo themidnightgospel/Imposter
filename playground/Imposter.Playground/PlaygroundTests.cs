@@ -2,6 +2,8 @@
 using Shouldly;
 using Xunit;
 
+namespace Imposter.Playground;
+
 public class PlaygroundTests
 {
     [Fact]
