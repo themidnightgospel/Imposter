@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.Builders.MethodImposter;
 
 internal partial class MethodImposterBuilder
 {
-    internal static MethodDeclarationSyntax InvokeMethod(ImposterTargetMethod method)
+    internal static MethodDeclarationSyntax InvokeMethod(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
@@ -28,15 +28,15 @@ internal partial class MethodImposterBuilder
             );
     }
 
-    private static StatementSyntax DeclareAndInitializeArgumentsVariable(ImposterTargetMethod method) =>
+    private static StatementSyntax DeclareAndInitializeArgumentsVariable(ImposterTargetMethodMetadata method) =>
         LocalDeclarationStatement(
-            VariableDeclaration(IdentifierName(method.ArgumentsClassName))
+            VariableDeclaration(method.ArgumentsType.Syntax)
                 .AddVariables(
                     VariableDeclarator(Identifier("arguments"))
                         .WithInitializer(
                             EqualsValueClause(
                                 ObjectCreationExpression(
-                                    IdentifierName(method.ArgumentsClassName),
+                                    method.ArgumentsType.Syntax,
                                     SyntaxFactoryHelper.ArgumentSyntaxList(method.ParametersExceptOut, includeRefKind: false),
                                     null
                                 )
@@ -45,7 +45,7 @@ internal partial class MethodImposterBuilder
                 )
         );
 
-    internal static InvocationExpressionSyntax CreateInvocationHistory(ImposterTargetMethod method, bool includeException)
+    internal static InvocationExpressionSyntax CreateInvocationHistory(ImposterTargetMethodMetadata method, bool includeException)
     {
         return InvocationExpression(
             MemberAccessExpression(
@@ -56,7 +56,7 @@ internal partial class MethodImposterBuilder
             ArgumentList(
                 SingletonSeparatedList(
                     Argument(
-                        ObjectCreationExpression(IdentifierName(method.MethodInvocationHistoryClassName))
+                        ObjectCreationExpression(method.InvocationHistoryType.Syntax)
                             .WithArgumentList(
                                 ArgumentList(
                                     SeparatedList(GetArguments())
@@ -86,7 +86,7 @@ internal partial class MethodImposterBuilder
         }
     }
 
-    internal static TryStatementSyntax InvokeMatchingSetupAndRecordHistory(ImposterTargetMethod method)
+    internal static TryStatementSyntax InvokeMatchingSetupAndRecordHistory(ImposterTargetMethodMetadata method)
     {
         return TryStatement(
             new BlockBuilder()
@@ -108,7 +108,7 @@ internal partial class MethodImposterBuilder
         );
     }
 
-    internal static StatementSyntax InvokeMatchingSetup(ImposterTargetMethod method)
+    internal static StatementSyntax InvokeMatchingSetup(ImposterTargetMethodMetadata method)
     {
         var invokeExpression = InvocationExpression(
             MemberAccessExpression(
@@ -134,7 +134,7 @@ internal partial class MethodImposterBuilder
         );
     }
 
-    internal static StatementSyntax IfMatchingSetupIsNullAssignDefault(ImposterTargetMethod method) =>
+    internal static StatementSyntax IfMatchingSetupIsNullAssignDefault(ImposterTargetMethodMetadata method) =>
         IfStatement(
             BinaryExpression(
                 SyntaxKind.EqualsExpression,
@@ -148,7 +148,7 @@ internal partial class MethodImposterBuilder
                         IdentifierName("matchingSetup"),
                         MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName(method.InvocationSetup),
+                            method.InvocationSetupType.Syntax,
                             IdentifierName("DefaultInvocationSetup")
                         )
                     )
@@ -156,10 +156,12 @@ internal partial class MethodImposterBuilder
             )
         );
 
-    private static StatementSyntax DeclareMatchingSetupVariable(ImposterTargetMethod method)
+    private static StatementSyntax DeclareMatchingSetupVariable(ImposterTargetMethodMetadata method)
     {
         return LocalDeclarationStatement(
-            VariableDeclaration(NullableType(IdentifierName(method.InvocationSetup)))
+            VariableDeclaration(
+                    NullableType(method.InvocationSetupType.Syntax)
+                )
                 .AddVariables(
                     VariableDeclarator(Identifier("matchingSetup"))
                         .WithInitializer(EqualsValueClause(

@@ -8,23 +8,24 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.InvocationHistory;
 
-public static class MethodInvocationHistoryBuilder
+public static class InvocationHistory
 {
-    internal static ClassDeclarationSyntax Build(ImposterTargetMethod method)
+    internal static ClassDeclarationSyntax Build(ImposterTargetMethodMetadata method)
     {
         var properties = GetProperties(method).ToArray();
 
-        return ClassDeclaration(method.MethodInvocationHistoryClassName)
+        return ClassDeclaration(method.InvocationHistoryType.Name)
+            .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(method.Symbol))
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .AddMembers(properties)
-            .AddMembers(GetConstructor(method.MethodInvocationHistoryClassName, properties))
+            .AddMembers(GetConstructor(method.InvocationHistoryType.Name, properties))
             .WithLeadingTriviaComment(method.DisplayName);
 
-        static IEnumerable<PropertyDeclarationSyntax> GetProperties(ImposterTargetMethod method)
+        static IEnumerable<PropertyDeclarationSyntax> GetProperties(ImposterTargetMethodMetadata method)
         {
             if (method.ParametersExceptOut.Count > 0)
             {
-                yield return PropertyDeclaration(ParseTypeName(method.ArgumentsClassName), Identifier("Arguments"))
+                yield return PropertyDeclaration(method.ArgumentsType.Syntax, Identifier("Arguments"))
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .WithAccessorList(AccessorList(
                         SingletonList(
@@ -66,14 +67,12 @@ public static class MethodInvocationHistoryBuilder
         static ConstructorDeclarationSyntax GetConstructor(string className, PropertyDeclarationSyntax[] properties)
         {
             var constructorParameters = properties
-                .Select(p =>
-                    Parameter(Identifier(p.Identifier.Text.ToCamelCase()))
-                        .WithType(p.Type)
-                        .WithDefault(p.Type is NullableTypeSyntax
+                .Select(it =>
+                    Parameter(Identifier(it.Identifier.Text.ToCamelCase()))
+                        .WithType(it.Type)
+                        .WithDefault(it.Type is NullableTypeSyntax
                             ? EqualsValueClause(
-                                LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression
-                                )
+                                DefaultExpression(it.Type)
                             )
                             : null)
                 ).ToArray();

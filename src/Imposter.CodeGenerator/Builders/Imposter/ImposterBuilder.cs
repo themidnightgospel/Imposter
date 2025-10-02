@@ -51,24 +51,27 @@ internal static class ImposterBuilder
     }
 
     private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(ImposterGenerationContext imposterGenerationContext) =>
-        imposterGenerationContext.Methods.Select(imposterMethod => MethodDeclaration(
-                IdentifierName(imposterMethod.MethodImposter.BuilderInterfaceName),
-                Identifier(imposterMethod.Symbol.Name)
-            )
-            .WithParameterList(SyntaxFactoryHelper.ArgParameters(imposterMethod.Symbol.Parameters))
-            .WithBody(Block(ReturnStatement(
-                        ObjectCreationExpression(
-                            IdentifierName($"{imposterMethod.MethodImposter.Name}.Builder"),
-                            new ArgumentListBuilder()
-                                .AddArgument(Argument(IdentifierName(imposterMethod.MethodImposter.DeclaredAsFieldName)))
-                                .AddArgumentIf(imposterMethod.ParametersExceptOut.Count > 0, () => Argument(SyntaxFactoryHelper.ArgumentCriteriaCreationExpression(imposterMethod)))
-                                .Build(),
-                            null
+        imposterGenerationContext.Methods
+            .Select(imposterMethod => MethodDeclaration(
+                    imposterMethod.MethodImposter.BuilderInterface.Syntax,
+                    Identifier(imposterMethod.Symbol.Name)
+                )
+                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(imposterMethod.Symbol))
+                .WithParameterList(SyntaxFactoryHelper.ArgParameters(imposterMethod.Symbol.Parameters))
+                .WithBody(Block(
+                        ReturnStatement(
+                            ObjectCreationExpression(
+                                IdentifierName($"{imposterMethod.MethodImposter.Name}.Builder"),
+                                new ArgumentListBuilder()
+                                    .AddArgument(Argument(IdentifierName(imposterMethod.MethodImposter.AsField.Name)))
+                                    .AddArgumentIf(imposterMethod.ParametersExceptOut.Count > 0, () => Argument(SyntaxFactoryHelper.ArgumentCriteriaCreationExpression(imposterMethod)))
+                                    .Build(),
+                                null
+                            )
                         )
                     )
                 )
-            )
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword))));
+                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword))));
 
     private static IEnumerable<ConstructorDeclarationSyntax> Constructor(ImposterGenerationContext imposterGenerationContext, string imposterTargetInstanceClassName)
     {
@@ -84,9 +87,9 @@ internal static class ImposterBuilder
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         ThisExpression(),
-                                        IdentifierName(method.MethodImposter.DeclaredAsFieldName)
+                                        IdentifierName(method.MethodImposter.AsField.Name)
                                     ),
-                                    ObjectCreationExpression(IdentifierName(method.MethodImposter.Name))
+                                    ObjectCreationExpression(method.MethodImposter.Syntax)
                                         .WithArgumentList(ArgumentList())
                                 )
                             )
@@ -127,10 +130,10 @@ internal static class ImposterBuilder
 
     private static IEnumerable<FieldDeclarationSyntax> MethodImposterFields(ImposterGenerationContext imposterGenerationContext) =>
         imposterGenerationContext.Methods.Select(method => FieldDeclaration(
-                VariableDeclaration(IdentifierName(method.MethodImposter.Name))
+                VariableDeclaration(method.MethodImposter.Syntax)
                     .WithVariables(
                         SingletonSeparatedList(
-                            VariableDeclarator(Identifier(method.MethodImposter.DeclaredAsFieldName))
+                            VariableDeclarator(Identifier(method.MethodImposter.AsField.Name))
                         ))
             )
             .AddModifiers(

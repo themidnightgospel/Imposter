@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Imposter.CodeGenerator.Contexts;
+﻿using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -13,15 +11,15 @@ internal static partial class InvocationSetup
 {
     internal const string MethodInvocationSetupTypeName = "MethodInvocationSetup";
 
-    internal static ConstructorDeclarationSyntax Constructor(ImposterTargetMethod method) =>
-        ConstructorDeclaration(Identifier(method.InvocationSetup))
+    internal static ConstructorDeclarationSyntax Constructor(ImposterTargetMethodMetadata method) =>
+        ConstructorDeclaration(method.InvocationSetupType.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithParameterList(
                 method.ParametersExceptOut.Count > 0
                     ? ParameterList(
                         SingletonSeparatedList(
                             Parameter(Identifier("argumentsCriteria"))
-                                .WithType(IdentifierName(method.ArgumentsCriteriaClassName))
+                                .WithType(method.ArgumentsCriteriaType.Syntax)
                         )
                     )
                     : ParameterList()
@@ -51,24 +49,13 @@ internal static partial class InvocationSetup
                 )
                 .Build());
 
-    private static InterfaceDeclarationSyntax GetInvocationSetupBuilderInterface(ImposterTargetMethod method, ClassDeclarationSyntax invocationSetupBuilderClass) =>
-        new InterfaceDeclarationBuilder(method.InvocationsSetupInterface)
-            .AddMembers(invocationSetupBuilderClass
-                .Members
-                .OfType<MethodDeclarationSyntax>()
-                .Where(m => m.Modifiers.Any(SyntaxKind.PublicKeyword) && m.Identifier.ValueText != "Invoke")
-                .Select(publicMethod => publicMethod
-                    .WithBody(null)
-                    .WithReturnType(IdentifierName(method.InvocationsSetupInterface))
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))))
-            .Build(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
-
-    private static ClassDeclarationSyntax GetInvocationSetup(ImposterTargetMethod method)
+    private static ClassDeclarationSyntax GetInvocationSetup(ImposterTargetMethodMetadata method)
     {
-        return new ClassDeclarationBuilder(method.InvocationSetup)
-            .AddBaseType(SimpleBaseType(IdentifierName(method.InvocationsSetupInterface)))
+        return SyntaxFactoryHelper
+            .ClassDeclarationBuilder(method.Symbol, method.InvocationSetupType)
+            .AddBaseType(SimpleBaseType(method.InvocationSetupType.Interface.Syntax))
             .AddMember(DefaultInstanceLazyInitializer(method))
-            .AddMemberIf(method.ParametersExceptOut.Count > 0, () => SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteriaClassName))
+            .AddMemberIf(method.ParametersExceptOut.Count > 0, () => SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteriaType.Syntax))
             .AddMember(CallSetupsFieldDeclaration)
             .AddMember(CurrentlySetupCallFieldDeclaration)
             .AddMember(GetMethodCallSetupDeclarationSyntax)
@@ -91,9 +78,9 @@ internal static partial class InvocationSetup
             .WithLeadingTriviaComment(method.DisplayName);
     }
 
-    internal static (MemberDeclarationSyntax InvocationSetupBuilder, InterfaceDeclarationSyntax InvocationSetupBuilderInterface) Build(ImposterTargetMethod method)
+    internal static (MemberDeclarationSyntax InvocationSetupBuilder, InterfaceDeclarationSyntax InvocationSetupBuilderInterface) Build(ImposterTargetMethodMetadata method)
     {
         var invocationSetupBuilderClass = GetInvocationSetup(method);
-        return (invocationSetupBuilderClass, GetInvocationSetupBuilderInterface(method, invocationSetupBuilderClass));
+        return (invocationSetupBuilderClass, BuildInvocationSetupInterface(method, invocationSetupBuilderClass));
     }
 }

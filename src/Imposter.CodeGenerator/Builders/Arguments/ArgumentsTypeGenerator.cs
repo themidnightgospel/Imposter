@@ -11,16 +11,17 @@ namespace Imposter.CodeGenerator.Builders.Arguments;
 
 internal static class ArgumentsTypeGenerator
 {
-    internal static IEnumerable<ClassDeclarationSyntax> Build(ImposterTargetMethod method)
+    internal static IEnumerable<ClassDeclarationSyntax> Build(ImposterTargetMethodMetadata method)
     {
         var parametersExceptOut = method.ParametersExceptOut;
 
         if (parametersExceptOut.Count > 0)
         {
-            yield return ClassDeclaration(method.ArgumentsClassName)
+            yield return ClassDeclaration(method.ArgumentsType.Name)
+                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(method.Symbol))
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                 .WithMembers(List<MemberDeclarationSyntax>(parametersExceptOut.Select(SyntaxFactoryHelper.ParameterAsProperty)))
-                .AddMembers(ConstructorDeclaration(method.ArgumentsClassName)
+                .AddMembers(ConstructorDeclaration(method.ArgumentsType.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .WithParameterList(ParameterList(SeparatedList(parametersExceptOut.Select(parameter => SyntaxFactoryHelper.ParameterSyntax(parameter, false)))))
                     .WithBody(Block(parametersExceptOut
@@ -42,33 +43,41 @@ internal static class ArgumentsTypeGenerator
 
         if (parametersExceptOut.Count > 0)
         {
-            yield return ClassDeclaration(method.ArgumentsCriteriaClassName)
+            yield return ClassDeclaration(method.ArgumentsCriteriaType.Name)
+                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(method.Symbol))
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                 .WithMembers(List<MemberDeclarationSyntax>(parametersExceptOut.Select(SyntaxFactoryHelper.ParameterAsArgProperty)))
-                .AddMembers(ConstructorDeclaration(method.ArgumentsCriteriaClassName)
-                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .WithParameterList(ParameterList(SeparatedList(parametersExceptOut.Select(SyntaxFactoryHelper.ArgParameter))))
-                    .WithBody(Block(parametersExceptOut
-                        .Select(parameter =>
-                            ExpressionStatement(
-                                AssignmentExpression(
-                                    SyntaxKind.SimpleAssignmentExpression,
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        ThisExpression(),
-                                        IdentifierName(parameter.Name)
-                                    ),
-                                    IdentifierName(parameter.Name)
+                .AddMembers(
+                    ConstructorDeclaration(method.ArgumentsCriteriaType.Name)
+                        .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                        .WithParameterList(
+                            ParameterList(
+                                SeparatedList(
+                                    parametersExceptOut.Select(SyntaxFactoryHelper.ArgParameter)
                                 )
                             )
-                        ))))
+                        )
+                        .WithBody(Block(parametersExceptOut
+                            .Select(parameter =>
+                                ExpressionStatement(
+                                    AssignmentExpression(
+                                        SyntaxKind.SimpleAssignmentExpression,
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            ThisExpression(),
+                                            IdentifierName(parameter.Name)
+                                        ),
+                                        IdentifierName(parameter.Name)
+                                    )
+                                )
+                            ))))
                 .AddMembers(MatchesMethod(method))
                 .WithLeadingTriviaComment(method.DisplayName)
                 .WithTrailingTrivia(CarriageReturnLineFeed);
         }
     }
 
-    private static MethodDeclarationSyntax MatchesMethod(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax MatchesMethod(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                     PredefinedType(Token(SyntaxKind.BoolKeyword)),
@@ -78,10 +87,12 @@ internal static class ArgumentsTypeGenerator
                     TokenList(Token(SyntaxKind.PublicKeyword))
                 )
                 .WithParameterList(
-                    ParameterList(SingletonSeparatedList(
-                        Parameter(Identifier("arguments"))
-                            .WithType(IdentifierName(method.ArgumentsClassName))
-                    ))
+                    ParameterList(
+                        SingletonSeparatedList(
+                            Parameter(Identifier("arguments"))
+                                .WithType(method.ArgumentsType.Syntax)
+                        )
+                    )
                 )
                 .WithBody(
                     Block(

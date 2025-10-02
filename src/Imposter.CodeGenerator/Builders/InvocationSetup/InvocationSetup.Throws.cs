@@ -10,10 +10,10 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupInterface),
+                method.InvocationSetupType.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -35,14 +35,14 @@ internal static partial class InvocationSetup
             ));
     }
 
-    private static MethodDeclarationSyntax ThrowsExceptionInstanceMethodDeclarationSyntax(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax ThrowsExceptionInstanceMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
     {
         var exceptionParameter = Parameter(
             Identifier("ex")
         ).WithType(WellKnownTypes.System.Exception);
 
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupInterface),
+                method.InvocationSetupType.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -65,16 +65,16 @@ internal static partial class InvocationSetup
             ));
     }
 
-    private static MethodDeclarationSyntax ThrowsExceptionWithGeneratorMethodDeclarationSyntax(ImposterTargetMethod method)
+    private static MethodDeclarationSyntax ThrowsExceptionWithGeneratorMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                IdentifierName(method.InvocationsSetupInterface),
+                method.InvocationSetupType.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .AddParameterListParameters(
                 Parameter(Identifier("exceptionGenerator"))
-                    .WithType(IdentifierName(method.ExceptionGeneratorDelegateName))
+                    .WithType(method.ExceptionGeneratorDelegate.Syntax)
             )
             .WithBody(
                 Block(ExpressionStatement(

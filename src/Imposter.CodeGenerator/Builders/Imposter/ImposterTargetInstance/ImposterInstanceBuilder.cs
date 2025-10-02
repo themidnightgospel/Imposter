@@ -41,7 +41,7 @@ internal static class ImposterTargetInstanceBuilder
         return imposterGenerationContext.Methods.Select(imposterMethod =>
         {
             var invokeMethodInvocationExpression = InvocationExpression(
-                IdentifierName($"{ImposterFieldName}.{imposterMethod.MethodImposter.DeclaredAsFieldName}.Invoke"),
+                IdentifierName($"{ImposterFieldName}.{imposterMethod.MethodImposter.AsField.Name}.Invoke"),
                 SyntaxFactoryHelper.ArgumentSyntaxList(imposterMethod.Symbol.Parameters)
             );
 

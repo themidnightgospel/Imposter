@@ -13,7 +13,7 @@ internal static class ImposterTargetExtensionsBuilder
     {
         // TODO optimize
         var extensionClassName = imposterGenerationContext.TargetSymbol.ToDisplayString().Replace(":", "").Replace(".", "");
-        var imposterType = ParseTypeName(imposterGenerationContext.Namespace + "." + imposterGenerationContext.ImposterType.Name);
+        var imposterType = ParseTypeName(imposterGenerationContext.ImposterComponentsNamespace + "." + imposterGenerationContext.ImposterType.Name);
         return new ClassDeclarationBuilder(extensionClassName)
             .AddMember(
                 MethodDeclaration(imposterType, "Imposter")

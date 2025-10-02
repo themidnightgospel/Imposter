@@ -5,5 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"/>
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Imposter.CodeGenerator.Builders;
 using Imposter.CodeGenerator.Builders.Arguments;
@@ -66,7 +67,7 @@ public class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var imposterGenerationContext = new ImposterGenerationContext((INamedTypeSymbol)generateImposterDeclaration.ImposterTarget);
+            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration);
             sourceProductionContext.AddSource(
                 $"{compilationContext.GeneratedCsFileUniqueName.New(imposterGenerationContext.ImposterType.Name)}.g.cs",
                 SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
@@ -88,13 +89,13 @@ public class ImposterGenerator : IIncrementalGenerator
 
     private static CompilationUnitSyntax BuildImposter(ImposterGenerationContext imposterGenerationContext)
     {
-        var namespaceDeclarationBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.Namespace);
+        var namespaceDeclarationBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.ImposterComponentsNamespace);
 
         foreach (var method in imposterGenerationContext.Methods)
         {
             namespaceDeclarationBuilder.AddMembers(MethodDelegateTypeBuilder.Build(method));
             namespaceDeclarationBuilder.AddMembers(ArgumentsTypeGenerator.Build(method));
-            namespaceDeclarationBuilder.AddMember(MethodInvocationHistoryBuilder.Build(method));
+            namespaceDeclarationBuilder.AddMember(InvocationHistory.Build(method));
             // TODO clean it up
             var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetup.Build(method);
             namespaceDeclarationBuilder.AddMember(invocationSetupBuilder);
@@ -102,7 +103,13 @@ public class ImposterGenerator : IIncrementalGenerator
             namespaceDeclarationBuilder.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
         }
 
-        namespaceDeclarationBuilder.AddMember(ImposterBuilder.Build(imposterGenerationContext));
+        var imposterNamespace = new NamespaceDeclarationSyntaxBuilder(
+                imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
+                    ? imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString()
+                    : imposterGenerationContext.ImposterComponentsNamespace)
+            ;
+
+        imposterNamespace.AddMember(ImposterBuilder.Build(imposterGenerationContext));
 
         var namespaceDeclaration = namespaceDeclarationBuilder
             .Build()
@@ -118,11 +125,15 @@ public class ImposterGenerator : IIncrementalGenerator
 
         return CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
-            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
+            usings: List(UsingStatements
+                .Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)
+                .Concat([UsingDirective(ParseName(imposterGenerationContext.ImposterComponentsNamespace))])
+            ),
             attributeLists: List<AttributeListSyntax>(),
             members: List<MemberDeclarationSyntax>(
                 [
-                    namespaceDeclaration
+                    namespaceDeclaration,
+                    imposterNamespace.Build()
                 ]
             )
         );

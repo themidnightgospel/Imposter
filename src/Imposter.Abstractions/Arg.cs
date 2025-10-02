@@ -10,15 +10,16 @@ public interface IArg<in T>
 /// <summary>
 /// TODO add doc
 /// </summary>
-public class Arg<T>(Func<T, bool> matches) : IArg<T>
+public class Arg<T> : IArg<T>
 {
-    public bool Matches(T value) => matches(value);
-
-    public static implicit operator Arg<T>(T value)
+    private readonly Func<T, bool> matches;
+    
+    private Arg(Func<T, bool> matches)
     {
-        // TODO possible null check
-        return new Arg<T>(t => t.Equals(value));
+        this.matches = matches;
     }
+    
+    public bool Matches(T value) => matches(value);
 
     public static Arg<T> Is(Func<T, bool> predicate) => new(predicate);
 

@@ -7,10 +7,6 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Imposter.Ideation\Imposter.Ideation.csproj"/>
-    </ItemGroup>
-
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles\$(TargetFramework)</CompilerGeneratedFilesOutputPath>
@@ -34,6 +30,10 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Imposter.Ideation\Imposter.Ideation.csproj" />
     </ItemGroup>
 
 </Project>

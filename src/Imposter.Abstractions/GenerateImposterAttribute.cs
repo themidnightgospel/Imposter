@@ -8,8 +8,11 @@ public class GenerateImposterAttribute : Attribute
 {
     public Type Type { get; }
 
-    public GenerateImposterAttribute(Type type)
+    public bool PutInTheSameNamespace { get; }
+
+    public GenerateImposterAttribute(Type type, bool putInTheSameNamespace = true)
     {
         Type = type;
+        PutInTheSameNamespace = putInTheSameNamespace;
     }
 }

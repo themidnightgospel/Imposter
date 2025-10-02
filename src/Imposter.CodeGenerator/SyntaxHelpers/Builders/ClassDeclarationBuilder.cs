@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal class ClassDeclarationBuilder(string name)
+internal class ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
 {
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attribute = new();
@@ -52,14 +52,13 @@ internal class ClassDeclarationBuilder(string name)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClassDeclarationSyntax Build(
         SyntaxTokenList modifiers = default,
-        TypeParameterListSyntax? typeParameterList = default,
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
     {
         return ClassDeclaration(
             List(Defaults.DefaultTypeAttributes.Concat(_attribute)),
             modifiers,
             Identifier(name),
-            typeParameterList,
+            typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
             constraintClauses,
             new SyntaxList<MemberDeclarationSyntax>(_members));
