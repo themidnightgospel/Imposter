@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Imposter.Abstractions;
@@ -11,7 +12,7 @@ public static class ArgTypeMethodsAccessor
     {
         return (bool)GetMethods(argType).MatchesMethod.Invoke(null, [argumentType]);
     }
-    
+
     public static object Constructor(Type argType, object argument)
     {
         return GetMethods(argType).Constructor.Invoke([argument]);
@@ -129,7 +130,7 @@ public class ArgType
         {
             return typeof(T).IsAssignableFrom(type);
         }
-        
+
         /// <inheritdoc />
         public T Value { get; }
 
@@ -138,4 +139,3 @@ public class ArgType
             Value = (T)value;
         }
     }
-}

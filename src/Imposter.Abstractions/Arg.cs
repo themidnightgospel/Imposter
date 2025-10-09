@@ -2,46 +2,79 @@
 
 namespace Imposter.Abstractions;
 
-public interface IArg<in T>
-{
-    bool Matches(T value);
-}
-
-/// <summary>
-/// TODO add doc
-/// </summary>
-public class Arg<T> : IArg<T>
-{
-    private readonly Func<T, bool> matches;
-    
-    private Arg(Func<T, bool> matches)
+    /// <summary>
+    /// Represents a contract for matching method arguments.
+    /// </summary>
+    /// <typeparam name="T">The type of the argument to match.</typeparam>
+    public interface IArg<in T>
     {
-        this.matches = matches;
-    }
-    
-    public bool Matches(T value) => matches(value);
-
-    public static Arg<T> Is(Func<T, bool> predicate) => new(predicate);
-
-    public static Arg<T> Is(T? value) => Is(it => it?.Equals(value) == true);
-
-    public static Arg<T> IsDefault() => Is(default(T));
-
-    public static Arg<T> Any = new(_ => true);
-
-    public static Arg<string> MatchesRegex(string regex)
-    {
-        var re = new Regex(regex);
-
-        return new Arg<string>(value => value != null && re.IsMatch(value));
+        /// <summary>
+        /// Determines if the provided value matches the criteria.
+        /// </summary>
+        /// <param name="value">The actual value passed to the method.</param>
+        /// <returns>True if the value matches, false otherwise.</returns>
+        bool Matches(T value);
     }
 
-    // TODO Add more utility factory methods similar to Moq.It
-}
+    /// <summary>
+    /// Provides static factory methods for creating argument matchers used in Imposter setups.
+    /// </summary>
+    /// <typeparam name="T">The type of the argument to match.</typeparam>
+    public class Arg<T> : IArg<T>
+    {
+        private readonly Func<T, bool> _matches;
+        
+        private Arg(Func<T, bool> matches)
+        {
+            _matches = matches;
+        }
+        
+        /// <summary>
+        /// Checks if criteria matches the value
+        /// </summary>
+        public bool Matches(T value) => _matches(value);
 
-public class OutArg<T>() : IArg<T>
-{
-    public static OutArg<T> Any = new();
+        /// <summary>
+        /// Matches an argument based on a custom predicate.
+        /// </summary>
+        public static Arg<T> Is(Func<T, bool> predicate) => new(predicate);
 
-    public bool Matches(T value) => true;
-}
+        /// <summary>
+        /// Matches an argument that is equal to the provided value.
+        /// </summary>
+        public static Arg<T> Is(T? value) => new(it => EqualityComparer<T>.Default.Equals(it, value));
+
+        /// <summary>
+        /// Matches an argument that is the default value for its type (e.g., 0 for int, null for string).
+        /// </summary>
+        public static Arg<T> IsDefault() => Is(default(T));
+
+        /// <summary>
+        /// Matches any value of type T.
+        /// </summary>
+        public static readonly Arg<T> Any = new(_ => true);
+
+        /// <summary>
+        /// Matches a string argument against a regular expression.
+        /// </summary>
+        public static Arg<string> MatchesRegex(string regex)
+        {
+            var re = new Regex(regex);
+            return new Arg<string>(value => value != null && re.IsMatch(value));
+        }
+    }
+
+    /// <summary>
+    /// A matcher for 'out' parameters. Since 'out' parameters have no input value, this always matches.
+    /// </summary>
+    public class OutArg<T> : IArg<T>
+    {
+        /// <summary>
+        /// Matches any 'out' argument of type T.
+        /// </summary>
+        public static readonly OutArg<T> Any = new();
+
+        private OutArg() { }
+
+        public bool Matches(T value) => true;
+    }

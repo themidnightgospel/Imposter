@@ -8,6 +8,16 @@ internal readonly struct NamespaceDeclarationSyntaxBuilder(string @namespace)
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
 
+    internal NamespaceDeclarationSyntaxBuilder AddMemberIfNotNull(MemberDeclarationSyntax? member)
+    {
+        if (member is not null)
+        {
+            AddMember(member);
+        }
+
+        return this;
+    }
+
     internal NamespaceDeclarationSyntaxBuilder AddMember(MemberDeclarationSyntax member)
     {
         _members.Add(member);

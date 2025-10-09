@@ -16,7 +16,7 @@ internal static class ImposterBuilder
     // TODO this can also collide
     private const string ImposterInstanceFieldName = "_imposterInstance";
 
-    internal static ClassDeclarationSyntax Build(ImposterGenerationContext imposterGenerationContext)
+    internal static ClassDeclarationBuilder Build(ImposterGenerationContext imposterGenerationContext)
     {
         var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.ImposterType.Name)
             .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol))))
@@ -31,7 +31,7 @@ internal static class ImposterBuilder
             .AddMembers(Constructor(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(ImposterTargetInstanceBuilder.Build(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(InstanceMethod(imposterGenerationContext, imposterTargetInstanceClassName))
-            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)));
+            .AddModifier(Token(SyntaxKind.PublicKeyword));
     }
 
     private static MemberDeclarationSyntax InstanceMethod(ImposterGenerationContext imposterGenerationContext, string imposterTargetInstanceClassName)

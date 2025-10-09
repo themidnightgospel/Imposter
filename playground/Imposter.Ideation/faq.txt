@@ -1,0 +1,21 @@
+﻿     * FAQ
+     *  1. Why should generic type arguments in callbacks/returns/throws should be `object` ?
+     *  public interface IGenericInterface<T>
+        {
+            T Value { get; }
+        }
+     * then setup
+     *   imposter
+            .Print<GenericInterfaceImpl<ArgType.Any>>(
+                Arg<GenericInterfaceImpl<ArgType.Any>>.Any,
+                Arg<int>.Any)
+            .Returns((GenericInterfaceImpl<ArgType.Any> input, int age) =>
+            {
+                return 1;
+            });
+        then invoked
+    *   imposter.Instance().Print(new GenericInterfaceImpl<int> { Value = 21 }, 1).ShouldBe(1)
+    * now in order us to call `Returns` and pass `GenericInterfaceImpl<ArgType.Any> input` to it, we need to convert `GenericInterfaceImpl<int>` to `GenericInterfaceImpl<ArgType.Any>`
+     *  which is no possible mi amigo
+    *
+    *
