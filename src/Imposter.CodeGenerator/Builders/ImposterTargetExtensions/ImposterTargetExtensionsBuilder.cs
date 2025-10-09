@@ -35,11 +35,8 @@ internal static class ImposterTargetExtensionsBuilder
                         )
                     )
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
-            .Build(modifiers:
-                TokenList(
-                    Token(SyntaxKind.PublicKeyword),
-                    Token(SyntaxKind.StaticKeyword)
-                )
-            );
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
+            .Build();
     }
 }

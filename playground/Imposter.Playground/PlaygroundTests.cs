@@ -121,6 +121,34 @@ public class PlaygroundTests
         mq.Object.Print2(10).ShouldBe(3);
         mq.Object.Print2(9).ShouldBe(3);
     }
+
+    [Fact]
+    public void Test6()
+    {
+        var mq = new Mock<IService>();
+
+        mq
+            .Setup(it => it.Print2<It.IsSubtype<IGenericInterface<It.IsAnyType>>>(
+                It.IsAny<It.IsSubtype<IGenericInterface<It.IsAnyType>>>()))
+            .Returns((It.IsSubtype<IGenericInterface<It.IsAnyType>> arg) =>
+            {
+                return 11;
+            });
+
+        mq
+            .Setup(it => it.Print2(new GenericInterfaceImpl<int> { Value = 11 }))
+            .Returns(1);
+    }
+}
+
+public interface IGenericInterface<T>
+{
+    T Value { get; }
+}
+
+public class GenericInterfaceImpl<T> : IGenericInterface<T>
+{
+    public T Value { get; set; }
 }
 
 public interface IService

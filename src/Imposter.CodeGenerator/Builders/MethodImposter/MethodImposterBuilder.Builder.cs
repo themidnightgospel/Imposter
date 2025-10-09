@@ -246,6 +246,7 @@ internal static partial class MethodImposterBuilder
             .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers("Builder", fields))
             .AddMembers(ImplementInvocationSetupBuilderInterface(method, invocationSetupBuilderInterface))
             .AddMembers(ImplementVerifierInterface(method))
-            .Build(modifiers: TokenList(Token(SyntaxKind.InternalKeyword)));
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .Build();
     }
 }

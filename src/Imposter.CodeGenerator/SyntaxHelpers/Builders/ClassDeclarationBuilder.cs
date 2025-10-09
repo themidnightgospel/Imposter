@@ -13,6 +13,7 @@ internal class ClassDeclarationBuilder(string name, TypeParameterListSyntax? typ
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attribute = new();
     private readonly List<BaseTypeSyntax> _baseTypes = new();
+    private readonly List<SyntaxToken> _modifiers = new List<SyntaxToken>(1);
 
     internal IReadOnlyList<MemberDeclarationSyntax> Members => _members;
 
@@ -37,6 +38,17 @@ internal class ClassDeclarationBuilder(string name, TypeParameterListSyntax? typ
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ClassDeclarationBuilder AddMemberIfNotNull(MemberDeclarationSyntax? member)
+    {
+        if (member is not null)
+        {
+            _members.Add(member);
+        }
+
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax> members)
     {
         _members.AddRange(members);
@@ -50,13 +62,19 @@ internal class ClassDeclarationBuilder(string name, TypeParameterListSyntax? typ
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ClassDeclarationBuilder AddModifier(SyntaxToken modifier)
+    {
+        _modifiers.Add(modifier);
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClassDeclarationSyntax Build(
-        SyntaxTokenList modifiers = default,
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
     {
         return ClassDeclaration(
             List(Defaults.DefaultTypeAttributes.Concat(_attribute)),
-            modifiers,
+            _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,

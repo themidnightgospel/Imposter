@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using Imposter.CodeGenerator.Builders;
 using Imposter.CodeGenerator.Builders.Arguments;
@@ -14,6 +13,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Imposter.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -38,6 +38,7 @@ namespace Imposter.CodeGenerator;
 // Thread safety
 // Cache some of the syntaxes (add benchmark to validate)
 // Use fully qualified names for all the types
+// TODO: Support for 'scoped' parameters
 [Generator]
 public class ImposterGenerator : IIncrementalGenerator
 {
@@ -89,51 +90,39 @@ public class ImposterGenerator : IIncrementalGenerator
 
     private static CompilationUnitSyntax BuildImposter(ImposterGenerationContext imposterGenerationContext)
     {
-        var namespaceDeclarationBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.ImposterComponentsNamespace);
+        var imposter = ImposterBuilder.Build(imposterGenerationContext);
 
         foreach (var method in imposterGenerationContext.Methods)
         {
-            namespaceDeclarationBuilder.AddMembers(MethodDelegateTypeBuilder.Build(method));
-            namespaceDeclarationBuilder.AddMembers(ArgumentsTypeGenerator.Build(method));
-            namespaceDeclarationBuilder.AddMember(InvocationHistory.Build(method));
+            imposter.AddMembers(MethodDelegateTypeBuilder.Build(method));
+            imposter.AddMemberIfNotNull(ArgumentsTypeBuilder.Build(method));
+            imposter.AddMemberIfNotNull(ArgumentsCriteriaBuilder.Build(method));
+            imposter.AddMember(InvocationHistory.Build(method));
             // TODO clean it up
             var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetup.Build(method);
-            namespaceDeclarationBuilder.AddMember(invocationSetupBuilder);
-            namespaceDeclarationBuilder.AddMember(invocationSetupBuilderInterface);
-            namespaceDeclarationBuilder.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
+            imposter.AddMember(invocationSetupBuilder);
+            imposter.AddMember(invocationSetupBuilderInterface);
+            imposter.AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
         }
 
-        var imposterNamespace = new NamespaceDeclarationSyntaxBuilder(
-                imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
-                    ? imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString()
-                    : imposterGenerationContext.ImposterComponentsNamespace)
-            ;
+        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
+            imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
+                ? imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString()
+                : imposterGenerationContext.ImposterComponentsNamespace);
 
-        imposterNamespace.AddMember(ImposterBuilder.Build(imposterGenerationContext));
-
-        var namespaceDeclaration = namespaceDeclarationBuilder
+        var imposterNamespace = imposterNamespaceBuilder
+            .AddMember(imposter.Build())
             .Build()
             // TODO this will cause copying of enitere namespace syntax
             .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
 
-
-        /* TODO
-        var imposterExtensionsNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder("Imposters.Extensions")
-            .AddMember(ImposterTargetExtensionsBuilder.Build(imposterGenerationContext))
-            .Build();
-            */
-
         return CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
-            usings: List(UsingStatements
-                .Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)
-                .Concat([UsingDirective(ParseName(imposterGenerationContext.ImposterComponentsNamespace))])
-            ),
+            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
             attributeLists: List<AttributeListSyntax>(),
             members: List<MemberDeclarationSyntax>(
                 [
-                    namespaceDeclaration,
-                    imposterNamespace.Build()
+                    imposterNamespace
                 ]
             )
         );

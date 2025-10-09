@@ -29,7 +29,7 @@ public class GenericIdeationTests
     [Fact]
     public void Test1()
     {
-        var imposter = new ISutWithGenericMethodImposter();
+        var imposter = new ISutWithGenericMethodImposterPoc();
 
         object? anyArg = null;
 
@@ -55,7 +55,7 @@ public class GenericIdeationTests
     [Fact]
     public void Test2()
     {
-        var imposter = new ISutWithGenericMethodImposter();
+        var imposter = new ISutWithGenericMethodImposterPoc();
 
         imposter
             .Print<ArgType.IsAssignableTo<ICurrent>>(
