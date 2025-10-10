@@ -90,12 +90,11 @@ public static class ArgumentsCriteriaBuilder
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         IdentifierName("TypeCaster"),
                                         GenericName("TryCast").WithTypeArgumentList(
-                                            TypeArgumentList(SeparatedList(new[] { targetType, sourceType })))),
-                                    ArgumentList(SeparatedList(new[]
-                                    {
+                                            TypeArgumentList(SeparatedList([targetType, sourceType])))),
+                                    ArgumentList(SeparatedList([
                                         Argument(lambdaVarIdentifier),
                                         Argument(DeclarationExpression(sourceType, SingleVariableDesignation(tryCastVarIdentifier))).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
-                                    }))),
+                                    ]))),
                                 InvocationExpression(
                                     MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(p.Name), IdentifierName("Matches")),
                                     ArgumentList(SingletonSeparatedList(Argument(IdentifierName(tryCastVarIdentifier))))))))))

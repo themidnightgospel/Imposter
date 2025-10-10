@@ -1,4 +1,6 @@
-﻿namespace Imposter.Abstractions;
+﻿using System.Runtime.CompilerServices;
+
+namespace Imposter.Abstractions;
 
 /// <summary>
 /// A utility for safe and flexible type casting and conversion.
@@ -11,6 +13,7 @@ public static class TypeCaster
     /// - Handles numeric conversions, nullable types, and other convertible types.
     /// - Returns true if the conversion succeeded, false otherwise.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryCast<TIn, TOut>(TIn input, out TOut result)
     {
         // Handle null input first. A null can be cast to any reference type or nullable value type.
@@ -44,6 +47,7 @@ public static class TypeCaster
     /// Force-casts or converts a value of type <typeparamref name="TIn"/> to <typeparamref name="TOut"/>.
     /// - Throws <see cref="InvalidCastException"/> if the conversion is not possible.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TOut Cast<TIn, TOut>(TIn input)
     {
         if (TryCast<TIn, TOut>(input, out var result))

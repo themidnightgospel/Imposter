@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Builders.Imposter.ImposterTargetInstance;
+namespace Imposter.CodeGenerator.Builders.Imposter.ImposterInstance;
 
 internal static class ImposterTargetInstanceBuilder
 {
@@ -45,17 +45,16 @@ internal static class ImposterTargetInstanceBuilder
                 SyntaxFactoryHelper.ArgumentSyntaxList(imposterMethod.Symbol.Parameters)
             );
 
-            return MethodDeclaration(
-                    SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType),
-                    Identifier(imposterMethod.Symbol.Name)
-                )
-                .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(imposterMethod.Symbol.Parameters))
+            return new MethodDeclarationBuilder(SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
+                .AddTypeParameters(SyntaxFactoryHelper.TypeParameters(imposterMethod.Symbol))
+                .AddParameters(SyntaxFactoryHelper.ParameterSyntaxes(imposterMethod.Symbol.Parameters))
                 .WithBody(Block(
                     imposterMethod.HasReturnValue
                         ? ReturnStatement(invokeMethodInvocationExpression)
                         : ExpressionStatement(invokeMethodInvocationExpression))
                 )
-                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
+                .AddModifier(Token(SyntaxKind.PublicKeyword))
+                .Build();
         });
     }
 }

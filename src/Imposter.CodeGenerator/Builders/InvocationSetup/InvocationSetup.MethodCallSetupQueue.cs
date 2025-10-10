@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Imposter.CodeGenerator.Contexts;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -56,8 +57,8 @@ internal static partial class InvocationSetup
 
     private static MethodDeclarationSyntax GetMethodCallSetupDeclarationSyntax =
         MethodDeclaration(
-                IdentifierName("MethodInvocationSetup"), // return type
-                Identifier("GetMethodCallSetup") // method name
+                IdentifierName("MethodInvocationSetup"),
+                Identifier(InvocationSetupType.GetOrAddMethodSetupMethodName)
             )
             .AddModifiers(Token(SyntaxKind.PrivateKeyword))
             .AddParameterListParameters(

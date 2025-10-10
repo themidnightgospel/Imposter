@@ -31,15 +31,20 @@ internal static partial class InvocationSetup
                             SyntaxKind.SimpleAssignmentExpression,
                             IdentifierName("ArgumentsCriteria"),
                             IdentifierName("argumentsCriteria"))))
-                .AddStatement(ExpressionStatement(
-                        InvocationExpression(
-                            IdentifierName("GetMethodCallSetup"),
-                            ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(
-                                        SimpleLambdaExpression(
-                                            Parameter(Identifier("it")),
-                                            LiteralExpression(SyntaxKind.TrueLiteralExpression)
+                .AddStatement(
+                    ExpressionStatement(
+                        AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            IdentifierName("_nextSetup"),
+                            InvocationExpression(
+                                IdentifierName(InvocationSetupType.GetOrAddMethodSetupMethodName),
+                                ArgumentList(
+                                    SingletonSeparatedList(
+                                        Argument(
+                                            SimpleLambdaExpression(
+                                                Parameter(Identifier("it")),
+                                                LiteralExpression(SyntaxKind.TrueLiteralExpression)
+                                            )
                                         )
                                     )
                                 )

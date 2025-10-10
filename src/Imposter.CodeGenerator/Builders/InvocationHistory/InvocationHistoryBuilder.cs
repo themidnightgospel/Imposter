@@ -2,24 +2,67 @@
 using System.Linq;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.InvocationHistory;
 
-public static class InvocationHistory
+public static partial class InvocationHistoryBuilder
 {
-    internal static ClassDeclarationSyntax Build(ImposterTargetMethodMetadata method)
+    internal static IEnumerable<MemberDeclarationSyntax> Build(ImposterTargetMethodMetadata method)
     {
         var properties = GetProperties(method).ToArray();
 
-        return ClassDeclaration(method.InvocationHistoryType.Name)
+        yield return BuildHistoryInterface(method);
+
+        var historyClass = ClassDeclaration(method.InvocationHistory.Name)
             .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(method.Symbol))
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .AddMembers(properties)
-            .AddMembers(GetConstructor(method.InvocationHistoryType.Name, properties))
-            .WithLeadingTriviaComment(method.DisplayName);
+            .AddMembers(GetConstructor(method.InvocationHistory.Name, properties))
+            .WithLeadingTriviaComment(method.DisplayName)
+            .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(method.InvocationHistory.Interface.Syntax))))
+            .AddMembers(BuildMatchesMethodForHistoryClass(method));
+
+        yield return historyClass;
+
+        yield return BuildInvocationHistoryCollectionClass(method);
+
+        static MemberDeclarationSyntax BuildMatchesMethodForHistoryClass(ImposterTargetMethodMetadata method)
+        {
+            // TODO optimize
+            var criteriaTypeParameters = method
+                .TargetGenericTypeArguments
+                .Select(it => TypeParameter(it.Identifier));
+
+            return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
+                .AddModifier(Token(SyntaxKind.PublicKeyword))
+                .AddTypeParameters(criteriaTypeParameters)
+                .AddParameterIf(method.HasInputParameters, () => SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteriaType.Syntax, "criteria"))
+                .WithBody(Block(
+                    ReturnStatement(
+                        InvocationExpression(
+                            MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                method.Symbol.IsGenericMethod
+                                    ? InvocationExpression(
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            IdentifierName("criteria"),
+                                            GenericName(Identifier("As"), method.GenericTypeArguments.AsTypeArguments())
+                                        )
+                                    )
+                                    : IdentifierName("criteria")
+                                , IdentifierName("Matches")
+                            ),
+                            ArgumentList(SingletonSeparatedList(Argument(IdentifierName("Arguments"))))
+                        )
+                    )
+                ))
+                .Build();
+        }
 
         static IEnumerable<PropertyDeclarationSyntax> GetProperties(ImposterTargetMethodMetadata method)
         {
@@ -94,4 +137,5 @@ public static class InvocationHistory
                 .WithBody(Block(List(constructorAssignments)));
         }
     }
+
 }

@@ -13,7 +13,7 @@ internal static partial class InvocationSetup
 {
     private static FieldDeclarationSyntax NextMethodCallSetupFieldDeclaration = FieldDeclaration(
             VariableDeclaration(
-                    NullableType(IdentifierName(MethodInvocationSetupTypeName))
+                    IdentifierName(MethodInvocationSetupTypeName)
                 )
                 .WithVariables(
                     SingletonSeparatedList(
@@ -217,19 +217,19 @@ internal static partial class InvocationSetup
         return ClassDeclaration("MethodInvocationSetup")
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddMembers(PropertyDeclaration(
-                method.Delegate.Syntax,
+                NullableType(method.Delegate.Syntax),
                 Identifier("ResultGenerator")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             ), PropertyDeclaration(
-                method.CallbackDelegate.Syntax,
+                NullableType(method.CallbackDelegate.Syntax),
                 Identifier("CallBefore")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             ), PropertyDeclaration(
-                method.CallbackDelegate.Syntax,
+                NullableType(method.CallbackDelegate.Syntax),
                 Identifier("CallAfter")
             ).AddModifiers(Token(SyntaxKind.InternalKeyword)).AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,16 +18,21 @@ internal static partial class SyntaxFactoryHelper
 
     internal static TypeParameterSyntax TypeParameter(ITypeParameterSymbol typeParameterSymbol) => SyntaxFactory.TypeParameter(typeParameterSymbol.Name);
 
+    internal static IEnumerable<TypeParameterSyntax> TypeParameters(IMethodSymbol method) =>
+        method.TypeParameters.Length > 0
+            ? method.TypeParameters.Select(TypeParameter)
+            : [];
+
     internal static TypeParameterListSyntax? TypeParameterList(IMethodSymbol method) =>
         method.TypeParameters.Length > 0
             ? SyntaxFactory.TypeParameterList(
                 SeparatedList(
-                    method.TypeParameters.Select(TypeParameter)
+                    TypeParameters(method)
                 )
             )
-            : default;
+            : null;
 
-    internal static NameSyntax TypeSyntaxWithGenericArguments(IMethodSymbol method, string typeName)
+    internal static NameSyntax WithMethodGenericArguments(IMethodSymbol method, string typeName)
     {
         if (method.IsGenericMethod)
         {

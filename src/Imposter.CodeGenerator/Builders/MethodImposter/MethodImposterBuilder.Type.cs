@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Builders.MethodImposter.Builder;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
@@ -30,7 +31,7 @@ internal static partial class MethodImposterBuilder
 
     internal static FieldDeclarationSyntax GetInvocationHistoriesField(ImposterTargetMethodMetadata method)
     {
-        var invocationHistoryFieldType = SyntaxFactoryHelper.List(method.InvocationHistoryType.Syntax);
+        var invocationHistoryFieldType = SyntaxFactoryHelper.List(method.InvocationHistory.Syntax);
 
         return FieldDeclaration(
                 VariableDeclaration(invocationHistoryFieldType)
@@ -54,19 +55,39 @@ internal static partial class MethodImposterBuilder
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
             .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword).WithLeadingTriviaComment(method.DisplayName)));
 
-    private static ClassDeclarationSyntax BuildMethodImposter(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface) =>
-        SyntaxFactoryHelper
-            .ClassDeclarationBuilder(method.Symbol, method.MethodImposter)
+
+    private static ClassDeclarationSyntax BuildMethodImposter(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    {
+        var methodImposterClassBuilder = SyntaxFactoryHelper
+            .ClassDeclarationBuilder(method.Symbol, method.MethodImposter);
+
+        if (method.Symbol.IsGenericMethod)
+        {
+            methodImposterClassBuilder = methodImposterClassBuilder.AddBaseType(SimpleBaseType(method.MethodImposter.GenericInterface.Syntax));
+        }
+
+        return methodImposterClassBuilder
             .AddMember(GetInvocationSetupsField(method))
             .AddMember(GetInvocationHistoriesField(method))
+            .AddMemberIf(method.Symbol.IsGenericMethod, () => BuildAsMethodForGenericImposter(method))
+            .AddMemberIf(method.Symbol.IsGenericMethod, () => BuildAdapterClass(method))
             .AddMemberIf(method.HasOutParameters, () => SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters))
+            .AddMember(BuildHasMatchingSetupMethod(method))
+            .AddMember(BuildFindMatchingSetupMethod(method))
             .AddMember(InvokeMethod(method))
-            .AddMember(BuildMethodImposterBuilderClass(method, invocationSetupBuilderInterface))
+            .AddMember(MethodImposterBuilderBuilder.Build(method, invocationSetupBuilderInterface))
             .Build()
             .WithLeadingTriviaComment(method.DisplayName);
+    }
 
     internal static IEnumerable<MemberDeclarationSyntax> Build(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
+        if (method.Symbol.IsGenericMethod)
+        {
+            yield return BuildNonGenericMethodImposterInterface(method);
+            yield return BuildGenericMethodImposterInterface(method);
+        }
+
         yield return BuildMethodInvocationVerifierInterface(method);
         yield return BuildMethodImposterBuilderInterface(method);
         yield return BuildMethodImposter(method, invocationSetupBuilderInterface);
