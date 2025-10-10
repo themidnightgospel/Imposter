@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,14 +31,18 @@ internal static partial class SyntaxFactoryHelper
         );
     }
 
-    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<IParameterSymbol> parameters) => SyntaxFactory.ParameterList(SeparatedList(parameters.Select(ParameterSyntax)));
+    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<IParameterSymbol> parameters) => ParameterList(SeparatedList(parameters.Select(ParameterSyntax)));
+
+    internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(IEnumerable<IParameterSymbol> parameters) => parameters.Select(ParameterSyntax);
 
     internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) => ParameterSyntax(parameter, true);
 
+    internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name)
+        => new ParameterBuilder(type, "criteria").Build();
+
     internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter, bool includeRefKind)
     {
-        var paramSyntax = Parameter(Identifier(parameter.Name))
-            .WithType(TypeSyntax(parameter.Type));
+        var parameterBuilder = new ParameterBuilder(TypeSyntax(parameter.Type), parameter.Name);
 
         if (includeRefKind)
         {
@@ -51,7 +56,7 @@ internal static partial class SyntaxFactoryHelper
 
             if (modifier != default)
             {
-                paramSyntax = paramSyntax.WithModifiers(TokenList(modifier));
+                parameterBuilder.AddModifier(modifier);
             }
         }
 
@@ -61,11 +66,10 @@ internal static partial class SyntaxFactoryHelper
                 ? ParseExpression(parameter.ExplicitDefaultValue.ToString())
                 : LiteralExpression(SyntaxKind.NullLiteralExpression);
 
-            paramSyntax = paramSyntax.WithDefault(
-                EqualsValueClause(defaultValue));
+            parameterBuilder.WithDefaultValue(defaultValue);
         }
 
-        return paramSyntax;
+        return parameterBuilder.Build();
     }
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
@@ -76,4 +80,22 @@ internal static partial class SyntaxFactoryHelper
                 DefaultExpression(TypeSyntax(parameter.Type))
             )
         );
+
+    internal static TypeParameterListSyntax TypeParameterList(IReadOnlyList<NameSyntax> genericArguments)
+    {
+        return SyntaxFactory.TypeParameterList(
+            SeparatedList(
+                genericArguments.Select(name => SyntaxFactory.TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text)))
+            )
+        );
+    }
+
+    internal static TypeParameterListSyntax TypeParameterList(IReadOnlyList<IdentifierNameSyntax> genericArguments)
+    {
+        return SyntaxFactory.TypeParameterList(
+            SeparatedList(
+                genericArguments.Select(name => SyntaxFactory.TypeParameter(Identifier(name.Identifier.Text)))
+            )
+        );
+    }
 }

@@ -1,4 +1,6 @@
-﻿     * FAQ
+﻿   1. We no longer support .Any 
+     
+     * FAQ
      *  1. Why should generic type arguments in callbacks/returns/throws should be `object` ?
      *  public interface IGenericInterface<T>
         {

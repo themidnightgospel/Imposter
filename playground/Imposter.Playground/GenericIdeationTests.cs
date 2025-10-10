@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Imposter.Abstractions;
-using Imposter.CodeGenerator.Tests.Setup.Methods.Generics;
 using Imposter.Ideation;
+using Imposter.Ideation.GenericMethod;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -29,7 +29,7 @@ public class GenericIdeationTests
     [Fact]
     public void Test1()
     {
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
 
         object? anyArg = null;
 
@@ -55,7 +55,7 @@ public class GenericIdeationTests
     [Fact]
     public void Test2()
     {
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
 
         imposter
             .Print<ArgType.IsAssignableTo<ICurrent>>(

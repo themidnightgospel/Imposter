@@ -1,9 +1,8 @@
-﻿using Xunit;
-using Imposter.Abstractions;
-using Imposter.CodeGenerator.Tests.Setup.Methods.Generics;
+﻿using Imposter.Abstractions;
 using Shouldly;
+using Xunit;
 
-namespace Imposter.Ideation;
+namespace Imposter.Ideation.GenericMethod;
 
 public class GenericMethodImposterTests
 {
@@ -20,7 +19,7 @@ public class GenericMethodImposterTests
     public void SetupOnSpecificGenericTypes_InvokedWithThoseTypes_SetupExecuted()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var expectedResult = "imposter_result";
         var callBeforeInvoked = false;
         var callAfterInvoked = false;
@@ -61,7 +60,7 @@ public class GenericMethodImposterTests
     public void SetupWithArgumentCriteria_InvokedWithValuesMatchingTheCriteria_SetupExecuted()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var expectedResult = "imposter_result";
 
         var paramsParam = new[] { 1, 2, 3 };
@@ -88,7 +87,7 @@ public class GenericMethodImposterTests
     public void SetupWithSpecificGenericTypes_PassedCompatibleTypeForTOrdinaryParam_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         imposter.Print<Animal, int, bool, double, string, object>(Arg<Animal>.Any, OutArg<int>.Any, Arg<bool>.Any, Arg<double>.Any, Arg<object[]>.Any)
             .Returns("matched_base");
         var sut = imposter.Instance();
@@ -106,7 +105,7 @@ public class GenericMethodImposterTests
     public void SetupWithSpecificGenericTypes_PassedCompatibleTypeForTOutParam_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         imposter.Print<string, Dog, bool, double, string, object>(Arg<string>.Any, OutArg<Dog>.Any, Arg<bool>.Any, Arg<double>.Any, Arg<object[]>.Any)
             .Returns((string _, out Dog dog, in bool _, ref double _, object[] _) =>
             {
@@ -129,7 +128,7 @@ public class GenericMethodImposterTests
     public void SetupWithSpecificGenericTypes_PassedCompatibleTypeForTInParam_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         imposter.Print<string, int, Animal, double, string, object>(Arg<string>.Any, OutArg<int>.Any, Arg<Animal>.Any, Arg<double>.Any, Arg<object[]>.Any)
             .Returns("matched_base");
         var sut = imposter.Instance();
@@ -147,7 +146,7 @@ public class GenericMethodImposterTests
     public void SetupWithSpecificGenericTypes_PassedCompatibleTypeForResult_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         imposter.Print<string, int, bool, double, Dog, object>(Arg<string>.Any, OutArg<int>.Any, Arg<bool>.Any, Arg<double>.Any, Arg<object[]>.Any)
             .Returns(new Dog());
         var sut = imposter.Instance();
@@ -166,7 +165,7 @@ public class GenericMethodImposterTests
     public void SetupWithSpecificGenericTypes_PassedCompatibleTypeForTParamsParam_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         imposter.Print<string, int, bool, double, string, Animal>(Arg<string>.Any, OutArg<int>.Any, Arg<bool>.Any, Arg<double>.Any, Arg<Animal[]>.Any)
             .Returns("matched_base");
         var sut = imposter.Instance();
@@ -185,7 +184,7 @@ public class GenericMethodImposterTests
     public void SetupWithObjectType_PassedAnyType_SetupInvoked()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var expectedResult = "matched_object";
         // Setup to match 'object' for the ordinary parameter
         imposter.Print<object, int, bool, double, string, object>(
@@ -223,7 +222,7 @@ public class GenericMethodImposterTests
     public void MultipleSetups_WithVaryingCompatibility_LastMatchingSetupIsUsedForMultipleCalls()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var firstCompatibleResult = "first_compatible";
         var incompatibleResult = "incompatible";
         var lastCompatibleResult = "last_compatible";
@@ -265,7 +264,7 @@ public class GenericMethodImposterTests
     public void MultipleSetups_WithOneMatching_ShouldInvokeTheMatchingSetup()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var compatibleResult = "compatible";
         var incompatibleResult = "incompatible";
 
@@ -297,7 +296,7 @@ public class GenericMethodImposterTests
     public void SequentialSetups_WithCallbacks_AreInvokedInOrderAndLastSetupRepeats()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var events = new List<string>();
         var firstResult = "first_call";
         var secondResult = "second_call";
@@ -387,7 +386,7 @@ public class GenericMethodImposterTests
     public void RefParameterModifiedByCompatibleSetup_ShouldBePropagatedToCaller()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
         var newAnimal = new Animal { Name = "New" };
 
         imposter.Print<Animal, int, bool, Animal, string, object>(
@@ -423,7 +422,7 @@ public class GenericMethodImposterTests
     public void OutParameter_IsOverwrittenByEachDelegateInChain()
     {
         // Arrange
-        var imposter = new ISutWithGenericMethodImposterPoc();
+        var imposter = new GenericMethodPoc();
 
         // Setup a complete chain of delegates, each setting a different value for the 'out' parameter.
         imposter.Print<Animal, int, bool, double, string, object>(

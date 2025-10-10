@@ -7,48 +7,32 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Builders.MethodImposter;
+namespace Imposter.CodeGenerator.Builders.MethodImposter.Builder;
 
-internal static partial class MethodImposterBuilder
+internal static partial class MethodImposterBuilderBuilder
 {
-    private static IEnumerable<FieldDeclarationSyntax> GetBuilderClassFields(ImposterTargetMethodMetadata method)
+    private static IEnumerable<FieldDeclarationSyntax> GetFields(ImposterTargetMethodMetadata method)
     {
-        yield return FieldDeclaration(
-                VariableDeclaration(
-                        method.MethodImposter.Syntax
-                    )
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("_imposter"))
-                        )
-                    )
-            )
-            .AddModifiers(
-                Token(SyntaxKind.PrivateKeyword)
-            );
+        if (method.Symbol.IsGenericMethod)
+        {
+            yield return SyntaxFactoryHelper.SingleVariableField(method.MethodImposter.Collection.Syntax, "_imposterCollection");
+        }
+        else
+        {
+            yield return SyntaxFactoryHelper.SingleVariableField(method.MethodImposter.Syntax, "_imposter");
+        }
+        
+        yield return SyntaxFactoryHelper.SingleVariableField(method.InvocationHistory.Collection.Syntax, "_invocationHistoryCollection");
 
         if (method.ParametersExceptOut.Count > 0)
         {
-            yield return FieldDeclaration(
-                    VariableDeclaration(
-                            method.ArgumentsCriteriaType.Syntax
-                        )
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(Identifier("_argumentsCriteria"))
-                            )
-                        )
-                )
-                .AddModifiers(
-                    Token(SyntaxKind.PrivateKeyword)
-                );
+            yield return SyntaxFactoryHelper.SingleVariableField(method.ArgumentsCriteriaType.Syntax, "_argumentsCriteria");
         }
     }
 
     private static IEnumerable<MemberDeclarationSyntax> ImplementVerifierInterface(ImposterTargetMethodMetadata method)
     {
-        yield return CalledMethodDeclaration
-            .Value
+        yield return Shared.CalledMethodDeclaration
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(
                     method.InvocationVerifierInterface.Syntax
@@ -171,19 +155,7 @@ internal static partial class MethodImposterBuilder
                                 VariableDeclarator(Identifier("invocationSetup"))
                                     .WithInitializer(
                                         EqualsValueClause(
-                                            ObjectCreationExpression(
-                                                method.InvocationSetupType.Syntax
-                                            ).WithArgumentList(
-                                                method.ParametersExceptOut.Count > 0
-                                                    ? ArgumentList(
-                                                        SingletonSeparatedList(
-                                                            Argument(
-                                                                IdentifierName("_argumentsCriteria")
-                                                            )
-                                                        )
-                                                    )
-                                                    : ArgumentList()
-                                            )
+                                            InvocationExpression(IdentifierName("GetOrAddInvocationSetup"))
                                         )
                                     )
                             )
@@ -209,26 +181,6 @@ internal static partial class MethodImposterBuilder
                                 .ToArray()))
                         )
                     ),
-                    ExpressionStatement(
-                        InvocationExpression(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("_imposter"),
-                                        IdentifierName("_invocationSetups")
-                                    ),
-                                    IdentifierName("Add")
-                                )
-                            )
-                            .WithArgumentList(
-                                ArgumentList(
-                                    SingletonSeparatedList(
-                                        Argument(IdentifierName("invocationSetup"))
-                                    )
-                                )
-                            )
-                    ),
                     ReturnStatement(
                         IdentifierName("invocationSetup")
                     )
@@ -236,14 +188,27 @@ internal static partial class MethodImposterBuilder
         }
     }
 
-    private static ClassDeclarationSyntax BuildMethodImposterBuilderClass(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    internal static ClassDeclarationSyntax Build(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
-        var fields = GetBuilderClassFields(method).ToArray();
+        var fields = GetFields(method).ToArray();
+
+        var existingInvocationSetupField = FieldDeclaration(
+            VariableDeclaration(
+                    NullableType(method.InvocationSetupType.Syntax)
+                )
+                .WithVariables(
+                    SingletonSeparatedList(
+                        VariableDeclarator(Identifier("_existingInvocationSetup"))
+                    )
+                )
+        ).AddModifiers(Token(SyntaxKind.PrivateKeyword));
 
         return new ClassDeclarationBuilder("Builder")
             .AddBaseType(SimpleBaseType(method.MethodImposter.BuilderInterface.Syntax))
             .AddMembers(fields)
+            .AddMember(existingInvocationSetupField)
             .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers("Builder", fields))
+            .AddMember(GetOrAddInvocationSetupMethod(method))
             .AddMembers(ImplementInvocationSetupBuilderInterface(method, invocationSetupBuilderInterface))
             .AddMembers(ImplementVerifierInterface(method))
             .AddModifier(Token(SyntaxKind.InternalKeyword))

@@ -38,12 +38,18 @@ internal static class WellKnownTypes
         {
             internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.Imposter.Namespace, IdentifierName("Abstractions"));
 
-            internal static NameSyntax IHaveImposterInstance(TypeSyntax instanceType) => GenericName(
-                Identifier("IHaveImposterInstance"),
-                TypeArgumentList(
-                    SingletonSeparatedList(instanceType)
-                )
-            );
+            internal static NameSyntax IHaveImposterInstance(TypeSyntax instanceType) =>
+                QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("IHaveImposterInstance"),
+                        TypeArgumentList(
+                            SingletonSeparatedList(instanceType)
+                        )
+                    )
+                );
+
+            internal static NameSyntax TypeCaster => QualifiedName(Namespace, IdentifierName("TypeCaster"));
         }
     }
 }

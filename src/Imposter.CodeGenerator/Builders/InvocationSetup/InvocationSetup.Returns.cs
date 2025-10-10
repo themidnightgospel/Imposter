@@ -58,7 +58,7 @@ internal static partial class InvocationSetup
         MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
             InvocationExpression(
-                IdentifierName("GetMethodCallSetup"),
+                IdentifierName("GetOrAddMethodSetup"),
                 ArgumentList(
                     SingletonSeparatedList(
                         Argument(

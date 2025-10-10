@@ -8,12 +8,12 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal class ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
+internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
 {
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attribute = new();
     private readonly List<BaseTypeSyntax> _baseTypes = new();
-    private readonly List<SyntaxToken> _modifiers = new List<SyntaxToken>(1);
+    private readonly List<SyntaxToken> _modifiers = new(1);
 
     internal IReadOnlyList<MemberDeclarationSyntax> Members => _members;
 
