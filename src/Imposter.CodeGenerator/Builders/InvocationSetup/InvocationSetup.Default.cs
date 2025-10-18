@@ -9,38 +9,23 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(ImposterTargetMethodMetadata method)
-    {
-        return FieldDeclaration(
-                VariableDeclaration(method.InvocationSetupType.Syntax)
-                    .AddVariables(
-                        VariableDeclarator(Identifier("DefaultInvocationSetup"))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    ObjectCreationExpression(method.InvocationSetupType.Syntax)
-                                        .WithArgumentList(
-                                            method.ParametersExceptOut.Count > 0
-                                                ? ArgumentList(
-                                                    SingletonSeparatedList(
-                                                        Argument(
-                                                            ObjectCreationExpression(method.ArgumentsCriteriaType.Syntax)
-                                                                .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters))
-                                                        )
-                                                    )
-                                                )
-                                                : ArgumentList()
-                                        )
-                                )
+    internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(in ImposterTargetMethodMetadata method) =>
+        SyntaxFactoryHelper
+            .SingleVariableField(
+                method.InvocationSetup.Syntax,
+                InvocationSetupType.DefaultInvocationSetupMethod.Name,
+                TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword)),
+                method.InvocationSetup.Syntax
+                    .New(method.Parameters.HasInputParameters
+                        ? Argument(ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
+                                .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters))
                             )
+                            .AsSingleArgumentList()
+                        : SyntaxFactoryHelper.EmptyArgumentListSyntax
                     )
-            )
-            .AddModifiers(
-                Token(SyntaxKind.InternalKeyword),
-                Token(SyntaxKind.StaticKeyword)
             );
-    }
 
-    internal static MethodDeclarationSyntax DefaultResultGenerator(ImposterTargetMethodMetadata method)
+    internal static MethodDeclarationSyntax DefaultResultGenerator(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
@@ -55,7 +40,7 @@ internal static partial class InvocationSetup
             .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters))
             .WithBody(
                 new BlockBuilder()
-                    .AddStatementsIf(method.HasOutParameters, () => SyntaxFactoryHelper.InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
+                    .AddStatementsIf(method.Parameters.HasOutputParameters, () => SyntaxFactoryHelper.InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                     .AddStatementsIf(method.HasReturnValue, () => SyntaxFactoryHelper.ReturnDefault(method.Symbol.ReturnType))
                     .Build()
             );

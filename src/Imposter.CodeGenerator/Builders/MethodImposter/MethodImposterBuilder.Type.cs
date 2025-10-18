@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Imposter.CodeGenerator.Builders.MethodImposter.Adapter;
 using Imposter.CodeGenerator.Builders.MethodImposter.Builder;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -10,86 +10,39 @@ namespace Imposter.CodeGenerator.Builders.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
-    internal static FieldDeclarationSyntax GetInvocationSetupsField(ImposterTargetMethodMetadata method)
-    {
-        var invocationSetupsFieldType = SyntaxFactoryHelper.List(method.InvocationSetupType.Syntax);
-
-        return FieldDeclaration(
-                VariableDeclaration(invocationSetupsFieldType)
-                    .AddVariables(
-                        VariableDeclarator(Identifier("_invocationSetups"))
-                            .WithInitializer(
-                                EqualsValueClause(ObjectCreationExpression(invocationSetupsFieldType).WithArgumentList(ArgumentList()))
-                            )
-                    )
-            )
-            .AddModifiers(
-                Token(SyntaxKind.PrivateKeyword),
-                Token(SyntaxKind.ReadOnlyKeyword)
-            );
-    }
-
-    internal static FieldDeclarationSyntax GetInvocationHistoriesField(ImposterTargetMethodMetadata method)
-    {
-        var invocationHistoryFieldType = SyntaxFactoryHelper.List(method.InvocationHistory.Syntax);
-
-        return FieldDeclaration(
-                VariableDeclaration(invocationHistoryFieldType)
-                    .AddVariables(
-                        VariableDeclarator(Identifier("_invocationHistory"))
-                            .WithInitializer(
-                                EqualsValueClause(ObjectCreationExpression(invocationHistoryFieldType).WithArgumentList(ArgumentList()))
-                            )
-                    )
-            )
-            .AddModifiers(
-                Token(SyntaxKind.PrivateKeyword),
-                Token(SyntaxKind.ReadOnlyKeyword)
-            );
-    }
-
-    private static MemberDeclarationSyntax BuildMethodImposterBuilderInterface(ImposterTargetMethodMetadata method) =>
-        SyntaxFactoryHelper
-            .InterfaceDeclarationBuilder(method.Symbol, method.MethodImposter.BuilderInterface)
-            .AddBaseType(SimpleBaseType(method.InvocationSetupType.Interface.Syntax))
-            .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
-            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword).WithLeadingTriviaComment(method.DisplayName)));
-
-
-    private static ClassDeclarationSyntax BuildMethodImposter(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method, in InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
         var methodImposterClassBuilder = SyntaxFactoryHelper
-            .ClassDeclarationBuilder(method.Symbol, method.MethodImposter);
+            .ClassDeclarationBuilder(method.Symbol, method.MethodImposter.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword));
 
         if (method.Symbol.IsGenericMethod)
         {
             methodImposterClassBuilder = methodImposterClassBuilder.AddBaseType(SimpleBaseType(method.MethodImposter.GenericInterface.Syntax));
         }
 
+        var invocationHistoryCollectionField = SyntaxFactoryHelper
+            .SingleVariableField(
+                method.InvocationHistory.Collection.Syntax,
+                method.InvocationHistory.Collection.AsField.Name,
+                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
+
         return methodImposterClassBuilder
-            .AddMember(GetInvocationSetupsField(method))
-            .AddMember(GetInvocationHistoriesField(method))
-            .AddMemberIf(method.Symbol.IsGenericMethod, () => BuildAsMethodForGenericImposter(method))
-            .AddMemberIf(method.Symbol.IsGenericMethod, () => BuildAdapterClass(method))
-            .AddMemberIf(method.HasOutParameters, () => SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters))
+            .AddMember(BuildInvocationSetupsField(method))
+            .AddMember(invocationHistoryCollectionField)
+            .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField]))
+            .AddMember(BuildAsMethodForGenericImposter(method))
+            .AddMember(MethodImposterAdapterBuilder.Build(method))
+            .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))
             .AddMember(BuildHasMatchingSetupMethod(method))
             .AddMember(BuildFindMatchingSetupMethod(method))
             .AddMember(InvokeMethod(method))
             .AddMember(MethodImposterBuilderBuilder.Build(method, invocationSetupBuilderInterface))
-            .Build()
-            .WithLeadingTriviaComment(method.DisplayName);
-    }
+            .Build();
 
-    internal static IEnumerable<MemberDeclarationSyntax> Build(ImposterTargetMethodMetadata method, InterfaceDeclarationSyntax invocationSetupBuilderInterface)
-    {
-        if (method.Symbol.IsGenericMethod)
-        {
-            yield return BuildNonGenericMethodImposterInterface(method);
-            yield return BuildGenericMethodImposterInterface(method);
-        }
-
-        yield return BuildMethodInvocationVerifierInterface(method);
-        yield return BuildMethodImposterBuilderInterface(method);
-        yield return BuildMethodImposter(method, invocationSetupBuilderInterface);
+        static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(in ImposterTargetMethodMetadata method) =>
+            method.Parameters.HasOutputParameters
+                ? SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters)
+                : null;
     }
 }

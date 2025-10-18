@@ -8,13 +8,15 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal class MethodDeclarationBuilder(TypeSyntax returnType, string name)
+internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
 {
     private readonly List<AttributeListSyntax> _attributes = new();
     private readonly List<SyntaxToken> _modifiers = new();
+    private ParameterListSyntax? _parameterListSyntax;
     private readonly List<ParameterSyntax> _parameters = new();
     private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = new();
     private readonly List<TypeParameterSyntax> _typeParameters = new();
+    private TypeParameterListSyntax? _typeParameterList;
     private BlockSyntax? _body;
     private ArrowExpressionClauseSyntax? _expressionBody;
     private SyntaxToken _semicolonToken;
@@ -35,9 +37,20 @@ internal class MethodDeclarationBuilder(TypeSyntax returnType, string name)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MethodDeclarationBuilder AddParameter(ParameterSyntax parameter)
+    public MethodDeclarationBuilder WithParameterList(ParameterListSyntax parameterListSyntax)
     {
-        _parameters.Add(parameter);
+        _parameterListSyntax = parameterListSyntax;
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MethodDeclarationBuilder AddParameter(ParameterSyntax? parameter)
+    {
+        if (parameter is not null)
+        {
+            _parameters.Add(parameter);
+        }
+
         return this;
     }
 
@@ -52,10 +65,29 @@ internal class MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
+    // Those "if" fit better as extension methods
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MethodDeclarationBuilder AddParametersIf(bool condition, Func<IEnumerable<ParameterSyntax>> parameters)
+    {
+        if (condition)
+        {
+            _parameters.AddRange(parameters());
+        }
+
+        return this;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddParameters(IEnumerable<ParameterSyntax> parameters)
     {
         _parameters.AddRange(parameters);
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MethodDeclarationBuilder WithTypeParameters(TypeParameterListSyntax? typeParameterList)
+    {
+        _typeParameterList = typeParameterList;
         return this;
     }
 
@@ -120,7 +152,7 @@ internal class MethodDeclarationBuilder(TypeSyntax returnType, string name)
             _explicitInterfaceSpecifier,
             Identifier(name),
             _typeParameters.Count > 0 ? TypeParameterList(SeparatedList(_typeParameters)) : default,
-            ParameterList(SeparatedList(_parameters)),
+            _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
             _constraintClauses.Count > 0 ? List(_constraintClauses) : default,
             _body,
             _expressionBody,

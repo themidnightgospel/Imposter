@@ -34,7 +34,7 @@ internal static class CompilationDiagnosticsProvider
                 DiagnosticDescriptors.OnlyCSharpIsSupported,
                 null,
                 compilation.Language,
-                LanguageVersion.CSharp9.ToDisplayString()
+                LanguageVersion.CSharp8.ToDisplayString()
             );
             yield break;
         }

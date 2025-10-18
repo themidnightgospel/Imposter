@@ -7,15 +7,15 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static MethodDeclarationSyntax CallBeforeReturnMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax CallBeforeReturnMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
         => CallbackMethodDeclarationSyntax(method, "CallBefore");
 
-    private static MethodDeclarationSyntax CallAfterReturnMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax CallAfterReturnMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
         => CallbackMethodDeclarationSyntax(method, "CallAfter");
 
-    private static MethodDeclarationSyntax CallbackMethodDeclarationSyntax(ImposterTargetMethodMetadata method, string callbackName) =>
+    private static MethodDeclarationSyntax CallbackMethodDeclarationSyntax(in ImposterTargetMethodMetadata method, in string callbackName) =>
         MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier(callbackName)
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))

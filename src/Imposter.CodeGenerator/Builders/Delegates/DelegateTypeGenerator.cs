@@ -15,28 +15,28 @@ internal static class MethodDelegateTypeBuilder
         GetExceptionGeneratorDelegateDeclaration(method)
     ];
 
-    private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(ImposterTargetMethodMetadata method)
+    private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(in ImposterTargetMethodMetadata method)
         => CreateDelegateDeclaration(method, method.Delegate.Name, SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType));
 
-    private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(ImposterTargetMethodMetadata method) =>
+    private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(in ImposterTargetMethodMetadata method) =>
         CreateDelegateDeclaration(
             method,
             method.CallbackDelegate.Name,
             PredefinedType(Token(SyntaxKind.VoidKeyword)));
 
-    private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(ImposterTargetMethodMetadata method) =>
+    private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(in ImposterTargetMethodMetadata method) =>
         CreateDelegateDeclaration(
             method,
             method.ExceptionGeneratorDelegate.Name,
             WellKnownTypes.System.Exception);
 
-    private static DelegateDeclarationSyntax CreateDelegateDeclaration(ImposterTargetMethodMetadata method, string delegateName, TypeSyntax returnType) =>
+    private static DelegateDeclarationSyntax CreateDelegateDeclaration(in ImposterTargetMethodMetadata method, in string delegateName, in TypeSyntax returnType) =>
         DelegateDeclaration(
                 attributeLists: List<AttributeListSyntax>(),
                 modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
                 returnType: returnType,
                 identifier: Identifier(delegateName),
-                typeParameterList: SyntaxFactoryHelper.TypeParameterList(method.Symbol),
+                typeParameterList: method.GenericTypeArguments.Count > 0 ? SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments) : default,
                 parameterList: SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters),
                 constraintClauses: List<TypeParameterConstraintClauseSyntax>())
             .WithLeadingTriviaComment(method.DisplayName);

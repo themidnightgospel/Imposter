@@ -10,10 +10,10 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -27,22 +27,23 @@ internal static partial class InvocationSetup
                         GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
                         Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
+                                .AddStatementsIf(method.HasOutputParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ThrowStatement(ObjectCreationExpression(IdentifierName("TException"), ArgumentList(), default)))
-                                .Build())
+                                .Build()
+                            )
                     )),
                 ReturnStatement(ThisExpression())
             ));
     }
 
-    private static MethodDeclarationSyntax ThrowsExceptionInstanceMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax ThrowsExceptionInstanceMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
         var exceptionParameter = Parameter(
             Identifier("ex")
         ).WithType(WellKnownTypes.System.Exception);
 
         return MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -57,7 +58,7 @@ internal static partial class InvocationSetup
                         GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
                         Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
+                                .AddStatementsIf(method.HasOutputParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ThrowStatement(IdentifierName(exceptionParameter.Identifier)))
                                 .Build())
                     )),
@@ -65,10 +66,10 @@ internal static partial class InvocationSetup
             ));
     }
 
-    private static MethodDeclarationSyntax ThrowsExceptionWithGeneratorMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax ThrowsExceptionWithGeneratorMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier("Throws")
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -87,7 +88,7 @@ internal static partial class InvocationSetup
                                     ThrowStatement(
                                         InvocationExpression(
                                             IdentifierName("exceptionGenerator"),
-                                            ArgumentSyntaxList(method.Symbol.Parameters)
+                                            ArgumenstListSyntax(method.Symbol.Parameters)
                                         )
                                     ))
                             )

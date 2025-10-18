@@ -8,11 +8,15 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ExpressionSyntax Default(ITypeSymbol type)
+    public static readonly LiteralExpressionSyntax Default = LiteralExpression(SyntaxKind.DefaultLiteralExpression);
+
+    // TODO delete
+    internal static ExpressionSyntax Default2(ITypeSymbol type)
     {
         if (type.SpecialType == SpecialType.System_Void)
         {
-            throw new ArgumentException("Type must not be void", nameof(type));;
+            throw new ArgumentException("Type must not be void", nameof(type));
+            ;
         }
 
         if (type is INamedTypeSymbol namedTypeSymbol)
@@ -32,7 +36,7 @@ internal static partial class SyntaxFactoryHelper
                             )
                         )
                     ).WithArgumentList(
-                        ArgumentList(
+                        ArgumentListSyntax(
                             SingletonSeparatedList(
                                 Argument(DefaultExpression(ParseTypeName(genericType.ToDisplayString())))
                             )
@@ -63,7 +67,7 @@ internal static partial class SyntaxFactoryHelper
                                 )
                             )
                         ).WithArgumentList(
-                            ArgumentList(
+                            ArgumentListSyntax(
                                 SingletonSeparatedList(
                                     Argument(DefaultExpression(ParseTypeName(genericType.ToDisplayString())))
                                 )
@@ -87,6 +91,6 @@ internal static partial class SyntaxFactoryHelper
 
     public static ReturnStatementSyntax ReturnDefault(ITypeSymbol returnTypeSymbol)
     {
-        return returnTypeSymbol.SpecialType == SpecialType.System_Void ? ReturnStatement() : ReturnStatement(Default(returnTypeSymbol));
+        return returnTypeSymbol.SpecialType == SpecialType.System_Void ? ReturnStatement() : ReturnStatement(Default);
     }
 }

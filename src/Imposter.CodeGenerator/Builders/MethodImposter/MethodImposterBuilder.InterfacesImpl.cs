@@ -2,7 +2,6 @@
 using System.Linq;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,8 +11,13 @@ namespace Imposter.CodeGenerator.Builders.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
-    internal static MemberDeclarationSyntax BuildAsMethodForGenericImposter(ImposterTargetMethodMetadata method)
+    internal static MemberDeclarationSyntax? BuildAsMethodForGenericImposter(in ImposterTargetMethodMetadata method)
     {
+        if (!method.Symbol.IsGenericMethod)
+        {
+            return null;
+        }
+        
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, "Target");
 
         var conditions = new List<ExpressionSyntax>();
@@ -125,21 +129,4 @@ internal static partial class MethodImposterBuilder
             ArgumentList(SingletonSeparatedList(Argument(right)))
         );
     }
-
-    private static MemberDeclarationSyntax BuildHasMatchingSetupMethod(ImposterTargetMethodMetadata method) =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameterIf(method.HasInputParameters, () => SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsType.Syntax, "arguments"))
-            .WithBody(Block(
-                ReturnStatement(
-                    IsPatternExpression(
-                        InvocationExpression(
-                            IdentifierName("FindMatchingSetup"),
-                            ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))
-                        ),
-                        UnaryPattern(Token(SyntaxKind.NotKeyword), ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
-                    )
-                )
-            ))
-            .Build();
 }

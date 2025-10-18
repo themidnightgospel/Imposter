@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-internal class ParameterBuilder(TypeSyntax type, string name)
+internal struct ParameterBuilder(TypeSyntax type, string name)
 {
     private readonly List<AttributeListSyntax> _attributes = new();
     private readonly List<SyntaxToken> _modifiers = new();

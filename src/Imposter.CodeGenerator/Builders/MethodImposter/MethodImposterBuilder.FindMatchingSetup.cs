@@ -4,112 +4,52 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Builders.MethodImposter;
 
 internal partial class MethodImposterBuilder
 {
-    internal static MemberDeclarationSyntax BuildFindMatchingSetupMethod(ImposterTargetMethodMetadata method)
+    internal static MemberDeclarationSyntax BuildFindMatchingSetupMethod(in ImposterTargetMethodMetadata method)
     {
-        var argumentsParameter = Parameter(Identifier("arguments"))
-            .WithType(method.ArgumentsType.Syntax);
+        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.InvocationSetup.Syntax), "FindMatchingSetup")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddParameterIf(method.Parameters.HasInputParameters, () => new ParameterBuilder(method.Arguments.Syntax, "arguments").Build());
 
-        var findMatchingSetupMethod = MethodDeclaration(
-                NullableType(method.InvocationSetupType.Syntax),
-                "FindMatchingSetup"
-            )
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-            .AddParameterListParameters(argumentsParameter);
-
-        if (method.HasInputParameters)
+        if (method.Parameters.HasInputParameters)
         {
             return findMatchingSetupMethod
                 .WithBody(Block(
                     ForEachStatement(
-                        IdentifierName("var"),
+                        Var,
                         Identifier("setup"),
-                        IdentifierName("_invocationSetups"),
+                        IdentifierName(method.MethodImposter.InvocationSetupsField.Name),
                         Block(
                             IfStatement(
-                                InvocationExpression(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            IdentifierName("setup"),
-                                            IdentifierName("ArgumentsCriteria")
-                                        ),
-                                        IdentifierName("Matches")
-                                    ),
-                                    ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))
-                                ),
+                                IdentifierName("setup")
+                                    .Dot(IdentifierName("ArgumentsCriteria"))
+                                    .Dot(IdentifierName("Matches"))
+                                    .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
                                 ReturnStatement(IdentifierName("setup"))
                             )
                         )
                     ),
                     ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression))
-                ));
+                ))
+                .Build();
         }
 
         return findMatchingSetupMethod
             .WithBody(Block(
-                IdentifierName("_invocationSetups")
-                    .Dot(IdentifierName("TryPeek"))
-                    .Call(new ArgumentListBuilder()
-                        .AddArgument(Argument(
-                                null,
-                                Token(SyntaxKind.OutKeyword),
-                                IdentifierName("setup")
-                            )
-                        )
-                        .Build()
-                    )
-                    .AsStatement()
-            ));
-
-        return findMatchingSetupMethod
-            .WithBody(Block(
-                    ReturnStatement(
-                        ConditionalExpression(
-                            BinaryExpression(
-                                SyntaxKind.EqualsExpression,
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("_invocationSetups"),
-                                    IdentifierName("Count")
-                                ),
-                                LiteralExpression(
-                                    SyntaxKind.NumericLiteralExpression,
-                                    Literal(0)
-                                )
-                            ),
-                            LiteralExpression(
-                                SyntaxKind.NullLiteralExpression
-                            ),
-                            ElementAccessExpression(
-                                IdentifierName("_invocationSetups"),
-                                BracketedArgumentList(
-                                    SingletonSeparatedList(
-                                        Argument(
-                                            BinaryExpression(
-                                                SyntaxKind.SubtractExpression,
-                                                MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    IdentifierName("_invocationSetups"),
-                                                    IdentifierName("Count")
-                                                ),
-                                                LiteralExpression(
-                                                    SyntaxKind.NumericLiteralExpression,
-                                                    Literal(1)
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
+                IfStatement(
+                    IdentifierName(method.MethodImposter.InvocationSetupsField.Name)
+                        .Dot(IdentifierName("TryPeek"))
+                        .Call(ArgumentListSyntax(OutVarArgument("setup"))
+                        ),
+                    ReturnStatement(IdentifierName("setup")),
+                    ElseClause(ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression)))
                 )
-            );
+            ))
+            .Build();
     }
 }

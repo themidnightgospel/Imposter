@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Imposter.CodeGenerator.Builders.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.Helpers;
@@ -16,9 +15,9 @@ internal static partial class ImposterBuilder
     // TODO this can also collide
     private const string ImposterInstanceFieldName = "_imposterInstance";
 
-    internal static ClassDeclarationBuilder Build(ImposterGenerationContext imposterGenerationContext)
+    internal static ClassDeclarationBuilder Build(in ImposterGenerationContext imposterGenerationContext)
     {
-        var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.ImposterType.Name)
+        var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.Imposter.Name)
             .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol))))
             .AddMembers(MethodImposterFields(imposterGenerationContext))
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
@@ -29,51 +28,38 @@ internal static partial class ImposterBuilder
 
         return imposterBuilder
             .AddMember(ImposterInstanceField(imposterTargetInstanceClassName))
-            .AddMembers(Constructor(imposterGenerationContext, imposterTargetInstanceClassName))
+            .AddMember(BuildConstructor(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(ImposterTargetInstanceBuilder.Build(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(InstanceMethod(imposterGenerationContext))
             .AddModifier(Token(SyntaxKind.PublicKeyword));
     }
 
 
-    private static IEnumerable<ConstructorDeclarationSyntax> Constructor(ImposterGenerationContext imposterGenerationContext, string imposterTargetInstanceClassName)
-    {
-        yield return ConstructorDeclaration(imposterGenerationContext.ImposterType.Name)
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterGenerationContext imposterGenerationContext, in string imposterTargetInstanceClassName) =>
+        ConstructorDeclaration(imposterGenerationContext.Imposter.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithBody(new BlockBuilder()
                 .AddStatements(
                     imposterGenerationContext
+                        .Imposter
                         .Methods
                         .Select(method => ThisExpression()
-                            .Dot(method.Symbol.IsGenericMethod ? IdentifierName(method.MethodImposter.Collection.AsField.Name) : IdentifierName(method.MethodImposter.AsField.Name))
-                            .Assign(
-                                (method.Symbol.IsGenericMethod ? method.MethodImposter.Collection.Syntax : method.MethodImposter.Syntax)
-                                .New()
+                            .Dot(method.Symbol.IsGenericMethod
+                                ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
+                                : IdentifierName(method.MethodImposter.AsField.Name))
+                            .Assign((method.Symbol.IsGenericMethod ? method.MethodImposter.Collection.Syntax : method.MethodImposter.Syntax)
+                                .New(IdentifierName(method.InvocationHistory.Collection.AsField.Name).AsSingleArgumentList())
                             )
                             .AsStatement()
                         )
                 )
-                .AddStatement(ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            ThisExpression(),
-                            IdentifierName(ImposterInstanceFieldName)
-                        ),
-                        ObjectCreationExpression(IdentifierName(imposterTargetInstanceClassName))
-                            .WithArgumentList(ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(
-                                        ThisExpression()
-                                    )
-                                )
-                            ))
-                    )
-                ))
+                .AddExpression(
+                    ThisExpression()
+                        .Dot(IdentifierName(ImposterInstanceFieldName))
+                        .Assign(IdentifierName(imposterTargetInstanceClassName).New(ThisExpression().AsSingleArgumentList()))
+                )
                 .Build());
-    }
 
-    private static FieldDeclarationSyntax ImposterInstanceField(string imposterTargetInstanceClassName) =>
-        SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterTargetInstanceClassName), ImposterInstanceFieldName);
+    private static FieldDeclarationSyntax ImposterInstanceField(in string imposterTargetInstanceClassName) =>
+        SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterTargetInstanceClassName), ImposterInstanceFieldName, SyntaxKind.PrivateKeyword);
 }

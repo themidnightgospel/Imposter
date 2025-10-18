@@ -8,5 +8,4 @@ internal static partial class SyntaxFactoryHelper
 {
     public static TypeArgumentListSyntax AsTypeArguments(this IEnumerable<NameSyntax> typeNames)
         => TypeArgumentList(SeparatedList<TypeSyntax>(typeNames));
-
 }

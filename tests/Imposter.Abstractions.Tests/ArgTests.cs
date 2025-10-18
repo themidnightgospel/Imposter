@@ -10,7 +10,7 @@ public class ArgTests
     public void Arg_Any_ShouldMatchAnyValue()
     {
         // Arrange
-        var arg = Arg<int>.Any;
+        var arg = Arg<int>.Any();
             
         // Act & Assert
         arg.Matches(100).ShouldBeTrue();
@@ -22,7 +22,7 @@ public class ArgTests
     public void Arg_Any_ShouldMatchAnyReferenceValueIncludingNull()
     {
         // Arrange
-        var arg = Arg<string>.Any;
+        var arg = Arg<string>.Any();
             
         // Act & Assert
         arg.Matches("hello").ShouldBeTrue();
@@ -142,7 +142,7 @@ public class ArgTests
     public void OutArg_Any_ShouldAlwaysMatch()
     {
         // Arrange
-        var arg = OutArg<int>.Any;
+        var arg = OutArg<int>.Any();
             
         // Act & Assert
         // For an 'out' param, the value passed to Matches will be the default,
@@ -155,7 +155,7 @@ public class ArgTests
     public void OutArg_Any_ShouldAlwaysMatchForReferenceTypes()
     {
         // Arrange
-        var arg = OutArg<string>.Any;
+        var arg = OutArg<string>.Any();
             
         // Act & Assert
         arg.Matches(null).ShouldBeTrue();

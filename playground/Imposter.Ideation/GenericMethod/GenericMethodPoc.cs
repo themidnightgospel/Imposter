@@ -37,7 +37,6 @@ public class PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TPar
             TypeCaster.Cast<TParamsParam[], TParamsParamTarget[]>(paramsParam)
         );
     }
-        
 }
 
 // TResult ISutWithGenericMethod.Print<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(TOrdinaryParam ordinaryParam, out TOutParam outParam, in TInParam inParam, ref TRefParam refParam, TParamsParam[] paramsParam)
@@ -77,7 +76,7 @@ public class PrintArgumentsCriteria<TOrdinaryParam, TOutParam, TInParam, TRefPar
         );
     }
 }
-    
+
 public interface IPrintMethodInvocationHistory
 {
     bool Matches<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam>(PrintArgumentsCriteria<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam> criteria);
@@ -106,7 +105,7 @@ public class PrintMethodInvocationHistory<TOrdinaryParam, TOutParam, TInParam, T
         return criteria.As<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam>().Matches(Arguments);
     }
 }
-    
+
 internal class PrintMethodInvocationHistoryCollection
 {
     private readonly ConcurrentStack<IPrintMethodInvocationHistory> _invocationHistory = new ConcurrentStack<IPrintMethodInvocationHistory>();
@@ -121,7 +120,6 @@ internal class PrintMethodInvocationHistoryCollection
         return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
     }
 }
-
 
 // TResult ISutWithGenericMethod.Print<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(TOrdinaryParam ordinaryParam, out TOutParam outParam, in TInParam inParam, ref TRefParam refParam, TParamsParam[] paramsParam)
 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -287,7 +285,7 @@ public interface PrintMethodInvocationVerifier<TOrdinaryParam, TOutParam, TInPar
 public interface IPrintMethodImposterBuilder<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam> : IPrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>, PrintMethodInvocationVerifier<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>
 {
 }
-    
+
 public interface IPrintMethodImposter
 {
     IPrintMethodImposter<TOrdinaryParamTarget, TOutParamTarget, TInParamTarget, TRefParamTarget, TResultTarget, TParamsParamTarget>?
@@ -305,6 +303,13 @@ internal class PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefPara
 {
     private readonly ConcurrentStack<PrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>> _invocationSetups
         = new ConcurrentStack<PrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>>();
+
+    private readonly PrintMethodInvocationHistoryCollection _printMethodInvocationHistoryCollection;
+
+    public PrintMethodImposter(PrintMethodInvocationHistoryCollection printMethodInvocationHistoryCollection)
+    {
+        _printMethodInvocationHistoryCollection = printMethodInvocationHistoryCollection;
+    }
 
     private static void InitializeOutParametersWithDefaultValues(out TOutParam outParam)
     {
@@ -385,15 +390,26 @@ internal class PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefPara
         return null;
     }
 
-
     public TResult Invoke(TOrdinaryParam ordinaryParam, out TOutParam outParam, in TInParam inParam, ref TRefParam refParam, TParamsParam[] paramsParam)
     {
         var arguments = new PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam>(ordinaryParam, inParam, refParam, paramsParam);
-        var matchingSetup = FindMatchingSetup(arguments) ?? PrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>.DefaultInvocationSetup;
 
-        return matchingSetup.Invoke(ordinaryParam, out outParam, in inParam, ref refParam, paramsParam);
+        try
+        {
+            var matchingSetup = FindMatchingSetup(arguments) ?? PrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>.DefaultInvocationSetup;
+
+            var result = matchingSetup.Invoke(ordinaryParam, out outParam, in inParam, ref refParam, paramsParam);
+
+            _printMethodInvocationHistoryCollection.Add(new PrintMethodInvocationHistory<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(arguments, result));
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _printMethodInvocationHistoryCollection.Add(new PrintMethodInvocationHistory<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(arguments, default, ex));
+            throw;
+        }
     }
-
 
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
     internal class Builder : IPrintMethodImposterBuilder<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>
@@ -419,14 +435,14 @@ internal class PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefPara
             if (existingInvocationSetup is null)
             {
                 existingInvocationSetup = new PrintMethodInvocationsSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(_argumentsCriteria);
-                
+
                 // If method is generic
                 _printMethodImposterCollection.AddNew<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>()._invocationSetups.Push(existingInvocationSetup);
-                
+
                 // If not then there will be _imposter variable and we should do instead
                 // _imposter._invocationSetups.Push(existingInvocationSetup)
             }
-                
+
             return existingInvocationSetup;
         }
 
@@ -434,7 +450,7 @@ internal class PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefPara
         {
             var invocationSetup = GetOrAddInvocationSetup();
             invocationSetup.Returns(resultGenerator);
-                
+
             return invocationSetup;
         }
 
@@ -497,25 +513,37 @@ internal class PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefPara
         }
     }
 }
-    
+
 internal class PrintMethodImposterCollection
 {
+    private readonly PrintMethodInvocationHistoryCollection _printMethodInvocationHistoryCollection;
     private readonly ConcurrentStack<IPrintMethodImposter> _imposters = new();
+
+    public PrintMethodImposterCollection(PrintMethodInvocationHistoryCollection printMethodInvocationHistoryCollection)
+    {
+        _printMethodInvocationHistoryCollection = printMethodInvocationHistoryCollection;
+    }
 
     public PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam> AddNew<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>()
     {
-        var imposter = new PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>();
+        var imposter = new PrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(_printMethodInvocationHistoryCollection);
         _imposters.Push(imposter);
 
         return imposter;
     }
 
-    public IEnumerable<IPrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>> Filter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>()
+    public IPrintMethodImposter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam> GetImposterWithMatchingSetup
+        <TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(
+            PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam> arguments)
     {
+        // TODO Not thread safe
         return _imposters
-            .Select(it => it.As<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>())
-            .Where(it => it is not null)
-            .Select(it => it!);
+                   .Select(it => it.As<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>())
+                   .Where(it => it is not null)
+                   .Select(it => it!)
+                   .FirstOrDefault(it => it.HasMatchingSetup(arguments))
+               ?? AddNew<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>()
+            ;
     }
 }
 
@@ -539,7 +567,7 @@ public class GenericMethodPoc : IHaveImposterInstance<ISutWithGenericMethod>
     public GenericMethodPoc()
     {
         this._printMethodInvocationHistoryCollection = new PrintMethodInvocationHistoryCollection();
-        this._printMethodImposterCollection = new PrintMethodImposterCollection();
+        this._printMethodImposterCollection = new PrintMethodImposterCollection(_printMethodInvocationHistoryCollection);
         this._imposterInstance = new ImposterTargetInstance(this);
     }
 
@@ -553,28 +581,14 @@ public class GenericMethodPoc : IHaveImposterInstance<ISutWithGenericMethod>
             this._imposter = _imposter;
         }
 
-        public TResult Print<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(TOrdinaryParam ordinaryParam, out TOutParam outParam, in TInParam inParam, ref TRefParam refParam, TParamsParam[] paramsParam)
+        public TResult Print<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(
+            TOrdinaryParam ordinaryParam, out TOutParam outParam, in TInParam inParam, ref TRefParam refParam, TParamsParam[] paramsParam)
         {
-            var arguments = new PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam>(ordinaryParam, inParam, refParam, paramsParam);
-            var methodImposter = _imposter
+            return _imposter
                 ._printMethodImposterCollection
-                .Filter<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>()
-                .FirstOrDefault(it => it.HasMatchingSetup(arguments));
-
-            var imposterWithMatchingSetup = methodImposter ?? _imposter._printMethodImposterCollection.AddNew<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>();
-
-            try
-            {
-                var result = imposterWithMatchingSetup.Invoke(ordinaryParam, out outParam, in inParam, ref refParam, paramsParam);
-
-                _imposter._printMethodInvocationHistoryCollection.Add(new PrintMethodInvocationHistory<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(arguments, result));
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _imposter._printMethodInvocationHistoryCollection.Add(new PrintMethodInvocationHistory<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(arguments, default, ex));
-                throw;
-            }
+                .GetImposterWithMatchingSetup<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>
+                    (new PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam>(ordinaryParam, inParam, refParam, paramsParam))
+                .Invoke(ordinaryParam, out outParam, in inParam, ref refParam, paramsParam);
         }
     }
 

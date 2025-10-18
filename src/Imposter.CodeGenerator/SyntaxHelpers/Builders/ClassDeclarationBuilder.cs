@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -31,9 +32,12 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal ClassDeclarationBuilder AddMember(MemberDeclarationSyntax member)
+    internal ClassDeclarationBuilder AddMember(MemberDeclarationSyntax? member)
     {
-        _members.Add(member);
+        if (member is not null)
+        {
+            _members.Add(member);
+        }
         return this;
     }
 
@@ -60,6 +64,9 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
     {
         return condition ? AddMember(memberGenerator()) : this;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ClassDeclarationBuilder AddPublicModifier() => AddModifier(Token(SyntaxKind.PublicKeyword));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddModifier(SyntaxToken modifier)

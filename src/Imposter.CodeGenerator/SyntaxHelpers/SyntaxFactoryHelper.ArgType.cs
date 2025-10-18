@@ -12,6 +12,7 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static TypeSyntax ArgType(IParameterSymbol parameter)
     {
+        // TODO use wellknown
         return GenericName(Identifier(parameter.RefKind == RefKind.Out ? "OutArg" : "Arg"))
             .WithTypeArgumentList(
                 TypeArgumentList(SingletonSeparatedList(TypeSyntax(parameter.Type)))
@@ -26,15 +27,16 @@ internal static partial class SyntaxFactoryHelper
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
 
     internal static ArgumentSyntax ArgAnyArgument(IParameterSymbol parameter) =>
-        Argument(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                ArgType(parameter),
-                IdentifierName("Any")
-            ));
+        Argument(ArgType(parameter).Dot(IdentifierName("Any")).Call());
 
-    internal static ArgumentListSyntax ArgAnyArgumentList(IEnumerable<IParameterSymbol> parameter) => ArgumentList(SeparatedList(parameter.Select(ArgAnyArgument)));
+    internal static InvocationExpressionSyntax OutArgAny(SyntaxNode type) =>
+        WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
     
+    internal static InvocationExpressionSyntax ArgAny(TypeSyntax type) =>
+        WellKnownTypes.Imposter.Abstractions.Arg(type).Dot(IdentifierName("Any")).Call();
+
+    internal static ArgumentListSyntax ArgAnyArgumentList(IEnumerable<IParameterSymbol> parameter) => ArgumentListSyntax(SeparatedList(parameter.Select(ArgAnyArgument)));
+
     internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
@@ -42,9 +44,9 @@ internal static partial class SyntaxFactoryHelper
         Parameter(Identifier(parameter.Name)).WithType(ArgType(parameter));
 
     internal static ObjectCreationExpressionSyntax ArgumentCriteriaCreationExpression(ImposterTargetMethodMetadata method)
-        => ObjectCreationExpression(method.ArgumentsCriteriaType.Syntax)
+        => ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
             .WithArgumentList(
-                ArgumentList(
+                ArgumentListSyntax(
                     SeparatedList(
                         method.Symbol.Parameters.Select(p => Argument(IdentifierName(p.Name)))
                     )

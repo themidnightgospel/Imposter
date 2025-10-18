@@ -18,9 +18,20 @@ public class BlockBuilder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BlockBuilder AddStatement(StatementSyntax statementSyntax)
+    public BlockBuilder AddStatement(StatementSyntax? statementSyntax)
     {
-        _statements.Add(statementSyntax);
+        if (statementSyntax is not null)
+        {
+            _statements.Add(statementSyntax);
+        }
+
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BlockBuilder AddExpression(ExpressionSyntax statementSyntax)
+    {
+        _statements.Add(statementSyntax.AsStatement());
         return this;
     }
 
