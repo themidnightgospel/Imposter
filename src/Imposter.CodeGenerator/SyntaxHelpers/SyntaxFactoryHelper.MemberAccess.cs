@@ -28,9 +28,9 @@ internal static partial class SyntaxFactoryHelper
     internal static AssignmentExpressionSyntax Assign(this ExpressionSyntax left, ExpressionSyntax right)
         => AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right);
 
-    internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax initializer = default)
+    internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax? initializer = default)
         => ObjectCreationExpression(type, arguments ?? ArgumentList(), initializer);
 
-    internal static ArgumentListSyntax AsSingleArgument(this ArgumentSyntax argument)
-        => ArgumentList(SingletonSeparatedList(argument));
+    internal static BinaryExpressionSyntax QuestionMarkQuestionMark(this ExpressionSyntax left, ExpressionSyntax right)
+        => BinaryExpression(SyntaxKind.CoalesceExpression, left, right);
 }

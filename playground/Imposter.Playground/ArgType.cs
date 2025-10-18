@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using Imposter.Abstractions;
 
-namespace Imposter.Abstractions;
+namespace Imposter.Playground;
 
 public static class ArgTypeMethodsAccessor
 {
@@ -139,3 +140,4 @@ public class ArgType
             Value = (T)value;
         }
     }
+}

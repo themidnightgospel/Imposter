@@ -15,7 +15,7 @@ internal static partial class SyntaxFactoryHelper
     {
         return ExpressionStatement(InvocationExpression(
             IdentifierName(InitializeOutParametersWithDefaultValuesMethodName),
-            ArgumentList(
+            ArgumentListSyntax(
                 SeparatedList(parameters.Where(it => it.RefKind is RefKind.Out).Select(it => ArgumentSyntax(it)))
             )
         ));

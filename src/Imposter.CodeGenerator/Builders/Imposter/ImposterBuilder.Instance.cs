@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.Builders.Imposter;
 
 internal static partial class ImposterBuilder
 {
-    private static MemberDeclarationSyntax InstanceMethod(ImposterGenerationContext imposterGenerationContext) =>
+    private static MemberDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext) =>
         MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
                 Identifier("Instance")

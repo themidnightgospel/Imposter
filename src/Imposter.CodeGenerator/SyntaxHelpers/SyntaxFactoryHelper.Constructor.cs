@@ -17,24 +17,23 @@ internal static partial class SyntaxFactoryHelper
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(fields
                 .SelectMany(field =>
-                    field.Declaration.Variables.Select(v =>
-                        Parameter(
-                                Identifier(v.Identifier.Text))
-                            .WithType(field.Declaration.Type))
+                    field
+                        .Declaration
+                        .Variables
+                        .Select(it =>
+                            Parameter(Identifier(it.Identifier.Text))
+                                .WithType(field.Declaration.Type))
                 ).ToArray())
             .WithBody(Block(SyntaxFactory.List(
                 fields
                     .SelectMany(field =>
-                        field.Declaration.Variables.Select(v =>
-                            ExpressionStatement(AssignmentExpression(
-                                SyntaxKind.SimpleAssignmentExpression,
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    ThisExpression(),
-                                    IdentifierName(v.Identifier.Text)
-                                ),
-                                IdentifierName(v.Identifier.Text)
-                            )))
-                    ).ToArray<StatementSyntax>())));
+                        field.Declaration.Variables
+                            .Select(v =>
+                                ThisExpression()
+                                    .Dot(IdentifierName(v.Identifier.Text))
+                                    .Assign(IdentifierName(v.Identifier.Text))
+                                    .AsStatement()
+                            ))
+            ).ToArray<StatementSyntax>()));
     }
 }

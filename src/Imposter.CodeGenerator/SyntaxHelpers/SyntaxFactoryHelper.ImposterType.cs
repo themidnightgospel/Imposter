@@ -1,18 +1,17 @@
-﻿using Imposter.CodeGenerator.Contexts;
-using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+﻿using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static InterfaceDeclarationBuilder InterfaceDeclarationBuilder(IMethodSymbol method, ITypeMetadata typeMetadata)
+    internal static InterfaceDeclarationBuilder InterfaceDeclarationBuilder(IMethodSymbol method, string name)
     {
-        return new InterfaceDeclarationBuilder(typeMetadata.Name, TypeParameterList(method));
+        return new InterfaceDeclarationBuilder(name, TypeParameterListSyntax(method));
     }
     
-    internal static ClassDeclarationBuilder ClassDeclarationBuilder(IMethodSymbol method, ITypeMetadata typeMetadata)
+    internal static ClassDeclarationBuilder ClassDeclarationBuilder(IMethodSymbol method, string name)
     {
-        return new ClassDeclarationBuilder(typeMetadata.Name, TypeParameterList(method));
+        return new ClassDeclarationBuilder(name, TypeParameterListSyntax(method));
     }
 }

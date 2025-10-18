@@ -10,16 +10,16 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static InterfaceDeclarationSyntax BuildInvocationSetupInterface(ImposterTargetMethodMetadata method, ClassDeclarationSyntax invocationSetupBuilderClass) =>
+    private static InterfaceDeclarationSyntax BuildInvocationSetupInterface(in ImposterTargetMethodMetadata method, in ClassDeclarationSyntax invocationSetupBuilderClass) =>
         SyntaxFactoryHelper
-            .InterfaceDeclarationBuilder(method.Symbol, method.InvocationSetupType.Interface)
+            .InterfaceDeclarationBuilder(method.Symbol, method.InvocationSetup.Interface.Name)
             .AddMembers(invocationSetupBuilderClass
                 .Members
                 .OfType<MethodDeclarationSyntax>()
                 .Where(m => m.Modifiers.Any(SyntaxKind.PublicKeyword) && m.Identifier.ValueText != "Invoke")
                 .Select(publicMethod => publicMethod
                     .WithBody(null)
-                    .WithReturnType(method.InvocationSetupType.Interface.Syntax)
+                    .WithReturnType(method.InvocationSetup.Interface.Syntax)
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))))
             .Build(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
 }

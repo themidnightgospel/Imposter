@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers;
@@ -42,7 +43,7 @@ internal static class WellKnownTypes
                 QualifiedName(
                     Namespace,
                     GenericName(
-                        Identifier("IHaveImposterInstance"),
+                        Identifier(nameof(IHaveImposterInstance)),
                         TypeArgumentList(
                             SingletonSeparatedList(instanceType)
                         )
@@ -50,6 +51,12 @@ internal static class WellKnownTypes
                 );
 
             internal static NameSyntax TypeCaster => QualifiedName(Namespace, IdentifierName("TypeCaster"));
+
+            internal static NameSyntax OutArg(SyntaxNode type)
+                => QualifiedName(Namespace, GenericName(Identifier(nameof(OutArg)), TypeArgumentList(SingletonSeparatedList(type))));
+
+            internal static NameSyntax Arg(SyntaxNode type)
+                => QualifiedName(Namespace, GenericName(Identifier(nameof(Arg)), TypeArgumentList(SingletonSeparatedList(type))));
         }
     }
 }

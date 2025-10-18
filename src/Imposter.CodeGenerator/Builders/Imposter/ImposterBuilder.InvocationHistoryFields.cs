@@ -8,8 +8,12 @@ namespace Imposter.CodeGenerator.Builders.Imposter;
 
 internal static partial class ImposterBuilder
 {
-    private static IEnumerable<FieldDeclarationSyntax> InvocationHistoryCollectionFields(ImposterGenerationContext imposterGenerationContext) =>
+    private static IEnumerable<FieldDeclarationSyntax> InvocationHistoryCollectionFields(in ImposterGenerationContext imposterGenerationContext) =>
         imposterGenerationContext
+            .Imposter
             .Methods
-            .Select(method => SyntaxFactoryHelper.SingleVariableField(method.InvocationHistory.Collection.Syntax, method.InvocationHistory.Collection.AsField.Name));
+            .Select(method => SyntaxFactoryHelper
+                .SinglePrivateReadonlyVariableField(method.InvocationHistory.Collection.Syntax, method.InvocationHistory.Collection.AsField.Name,
+                    method.InvocationHistory.Collection.Syntax.New()
+                ));
 }

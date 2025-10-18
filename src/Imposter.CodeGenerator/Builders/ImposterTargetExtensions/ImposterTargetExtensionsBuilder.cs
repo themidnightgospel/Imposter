@@ -9,11 +9,12 @@ namespace Imposter.CodeGenerator.Builders.ImposterTargetExtensions;
 
 internal static class ImposterTargetExtensionsBuilder
 {
-    internal static ClassDeclarationSyntax Build(ImposterGenerationContext imposterGenerationContext)
+    internal static ClassDeclarationSyntax Build(in ImposterGenerationContext imposterGenerationContext)
     {
         // TODO optimize
         var extensionClassName = imposterGenerationContext.TargetSymbol.ToDisplayString().Replace(":", "").Replace(".", "");
-        var imposterType = ParseTypeName(imposterGenerationContext.ImposterComponentsNamespace + "." + imposterGenerationContext.ImposterType.Name);
+        var imposterType = ParseTypeName(imposterGenerationContext.ImposterComponentsNamespace + "." + imposterGenerationContext.Imposter.Name);
+        
         return new ClassDeclarationBuilder(extensionClassName)
             .AddMember(
                 MethodDeclaration(imposterType, "Imposter")
@@ -31,7 +32,6 @@ internal static class ImposterTargetExtensionsBuilder
                     .WithExpressionBody(
                         ArrowExpressionClause(
                             ObjectCreationExpression(imposterType)
-                                .WithArgumentList(ArgumentList())
                         )
                     )
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))

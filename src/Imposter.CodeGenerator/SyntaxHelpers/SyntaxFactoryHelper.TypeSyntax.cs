@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -9,37 +8,36 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol)
-    {
-        return ParseTypeName(
+    internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol) =>
+        ParseTypeName(
             typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
         );
-    }
 
-    internal static TypeParameterSyntax TypeParameter(ITypeParameterSymbol typeParameterSymbol) => SyntaxFactory.TypeParameter(typeParameterSymbol.Name);
+    internal static TypeParameterSyntax TypeParameterSyntax(ITypeParameterSymbol typeParameterSymbol)
+        => TypeParameter(typeParameterSymbol.Name);
 
-    internal static IEnumerable<TypeParameterSyntax> TypeParameters(IMethodSymbol method) =>
+    internal static IEnumerable<TypeParameterSyntax> TypeParametersSyntax(IMethodSymbol method) =>
         method.TypeParameters.Length > 0
-            ? method.TypeParameters.Select(TypeParameter)
+            ? method.TypeParameters.Select(TypeParameterSyntax)
             : [];
 
-    internal static TypeParameterListSyntax? TypeParameterList(IMethodSymbol method) =>
+    internal static TypeParameterListSyntax? TypeParameterListSyntax(IMethodSymbol method) =>
         method.TypeParameters.Length > 0
-            ? SyntaxFactory.TypeParameterList(
+            ? TypeParameterList(
                 SeparatedList(
-                    TypeParameters(method)
+                    TypeParametersSyntax(method)
                 )
             )
             : null;
 
-    internal static NameSyntax WithMethodGenericArguments(IMethodSymbol method, string typeName)
+    internal static NameSyntax WithMethodGenericArguments(IReadOnlyList<NameSyntax> genericArguments, string typeName)
     {
-        if (method.IsGenericMethod)
+        if (genericArguments.Count > 0)
         {
             return GenericName(
                 Identifier(typeName),
                 TypeArgumentList(
-                    SeparatedList(method.TypeArguments.Select(TypeSyntax))
+                    SeparatedList<TypeSyntax>(genericArguments)
                 )
             );
         }

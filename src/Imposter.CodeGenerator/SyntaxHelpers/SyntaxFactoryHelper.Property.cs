@@ -16,12 +16,11 @@ internal static partial class SyntaxFactoryHelper
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
     }
 
-    internal static PropertyDeclarationSyntax ParameterAsProperty(IParameterSymbol parameter)
-    {
-        return PropertyDeclaration(TypeSyntax(parameter.Type), Identifier(parameter.Name))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddAccessorListAccessors(
-                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
-    }
+    internal static FieldDeclarationSyntax ParameterAsReadonlyField(IParameterSymbol parameter) =>
+        SingleVariableField(
+            TypeSyntax(parameter.Type),
+            parameter.Name,
+            TokenList(Token(SyntaxKind.PublicKeyword)
+            )
+        );
 }

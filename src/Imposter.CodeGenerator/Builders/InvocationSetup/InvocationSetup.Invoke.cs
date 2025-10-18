@@ -100,101 +100,57 @@ internal static partial class InvocationSetup
         )
     );
 
-    private static StatementSyntax InvokeCallBefore(ArgumentListSyntax parameterArgumentList) =>
+    private static StatementSyntax InvokeCallBefore(in ArgumentListSyntax parameterArgumentList) =>
         IfStatement(
-            IsPatternExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName("nextSetup"),
-                    IdentifierName("CallBefore")
-                ),
-                UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
-            ),
+            IdentifierName("nextSetup").Dot(IdentifierName("CallBefore")).IsNotNull(),
             Block(
-                ExpressionStatement(
-                    InvocationExpression(
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("nextSetup"),
-                            IdentifierName("CallBefore")
-                        ),
-                        parameterArgumentList
-                    )
-                )
+                IdentifierName("nextSetup")
+                    .Dot(IdentifierName("CallBefore"))
+                    .Call(parameterArgumentList)
+                    .AsStatement()
             )
         );
 
-    private static StatementSyntax InvokeCallAfter(ArgumentListSyntax parameterArgumentList) =>
-        IfStatement(
-            IsPatternExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName("nextSetup"),
-                    IdentifierName("CallAfter")
-                ),
-                UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
-            ),
+    private static StatementSyntax InvokeCallAfter(in ArgumentListSyntax parameterArgumentList) =>
+        IfStatement(IdentifierName("nextSetup")
+                .Dot(IdentifierName("CallAfter"))
+                .IsNotNull(),
             Block(
-                ExpressionStatement(
-                    InvocationExpression(
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("nextSetup"),
-                            IdentifierName("CallAfter")
-                        ),
-                        parameterArgumentList
-                    )
-                )
+                IdentifierName("nextSetup")
+                    .Dot(IdentifierName("CallAfter"))
+                    .Call(parameterArgumentList)
+                    .AsStatement()
             )
         );
 
-    private static IEnumerable<StatementSyntax> InvokeResultGenerator(ImposterTargetMethodMetadata method)
+    private static IEnumerable<StatementSyntax> InvokeResultGenerator(in ImposterTargetMethodMetadata method)
     {
         var callInvokeMethodExpression = InvocationExpression(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName("nextSetup.ResultGenerator"),
-                IdentifierName("Invoke")
-            )
+            IdentifierName("nextSetup")
+                .Dot(IdentifierName("ResultGenerator"))
+                .Dot(IdentifierName("Invoke"))
         ).WithArgumentList(
-            SyntaxFactoryHelper.ArgumentSyntaxList(method.Symbol.Parameters)
+            SyntaxFactoryHelper.ArgumenstListSyntax(method.Symbol.Parameters)
         );
 
         yield return IfStatement(
-            IsPatternExpression(
-                IdentifierName("nextSetup.ResultGenerator"),
-                ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))
-            ),
+            IdentifierName("nextSetup").Dot(IdentifierName("ResultGenerator")).IsNull(),
             Block(
-                ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        IdentifierName("nextSetup.ResultGenerator"),
-                        IdentifierName("DefaultResultGenerator")
-                    )
-                )
+                IdentifierName("nextSetup")
+                    .Dot(IdentifierName("ResultGenerator"))
+                    .Assign(IdentifierName("DefaultResultGenerator"))
+                    .AsStatement()
             )
         );
 
-        yield return method.Symbol.ReturnType.SpecialType is not SpecialType.System_Void
-                ? LocalDeclarationStatement(
-                    VariableDeclaration(
-                        IdentifierName("var"),
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("result"))
-                                .WithInitializer(
-                                    EqualsValueClause(callInvokeMethodExpression)
-                                )
-                        )
-                    )
-                )
-                : ExpressionStatement(callInvokeMethodExpression)
-            ;
+        yield return method.HasReturnValue
+                ? LocalDeclarationStatement(SyntaxFactoryHelper.VariableDeclarationSyntax(SyntaxFactoryHelper.Var, "result", EqualsValueClause(callInvokeMethodExpression)))
+                : ExpressionStatement(callInvokeMethodExpression);
     }
 
-    private static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
-        var parameterArgumentList = SyntaxFactoryHelper.ArgumentSyntaxList(method.Symbol.Parameters);
+        var parameterArgumentList = SyntaxFactoryHelper.ArgumenstListSyntax(method.Symbol.Parameters);
         return MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
                 Identifier("Invoke")
@@ -212,7 +168,7 @@ internal static partial class InvocationSetup
                 .Build());
     }
 
-    public static ClassDeclarationSyntax NestedMethodInvocationSetupType(ImposterTargetMethodMetadata method)
+    public static ClassDeclarationSyntax NestedMethodInvocationSetupType(in ImposterTargetMethodMetadata method)
     {
         return ClassDeclaration("MethodInvocationSetup")
             .AddModifiers(Token(SyntaxKind.InternalKeyword))

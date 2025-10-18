@@ -10,35 +10,41 @@ namespace Imposter.CodeGenerator.Builders.Imposter;
 
 internal static partial class ImposterBuilder
 {
-    private static IEnumerable<MethodDeclarationSyntax> SetupBuilderMethods(ImposterGenerationContext imposterGenerationContext) =>
-        imposterGenerationContext.Methods
+    private static IEnumerable<MethodDeclarationSyntax> SetupBuilderMethods(in ImposterGenerationContext imposterGenerationContext)
+    {
+        return imposterGenerationContext
+            .Imposter
+            .Methods
             .Select(method => MethodDeclaration(
                     method.MethodImposter.BuilderInterface.Syntax,
                     Identifier(method.Symbol.Name)
                 )
-                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterList(method.Symbol))
+                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
                 .WithParameterList(SyntaxFactoryHelper.ArgParameters(method.Symbol.Parameters))
                 .WithBody(Block(ReturnStatement(
                             method
                                 .MethodImposter
                                 .Builder
                                 .Syntax
-                                .New(ArgumentList(
-                                        SeparatedList(
-                                            [
-                                                Argument(IdentifierName(
-                                                    method.Symbol.IsGenericMethod
-                                                        ? method.MethodImposter.Collection.AsField.Name
-                                                        : method.MethodImposter.AsField.Name
-                                                )),
-                                                Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                                                Argument(SyntaxFactoryHelper.ArgumentCriteriaCreationExpression(method))
-                                            ]
-                                        )
-                                    )
-                                )
+                                .New(ArgumentList(SeparatedList(GetBuilderClassArguments(method))))
                         )
                     )
                 )
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword))));
+
+        IEnumerable<ArgumentSyntax> GetBuilderClassArguments(ImposterTargetMethodMetadata method)
+        {
+            yield return Argument(IdentifierName(
+                method.Symbol.IsGenericMethod
+                    ? method.MethodImposter.Collection.AsField.Name
+                    : method.MethodImposter.AsField.Name
+            ));
+            yield return Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name));
+
+            if (method.Parameters.HasInputParameters)
+            {
+                yield return Argument(SyntaxFactoryHelper.ArgumentCriteriaCreationExpression(method));
+            }
+        }
+    }
 }

@@ -5,9 +5,15 @@ using Imposter.CodeGenerator.Builders.Arguments;
 using Imposter.CodeGenerator.Builders.Delegates;
 using Imposter.CodeGenerator.Builders.Imposter;
 using Imposter.CodeGenerator.Builders.InvocationHistory;
+using Imposter.CodeGenerator.Builders.InvocationHistory.Collection;
+using Imposter.CodeGenerator.Builders.InvocationHistory.Interface;
 using Imposter.CodeGenerator.Builders.InvocationSetup;
 using Imposter.CodeGenerator.Builders.MethodImposter;
-using Imposter.CodeGenerator.Builders.MethodImposterCollection;
+using Imposter.CodeGenerator.Builders.MethodImposter.Collection;
+using Imposter.CodeGenerator.Builders.MethodImposter.GenericInterface;
+using Imposter.CodeGenerator.Builders.MethodImposter.ImposterBuilderInterface;
+using Imposter.CodeGenerator.Builders.MethodImposter.InvocationVerifierInterface;
+using Imposter.CodeGenerator.Builders.MethodImposter.NonGenericInterface_;
 using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -53,7 +59,7 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration);
             sourceProductionContext.AddSource(
-                $"{compilationContext.GeneratedCsFileUniqueName.New(imposterGenerationContext.ImposterType.Name)}.g.cs",
+                $"{compilationContext.GeneratedCsFileUniqueName.New(imposterGenerationContext.Imposter.Name)}.g.cs",
                 SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
         }
         // TODO
@@ -75,13 +81,15 @@ public class ImposterGenerator : IIncrementalGenerator
     {
         var imposter = ImposterBuilder.Build(imposterGenerationContext);
 
-        foreach (var method in imposterGenerationContext.Methods)
+        foreach (var method in imposterGenerationContext.Imposter.Methods)
         {
             imposter
                 .AddMembers(MethodDelegateTypeBuilder.Build(method))
                 .AddMemberIfNotNull(ArgumentsTypeBuilder.Build(method))
                 .AddMemberIfNotNull(ArgumentsCriteriaBuilder.Build(method))
-                .AddMembers(InvocationHistoryBuilder.Build(method))
+                .AddMember(InvocationHistoryInterfaceBuilder.Build(method))
+                .AddMember(InvocationHistoryBuilder.Build(method))
+                .AddMember(InvocationHistoryCollectionBuilder.Build(method))
                 .AddMemberIf(method.Symbol.IsGenericMethod, () => MethodImposterCollectionBuilder.Build(method));
 
             // TODO clean it up
@@ -89,7 +97,11 @@ public class ImposterGenerator : IIncrementalGenerator
             imposter
                 .AddMember(invocationSetupBuilder)
                 .AddMember(invocationSetupBuilderInterface)
-                .AddMembers(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
+                .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
+                .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
+                .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))
+                .AddMember(MethodImposterBuilderInterfaceBuilder.Build(method))
+                .AddMember(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
         }
 
         var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(

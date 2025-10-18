@@ -8,18 +8,18 @@ namespace Imposter.CodeGenerator.Builders.MethodImposter.Builder;
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static MethodDeclarationSyntax GetOrAddInvocationSetupMethod(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax GetOrAddInvocationSetupMethod(in ImposterTargetMethodMetadata method)
     {
-        var invocationSetupType = method.InvocationSetupType.Syntax;
+        var invocationSetupType = method.InvocationSetup.Syntax;
         var argumentsCriteriaIdentifier = IdentifierName("_argumentsCriteria");
-        var existingInvocationSetupIdentifier = IdentifierName("_existingInvocationSetup");
+        var existingInvocationSetupIdentifier = IdentifierName(MethodImposterMetadata.ExistingInvocationSetupFieldName);
 
         var ifBody = Block(
             ExpressionStatement(
                 existingInvocationSetupIdentifier
                     .Assign(invocationSetupType
-                        .New(method.ParametersExceptOut.Count > 0
-                            ? Argument(argumentsCriteriaIdentifier).AsSingleArgument()
+                        .New(method.Parameters.HasInputParameters
+                            ? Argument(argumentsCriteriaIdentifier).AsSingleArgumentList()
                             : null
                         )
                     )
@@ -30,7 +30,7 @@ internal static partial class MethodImposterBuilderBuilder
                     .Call()
                 : (ExpressionSyntax)IdentifierName("_imposter")
             )
-            .Dot(IdentifierName("_invocationSetups"))
+            .Dot(IdentifierName(method.MethodImposter.InvocationSetupsField.Name))
             .Dot(IdentifierName("Push"))
             .Call(ArgumentList(SingletonSeparatedList(Argument(existingInvocationSetupIdentifier))))
             .AsStatement()

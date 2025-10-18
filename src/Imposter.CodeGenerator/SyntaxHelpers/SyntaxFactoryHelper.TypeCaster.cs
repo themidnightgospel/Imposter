@@ -14,7 +14,7 @@ internal static partial class SyntaxFactoryHelper
                 WellKnownTypes.Imposter.Abstractions.TypeCaster,
                 GenericName("Cast").WithTypeArgumentList(TypeArgumentList(SeparatedList([fromType, toType])))
             ),
-            ArgumentList(SingletonSeparatedList(Argument(IdentifierName(varName))))
+            ArgumentListSyntax(SingletonSeparatedList(Argument(IdentifierName(varName))))
         );
     }
 }

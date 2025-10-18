@@ -9,9 +9,9 @@ namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
 internal static partial class InvocationSetup
 {
-    private static MethodDeclarationSyntax ReturnsMethodDeclarationSyntax(ImposterTargetMethodMetadata method) =>
+    private static MethodDeclarationSyntax ReturnsMethodDeclarationSyntax(in ImposterTargetMethodMetadata method) =>
         MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier("Returns")
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
@@ -29,10 +29,10 @@ internal static partial class InvocationSetup
                 ReturnStatement(ThisExpression())
             ));
 
-    private static MethodDeclarationSyntax ReturnsValueMethodDeclarationSyntax(ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax ReturnsValueMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
-                method.InvocationSetupType.Interface.Syntax,
+                method.InvocationSetup.Interface.Syntax,
                 Identifier("Returns")
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
@@ -46,7 +46,7 @@ internal static partial class InvocationSetup
                         GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
                         Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
+                                .AddStatementsIf(method.HasOutputParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
                                 .AddStatement(ReturnStatement(IdentifierName("value")))
                                 .Build())
                     )),
@@ -54,30 +54,25 @@ internal static partial class InvocationSetup
             ));
     }
 
-    private static MemberAccessExpressionSyntax GetMethodCallSetupAccessExpressionSyntax(string callSetupPropertyName) =>
-        MemberAccessExpression(
-            SyntaxKind.SimpleMemberAccessExpression,
-            InvocationExpression(
-                IdentifierName("GetOrAddMethodSetup"),
-                ArgumentList(
-                    SingletonSeparatedList(
-                        Argument(
-                            SimpleLambdaExpression(
-                                Parameter(Identifier("it")),
-                                BinaryExpression(
-                                    SyntaxKind.NotEqualsExpression,
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("it"),
-                                        IdentifierName(callSetupPropertyName)
-                                    ),
-                                    LiteralExpression(SyntaxKind.NullLiteralExpression)
-                                )
+    private static MemberAccessExpressionSyntax GetMethodCallSetupAccessExpressionSyntax(in string callSetupPropertyName) =>
+        IdentifierName("GetOrAddMethodSetup")
+            .Call(ArgumentList(
+                SingletonSeparatedList(
+                    Argument(
+                        SimpleLambdaExpression(
+                            Parameter(Identifier("it")),
+                            BinaryExpression(
+                                SyntaxKind.NotEqualsExpression,
+                                MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    IdentifierName("it"),
+                                    IdentifierName(callSetupPropertyName)
+                                ),
+                                LiteralExpression(SyntaxKind.NullLiteralExpression)
                             )
                         )
                     )
                 )
-            ),
-            IdentifierName(callSetupPropertyName)
-        );
+            ))
+            .Dot(IdentifierName(callSetupPropertyName));
 }

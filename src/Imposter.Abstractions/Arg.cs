@@ -52,7 +52,9 @@ namespace Imposter.Abstractions;
         /// <summary>
         /// Matches any value of type T.
         /// </summary>
-        public static readonly Arg<T> Any = new(_ => true);
+        public static Arg<T> Any() => _anyInstance;
+
+        private static readonly Arg<T> _anyInstance = new Arg<T>(_ => true);
 
         /// <summary>
         /// Matches a string argument against a regular expression.
@@ -69,10 +71,11 @@ namespace Imposter.Abstractions;
     /// </summary>
     public class OutArg<T> : IArg<T>
     {
+        private static readonly OutArg<T> _instance;
         /// <summary>
         /// Matches any 'out' argument of type T.
         /// </summary>
-        public static readonly OutArg<T> Any = new();
+        public static OutArg<T> Any() => _instance;
 
         private OutArg() { }
 

@@ -13,7 +13,7 @@ internal static class ImposterTargetInstanceBuilder
 {
     private const string ImposterFieldName = "_imposter";
 
-    internal static ClassDeclarationSyntax Build(ImposterGenerationContext imposterGenerationContext, string name)
+    internal static ClassDeclarationSyntax Build(in ImposterGenerationContext imposterGenerationContext, string name)
     {
         var fields = GetFields(imposterGenerationContext);
 
@@ -29,24 +29,23 @@ internal static class ImposterTargetInstanceBuilder
     [
         FieldDeclaration(
             VariableDeclaration(
-                IdentifierName(imposterGenerationContext.ImposterType.Name),
+                IdentifierName(imposterGenerationContext.Imposter.Name),
                 SingletonSeparatedList(
                     VariableDeclarator(Identifier(ImposterFieldName))
                 )
             ))
     ];
 
-    private static IEnumerable<MethodDeclarationSyntax> ImposterTargetMethods(ImposterGenerationContext imposterGenerationContext)
+    private static IEnumerable<MethodDeclarationSyntax> ImposterTargetMethods(in ImposterGenerationContext imposterGenerationContext)
     {
-        return imposterGenerationContext.Methods.Select(imposterMethod =>
+        return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
-            var invokeMethodInvocationExpression = InvocationExpression(
-                IdentifierName($"{ImposterFieldName}.{imposterMethod.MethodImposter.AsField.Name}.Invoke"),
-                SyntaxFactoryHelper.ArgumentSyntaxList(imposterMethod.Symbol.Parameters)
-            );
+            var invokeMethodInvocationExpression = GetImposterWithMatchingSetupExpression(imposterMethod)
+                .Dot(IdentifierName("Invoke"))
+                .Call(SyntaxFactoryHelper.ArgumenstListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true));
 
             return new MethodDeclarationBuilder(SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
-                .AddTypeParameters(SyntaxFactoryHelper.TypeParameters(imposterMethod.Symbol))
+                .AddTypeParameters(SyntaxFactoryHelper.TypeParametersSyntax(imposterMethod.Symbol))
                 .AddParameters(SyntaxFactoryHelper.ParameterSyntaxes(imposterMethod.Symbol.Parameters))
                 .WithBody(Block(
                     imposterMethod.HasReturnValue
@@ -56,5 +55,33 @@ internal static class ImposterTargetInstanceBuilder
                 .AddModifier(Token(SyntaxKind.PublicKeyword))
                 .Build();
         });
+
+        ExpressionSyntax GetImposterWithMatchingSetupExpression(in ImposterTargetMethodMetadata method)
+        {
+            if (method.Symbol.IsGenericMethod)
+            {
+                return IdentifierName("_imposter")
+                    .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
+                    .Dot(GenericName(Identifier("GetImposterWithMatchingSetup"), method.GenericTypeArguments.AsTypeArguments()))
+                    .Call(GetGetImposterWithMatchingSetupArguments(method));
+            }
+
+            return IdentifierName("_imposter")
+                .Dot(IdentifierName(method.MethodImposter.AsField.Name));
+
+            static ArgumentListSyntax? GetGetImposterWithMatchingSetupArguments(in ImposterTargetMethodMetadata method)
+            {
+                if (method.Parameters.HasInputParameters)
+                {
+                    return Argument(
+                        method.Arguments.Syntax
+                            .New(SyntaxFactoryHelper.ArgumenstListSyntax(method.Parameters.InputParameters, includeRefKind: false))
+                        )
+                        .AsSingleArgumentListSyntax();
+                }
+
+                return default;
+            }
+        }
     }
 }
