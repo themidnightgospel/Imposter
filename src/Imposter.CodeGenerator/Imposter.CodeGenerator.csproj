@@ -17,6 +17,10 @@
         <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' &gt;= '4.7.0.0'">$(DefineConstants);ROSLYN4_7_OR_GREATER</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
             <PrivateAssets>all</PrivateAssets>
