@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Contexts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -29,6 +30,11 @@ internal static partial class SyntaxFactoryHelper
                 )
             )
             : null;
+
+    internal static SimpleNameSyntax WithMethodGenericArguments(string identifier, in ImposterTargetMethodMetadata method) =>
+        method.GenericTypeArgumentListSyntax is not null
+            ? GenericName(Identifier(identifier), method.GenericTypeArgumentListSyntax)
+            : IdentifierName(identifier);
 
     internal static NameSyntax WithMethodGenericArguments(IReadOnlyList<NameSyntax> genericArguments, string typeName)
     {

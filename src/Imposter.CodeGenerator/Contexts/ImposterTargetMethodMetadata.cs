@@ -49,7 +49,7 @@ internal readonly record struct ImposterTargetMethodMetadata
 
     internal readonly string DisplayName;
 
-    internal readonly TypeMetadata InvocationVerifierInterface;
+    internal readonly InvocationVerifierInterfaceMetadata InvocationVerifierInterface;
 
     internal readonly TypeMetadata Delegate;
 
@@ -67,9 +67,12 @@ internal readonly record struct ImposterTargetMethodMetadata
 
     internal readonly TypeSyntax ReturnTypeSyntax;
 
+    // TODO: Put those into GenericTypeArgumentsMetadata
     internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
 
     internal readonly TypeParameterListSyntax? GenericTypeParameterListSyntax;
+
+    internal readonly TypeArgumentListSyntax? GenericTypeArgumentListSyntax;
 
     internal readonly IReadOnlyList<IdentifierNameSyntax> TargetGenericTypeArguments;
 
@@ -95,6 +98,7 @@ internal readonly record struct ImposterTargetMethodMetadata
             .ToArray();
 
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
+        GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
 
         TargetGenericTypeArguments = Symbol
             .TypeParameters
@@ -111,7 +115,37 @@ internal readonly record struct ImposterTargetMethodMetadata
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
         CallbackDelegate = TypeMetadataFactory.Create($"{uniqueName}CallbackDelegate", GenericTypeArguments);
         ExceptionGeneratorDelegate = TypeMetadataFactory.Create($"{uniqueName}ExceptionGeneratorDelegate", GenericTypeArguments);
-        InvocationVerifierInterface = TypeMetadataFactory.Create($"{uniqueName}MethodInvocationVerifier", GenericTypeArguments);
+        InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
+    }
+}
+
+internal readonly struct InvocationVerifierInterfaceMetadata
+{
+    internal const string VerifyMethodArgumentsParameterName = "arguments";
+
+    internal readonly NameSyntax Syntax;
+
+    internal readonly CalledMethodMetadata CalledMethod;
+
+    internal readonly string Name;
+
+    public InvocationVerifierInterfaceMetadata(ImposterTargetMethodMetadata method)
+    {
+        Name = $"{method.UniqueName}MethodInvocationVerifier";
+        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
+        CalledMethod = new CalledMethodMetadata();
+    }
+
+    internal readonly struct CalledMethodMetadata
+    {
+        internal const string Name = "Called";
+
+        internal readonly ParameterMetadata CountParameter;
+
+        public CalledMethodMetadata()
+        {
+            CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
+        }
     }
 }

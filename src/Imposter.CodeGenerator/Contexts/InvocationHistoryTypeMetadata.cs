@@ -55,7 +55,7 @@ internal readonly record struct InvocationHistoryTypeMetadata
             AsField = new FieldDeclarationMetadata(Name);
         }
 
-        internal readonly struct CountMethod
+        internal readonly struct CountMethodMetadata
         {
             internal const string Name = "Count";
 

@@ -49,6 +49,8 @@ internal static class WellKnownTypes
                         )
                     )
                 );
+            
+            internal static NameSyntax Count => QualifiedName(Namespace, IdentifierName("Count"));
 
             internal static NameSyntax TypeCaster => QualifiedName(Namespace, IdentifierName("TypeCaster"));
 

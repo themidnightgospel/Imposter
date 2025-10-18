@@ -12,7 +12,7 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MethodDeclarationSyntax BuildCountMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), InvocationHistoryTypeMetadata.CollectionMetadata.CountMethod.Name)
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), InvocationHistoryTypeMetadata.CollectionMetadata.CountMethodMetadata.Name)
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(GetParameter(method))
@@ -33,13 +33,13 @@ internal static partial class InvocationHistoryCollectionBuilder
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
         {
             return method.Parameters.HasInputParameters
-                ? ParameterSyntax(method.ArgumentsCriteria.Syntax, InvocationHistoryTypeMetadata.CollectionMetadata.CountMethod.ArgumentsCriteriaParameterName)
+                ? ParameterSyntax(method.ArgumentsCriteria.Syntax, InvocationHistoryTypeMetadata.CollectionMetadata.CountMethodMetadata.ArgumentsCriteriaParameterName)
                 : null;
         }
 
         static ArgumentSyntax? GetMatchesMethodArguments(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasInputParameters
-                ? Argument(IdentifierName(InvocationHistoryTypeMetadata.CollectionMetadata.CountMethod.ArgumentsCriteriaParameterName))
+                ? Argument(IdentifierName(InvocationHistoryTypeMetadata.CollectionMetadata.CountMethodMetadata.ArgumentsCriteriaParameterName))
                 : null;
     }
 }

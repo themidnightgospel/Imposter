@@ -21,7 +21,7 @@ internal readonly record struct MethodImposterMetadata
 
     internal readonly FieldDeclarationMetadata AsField;
 
-    internal readonly TypeMetadata Builder;
+    internal readonly BuilderMetadata Builder;
 
     internal readonly InvokeMethodMetadata InvokeMethod;
 
@@ -46,11 +46,31 @@ internal readonly record struct MethodImposterMetadata
 
         Collection = new CollectionMetadata($"{Name}Collection");
         AsField = new FieldDeclarationMetadata(Name);
-        Builder = new TypeMetadata("Builder", SyntaxFactory.QualifiedName(methodImposterSyntax, SyntaxFactory.IdentifierName("Builder")));
-
         InvokeMethod = new InvokeMethodMetadata(method);
         FindMatchingSetupMethod = new FindMatchingSetupMethodMetadata(method);
         InvocationSetupsField = new InvocationSetupsFieldMetadata(method);
+        Builder = new BuilderMetadata(method);
+    }
+
+    internal readonly struct BuilderMetadata
+    {
+        internal const string Name = "Builder";
+
+        internal readonly TypeSyntax Syntax;
+        
+        internal readonly FieldMetadata ImposterCollectionField;
+
+        internal readonly FieldMetadata MethodImposterField;
+        
+        internal readonly FieldMetadata ArgumentsCriteriaField;
+        
+        internal BuilderMetadata(ImposterTargetMethodMetadata method)
+        {
+            Syntax = SyntaxFactory.QualifiedName(method.MethodImposter.Syntax, SyntaxFactory.IdentifierName("Builder"));
+            ImposterCollectionField = new FieldMetadata("_imposterCollection", method.MethodImposter.Collection.Syntax);
+            MethodImposterField = new FieldMetadata("_imposter", method.MethodImposter.Syntax);
+            ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", method.ArgumentsCriteria.Syntax);
+        }
     }
 
     internal readonly record struct CollectionMetadata(string Name, NameSyntax Syntax, FieldDeclarationMetadata AsField)
