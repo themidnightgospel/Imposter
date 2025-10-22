@@ -47,29 +47,32 @@ internal readonly record struct MethodImposterMetadata
         Collection = new CollectionMetadata($"{Name}Collection");
         AsField = new FieldDeclarationMetadata(Name);
         InvokeMethod = new InvokeMethodMetadata(method);
-        FindMatchingSetupMethod = new FindMatchingSetupMethodMetadata(method);
+        FindMatchingSetupMethod = new FindMatchingSetupMethodMetadata();
         InvocationSetupsField = new InvocationSetupsFieldMetadata(method);
-        Builder = new BuilderMetadata(method);
+        Builder = new BuilderMetadata(Syntax, Collection.Syntax, method.ArgumentsCriteria.Syntax);
     }
 
     internal readonly struct BuilderMetadata
     {
-        internal const string Name = "Builder";
+        internal readonly string Name = "Builder";
 
         internal readonly TypeSyntax Syntax;
-        
+
         internal readonly FieldMetadata ImposterCollectionField;
 
         internal readonly FieldMetadata MethodImposterField;
-        
+
         internal readonly FieldMetadata ArgumentsCriteriaField;
-        
-        internal BuilderMetadata(ImposterTargetMethodMetadata method)
+
+        internal BuilderMetadata(
+            NameSyntax methodImposterSyntax,
+            NameSyntax methodImposterCollectionSyntax,
+            NameSyntax argumentCriteriaSyntax)
         {
-            Syntax = SyntaxFactory.QualifiedName(method.MethodImposter.Syntax, SyntaxFactory.IdentifierName("Builder"));
-            ImposterCollectionField = new FieldMetadata("_imposterCollection", method.MethodImposter.Collection.Syntax);
-            MethodImposterField = new FieldMetadata("_imposter", method.MethodImposter.Syntax);
-            ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", method.ArgumentsCriteria.Syntax);
+            Syntax = SyntaxFactory.QualifiedName(methodImposterSyntax, SyntaxFactory.IdentifierName("Builder"));
+            ImposterCollectionField = new FieldMetadata("_imposterCollection", methodImposterCollectionSyntax);
+            MethodImposterField = new FieldMetadata("_imposter", methodImposterSyntax);
+            ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", argumentCriteriaSyntax);
         }
     }
 
@@ -112,9 +115,9 @@ internal readonly record struct MethodImposterMetadata
 
         internal readonly string ArgumentsVariableName;
 
-        public InvokeMethodMetadata(ImposterTargetMethodMetadata imposterTargetMethodMetadata)
+        public InvokeMethodMetadata(IParameterNameContextProvider parameterNameContextProvider)
         {
-            var parameterNameContext = imposterTargetMethodMetadata.CreateParameterNameContext();
+            var parameterNameContext = parameterNameContextProvider.CreateParameterNameContext();
 
             ExceptionVariableName = parameterNameContext.Use("ex");
             ResultVariableName = parameterNameContext.Use("result");
@@ -127,8 +130,7 @@ internal readonly record struct MethodImposterMetadata
     {
         internal const string Name = "FindMatchingSetup";
 
-
-        public FindMatchingSetupMethodMetadata(ImposterTargetMethodMetadata imposterTargetMethodMetadata)
+        public FindMatchingSetupMethodMetadata()
         {
         }
     }
@@ -137,9 +139,9 @@ internal readonly record struct MethodImposterMetadata
     {
         internal readonly string Name;
 
-        internal InvocationSetupsFieldMetadata(ImposterTargetMethodMetadata method)
+        internal InvocationSetupsFieldMetadata(IParameterNameContextProvider parameterNameContextProvider)
         {
-            var nameContext = method.CreateParameterNameContext();
+            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
             Name = nameContext.Use("_invocationSetups");
         }
     }

@@ -10,7 +10,7 @@ internal static class MethodImposterNonGenericInterfaceBuilder
 {
     internal static InterfaceDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (method.Symbol.IsGenericMethod)
+        if (!method.Symbol.IsGenericMethod)
         {
             return null;
         }

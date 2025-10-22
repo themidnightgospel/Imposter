@@ -31,7 +31,7 @@ internal static partial class MethodImposterBuilderBuilder
                             IdentifierName(method.InvocationHistory.Collection.AsField.Name)
                                 .Dot(WithMethodGenericArguments(InvocationHistoryTypeMetadata.CollectionMetadata.CountMethodMetadata.Name, method))
                                 .Call(method.Parameters.HasInputParameters
-                                    ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).AsSingleArgumentList()
+                                    ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).ToSingleArgumentList()
                                     : EmptyArgumentListSyntax)
                         )
                     ),

@@ -89,8 +89,11 @@ internal static partial class SyntaxFactoryHelper
         );
     }
 
-    public static ReturnStatementSyntax ReturnDefault(ITypeSymbol returnTypeSymbol)
+    //TODO
+    public static ReturnStatementSyntax ReturnDefault_delete(ITypeSymbol returnTypeSymbol)
     {
         return returnTypeSymbol.SpecialType == SpecialType.System_Void ? ReturnStatement() : ReturnStatement(Default);
     }
+
+    public static ReturnStatementSyntax ReturnDefault = ReturnStatement(Default);
 }

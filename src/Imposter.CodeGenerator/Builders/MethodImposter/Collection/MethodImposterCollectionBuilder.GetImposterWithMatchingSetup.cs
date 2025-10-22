@@ -14,7 +14,7 @@ internal static partial class MethodImposterCollectionBuilder
     private static MemberDeclarationSyntax BuildGetImposterWithMatchingSetup(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingSetup")
-            .AddParameterIf(method.HasInputParameters, () => Parameter(Identifier("arguments")).WithType(method.Arguments.Syntax))
+            .AddParameter(GetParameter(method))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddTypeParameters(TypeParametersSyntax(method.Symbol).ToArray())
             .WithBody(Block(ReturnStatement(
@@ -24,13 +24,13 @@ internal static partial class MethodImposterCollectionBuilder
                         .GoesTo(IdentifierName("it")
                             .Dot(GenericName(Identifier("As"), method.GenericTypeArguments.AsTypeArguments()))
                             .Call())
-                        .AsSingleArgumentList()
+                        .ToSingleArgumentList()
                     )
                     .Dot(IdentifierName("Where"))
                     .Call(
                         Identifier("it")
                             .GoesTo(IdentifierName("it").IsNotNull())
-                            .AsSingleArgumentList())
+                            .ToSingleArgumentList())
                     .Dot(IdentifierName("Select"))
                     .Call(Identifier("it")
                         .GoesTo(PostfixUnaryExpression(
@@ -38,7 +38,7 @@ internal static partial class MethodImposterCollectionBuilder
                                 IdentifierName("it")
                             )
                         )
-                        .AsSingleArgumentList()
+                        .ToSingleArgumentList()
                     )
                     .Dot(IdentifierName("FirstOrDefault"))
                     .Call(
@@ -46,9 +46,9 @@ internal static partial class MethodImposterCollectionBuilder
                             .GoesTo(
                                 It
                                     .Dot(IdentifierName("HasMatchingSetup"))
-                                    .Call(method.HasInputParameters ? Argument(IdentifierName("arguments")).AsSingleArgumentListSyntax() : EmptyArgumentListSyntax)
+                                    .Call(method.Parameters.HasInputParameters ? Argument(IdentifierName("arguments")).AsSingleArgumentListSyntax() : EmptyArgumentListSyntax)
                             )
-                            .AsSingleArgumentList()
+                            .ToSingleArgumentList()
                     )
                     .QuestionMarkQuestionMark(
                         GenericName(Identifier("AddNew"), method.GenericTypeArguments.AsTypeArguments())
@@ -56,5 +56,10 @@ internal static partial class MethodImposterCollectionBuilder
                     )
             )))
             .Build();
+        
+        static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method) =>
+            method.Parameters.HasInputParameters
+                ? Parameter(Identifier("arguments")).WithType(method.Arguments.Syntax)
+                : null;
     }
 }

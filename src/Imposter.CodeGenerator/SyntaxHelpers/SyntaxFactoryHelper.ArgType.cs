@@ -12,11 +12,9 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static TypeSyntax ArgType(IParameterSymbol parameter)
     {
-        // TODO use wellknown
-        return GenericName(Identifier(parameter.RefKind == RefKind.Out ? "OutArg" : "Arg"))
-            .WithTypeArgumentList(
-                TypeArgumentList(SingletonSeparatedList(TypeSyntax(parameter.Type)))
-            );
+        return parameter.RefKind == RefKind.Out
+            ? WellKnownTypes.Imposter.Abstractions.OutArg(TypeSyntax(parameter.Type))
+            : WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax(parameter.Type));
     }
 
     internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(TypeSyntax argArgumentTypeSyntax) =>
@@ -31,7 +29,7 @@ internal static partial class SyntaxFactoryHelper
 
     internal static InvocationExpressionSyntax OutArgAny(SyntaxNode type) =>
         WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
-    
+
     internal static InvocationExpressionSyntax ArgAny(TypeSyntax type) =>
         WellKnownTypes.Imposter.Abstractions.Arg(type).Dot(IdentifierName("Any")).Call();
 

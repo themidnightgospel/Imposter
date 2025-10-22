@@ -19,7 +19,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                     IdentifierName(InvocationHistoryTypeMetadata.CollectionMetadata.InvocationHistoryCollectionFieldName)
                         .Dot(IdentifierName("Push"))
                         .Call(ArgumentListSyntax(Argument(IdentifierName("invocationHistory"))))
-                        .AsStatement()
+                        .ToStatementSyntax()
                 )
             )
             .Build();

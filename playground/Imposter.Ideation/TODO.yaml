@@ -16,6 +16,7 @@ FEATURES:
       - Make imposter thread safe
       - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions.
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names
+      - For c# 14, declare Impsoter as an extension to imposter target type
 
   MEDIUM:
     - NOT Started:
@@ -33,3 +34,5 @@ OPTIMIZATIONS:
   - Identify syntaxes that can be cached
   - Add benchamrks for the code generator itself.
   - Add benchamrks for syntax builder classes, showcase that it performs better than built-in .With methods.
+  - Take a look at file name convention, specially of "Builders" and make sure they are consistent across
+  - Make sure Metadata is always stack allocated and not copied

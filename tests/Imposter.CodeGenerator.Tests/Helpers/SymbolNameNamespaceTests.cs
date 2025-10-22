@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Helpers;
 
-public class SymbolNameContextTests
+public class SymbolNameNamespaceTests
 {
     [Fact]
     public void Get_NoConflicts_ReturnsOriginalName()

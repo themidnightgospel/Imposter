@@ -143,13 +143,13 @@ internal static class MethodImposterAdapterBuilder
 
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameterIf(method.HasInputParameters, () => Parameter(Identifier("arguments")).WithType(argumentsTypeWithTarget))
+            .AddParameterIf(method.Parameters.HasInputParameters, () => Parameter(Identifier("arguments")).WithType(argumentsTypeWithTarget))
             .WithBody(Block(
                 ReturnStatement(
                     IdentifierName("_target")
                         .Dot(IdentifierName("HasMatchingSetup"))
                         .Call(
-                            method.HasInputParameters
+                            method.Parameters.HasInputParameters
                                 ? Argument(
                                         InvocationExpression(
                                             MemberAccessExpression(
@@ -159,7 +159,7 @@ internal static class MethodImposterAdapterBuilder
                                             )
                                         )
                                     )
-                                    .AsSingleArgumentList()
+                                    .ToSingleArgumentList()
                                 : ArgumentList()
                         )
                 )

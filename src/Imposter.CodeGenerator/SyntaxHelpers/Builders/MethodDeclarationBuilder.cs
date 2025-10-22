@@ -151,7 +151,7 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
             returnType,
             _explicitInterfaceSpecifier,
             Identifier(name),
-            _typeParameters.Count > 0 ? TypeParameterList(SeparatedList(_typeParameters)) : default,
+            _typeParameterList ?? (_typeParameters.Count > 0 ? TypeParameterList(SeparatedList(_typeParameters)) : null),
             _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
             _constraintClauses.Count > 0 ? List(_constraintClauses) : default,
             _body,

@@ -32,7 +32,7 @@ internal static partial class SyntaxFactoryHelper
                                 ThisExpression()
                                     .Dot(IdentifierName(v.Identifier.Text))
                                     .Assign(IdentifierName(v.Identifier.Text))
-                                    .AsStatement()
+                                    .ToStatementSyntax()
                             ))
             ).ToArray<StatementSyntax>()));
     }

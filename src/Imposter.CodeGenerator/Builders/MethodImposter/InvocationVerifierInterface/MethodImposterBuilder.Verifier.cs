@@ -11,12 +11,14 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
         SyntaxFactoryHelper
             .InterfaceDeclarationBuilder(method.Symbol, method.InvocationVerifierInterface.Name)
-            .AddMember(MethodDeclaration(
-                    PredefinedType(Token(SyntaxKind.VoidKeyword)),
-                    Identifier(InvocationVerifierInterfaceMetadata.CalledMethodMetadata.Name))
-                .AddParameterListParameters(
-                    Parameter(Identifier("count"))
-                        .WithType(IdentifierName("Count"))))
-            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            .AddMember(
+                MethodDeclaration(
+                        PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                        Identifier(InvocationVerifierInterfaceMetadata.CalledMethodMetadata.Name))
+                    .AddParameterListParameters(
+                        Parameter(Identifier("count"))
+                            .WithType(IdentifierName("Count")))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+            )
+            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)));
 }

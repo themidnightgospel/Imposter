@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using Imposter.CodeGenerator.Contexts;
+﻿using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
-internal static partial class InvocationSetup
+internal static partial class InvocationSetupBuilder
 {
     private static FieldDeclarationSyntax NextMethodCallSetupFieldDeclaration = FieldDeclaration(
             VariableDeclaration(
@@ -25,10 +25,11 @@ internal static partial class InvocationSetup
             Token(SyntaxKind.PrivateKeyword)
         );
 
-    private static MethodDeclarationSyntax GetMethodDeclarationSyntax =>
-        MethodDeclaration(
+    private static MethodDeclarationSyntax BuildGetNextSetupMethod(in ImposterTargetMethodMetadata method)
+    {
+        return MethodDeclaration(
                 NullableType(IdentifierName("MethodInvocationSetup")),
-                Identifier("GetNextSetup")
+                Identifier(method.InvocationSetup.GetNextSetupMethod.Name)
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
             .WithBody(
@@ -44,7 +45,7 @@ internal static partial class InvocationSetup
                                 SingletonSeparatedList(
                                     Argument(
                                         DeclarationExpression(
-                                            IdentifierName("var"),
+                                            Var,
                                             SingleVariableDesignation(Identifier("callSetup"))
                                         )
                                     ).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))
@@ -66,109 +67,116 @@ internal static partial class InvocationSetup
                     )
                 )
             );
+    }
 
-    private static StatementSyntax InitializenextSetup = LocalDeclarationStatement(
-        VariableDeclaration(
-            IdentifierName("var"),
-            SingletonSeparatedList(
-                VariableDeclarator(Identifier("nextSetup"))
-                    .WithInitializer(
-                        EqualsValueClause(
-                            BinaryExpression(
-                                SyntaxKind.CoalesceExpression,
-                                InvocationExpression(IdentifierName("GetNextSetup"))
-                                    .WithArgumentList(ArgumentList()),
-                                ThrowExpression(
-                                    ObjectCreationExpression(IdentifierName("InvalidOperationException"))
-                                        .WithArgumentList(
-                                            ArgumentList(
-                                                SingletonSeparatedList(
-                                                    Argument(
-                                                        LiteralExpression(
-                                                            SyntaxKind.StringLiteralExpression,
-                                                            Literal("Invalid Setup")
+    private static StatementSyntax InitializeNextSetup(in ImposterTargetMethodMetadata method)
+    {
+        return LocalDeclarationStatement(
+            VariableDeclaration(
+                Var,
+                SingletonSeparatedList(
+                    VariableDeclarator(Identifier(method.InvocationSetup.InvokeMethod.NextSetupVariableName))
+                        .WithInitializer(
+                            EqualsValueClause(
+                                BinaryExpression(
+                                    SyntaxKind.CoalesceExpression,
+                                    InvocationExpression(IdentifierName(method.InvocationSetup.GetNextSetupMethod.Name))
+                                        .WithArgumentList(ArgumentList()),
+                                    ThrowExpression(
+                                        ObjectCreationExpression(IdentifierName("InvalidOperationException"))
+                                            .WithArgumentList(
+                                                ArgumentList(
+                                                    SingletonSeparatedList(
+                                                        Argument(
+                                                            LiteralExpression(
+                                                                SyntaxKind.StringLiteralExpression,
+                                                                Literal("Invalid Setup")
+                                                            )
                                                         )
                                                     )
                                                 )
                                             )
-                                        )
+                                    )
                                 )
                             )
                         )
-                    )
-            )
-        )
-    );
-
-    private static StatementSyntax InvokeCallBefore(in ArgumentListSyntax parameterArgumentList) =>
-        IfStatement(
-            IdentifierName("nextSetup").Dot(IdentifierName("CallBefore")).IsNotNull(),
-            Block(
-                IdentifierName("nextSetup")
-                    .Dot(IdentifierName("CallBefore"))
-                    .Call(parameterArgumentList)
-                    .AsStatement()
+                )
             )
         );
+    }
 
-    private static StatementSyntax InvokeCallAfter(in ArgumentListSyntax parameterArgumentList) =>
-        IfStatement(IdentifierName("nextSetup")
+    private static StatementSyntax InvokeCallBefore(in ImposterTargetMethodMetadata method)
+    {
+        return IfStatement(
+            IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName).Dot(IdentifierName("CallBefore")).IsNotNull(),
+            Block(
+                IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
+                    .Dot(IdentifierName("CallBefore"))
+                    .Call(method.Parameters.ParametersAsArgumentListSyntaxWithRef)
+                    .ToStatementSyntax()
+            )
+        );
+    }
+
+    private static StatementSyntax InvokeCallAfter(in ImposterTargetMethodMetadata method) =>
+        IfStatement(IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
                 .Dot(IdentifierName("CallAfter"))
                 .IsNotNull(),
             Block(
-                IdentifierName("nextSetup")
+                IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
                     .Dot(IdentifierName("CallAfter"))
-                    .Call(parameterArgumentList)
-                    .AsStatement()
+                    .Call(method.Parameters.ParametersAsArgumentListSyntaxWithRef)
+                    .ToStatementSyntax()
             )
         );
 
-    private static IEnumerable<StatementSyntax> InvokeResultGenerator(in ImposterTargetMethodMetadata method)
-    {
-        var callInvokeMethodExpression = InvocationExpression(
-            IdentifierName("nextSetup")
-                .Dot(IdentifierName("ResultGenerator"))
-                .Dot(IdentifierName("Invoke"))
-        ).WithArgumentList(
-            SyntaxFactoryHelper.ArgumenstListSyntax(method.Symbol.Parameters)
-        );
 
-        yield return IfStatement(
-            IdentifierName("nextSetup").Dot(IdentifierName("ResultGenerator")).IsNull(),
+    private static StatementSyntax SetDefaultGeneratorIfNull(in ImposterTargetMethodMetadata method)
+    {
+        return IfStatement(
+            IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName).Dot(IdentifierName("ResultGenerator")).IsNull(),
             Block(
-                IdentifierName("nextSetup")
+                IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
                     .Dot(IdentifierName("ResultGenerator"))
                     .Assign(IdentifierName("DefaultResultGenerator"))
-                    .AsStatement()
+                    .ToStatementSyntax()
             )
         );
+    }
 
-        yield return method.HasReturnValue
-                ? LocalDeclarationStatement(SyntaxFactoryHelper.VariableDeclarationSyntax(SyntaxFactoryHelper.Var, "result", EqualsValueClause(callInvokeMethodExpression)))
-                : ExpressionStatement(callInvokeMethodExpression);
+    private static StatementSyntax InvokeResultGenerator(in ImposterTargetMethodMetadata method)
+    {
+        var callInvokeMethodExpression = IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
+            .Dot(IdentifierName("ResultGenerator"))
+            .Dot(IdentifierName("Invoke"))
+            .Call(ArgumenstListSyntax(method.Symbol.Parameters));
+
+        return method.HasReturnValue
+            ? LocalDeclarationStatement(VariableDeclarationSyntax(Var, method.InvocationSetup.InvokeMethod.ResultVariableName, callInvokeMethodExpression))
+            : ExpressionStatement(callInvokeMethodExpression);
     }
 
     private static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
-        var parameterArgumentList = SyntaxFactoryHelper.ArgumenstListSyntax(method.Symbol.Parameters);
         return MethodDeclaration(
-                SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
+                TypeSyntax(method.Symbol.ReturnType),
                 Identifier("Invoke")
             ).WithModifiers(
                 TokenList(Token(SyntaxKind.PublicKeyword))
-            ).WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters))
+            ).WithParameterList(ParameterListSyntax(method.Symbol.Parameters))
             .WithBody(new BlockBuilder()
-                .AddStatement(InitializenextSetup)
-                .AddStatement(InvokeCallBefore(parameterArgumentList))
-                .AddStatements(InvokeResultGenerator(method))
-                .AddStatement(InvokeCallAfter(parameterArgumentList))
+                .AddStatement(InitializeNextSetup(method))
+                .AddStatement(InvokeCallBefore(method))
+                .AddStatement(SetDefaultGeneratorIfNull(method))
+                .AddStatement(InvokeResultGenerator(method))
+                .AddStatement(InvokeCallAfter(method))
                 .AddStatement(method.Symbol.ReturnType.SpecialType is SpecialType.System_Void
                     ? EmptyStatement()
-                    : ReturnStatement(IdentifierName("result")))
+                    : ReturnStatement(IdentifierName(method.InvocationSetup.InvokeMethod.ResultVariableName)))
                 .Build());
     }
 
-    public static ClassDeclarationSyntax NestedMethodInvocationSetupType(in ImposterTargetMethodMetadata method)
+    private static ClassDeclarationSyntax NestedMethodInvocationSetupType(in ImposterTargetMethodMetadata method)
     {
         return ClassDeclaration("MethodInvocationSetup")
             .AddModifiers(Token(SyntaxKind.InternalKeyword))

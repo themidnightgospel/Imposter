@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -31,8 +32,9 @@ internal static partial class SyntaxFactoryHelper
         );
     }
 
-    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<IParameterSymbol> parameters) => ParameterList(SeparatedList(parameters.Select(ParameterSyntax)));
-    
+    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
+        => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
+
     internal static IEnumerable<ParameterSyntax> ParametersSyntax(IEnumerable<IParameterSymbol> parameters) => parameters.Select(ParameterSyntax);
 
     internal static ParameterListSyntax ParameterListSyntax(IEnumerable<ParameterSyntax> parameters) => ParameterList(SeparatedList(parameters));
@@ -45,6 +47,12 @@ internal static partial class SyntaxFactoryHelper
 
     internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name)
         => new ParameterBuilder(type, name).Build();
+
+    internal static ParameterSyntax ParameterSyntax(ParameterMetadata parameterMetadata)
+        => new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name).Build();
+
+    internal static ParameterListSyntax ToSingleParameterListSyntax(this ParameterSyntax parameterSyntax)
+        => ParameterList(SingletonSeparatedList(parameterSyntax));
 
     internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter, bool includeRefKind)
     {

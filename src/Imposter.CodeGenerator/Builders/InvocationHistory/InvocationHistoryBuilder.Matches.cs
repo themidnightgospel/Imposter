@@ -37,7 +37,7 @@ internal static partial class InvocationHistoryBuilder
                     .Dot(GenericName(Identifier(ArgumentCriteriaTypeMetadata.AsMethod.Name), method.GenericTypeArguments.AsTypeArguments()))
                     .Call()
                     .Dot(IdentifierName(ArgumentCriteriaTypeMetadata.MatchesMethod.Name))
-                    .Call(IdentifierName("Arguments").AsSingleArgumentList());
+                    .Call(IdentifierName("Arguments").ToSingleArgumentList());
             }
 
             return IdentifierName("criteria")

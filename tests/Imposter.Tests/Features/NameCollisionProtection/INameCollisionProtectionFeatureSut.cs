@@ -32,5 +32,19 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         void it(int it);
         
         void invocationHistory(int invocationHistory);
+        
+        void nextSetup(int nextSetup);
+        
+        void GetNextSetup(int GetNextSetup);
+        
+        void exceptionGenerator(int exceptionGenerator);
+        
+        void callback(int callback);
+        
+        void resultGenerator(int resultGenerator);
+        
+        void argumentsCriteria(int argumentsCriteria);
+        
+        void TException(int TException);
     }
 }

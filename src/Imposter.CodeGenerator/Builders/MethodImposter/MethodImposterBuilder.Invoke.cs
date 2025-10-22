@@ -13,7 +13,7 @@ internal partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
         new MethodDeclarationBuilder(method.ReturnTypeSyntax, MethodImposterMetadata.InvokeMethodMetadata.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(method.Parameters.ParameterListSyntax)
             .WithBody(new BlockBuilder()
                 .AddStatement(DeclareAndInitializeArgumentsVariable(method))
@@ -52,7 +52,7 @@ internal partial class MethodImposterBuilder
             ? LocalVariableDeclarationSyntax(
                 typeSyntax: Var,
                 name: method.MethodImposter.InvokeMethod.ArgumentsVariableName,
-                initializer: method.Arguments.Syntax.New(method.Parameters.ArgumentListSyntaxWithoutRef))
+                initializer: method.Arguments.Syntax.New(method.Parameters.InputParametersAsArgumentListSyntaxWithoutRef))
             : null;
 
     private static StatementSyntax AddToInvocationHistoryCollection(in ImposterTargetMethodMetadata method, bool threwException)
@@ -64,9 +64,9 @@ internal partial class MethodImposterBuilder
                     .InvocationHistory
                     .Syntax
                     .New(ArgumentListSyntax(GetArguments(method, threwException)))
-                    .AsSingleArgumentList()
+                    .ToSingleArgumentList()
             )
-            .AsStatement();
+            .ToStatementSyntax();
 
         static IReadOnlyList<ArgumentSyntax> GetArguments(in ImposterTargetMethodMetadata method, bool threwException)
         {
@@ -112,7 +112,7 @@ internal partial class MethodImposterBuilder
             method.MethodImposter.InvokeMethod.MatchingSetupVariableName,
             IdentifierName(MethodImposterMetadata.FindMatchingSetupMethodMetadata.Name)
                 .Call(method.Parameters.HasInputParameters
-                    ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).AsSingleArgumentList()
+                    ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).ToSingleArgumentList()
                     : ArgumentList())
                 .QuestionMarkQuestionMark(method.InvocationSetup.Syntax.Dot(IdentifierName("DefaultInvocationSetup")))
         );

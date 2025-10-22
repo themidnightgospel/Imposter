@@ -42,7 +42,7 @@ internal static partial class MethodImposterBuilder
 
         static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasOutputParameters
-                ? SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters)
+                ? SyntaxFactoryHelper.DeclareInitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters)
                 : null;
     }
 }

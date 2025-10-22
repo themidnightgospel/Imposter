@@ -31,7 +31,7 @@ public class BlockBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BlockBuilder AddExpression(ExpressionSyntax statementSyntax)
     {
-        _statements.Add(statementSyntax.AsStatement());
+        _statements.Add(statementSyntax.ToStatementSyntax());
         return this;
     }
 

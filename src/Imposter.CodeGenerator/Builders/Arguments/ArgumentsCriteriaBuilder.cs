@@ -13,7 +13,7 @@ public static class ArgumentsCriteriaBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (method.Parameters.HasInputParameters)
+        if (!method.Parameters.HasInputParameters)
         {
             return null;
         }
@@ -36,7 +36,7 @@ public static class ArgumentsCriteriaBuilder
                                 ThisExpression()
                                     .Dot(IdentifierName(parameter.Name))
                                     .Assign(IdentifierName(parameter.Name))
-                                    .AsStatement()
+                                    .ToStatementSyntax()
                             )
                         )
                     )

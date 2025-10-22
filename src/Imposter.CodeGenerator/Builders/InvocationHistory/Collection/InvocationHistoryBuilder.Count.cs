@@ -25,8 +25,8 @@ internal static partial class InvocationHistoryCollectionBuilder
                                 ? GenericName(Identifier(InvocationHistoryTypeMetadata.MatchesMethod.Name), method.GenericTypeArguments.AsTypeArguments())
                                 : IdentifierName(InvocationHistoryTypeMetadata.MatchesMethod.Name)
                             )
-                            .Call(GetMatchesMethodArguments(method)?.AsSingleArgumentList()))
-                        .AsSingleArgumentList()
+                            .Call(GetMatchesMethodArguments(method)?.ToSingleArgumentList()))
+                        .ToSingleArgumentList()
                     ))))
             .Build();
 

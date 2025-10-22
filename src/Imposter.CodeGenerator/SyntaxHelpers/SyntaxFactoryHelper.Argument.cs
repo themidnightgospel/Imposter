@@ -13,7 +13,8 @@ internal static partial class SyntaxFactoryHelper
 
     internal static ArgumentListSyntax AsSingleArgumentListSyntax(this ArgumentSyntax argument) => ArgumentList(SeparatedList([argument]));
 
-    internal static ArgumentListSyntax ArgumentListSyntax(ArgumentSyntax argument) => ArgumentListSyntax(SingletonSeparatedList(argument));
+    internal static ArgumentListSyntax ArgumentListSyntax(ArgumentSyntax? argument)
+        => argument is null ? ArgumentList() : ArgumentListSyntax(SingletonSeparatedList(argument));
 
     internal static ArgumentSyntax OutVarArgument(string name) => Argument(
         null,
@@ -21,12 +22,12 @@ internal static partial class SyntaxFactoryHelper
         DeclarationExpression(IdentifierName("var"), SingleVariableDesignation(Identifier(name)))
     );
 
-    internal static ArgumentListSyntax AsSingleArgumentList(this ExpressionSyntax expression)
+    internal static ArgumentListSyntax ToSingleArgumentList(this ExpressionSyntax expression)
         => ArgumentList(SingletonSeparatedList(Argument(expression)));
 
-    internal static ArgumentListSyntax AsSingleArgumentList(this ArgumentSyntax argument)
+    internal static ArgumentListSyntax ToSingleArgumentList(this ArgumentSyntax argument)
         => ArgumentListSyntax(SingletonSeparatedList(argument));
-    
+
     internal static ArgumentSyntax AsArgument(this string argumentName)
         => Argument(IdentifierName(argumentName));
 }

@@ -39,9 +39,9 @@ internal static class GenerateImposterDeclarationsProvider
                     return new GenerateImposterDeclaration(imposterType, GetPutInTheSameNamespaceValue(it));
                 }
 
-                return null;
+                return default;
             })
-            .Where(it => it is not null)
+            .Where(it => it != default)
             .Distinct()
             .Select(it => it!);
     }
