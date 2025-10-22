@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.Abstractions;
@@ -15,7 +15,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void VoidNoParams_MethodInvoked_CallbackInvoked(int invocationCount)
+        public void VoidNoParams_WhenInvoked_CallbackIsInvoked(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -34,7 +34,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntNoParams_WhenMethodInvoked_CallbackIsInvoked(int invocationCount)
+        public void IntNoParams_WhenInvoked_CallbackIsInvoked(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -53,7 +53,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntSingleParam_WhenMethodInvoked_CallbackInvokedWithParameters(int invocationCount)
+        public void IntSingleParam_WhenInvoked_CallbackIsInvokedWithParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var parametersPassedToCallback = new List<int>();
@@ -78,10 +78,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntParams_WhenMethodInvoked_CallbackInvokedWithParameters(int invocationCount)
+        public void IntParams_WhenInvoked_CallbackIsInvokedWithParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
-            
+
             var passedAgeParametersToCallback = new List<int>();
             var passedNameParametersToCallback = new List<string>();
             var passedRegexParametersToCallback = new List<Regex>();
@@ -91,7 +91,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                 .CallAfter((age, name, regex) =>
                 {
                     callAfterCallbackInvokedCount++;
-                    
+
                     passedAgeParametersToCallback.Add(age);
                     passedNameParametersToCallback.Add(name);
                     passedRegexParametersToCallback.Add(regex);
@@ -112,7 +112,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntOutParam_OutParameterInitializedInCallback_OutParameterValueIsPropagated(int invocationCount)
+        public void IntOutParam_WhenCallbackSetsOutParameter_OutParameterValueIsPropagated(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -136,7 +136,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntRefParam_WhenMethodInvoked_CallbackIsInvokedAndCanModifyRefValue(int invocationCount)
+        public void IntRefParam_WhenInvoked_CallbackIsInvokedAndModifiesRefValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var refParametersPassedToCallback = new List<int>();
@@ -164,7 +164,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntParamsParam_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void IntParamsParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var paramsParameterPassedToCallback = new List<string[]>();
@@ -190,7 +190,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntInParam_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void IntInParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var stringList = new List<string>();
@@ -215,7 +215,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntAllRefKinds_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void IntAllRefKinds_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var outList = new List<int>();
@@ -260,7 +260,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void GenericSingleParam_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameter(int invocationCount)
+        public void GenericSingleParam_WhenInvoked_CallbackIsInvokedWithCorrectParameter(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var passedParameterToCallback = new List<int>();
@@ -285,7 +285,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(4)]
-        public void GenericOutParam_WhenMethodInvoked_CallbackIsInvokedAndValuePropagated(int invocationCount)
+        public void GenericOutParam_WhenInvoked_CallbackIsInvokedAndValuePropagated(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -309,7 +309,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(4)]
-        public void GenericRefParam_WhenMethodInvoked_CallbackIsInvokedAndCanModifyValue(int invocationCount)
+        public void GenericRefParam_WhenInvoked_CallbackIsInvokedAndModifiesValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var refParams = new List<double>();
@@ -337,7 +337,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(3)]
-        public void GenericParamsParam_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GenericParamsParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var allArrays = new List<string[]>();
@@ -363,7 +363,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
-        public void GenericAllRefKind_WhenMethodInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GenericAllRefKind_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var outParams = new List<int>();
@@ -412,7 +412,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericSingleParam_WhenMethodInvokedWithDerivedType_CallbackIsInvoked()
+        public void GenericSingleParam_WhenInvokedWithDerivedType_CallbackIsInvoked()
         {
             var callAfterCallbackInvokedCount = 0;
             var captured = new List<IAnimal>();
@@ -431,18 +431,15 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
             callAfterCallbackInvokedCount.ShouldBe(2);
             captured.Select(c => c.Name).ShouldBe(new[] { "cat", "dog" });
         }
-        
+
         [Fact]
-        public void GenericSingleParam_WhenMethodInvokedWithBaseType_CallbackIsNotInvoked()
+        public void GenericSingleParam_WhenInvokedWithBaseType_CallbackIsNotInvoked()
         {
             var callAfterCallbackInvokedCount = 0;
 
             _sut
                 .GenericSingleParam<IAnimal>(Arg<IAnimal>.Any())
-                .CallAfter(animal =>
-                {
-                    callAfterCallbackInvokedCount++;
-                });
+                .CallAfter(animal => { callAfterCallbackInvokedCount++; });
 
             _sut.Instance().GenericSingleParam<IMammal>(new Cat("mammal"));
 
@@ -450,10 +447,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericOutParam_WhenMethodInvokedWithBaseType_CallbackIsInvoked()
+        public void GenericOutParam_WhenInvokedWithBaseType_CallbackIsInvoked()
         {
             var callAfterCallbackInvokedCount = 0;
-            
+
             _sut
                 .GenericOutParam<Cat, int>(OutArg<Cat>.Any())
                 .CallAfter((out Cat c) =>
@@ -463,15 +460,15 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                 });
 
             _sut.Instance().GenericOutParam<IAnimal, int>(out var animal);
-            
+
             callAfterCallbackInvokedCount.ShouldBe(1);
         }
-        
+
         [Fact]
-        public void GenericOutParam_WhenMethodInvokedWithDerivedType_CallbackIsNotInvoked()
+        public void GenericOutParam_WhenInvokedWithDerivedType_CallbackIsNotInvoked()
         {
             var callAfterCallbackInvokedCount = 0;
-            
+
             _sut
                 .GenericOutParam<IAnimal, int>(OutArg<IAnimal>.Any())
                 .CallAfter((out IAnimal c) =>
@@ -481,20 +478,17 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                 });
 
             _sut.Instance().GenericOutParam<Cat, int>(out var tiger);
-            
+
             callAfterCallbackInvokedCount.ShouldBe(0);
         }
 
         [Fact]
-        public void GenericParamsParam_WhenMethodInvokedWithDerivedType_CallbackIsInvoked()
+        public void GenericParamsParam_WhenInvokedWithDerivedType_CallbackIsInvoked()
         {
             var captured = new List<IAnimal[]>();
             _sut
                 .GenericParamsParam<IAnimal, int>(Arg<IAnimal[]>.Any())
-                .CallAfter(animals =>
-                {
-                    captured.Add(animals);
-                });
+                .CallAfter(animals => { captured.Add(animals); });
 
             _sut.Instance().GenericParamsParam<ICat, int>(new Cat("cat1"), new Cat("cat2"));
             _sut.Instance().GenericParamsParam<Dog, int>(new Dog("dog1"));
@@ -505,7 +499,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericAllRefKind_InvokedWithCompatibleTypes_CallbackIsInvokedWithCorrectParameters()
+        public void GenericAllRefKind_WhenInvokedWithCompatibleTypes_CallbackIsInvokedWithCorrectParameters()
         {
             var callAfterCallbackInvokedCount = 0;
             IAnimal? refAnimal = null;
@@ -522,7 +516,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                 .CallAfter((out Cat outValue, ref IAnimal refValue, in IAnimal inValue, IAnimal[] paramsValue) =>
                 {
                     callAfterCallbackInvokedCount++;
-                    
+
                     outValue = new Cat("new-cat");
                     refValue = new Cat("new-ref-cat");
                     refAnimal = refValue;
@@ -545,12 +539,350 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
 
             outValue.ShouldBeOfType<Cat>().Name.ShouldBe("new-cat");
             refValue.ShouldBeOfType<Cat>().Name.ShouldBe("new-ref-cat");
-            
+
             refAnimal.ShouldBeOfType<Cat>().Name.ShouldBe("new-ref-cat");
             inAnimal.ShouldBeOfType<GermanShepherd>().Name.ShouldBe("in-gs");
             paramsAnimals.ShouldNotBeNull().Length.ShouldBe(2);
             paramsAnimals[0].ShouldBeOfType<GermanShepherd>().Name.ShouldBe("params-gs1");
             paramsAnimals[1].ShouldBeOfType<GermanShepherd>().Name.ShouldBe("params-gs2");
+        }
+
+        [Fact]
+        public void VoidNoParams_WhenHasMultipleCallAfterCallbacks_AllCallbacksAreInvoked()
+        {
+            var firstCallbackInvokedCount = 0;
+            var secondCallbackInvokedCount = 0;
+
+            _sut
+                .VoidNoParams()
+                .CallAfter(() => ++firstCallbackInvokedCount)
+                .CallAfter(() => ++secondCallbackInvokedCount);
+
+            _sut.Instance().VoidNoParams();
+
+            firstCallbackInvokedCount.ShouldBe(1);
+            secondCallbackInvokedCount.ShouldBe(1);
+        }
+
+        [Fact]
+        public void IntNoParams_WhenCallAfterChainedWithReturns_CallbackIsInvokedAfterReturn()
+        {
+            var callbackInvokedCount = 0;
+            var returnValue = 0;
+
+            _sut
+                .IntNoParams()
+                .Returns(42)
+                .CallAfter(() => { callbackInvokedCount++; });
+
+            returnValue = _sut.Instance().IntNoParams();
+
+            callbackInvokedCount.ShouldBe(1);
+            returnValue.ShouldBe(42);
+        }
+
+        [Fact]
+        public void IntNoParams_WhenCallAfterChainedWithMultipleReturns_CallbackIsInvokedAfterEachReturn()
+        {
+            var callbackInvokedCount = 0;
+            var capturedReturnValues = new List<int>();
+
+            _sut
+                .IntNoParams()
+                .Returns(1)
+                .CallAfter(() => callbackInvokedCount++)
+                .Returns(2)
+                .CallAfter(() => callbackInvokedCount++)
+                .Returns(3)
+                .CallAfter(() => callbackInvokedCount++);
+
+            capturedReturnValues.Add(_sut.Instance().IntNoParams());
+            capturedReturnValues.Add(_sut.Instance().IntNoParams());
+            capturedReturnValues.Add(_sut.Instance().IntNoParams());
+            capturedReturnValues.Add(_sut.Instance().IntNoParams()); // Should repeat last
+
+            callbackInvokedCount.ShouldBe(4);
+            capturedReturnValues.ShouldBe(new[] { 1, 2, 3, 3 });
+        }
+
+        [Fact]
+        public void VoidNoParams_WhenCallAfterThrows_ExceptionIsPropagated()
+        {
+            var expectedException = new InvalidOperationException("Test exception");
+
+            _sut
+                .VoidNoParams()
+                .CallAfter(() => throw expectedException);
+
+            var thrownException = Should.Throw<InvalidOperationException>(() => _sut.Instance().VoidNoParams());
+            thrownException.ShouldBe(expectedException);
+        }
+
+        [Fact]
+        public void IntSingleParam_WhenCallAfterThrows_ExceptionIsPropagatedAndReturnValueNotReturned()
+        {
+            _sut
+                .IntSingleParam(Arg<int>.Any())
+                .Returns(100)
+                .CallAfter(age => throw new ArgumentException($"Invalid age: {age}"));
+
+            Should.Throw<ArgumentException>(() => _sut.Instance().IntSingleParam(42))
+                .Message.ShouldBe("Invalid age: 42");
+        }
+
+        [Fact]
+        public void IntOutParam_WhenCallAfterModifiesOutParam_ValueFromCallAfterIsReturned()
+        {
+            var callAfterInvokedCount = 0;
+
+            _sut
+                .IntOutParam(OutArg<int>.Any())
+                .Returns(999)
+                .CallAfter((out int outValue) =>
+                {
+                    outValue = 777; // CallAfter should override Returns for out params
+                    callAfterInvokedCount++;
+                });
+
+            var result = _sut.Instance().IntOutParam(out var outVal);
+
+            result.ShouldBe(999); // Return value from Returns
+            outVal.ShouldBe(777); // Out value from CallAfter
+            callAfterInvokedCount.ShouldBe(1);
+        }
+
+        [Fact]
+        public void IntRefParam_WhenCallAfterAndReturnsChained_BothAreExecuted()
+        {
+            var callAfterInvokedCount = 0;
+            var originalRefValue = 100;
+
+            _sut
+                .IntRefParam(Arg<int>.Any())
+                .Returns((ref int refVal) => refVal * 2)
+                .CallAfter((ref int refParameter) =>
+                {
+                    refParameter += 50;
+                    callAfterInvokedCount++;
+                });
+
+            var refValue = originalRefValue;
+            var result = _sut.Instance().IntRefParam(ref refValue);
+
+            result.ShouldBe(200); // 100 * 2
+            refValue.ShouldBe(150); // 100 + 50
+            callAfterInvokedCount.ShouldBe(1);
+        }
+
+        [Fact]
+        public void IntSingleParam_WhenSetupWithSpecificValueAndCallAfter_OnlyMatchingCallsInvokeCallback()
+        {
+            var callAfterCount = 0;
+
+            _sut
+                .IntSingleParam(Arg<int>.Is(42))
+                .Returns(100)
+                .CallAfter(age => callAfterCount++);
+
+            _sut.Instance().IntSingleParam(42);
+            _sut.Instance().IntSingleParam(43); // Should not invoke callback
+            _sut.Instance().IntSingleParam(42);
+
+            callAfterCount.ShouldBe(2);
+        }
+
+        [Fact]
+        public void IntSingleParam_WhenSetupWithPredicateAndCallAfter_OnlyMatchingCallsInvokeCallback()
+        {
+            var callAfterCount = 0;
+            var capturedValues = new List<int>();
+
+            _sut
+                .IntSingleParam(Arg<int>.Is(x => x > 10))
+                .Returns(999)
+                .CallAfter(age =>
+                {
+                    callAfterCount++;
+                    capturedValues.Add(age);
+                });
+
+            _sut.Instance().IntSingleParam(5); // Should not match
+            _sut.Instance().IntSingleParam(15); // Should match
+            _sut.Instance().IntSingleParam(20); // Should match
+
+            callAfterCount.ShouldBe(2);
+            capturedValues.ShouldBe(new[] { 15, 20 });
+        }
+
+        [Fact]
+        public void GenericSingleParam_WhenCallAfterReceivesNullValue_CallbackIsInvokedWithNull()
+        {
+            var callAfterCount = 0;
+            string? capturedValue = "not-null";
+
+            _sut
+                .GenericSingleParam<string?>(Arg<string?>.Any())
+                .CallAfter(value =>
+                {
+                    callAfterCount++;
+                    capturedValue = value;
+                });
+
+            _sut.Instance().GenericSingleParam<string?>(null);
+
+            callAfterCount.ShouldBe(1);
+            capturedValue.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GenericRefParam_WhenCallAfterModifiesRef_ValueIsPropagated()
+        {
+            var callAfterCount = 0;
+
+            _sut
+                .GenericRefParam<string?, int>(Arg<string?>.Any())
+                .Returns(42)
+                .CallAfter((ref string? refParam) =>
+                {
+                    callAfterCount++;
+                    refParam = "modified"; // Modify to null
+                });
+
+            var refValue = "initial";
+            var result = _sut.Instance().GenericRefParam<string?, int>(ref refValue);
+
+            result.ShouldBe(42);
+            refValue.ShouldBe("modified");
+            callAfterCount.ShouldBe(1);
+        }
+
+        [Fact]
+        public void IntParams_WhenCallAfterReceivesNullArgument_CallbackIsInvokedWithNull()
+        {
+            var callAfterCount = 0;
+            string? capturedName = "not-null";
+
+            _sut
+                .IntParams(Arg<int>.Any(), Arg<string?>.Any(), Arg<Regex>.Any())
+                .CallAfter((age, name, regex) =>
+                {
+                    callAfterCount++;
+                    capturedName = name;
+                });
+
+            _sut.Instance().IntParams(42, null, new Regex("test"));
+
+            callAfterCount.ShouldBe(1);
+            capturedName.ShouldBeNull();
+        }
+
+        [Fact]
+        public void IntParamsParam_WhenCallAfterReceivesEmptyArray_CallbackIsInvokedWithEmptyArray()
+        {
+            var callAfterCount = 0;
+            string[]? capturedArray = null;
+
+            _sut
+                .IntParamsParam(Arg<string[]>.Any())
+                .CallAfter(arr =>
+                {
+                    callAfterCount++;
+                    capturedArray = arr;
+                });
+
+            _sut.Instance().IntParamsParam(Array.Empty<string>());
+
+            callAfterCount.ShouldBe(1);
+            capturedArray.ShouldNotBeNull();
+            capturedArray.Length.ShouldBe(0);
+        }
+
+        [Fact]
+        public void GenericAllRefKind_WhenCallAfterModifiesComplexTypes_AllModificationsArePropagated()
+        {
+            var callAfterCount = 0;
+            var originalCats = new[] { new Cat("cat1"), new Cat("cat2") };
+
+            _sut
+                .GenericAllRefKind<Cat, IAnimal, IAnimal, IAnimal, bool>(
+                    OutArg<Cat>.Any(),
+                    Arg<IAnimal>.Any(),
+                    Arg<IAnimal>.Any(),
+                    Arg<IAnimal[]>.Any()
+                )
+                .Returns(true)
+                .CallAfter((out Cat outCat, ref IAnimal refAnimal, in IAnimal inAnimal, IAnimal[] paramsAnimals) =>
+                {
+                    callAfterCount++;
+                    outCat = new Cat("out-cat");
+                    refAnimal = new Dog("ref-dog");
+
+                    // Verify we can read the in parameter
+                    inAnimal.Name.ShouldBe("in-animal");
+
+                    // Verify params array contents
+                    paramsAnimals.Length.ShouldBe(2);
+                });
+
+            IAnimal refAnimal = new Cat("ref-cat");
+            var inAnimal = new Dog("in-animal");
+
+            var result = _sut.Instance().GenericAllRefKind<IAnimal, IAnimal, Dog, Cat, bool>(
+                out var outValue,
+                ref refAnimal,
+                in inAnimal,
+                originalCats
+            );
+
+            callAfterCount.ShouldBe(1);
+            result.ShouldBeTrue();
+            outValue.ShouldBeOfType<Cat>().Name.ShouldBe("out-cat");
+            refAnimal.ShouldBeOfType<Dog>().Name.ShouldBe("ref-dog");
+        }
+
+        [Fact]
+        public void IntNoParams_WhenCallAfterInSequence_CallbackIsInvokedForEachSequenceItem()
+        {
+            var callAfterCount = 0;
+            var setup = _sut.IntNoParams();
+
+            setup
+                .Returns(1)
+                .CallAfter(() => callAfterCount++)
+                .Returns(2)
+                .CallAfter(() => callAfterCount++)
+                .Returns(3)
+                .CallAfter(() => callAfterCount++);
+
+            _sut.Instance().IntNoParams();
+            _sut.Instance().IntNoParams();
+            _sut.Instance().IntNoParams();
+
+            callAfterCount.ShouldBe(3);
+        }
+
+        [Fact]
+        public void GenericOutParam_WhenCallAfterHasDifferentGenericConstraints_CallbackIsInvokedCorrectly()
+        {
+            var callAfterCount = 0;
+            IAnimal? capturedOutValue = null;
+
+            _sut
+                .GenericOutParam<IAnimal, string>(OutArg<IAnimal>.Any())
+                .Returns("success")
+                .CallAfter((out IAnimal animal) =>
+                {
+                    callAfterCount++;
+                    animal = new Tiger("callback-tiger");
+                    capturedOutValue = animal;
+                });
+
+            var result = _sut.Instance().GenericOutParam<Tiger, string>(out var outAnimal);
+
+            callAfterCount.ShouldBe(1);
+            result.ShouldBe("success");
+            outAnimal.ShouldBeOfType<Tiger>().Name.ShouldBe("callback-tiger");
+            capturedOutValue.ShouldBeOfType<Tiger>();
         }
     }
 }
