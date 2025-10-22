@@ -22,7 +22,7 @@ internal static partial class SyntaxFactoryHelper
             );
     }
 
-    internal static ExpressionStatementSyntax AsStatement(this ExpressionSyntax source)
+    internal static ExpressionStatementSyntax ToStatementSyntax(this ExpressionSyntax source)
         => ExpressionStatement(source);
 
     internal static AssignmentExpressionSyntax Assign(this ExpressionSyntax left, ExpressionSyntax right)

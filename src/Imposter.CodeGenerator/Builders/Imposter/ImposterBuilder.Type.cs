@@ -48,15 +48,15 @@ internal static partial class ImposterBuilder
                                 ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
                                 : IdentifierName(method.MethodImposter.AsField.Name))
                             .Assign((method.Symbol.IsGenericMethod ? method.MethodImposter.Collection.Syntax : method.MethodImposter.Syntax)
-                                .New(IdentifierName(method.InvocationHistory.Collection.AsField.Name).AsSingleArgumentList())
+                                .New(IdentifierName(method.InvocationHistory.Collection.AsField.Name).ToSingleArgumentList())
                             )
-                            .AsStatement()
+                            .ToStatementSyntax()
                         )
                 )
                 .AddExpression(
                     ThisExpression()
                         .Dot(IdentifierName(ImposterInstanceFieldName))
-                        .Assign(IdentifierName(imposterTargetInstanceClassName).New(ThisExpression().AsSingleArgumentList()))
+                        .Assign(IdentifierName(imposterTargetInstanceClassName).New(ThisExpression().ToSingleArgumentList()))
                 )
                 .Build());
 

@@ -14,7 +14,7 @@ internal partial class MethodImposterBuilder
     {
         var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.InvocationSetup.Syntax), "FindMatchingSetup")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddParameterIf(method.Parameters.HasInputParameters, () => new ParameterBuilder(method.Arguments.Syntax, "arguments").Build());
+            .AddParameter(GetArgumentsParameter(method));
 
         if (method.Parameters.HasInputParameters)
         {
@@ -51,5 +51,10 @@ internal partial class MethodImposterBuilder
                 )
             ))
             .Build();
+
+        static ParameterSyntax? GetArgumentsParameter(in ImposterTargetMethodMetadata method) =>
+            method.Parameters.HasInputParameters
+                ? ParameterSyntax(method.Arguments.Syntax, "arguments")
+                : null;
     }
 }

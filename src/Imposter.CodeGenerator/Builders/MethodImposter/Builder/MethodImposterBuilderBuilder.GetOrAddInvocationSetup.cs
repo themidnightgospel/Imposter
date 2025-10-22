@@ -19,7 +19,7 @@ internal static partial class MethodImposterBuilderBuilder
                 existingInvocationSetupIdentifier
                     .Assign(invocationSetupType
                         .New(method.Parameters.HasInputParameters
-                            ? Argument(argumentsCriteriaIdentifier).AsSingleArgumentList()
+                            ? Argument(argumentsCriteriaIdentifier).ToSingleArgumentList()
                             : null
                         )
                     )
@@ -33,10 +33,10 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodImposter.InvocationSetupsField.Name))
             .Dot(IdentifierName("Push"))
             .Call(ArgumentList(SingletonSeparatedList(Argument(existingInvocationSetupIdentifier))))
-            .AsStatement()
+            .ToStatementSyntax()
         );
 
-        return MethodDeclaration(invocationSetupType, "GetOrAddInvocationSetup")
+        return MethodDeclaration(method.InvocationSetup.Interface.Syntax, "GetOrAddInvocationSetup")
             .AddModifiers(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(

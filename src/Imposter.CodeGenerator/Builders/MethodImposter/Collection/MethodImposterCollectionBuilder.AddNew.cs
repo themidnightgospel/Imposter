@@ -26,7 +26,7 @@ internal static partial class MethodImposterCollectionBuilder
                     IdentifierName("_imposters")
                         .Dot(IdentifierName("Push"))
                         .Call(Argument(IdentifierName("imposter")).AsSingleArgumentListSyntax())
-                        .AsStatement(),
+                        .ToStatementSyntax(),
                     ReturnStatement(IdentifierName("imposter"))
                 )
             );

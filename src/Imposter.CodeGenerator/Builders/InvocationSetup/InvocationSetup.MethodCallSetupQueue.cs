@@ -6,7 +6,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
-internal static partial class InvocationSetup
+internal static partial class InvocationSetupBuilder
 {
     private static FieldDeclarationSyntax CallSetupsFieldDeclaration = GetCallSetupsFieldDeclaration();
 
@@ -58,7 +58,7 @@ internal static partial class InvocationSetup
     private static MethodDeclarationSyntax GetMethodCallSetupDeclarationSyntax =
         MethodDeclaration(
                 IdentifierName("MethodInvocationSetup"),
-                Identifier(InvocationSetupType.GetOrAddMethodSetupMethodName)
+                Identifier(InvocationSetupMetadata.GetOrAddMethodSetupMethodName)
             )
             .AddModifiers(Token(SyntaxKind.PrivateKeyword))
             .AddParameterListParameters(

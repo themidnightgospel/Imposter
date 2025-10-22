@@ -36,7 +36,7 @@ internal static partial class InvocationHistoryBuilder
                             ThisExpression()
                                 .Dot(IdentifierName(field.Declaration.Variables[0].Identifier.Text))
                                 .Assign(IdentifierName(field.Declaration.Variables[0].Identifier.Text))
-                                .AsStatement()
+                                .ToStatementSyntax()
                         )
                     )
                 )

@@ -5,7 +5,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
-internal static partial class InvocationSetup
+internal static partial class InvocationSetupBuilder
 {
     private static MethodDeclarationSyntax CallBeforeReturnMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
         => CallbackMethodDeclarationSyntax(method, "CallBefore");
@@ -18,7 +18,7 @@ internal static partial class InvocationSetup
                 method.InvocationSetup.Interface.Syntax,
                 Identifier(callbackName)
             )
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InvocationSetup.Interface.Syntax))
             .AddParameterListParameters(
                 Parameter(Identifier("callback"))
                     .WithType(method.CallbackDelegate.Syntax)

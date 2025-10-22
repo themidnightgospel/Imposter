@@ -85,7 +85,7 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             imposter
                 .AddMembers(MethodDelegateTypeBuilder.Build(method))
-                .AddMemberIfNotNull(ArgumentsTypeBuilder.Build(method))
+                .AddMemberIfNotNull(ArgumentsBuilder.Build(method))
                 .AddMemberIfNotNull(ArgumentsCriteriaBuilder.Build(method))
                 .AddMember(InvocationHistoryInterfaceBuilder.Build(method))
                 .AddMember(InvocationHistoryBuilder.Build(method))
@@ -93,15 +93,17 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMemberIf(method.Symbol.IsGenericMethod, () => MethodImposterCollectionBuilder.Build(method));
 
             // TODO clean it up
-            var (invocationSetupBuilder, invocationSetupBuilderInterface) = InvocationSetup.Build(method);
+            var invocationSetup = InvocationSetupBuilder.Build(method);
+            var invocationSetupInterface = InvocationSetupBuilder.BuildInvocationSetupInterface(method);
+            
             imposter
-                .AddMember(invocationSetupBuilder)
-                .AddMember(invocationSetupBuilderInterface)
+                .AddMember(invocationSetup)
+                .AddMember(invocationSetupInterface)
                 .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterBuilderInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterBuilder.Build(method, invocationSetupBuilderInterface));
+                .AddMember(MethodImposterBuilder.Build(method, invocationSetupInterface));
         }
 
         var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(

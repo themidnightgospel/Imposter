@@ -6,7 +6,8 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Contexts;
 
-internal class ImposterTypeMetadata
+
+internal readonly struct ImposterTypeMetadata
 {
     internal readonly string Name;
 
@@ -14,23 +15,23 @@ internal class ImposterTypeMetadata
 
     internal readonly IReadOnlyList<ImposterTargetMethodMetadata> Methods;
 
-    internal readonly SymbolNameContext SymbolNameContext;
+    internal readonly SymbolNameNamespace SymbolNameNamespace;
 
     internal ImposterTypeMetadata(INamedTypeSymbol targetSymbol)
     {
-        SymbolNameContext = new SymbolNameContext([]);
+        SymbolNameNamespace = new SymbolNameNamespace([]);
         TargetSymbol = targetSymbol;
         Name = targetSymbol.Name + "Imposter";
-        Methods = GetMethods(targetSymbol, SymbolNameContext);
+        Methods = GetMethods(targetSymbol, SymbolNameNamespace);
     }
 
-    private static IReadOnlyList<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, SymbolNameContext symbolNameContext)
+    private static IReadOnlyList<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, SymbolNameNamespace symbolNameNamespace)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(method => new ImposterTargetMethodMetadata(method, symbolNameContext.Use(method.Name)))
+                .Select(method => new ImposterTargetMethodMetadata(method, symbolNameNamespace.Use(method.Name)))
                 .ToList();
         }
 

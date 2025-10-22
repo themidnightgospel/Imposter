@@ -10,13 +10,19 @@ namespace Imposter.CodeGenerator.Contexts;
 
 internal readonly record struct ImposterTargetMethodParametersMetadata
 {
+    internal IReadOnlyList<IParameterSymbol> Parameters { get; }
+    
     internal IReadOnlyList<IParameterSymbol> InputParameters { get; }
 
     internal readonly ParameterListSyntax ParameterListSyntax;
 
-    internal readonly ParameterListSyntax InputParameterListSyntax;
+    internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntax;
 
-    internal readonly ArgumentListSyntax ArgumentListSyntaxWithoutRef;
+    internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithoutRef;
+    
+    internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithRef;
+    
+    internal readonly ArgumentListSyntax ParametersAsArgumentListSyntaxWithRef;
 
     internal bool HasInputParameters => InputParameters.Count > 0;
 
@@ -24,17 +30,25 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     public ImposterTargetMethodParametersMetadata(IReadOnlyList<IParameterSymbol> symbolParameters)
     {
+        Parameters = symbolParameters;
         InputParameters = symbolParameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
         HasOutputParameters = symbolParameters.Any(it => it.RefKind is RefKind.Out);
 
         ParameterListSyntax = SyntaxFactoryHelper.ParameterListSyntax(symbolParameters);
-        InputParameterListSyntax = SyntaxFactoryHelper.ParameterListSyntax(InputParameters);
+        InputParameterWithoutRefKindListSyntax = SyntaxFactoryHelper.ParameterListSyntax(InputParameters, includeRefKind: false);
 
-        ArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumenstListSyntax(InputParameters, includeRefKind: false);
+        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumenstListSyntax(InputParameters, includeRefKind: false);
+        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumenstListSyntax(InputParameters, includeRefKind: true);
+        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumenstListSyntax(Parameters, includeRefKind: true);
     }
 }
 
-internal readonly record struct ImposterTargetMethodMetadata
+internal interface IParameterNameContextProvider
+{
+    SymbolNameNamespace CreateParameterNameContext();
+}
+
+internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextProvider
 {
     internal IMethodSymbol Symbol { get; }
 
@@ -63,7 +77,7 @@ internal readonly record struct ImposterTargetMethodMetadata
 
     internal readonly InvocationHistoryTypeMetadata InvocationHistory;
 
-    internal readonly InvocationSetupType InvocationSetup;
+    internal readonly InvocationSetupMetadata InvocationSetup;
 
     internal readonly TypeSyntax ReturnTypeSyntax;
 
@@ -78,7 +92,7 @@ internal readonly record struct ImposterTargetMethodMetadata
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 
-    internal SymbolNameContext CreateParameterNameContext() => new(SymbolNames.GetParameterNames(this.Symbol));
+    public SymbolNameNamespace CreateParameterNameContext() => new(SymbolNames.GetParameterNames(this.Symbol));
 
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,
@@ -107,14 +121,15 @@ internal readonly record struct ImposterTargetMethodMetadata
 
         TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TargetGenericTypeArguments);
 
+        Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
+        CallbackDelegate = TypeMetadataFactory.Create($"{uniqueName}CallbackDelegate", GenericTypeArguments);
+        ExceptionGeneratorDelegate = TypeMetadataFactory.Create($"{uniqueName}ExceptionGeneratorDelegate", GenericTypeArguments);
+        
         var argumentsTypeName = $"{uniqueName}Arguments";
         Arguments = new TypeMetadata(argumentsTypeName, SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName));
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
-        InvocationSetup = new InvocationSetupType(this);
-        Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
-        CallbackDelegate = TypeMetadataFactory.Create($"{uniqueName}CallbackDelegate", GenericTypeArguments);
-        ExceptionGeneratorDelegate = TypeMetadataFactory.Create($"{uniqueName}ExceptionGeneratorDelegate", GenericTypeArguments);
+        InvocationSetup = new InvocationSetupMetadata(this);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
     }

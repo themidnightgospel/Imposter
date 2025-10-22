@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Imposter.CodeGenerator.Contexts;
+﻿using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,14 +18,14 @@ public static class InvocationHistoryInterfaceBuilder
     {
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
             .WithSemicolon()
-            .AddTypeParameters(method.Symbol.TypeParameters.Select(p => TypeParameter(p.Name)))
+            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))
             .Build();
 
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
         {
             return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteria.Syntax, "criteria")
+                ? SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments, "criteria")
                 : null;
         }
     }

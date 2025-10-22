@@ -35,7 +35,7 @@ internal static partial class MethodImposterCollectionBuilder
             impostersFieldType,
             "_imposters",
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-            EqualsValueClause(impostersFieldType.New())
+            impostersFieldType.New()
         );
     }
 }

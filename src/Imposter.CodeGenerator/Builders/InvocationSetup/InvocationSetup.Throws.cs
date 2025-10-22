@@ -8,29 +8,26 @@ using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
-internal static partial class InvocationSetup
+internal static partial class InvocationSetupBuilder
 {
     private static MethodDeclarationSyntax ThrowsTExceptionMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                 method.InvocationSetup.Interface.Syntax,
-                Identifier("Throws")
+                Identifier(method.InvocationSetup.ThrowsMethod.Name)
             )
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InvocationSetup.Interface.Syntax))
             .WithTypeParameterList(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
-            .AddConstraintClauses(
-                TypeParameterConstraintClause("TException")
-                    .AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
             .WithBody(Block(ExpressionStatement(
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
                         Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutputParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
-                                .AddStatement(ThrowStatement(ObjectCreationExpression(IdentifierName("TException"), ArgumentList(), default)))
+                                .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
+                                .AddStatement(ThrowStatement(ObjectCreationExpression(IdentifierName("TException"), ArgumentList(), null)))
                                 .Build()
-                            )
+                        )
                     )),
                 ReturnStatement(ThisExpression())
             ));
@@ -38,30 +35,21 @@ internal static partial class InvocationSetup
 
     private static MethodDeclarationSyntax ThrowsExceptionInstanceMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
-        var exceptionParameter = Parameter(
-            Identifier("ex")
-        ).WithType(WellKnownTypes.System.Exception);
-
         return MethodDeclaration(
                 method.InvocationSetup.Interface.Syntax,
-                Identifier("Throws")
+                Identifier(method.InvocationSetup.ThrowsMethod.Name)
             )
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(
-                ParameterList(
-                    SingletonSeparatedList(exceptionParameter)
-                )
-            )
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InvocationSetup.Interface.Syntax))
+            .WithParameterList(ParameterSyntax(method.InvocationSetup.ThrowsMethod.ExceptionParameter).ToSingleParameterListSyntax())
             .WithBody(Block(ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
-                        Lambda(method.Symbol.Parameters,
+                    GetMethodCallSetupAccessExpressionSyntax("ResultGenerator")
+                        .Assign(Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatementsIf(method.HasOutputParameters, () => InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters))
-                                .AddStatement(ThrowStatement(IdentifierName(exceptionParameter.Identifier)))
+                                .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
+                                .AddStatement(ThrowStatement(IdentifierName(method.InvocationSetup.ThrowsMethod.ExceptionParameter.Name)))
                                 .Build())
-                    )),
+                        )
+                ),
                 ReturnStatement(ThisExpression())
             ));
     }
@@ -70,12 +58,11 @@ internal static partial class InvocationSetup
     {
         return MethodDeclaration(
                 method.InvocationSetup.Interface.Syntax,
-                Identifier("Throws")
+                Identifier(method.InvocationSetup.ThrowsMethod.Name)
             )
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InvocationSetup.Interface.Syntax))
             .AddParameterListParameters(
-                Parameter(Identifier("exceptionGenerator"))
-                    .WithType(method.ExceptionGeneratorDelegate.Syntax)
+                ParameterSyntax(method.InvocationSetup.ThrowsMethod.ExceptionGeneratorParameter)
             )
             .WithBody(
                 Block(ExpressionStatement(
@@ -87,7 +74,7 @@ internal static partial class InvocationSetup
                                 Block(
                                     ThrowStatement(
                                         InvocationExpression(
-                                            IdentifierName("exceptionGenerator"),
+                                            IdentifierName(method.InvocationSetup.ThrowsMethod.ExceptionGeneratorParameter.Name),
                                             ArgumenstListSyntax(method.Symbol.Parameters)
                                         )
                                     ))

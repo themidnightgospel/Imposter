@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Contexts;
 
-internal class ImposterGenerationContext
+internal readonly struct ImposterGenerationContext
 {
     internal readonly GenerateImposterDeclaration GenerateImposterDeclaration;
 

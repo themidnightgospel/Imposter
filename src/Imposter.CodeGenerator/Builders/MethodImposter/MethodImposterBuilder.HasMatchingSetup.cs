@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Imposter.CodeGenerator.Contexts;
+﻿using Imposter.CodeGenerator.Contexts;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,32 +13,27 @@ internal static partial class MethodImposterBuilder
     {
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameters(GetHasMatchingSetupParameters())
+            .AddParameter(GetHasMatchingSetupParameter(method))
             .WithBody(Block(
                     ReturnStatement(
                         IdentifierName("FindMatchingSetup")
-                            .Call(SyntaxFactoryHelper.ArgumentListSyntax(GetFindMatchingSetupArguments()))
+                            .Call(SyntaxFactoryHelper.ArgumentListSyntax(GetFindMatchingSetupArguments(method)))
                             .IsNotNull()
                     )
                 )
             )
             .Build();
 
-        IEnumerable<ParameterSyntax> GetHasMatchingSetupParameters()
+        static ParameterSyntax? GetHasMatchingSetupParameter(in ImposterTargetMethodMetadata method)
         {
-            if (method.HasInputParameters)
-            {
-                yield return SyntaxFactoryHelper.ParameterSyntax(method.Arguments.Syntax, "arguments");
-            }
+            return method.Parameters.HasInputParameters
+                ? SyntaxFactoryHelper.ParameterSyntax(method.Arguments.Syntax, "arguments")
+                : null;
         }
 
-        IEnumerable<ArgumentSyntax> GetFindMatchingSetupArguments()
+        static ArgumentSyntax? GetFindMatchingSetupArguments(in ImposterTargetMethodMetadata method)
         {
-
-            if (method.HasInputParameters)
-            {
-                yield return Argument(IdentifierName("arguments"));
-            }
+            return method.Parameters.HasInputParameters ? Argument(IdentifierName("arguments")) : null;
         }
     }
 }

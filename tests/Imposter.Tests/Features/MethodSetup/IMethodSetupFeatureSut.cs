@@ -6,40 +6,46 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
     [GenerateImposter(typeof(IMethodSetupFeatureSut))]
     public interface IMethodSetupFeatureSut
     {
-        void Void_NoParams();
+        void VoidNoParams();
 
-        int Int_NoParams();
+        int IntNoParams();
 
-        int Int_SingleParam(int age);
+        int IntSingleParam(int age);
 
-        int Int_Params(int age, string name, Regex regex);
+        int IntParams(int age, string name, Regex regex);
 
-        int Int_OutParam(out int outValue);
+        int IntOutParam(out int outValue);
 
-        int Int_RefParam(ref int refValue);
+        int IntRefParam(ref int refValue);
 
-        int Int_ParamsParam(params string[] paramsStrings);
+        int IntParamsParam(params string[] paramsStrings);
 
-        int Int_InParam(in string inStringValue);
+        int IntInParam(in string inStringValue);
 
-        int Int_AllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings);
+        int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings);
 
-        void Generic_SingleParam<TValue>(TValue value);
+        void GenericSingleParam<TValue>(TValue value);
 
-        TResult Generic_OutParam<TValue, TResult>(out TValue value);
+        TResult GenericOutParam<TValue, TResult>(out TValue value);
 
-        TResult Generic_RefParam<TValue, TResult>(ref TValue value);
+        TResult GenericRefParam<TValue, TResult>(ref TValue value);
 
-        TResult Generic_ParamsParam<TValue, TResult>(params TValue[] value);
+        TResult GenericParamsParam<TValue, TResult>(params TValue[] value);
 
-        TResult Generic_AllRefKind<TOut, TRef, TIn, TParams, TResult>(
+        TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
             out TOut outValue,
             ref TRef refValue,
             in TIn inValue,
             params TParams[] paramsValues);
     }
 
-    public interface IAnimal
+
+    public interface IMammal
+    {
+        
+    }
+
+    public interface IAnimal : IMammal
     {
         string Name { get; }
     }
@@ -62,6 +68,13 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
     {
         public Cat(string name)
             : base(name)
+        {
+        }
+    }
+
+    public class Tiger : Cat
+    {
+        public Tiger(string name) : base(name)
         {
         }
     }

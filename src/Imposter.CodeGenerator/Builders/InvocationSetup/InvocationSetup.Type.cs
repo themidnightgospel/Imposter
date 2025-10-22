@@ -7,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.InvocationSetup;
 
-internal static partial class InvocationSetup
+internal static partial class InvocationSetupBuilder
 {
     internal const string MethodInvocationSetupTypeName = "MethodInvocationSetup";
 
@@ -15,7 +15,7 @@ internal static partial class InvocationSetup
         ConstructorDeclaration(method.InvocationSetup.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithParameterList(
-                method.InputParameters.Count > 0
+                method.Parameters.InputParameters.Count > 0
                     ? ParameterList(
                         SingletonSeparatedList(
                             Parameter(Identifier("argumentsCriteria"))
@@ -25,7 +25,7 @@ internal static partial class InvocationSetup
                     : ParameterList()
             )
             .WithBody(new BlockBuilder()
-                .AddStatementsIf(method.InputParameters.Count > 0,
+                .AddStatementsIf(method.Parameters.InputParameters.Count > 0,
                     () => ExpressionStatement(
                         AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
@@ -37,7 +37,7 @@ internal static partial class InvocationSetup
                             SyntaxKind.SimpleAssignmentExpression,
                             IdentifierName("_nextSetup"),
                             InvocationExpression(
-                                IdentifierName(InvocationSetupType.GetOrAddMethodSetupMethodName),
+                                IdentifierName(InvocationSetupMetadata.GetOrAddMethodSetupMethodName),
                                 ArgumentList(
                                     SingletonSeparatedList(
                                         Argument(
@@ -54,38 +54,34 @@ internal static partial class InvocationSetup
                 )
                 .Build());
 
-    private static ClassDeclarationSyntax GetInvocationSetup(in ImposterTargetMethodMetadata method)
+    internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         return SyntaxFactoryHelper
-            .ClassDeclarationBuilder(method.Symbol, method.InvocationSetup.Name)
-            .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
-            .AddMember(DefaultInstanceLazyInitializer(method))
-            .AddMemberIf(method.InputParameters.Count > 0, () => SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax))
-            .AddMember(CallSetupsFieldDeclaration)
-            .AddMember(CurrentlySetupCallFieldDeclaration)
-            .AddMember(GetMethodCallSetupDeclarationSyntax)
-            .AddMember(DefaultResultGenerator(method))
-            .AddMember(Constructor(method))
-            .AddMemberIf(method.HasOutputParameters, () => SyntaxFactoryHelper.InitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters))
-            .AddMemberIf(method.HasReturnValue, () => ReturnsMethodDeclarationSyntax(method))
-            .AddMemberIf(method.HasReturnValue, () => ReturnsValueMethodDeclarationSyntax(method))
-            .AddMember(ThrowsTExceptionMethodDeclarationSyntax(method))
-            .AddMember(ThrowsExceptionInstanceMethodDeclarationSyntax(method))
-            .AddMember(ThrowsExceptionWithGeneratorMethodDeclarationSyntax(method))
-            .AddMember(CallBeforeReturnMethodDeclarationSyntax(method))
-            .AddMember(CallAfterReturnMethodDeclarationSyntax(method))
-            .AddMember(NextMethodCallSetupFieldDeclaration)
-            .AddMember(GetMethodDeclarationSyntax)
-            .AddMember(InvokeMethodDeclarationSyntax(method))
-            .AddMember(NestedMethodInvocationSetupType(method))
-            .Build()
-            // TODO not good for performance
-            .WithLeadingTriviaComment(method.DisplayName);
-    }
-
-    internal static (MemberDeclarationSyntax InvocationSetupBuilder, InterfaceDeclarationSyntax InvocationSetupBuilderInterface) Build(ImposterTargetMethodMetadata method)
-    {
-        var invocationSetupBuilderClass = GetInvocationSetup(method);
-        return (invocationSetupBuilderClass, BuildInvocationSetupInterface(method, invocationSetupBuilderClass));
+                .ClassDeclarationBuilder(method.Symbol, method.InvocationSetup.Name)
+                .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
+                .AddMember(DefaultInstanceLazyInitializer(method))
+                .AddMember(method.Parameters.HasInputParameters ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax) : null)
+                .AddMember(CallSetupsFieldDeclaration)
+                .AddMember(CurrentlySetupCallFieldDeclaration)
+                .AddMember(GetMethodCallSetupDeclarationSyntax)
+                .AddMember(DefaultResultGenerator(method))
+                .AddMember(Constructor(method))
+                .AddMember(SyntaxFactoryHelper.DeclareInitializeOutParametersWithDefaultsMethod(method))
+                .AddMember(ReturnsMethodDeclarationSyntax(method))
+                .AddMember(ReturnsValueMethodDeclarationSyntax(method))
+                .AddMember(ThrowsTExceptionMethodDeclarationSyntax(method))
+                .AddMember(ThrowsExceptionInstanceMethodDeclarationSyntax(method))
+                .AddMember(ThrowsExceptionWithGeneratorMethodDeclarationSyntax(method))
+                .AddMember(CallBeforeReturnMethodDeclarationSyntax(method))
+                .AddMember(CallAfterReturnMethodDeclarationSyntax(method))
+                .AddMember(NextMethodCallSetupFieldDeclaration)
+                .AddMember(BuildGetNextSetupMethod(method))
+                .AddMember(InvokeMethodDeclarationSyntax(method))
+                .AddMember(NestedMethodInvocationSetupType(method))
+                .Build()
+#if DEBUG
+                .WithLeadingTriviaComment(method.DisplayName)
+#endif
+            ;
     }
 }

@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Builders.Arguments;
 
-internal static class ArgumentsTypeBuilder
+internal static class ArgumentsBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
@@ -24,13 +24,13 @@ internal static class ArgumentsTypeBuilder
             .AddMembers(inputParameters.Select(SyntaxFactoryHelper.ParameterAsReadonlyField))
             .AddMember(new ConstructorBuilder(method.Arguments.Name)
                 .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                .WithParameterList(method.Parameters.InputParameterListSyntax)
+                .WithParameterList(method.Parameters.InputParameterWithoutRefKindListSyntax)
                 .WithBody(Block(inputParameters
                         .Select(parameter =>
                             ThisExpression()
                                 .Dot(IdentifierName(parameter.Name))
                                 .Assign(IdentifierName(parameter.Name))
-                                .AsStatement()
+                                .ToStatementSyntax()
                         )
                     )
                 )
