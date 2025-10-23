@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Contexts;
+using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -49,7 +49,9 @@ internal static partial class SyntaxFactoryHelper
         => new ParameterBuilder(type, name).Build();
 
     internal static ParameterSyntax ParameterSyntax(ParameterMetadata parameterMetadata)
-        => new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name).Build();
+        => new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name)
+            .WithDefaultValue(parameterMetadata.DefaultValue)
+            .Build();
 
     internal static ParameterListSyntax ToSingleParameterListSyntax(this ParameterSyntax parameterSyntax)
         => ParameterList(SingletonSeparatedList(parameterSyntax));

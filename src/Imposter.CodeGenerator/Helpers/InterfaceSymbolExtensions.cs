@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Helpers;
 
 public static class InterfaceSymbolExtensions
 {
-    public static IReadOnlyCollection<IMethodSymbol> GetAllInterfaceMethods(this INamedTypeSymbol interfaceSymbol)
+    internal static IReadOnlyCollection<IMethodSymbol> GetAllInterfaceMethods(this INamedTypeSymbol interfaceSymbol)
     {
         var methods = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
         var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
@@ -39,4 +39,38 @@ public static class InterfaceSymbolExtensions
             CollectInterfaceMethodsRecursive(implementedInterface, methods, visitedInterfaces);
         }
     }
+    
+    internal static IReadOnlyCollection<IPropertySymbol> GetAllInterfaceProperties(this INamedTypeSymbol interfaceSymbol)
+    {
+        var properties = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
+        var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+
+        CollectInterfacePropertiesRecursive(interfaceSymbol, properties, visitedInterfaces);
+
+        return properties;
+    }
+
+    private static void CollectInterfacePropertiesRecursive(
+        INamedTypeSymbol interfaceSymbol,
+        HashSet<IPropertySymbol> properties,
+        HashSet<INamedTypeSymbol> visitedInterfaces)
+    {
+        if (!visitedInterfaces.Add(interfaceSymbol))
+        {
+            return;
+        }
+
+        foreach (var propertySymbol in interfaceSymbol
+                     .GetMembers()
+                     .OfType<IPropertySymbol>())
+        {
+            properties.Add(propertySymbol);
+        }
+
+        foreach (var implementedInterface in interfaceSymbol.Interfaces)
+        {
+            CollectInterfacePropertiesRecursive(implementedInterface, properties, visitedInterfaces);
+        }
+    }
+
 }

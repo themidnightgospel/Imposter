@@ -31,13 +31,16 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
 
     /// <summary>Sets the default value expression for the parameter.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ParameterBuilder WithDefaultValue(ExpressionSyntax defaultValue)
+    public ParameterBuilder WithDefaultValue(ExpressionSyntax? defaultValue)
     {
-        // Roslyn factory requires the EqualsToken to be part of the EqualsValueClauseSyntax
-        _defaultValueClause = EqualsValueClause(
-            Token(SyntaxKind.EqualsToken),
-            defaultValue
-        );
+        if (defaultValue is not null)
+        {
+            // Roslyn factory requires the EqualsToken to be part of the EqualsValueClauseSyntax
+            _defaultValueClause = EqualsValueClause(
+                Token(SyntaxKind.EqualsToken),
+                defaultValue);
+        }
+
         return this;
     }
 

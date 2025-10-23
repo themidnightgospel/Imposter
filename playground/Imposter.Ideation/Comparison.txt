@@ -1,0 +1,2 @@
+Moq
+: Can't mock internal/private interfaces ?

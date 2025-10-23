@@ -1,0 +1,24 @@
+﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.InvocationVerifierInterface;
+
+internal static class MethodImposterInvocationVerifierInterfaceBuilder
+{
+    internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
+        SyntaxFactoryHelper
+            .InterfaceDeclarationBuilder(method.Symbol, method.InvocationVerifierInterface.Name)
+            .AddMember(
+                MethodDeclaration(
+                        PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                        Identifier(InvocationVerifierInterfaceMetadata.CalledMethodMetadata.Name))
+                    .AddParameterListParameters(
+                        Parameter(Identifier("count"))
+                            .WithType(IdentifierName("Count")))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+            )
+            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)));
+}

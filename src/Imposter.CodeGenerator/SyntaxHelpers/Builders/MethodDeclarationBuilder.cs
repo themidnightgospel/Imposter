@@ -28,6 +28,16 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         _attributes.Add(attribute);
         return this;
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MethodDeclarationBuilder AddModifierIf(bool condition, Func<SyntaxToken> modifierFactory)
+    {
+        if (condition)
+        {
+            _modifiers.Add(modifierFactory());
+        }
+        return this;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddModifier(SyntaxToken modifier)

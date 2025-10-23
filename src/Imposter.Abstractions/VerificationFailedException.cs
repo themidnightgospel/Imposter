@@ -5,7 +5,8 @@
 /// </summary>
 public class VerificationFailedException : Exception
 {
-    public VerificationFailedException(string message) : base(message)
+    public VerificationFailedException(Count expectedCount, int actualCount)
+        : base($"Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.")
     { }
 
     public VerificationFailedException(string message, Exception innerException) : base(message, innerException)
