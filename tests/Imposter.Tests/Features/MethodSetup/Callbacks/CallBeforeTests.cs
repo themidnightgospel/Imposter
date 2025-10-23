@@ -4,6 +4,8 @@ using System.Linq;
 using Imposter.Abstractions;
 using Shouldly;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Imposter.CodeGenerator.Tests.Shared;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
@@ -973,6 +975,56 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
 
             callBeforeValues.ShouldBe(new[] { 42 });
             callAfterValues.ShouldBe(new[] { 42 });
+        }
+        
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WithCallBefore_ExecutesCallback()
+        {
+            var callbackExecuted = false;
+            
+            _sut
+                .AsyncTaskIntNoParams()
+                .CallBefore(() =>
+                {
+                    callbackExecuted = true;
+                    return Task.CompletedTask;
+                })
+                .Returns(Task.FromResult(50));
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            
+            result.ShouldBe(50);
+            callbackExecuted.ShouldBeTrue();
+        }
+        
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WithBothCallbacks_ExecutesInOrder()
+        {
+            var executionOrder = new List<string>();
+            
+            _sut
+                .AsyncTaskIntNoParams()
+                .CallBefore(() =>
+                {
+                    executionOrder.Add("before");
+                    return Task.CompletedTask;
+                })
+                .Returns(async () =>
+                {
+                    executionOrder.Add("during");
+                    await Task.Delay(1);
+                    return 70;
+                })
+                .CallAfter(() =>
+                {
+                    executionOrder.Add("after");
+                    return Task.CompletedTask;
+                });
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            
+            result.ShouldBe(70);
+            executionOrder.ShouldBe(new[] { "before", "during", "after" });
         }
     }
 }

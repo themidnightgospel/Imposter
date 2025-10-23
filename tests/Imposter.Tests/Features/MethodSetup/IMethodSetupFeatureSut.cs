@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Imposter.Abstractions;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
@@ -25,81 +27,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings);
 
         void GenericSingleParam<TValue>(TValue value);
-
+        
+        void GenericInnerSingleParam<TValue>(List<TValue> value);
+        
         TResult GenericOutParam<TValue, TResult>(out TValue value);
+        
+        Stack<TResult> GenericInnerOutParam<TValue, TResult>(out List<TValue> value);
 
         TResult GenericRefParam<TValue, TResult>(ref TValue value);
+        
+        Stack<TResult> GenericInnerRefParam<TValue, TResult>(ref List<TValue> value);
 
         TResult GenericParamsParam<TValue, TResult>(params TValue[] value);
+        
+        Stack<TResult> GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value);
 
         TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
             out TOut outValue,
             ref TRef refValue,
             in TIn inValue,
             params TParams[] paramsValues);
-    }
-
-
-    public interface IMammal
-    {
         
-    }
-
-    public interface IAnimal : IMammal
-    {
-        string Name { get; }
-    }
-
-    public class Animal : IAnimal
-    {
-        public Animal(string name)
-        {
-            Name = name;
-        }
-
-        public string Name { get; }
-    }
-
-    public interface ICat : IAnimal
-    {
-    }
-
-    public class Cat : Animal, ICat
-    {
-        public Cat(string name)
-            : base(name)
-        {
-        }
-    }
-
-    public class Tiger : Cat
-    {
-        public Tiger(string name) : base(name)
-        {
-        }
-    }
-
-    public interface IDog : IAnimal
-    {
-    }
-
-    public class Dog : Animal, IDog
-    {
-        public Dog(string name)
-            : base(name)
-        {
-        }
-    }
-
-    public interface IGermanShepherd : IDog
-    {
-    }
-
-    public class GermanShepherd : Dog, IGermanShepherd
-    {
-        public GermanShepherd(string name)
-            : base(name)
-        {
-        }
+        Task<int> AsyncTaskIntNoParams();
     }
 }

@@ -29,16 +29,24 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal InterfaceDeclarationBuilder AddMember(MemberDeclarationSyntax member)
+    internal InterfaceDeclarationBuilder AddMember(MemberDeclarationSyntax? member)
     {
-        _members.Add(member);
+        if (member is not null)
+        {
+            _members.Add(member);
+        }
+
         return this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal InterfaceDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax> members)
+    internal InterfaceDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
     {
-        _members.AddRange(members);
+        if (members is not null)
+        {
+            _members.AddRange(members);
+        }
+
         return this;
     }
 

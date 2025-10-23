@@ -4,6 +4,8 @@ using System.Linq;
 using Imposter.Abstractions;
 using Shouldly;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Imposter.CodeGenerator.Tests.Shared;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
@@ -548,7 +550,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void VoidNoParams_WhenHasMultipleCallAfterCallbacks_AllCallbacksAreInvoked()
+        public void VoidNoParams_WhenCallAfterSetupsAreChained_InvokedInOrder()
         {
             var firstCallbackInvokedCount = 0;
             var secondCallbackInvokedCount = 0;
@@ -559,8 +561,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                 .CallAfter(() => ++secondCallbackInvokedCount);
 
             _sut.Instance().VoidNoParams();
-
             firstCallbackInvokedCount.ShouldBe(1);
+
+            _sut.Instance().VoidNoParams();
             secondCallbackInvokedCount.ShouldBe(1);
         }
 
@@ -877,12 +880,33 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
                     capturedOutValue = animal;
                 });
 
-            var result = _sut.Instance().GenericOutParam<Tiger, string>(out var outAnimal);
+            var result = _sut.Instance().GenericOutParam<IMammal, string>(out var outMammal);
 
             callAfterCount.ShouldBe(1);
             result.ShouldBe("success");
-            outAnimal.ShouldBeOfType<Tiger>().Name.ShouldBe("callback-tiger");
+            outMammal.ShouldBeOfType<Tiger>().Name.ShouldBe("callback-tiger");
             capturedOutValue.ShouldBeOfType<Tiger>();
         }
+        
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WithCallAfter_ExecutesCallback()
+        {
+            var callbackExecuted = false;
+            
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(60))
+                .CallAfter(() =>
+                {
+                    callbackExecuted = true;
+                    return Task.CompletedTask;
+                });
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            
+            result.ShouldBe(60);
+            callbackExecuted.ShouldBeTrue();
+        }
+
     }
 }

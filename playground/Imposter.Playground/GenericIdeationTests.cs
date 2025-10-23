@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Imposter.Abstractions;
 using Imposter.Ideation;
-using Imposter.Ideation.GenericMethod;
+using Imposter.Ideation.GenericMethodPoc;
 using Moq;
 using Shouldly;
 using Xunit;

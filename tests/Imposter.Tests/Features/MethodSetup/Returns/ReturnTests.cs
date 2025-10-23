@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.CodeGenerator.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -406,6 +410,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
             result.ShouldBe(123);
             outValue.ShouldBe(default);
         }
+        
+        [Fact]
+        public void GenericOutParam_WhenMultipleSetup_InvokesMatchingSetup()
+        {
+            _sut
+                .GenericOutParam<string, int>(OutArg<string>.Any())
+                .Returns(123);
+            
+            _sut
+                .GenericOutParam<int, string>(OutArg<int>.Any())
+                .Returns("hello");
+            
+            _sut
+                .GenericOutParam<double, int>(OutArg<double>.Any())
+                .Returns(321);
+
+            var result = _sut.Instance().GenericOutParam<string, int>(out var outValue);
+
+            result.ShouldBe(123);
+            outValue.ShouldBe(default);
+        }
 
         [Fact]
         public void GenericOutParam_WhenSetupWithDelegate_ReturnsValueAndSetsOut()
@@ -613,5 +638,169 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
 
             _sut.Instance().IntNoParams().ShouldBe(default);
         }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_SetupToReturnValue_ReturnsValue()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(async () =>
+                {
+                    await Task.Delay(TimeSpan.FromMicroseconds(1));
+                    return 11;
+                });
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            result.ShouldBe(11);
+        }
+        
+          [Fact]
+        public async Task AsyncTaskIntNoParams_WhenNoSetup_ReturnsCompletedTaskWithDefault()
+        {
+            var task = _sut.Instance().AsyncTaskIntNoParams();
+
+            task.ShouldNotBeNull();
+            
+            var result = await task;
+            result.ShouldBe(0);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_SetupWithSyncValue_ReturnsCompletedTask()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(42));
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            result.ShouldBe(42);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_SetupWithAsyncDelegate_ExecutesAsync()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(async () =>
+                {
+                    await Task.Delay(10); // Small delay to ensure async execution
+                    return 123;
+                });
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            
+            result.ShouldBe(123);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_SetupChained_ReturnsInSequence()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(100))
+                .Returns(async () =>
+                {
+                    await Task.Delay(5);
+                    return 200;
+                })
+                .Returns(Task.FromResult(300));
+
+            var result1 = await _sut.Instance().AsyncTaskIntNoParams();
+            var result2 = await _sut.Instance().AsyncTaskIntNoParams();
+            var result3 = await _sut.Instance().AsyncTaskIntNoParams();
+            var result4 = await _sut.Instance().AsyncTaskIntNoParams(); // Should repeat last
+
+            result1.ShouldBe(100);
+            result2.ShouldBe(200);
+            result3.ShouldBe(300);
+            result4.ShouldBe(300);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_SetupOverridden_LastSetupWins()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(111));
+
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(222));
+
+            var result = await _sut.Instance().AsyncTaskIntNoParams();
+            result.ShouldBe(222);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WithComplexAsyncScenario_HandlesCorrectly()
+        {
+            var counter = 0;
+            
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(async () =>
+                {
+                    // Simulate some async work
+                    await Task.Run(() =>
+                    {
+                        Thread.Sleep(10);
+                        counter++;
+                    });
+                    
+                    return counter * 100;
+                });
+
+            var tasks = new[]
+            {
+                _sut.Instance().AsyncTaskIntNoParams(),
+                _sut.Instance().AsyncTaskIntNoParams(),
+                _sut.Instance().AsyncTaskIntNoParams()
+            };
+
+            var results = await Task.WhenAll(tasks);
+            
+            // All should have the same setup, but counter might vary due to concurrency
+            results.ShouldAllBe(r => r > 0);
+            counter.ShouldBeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_CancellationTokenSupported_WhenAvailable()
+        {
+            // Test that the async method can handle cancellation if the implementation supports it
+            using var cts = new CancellationTokenSource();
+            
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(async () =>
+                {
+                    // Simulate work that can be cancelled
+                    await Task.Delay(100, cts.Token);
+                    return 999;
+                });
+
+            cts.CancelAfter(50); // Cancel after 50ms
+
+            await Should.ThrowAsync<OperationCanceledException>(
+                async () => await _sut.Instance().AsyncTaskIntNoParams()
+            );
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_TaskFromResultOptimization_WorksCorrectly()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(Task.FromResult(888));
+
+            var task = _sut.Instance().AsyncTaskIntNoParams();
+            
+            task.ShouldNotBeNull();
+            task.IsCompleted.ShouldBeTrue(); // Task.FromResult creates a completed task
+            
+            var result = await task;
+            result.ShouldBe(888);
+        }
+
     }
 }

@@ -34,3 +34,33 @@ UPDATE: We no longer support .Any, `object` can be used to support the behaviour
 
 - Why method imposter uses `Stack` to store `_invocationSetups`
    Because newly added setups override existing ones, so LIFO container fits well.
+
+
+- Why generic method invocation verification matches exact type match.
+
+  example:
+```csharp
+            _sut.Instance().GenericSinlgeParam<IMammal, int>(mammal);
+            _sut.Instance().GenericSinlgeParam<ICat, int>(cat);
+            _sut.Instance().GenericSinlgeParam<ITiger, int>(tiger);
+```
+
+  then
+  
+```csharp
+            _sut.GenericOutParam<IAnimal, int>(OutArg<IAnimal>.Any()).Called(1);
+```
+
+this will not match `GenericOutParam<Cat, int>` call, even though `Cat` is assignable to `IAnimal` reason is that, if we  do that then the following will not work
+
+```csharp
+            _sut.GenericOutParam<ICat, int>(OutArg<IAnimal>.Any()).Called(1);
+```
+
+Here we want to assert that `ICat` invocation was made exactly once. If assert were to match `ITiger` call (because `ITiger : ICat`), then we wouldn't be able to make this assertion.
+Only way then would be to pass custom criteria so like `Arg<ICat>.Is(it => it is ITiger)`.
+
+The reason why we might consider changing this behaviour and actually matching based on "IsAssigneableTo" is that that is how method setups works. So method setup for Tiger will match invocation made on Cat.
+
+
+
