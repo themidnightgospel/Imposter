@@ -1,0 +1,74 @@
+﻿using Imposter.Abstractions;
+using Shouldly;
+using Xunit;
+
+namespace Imposter.CodeGenerator.Tests.Features.PropertySetup;
+
+public class CallbackTests
+{
+    private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
+
+    [Fact]
+    public void GivenSetterCallbackWithMatchingCriteria_WhenPropertyIsSet_ShouldInvokeCallback()
+    {
+        var capturedValue = 0;
+        _sut.Age.SetterCallback(Arg<int>.Is(x => x > 10), value => capturedValue = value);
+
+        _sut.Instance().Age = 15;
+
+        capturedValue.ShouldBe(15);
+    }
+
+    [Fact]
+    public void GivenSetterCallbackWithNonMatchingCriteria_WhenPropertyIsSet_ShouldNotInvokeCallback()
+    {
+        var callbackInvoked = false;
+        _sut.Age.SetterCallback(Arg<int>.Is(x => x > 10), _ => callbackInvoked = true);
+
+        _sut.Instance().Age = 5;
+
+        callbackInvoked.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeAllMatchingCallbacks()
+    {
+        var callback1Invoked = false;
+        var callback2Invoked = false;
+
+        _sut.Age.SetterCallback(Arg<int>.Is(x => x > 0), _ => callback1Invoked = true);
+        _sut.Age.SetterCallback(Arg<int>.Is(x => x > 10), _ => callback2Invoked = true);
+
+        _sut.Instance().Age = 15;
+
+        callback1Invoked.ShouldBeTrue();
+        callback2Invoked.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GivenGetterCallback_WhenPropertyIsAccessedMultipleTimes_ShouldInvokeCallbackEachTime()
+    {
+        var invocationCount = 0;
+        _sut.Age.GetterCallback(() => invocationCount++);
+
+        _sut.Instance().Age.ShouldBe(0);
+        _sut.Instance().Age.ShouldBe(0);
+
+        invocationCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public void GivenMultipleGetterCallback_WhenPropertyIsAccessed_ShouldInvokeEachCallback()
+    {
+        var callback1Count = 0;
+        var callback2Count = 0;
+
+        _sut.Age.GetterCallback(() => callback1Count++);
+        _sut.Age.GetterCallback(() => callback2Count++);
+
+        _sut.Instance().Age.ShouldBe(0);
+
+        callback1Count.ShouldBe(1);
+        callback2Count.ShouldBe(1);
+    }
+}

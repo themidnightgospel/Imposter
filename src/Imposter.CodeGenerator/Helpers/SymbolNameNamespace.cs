@@ -2,11 +2,16 @@
 
 namespace Imposter.CodeGenerator.Helpers;
 
-internal readonly struct SymbolNameNamespace(IEnumerable<string> alreadyUsedNames)
+internal class SymbolNameNamespace
 {
-    private readonly HashSet<string> _alreadyUsedNames = new(alreadyUsedNames);
+    private readonly HashSet<string> _alreadyUsedNames;
 
-    public string Use(string key)
+    public SymbolNameNamespace(IEnumerable<string> alreadyUsedNames)
+    {
+        _alreadyUsedNames = new(alreadyUsedNames);
+    }
+
+    internal string Use(string key)
     {
         var counter = 0;
         var value = key;
@@ -21,5 +26,8 @@ internal readonly struct SymbolNameNamespace(IEnumerable<string> alreadyUsedName
         return value;
     }
 
-    private bool IsNameUsed(string name) => _alreadyUsedNames.Contains(name);
+    private bool IsNameUsed(string name)
+    {
+        return _alreadyUsedNames.Contains(name);
+    }
 }

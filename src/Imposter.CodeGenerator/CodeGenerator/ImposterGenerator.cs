@@ -16,6 +16,7 @@ using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Impost
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.InvocationVerifierInterface;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface_;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter;
 using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Interface;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -44,7 +45,7 @@ public class ImposterGenerator : IIncrementalGenerator
     private static void GenerateImposter(
         SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration generateImposterDeclaration,
-        CompilationContext compilationContext)
+        in CompilationContext compilationContext)
     {
         if (sourceProductionContext.CancellationToken.IsCancellationRequested)
         {
@@ -60,7 +61,7 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration);
             sourceProductionContext.AddSource(
-                $"{compilationContext.GeneratedCsFileUniqueName.New(imposterGenerationContext.Imposter.Name)}.g.cs",
+                $"{compilationContext.SymbolNameNamespace.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
                 SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
         }
         // TODO
@@ -110,6 +111,7 @@ public class ImposterGenerator : IIncrementalGenerator
         foreach (var property in imposterGenerationContext.Imposter.Properties)
         {
             imposter.AddMember(PropertyImposterInterfaceBuilder.Build(property));
+            imposter.AddMember(PropertyImposterBuilder.Build(property));
         }
 
         var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(

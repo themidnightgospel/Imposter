@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.Features.Imposter;
 
 internal static partial class ImposterBuilder
 {
-    private static MemberDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext) =>
+    private static MemberDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext, string imposterInstanceFieldName) =>
         MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
                 Identifier("Instance")
@@ -18,6 +18,6 @@ internal static partial class ImposterBuilder
                 )
             )
             .WithBody(Block(
-                ReturnStatement(IdentifierName(ImposterInstanceFieldName))
+                ReturnStatement(IdentifierName(imposterInstanceFieldName))
             ));
 }

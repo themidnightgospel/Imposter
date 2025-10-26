@@ -12,6 +12,9 @@ internal static partial class SyntaxFactoryHelper
     internal static MemberAccessExpressionSyntax Dot(this ExpressionSyntax source, SimpleNameSyntax right)
         => SimpleMemberAccess(source, right);
 
+    internal static InvocationExpressionSyntax Call(this ExpressionSyntax source, ArgumentSyntax argumentSyntax)
+        => source.Call(argumentSyntax.AsSingleArgumentListSyntax());
+
     internal static InvocationExpressionSyntax Call(this ExpressionSyntax source, ArgumentListSyntax? argumentListSyntax = null)
     {
         return argumentListSyntax is null

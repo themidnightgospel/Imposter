@@ -1,27 +1,27 @@
 ﻿using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Interface;
 
 internal static class PropertyImposterInterfaceBuilder
 {
-    internal static InterfaceDeclarationSyntax Build(in ImposterTargetPropertyMetadata property)
+    internal static InterfaceDeclarationSyntax Build(in ImposterTargetPropertyMetadata property) =>
+        new InterfaceDeclarationBuilder(property.PropertyImposterInterface.Name)
+            .AddMembers(BuildReturnsValueMethod(property))
+            .AddMembers(BuildThrowsValueMethod(property))
+            .AddMember(BuildSetterCallbackMethod(property))
+            .AddMember(BuildGetterCallbackMethod(property))
+            .AddMember(BuildGetterCalledMethod(property))
+            .AddMember(BuildSetterCalledMethod(property))
+            .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
+
+    internal static MethodDeclarationSyntax? BuildSetterCalledMethod(in ImposterTargetPropertyMetadata property)
     {
-        return new InterfaceDeclarationBuilder(property.Interface.Name)
-            .AddMembers(ReturnsValueMethod(property))
-            .AddMember(SetterCallbackMethod(property))
-            .AddMember(GetterCallbackMethod(property))
-            .AddMember(AutoPropertyMethod(property))
-            .AddMember(GetterCalledMethod(property))
-            .AddMember(SetterCalledMethod(property))
-            .Build();
-    }
-    
-    internal static MethodDeclarationSyntax? SetterCalledMethod(in ImposterTargetPropertyMetadata property)
-    {
-        if (!property.HasGetter)
+        if (!property.HasSetter)
         {
             return null;
         }
@@ -33,7 +33,7 @@ internal static class PropertyImposterInterfaceBuilder
             .Build();
     }
     
-    internal static MethodDeclarationSyntax? GetterCalledMethod(in ImposterTargetPropertyMetadata property)
+    internal static MethodDeclarationSyntax? BuildGetterCalledMethod(in ImposterTargetPropertyMetadata property)
     {
         if (!property.HasGetter)
         {
@@ -45,21 +45,8 @@ internal static class PropertyImposterInterfaceBuilder
             .WithSemicolon()
             .Build();
     }
- 
-    internal static MethodDeclarationSyntax? AutoPropertyMethod(in ImposterTargetPropertyMetadata property)
-    {
-        if (!property.HasGetter)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(property.AutoPropertyMethod.ReturnType, property.AutoPropertyMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(property.AutoPropertyMethod.InitialValueParameter))
-            .WithSemicolon()
-            .Build();
-    }
     
-    internal static MethodDeclarationSyntax? GetterCallbackMethod(in ImposterTargetPropertyMetadata property)
+    internal static MethodDeclarationSyntax? BuildGetterCallbackMethod(in ImposterTargetPropertyMetadata property)
     {
         if (!property.HasGetter)
         {
@@ -72,7 +59,7 @@ internal static class PropertyImposterInterfaceBuilder
             .Build();
     }
 
-    internal static MethodDeclarationSyntax? SetterCallbackMethod(in ImposterTargetPropertyMetadata property)
+    internal static MethodDeclarationSyntax? BuildSetterCallbackMethod(in ImposterTargetPropertyMetadata property)
     {
         if (!property.HasSetter)
         {
@@ -85,8 +72,30 @@ internal static class PropertyImposterInterfaceBuilder
             .WithSemicolon()
             .Build();
     }
+    
+    internal static MethodDeclarationSyntax[]? BuildThrowsValueMethod(in ImposterTargetPropertyMetadata property)
+    {
+        if (!property.HasGetter)
+        {
+            return null;
+        }
 
-    internal static MethodDeclarationSyntax[]? ReturnsValueMethod(in ImposterTargetPropertyMetadata property)
+        return
+        [
+            new MethodDeclarationBuilder(property.ThrowsMethod.ReturnType, property.ThrowsMethod.Name)
+                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(property.ThrowsMethod.ExceptionParameter))
+                .WithSemicolon()
+                .Build(),
+
+            new MethodDeclarationBuilder(property.ThrowsMethod.ReturnType, property.ThrowsMethod.Name)
+                .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
+                .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
+                .WithSemicolon()
+                .Build(),
+        ];
+    }
+
+    internal static MethodDeclarationSyntax[]? BuildReturnsValueMethod(in ImposterTargetPropertyMetadata property)
     {
         if (!property.HasGetter)
         {

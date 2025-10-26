@@ -7,7 +7,11 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static class WellKnownTypes
 {
-    internal static TypeSyntax Void = PredefinedType(Token(SyntaxKind.VoidKeyword));
+    internal static readonly TypeSyntax Void = PredefinedType(Token(SyntaxKind.VoidKeyword));
+    
+    internal static readonly TypeSyntax Int = PredefinedType(Token(SyntaxKind.IntKeyword));
+    
+    internal static readonly TypeSyntax Bool = PredefinedType(Token(SyntaxKind.BoolKeyword));
         
     internal static class System
     {
@@ -38,10 +42,56 @@ internal static class WellKnownTypes
                 TypeArgumentList(SingletonSeparatedList(returnType))
             )
         );
+        
+        internal static TypeSyntax Tuple(TypeSyntax item1Type, TypeSyntax item2Type) => QualifiedName(
+            Namespace,
+            GenericName(
+                Identifier("Tuple"),
+                TypeArgumentList(
+                    SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
+                    {
+                        item1Type,
+                        Token(SyntaxKind.CommaToken),
+                        item2Type
+                    })
+                )
+            )
+        );
+
+        public static class Collections
+        {
+            internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Collections"));
+
+            public static class Concurrent
+            {
+                internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Collections.Namespace, IdentifierName("Concurrent"));
+
+                internal static TypeSyntax ConcurrentQueue(TypeSyntax typeArgument) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("ConcurrentQueue"),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
+                    )
+                );
+
+                internal static TypeSyntax ConcurrentBag(TypeSyntax typeArgument) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("ConcurrentBag"),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
+                    )
+                );
+            }
+        }
 
         public static class Threading
         {
             internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Threading"));
+            
+            internal static TypeSyntax Interlocked = QualifiedName(
+                Namespace,
+                IdentifierName("Interlocked")
+            );
 
             public static class Tasks
             {

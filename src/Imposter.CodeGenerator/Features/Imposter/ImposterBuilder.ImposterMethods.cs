@@ -11,7 +11,7 @@ namespace Imposter.CodeGenerator.Features.Imposter;
 
 internal static partial class ImposterBuilder
 {
-    private static IEnumerable<MethodDeclarationSyntax> SetupBuilderMethods(in ImposterGenerationContext imposterGenerationContext)
+    private static IEnumerable<MethodDeclarationSyntax> BuildImposterMethods(in ImposterGenerationContext imposterGenerationContext)
     {
         return imposterGenerationContext
             .Imposter

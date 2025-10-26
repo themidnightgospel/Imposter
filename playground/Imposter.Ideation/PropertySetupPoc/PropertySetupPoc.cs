@@ -9,12 +9,12 @@ using Imposter.Ideation.PropertySetupPoc;
 namespace Imposter.Ideation.PropertySetupPoc
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IPropertySetupSutPocImposter : Imposter.Abstractions.IHaveImposterInstance<IPropertySetupSutPoc>
+    public class IndexerSetupPoc : Imposter.Abstractions.IHaveImposterInstance<IPropertySetupSutPoc>
     {
         private ImposterTargetInstance _imposterInstance;
         private readonly AgePropertyImposter _agePropertyImposter;
 
-        public IPropertySetupSutPocImposter()
+        public IndexerSetupPoc()
         {
             this._imposterInstance = new ImposterTargetInstance(this);
             this._agePropertyImposter = new AgePropertyImposter();
@@ -25,9 +25,9 @@ namespace Imposter.Ideation.PropertySetupPoc
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class ImposterTargetInstance : IPropertySetupSutPoc
         {
-            IPropertySetupSutPocImposter _imposter;
+            IndexerSetupPoc _imposter;
 
-            public ImposterTargetInstance(IPropertySetupSutPocImposter _imposter)
+            public ImposterTargetInstance(IndexerSetupPoc _imposter)
             {
                 this._imposter = _imposter;
             }
@@ -49,122 +49,119 @@ namespace Imposter.Ideation.PropertySetupPoc
             IAgePropertyImposter Returns(int value);
 
             IAgePropertyImposter Returns(Func<int> resultGenerator);
-            
+
             IAgePropertyImposter Throws(Exception exception);
 
             IAgePropertyImposter Throws<TException>()
                 where TException : Exception, new();
-            
+
             IAgePropertyImposter SetterCallback(Arg<int> criteria, Action<int> callback);
 
             IAgePropertyImposter GetterCallback(Action callback);
 
-            void GetterCalled(Count times);
+            void GetterCalled(Count count);
 
-            void SetterCalled(Arg<int> criteria, Count times);
+            void SetterCalled(Arg<int> criteria, Count count);
         }
 
         class AgePropertyImposter : IAgePropertyImposter
         {
-            private readonly ConcurrentQueue<Func<int>> _setupValue = new ConcurrentQueue<Func<int>>();
-            private readonly ConcurrentStack<(Arg<int> criteria, Action<int> callback)> _setterCallbacks = new ConcurrentStack<(Arg<int> criteria, Action<int> callback)>();
-            private Action? _getterCallback;
-            private readonly ConcurrentBag<int> _setHistory = new ConcurrentBag<int>();
-            private bool _isAutoProperty = true;
-            private int _backingField;
-            private int _lastSetupValue;
-            private int _invocationCount;
+            private readonly ConcurrentQueue<Func<int>> _getterReturnValues = new ConcurrentQueue<Func<int>>();
+            private readonly ConcurrentQueue<Action> _getterCallbacks = new ConcurrentQueue<Action>();
+            private Func<int> _lastGetterReturnValue = () => default(int);
+            private int _getterInvocationCount;
 
-            private void AddSetupValue(Func<int> setupValue)
+            private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _setterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
+            private readonly ConcurrentBag<int> _setterInvocationHistory = new ConcurrentBag<int>();
+
+            private bool _useAutoPropertyBehaviour = true;
+            private int _backingField;
+
+            private void AddGetterReturnValue(Func<int> valueGenerator)
             {
-                _isAutoProperty = false;
-                _setupValue.Enqueue(setupValue);
+                _useAutoPropertyBehaviour = false;
+                _getterReturnValues.Enqueue(valueGenerator);
             }
 
             IAgePropertyImposter IAgePropertyImposter.Returns(int value)
             {
-                AddSetupValue(() => value);
+                AddGetterReturnValue(() => value);
                 return this;
             }
 
-            IAgePropertyImposter IAgePropertyImposter.Returns(Func<int> resultGenerator)
+            IAgePropertyImposter IAgePropertyImposter.Returns(Func<int> valueGenerator)
             {
-                AddSetupValue(resultGenerator);
+                AddGetterReturnValue(valueGenerator);
                 return this;
             }
 
             IAgePropertyImposter IAgePropertyImposter.Throws(Exception exception)
             {
-                AddSetupValue(() => throw exception);
+                AddGetterReturnValue(() => throw exception);
                 return this;
             }
 
-            public IAgePropertyImposter Throws<TException>() where TException : Exception, new()
+            IAgePropertyImposter IAgePropertyImposter.Throws<TException>()
             {
-                AddSetupValue(() => throw new TException());
+                AddGetterReturnValue(() => throw new TException());
                 return this;
             }
 
             IAgePropertyImposter IAgePropertyImposter.SetterCallback(Arg<int> criteria, Action<int> callback)
             {
-                _setterCallbacks.Push((criteria, callback));
+                _setterCallbacks.Enqueue(new Tuple<Arg<int>, Action<int>>(criteria, callback));
                 return this;
             }
 
             IAgePropertyImposter IAgePropertyImposter.GetterCallback(Action callback)
             {
-                _getterCallback = callback;
+                _getterCallbacks.Enqueue(callback);
                 return this;
             }
 
-            void IAgePropertyImposter.GetterCalled(Count times)
+            void IAgePropertyImposter.GetterCalled(Count count)
             {
-                if (!times.Matches(_invocationCount))
+                if (!count.Matches(_getterInvocationCount))
                 {
-                    throw new System.Exception($"Expected {times} times, but was {_invocationCount}");
+                    throw new VerificationFailedException(count, _getterInvocationCount);
                 }
             }
 
-            void IAgePropertyImposter.SetterCalled(Arg<int> criteria, Count times)
+            void IAgePropertyImposter.SetterCalled(Arg<int> criteria, Count count)
             {
-                var setCount = _setHistory.Count(criteria.Matches);
+                var setterInvocationCount = _setterInvocationHistory.Count(criteria.Matches);
 
-                if (!times.Matches(setCount))
+                if (!count.Matches(setterInvocationCount))
                 {
-                    throw new System.Exception($"Expected {times} times, but was {setCount}");
+                    throw new VerificationFailedException(count, setterInvocationCount);
                 }
             }
 
             internal int Get()
             {
-                Interlocked.Increment(ref _invocationCount);
+                Interlocked.Increment(ref _getterInvocationCount);
 
-                if (_getterCallback != null)
+                foreach (var getterCallback in _getterCallbacks)
                 {
-                    _getterCallback();
+                    getterCallback();
                 }
 
-                if (_isAutoProperty)
+                if (_useAutoPropertyBehaviour)
                 {
                     return _backingField;
                 }
 
-                if (_setupValue.TryDequeue(out var setupValue))
+                if (_getterReturnValues.TryDequeue(out var returnValue))
                 {
-                    _lastSetupValue = setupValue();
+                    _lastGetterReturnValue = returnValue;
                 }
 
-                return _lastSetupValue;
+                return _lastGetterReturnValue();
             }
 
             internal void Set(int value)
             {
-                _setHistory.Add(value);
-
-                if (_isAutoProperty)
-                {
-                    _backingField = value;
-                }
+                _setterInvocationHistory.Add(value);
 
                 foreach (var (criteria, setterCallback) in _setterCallbacks)
                 {
@@ -173,9 +170,13 @@ namespace Imposter.Ideation.PropertySetupPoc
                         setterCallback(value);
                     }
                 }
+
+                if (_useAutoPropertyBehaviour)
+                {
+                    _backingField = value;
+                }
             }
         }
-
     }
 }
 
@@ -188,9 +189,9 @@ public static class Usage
 {
     static void SutUsage()
     {
-        var imposter = new IPropertySetupSutPocImposter();
+        var imposter = new IndexerSetupPoc();
         imposter.Age.Returns(11).Returns(22).Returns(44);
-        
+
         imposter.Age.Returns(() => imposter.Instance().Age == 22 ? 11 : 44);
 
         int captured;

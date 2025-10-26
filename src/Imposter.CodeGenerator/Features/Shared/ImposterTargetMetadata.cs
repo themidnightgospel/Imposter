@@ -18,7 +18,6 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyList<ImposterTargetPropertyMetadata> Properties;
 
-
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
     {
         var symbolNameNamespace = new SymbolNameNamespace([]);

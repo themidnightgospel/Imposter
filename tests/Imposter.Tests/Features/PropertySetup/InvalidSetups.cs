@@ -1,0 +1,30 @@
+﻿using System;
+using Imposter.Abstractions;
+using Shouldly;
+using Xunit;
+
+namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
+{
+    public class InvalidSetups
+    {
+        private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
+
+        [Fact]
+        public void GivenNullFunction_WhenPropertyIsAccessed_ShouldThrowNullReferenceException()
+        {
+            _sut.Age.Returns((Func<int>)null);
+
+            Should.Throw<NullReferenceException>(() => _sut.Instance().Age);
+        }
+
+        [Fact]
+        public void GivenNullCallback_WhenPropertyIsSet_ShouldThrowOnInvocation()
+        {
+            // This should not throw when setting up
+            Should.NotThrow(() => _sut.Age.SetterCallback(Arg<int>.Any(), null));
+
+            // But will throw when callback is invoked
+            Should.Throw<NullReferenceException>(() => _sut.Instance().Age = 42);
+        }
+    }
+}
