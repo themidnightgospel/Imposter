@@ -8,11 +8,17 @@ namespace Imposter.CodeGenerator.Tests;
 
 public class TypeCasterTests
 {
-    #region Test Classes
-    private interface IAnimal { }
-    private class Animal : IAnimal { }
-    private class Dog : Animal { }
-    #endregion
+    private interface IAnimal
+    {
+    }
+
+    private class Animal : IAnimal
+    {
+    }
+
+    private class Dog : Animal
+    {
+    }
 
     [Fact]
     public void Cast_WhenUpcastingReferenceType_ShouldSucceed()
@@ -52,13 +58,13 @@ public class TypeCasterTests
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<string, int>("123"));
     }
-        
+
     [Fact]
     public void Cast_WideningNumericConversion_ShouldFail()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<int, double>(42));
     }
-        
+
     [Fact]
     public void Cast_NarrowingNumericConversion_WhenValid_ShouldSucceed()
     {
@@ -90,13 +96,13 @@ public class TypeCasterTests
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<double, int>(42.5));
     }
-        
+
     [Fact]
     public void Cast_NullToNonNullableValueType_ShouldThrow()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<object, int>(null));
     }
-    
+
     [Fact]
     public void TryCast_WhenUpcastingReferenceType_ShouldReturnTrue()
     {
@@ -138,7 +144,7 @@ public class TypeCasterTests
         TypeCaster.TryCast("abc", out int result).ShouldBeFalse();
         result.ShouldBe(default);
     }
-        
+
     [Fact]
     public void TryCast_NarrowingNumericConversion_WhenDataLoss_ShouldReturnFalse()
     {
@@ -152,7 +158,7 @@ public class TypeCasterTests
         TypeCaster.TryCast<object, int>(null, out var result).ShouldBeFalse();
         result.ShouldBe(default);
     }
-        
+
     [Fact]
     public void TryCast_UnrelatedTypes_ShouldReturnFalse()
     {
