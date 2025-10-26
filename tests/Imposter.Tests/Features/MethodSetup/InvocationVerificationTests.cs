@@ -1,10 +1,10 @@
-﻿using Imposter.Abstractions;
-using Shouldly;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Shared;
+using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Verification
+namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 {
     public class InvocationVerificationTests
     {

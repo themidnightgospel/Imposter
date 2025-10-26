@@ -13,4 +13,6 @@ internal static partial class SyntaxFactoryHelper
     public static readonly LiteralExpressionSyntax Null = LiteralExpression(SyntaxKind.DefaultLiteralExpression);
     
     public static readonly LiteralExpressionSyntax True = LiteralExpression(SyntaxKind.TrueLiteralExpression);
+    
+    public static readonly LiteralExpressionSyntax False = LiteralExpression(SyntaxKind.FalseLiteralExpression);
 }

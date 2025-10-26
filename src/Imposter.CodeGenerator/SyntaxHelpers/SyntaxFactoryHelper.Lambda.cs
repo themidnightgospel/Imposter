@@ -10,10 +10,17 @@ internal static partial class SyntaxFactoryHelper
 {
     public static ParenthesizedLambdaExpressionSyntax Lambda(IEnumerable<IParameterSymbol> parameters, BlockSyntax body) =>
         ParenthesizedLambdaExpression(ParameterListSyntax(parameters), body);
+    
+    
+    public static ParenthesizedLambdaExpressionSyntax EmptyParametersGoesTo(CSharpSyntaxNode body) =>
+        ParenthesizedLambdaExpression(
+            ParameterList(),
+            body
+        );
 
     public static SimpleLambdaExpressionSyntax GoesTo(this ParameterSyntax lambdaParameter, CSharpSyntaxNode body)
-        => SyntaxFactory.SimpleLambdaExpression(lambdaParameter, body);
+        => SimpleLambdaExpression(lambdaParameter, body);
     
     public static SimpleLambdaExpressionSyntax GoesTo(this SyntaxToken lambdaParameter, CSharpSyntaxNode body)
-        => SyntaxFactory.SimpleLambdaExpression(Parameter(lambdaParameter), body);
+        => SimpleLambdaExpression(Parameter(lambdaParameter), body);
 }

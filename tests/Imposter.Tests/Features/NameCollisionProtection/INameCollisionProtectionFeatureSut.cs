@@ -46,5 +46,8 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         void argumentsCriteria(int argumentsCriteria);
         
         void TException(int TException);
+
+        // TODO 
+        // int _imposter { get; }
     }
 }

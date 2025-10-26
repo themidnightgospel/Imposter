@@ -14,9 +14,10 @@ internal static class CompilationDiagnosticsProvider
         return context
             .CompilationProvider
             .Select(static (compilation, _) => new CompilationContext(
-                (CSharpCompilation)compilation,
-                new UniqueName([])
-            ));
+                    (CSharpCompilation)compilation,
+                    new SymbolNameNamespace([])
+                )
+            );
     }
 
     internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this IncrementalGeneratorInitializationContext context)

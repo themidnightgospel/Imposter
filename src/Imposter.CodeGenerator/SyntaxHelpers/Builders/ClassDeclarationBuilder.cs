@@ -42,9 +42,12 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal ClassDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax> members)
+    internal ClassDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
     {
-        _members.AddRange(members);
+        if (members is not null)
+        {
+            _members.AddRange(members);
+        }
         return this;
     }
 

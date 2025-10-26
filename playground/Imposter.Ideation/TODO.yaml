@@ -8,24 +8,27 @@ FEATURES:
       - Generic method support
       - Async method support
       - Generic interface support - for closed generics
-    IN Progress:
       - Property
         - Returns single and multiple values
         - Setter callback's
         - Setup property to act as a normal property (when set, same value is read). Support for initial value
         - Setup all properties (move to an interface as explicit implementation)
         - Verify set
-    NOT Started:
-      - Property setup support
+      - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions. - DONE
+    IN Progress:
       - Indexer setup support
+    NOT Started:
       - Event setup support
       - Impostering class (abstract class, virtual methods)
       - Make imposter thread safe
-      - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions. - DONE
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
       - Use fully qualified name wherever possible
       - For c# 14, declare Impsoter as an extension to imposter target type
       - Make sure metadata structs are passed as readonly
+      - fix TODOs in code
+      - cleanup SyntaxFactoryHelper
+      - Setup github action to build, test and publish nuget packages
+      - Add Wiki page
 
   MEDIUM:
     - NOT Started:

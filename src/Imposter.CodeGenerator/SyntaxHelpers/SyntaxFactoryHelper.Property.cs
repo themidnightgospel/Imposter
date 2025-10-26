@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -23,4 +24,52 @@ internal static partial class SyntaxFactoryHelper
             TokenList(Token(SyntaxKind.PublicKeyword)
             )
         );
+
+    internal static PropertyDeclarationSyntax ReadOnlyPropertyDeclarationSyntax(
+        TypeSyntax type,
+        string name,
+        ExpressionSyntax? initializer = null) =>
+        PropertyDeclaration(
+            attributeLists: default,
+            modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
+            type: type,
+            explicitInterfaceSpecifier: null,
+            identifier: Identifier(name),
+            accessorList: null,
+            expressionBody: initializer is null ? null : ArrowExpressionClause(initializer),
+            initializer: null,
+            semicolonToken: Token(SyntaxKind.SemicolonToken)
+        );
+
+    internal static PropertyDeclarationSyntax PropertyDeclarationSyntax(
+        TypeSyntax type,
+        string name,
+        BlockSyntax? getAccessor,
+        BlockSyntax? setAccessor)
+    {
+        return PropertyDeclaration(
+            attributeLists: default,
+            modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
+            type: type,
+            explicitInterfaceSpecifier: null,
+            identifier: Identifier(name),
+            accessorList: AccessorList(List<AccessorDeclarationSyntax>(GetAccessors())),
+            expressionBody: null,
+            initializer: null,
+            semicolonToken: default
+        );
+
+        IEnumerable<AccessorDeclarationSyntax> GetAccessors()
+        {
+            if (getAccessor is not null)
+            {
+                yield return AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, getAccessor);
+            }
+
+            if (setAccessor is not null)
+            {
+                yield return AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, setAccessor);
+            }
+        }
+    }
 }

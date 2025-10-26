@@ -8,14 +8,14 @@ using Imposter.CodeGenerator.Tests.Shared;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
+namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 {
-    public class ReturnTests
+    public class ReturnValueSetupTests
     {
         private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
 
         [Fact]
-        public void IntNoParams_MethodInvoked_SetupReturnValueReturned()
+        public void GivenMethodSetupWithReturnValue_WhenMethodIsInvoked_ShouldReturnSetupValue()
         {
             _sut
                 .IntNoParams()
@@ -27,7 +27,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntNoParams_SetupOverridenAndInvoked_SetupReturnValueReturned()
+        public void GivenOverriddenMethodSetup_WhenMethodIsInvoked_ShouldReturnLatestSetupValue()
         {
             _sut
                 .IntNoParams()
@@ -43,7 +43,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntNoParams_SetupChainedAndInvoked_SetupReturnValueAsSequence()
+        public void GivenChainedMethodSetup_WhenMethodIsInvokedMultipleTimes_ShouldReturnValuesInSequence()
         {
             _sut
                 .IntNoParams()
@@ -58,7 +58,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenNoSetup_ReturnsDefault()
+        public void GivenNoMethodSetup_WhenMethodIsInvoked_ShouldReturnDefault()
         {
             var result = _sut.Instance().IntSingleParam(42);
 
@@ -66,7 +66,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithSpecificValue_ReturnsSetupValue()
+        public void GivenMethodSetupWithSpecificValue_WhenMethodIsInvokedWithMatchingValue_ShouldReturnSetupValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(42))
@@ -77,7 +77,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithAnyValue_ReturnsSetupValue()
+        public void GivenMethodSetupWithAnyValue_WhenMethodIsInvokedWithAnyValue_ShouldReturnSetupValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -88,7 +88,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithPredicate_ReturnsSetupValueForMatchingArgs()
+        public void GivenMethodSetupWithPredicate_WhenMethodIsInvokedWithMatchingArgs_ShouldReturnSetupValueForMatchingArgs()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(a => a > 10))
@@ -99,7 +99,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -110,7 +110,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenChainedReturns_ReturnsValuesInSequence()
+        public void GivenChainedReturnsSetup_WhenMethodIsInvokedMultipleTimes_ShouldReturnValuesInSequence()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -123,7 +123,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericRefParam_WhenSetup_ReturnsValue()
+        public void GivenGenericRefParamMethodSetup_WhenMethodIsInvoked_ShouldReturnValue()
         {
             _sut
                 .GenericRefParam<string, bool>(Arg<string>.Any())
@@ -136,7 +136,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericRefParam_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenGenericRefParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .GenericRefParam<string, string>(Arg<string>.Is(s => s.StartsWith("ini")))
@@ -157,7 +157,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenSetup_ReturnsCorrectValue()
+        public void GivenGenericAllRefKindMethodSetup_WhenMethodIsInvoked_ShouldReturnCorrectValue()
         {
             _sut.GenericAllRefKind<int, string, double, bool, long>(
                     OutArg<int>.Any(),
@@ -176,7 +176,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenChainedReturnsWithDelegate_ReturnsValuesInSequence()
+        public void GivenGenericAllRefKindMethodSetupWithChainedDelegate_WhenMethodIsInvokedMultipleTimes_ShouldReturnValuesInSequence()
         {
             _sut.GenericAllRefKind<int, string, double, bool, long>(OutArg<int>.Any(), Arg<string>.Any(), Arg<double>.Any(), Arg<bool[]>.Any())
                 .Returns(1L)
@@ -203,7 +203,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericParamsParam_WhenCalledWithDerivedType_ReturnsValue()
+        public void GivenGenericParamsParamMethodSetup_WhenMethodIsInvokedWithDerivedType_ShouldReturnValue()
         {
             _sut.GenericParamsParam<IAnimal, bool>(Arg<IAnimal[]>.Any()).Returns(true);
 
@@ -214,7 +214,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenMultipleSetups_FirstMatchingSetupInvoked()
+        public void GivenMultipleMethodSetups_WhenMethodIsInvokedWithDifferentValues_ShouldInvokeFirstMatchingSetup()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(1))
@@ -234,7 +234,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_NoMatchingSetup_ReturnsDefalt()
+        public void GivenMultipleMethodSetups_WhenMethodIsInvokedWithNoMatchingSetup_ShouldReturnDefault()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(1))
@@ -252,7 +252,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntOutParam_WhenSetupWithValue_ReturnsValueAndSetsOutParameter()
+        public void GivenOutParamMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValueAndSetOutParameterToDefault()
         {
             _sut
                 .IntOutParam(OutArg<int>.Any())
@@ -265,7 +265,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntOutParam_WhenSetupWithDelegate_ReturnsValueAndSetsOutParameter()
+        public void GivenOutParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnValueAndSetOutParameter()
         {
             _sut
                 .IntOutParam(OutArg<int>.Any())
@@ -282,7 +282,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntRefParam_WhenSetupWithValue_ReturnsValueAndDoesNotModifyRef()
+        public void GivenRefParamMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValueAndNotModifyRef()
         {
             _sut
                 .IntRefParam(Arg<int>.Any())
@@ -296,7 +296,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntRefParam_WhenSetupWithDelegate_ReturnsValueAndModifiesRef()
+        public void GivenRefParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnValueAndModifyRef()
         {
             _sut
                 .IntRefParam(Arg<int>.Any())
@@ -315,7 +315,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntInParam_WhenSetupWithValue_ReturnsValue()
+        public void GivenInParamMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValue()
         {
             _sut
                 .IntInParam(Arg<string>.Any())
@@ -327,7 +327,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntInParam_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenInParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .IntInParam(Arg<string>.Any())
@@ -338,7 +338,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntParamsParam_WhenSetupWithValue_ReturnsValue()
+        public void GivenParamsArrayMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValue()
         {
             _sut
                 .IntParamsParam(Arg<string[]>.Any())
@@ -350,7 +350,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntParamsParam_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenParamsArrayMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .IntParamsParam(Arg<string[]>.Any())
@@ -362,7 +362,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntAllRefKinds_WhenSetupWithValue_ReturnsValueWithDefaultOutParameters()
+        public void GivenAllRefKindsMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValueWithDefaultOutParameters()
         {
             _sut
                 .IntAllRefKinds(OutArg<int>.Any(), Arg<int>.Any(), Arg<int>.Any(), Arg<string>.Any(), Arg<string[]>.Any())
@@ -378,7 +378,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntAllRefKinds_WhenSetupWithDelegate_ReturnsValueAndModifiesParameters()
+        public void GivenAllRefKindsMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnValueAndModifyParameters()
         {
             _sut
                 .IntAllRefKinds(OutArg<int>.Any(), Arg<int>.Any(), Arg<int>.Any(), Arg<string>.Any(), Arg<string[]>.Any())
@@ -399,7 +399,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericOutParam_WhenSetupWithValue_ReturnsValueWithDefaultOut()
+        public void GivenGenericOutParamMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValueWithDefaultOut()
         {
             _sut
                 .GenericOutParam<string, int>(OutArg<string>.Any())
@@ -412,7 +412,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
         
         [Fact]
-        public void GenericOutParam_WhenMultipleSetup_InvokesMatchingSetup()
+        public void GivenMultipleGenericOutParamSetups_WhenMethodIsInvokedWithMatchingType_ShouldInvokeMatchingSetup()
         {
             _sut
                 .GenericOutParam<string, int>(OutArg<string>.Any())
@@ -433,7 +433,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericOutParam_WhenSetupWithDelegate_ReturnsValueAndSetsOut()
+        public void GivenGenericOutParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnValueAndSetOut()
         {
             _sut
                 .GenericOutParam<Cat, string>(OutArg<Cat>.Any())
@@ -451,7 +451,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericRefParam_WhenSetupWithNullValue_ReturnsNull()
+        public void GivenGenericRefParamMethodSetupWithNullValue_WhenMethodIsInvoked_ShouldReturnNull()
         {
             _sut
                 .GenericRefParam<string?, string?>(Arg<string?>.Any())
@@ -465,7 +465,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericParamsParam_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenGenericParamsParamMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .GenericParamsParam<string, int>(Arg<string[]>.Any())
@@ -477,7 +477,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenSetupWithComplexDelegate_ModifiesAllParameters()
+        public void GivenGenericAllRefKindMethodSetupWithComplexDelegate_WhenMethodIsInvoked_ShouldModifyAllParameters()
         {
             _sut
                 .GenericAllRefKind<Cat, IAnimal, Dog, IAnimal, string>(
@@ -510,7 +510,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithNullPredicate_HandledGracefully()
+        public void GivenMethodSetupWithNullPredicate_WhenMethodIsInvokedWithVariousValues_ShouldHandleGracefully()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -523,7 +523,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntParams_WhenSetupWithValue_ReturnsValue()
+        public void GivenMultipleParamsMethodSetupWithValue_WhenMethodIsInvoked_ShouldReturnValue()
         {
             _sut
                 .IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
@@ -535,7 +535,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntParams_WhenSetupWithDelegate_ReturnsComputedValue()
+        public void GivenMultipleParamsMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
                 .IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
@@ -547,7 +547,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupOverriddenMultipleTimes_LastSetupWins()
+        public void GivenMethodSetupOverriddenMultipleTimes_WhenMethodIsInvoked_ShouldReturnLastSetupValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(42))
@@ -565,7 +565,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenChainedWithMixedReturnsAndDelegates_ReturnsInSequence()
+        public void GivenChainedMethodSetupWithMixedReturnsAndDelegates_WhenMethodIsInvokedMultipleTimes_ShouldReturnInSequence()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -580,7 +580,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericParamsParam_WhenCalledWithEmptyParams_ReturnsSetupValue()
+        public void GivenGenericParamsParamMethodSetup_WhenMethodIsInvokedWithEmptyParams_ShouldReturnSetupValue()
         {
             _sut
                 .GenericParamsParam<string, int>(Arg<string[]>.Any())
@@ -592,7 +592,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithComplexPredicate_MatchesCorrectly()
+        public void GivenMethodSetupWithComplexPredicate_WhenMethodIsInvokedWithDifferentValues_ShouldMatchCorrectly()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(x => x % 2 == 0 && x > 10))
@@ -604,7 +604,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenSetupWithTypeVariance_HandlesInheritanceCorrectly()
+        public void GivenGenericAllRefKindMethodSetupWithTypeVariance_WhenMethodIsInvokedWithCompatibleTypes_ShouldHandleInheritanceCorrectly()
         {
             _sut
                 .GenericAllRefKind<Cat, Dog, IAnimal, IAnimal, bool>( // ref parameter now matches
@@ -632,7 +632,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public void IntNoParams_WhenSetupWithEmptyReturnsChain_ReturnsDefault()
+        public void GivenMethodSetupWithEmptyReturnsChain_WhenMethodIsInvoked_ShouldReturnDefault()
         {
             _sut.IntNoParams(); // No Returns() called
 
@@ -640,7 +640,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_SetupToReturnValue_ReturnsValue()
+        public async Task GivenAsyncTaskMethodSetupWithAsyncDelegate_WhenMethodIsInvoked_ShouldReturnValue()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -654,8 +654,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
             result.ShouldBe(11);
         }
         
-          [Fact]
-        public async Task AsyncTaskIntNoParams_WhenNoSetup_ReturnsCompletedTaskWithDefault()
+        [Fact]
+        public async Task GivenNoAsyncTaskMethodSetup_WhenMethodIsInvoked_ShouldReturnCompletedTaskWithDefault()
         {
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
@@ -666,7 +666,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_SetupWithSyncValue_ReturnsCompletedTask()
+        public async Task GivenAsyncTaskMethodSetupWithSyncValue_WhenMethodIsInvoked_ShouldReturnCompletedTask()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -677,7 +677,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_SetupWithAsyncDelegate_ExecutesAsync()
+        public async Task GivenAsyncTaskMethodSetupWithAsyncDelegate_WhenMethodIsInvoked_ShouldExecuteAsync()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -693,7 +693,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_SetupChained_ReturnsInSequence()
+        public async Task GivenChainedAsyncTaskMethodSetup_WhenMethodIsInvokedMultipleTimes_ShouldReturnInSequence()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -717,7 +717,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_SetupOverridden_LastSetupWins()
+        public async Task GivenOverriddenAsyncTaskMethodSetup_WhenMethodIsInvoked_ShouldReturnLastSetupValue()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -732,7 +732,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_WithComplexAsyncScenario_HandlesCorrectly()
+        public async Task GivenComplexAsyncTaskMethodSetup_WhenMethodIsInvokedConcurrently_ShouldHandleCorrectly()
         {
             var counter = 0;
             
@@ -765,7 +765,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_CancellationTokenSupported_WhenAvailable()
+        public async Task GivenAsyncTaskMethodSetupWithCancellation_WhenMethodIsInvokedWithCancellation_ShouldSupportCancellationToken()
         {
             // Test that the async method can handle cancellation if the implementation supports it
             using var cts = new CancellationTokenSource();
@@ -787,7 +787,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_TaskFromResultOptimization_WorksCorrectly()
+        public async Task GivenAsyncTaskMethodSetupWithTaskFromResult_WhenMethodIsInvoked_ShouldWorkWithOptimization()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -801,6 +801,5 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Returns
             var result = await task;
             result.ShouldBe(888);
         }
-
     }
 }

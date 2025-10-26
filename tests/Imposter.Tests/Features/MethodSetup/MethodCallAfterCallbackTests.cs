@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Imposter.Abstractions;
-using Shouldly;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Shared;
+using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
+namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 {
-    public class CallAfterTests
+    public class MethodCallAfterCallbackTests
     {
         private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
 
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void VoidNoParams_WhenInvoked_CallbackIsInvoked(int invocationCount)
+        public void GivenVoidMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallback(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -36,7 +36,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntNoParams_WhenInvoked_CallbackIsInvoked(int invocationCount)
+        public void GivenIntMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallback(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -55,7 +55,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntSingleParam_WhenInvoked_CallbackIsInvokedWithParameters(int invocationCount)
+        public void GivenSingleParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var parametersPassedToCallback = new List<int>();
@@ -80,7 +80,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntParams_WhenInvoked_CallbackIsInvokedWithParameters(int invocationCount)
+        public void GivenMultipleParamsMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -114,7 +114,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntOutParam_WhenCallbackSetsOutParameter_OutParameterValueIsPropagated(int invocationCount)
+        public void GivenOutParamMethodSetupWithCallAfter_WhenCallbackSetsOutParameter_ShouldPropagateOutParameterValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -138,7 +138,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntRefParam_WhenInvoked_CallbackIsInvokedAndModifiesRefValue(int invocationCount)
+        public void GivenRefParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackAndModifyRefValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var refParametersPassedToCallback = new List<int>();
@@ -166,7 +166,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntParamsParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GivenParamsArrayMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var paramsParameterPassedToCallback = new List<string[]>();
@@ -192,7 +192,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntInParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GivenInParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var stringList = new List<string>();
@@ -217,7 +217,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void IntAllRefKinds_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GivenAllRefKindsMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var outList = new List<int>();
@@ -262,7 +262,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void GenericSingleParam_WhenInvoked_CallbackIsInvokedWithCorrectParameter(int invocationCount)
+        public void GivenGenericSingleParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameter(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var passedParameterToCallback = new List<int>();
@@ -287,7 +287,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(4)]
-        public void GenericOutParam_WhenInvoked_CallbackIsInvokedAndValuePropagated(int invocationCount)
+        public void GivenGenericOutParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackAndPropagateValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -311,7 +311,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(4)]
-        public void GenericRefParam_WhenInvoked_CallbackIsInvokedAndModifiesValue(int invocationCount)
+        public void GivenGenericRefParamMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackAndModifyValue(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var refParams = new List<double>();
@@ -339,7 +339,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(3)]
-        public void GenericParamsParam_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GivenGenericParamsMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var allArrays = new List<string[]>();
@@ -365,7 +365,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
-        public void GenericAllRefKind_WhenInvoked_CallbackIsInvokedWithCorrectParameters(int invocationCount)
+        public void GivenGenericAllRefKindsMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldInvokeCallbackWithCorrectParameters(int invocationCount)
         {
             var callAfterCallbackInvokedCount = 0;
             var outParams = new List<int>();
@@ -414,7 +414,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericSingleParam_WhenInvokedWithDerivedType_CallbackIsInvoked()
+        public void GivenGenericSingleParamSetupWithDerivedType_WhenMethodIsInvokedWithDerivedType_ShouldInvokeCallback()
         {
             var callAfterCallbackInvokedCount = 0;
             var captured = new List<IAnimal>();
@@ -435,7 +435,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericSingleParam_WhenInvokedWithBaseType_CallbackIsNotInvoked()
+        public void GivenGenericSingleParamSetupWithSpecificType_WhenMethodIsInvokedWithBaseType_ShouldNotInvokeCallback()
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -449,7 +449,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericOutParam_WhenInvokedWithBaseType_CallbackIsInvoked()
+        public void GivenGenericOutParamSetupWithSpecificType_WhenMethodIsInvokedWithBaseType_ShouldInvokeCallback()
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -467,7 +467,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericOutParam_WhenInvokedWithDerivedType_CallbackIsNotInvoked()
+        public void GivenGenericOutParamSetupWithBaseType_WhenMethodIsInvokedWithDerivedType_ShouldNotInvokeCallback()
         {
             var callAfterCallbackInvokedCount = 0;
 
@@ -485,7 +485,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericParamsParam_WhenInvokedWithDerivedType_CallbackIsInvoked()
+        public void GivenGenericParamsParamSetupWithBaseType_WhenMethodIsInvokedWithDerivedType_ShouldInvokeCallback()
         {
             var captured = new List<IAnimal[]>();
             _sut
@@ -501,7 +501,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenInvokedWithCompatibleTypes_CallbackIsInvokedWithCorrectParameters()
+        public void GivenGenericAllRefKindsSetupWithCompatibleTypes_WhenMethodIsInvokedWithCompatibleTypes_ShouldInvokeCallbackWithCorrectParameters()
         {
             var callAfterCallbackInvokedCount = 0;
             IAnimal? refAnimal = null;
@@ -550,7 +550,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void VoidNoParams_WhenCallAfterSetupsAreChained_InvokedInOrder()
+        public void GivenChainedCallAfterSetups_WhenMethodIsInvoked_ShouldInvokeCallbacksInOrder()
         {
             var firstCallbackInvokedCount = 0;
             var secondCallbackInvokedCount = 0;
@@ -568,7 +568,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntNoParams_WhenCallAfterChainedWithReturns_CallbackIsInvokedAfterReturn()
+        public void GivenCallAfterChainedWithReturns_WhenMethodIsInvoked_ShouldInvokeCallbackAfterReturn()
         {
             var callbackInvokedCount = 0;
             var returnValue = 0;
@@ -585,7 +585,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntNoParams_WhenCallAfterChainedWithMultipleReturns_CallbackIsInvokedAfterEachReturn()
+        public void GivenCallAfterChainedWithMultipleReturns_WhenMethodIsInvokedMultipleTimes_ShouldInvokeCallbackAfterEachReturn()
         {
             var callbackInvokedCount = 0;
             var capturedReturnValues = new List<int>();
@@ -609,7 +609,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void VoidNoParams_WhenCallAfterThrows_ExceptionIsPropagated()
+        public void GivenCallAfterThatThrows_WhenMethodIsInvoked_ShouldPropagateException()
         {
             var expectedException = new InvalidOperationException("Test exception");
 
@@ -622,7 +622,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntSingleParam_WhenCallAfterThrows_ExceptionIsPropagatedAndReturnValueNotReturned()
+        public void GivenCallAfterThatThrowsWithReturnValue_WhenMethodIsInvoked_ShouldPropagateExceptionAndNotReturnValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -634,7 +634,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntOutParam_WhenCallAfterModifiesOutParam_ValueFromCallAfterIsReturned()
+        public void GivenOutParamMethodWithCallAfterAndReturns_WhenMethodIsInvoked_ShouldReturnCallAfterValueForOutParam()
         {
             var callAfterInvokedCount = 0;
 
@@ -655,7 +655,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntRefParam_WhenCallAfterAndReturnsChained_BothAreExecuted()
+        public void GivenRefParamMethodWithCallAfterAndReturns_WhenMethodIsInvoked_ShouldExecuteBothCallAfterAndReturns()
         {
             var callAfterInvokedCount = 0;
             var originalRefValue = 100;
@@ -678,7 +678,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithSpecificValueAndCallAfter_OnlyMatchingCallsInvokeCallback()
+        public void GivenSpecificValueMatchSetupWithCallAfter_WhenMethodIsInvokedWithMatchingValues_ShouldOnlyInvokeCallbackForMatchingCalls()
         {
             var callAfterCount = 0;
 
@@ -695,7 +695,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupWithPredicateAndCallAfter_OnlyMatchingCallsInvokeCallback()
+        public void GivenPredicateMatchSetupWithCallAfter_WhenMethodIsInvokedWithValues_ShouldOnlyInvokeCallbackForMatchingCalls()
         {
             var callAfterCount = 0;
             var capturedValues = new List<int>();
@@ -718,7 +718,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericSingleParam_WhenCallAfterReceivesNullValue_CallbackIsInvokedWithNull()
+        public void GivenGenericSingleParamSetupWithCallAfter_WhenMethodIsInvokedWithNullValue_ShouldInvokeCallbackWithNull()
         {
             var callAfterCount = 0;
             string? capturedValue = "not-null";
@@ -738,7 +738,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericRefParam_WhenCallAfterModifiesRef_ValueIsPropagated()
+        public void GivenGenericRefParamSetupWithCallAfter_WhenCallAfterModifiesRef_ShouldPropagateValue()
         {
             var callAfterCount = 0;
 
@@ -760,7 +760,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntParams_WhenCallAfterReceivesNullArgument_CallbackIsInvokedWithNull()
+        public void GivenMultipleParamsSetupWithCallAfter_WhenMethodIsInvokedWithNullArgument_ShouldInvokeCallbackWithNull()
         {
             var callAfterCount = 0;
             string? capturedName = "not-null";
@@ -780,7 +780,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntParamsParam_WhenCallAfterReceivesEmptyArray_CallbackIsInvokedWithEmptyArray()
+        public void GivenParamsArraySetupWithCallAfter_WhenMethodIsInvokedWithEmptyArray_ShouldInvokeCallbackWithEmptyArray()
         {
             var callAfterCount = 0;
             string[]? capturedArray = null;
@@ -801,7 +801,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenCallAfterModifiesComplexTypes_AllModificationsArePropagated()
+        public void GivenGenericAllRefKindsSetupWithCallAfter_WhenCallAfterModifiesComplexTypes_ShouldPropagateAllModifications()
         {
             var callAfterCount = 0;
             var originalCats = new[] { new Cat("cat1"), new Cat("cat2") };
@@ -844,7 +844,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void IntNoParams_WhenCallAfterInSequence_CallbackIsInvokedForEachSequenceItem()
+        public void GivenSequentialCallAfterSetups_WhenMethodIsInvokedMultipleTimes_ShouldInvokeCallbackForEachSequenceItem()
         {
             var callAfterCount = 0;
             var setup = _sut.IntNoParams();
@@ -865,7 +865,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
 
         [Fact]
-        public void GenericOutParam_WhenCallAfterHasDifferentGenericConstraints_CallbackIsInvokedCorrectly()
+        public void GivenGenericOutParamSetupWithDifferentGenericConstraints_WhenMethodIsInvoked_ShouldInvokeCallbackCorrectly()
         {
             var callAfterCount = 0;
             IAnimal? capturedOutValue = null;
@@ -889,7 +889,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Callbacks
         }
         
         [Fact]
-        public async Task AsyncTaskIntNoParams_WithCallAfter_ExecutesCallback()
+        public async Task GivenAsyncTaskMethodSetupWithCallAfter_WhenMethodIsInvoked_ShouldExecuteCallback()
         {
             var callbackExecuted = false;
             

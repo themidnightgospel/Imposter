@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
+using Shouldly;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Imposter.Ideation.Whiteboard
 {
@@ -73,6 +76,31 @@ namespace Imposter.Ideation.Whiteboard
         }
     }
 
+    public interface IPhoneBook
+    {
+        string this[int name, string lastname, IAnimal dog] { get; set; }
+
+        string this[string name] { get; set; }
+    }
+
+    public class PhoneBook
+    {
+        private Dictionary<string, string> _entries = new();
+
+        public string this[int name, string lastname, IAnimal dog]
+        {
+            get => _entries.TryGetValue(name.ToString(), out var number) ? number : "Not found";
+            set => _entries[name.ToString()] = value;
+        }
+
+        public string this[string name]
+        {
+            get => _entries.TryGetValue(name, out var number) ? number : "Not found";
+            set => _entries[name] = value;
+        }
+    }
+
+
     public class Whiteboard
     {
         [Fact]
@@ -80,7 +108,18 @@ namespace Imposter.Ideation.Whiteboard
         {
             var mock = new Mock<ITest>();
 
-            mock.Setup(x => x.Age).Returns(() => mock.Object.Age == 1 ? 25 : 30);
+            mock.SetupSet(x => x.Age = It.IsAny<int>())
+                .Callback(() => { throw new EmptyException("Test"); });
+
+            try
+            {
+                mock.Object.Age = 1;
+            }
+            catch
+            {
+            }
+
+            mock.Object.Age.ShouldBe(2);
 
             // Setup
             mock.Setup(x => x.GenericOutParam<Cat, int>(out It.Ref<Cat>.IsAny))

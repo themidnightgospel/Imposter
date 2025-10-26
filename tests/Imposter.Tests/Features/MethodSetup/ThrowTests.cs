@@ -1,15 +1,14 @@
-﻿
-using Imposter.Abstractions;
-using Shouldly;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Shared;
+using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
+namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 {
     public class ThrowTests
     {
@@ -18,7 +17,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region VoidNoParams Tests
 
         [Fact]
-        public void VoidNoParams_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenVoidMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .VoidNoParams()
@@ -28,7 +27,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void VoidNoParams_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenVoidMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new ArgumentException("Test message");
             
@@ -46,7 +45,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntNoParams Tests
 
         [Fact]
-        public void IntNoParams_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenIntMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntNoParams()
@@ -56,7 +55,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntNoParams_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenIntMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new InvalidOperationException("Custom error");
             
@@ -70,7 +69,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntNoParams_WhenSetupToThrowAfterReturns_ThrowsOnSecondCall()
+        public void GivenIntMethodSetupToThrowAfterReturns_WhenMethodIsInvokedMultipleTimes_ShouldThrowOnSecondCall()
         {
             _sut
                 .IntNoParams()
@@ -86,7 +85,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntSingleParam Tests
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenSingleParamMethodSetupToThrowGenericException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(42))
@@ -96,7 +95,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenSingleParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new ArgumentOutOfRangeException("age", "Age cannot be negative");
             
@@ -110,7 +109,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowWithAnyArg_ThrowsForAnyValue()
+        public void GivenSingleParamMethodSetupToThrowWithAnyArg_WhenMethodIsInvokedWithAnyValue_ShouldThrowForAnyValue()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -122,7 +121,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowWithPredicate_ThrowsOnlyForMatchingValues()
+        public void GivenSingleParamMethodSetupToThrowWithPredicate_WhenMethodIsInvokedWithValues_ShouldThrowOnlyForMatchingValues()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(x => x > 100))
@@ -141,7 +140,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntParams Tests
 
         [Fact]
-        public void IntParams_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenMultipleParamsMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
@@ -152,7 +151,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntParams_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenMultipleParamsMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new FormatException("Invalid format provided");
             
@@ -166,7 +165,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntParams_WhenSetupToThrowWithSpecificArgs_ThrowsOnlyForMatchingArgs()
+        public void GivenMultipleParamsMethodSetupToThrowWithSpecificArgs_WhenMethodIsInvokedWithDifferentArgs_ShouldThrowOnlyForMatchingArgs()
         {
             _sut
                 .IntParams(Arg<int>.Is(999), Arg<string>.Is("error"), Arg<Regex>.Any())
@@ -185,7 +184,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntOutParam Tests
 
         [Fact]
-        public void IntOutParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenOutParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntOutParam(OutArg<int>.Any())
@@ -195,7 +194,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntOutParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenOutParamMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new TimeoutException("Operation timed out");
             
@@ -213,7 +212,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntRefParam Tests
 
         [Fact]
-        public void IntRefParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenRefParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntRefParam(Arg<int>.Any())
@@ -224,7 +223,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntRefParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenRefParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new InvalidCastException("Cannot cast value");
             
@@ -242,7 +241,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntInParam Tests
 
         [Fact]
-        public void IntInParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenInParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntInParam(Arg<string>.Any())
@@ -252,7 +251,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntInParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenInParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new DirectoryNotFoundException("Path not found");
             
@@ -269,7 +268,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntParamsParam Tests
 
         [Fact]
-        public void IntParamsParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenParamsArrayMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntParamsParam(Arg<string[]>.Any())
@@ -279,7 +278,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntParamsParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenParamsArrayMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new IndexOutOfRangeException("Index was out of range");
             
@@ -297,7 +296,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region IntAllRefKinds Tests
 
         [Fact]
-        public void IntAllRefKinds_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenAllRefKindsMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .IntAllRefKinds(OutArg<int>.Any(), Arg<int>.Any(), Arg<int>.Any(), Arg<string>.Any(), Arg<string[]>.Any())
@@ -310,7 +309,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntAllRefKinds_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenAllRefKindsMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new AccessViolationException("Memory access violation");
             
@@ -330,7 +329,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region Generic Method Tests
 
         [Fact]
-        public void GenericSingleParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenGenericSingleParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .GenericSingleParam<string>(Arg<string>.Any())
@@ -340,7 +339,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericSingleParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenGenericSingleParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new NotImplementedException("Feature not implemented");
             
@@ -353,7 +352,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericOutParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenGenericOutParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .GenericOutParam<string, int>(OutArg<string>.Any())
@@ -363,7 +362,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericOutParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenGenericOutParamMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new ObjectDisposedException("Object has been disposed");
             
@@ -376,7 +375,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericRefParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenGenericRefParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .GenericRefParam<string, int>(Arg<string>.Any())
@@ -387,7 +386,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericRefParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenGenericRefParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new UriFormatException("Invalid URI format");
             
@@ -401,7 +400,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericParamsParam_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenGenericParamsParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .GenericParamsParam<string, int>(Arg<string[]>.Any())
@@ -411,7 +410,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericParamsParam_WhenSetupToThrowSpecificException_ThrowsException()
+        public void GivenGenericParamsParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new InvalidEnumArgumentException("Invalid enum value");
             
@@ -424,7 +423,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void GenericAllRefKind_WhenSetupToThrowGenericException_ThrowsException()
+        public void GivenGenericAllRefKindMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
             _sut
                 .GenericAllRefKind<Cat, IAnimal, Dog, Tiger, string>(
@@ -449,7 +448,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region Exception Chaining Tests
 
         [Fact]
-        public void IntSingleParam_WhenChainedThrows_ThrowsInSequence()
+        public void GivenChainedThrowsSetup_WhenMethodIsInvokedMultipleTimes_ShouldThrowInSequence()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -464,7 +463,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntNoParams_WhenChainedThrowsWithSpecificExceptions_ThrowsInSequence()
+        public void GivenChainedThrowsSetupWithSpecificExceptions_WhenMethodIsInvokedMultipleTimes_ShouldThrowInSequence()
         {
             var exception1 = new ArgumentException("First error");
             var exception2 = new InvalidOperationException("Second error");
@@ -485,7 +484,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenMixedReturnsAndThrows_BehavesCorrectly()
+        public void GivenMixedReturnsAndThrowsSetup_WhenMethodIsInvokedMultipleTimes_ShouldBehaveCorrectly()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -504,7 +503,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region Custom Exception Tests
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowCustomException_ThrowsCustomException()
+        public void GivenMethodSetupToThrowCustomException_WhenMethodIsInvoked_ShouldThrowCustomException()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -514,7 +513,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowCustomExceptionWithMessage_ThrowsWithMessage()
+        public void GivenMethodSetupToThrowCustomExceptionWithMessage_WhenMethodIsInvoked_ShouldThrowWithMessage()
         {
             var customException = new CustomTestException("Custom error message", 404);
             
@@ -533,7 +532,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region Exception Inheritance Tests
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowDerivedType_ThrowsDerivedType()
+        public void GivenMethodSetupToThrowDerivedType_WhenMethodIsInvoked_ShouldThrowDerivedType()
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
@@ -545,7 +544,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenSetupToThrowBaseAndDerived_ThrowsCorrectTypes()
+        public void GivenMultipleSetupsToThrowBaseAndDerived_WhenMethodIsInvokedWithDifferentValues_ShouldThrowCorrectTypes()
         {
             _sut.IntSingleParam(Arg<int>.Is(1)).Throws<ArgumentException>();
             _sut.IntSingleParam(Arg<int>.Is(2)).Throws<ArgumentNullException>();
@@ -562,7 +561,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         #region Error Cases
 
         [Fact]
-        public void IntSingleParam_WhenSetupOverridden_LastSetupWins()
+        public void GivenOverriddenMethodSetup_WhenMethodIsInvoked_ShouldUseLastSetup()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(42))
@@ -576,7 +575,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public void IntSingleParam_WhenNoMatchingSetupForException_ReturnsDefault()
+        public void GivenMethodSetupWithThrowsForSpecificValue_WhenMethodIsInvokedWithNonMatchingValue_ShouldReturnDefault()
         {
             _sut
                 .IntSingleParam(Arg<int>.Is(42))
@@ -590,7 +589,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         
         
         [Fact]
-        public async Task AsyncTaskIntNoParams_ThrowsException_PropagatesCorrectly()
+        public async Task GivenAsyncTaskMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
             var testException = new InvalidOperationException("Test async exception");
             
@@ -606,7 +605,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_ThrowsGenericException_PropagatesCorrectly()
+        public async Task GivenAsyncTaskMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
             _sut
                 .AsyncTaskIntNoParams()
@@ -618,7 +617,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup.Throw
         }
 
         [Fact]
-        public async Task AsyncTaskIntNoParams_ThrowsWithExceptionGenerator_PropagatesCorrectly()
+        public async Task GivenAsyncTaskMethodSetupToThrowWithExceptionGenerator_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
             _sut
                 .AsyncTaskIntNoParams()
