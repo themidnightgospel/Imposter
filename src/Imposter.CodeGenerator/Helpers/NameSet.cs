@@ -2,14 +2,9 @@
 
 namespace Imposter.CodeGenerator.Helpers;
 
-internal class SymbolNameNamespace
+internal class NameSet(IEnumerable<string> alreadyUsedNames)
 {
-    private readonly HashSet<string> _alreadyUsedNames;
-
-    public SymbolNameNamespace(IEnumerable<string> alreadyUsedNames)
-    {
-        _alreadyUsedNames = new(alreadyUsedNames);
-    }
+    private readonly HashSet<string> _alreadyUsedNames = [..alreadyUsedNames];
 
     internal string Use(string key)
     {

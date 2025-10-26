@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 
-internal static class ImposterTargetInstanceBuilder
+internal static class ImposterInstanceBuilder
 {
     // TODO this might collide
     private const string ImposterFieldName = "_imposter";
@@ -22,7 +22,7 @@ internal static class ImposterTargetInstanceBuilder
         return new ClassDeclarationBuilder(name)
             .AddBaseType(SimpleBaseType(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)))
             .AddMembers(fields)
-            .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers(name, fields))
+            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(name, fields))
             .AddMembers(ImposterMethods(imposterGenerationContext))
             .AddMembers(ImposterProperties(imposterGenerationContext))
             .Build();
@@ -30,13 +30,7 @@ internal static class ImposterTargetInstanceBuilder
 
     private static IReadOnlyList<FieldDeclarationSyntax> GetFields(ImposterGenerationContext imposterGenerationContext) =>
     [
-        FieldDeclaration(
-            VariableDeclaration(
-                IdentifierName(imposterGenerationContext.Imposter.Name),
-                SingletonSeparatedList(
-                    VariableDeclarator(Identifier(ImposterFieldName))
-                )
-            ))
+        SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
     ];
 
     private static IEnumerable<PropertyDeclarationSyntax> ImposterProperties(in ImposterGenerationContext imposterGenerationContext) =>
@@ -74,7 +68,7 @@ internal static class ImposterTargetInstanceBuilder
         {
             var invokeMethodInvocationExpression = GetImposterWithMatchingSetupExpression(imposterMethod)
                 .Dot(IdentifierName("Invoke"))
-                .Call(SyntaxFactoryHelper.ArgumenstListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true));
+                .Call(SyntaxFactoryHelper.ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true));
 
             return new MethodDeclarationBuilder(SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
                 .AddTypeParameters(SyntaxFactoryHelper.TypeParametersSyntax(imposterMethod.Symbol))
@@ -107,7 +101,7 @@ internal static class ImposterTargetInstanceBuilder
                 {
                     return Argument(
                             method.Arguments.Syntax
-                                .New(SyntaxFactoryHelper.ArgumenstListSyntax(method.Parameters.InputParameters, includeRefKind: false))
+                                .New(SyntaxFactoryHelper.ArgumentListSyntax(method.Parameters.InputParameters, includeRefKind: false))
                         )
                         .AsSingleArgumentListSyntax();
                 }

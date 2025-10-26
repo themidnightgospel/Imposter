@@ -74,17 +74,17 @@ internal partial class MethodImposterBuilder
 
             if (method.Parameters.HasInputParameters)
             {
-                arguments.Add(method.MethodImposter.InvokeMethod.ArgumentsVariableName.AsArgument());
+                arguments.Add(method.MethodImposter.InvokeMethod.ArgumentsVariableName.ToArgument());
             }
 
             if (method.HasReturnValue)
             {
                 arguments
-                    .Add(threwException ? Argument(Null) : method.MethodImposter.InvokeMethod.ResultVariableName.AsArgument());
+                    .Add(threwException ? Argument(Null) : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument());
             }
 
             arguments.Add(threwException
-                ? method.MethodImposter.InvokeMethod.ExceptionVariableName.AsArgument()
+                ? method.MethodImposter.InvokeMethod.ExceptionVariableName.ToArgument()
                 : Argument(Default));
 
             return arguments;
@@ -96,7 +96,7 @@ internal partial class MethodImposterBuilder
     {
         var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingSetupVariableName)
             .Dot(IdentifierName("Invoke"))
-            .Call(ArgumenstListSyntax(method.Symbol.Parameters));
+            .Call(ArgumentListSyntax(method.Symbol.Parameters));
 
         if (method.Symbol.ReturnsVoid)
         {

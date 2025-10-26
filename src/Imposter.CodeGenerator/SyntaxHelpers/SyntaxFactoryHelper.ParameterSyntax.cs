@@ -11,7 +11,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ArgumentListSyntax ArgumenstListSyntax(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
+    internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
         => ArgumentListSyntax(SeparatedList(parameters.Select(it => ArgumentSyntax(it, includeRefKind))));
 
     internal static ArgumentSyntax ArgumentSyntax(IParameterSymbol parameter, bool includeRefKind = true)

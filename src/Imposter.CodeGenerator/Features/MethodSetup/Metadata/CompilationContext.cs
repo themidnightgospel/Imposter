@@ -3,6 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 
-internal record CompilationContext(CSharpCompilation Compilation, SymbolNameNamespace SymbolNameNamespace)
+internal record CompilationContext(CSharpCompilation Compilation, NameSet NameSet)
 {
 }

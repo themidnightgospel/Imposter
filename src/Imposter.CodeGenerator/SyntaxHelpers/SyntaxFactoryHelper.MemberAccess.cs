@@ -12,26 +12,13 @@ internal static partial class SyntaxFactoryHelper
     internal static MemberAccessExpressionSyntax Dot(this ExpressionSyntax source, SimpleNameSyntax right)
         => SimpleMemberAccess(source, right);
 
-    internal static InvocationExpressionSyntax Call(this ExpressionSyntax source, ArgumentSyntax argumentSyntax)
-        => source.Call(argumentSyntax.AsSingleArgumentListSyntax());
-
-    internal static InvocationExpressionSyntax Call(this ExpressionSyntax source, ArgumentListSyntax? argumentListSyntax = null)
-    {
-        return argumentListSyntax is null
-            ? InvocationExpression(source)
-            : InvocationExpression(
-                source,
-                argumentListSyntax
-            );
-    }
-
     internal static ExpressionStatementSyntax ToStatementSyntax(this ExpressionSyntax source)
         => ExpressionStatement(source);
 
     internal static AssignmentExpressionSyntax Assign(this ExpressionSyntax left, ExpressionSyntax right)
         => AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right);
 
-    internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax? initializer = default)
+    internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax? initializer = null)
         => ObjectCreationExpression(type, arguments ?? ArgumentList(), initializer);
 
     internal static BinaryExpressionSyntax QuestionMarkQuestionMark(this ExpressionSyntax left, ExpressionSyntax right)

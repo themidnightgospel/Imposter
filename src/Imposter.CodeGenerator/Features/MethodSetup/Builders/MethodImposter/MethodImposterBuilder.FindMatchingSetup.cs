@@ -43,7 +43,7 @@ internal partial class MethodImposterBuilder
             .WithBody(Block(
                 IfStatement(
                     IdentifierName(method.MethodImposter.InvocationSetupsField.Name)
-                        .Dot(IdentifierName("TryPeek"))
+                        .Dot(ConcurrentStackSyntaxHelper.TryPeek)
                         .Call(ArgumentListSyntax(OutVarArgument("setup"))
                         ),
                     ReturnStatement(IdentifierName("setup")),

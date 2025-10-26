@@ -14,13 +14,13 @@ internal static partial class MethodImposterCollectionBuilder
         {
             return null;
         }
-        
+
         var historyCollectionField = BuildInvocationHistoryCollectionField(method);
 
         return ClassDeclaration(method.MethodImposter.Collection.Name)
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddMembers(historyCollectionField)
-            .AddMembers(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField]))
+            .AddMembers(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField]))
             .AddMembers(
                 BuildImpostersField(method),
                 BuildAddNewMethod(method),
@@ -34,7 +34,7 @@ internal static partial class MethodImposterCollectionBuilder
 
     private static MemberDeclarationSyntax BuildImpostersField(in ImposterTargetMethodMetadata method)
     {
-        var impostersFieldType = SyntaxFactoryHelper.ConcurrentStack(method.MethodImposter.Interface.Syntax);
+        var impostersFieldType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.MethodImposter.Interface.Syntax);
 
         return SyntaxFactoryHelper.SingleVariableField(
             impostersFieldType,

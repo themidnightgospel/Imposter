@@ -1,0 +1,53 @@
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
+
+internal static class DefaultAttributes
+{
+    static DefaultAttributes()
+    {
+        DefaultTypeAttributes =
+        [
+            GeneratedCodeAttribute
+        ];
+    }
+
+    internal static readonly IReadOnlyList<AttributeListSyntax> DefaultTypeAttributes;
+
+    private const string GeneratedCodeAttributeName = "global::System.CodeDom.Compiler.GeneratedCode";
+    private static readonly AssemblyName ImposterGeneratorAssembly = typeof(SyntaxFactoryHelper).Assembly.GetName();
+
+    internal static readonly AttributeListSyntax GeneratedCodeAttribute =
+        AttributeList(
+            SingletonSeparatedList(
+                Attribute(IdentifierName(GeneratedCodeAttributeName))
+                    .WithArgumentList(
+                        AttributeArgumentList(
+                            SeparatedList<AttributeArgumentSyntax>(
+                                new SyntaxNodeOrToken[]
+                                {
+                                    AttributeArgument(
+                                        LiteralExpression(
+                                            SyntaxKind.StringLiteralExpression,
+                                            Literal(ImposterGeneratorAssembly.Name)
+                                        )
+                                    ),
+                                    Token(SyntaxKind.CommaToken),
+                                    AttributeArgument(
+                                        LiteralExpression(
+                                            SyntaxKind.StringLiteralExpression,
+                                            Literal(ImposterGeneratorAssembly.Version.ToString())
+                                        )
+                                    )
+                                }
+                            )
+                        )
+                    )
+            )
+        );
+}

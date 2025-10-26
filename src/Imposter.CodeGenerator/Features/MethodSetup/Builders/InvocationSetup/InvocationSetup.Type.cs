@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -56,8 +57,8 @@ internal static partial class InvocationSetupBuilder
 
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
-        return SyntaxFactoryHelper
-                .ClassDeclarationBuilder(method.Symbol, method.InvocationSetup.Name)
+        return ClassDeclarationBuilderFactory
+                .CreateForMethod(method.Symbol, method.InvocationSetup.Name)
                 .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
                 .AddMember(DefaultInstanceLazyInitializer(method))
                 .AddMember(method.Parameters.HasInputParameters ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax) : null)
@@ -66,7 +67,7 @@ internal static partial class InvocationSetupBuilder
                 .AddMember(GetMethodCallSetupDeclarationSyntax)
                 .AddMember(DefaultResultGenerator(method))
                 .AddMember(Constructor(method))
-                .AddMember(SyntaxFactoryHelper.DeclareInitializeOutParametersWithDefaultsMethod(method))
+                .AddMember(InitializeOutParametersMethodBuilder.Build(method))
                 .AddMember(ReturnsMethodDeclarationSyntax(method))
                 .AddMember(ReturnsValueMethodDeclarationSyntax(method))
                 .AddMember(ThrowsTExceptionMethodDeclarationSyntax(method))

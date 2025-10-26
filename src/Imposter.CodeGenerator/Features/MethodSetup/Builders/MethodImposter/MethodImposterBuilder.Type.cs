@@ -1,7 +1,9 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Adapter;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Builder;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -12,8 +14,8 @@ internal static partial class MethodImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method, in InterfaceDeclarationSyntax invocationSetupBuilderInterface)
     {
-        var methodImposterClassBuilder = SyntaxFactoryHelper
-            .ClassDeclarationBuilder(method.Symbol, method.MethodImposter.Name)
+        var methodImposterClassBuilder = ClassDeclarationBuilderFactory
+            .CreateForMethod(method.Symbol, method.MethodImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword));
 
         if (method.Symbol.IsGenericMethod)
@@ -30,7 +32,7 @@ internal static partial class MethodImposterBuilder
         return methodImposterClassBuilder
             .AddMember(BuildInvocationSetupsField(method))
             .AddMember(invocationHistoryCollectionField)
-            .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField]))
+            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField]))
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))
@@ -42,7 +44,7 @@ internal static partial class MethodImposterBuilder
 
         static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasOutputParameters
-                ? SyntaxFactoryHelper.DeclareInitializeOutParametersWithDefaultsMethod(method.Symbol.Parameters)
+                ? InitializeOutParametersMethodBuilder.Build(method)
                 : null;
     }
 }

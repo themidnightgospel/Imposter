@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -13,8 +14,8 @@ internal static partial class InvocationSetupBuilder
 {
     internal static InterfaceDeclarationSyntax BuildInvocationSetupInterface(in ImposterTargetMethodMetadata method)
     {
-        return SyntaxFactoryHelper
-            .InterfaceDeclarationBuilder(method.Symbol, method.InvocationSetup.Interface.Name)
+        return InterfaceDeclarationBuilderFactory
+            .CreateForMethod(method.Symbol, method.InvocationSetup.Interface.Name)
             .AddMembers(GetMethods(method))
             .Build(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Imposter.CodeGenerator.SyntaxHelpers;
+namespace Imposter.CodeGenerator.Helpers;
 
 public static class ClassSymbolExtensions
 {

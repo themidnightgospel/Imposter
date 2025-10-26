@@ -58,7 +58,7 @@ internal static partial class InvocationSetupBuilder
 
         static StatementSyntax? InvokeInitializeOutParametersWithDefaultValues(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasOutputParameters
-                ? SyntaxFactoryHelper.InvokeInitializeOutParametersWithDefaultValues(method.Symbol.Parameters)
+                ? InitializeOutParametersMethodBuilder.Invoke(method)
                 : null;
     }
 

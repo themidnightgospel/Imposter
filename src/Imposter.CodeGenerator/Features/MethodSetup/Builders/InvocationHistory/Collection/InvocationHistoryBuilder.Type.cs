@@ -16,10 +16,10 @@ internal static partial class InvocationHistoryCollectionBuilder
                 .AddModifier(Token(SyntaxKind.InternalKeyword))
                 .AddMember(
                     SingleVariableField(
-                        ConcurrentStack(method.InvocationHistory.Interface.Syntax),
+                        WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.InvocationHistory.Interface.Syntax),
                         InvocationHistoryTypeMetadata.CollectionMetadata.InvocationHistoryCollectionFieldName,
                         TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-                        ConcurrentStack(method.InvocationHistory.Interface.Syntax).New()
+                        WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.InvocationHistory.Interface.Syntax).New()
                     )
                 )
                 .AddMember(BuildAddMethod(method))

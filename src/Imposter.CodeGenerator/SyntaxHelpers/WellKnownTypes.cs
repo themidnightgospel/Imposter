@@ -73,6 +73,14 @@ internal static class WellKnownTypes
                         TypeArgumentList(SingletonSeparatedList(typeArgument))
                     )
                 );
+                
+                internal static TypeSyntax ConcurrentStack(TypeSyntax typeArgument) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("ConcurrentStack"),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
+                    )
+                );
 
                 internal static TypeSyntax ConcurrentBag(TypeSyntax typeArgument) => QualifiedName(
                     Namespace,

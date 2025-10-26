@@ -15,7 +15,7 @@ internal static class CompilationDiagnosticsProvider
             .CompilationProvider
             .Select(static (compilation, _) => new CompilationContext(
                     (CSharpCompilation)compilation,
-                    new SymbolNameNamespace([])
+                    new NameSet([])
                 )
             );
     }

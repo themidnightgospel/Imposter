@@ -10,6 +10,7 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static PropertyDeclarationSyntax ParameterAsArgProperty(IParameterSymbol parameter)
     {
+        // TODO use builder
         return PropertyDeclaration(ArgType(parameter), Identifier(parameter.Name))
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddAccessorListAccessors(

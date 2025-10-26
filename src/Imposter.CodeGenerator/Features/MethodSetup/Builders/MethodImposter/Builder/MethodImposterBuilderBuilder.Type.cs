@@ -75,7 +75,7 @@ internal static partial class MethodImposterBuilderBuilder
             .AddMembers(fields)
             .AddMember(SyntaxFactoryHelper
                 .SingleVariableField(NullableType(method.InvocationSetup.Syntax), MethodImposterMetadata.ExistingInvocationSetupFieldName, TokenList(Token(SyntaxKind.PrivateKeyword))))
-            .AddMember(SyntaxFactoryHelper.DeclareConstructorAndInitializeMembers(method.MethodImposter.Builder.Name, fields))
+            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Builder.Name, fields))
             .AddMember(GetOrAddInvocationSetupMethod(method))
             .AddMembers(ImplementInvocationSetupBuilderInterface(method, invocationSetupBuilderInterface))
             .AddMember(BuildCalledMethod(method))

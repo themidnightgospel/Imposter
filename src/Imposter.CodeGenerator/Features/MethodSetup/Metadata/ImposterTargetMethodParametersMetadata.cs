@@ -12,6 +12,8 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal IReadOnlyList<IParameterSymbol> InputParameters { get; }
 
+    internal IReadOnlyList<IParameterSymbol> OutputParameters { get; }
+
     internal readonly ParameterListSyntax ParameterListSyntax;
 
     internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntax;
@@ -30,13 +32,14 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
     {
         Parameters = symbolParameters;
         InputParameters = symbolParameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
-        HasOutputParameters = symbolParameters.Any(it => it.RefKind is RefKind.Out);
+        OutputParameters = symbolParameters.Where(it => it.RefKind is RefKind.Out).ToArray();
+        HasOutputParameters = OutputParameters.Count > 0;
 
         ParameterListSyntax = SyntaxFactoryHelper.ParameterListSyntax(symbolParameters);
         InputParameterWithoutRefKindListSyntax = SyntaxFactoryHelper.ParameterListSyntax(InputParameters, includeRefKind: false);
 
-        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumenstListSyntax(InputParameters, includeRefKind: false);
-        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumenstListSyntax(InputParameters, includeRefKind: true);
-        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumenstListSyntax(Parameters, includeRefKind: true);
+        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(InputParameters, includeRefKind: false);
+        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(InputParameters, includeRefKind: true);
+        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(Parameters, includeRefKind: true);
     }
 }

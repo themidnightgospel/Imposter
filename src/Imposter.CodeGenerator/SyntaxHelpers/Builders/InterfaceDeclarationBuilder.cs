@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
+internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = null)
 {
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attributes = new();
@@ -62,7 +62,7 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
     {
         return InterfaceDeclaration(
-            List(Defaults.DefaultTypeAttributes.Concat(_attributes)),
+            List(DefaultAttributes.DefaultTypeAttributes.Concat(_attributes)),
             modifiers,
             Identifier(name),
             typeParameters,
