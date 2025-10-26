@@ -40,11 +40,12 @@ internal static partial class ImposterBuilder
                     ? method.MethodImposter.Collection.AsField.Name
                     : method.MethodImposter.AsField.Name
             ));
+
             yield return Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name));
 
             if (method.Parameters.HasInputParameters)
             {
-                yield return Argument(SyntaxFactoryHelper.ArgumentCriteriaCreationExpression(method));
+                yield return Argument(SyntaxFactoryHelper.NewArgumentsCriteria(method));
             }
         }
     }

@@ -73,14 +73,14 @@ internal static class MethodImposterAdapterBuilder
                 case RefKind.Ref:
                     body.Add(LocalDeclarationStatement(VariableDeclaration(pType, SingletonSeparatedList(
                         VariableDeclarator(pAdaptedName)
-                            .WithInitializer(EqualsValueClause(SyntaxFactoryHelper.CastExpressionSyntax(p.Name, (TypeSyntax)pTargetType, pType)))
+                            .WithInitializer(EqualsValueClause(TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)))
                     ))));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword)));
                     postInvokeActions.Add(ExpressionStatement(
                         AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
                             IdentifierName(p.Name),
-                            SyntaxFactoryHelper.CastExpressionSyntax(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
                         )
                     ));
                     break;
@@ -93,12 +93,12 @@ internal static class MethodImposterAdapterBuilder
                         AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
                             IdentifierName(p.Name),
-                            SyntaxFactoryHelper.CastExpressionSyntax(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
                         )
                     ));
                     break;
                 default:
-                    invokeArguments.Add(Argument(SyntaxFactoryHelper.CastExpressionSyntax(p.Name, (TypeSyntax)pTargetType, pType)));
+                    invokeArguments.Add(Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
                     break;
             }
         }
@@ -119,7 +119,7 @@ internal static class MethodImposterAdapterBuilder
 
             var returnType = SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType);
             var returnTargetType = typeParamRenamer.Visit(returnType);
-            body.Add(ReturnStatement(SyntaxFactoryHelper.CastExpressionSyntax("result", returnType, (TypeSyntax)returnTargetType)));
+            body.Add(ReturnStatement(TypeCasterSyntaxHelper.CastExpression("result", returnType, (TypeSyntax)returnTargetType)));
         }
         else
         {
@@ -132,7 +132,7 @@ internal static class MethodImposterAdapterBuilder
                 "Invoke"
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(SyntaxFactoryHelper.ToParameterListSyntax(method.Symbol.Parameters, true))
+            .WithParameterList(method.Symbol.Parameters.ToParameterListSyntax(true))
             .WithBody(Block(body));
     }
 

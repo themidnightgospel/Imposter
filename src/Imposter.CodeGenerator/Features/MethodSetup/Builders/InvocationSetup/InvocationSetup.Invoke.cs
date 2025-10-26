@@ -151,7 +151,7 @@ internal static partial class InvocationSetupBuilder
         var callInvokeMethodExpression = IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
             .Dot(IdentifierName("ResultGenerator"))
             .Dot(IdentifierName("Invoke"))
-            .Call(ArgumenstListSyntax(method.Symbol.Parameters))
+            .Call(ArgumentListSyntax(method.Symbol.Parameters))
             .AwaitIf(method.IsAsync);
 
         return method.HasReturnValue

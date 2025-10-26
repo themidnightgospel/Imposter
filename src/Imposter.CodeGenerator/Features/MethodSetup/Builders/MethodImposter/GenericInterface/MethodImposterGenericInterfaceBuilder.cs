@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,7 +15,7 @@ internal static class MethodImposterGenericInterfaceBuilder
         {
             return null;
         }
-        
+
         var genericInterfaceType = method.MethodImposter.Interface;
         var invokeMethod = MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
@@ -39,8 +40,8 @@ internal static class MethodImposterGenericInterfaceBuilder
         hasMatchingSetupMethod = hasMatchingSetupMethod
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-        return SyntaxFactoryHelper
-            .InterfaceDeclarationBuilder(method.Symbol, genericInterfaceType.Name)
+        return InterfaceDeclarationBuilderFactory
+            .CreateForMethod(method.Symbol, genericInterfaceType.Name)
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)
             .AddMember(hasMatchingSetupMethod)

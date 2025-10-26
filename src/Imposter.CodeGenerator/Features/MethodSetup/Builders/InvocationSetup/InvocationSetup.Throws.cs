@@ -24,7 +24,7 @@ internal static partial class InvocationSetupBuilder
                         GetMethodCallSetupAccessExpressionSyntax("ResultGenerator"),
                         Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
+                                .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
                                 .AddStatement(ThrowStatement(ObjectCreationExpression(IdentifierName("TException"), ArgumentList(), null)))
                                 .Build()
                         )
@@ -45,7 +45,7 @@ internal static partial class InvocationSetupBuilder
                     GetMethodCallSetupAccessExpressionSyntax("ResultGenerator")
                         .Assign(Lambda(method.Symbol.Parameters,
                             new BlockBuilder()
-                                .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
+                                .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
                                 .AddStatement(ThrowStatement(IdentifierName(method.InvocationSetup.ThrowsMethod.ExceptionParameter.Name)))
                                 .Build())
                         )
@@ -75,7 +75,7 @@ internal static partial class InvocationSetupBuilder
                                     ThrowStatement(
                                         InvocationExpression(
                                             IdentifierName(method.InvocationSetup.ThrowsMethod.ExceptionGeneratorParameter.Name),
-                                            ArgumenstListSyntax(method.Symbol.Parameters)
+                                            ArgumentListSyntax(method.Symbol.Parameters)
                                         )
                                     ))
                             )

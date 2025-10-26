@@ -22,14 +22,14 @@ internal static partial class ImposterBuilder
             .AddMembers(BuildImposterMethods(imposterGenerationContext))
             .AddMembers(BuildImposterProperties(imposterGenerationContext));
 
-        var imposterClassMemberUniqueName = new SymbolNameNamespace(MemberNamesHelper.GetNames(imposterBuilder.Members));
+        var imposterClassMemberUniqueName = new NameSet(MemberNamesHelper.GetNames(imposterBuilder.Members));
         var imposterTargetInstanceClassName = imposterClassMemberUniqueName.Use("ImposterTargetInstance");
         var imposterInstanceFieldName = imposterClassMemberUniqueName.Use("_imposterInstance");
 
         return imposterBuilder
             .AddMember(ImposterInstanceField(imposterTargetInstanceClassName, imposterInstanceFieldName))
             .AddMember(BuildConstructor(imposterGenerationContext, imposterTargetInstanceClassName, imposterInstanceFieldName))
-            .AddMember(ImposterTargetInstanceBuilder.Build(imposterGenerationContext, imposterTargetInstanceClassName))
+            .AddMember(ImposterInstanceBuilder.Build(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(InstanceMethod(imposterGenerationContext, imposterInstanceFieldName))
             .AddModifier(Token(SyntaxKind.PublicKeyword));
     }

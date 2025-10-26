@@ -72,7 +72,7 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
     {
         return ClassDeclaration(
-            List(Defaults.DefaultTypeAttributes.Concat(_attribute)),
+            List(DefaultAttributes.DefaultTypeAttributes.Concat(_attribute)),
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,

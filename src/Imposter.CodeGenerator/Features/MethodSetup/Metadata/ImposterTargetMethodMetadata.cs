@@ -54,7 +54,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 
-    public SymbolNameNamespace CreateParameterNameContext() => new(SymbolNames.GetParameterNames(this.Symbol));
+    public NameSet CreateParameterNameContext() => new(Symbol.Parameters.Select(p => p.Name));
 
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,

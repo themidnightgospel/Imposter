@@ -11,7 +11,7 @@ internal static partial class MethodImposterBuilder
 {
     internal static FieldDeclarationSyntax BuildInvocationSetupsField(in ImposterTargetMethodMetadata method)
     {
-        var invocationSetupsFieldType = ConcurrentStack(method.InvocationSetup.Syntax);
+        var invocationSetupsFieldType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.InvocationSetup.Syntax);
 
         return SingleVariableField(
             invocationSetupsFieldType,

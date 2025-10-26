@@ -4,12 +4,12 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Helpers;
 
-public class SymbolNameNamespaceTests
+public class NameSetTests
 {
     [Fact]
     public void Use_NoConflicts_ReturnsOriginalName()
     {
-        var context = new SymbolNameNamespace([]);
+        var context = new NameSet([]);
 
         var result = context.Use("name");
 
@@ -19,7 +19,7 @@ public class SymbolNameNamespaceTests
     [Fact]
     public void Use_CalledMultipleTimesForSameKey_ReturnsDifferentValues()
     {
-        var context = new SymbolNameNamespace([]);
+        var context = new NameSet([]);
 
         var result1 = context.Use("name");
         var result2 = context.Use("name");
@@ -31,7 +31,7 @@ public class SymbolNameNamespaceTests
     [Fact]
     public void Use_WithInitialConflict_ReturnsSuffixedName()
     {
-        var context = new SymbolNameNamespace(["name"]);
+        var context = new NameSet(["name"]);
 
         var result = context.Use("name");
 
@@ -41,7 +41,7 @@ public class SymbolNameNamespaceTests
     [Fact]
     public void Use_WithMultipleInitialConflicts_ReturnsCorrectlySuffixedName()
     {
-        var context = new SymbolNameNamespace(["name", "name_1"]);
+        var context = new NameSet(["name", "name_1"]);
 
         var result = context.Use("name");
 
@@ -51,7 +51,7 @@ public class SymbolNameNamespaceTests
     [Fact]
     public void Use_GeneratesUniqueNamesSequentially()
     {
-        var context = new SymbolNameNamespace([]);
+        var context = new NameSet([]);
 
         var name1 = context.Use("name");
         var name2 = context.Use("name_1");
@@ -65,7 +65,7 @@ public class SymbolNameNamespaceTests
     [Fact]
     public void Use_WithKeyThatIsAlreadySuffixed_GeneratesCorrectly()
     {
-        var context = new SymbolNameNamespace(["name", "name_1"]);
+        var context = new NameSet(["name", "name_1"]);
         var result = context.Use("name_1");
         result.ShouldBe("name_1_1");
     }

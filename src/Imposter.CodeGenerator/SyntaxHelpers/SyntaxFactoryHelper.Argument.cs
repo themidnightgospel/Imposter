@@ -19,15 +19,15 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentSyntax OutVarArgument(string name) => Argument(
         null,
         Token(SyntaxKind.OutKeyword),
-        DeclarationExpression(IdentifierName("var"), SingleVariableDesignation(Identifier(name)))
+        DeclarationExpression(Var, SingleVariableDesignation(Identifier(name)))
     );
 
     internal static ArgumentListSyntax ToSingleArgumentList(this ExpressionSyntax expression)
         => ArgumentList(SingletonSeparatedList(Argument(expression)));
 
     internal static ArgumentListSyntax ToSingleArgumentList(this ArgumentSyntax argument)
-        => ArgumentListSyntax(SingletonSeparatedList(argument));
+        => ArgumentListSyntax([argument]);
 
-    internal static ArgumentSyntax AsArgument(this string argumentName)
+    internal static ArgumentSyntax ToArgument(this string argumentName)
         => Argument(IdentifierName(argumentName));
 }

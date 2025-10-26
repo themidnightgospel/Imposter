@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,8 +10,8 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Im
 internal static class MethodImposterBuilderInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
-        SyntaxFactoryHelper
-            .InterfaceDeclarationBuilder(method.Symbol, method.MethodImposter.BuilderInterface.Name)
+        InterfaceDeclarationBuilderFactory
+            .CreateForMethod(method.Symbol, method.MethodImposter.BuilderInterface.Name)
             .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
             .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)

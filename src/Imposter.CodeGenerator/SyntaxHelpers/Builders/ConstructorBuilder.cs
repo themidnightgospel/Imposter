@@ -69,7 +69,7 @@ internal struct ConstructorBuilder(string name)
     public ConstructorDeclarationSyntax Build()
     {
         return ConstructorDeclaration(
-            attributeLists: List(_attributes),
+            attributeLists: _attributes.Count > 0 ? List(_attributes) : default,
             modifiers: _modifiers,
             identifier: Identifier(name),
             parameterList: _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),

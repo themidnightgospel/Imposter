@@ -21,7 +21,7 @@ internal static partial class MethodImposterCollectionBuilder
                 IdentifierName("_imposters")
                     .Dot(IdentifierName("Select"))
                     .Call(Identifier("it")
-                        .GoesTo(IdentifierName("it")
+                        .Lambda(IdentifierName("it")
                             .Dot(GenericName(Identifier("As"), method.GenericTypeArguments.AsTypeArguments()))
                             .Call())
                         .ToSingleArgumentList()
@@ -29,11 +29,11 @@ internal static partial class MethodImposterCollectionBuilder
                     .Dot(IdentifierName("Where"))
                     .Call(
                         Identifier("it")
-                            .GoesTo(IdentifierName("it").IsNotNull())
+                            .Lambda(IdentifierName("it").IsNotNull())
                             .ToSingleArgumentList())
                     .Dot(IdentifierName("Select"))
                     .Call(Identifier("it")
-                        .GoesTo(PostfixUnaryExpression(
+                        .Lambda(PostfixUnaryExpression(
                                 SyntaxKind.SuppressNullableWarningExpression,
                                 IdentifierName("it")
                             )
@@ -43,7 +43,7 @@ internal static partial class MethodImposterCollectionBuilder
                     .Dot(IdentifierName("FirstOrDefault"))
                     .Call(
                         Identifier("it")
-                            .GoesTo(
+                            .Lambda(
                                 It
                                     .Dot(IdentifierName("HasMatchingSetup"))
                                     .Call(method.Parameters.HasInputParameters ? Argument(IdentifierName("arguments")).AsSingleArgumentListSyntax() : EmptyArgumentListSyntax)

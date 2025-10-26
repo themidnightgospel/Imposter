@@ -61,7 +61,7 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration);
             sourceProductionContext.AddSource(
-                $"{compilationContext.SymbolNameNamespace.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
+                $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
                 SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
         }
         // TODO

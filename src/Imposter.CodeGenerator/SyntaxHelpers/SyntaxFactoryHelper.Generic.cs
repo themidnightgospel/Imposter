@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -13,5 +12,5 @@ internal static partial class SyntaxFactoryHelper
     public static TypeArgumentListSyntax? TypeArgumentListSyntax(IReadOnlyList<NameSyntax> typeArguments)
         => typeArguments.Count == 0
             ? null
-            : TypeArgumentList(SyntaxFactory.SeparatedList<TypeSyntax>(typeArguments));
+            : TypeArgumentList(SeparatedList<TypeSyntax>(typeArguments));
 }

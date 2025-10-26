@@ -10,12 +10,10 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax ArgType(IParameterSymbol parameter)
-    {
-        return parameter.RefKind == RefKind.Out
+    internal static TypeSyntax ArgType(IParameterSymbol parameter) =>
+        parameter.RefKind == RefKind.Out
             ? WellKnownTypes.Imposter.Abstractions.OutArg(TypeSyntax(parameter.Type))
             : WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax(parameter.Type));
-    }
 
     internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(TypeSyntax argArgumentTypeSyntax) =>
         PropertyDeclaration(argArgumentTypeSyntax, Identifier("ArgumentsCriteria"))
@@ -38,16 +36,16 @@ internal static partial class SyntaxFactoryHelper
     internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
-    internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
-        Parameter(Identifier(parameter.Name)).WithType(ArgType(parameter));
+    internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) => ParameterSyntax(ArgType(parameter), parameter.Name);
 
-    internal static ObjectCreationExpressionSyntax ArgumentCriteriaCreationExpression(ImposterTargetMethodMetadata method)
-        => ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
-            .WithArgumentList(
+    internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(ImposterTargetMethodMetadata method)
+        => method.ArgumentsCriteria.Syntax
+            .New(
                 ArgumentListSyntax(
-                    SeparatedList(
-                        method.Symbol.Parameters.Select(p => Argument(IdentifierName(p.Name)))
-                    )
+                    method
+                        .Symbol
+                        .Parameters
+                        .Select(p => Argument(IdentifierName(p.Name)))
                 )
             );
 }

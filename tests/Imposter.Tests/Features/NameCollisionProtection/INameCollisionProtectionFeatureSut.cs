@@ -49,5 +49,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // TODO 
         // int _imposter { get; }
+
+        void InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues);
     }
 }

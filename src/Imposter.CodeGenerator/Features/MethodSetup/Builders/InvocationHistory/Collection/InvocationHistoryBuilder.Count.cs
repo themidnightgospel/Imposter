@@ -20,7 +20,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                 IdentifierName(InvocationHistoryTypeMetadata.CollectionMetadata.InvocationHistoryCollectionFieldName)
                     .Dot(IdentifierName("Count"))
                     .Call(Parameter(Identifier("it"))
-                        .GoesTo(It
+                        .Lambda(It
                             .Dot(method.Symbol.IsGenericMethod
                                 ? GenericName(Identifier(InvocationHistoryTypeMetadata.MatchesMethod.Name), method.GenericTypeArguments.AsTypeArguments())
                                 : IdentifierName(InvocationHistoryTypeMetadata.MatchesMethod.Name)

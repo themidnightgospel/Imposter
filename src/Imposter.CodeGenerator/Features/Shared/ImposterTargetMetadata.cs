@@ -20,7 +20,7 @@ internal readonly struct ImposterTargetMetadata
 
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
     {
-        var symbolNameNamespace = new SymbolNameNamespace([]);
+        var symbolNameNamespace = new NameSet([]);
         
         TargetSymbol = targetSymbol;
         Name = targetSymbol.Name + "Imposter";
@@ -28,13 +28,13 @@ internal readonly struct ImposterTargetMetadata
         Properties = GetProperties(targetSymbol, symbolNameNamespace);
     }
 
-    private static IReadOnlyList<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, SymbolNameNamespace symbolNameNamespace)
+    private static IReadOnlyList<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(method => new ImposterTargetMethodMetadata(method, symbolNameNamespace.Use(method.Name)))
+                .Select(method => new ImposterTargetMethodMetadata(method, nameSet.Use(method.Name)))
                 .ToList();
         }
 
@@ -42,13 +42,13 @@ internal readonly struct ImposterTargetMetadata
         throw new InvalidOperationException("Only interfaces are supported");
     }
 
-    private static IReadOnlyList<ImposterTargetPropertyMetadata> GetProperties(INamedTypeSymbol typeSymbol, SymbolNameNamespace symbolNameNamespace)
+    private static IReadOnlyList<ImposterTargetPropertyMetadata> GetProperties(INamedTypeSymbol typeSymbol, NameSet nameSet)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceProperties()
-                .Select(property => new ImposterTargetPropertyMetadata(property, symbolNameNamespace.Use(property.Name)))
+                .Select(property => new ImposterTargetPropertyMetadata(property, nameSet.Use(property.Name)))
                 .ToList();
         }
 
