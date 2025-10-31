@@ -12,5 +12,5 @@ internal static partial class ImposterBuilder
         imposterGenerationContext
             .Imposter
             .Properties
-            .Select(property => SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(property.PropertyImposter.Syntax, property.AsField.Name));
+            .Select(property => SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(property.ImposterBuilder.Syntax, property.AsField.Name));
 }

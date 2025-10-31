@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 
+// TODO Split this similar to how property metada is
 internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextProvider
 {
     internal IMethodSymbol Symbol { get; }

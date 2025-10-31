@@ -1,8 +1,9 @@
 ﻿; Unshipped analyzer release
-; https://github.com/dotnet/roslyn-analyzers/blob/master/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
+; https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
 
 ### New Rules
 
- Rule ID | Category | Severity | Notes           
----------|----------|----------|-----------------
- IMP001  | Usage    | Error    | Generator crash 
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+IMP001 | Imposter | Error | EnumValueAnalyzer
+IMP003 | Imposter | Error | EnumValueAnalyzer

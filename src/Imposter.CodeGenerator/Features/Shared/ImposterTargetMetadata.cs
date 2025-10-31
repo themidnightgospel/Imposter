@@ -16,7 +16,7 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyList<ImposterTargetMethodMetadata> Methods;
 
-    internal readonly IReadOnlyList<ImposterTargetPropertyMetadata> Properties;
+    internal readonly IReadOnlyList<ImposterPropertyMetadata> Properties;
 
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
     {
@@ -42,13 +42,13 @@ internal readonly struct ImposterTargetMetadata
         throw new InvalidOperationException("Only interfaces are supported");
     }
 
-    private static IReadOnlyList<ImposterTargetPropertyMetadata> GetProperties(INamedTypeSymbol typeSymbol, NameSet nameSet)
+    private static IReadOnlyList<ImposterPropertyMetadata> GetProperties(INamedTypeSymbol typeSymbol, NameSet nameSet)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceProperties()
-                .Select(property => new ImposterTargetPropertyMetadata(property, nameSet.Use(property.Name)))
+                .Select(property => new ImposterPropertyMetadata(property, nameSet.Use(property.Name)))
                 .ToList();
         }
 

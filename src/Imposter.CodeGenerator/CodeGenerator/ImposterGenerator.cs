@@ -17,7 +17,8 @@ using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Invoca
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface_;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter;
-using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Interface;
+using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Getter;
+using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Setter;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -110,7 +111,10 @@ public class ImposterGenerator : IIncrementalGenerator
 
         foreach (var property in imposterGenerationContext.Imposter.Properties)
         {
-            imposter.AddMember(PropertyImposterInterfaceBuilder.Build(property));
+            imposter.AddMember(PropertyGetterImposterBuilderInterfaceBuilder.Build(property));
+            imposter.AddMember(PropertySetterImposterBuilderInterfaceBuilder.Build(property));
+            imposter.AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property));
+            
             imposter.AddMember(PropertyImposterBuilder.Build(property));
         }
 
@@ -123,7 +127,8 @@ public class ImposterGenerator : IIncrementalGenerator
             .AddMember(imposter.Build())
             .Build()
             // TODO this will cause copying of enitere namespace syntax
-            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
+            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia())
+            );
 
         return CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),

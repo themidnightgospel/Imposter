@@ -12,7 +12,7 @@ public class TypeParameterRenamer(IReadOnlyList<ITypeParameterSymbol> typeParame
 {
     private readonly HashSet<string> _typeParameterNames = new(typeParameters.Select(it => it.Name));
 
-    public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
+    public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
     {
         if (_typeParameterNames.Contains(node.Identifier.Text))
         {

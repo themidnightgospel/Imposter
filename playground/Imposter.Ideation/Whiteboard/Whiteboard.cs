@@ -1,10 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
-using Shouldly;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Imposter.Ideation.Whiteboard
 {
@@ -86,7 +83,7 @@ namespace Imposter.Ideation.Whiteboard
 
     public class PhoneBook
     {
-        private Dictionary<string, string> _entries = new();
+        private Dictionary<string, string> _entries = new Dictionary<string, string>();
 
         public string this[int name, string lastname, IAnimal dog]
         {
@@ -107,33 +104,11 @@ namespace Imposter.Ideation.Whiteboard
         [Fact]
         public async Task Test()
         {
-            var mock = new Mock<ITest>();
+            /*
+            var mock = new Mock<IPhoneBook>();
+            mock.Setup(it => it[1, "Doe", new Tiger("Tiger")]).Callback()
+            */
 
-            mock.SetupSet(x => x.Age = It.IsAny<int>())
-                .Callback(() => { throw new EmptyException("Test"); });
-
-            try
-            {
-                mock.Object.Age = 1;
-            }
-            catch
-            {
-            }
-
-            mock.Object.Age.ShouldBe(2);
-
-            // Setup
-            mock.Setup(x => x.GenericOutParam<Cat, int>(out It.Ref<Cat>.IsAny))
-                .Returns(42);
-
-            // Act
-            mock.Object.GenericOutParam<Cat, int>(out Cat result);
-
-            // This verification PASSES - exact type match
-            mock.Verify(x => x.GenericOutParam<Cat, int>(out It.Ref<Cat>.IsAny), Times.Once);
-
-            // This verification FAILS - different generic type parameters
-            mock.Verify(x => x.GenericOutParam<IAnimal, int>(out It.Ref<IAnimal>.IsAny), Times.Once);
         }
     }
 }

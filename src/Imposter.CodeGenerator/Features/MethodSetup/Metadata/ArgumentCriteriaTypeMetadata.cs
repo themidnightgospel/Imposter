@@ -18,12 +18,12 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
         SyntaxWithTargetGenericTypeArguments = SyntaxFactoryHelper.WithMethodGenericArguments(method.TargetGenericTypeArguments, $"{method.UniqueName}ArgumentsCriteria");
     }
     
-    internal readonly struct AsMethod
+    internal readonly struct AsMethodMetadata
     {
         internal const string Name = "As";
     }
 
-    internal readonly struct MatchesMethod
+    internal readonly struct MatchesMethodMetadata
     {
         internal const string Name = "Matches";
     }

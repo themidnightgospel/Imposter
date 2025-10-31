@@ -60,7 +60,7 @@ internal static partial class ImposterBuilder
                     .Properties
                     .Select(property => ThisExpression()
                         .Dot(IdentifierName(property.AsField.Name))
-                        .Assign(property.PropertyImposter.Syntax.New())
+                        .Assign(property.ImposterBuilder.Syntax.New())
                         .ToStatementSyntax()
                     )
                 )
