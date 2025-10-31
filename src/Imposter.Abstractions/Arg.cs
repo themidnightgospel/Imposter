@@ -28,7 +28,11 @@ public class Arg<T>
     /// <summary>
     /// Matches an argument that is equal to the provided value.
     /// </summary>
-    public static Arg<T> Is(T? value) => new(it => EqualityComparer<T>.Default.Equals(it, value));
+    public static Arg<T> Is(T? value) => new(it =>
+    {
+        if (value == null) return it == null;
+        return EqualityComparer<T>.Default.Equals(it, value);
+    });
 
     /// <summary>
     /// Matches an argument that is the default value for its type (e.g., 0 for int, null for string).
@@ -68,5 +72,8 @@ public class OutArg<T>
     {
     }
 
+    /// <summary>
+    /// Checks if criteria matches the value
+    /// </summary>
     public bool Matches(T value) => true;
 }

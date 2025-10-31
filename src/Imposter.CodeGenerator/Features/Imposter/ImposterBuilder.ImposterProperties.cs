@@ -16,8 +16,8 @@ internal static partial class ImposterBuilder
             .Properties
             .Select(property =>
                 SyntaxFactoryHelper.ReadOnlyPropertyDeclarationSyntax(
-                    property.PropertyImposterInterface.Syntax,
-                    property.Symbol.Name,
+                    property.ImposterBuilderInterface.Syntax,
+                    property.Core.Name,
                     IdentifierName(property.AsField.Name)
                 )
             );

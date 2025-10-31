@@ -40,21 +40,23 @@ internal static class ImposterInstanceBuilder
             .Select(property =>
                 SyntaxFactoryHelper
                     .PropertyDeclarationSyntax(
-                        property.TypeSyntax,
-                        property.Symbol.Name,
-                        property.HasGetter
+                        property.Core.TypeSyntax,
+                        property.Core.Name,
+                        property.Core.HasGetter
                             ? Block(
                                 ReturnStatement(
                                     IdentifierName("_imposter")
                                         .Dot(IdentifierName(property.AsField.Name))
+                                        .Dot(IdentifierName("_getterImposterBuilder"))
                                         .Dot(IdentifierName("Get"))
                                         .Call()
                                 ))
                             : null,
-                        property.HasSetter
+                        property.Core.HasSetter
                             ? Block(
                                 IdentifierName("_imposter")
                                     .Dot(IdentifierName(property.AsField.Name))
+                                    .Dot(IdentifierName("_setterImposter"))
                                     .Dot(IdentifierName("Set"))
                                     .Call(Argument(IdentifierName("value")))
                                     .ToStatementSyntax())

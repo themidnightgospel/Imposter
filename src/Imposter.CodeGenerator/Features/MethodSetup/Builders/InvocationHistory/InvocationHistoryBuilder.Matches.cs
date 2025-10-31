@@ -37,9 +37,9 @@ internal static partial class InvocationHistoryBuilder
                 }
 
                 var argumentsMatchCriteria = IdentifierName(InvocationHistoryTypeMetadata.MatchesMethod.ArgumentsCriteriaParameterName)
-                    .Dot(GenericName(Identifier(ArgumentCriteriaTypeMetadata.AsMethod.Name), method.GenericTypeArguments.AsTypeArguments()))
+                    .Dot(GenericName(Identifier(ArgumentCriteriaTypeMetadata.AsMethodMetadata.Name), method.GenericTypeArguments.AsTypeArguments()))
                     .Call()
-                    .Dot(IdentifierName(ArgumentCriteriaTypeMetadata.MatchesMethod.Name))
+                    .Dot(IdentifierName(ArgumentCriteriaTypeMetadata.MatchesMethodMetadata.Name))
                     .Call(IdentifierName("Arguments").ToSingleArgumentList());
 
                 return genericArgumentsMatchCriteria.And(argumentsMatchCriteria);

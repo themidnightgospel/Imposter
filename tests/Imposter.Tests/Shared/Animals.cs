@@ -1,4 +1,7 @@
-﻿namespace Imposter.CodeGenerator.Tests.Shared
+﻿using System.Text.RegularExpressions;
+using Imposter.Abstractions;
+
+namespace Imposter.CodeGenerator.Tests.Shared
 {
     public interface IMammal
     {
@@ -61,4 +64,12 @@
         {
         }
     }
+    
+    // TODO
+    [GenerateImposter(typeof(IIndexerSetupPoc))]
+    public interface IIndexerSetupPoc
+    {
+        string IndexerMethod(int name, string lastname, in Regex dog);
+    }
+
 }
