@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
+using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -10,28 +12,74 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal static partial class ImposterBuilder
+internal partial class ImposterBuilder
 {
-    internal static ClassDeclarationBuilder Build(in ImposterGenerationContext imposterGenerationContext)
+    private readonly ClassDeclarationBuilder _imposterBuilder;
+    private readonly ImposterInstanceBuilder _imposterInstanceBuilder;
+
+    private ImposterBuilder(ClassDeclarationBuilder imposterBuilder, ImposterInstanceBuilder imposterInstanceBuilder)
+    {
+        _imposterBuilder = imposterBuilder;
+        _imposterInstanceBuilder = imposterInstanceBuilder;
+    }
+
+    internal ImposterBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
+    {
+        _imposterBuilder.AddMembers(members);
+        return this;
+    }
+
+    internal ImposterBuilder AddMember(MemberDeclarationSyntax? member)
+    {
+        _imposterBuilder.AddMember(member);
+        return this;
+    }
+
+    internal ImposterBuilder AddPropertyImposter(in ImposterPropertyMetadata property)
+    {
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.ReadOnlyPropertyDeclarationSyntax(
+                property.ImposterBuilderInterface.Syntax,
+                property.Core.Name,
+                IdentifierName(property.AsField.Name)
+            ));
+
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+                property.ImposterBuilder.Syntax,
+                property.AsField.Name,
+                property.ImposterBuilder.Syntax.New()));
+
+        _imposterInstanceBuilder.AddImposterProperty(property);
+
+        return this;
+    }
+
+    internal ClassDeclarationSyntax Build() => _imposterBuilder
+        .AddMember(_imposterInstanceBuilder.Build())
+        .Build();
+
+    internal static ImposterBuilder Create(in ImposterGenerationContext imposterGenerationContext)
     {
         var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.Imposter.Name)
             .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol))))
             .AddMembers(MethodImposterFields(imposterGenerationContext))
-            .AddMembers(PropertyImposterFields(imposterGenerationContext))
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
-            .AddMembers(BuildImposterMethods(imposterGenerationContext))
-            .AddMembers(BuildImposterProperties(imposterGenerationContext));
+            .AddMembers(BuildImposterMethods(imposterGenerationContext));
 
         var imposterClassMemberUniqueName = new NameSet(MemberNamesHelper.GetNames(imposterBuilder.Members));
         var imposterTargetInstanceClassName = imposterClassMemberUniqueName.Use("ImposterTargetInstance");
         var imposterInstanceFieldName = imposterClassMemberUniqueName.Use("_imposterInstance");
 
-        return imposterBuilder
+        var imposterClassBuilder = imposterBuilder
             .AddMember(ImposterInstanceField(imposterTargetInstanceClassName, imposterInstanceFieldName))
             .AddMember(BuildConstructor(imposterGenerationContext, imposterTargetInstanceClassName, imposterInstanceFieldName))
-            .AddMember(ImposterInstanceBuilder.Build(imposterGenerationContext, imposterTargetInstanceClassName))
             .AddMember(InstanceMethod(imposterGenerationContext, imposterInstanceFieldName))
             .AddModifier(Token(SyntaxKind.PublicKeyword));
+
+        var imposterInstanceBuilder = ImposterInstanceBuilder.Create(imposterGenerationContext, imposterTargetInstanceClassName);
+
+        return new ImposterBuilder(imposterClassBuilder, imposterInstanceBuilder);
     }
 
     private static ConstructorDeclarationSyntax BuildConstructor(
@@ -54,15 +102,6 @@ internal static partial class ImposterBuilder
                             )
                             .ToStatementSyntax()
                         )
-                )
-                .AddStatements(imposterGenerationContext
-                    .Imposter
-                    .Properties
-                    .Select(property => ThisExpression()
-                        .Dot(IdentifierName(property.AsField.Name))
-                        .Assign(property.ImposterBuilder.Syntax.New())
-                        .ToStatementSyntax()
-                    )
                 )
                 .AddExpression(
                     ThisExpression()

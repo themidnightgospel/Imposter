@@ -9,7 +9,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
-    private static MemberDeclarationSyntax BuildHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))

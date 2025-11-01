@@ -19,16 +19,23 @@ internal static class SetterImposterBuilder
         }
 
         return new ClassDeclarationBuilder()
-            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.SetterCallbacksField, property.SetterImposter.SetterCallbacksField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.SetterCallbacksField.Type, PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name, property.SetterImposter.SetterCallbacksField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.SetterInvocationHistoryField, property.SetterImposter.SetterInvocationHistoryField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
-            .AddMember(BuildConstructorAndInitializeMembers(property.SetterImposter.Name, [property.SetterImposter.DefaultPropertyBehaviourField]))
+            .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
             .AddMember(BuildSetMethod(property.SetterImposter, property.DefaultPropertyBehaviour))
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
     }
+
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
+        new ConstructorWithFieldInitializationBuilder(property.SetterImposter.Name)
+            .WithModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(property.SetterImposter.DefaultPropertyBehaviourField)
+            .Build();
+
 
     internal static MethodDeclarationSyntax BuildSetMethod(in PropertySetterImposterMetadata setterImposter, in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
@@ -72,7 +79,7 @@ internal static class SetterImposterBuilder
                         Token(SyntaxKind.CloseParenToken)
                     )
                 ),
-                IdentifierName(setterImposter.SetterCallbacksField.Name),
+                IdentifierName(PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name),
                 Block(
                     IfStatement(
                         IdentifierName("criteria")
@@ -84,7 +91,7 @@ internal static class SetterImposterBuilder
                     )
                 ));
         }
-        
+
         static StatementSyntax TrackSetterInvocation(in PropertySetterImposterMetadata setterImposter) =>
             IdentifierName(setterImposter.SetterInvocationHistoryField.Name)
                 .Dot(IdentifierName("Add"))
@@ -131,7 +138,7 @@ internal static class SetterImposterBuilder
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CriteriaParameter))
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CallbackParameter))
             .WithBody(Block(
-                    IdentifierName(setterImposter.SetterCallbacksField.Name)
+                    IdentifierName(PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name)
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(
                                 setterImposter

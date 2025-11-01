@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface_;
+namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface;
 
 internal static class MethodImposterNonGenericInterfaceBuilder
 {

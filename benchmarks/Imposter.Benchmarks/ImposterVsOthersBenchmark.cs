@@ -7,17 +7,30 @@ namespace Imposter.Benchmarks;
 
 [GenerateImposter(typeof(ICalculator))]
 [MemoryDiagnoser]
-public class Benchy
+public class ImposterVsMoqVsNSub
 {
+    [Params(1, 10, 100, 1000)]
+    public int Iteration;
+
     [Benchmark]
     public void Mock()
     {
         var calculatorMock = new Mock<ICalculator>();
-        calculatorMock
-            .Setup(it => it.Add(It.IsAny<int>(), It.IsAny<int>()))
-            .Returns(1);
 
-        calculatorMock.Object.Add(1, 1);
+        for (var i = 0; i < Iteration; i++)
+        {
+            var input = i;
+            calculatorMock
+                .Setup(it => it.Square(input))
+                .Returns(input * input);
+        }
+        
+        var mockObject = calculatorMock.Object;
+
+        for (var i = 0; i < Iteration; i++)
+        {
+            mockObject.Square(i);
+        }
     }
 
     [Benchmark]
@@ -25,26 +38,38 @@ public class Benchy
     {
         var calculatorMock = Substitute.For<ICalculator>();
 
-        calculatorMock.Add(Arg.Any<int>(), Arg.Any<int>()).Returns(1);
+        for (var i = 0; i < Iteration; i++)
+        {
+            var input = i;
+            calculatorMock.Square(input).Returns(input * input);
+        }
 
-        calculatorMock.Add(1, 1);
+        for (var i = 0; i < Iteration; i++)
+        {
+            calculatorMock.Square(i);
+        }
     }
 
     [Benchmark]
     public void Imposter()
     {
         var imposter = new ICalculatorImposter();
+        
+        for (var i = 0; i < Iteration; i++)
+        {
+            var input = i;
+            imposter.Square(input).Returns(input * input);
+        }
 
-        /* TODO */
-        imposter
-            .Add(Arg<int>.Any(), Arg<int>.Any())
-            .Returns((left, right) => left * right);
-
-        imposter.Instance().Add(10, 9);
+        var imposterInstance = imposter.Instance();
+        for (var i = 0; i < Iteration; i++)
+        {
+            imposterInstance.Square(i);
+        }
     }
 
     public interface ICalculator
     {
-        int Add(int left, int right);
+        int Square(int input);
     }
 }

@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Co
 
 internal static partial class MethodImposterCollectionBuilder
 {
-    private static MemberDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(method.MethodImposter.Syntax, "AddNew")
             .AddModifiers(Token(SyntaxKind.InternalKeyword))

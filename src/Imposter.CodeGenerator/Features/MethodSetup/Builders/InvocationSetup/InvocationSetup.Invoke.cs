@@ -69,7 +69,7 @@ internal static partial class InvocationSetupBuilder
             );
     }
 
-    private static StatementSyntax InitializeNextSetup(in ImposterTargetMethodMetadata method)
+    private static LocalDeclarationStatementSyntax InitializeNextSetup(in ImposterTargetMethodMetadata method)
     {
         return LocalDeclarationStatement(
             VariableDeclaration(
@@ -105,7 +105,7 @@ internal static partial class InvocationSetupBuilder
         );
     }
 
-    private static StatementSyntax InvokeCallBefore(in ImposterTargetMethodMetadata method)
+    private static IfStatementSyntax InvokeCallBefore(in ImposterTargetMethodMetadata method)
     {
         return IfStatement(
             IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName).Dot(IdentifierName("CallBefore")).IsNotNull(),
@@ -119,7 +119,7 @@ internal static partial class InvocationSetupBuilder
         );
     }
 
-    private static StatementSyntax InvokeCallAfter(in ImposterTargetMethodMetadata method) =>
+    private static IfStatementSyntax InvokeCallAfter(in ImposterTargetMethodMetadata method) =>
         IfStatement(IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName)
                 .Dot(IdentifierName("CallAfter"))
                 .IsNotNull(),
@@ -133,7 +133,7 @@ internal static partial class InvocationSetupBuilder
         );
 
 
-    private static StatementSyntax SetDefaultGeneratorIfNull(in ImposterTargetMethodMetadata method)
+    private static IfStatementSyntax SetDefaultGeneratorIfNull(in ImposterTargetMethodMetadata method)
     {
         return IfStatement(
             IdentifierName(method.InvocationSetup.InvokeMethod.NextSetupVariableName).Dot(IdentifierName("ResultGenerator")).IsNull(),

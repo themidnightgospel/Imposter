@@ -1,9 +1,9 @@
-﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+﻿using Imposter.CodeGenerator.Features.Shared;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 
-internal readonly struct ImposterPropertyMetadata
+internal readonly ref struct ImposterPropertyMetadata
 {
     internal readonly ImposterPropertyCoreMetadata Core;
 
@@ -31,7 +31,8 @@ internal readonly struct ImposterPropertyMetadata
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
         
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
-        DefaultPropertyBehaviourField = new FieldMetadata("_defaultPropertyBehaviour", DefaultPropertyBehaviour.TypeSyntax);
+         DefaultPropertyBehaviourField = new FieldMetadata("_defaultPropertyBehaviour", DefaultPropertyBehaviour.TypeSyntax);
+        DefaultPropertyBehaviourField = new FieldMetadata("_defaultPropertyBehaviour", null!);
         
         GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
         GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(Core, DefaultPropertyBehaviourField);

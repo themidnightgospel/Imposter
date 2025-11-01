@@ -1,14 +1,10 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+namespace Imposter.CodeGenerator.Features.Shared;
 
-internal interface IFieldMetadata
+internal readonly struct FieldMetadata(string name, TypeSyntax type)
 {
-    string Name { get; }
+    internal readonly string Name = name;
     
-    TypeSyntax Type { get; }
-}
-
-internal readonly record struct FieldMetadata(string Name, TypeSyntax Type) : IFieldMetadata
-{
+    internal readonly TypeSyntax Type = type;
 }

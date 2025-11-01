@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+﻿using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,7 +11,7 @@ internal readonly struct DefaultPropertyBehaviourMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
-    internal readonly FieldMetadata IsOnField = new FieldMetadata("IsOn", WellKnownTypes.Bool);
+    internal readonly FieldMetadata IsOnField = new("IsOn", WellKnownTypes.Bool);
 
     internal readonly FieldMetadata BackingField;
 

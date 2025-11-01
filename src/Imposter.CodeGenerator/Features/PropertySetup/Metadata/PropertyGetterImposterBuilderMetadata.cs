@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,6 +25,13 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
     internal readonly AddGetterReturnValueMethodMetadata AddGetterReturnValueMethod;
 
     internal readonly GetMethodMetadata GetMethod;
+
+    // TODO remove
+    internal PropertyGetterImposterBuilderMetadata(in FieldMetadata defaultPropertyBehaviourMetadata)
+    {
+        Name = "test";
+        TypeSyntax = defaultPropertyBehaviourMetadata.Type;
+    }
 
     internal PropertyGetterImposterBuilderMetadata(in ImposterPropertyCoreMetadata property, in FieldMetadata defaultPropertyBehaviourMetadata)
     {

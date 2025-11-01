@@ -9,7 +9,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Bu
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static MemberDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
         return MethodDeclaration(
                 PredefinedType(Token(SyntaxKind.VoidKeyword)),

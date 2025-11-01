@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+﻿using Imposter.CodeGenerator.Features.Shared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,7 +8,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(IFieldMetadata fieldMetadata, ExpressionSyntax? initializer = null) =>
+    internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(FieldMetadata fieldMetadata, ExpressionSyntax? initializer = null) =>
         SingleVariableField(fieldMetadata.Type, fieldMetadata.Name, TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)), initializer);
     
     internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(TypeSyntax typeSyntax, string name, ExpressionSyntax? initializer = null) =>

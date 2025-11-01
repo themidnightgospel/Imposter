@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 
-internal readonly record struct MethodImposterMetadata
+internal readonly struct MethodImposterMetadata
 {
     internal readonly string Name;
 
@@ -31,7 +32,7 @@ internal readonly record struct MethodImposterMetadata
 
     internal const string ExistingInvocationSetupFieldName = "_existingInvocationSetup";
 
-    internal MethodImposterMetadata(ImposterTargetMethodMetadata method)
+    internal MethodImposterMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodImposter";
         var methodImposterSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);

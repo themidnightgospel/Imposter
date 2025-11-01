@@ -11,7 +11,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory
 
 internal static partial class InvocationHistoryBuilder
 {
-    static MemberDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
+    static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), InvocationHistoryTypeMetadata.MatchesMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))

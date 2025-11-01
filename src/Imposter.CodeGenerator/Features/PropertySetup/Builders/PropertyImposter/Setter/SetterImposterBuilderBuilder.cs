@@ -1,6 +1,7 @@
 ﻿using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -14,9 +15,16 @@ internal static class SetterImposterBuilderBuilder
             .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.SetterImposterField))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.CriteriaField))
-            .AddMember(BuildConstructorAndInitializeMembers(property.SetterImposter.Builder.Name, [property.SetterImposter.Builder.SetterImposterField, property.SetterImposter.Builder.CriteriaField]))
+            .AddMember(BuildConstructor(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
+            .Build();
+
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
+        new ConstructorWithFieldInitializationBuilder(property.SetterImposter.Builder.Name)
+            .WithModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(property.SetterImposter.Builder.SetterImposterField)
+            .AddParameter(property.SetterImposter.Builder.CriteriaField)
             .Build();
 
     internal static MethodDeclarationSyntax BuildCalledMethod(in ImposterPropertyMetadata property) =>
