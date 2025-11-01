@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 
-internal readonly struct ImposterPropertyCoreMetadata
+internal readonly ref struct ImposterPropertyCoreMetadata
 {
     internal readonly string Name;
 

@@ -7,14 +7,13 @@ using Imposter.CodeGenerator.Features.MethodSetup.Builders.Arguments;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.Delegates;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory.Collection;
-using Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory.Interface;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationSetup;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Collection;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.GenericInterface;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.InvocationVerifierInterface;
-using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface_;
+using Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.NonGenericInterface;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter;
 using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Getter;
@@ -77,17 +76,18 @@ public class ImposterGenerator : IIncrementalGenerator
                     DiagnosticSeverity.Error,
                     isEnabledByDefault: true),
                 Location.None));
+            throw;
         }
     }
 
     private static CompilationUnitSyntax BuildImposter(in ImposterGenerationContext imposterGenerationContext)
     {
-        var imposter = ImposterBuilder.Build(imposterGenerationContext);
+        var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
 
         foreach (var method in imposterGenerationContext.Imposter.Methods)
         {
             // TODO move all this to MethodSetupBuilder
-            imposter
+            imposterBuilder
                 .AddMembers(MethodDelegateTypeBuilder.Build(method))
                 .AddMember(ArgumentsBuilder.Build(method))
                 .AddMember(ArgumentsCriteriaBuilder.Build(method))
@@ -99,7 +99,7 @@ public class ImposterGenerator : IIncrementalGenerator
             // TODO clean it up
             var invocationSetupInterface = InvocationSetupBuilder.BuildInvocationSetupInterface(method);
 
-            imposter
+            imposterBuilder
                 .AddMember(InvocationSetupBuilder.Build(method))
                 .AddMember(invocationSetupInterface)
                 .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
@@ -109,13 +109,16 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(MethodImposterBuilder.Build(method, invocationSetupInterface));
         }
 
-        foreach (var property in imposterGenerationContext.Imposter.Properties)
+        foreach (var propertySymbol in imposterGenerationContext.Imposter.PropertySymbols)
         {
-            imposter.AddMember(PropertyGetterImposterBuilderInterfaceBuilder.Build(property));
-            imposter.AddMember(PropertySetterImposterBuilderInterfaceBuilder.Build(property));
-            imposter.AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property));
-            
-            imposter.AddMember(PropertyImposterBuilder.Build(property));
+            var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(propertySymbol);
+
+            imposterBuilder
+                .AddPropertyImposter(property)
+                .AddMember(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
+                .AddMember(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
+                .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
+                .AddMember(PropertyImposterBuilder.Build(property));
         }
 
         var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
@@ -124,7 +127,7 @@ public class ImposterGenerator : IIncrementalGenerator
                 : imposterGenerationContext.ImposterComponentsNamespace);
 
         var imposterNamespace = imposterNamespaceBuilder
-            .AddMember(imposter.Build())
+            .AddMember(imposterBuilder.Build())
             .Build()
             // TODO this will cause copying of enitere namespace syntax
             .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia())

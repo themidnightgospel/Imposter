@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
 using Imposter.Benchmarks;
 
-BenchmarkRunner.Run<ClassDeclarationBuilderBenchmark>();
+// BenchmarkRunner.Run<ImposterVsMoqVsNSub>();
+BenchmarkRunner.Run<ReadonlyStructBenchmarks>();

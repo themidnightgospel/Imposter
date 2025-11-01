@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal static partial class ImposterBuilder
+internal partial class ImposterBuilder
 {
     private static IEnumerable<MethodDeclarationSyntax> BuildImposterMethods(in ImposterGenerationContext imposterGenerationContext)
     {

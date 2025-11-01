@@ -54,7 +54,7 @@ internal static class MethodImposterAdapterBuilder
         return adapterClass;
     }
 
-    private static MemberDeclarationSyntax BuildAdapterInvokeMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAdapterInvokeMethod(in ImposterTargetMethodMetadata method)
     {
         var body = new List<StatementSyntax>();
         var invokeArguments = new List<ArgumentSyntax>();
@@ -136,7 +136,7 @@ internal static class MethodImposterAdapterBuilder
             .WithBody(Block(body));
     }
 
-    private static MemberDeclarationSyntax BuildAdapterHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAdapterHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
     {
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, "Target");
         var argumentsTypeWithTarget = (TypeSyntax)typeParamRenamer.Visit(method.Arguments.Syntax);
@@ -167,7 +167,7 @@ internal static class MethodImposterAdapterBuilder
             .Build();
     }
 
-    private static MemberDeclarationSyntax BuildAdapterAsMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAdapterAsMethod(in ImposterTargetMethodMetadata method)
     {
         var asMethodTypeParams = method.Symbol.TypeParameters.Select(p => TypeParameter(p.Name + "Target1")).ToArray();
         var targetTypeArgs = method.Symbol.TypeParameters.Select(p => IdentifierName(p.Name + "Target1")).Cast<TypeSyntax>().ToArray();

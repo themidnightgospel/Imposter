@@ -5,9 +5,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal static partial class ImposterBuilder
+internal partial class ImposterBuilder
 {
-    private static MemberDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext, string imposterInstanceFieldName) =>
+    private static MethodDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext, string imposterInstanceFieldName) =>
         MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
                 Identifier("Instance")

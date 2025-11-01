@@ -47,6 +47,12 @@ public class Arg<T>
     private static readonly Arg<T> _anyInstance = new(_ => true);
 
     /// <summary>
+    /// Implicitly converts a value of type T to an Arg{T} that matches that specific value.
+    /// </summary>
+    /// <param name="value">The value to convert to an argument matcher.</param>
+    public static implicit operator Arg<T>(T value) => Is(value);
+
+    /// <summary>
     /// Matches a string argument against a regular expression.
     /// </summary>
     public static Arg<string> MatchesRegex(string regex)

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory.Interface;
+namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.InvocationHistory;
 
 public static class InvocationHistoryInterfaceBuilder
 {

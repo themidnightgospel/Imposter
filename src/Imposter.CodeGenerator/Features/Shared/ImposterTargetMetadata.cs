@@ -12,29 +12,27 @@ internal readonly struct ImposterTargetMetadata
 {
     internal readonly string Name;
 
-    internal readonly INamedTypeSymbol TargetSymbol;
+    // TODO this will make ImposterTargetMethodMetadata allocate on heap
+    internal readonly List<ImposterTargetMethodMetadata> Methods;
 
-    internal readonly IReadOnlyList<ImposterTargetMethodMetadata> Methods;
+    internal readonly IReadOnlyCollection<IPropertySymbol> PropertySymbols;
 
-    internal readonly IReadOnlyList<ImposterPropertyMetadata> Properties;
+    private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
     {
-        var symbolNameNamespace = new NameSet([]);
-        
-        TargetSymbol = targetSymbol;
         Name = targetSymbol.Name + "Imposter";
-        Methods = GetMethods(targetSymbol, symbolNameNamespace);
-        Properties = GetProperties(targetSymbol, symbolNameNamespace);
+        Methods = GetMethods(targetSymbol, _symbolNameNamespace);
+        PropertySymbols = GetPropertySymbols(targetSymbol, _symbolNameNamespace);
     }
 
-    private static IReadOnlyList<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
+    private static List<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(method => new ImposterTargetMethodMetadata(method, nameSet.Use(method.Name)))
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name)))
                 .ToList();
         }
 
@@ -42,17 +40,20 @@ internal readonly struct ImposterTargetMetadata
         throw new InvalidOperationException("Only interfaces are supported");
     }
 
-    private static IReadOnlyList<ImposterPropertyMetadata> GetProperties(INamedTypeSymbol typeSymbol, NameSet nameSet)
+    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol, NameSet nameSet)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
-            return typeSymbol
-                .GetAllInterfaceProperties()
-                .Select(property => new ImposterPropertyMetadata(property, nameSet.Use(property.Name)))
-                .ToList();
+            return typeSymbol.GetAllInterfaceProperties();
         }
 
         // TODO Add class support.
         throw new InvalidOperationException("Only interfaces are supported");
     }
+
+    internal ImposterTargetMethodMetadata CreateMethodMetadata(IMethodSymbol methodSymbol)
+        => new ImposterTargetMethodMetadata(methodSymbol, _symbolNameNamespace.Use(methodSymbol.Name));
+
+    internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol)
+        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name));
 }

@@ -9,7 +9,9 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal static class DefaultAttributes
 {
+#pragma warning disable CA1810
     static DefaultAttributes()
+#pragma warning restore CA1810
     {
         DefaultTypeAttributes =
         [

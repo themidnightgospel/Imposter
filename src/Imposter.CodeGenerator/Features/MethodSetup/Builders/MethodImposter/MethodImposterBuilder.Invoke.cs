@@ -42,12 +42,12 @@ internal partial class MethodImposterBuilder
                 .Build())
             .Build();
 
-    private static StatementSyntax? ReturnResultStatement(in ImposterTargetMethodMetadata method)
+    private static ReturnStatementSyntax? ReturnResultStatement(in ImposterTargetMethodMetadata method)
     {
         return method.HasReturnValue ? ReturnStatement(IdentifierName(method.MethodImposter.InvokeMethod.ResultVariableName)) : null;
     }
 
-    private static StatementSyntax? DeclareAndInitializeArgumentsVariable(in ImposterTargetMethodMetadata method) =>
+    private static LocalDeclarationStatementSyntax? DeclareAndInitializeArgumentsVariable(in ImposterTargetMethodMetadata method) =>
         method.Parameters.HasInputParameters
             ? LocalVariableDeclarationSyntax(
                 typeSyntax: Var,
@@ -55,7 +55,7 @@ internal partial class MethodImposterBuilder
                 initializer: method.Arguments.Syntax.New(method.Parameters.InputParametersAsArgumentListSyntaxWithoutRef))
             : null;
 
-    private static StatementSyntax AddToInvocationHistoryCollection(in ImposterTargetMethodMetadata method, bool threwException)
+    private static ExpressionStatementSyntax AddToInvocationHistoryCollection(in ImposterTargetMethodMetadata method, bool threwException)
     {
         return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
             .Dot(IdentifierName("Add"))
@@ -106,7 +106,7 @@ internal partial class MethodImposterBuilder
         return LocalDeclarationStatement(VariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, initializer: invokeExpression));
     }
 
-    private static StatementSyntax DeclareMatchingSetupVariable(in ImposterTargetMethodMetadata method) =>
+    private static LocalDeclarationStatementSyntax DeclareMatchingSetupVariable(in ImposterTargetMethodMetadata method) =>
         LocalVariableDeclarationSyntax(
             Var,
             method.MethodImposter.InvokeMethod.MatchingSetupVariableName,

@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Bu
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static IReadOnlyList<FieldDeclarationSyntax> GetFields(in ImposterTargetMethodMetadata method)
+    private static List<FieldDeclarationSyntax> GetFields(in ImposterTargetMethodMetadata method)
     {
         var fields = new List<FieldDeclarationSyntax>();
 

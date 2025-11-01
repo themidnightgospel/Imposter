@@ -11,7 +11,7 @@ namespace Imposter.CodeGenerator.Features.MethodSetup.Builders.MethodImposter.Co
 
 internal static partial class MethodImposterCollectionBuilder
 {
-    private static MemberDeclarationSyntax BuildGetImposterWithMatchingSetup(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildGetImposterWithMatchingSetup(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingSetup")
             .AddParameter(GetParameter(method))

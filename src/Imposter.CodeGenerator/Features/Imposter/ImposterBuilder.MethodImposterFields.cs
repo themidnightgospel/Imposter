@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal static partial class ImposterBuilder
+internal partial class ImposterBuilder
 {
     private static IEnumerable<FieldDeclarationSyntax> MethodImposterFields(in ImposterGenerationContext imposterGenerationContext) =>
         imposterGenerationContext

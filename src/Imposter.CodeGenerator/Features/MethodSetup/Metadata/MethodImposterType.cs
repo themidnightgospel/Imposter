@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Imposter.CodeGenerator.Features.MethodSetup.Metadata;
 
 // TODO delete
@@ -14,7 +16,7 @@ internal class MethodImposterType2
     public MethodImposterType2(ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodImposter";
-        DeclaredAsParameterName = char.ToLower(Name[0]) + Name.Substring(1);
+        DeclaredAsParameterName = char.ToLower(Name[0], CultureInfo.InvariantCulture) + Name.Substring(1);
         DeclaredAsFieldName = "_" + DeclaredAsParameterName;
     }
 }

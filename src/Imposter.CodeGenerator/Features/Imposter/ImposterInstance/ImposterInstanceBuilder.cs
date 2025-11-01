@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -10,59 +11,68 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 
-internal static class ImposterInstanceBuilder
+internal class ImposterInstanceBuilder
 {
-    // TODO this might collide
+    // TODO this might collide. Move it to Metadata
     private const string ImposterFieldName = "_imposter";
 
-    internal static ClassDeclarationSyntax Build(in ImposterGenerationContext imposterGenerationContext, string name)
+    private readonly ClassDeclarationBuilder _imposterInstanceBuilder;
+
+    private ImposterInstanceBuilder(ClassDeclarationBuilder imposterInstanceBuilder)
+    {
+        _imposterInstanceBuilder = imposterInstanceBuilder;
+    }
+
+    internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
+    {
+        _imposterInstanceBuilder
+            .AddMember(SyntaxFactoryHelper
+                .PropertyDeclarationSyntax(
+                    property.Core.TypeSyntax,
+                    property.Core.Name,
+                    property.Core.HasGetter
+                        ? Block(
+                            ReturnStatement(
+                                IdentifierName("_imposter")
+                                    .Dot(IdentifierName(property.AsField.Name))
+                                    .Dot(IdentifierName("_getterImposterBuilder"))
+                                    .Dot(IdentifierName("Get"))
+                                    .Call()
+                            ))
+                        : null,
+                    property.Core.HasSetter
+                        ? Block(
+                            IdentifierName("_imposter")
+                                .Dot(IdentifierName(property.AsField.Name))
+                                .Dot(IdentifierName("_setterImposter"))
+                                .Dot(IdentifierName("Set"))
+                                .Call(Argument(IdentifierName("value")))
+                                .ToStatementSyntax())
+                        : null
+                ));
+        
+        return this;
+    }
+    
+    internal ClassDeclarationSyntax Build() => _imposterInstanceBuilder.Build();
+
+    internal static ImposterInstanceBuilder Create(in ImposterGenerationContext imposterGenerationContext, string name)
     {
         var fields = GetFields(imposterGenerationContext);
 
-        return new ClassDeclarationBuilder(name)
+        var imposterClassBuilder = new ClassDeclarationBuilder(name)
             .AddBaseType(SimpleBaseType(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)))
             .AddMembers(fields)
             .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(name, fields))
-            .AddMembers(ImposterMethods(imposterGenerationContext))
-            .AddMembers(ImposterProperties(imposterGenerationContext))
-            .Build();
+            .AddMembers(ImposterMethods(imposterGenerationContext));
+
+        return new ImposterInstanceBuilder(imposterClassBuilder);
     }
 
     private static IReadOnlyList<FieldDeclarationSyntax> GetFields(ImposterGenerationContext imposterGenerationContext) =>
     [
         SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
     ];
-
-    private static IEnumerable<PropertyDeclarationSyntax> ImposterProperties(in ImposterGenerationContext imposterGenerationContext) =>
-        imposterGenerationContext
-            .Imposter
-            .Properties
-            .Select(property =>
-                SyntaxFactoryHelper
-                    .PropertyDeclarationSyntax(
-                        property.Core.TypeSyntax,
-                        property.Core.Name,
-                        property.Core.HasGetter
-                            ? Block(
-                                ReturnStatement(
-                                    IdentifierName("_imposter")
-                                        .Dot(IdentifierName(property.AsField.Name))
-                                        .Dot(IdentifierName("_getterImposterBuilder"))
-                                        .Dot(IdentifierName("Get"))
-                                        .Call()
-                                ))
-                            : null,
-                        property.Core.HasSetter
-                            ? Block(
-                                IdentifierName("_imposter")
-                                    .Dot(IdentifierName(property.AsField.Name))
-                                    .Dot(IdentifierName("_setterImposter"))
-                                    .Dot(IdentifierName("Set"))
-                                    .Call(Argument(IdentifierName("value")))
-                                    .ToStatementSyntax())
-                            : null
-                    )
-            );
 
     private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(in ImposterGenerationContext imposterGenerationContext)
     {

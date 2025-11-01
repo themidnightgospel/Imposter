@@ -42,10 +42,10 @@ internal static partial class MethodImposterBuilder
                     conditions.Add(BinaryExpression(SyntaxKind.EqualsExpression, targetTypeOf, sourceTypeOf));
                     break;
                 case RefKind.Out:
-                    conditions.Add(IsAssignableTo(sourceTypeOf, targetTypeOf));
+                    conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
                     break;
                 default: // In and None
-                    conditions.Add(IsAssignableTo(targetTypeOf, sourceTypeOf));
+                    conditions.Add(targetTypeOf.IsAssignableTo(sourceTypeOf));
                     break;
             }
         }
@@ -61,11 +61,11 @@ internal static partial class MethodImposterBuilder
                 var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
                 var targetTypeOf = TypeOfExpression(targetTypeSyntax);
 
-                conditions.Add(IsAssignableTo(sourceTypeOf, targetTypeOf));
+                conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
             }
         }
 
-        var condition = conditions.Any()
+        var condition = conditions.Count > 0
             ? conditions.Aggregate((current, next) => BinaryExpression(SyntaxKind.LogicalAndExpression, current, next))
             : LiteralExpression(SyntaxKind.TrueLiteralExpression);
 
@@ -116,17 +116,5 @@ internal static partial class MethodImposterBuilder
         }
 
         return false;
-    }
-
-    private static ExpressionSyntax IsAssignableTo(ExpressionSyntax left, ExpressionSyntax right)
-    {
-        return InvocationExpression(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                left,
-                IdentifierName("IsAssignableTo")
-            ),
-            ArgumentList(SingletonSeparatedList(Argument(right)))
-        );
     }
 }

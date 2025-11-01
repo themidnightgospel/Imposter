@@ -56,7 +56,7 @@ public static class ArgumentsCriteriaBuilder
     }
 
     // TODO refactor
-    private static MemberDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
         var typeParameters = method.Symbol.TypeParameters;
         var asMethodTypeParams = typeParameters.Select(p => TypeParameter(p.Name + "Target")).ToArray();

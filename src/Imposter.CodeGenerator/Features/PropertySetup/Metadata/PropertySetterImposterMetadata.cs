@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -56,9 +57,9 @@ internal readonly struct PropertySetterImposterMetadata
         }
     }
 
-    internal readonly struct SetterCallbacksFieldMetadata : IFieldMetadata
+    internal readonly struct SetterCallbacksFieldMetadata
     {
-        public string Name => "_setterCallbacks";
+        public static string Name => "_setterCallbacks";
 
         public TypeSyntax Type { get; }
 

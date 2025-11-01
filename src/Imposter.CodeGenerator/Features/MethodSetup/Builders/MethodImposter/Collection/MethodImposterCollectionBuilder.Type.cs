@@ -32,7 +32,7 @@ internal static partial class MethodImposterCollectionBuilder
         SyntaxFactoryHelper
             .SinglePrivateReadonlyVariableField(method.InvocationHistory.Collection.Syntax, method.InvocationHistory.Collection.AsField.Name);
 
-    private static MemberDeclarationSyntax BuildImpostersField(in ImposterTargetMethodMetadata method)
+    private static FieldDeclarationSyntax BuildImpostersField(in ImposterTargetMethodMetadata method)
     {
         var impostersFieldType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.MethodImposter.Interface.Syntax);
 

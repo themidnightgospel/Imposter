@@ -29,7 +29,7 @@ internal readonly record struct InvocationSetupMetadata
     
     internal readonly DefaultResultGeneratorMethodMetadata DefaultResultGeneratorMethod;
 
-    internal InvocationSetupMetadata(ImposterTargetMethodMetadata method)
+    internal InvocationSetupMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodInvocationsSetup";
         Interface = TypeMetadataFactory.Create($"I{Name}", method.GenericTypeArguments);
