@@ -188,121 +188,6 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             this._imposterInstance = new ImposterTargetInstance(this);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.NameCollisionProtection.INameCollisionProtectionFeatureSut
-        {
-            INameCollisionProtectionFeatureSutImposter _imposter;
-            public ImposterTargetInstance(INameCollisionProtectionFeatureSutImposter _imposter)
-            {
-                this._imposter = _imposter;
-            }
-
-            public int CollisionWithReturns<TValue>(TValue value)
-            {
-                return _imposter._collisionWithReturnsMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new CollisionWithReturnsArguments<TValue>(value)).Invoke(value);
-            }
-
-            public int CollisionWithReturns(int value)
-            {
-                return _imposter._collisionWithReturns_1MethodImposter.Invoke(value);
-            }
-
-            public int CollisionWithReturns(string result)
-            {
-                return _imposter._collisionWithReturns_2MethodImposter.Invoke(result);
-            }
-
-            public int CollisionWithReturns(double matchingSetup)
-            {
-                return _imposter._collisionWithReturns_3MethodImposter.Invoke(matchingSetup);
-            }
-
-            public int CollisionWithThrows<TValue>(TValue ex)
-            {
-                return _imposter._collisionWithThrowsMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new CollisionWithThrowsArguments<TValue>(ex)).Invoke(ex);
-            }
-
-            public int CollisionWithThrows(global::System.Exception ex)
-            {
-                return _imposter._collisionWithThrows_1MethodImposter.Invoke(ex);
-            }
-
-            public int MethodWithSameNameDifferentSignature()
-            {
-                return _imposter._methodWithSameNameDifferentSignatureMethodImposter.Invoke();
-            }
-
-            public int MethodWithSameNameDifferentSignature(int input)
-            {
-                return _imposter._methodWithSameNameDifferentSignature_1MethodImposter.Invoke(input);
-            }
-
-            public int MethodWithSameNameDifferentSignature<T>(T input)
-            {
-                return _imposter._methodWithSameNameDifferentSignature_2MethodImposterCollection.GetImposterWithMatchingSetup<T>(new MethodWithSameNameDifferentSignature_2Arguments<T>(input)).Invoke(input);
-            }
-
-            public void DefaultInvocationSetup(int DefaultInvocationSetup)
-            {
-                _imposter._defaultInvocationSetupMethodImposter.Invoke(DefaultInvocationSetup);
-            }
-
-            public void _invocationSetups(int _invocationSetups)
-            {
-                _imposter.__invocationSetupsMethodImposter.Invoke(_invocationSetups);
-            }
-
-            public void it(int it)
-            {
-                _imposter._itMethodImposter.Invoke(it);
-            }
-
-            public void invocationHistory(int invocationHistory)
-            {
-                _imposter._invocationHistoryMethodImposter.Invoke(invocationHistory);
-            }
-
-            public void nextSetup(int nextSetup)
-            {
-                _imposter._nextSetupMethodImposter.Invoke(nextSetup);
-            }
-
-            public void GetNextSetup(int GetNextSetup)
-            {
-                _imposter._getNextSetupMethodImposter.Invoke(GetNextSetup);
-            }
-
-            public void exceptionGenerator(int exceptionGenerator)
-            {
-                _imposter._exceptionGeneratorMethodImposter.Invoke(exceptionGenerator);
-            }
-
-            public void callback(int callback)
-            {
-                _imposter._callbackMethodImposter.Invoke(callback);
-            }
-
-            public void resultGenerator(int resultGenerator)
-            {
-                _imposter._resultGeneratorMethodImposter.Invoke(resultGenerator);
-            }
-
-            public void argumentsCriteria(int argumentsCriteria)
-            {
-                _imposter._argumentsCriteriaMethodImposter.Invoke(argumentsCriteria);
-            }
-
-            public void TException(int TException)
-            {
-                _imposter._tExceptionMethodImposter.Invoke(TException);
-            }
-
-            public void InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
-            {
-                _imposter._initializeOutParametersWithDefaultValuesMethodImposter.Invoke(InitializeOutParametersWithDefaultValues);
-            }
-        }
-
         global::Imposter.CodeGenerator.Tests.Features.NameCollisionProtection.INameCollisionProtectionFeatureSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.NameCollisionProtection.INameCollisionProtectionFeatureSut>.Instance()
         {
             return _imposterInstance;
@@ -412,6 +297,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns<TValue>(TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithReturnsMethodInvocationsSetup<TValue> : ICollisionWithReturnsMethodInvocationsSetup<TValue>
         {
@@ -569,6 +455,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns<TValue>(TValue value)
         public interface ICollisionWithReturnsMethodImposterBuilder<TValue> : ICollisionWithReturnsMethodInvocationsSetup<TValue>, CollisionWithReturnsMethodInvocationVerifier<TValue>
         {
         }
@@ -808,6 +695,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithReturns_1MethodInvocationsSetup : ICollisionWithReturns_1MethodInvocationsSetup
         {
@@ -953,6 +841,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(int value)
         public interface ICollisionWithReturns_1MethodImposterBuilder : ICollisionWithReturns_1MethodInvocationsSetup, CollisionWithReturns_1MethodInvocationVerifier
         {
         }
@@ -1157,6 +1046,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(string result)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithReturns_2MethodInvocationsSetup : ICollisionWithReturns_2MethodInvocationsSetup
         {
@@ -1302,6 +1192,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(string result)
         public interface ICollisionWithReturns_2MethodImposterBuilder : ICollisionWithReturns_2MethodInvocationsSetup, CollisionWithReturns_2MethodInvocationVerifier
         {
         }
@@ -1506,6 +1397,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(double matchingSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithReturns_3MethodInvocationsSetup : ICollisionWithReturns_3MethodInvocationsSetup
         {
@@ -1651,6 +1543,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithReturns(double matchingSetup)
         public interface ICollisionWithReturns_3MethodImposterBuilder : ICollisionWithReturns_3MethodInvocationsSetup, CollisionWithReturns_3MethodInvocationVerifier
         {
         }
@@ -1887,6 +1780,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithThrows<TValue>(TValue ex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithThrowsMethodInvocationsSetup<TValue> : ICollisionWithThrowsMethodInvocationsSetup<TValue>
         {
@@ -2044,6 +1938,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithThrows<TValue>(TValue ex)
         public interface ICollisionWithThrowsMethodImposterBuilder<TValue> : ICollisionWithThrowsMethodInvocationsSetup<TValue>, CollisionWithThrowsMethodInvocationVerifier<TValue>
         {
         }
@@ -2283,6 +2178,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.CollisionWithThrows(Exception ex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CollisionWithThrows_1MethodInvocationsSetup : ICollisionWithThrows_1MethodInvocationsSetup
         {
@@ -2428,6 +2324,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.CollisionWithThrows(Exception ex)
         public interface ICollisionWithThrows_1MethodImposterBuilder : ICollisionWithThrows_1MethodInvocationsSetup, CollisionWithThrows_1MethodInvocationVerifier
         {
         }
@@ -2603,6 +2500,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class MethodWithSameNameDifferentSignatureMethodInvocationsSetup : IMethodWithSameNameDifferentSignatureMethodInvocationsSetup
         {
@@ -2745,6 +2643,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature()
         public interface IMethodWithSameNameDifferentSignatureMethodImposterBuilder : IMethodWithSameNameDifferentSignatureMethodInvocationsSetup, MethodWithSameNameDifferentSignatureMethodInvocationVerifier
         {
         }
@@ -2943,6 +2842,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class MethodWithSameNameDifferentSignature_1MethodInvocationsSetup : IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup
         {
@@ -3088,6 +2988,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature(int input)
         public interface IMethodWithSameNameDifferentSignature_1MethodImposterBuilder : IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup, MethodWithSameNameDifferentSignature_1MethodInvocationVerifier
         {
         }
@@ -3324,6 +3225,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature<T>(T input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> : IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>
         {
@@ -3481,6 +3383,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature<T>(T input)
         public interface IMethodWithSameNameDifferentSignature_2MethodImposterBuilder<T> : IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>, MethodWithSameNameDifferentSignature_2MethodInvocationVerifier<T>
         {
         }
@@ -3718,6 +3621,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.DefaultInvocationSetup(int DefaultInvocationSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class DefaultInvocationSetupMethodInvocationsSetup : IDefaultInvocationSetupMethodInvocationsSetup
         {
@@ -3843,6 +3747,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.DefaultInvocationSetup(int DefaultInvocationSetup)
         public interface IDefaultInvocationSetupMethodImposterBuilder : IDefaultInvocationSetupMethodInvocationsSetup, DefaultInvocationSetupMethodInvocationVerifier
         {
         }
@@ -4030,6 +3935,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut._invocationSetups(int _invocationSetups)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class _invocationSetupsMethodInvocationsSetup : I_invocationSetupsMethodInvocationsSetup
         {
@@ -4155,6 +4061,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut._invocationSetups(int _invocationSetups)
         public interface I_invocationSetupsMethodImposterBuilder : I_invocationSetupsMethodInvocationsSetup, _invocationSetupsMethodInvocationVerifier
         {
         }
@@ -4342,6 +4249,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.it(int it)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class itMethodInvocationsSetup : IitMethodInvocationsSetup
         {
@@ -4467,6 +4375,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.it(int it)
         public interface IitMethodImposterBuilder : IitMethodInvocationsSetup, itMethodInvocationVerifier
         {
         }
@@ -4654,6 +4563,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.invocationHistory(int invocationHistory)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class invocationHistoryMethodInvocationsSetup : IinvocationHistoryMethodInvocationsSetup
         {
@@ -4779,6 +4689,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.invocationHistory(int invocationHistory)
         public interface IinvocationHistoryMethodImposterBuilder : IinvocationHistoryMethodInvocationsSetup, invocationHistoryMethodInvocationVerifier
         {
         }
@@ -4966,6 +4877,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.nextSetup(int nextSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class nextSetupMethodInvocationsSetup : InextSetupMethodInvocationsSetup
         {
@@ -5091,6 +5003,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.nextSetup(int nextSetup)
         public interface InextSetupMethodImposterBuilder : InextSetupMethodInvocationsSetup, nextSetupMethodInvocationVerifier
         {
         }
@@ -5278,6 +5191,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.GetNextSetup(int GetNextSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GetNextSetupMethodInvocationsSetup : IGetNextSetupMethodInvocationsSetup
         {
@@ -5403,6 +5317,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.GetNextSetup(int GetNextSetup)
         public interface IGetNextSetupMethodImposterBuilder : IGetNextSetupMethodInvocationsSetup, GetNextSetupMethodInvocationVerifier
         {
         }
@@ -5590,6 +5505,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.exceptionGenerator(int exceptionGenerator)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class exceptionGeneratorMethodInvocationsSetup : IexceptionGeneratorMethodInvocationsSetup
         {
@@ -5715,6 +5631,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.exceptionGenerator(int exceptionGenerator)
         public interface IexceptionGeneratorMethodImposterBuilder : IexceptionGeneratorMethodInvocationsSetup, exceptionGeneratorMethodInvocationVerifier
         {
         }
@@ -5902,6 +5819,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.callback(int callback)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class callbackMethodInvocationsSetup : IcallbackMethodInvocationsSetup
         {
@@ -6027,6 +5945,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.callback(int callback)
         public interface IcallbackMethodImposterBuilder : IcallbackMethodInvocationsSetup, callbackMethodInvocationVerifier
         {
         }
@@ -6214,6 +6133,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.resultGenerator(int resultGenerator)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class resultGeneratorMethodInvocationsSetup : IresultGeneratorMethodInvocationsSetup
         {
@@ -6339,6 +6259,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.resultGenerator(int resultGenerator)
         public interface IresultGeneratorMethodImposterBuilder : IresultGeneratorMethodInvocationsSetup, resultGeneratorMethodInvocationVerifier
         {
         }
@@ -6526,6 +6447,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.argumentsCriteria(int argumentsCriteria)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class argumentsCriteriaMethodInvocationsSetup : IargumentsCriteriaMethodInvocationsSetup
         {
@@ -6651,6 +6573,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.argumentsCriteria(int argumentsCriteria)
         public interface IargumentsCriteriaMethodImposterBuilder : IargumentsCriteriaMethodInvocationsSetup, argumentsCriteriaMethodInvocationVerifier
         {
         }
@@ -6838,6 +6761,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.TException(int TException)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class TExceptionMethodInvocationsSetup : ITExceptionMethodInvocationsSetup
         {
@@ -6963,6 +6887,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.TException(int TException)
         public interface ITExceptionMethodImposterBuilder : ITExceptionMethodInvocationsSetup, TExceptionMethodInvocationVerifier
         {
         }
@@ -7150,6 +7075,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             }
         }
 
+        // void INameCollisionProtectionFeatureSut.InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class InitializeOutParametersWithDefaultValuesMethodInvocationsSetup : IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup
         {
@@ -7275,6 +7201,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void INameCollisionProtectionFeatureSut.InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
         public interface IInitializeOutParametersWithDefaultValuesMethodImposterBuilder : IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup, InitializeOutParametersWithDefaultValuesMethodInvocationVerifier
         {
         }
@@ -7389,6 +7316,121 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                         throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.NameCollisionProtection.INameCollisionProtectionFeatureSut
+        {
+            INameCollisionProtectionFeatureSutImposter _imposter;
+            public ImposterTargetInstance(INameCollisionProtectionFeatureSutImposter _imposter)
+            {
+                this._imposter = _imposter;
+            }
+
+            public int CollisionWithReturns<TValue>(TValue value)
+            {
+                return _imposter._collisionWithReturnsMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new CollisionWithReturnsArguments<TValue>(value)).Invoke(value);
+            }
+
+            public int CollisionWithReturns(int value)
+            {
+                return _imposter._collisionWithReturns_1MethodImposter.Invoke(value);
+            }
+
+            public int CollisionWithReturns(string result)
+            {
+                return _imposter._collisionWithReturns_2MethodImposter.Invoke(result);
+            }
+
+            public int CollisionWithReturns(double matchingSetup)
+            {
+                return _imposter._collisionWithReturns_3MethodImposter.Invoke(matchingSetup);
+            }
+
+            public int CollisionWithThrows<TValue>(TValue ex)
+            {
+                return _imposter._collisionWithThrowsMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new CollisionWithThrowsArguments<TValue>(ex)).Invoke(ex);
+            }
+
+            public int CollisionWithThrows(global::System.Exception ex)
+            {
+                return _imposter._collisionWithThrows_1MethodImposter.Invoke(ex);
+            }
+
+            public int MethodWithSameNameDifferentSignature()
+            {
+                return _imposter._methodWithSameNameDifferentSignatureMethodImposter.Invoke();
+            }
+
+            public int MethodWithSameNameDifferentSignature(int input)
+            {
+                return _imposter._methodWithSameNameDifferentSignature_1MethodImposter.Invoke(input);
+            }
+
+            public int MethodWithSameNameDifferentSignature<T>(T input)
+            {
+                return _imposter._methodWithSameNameDifferentSignature_2MethodImposterCollection.GetImposterWithMatchingSetup<T>(new MethodWithSameNameDifferentSignature_2Arguments<T>(input)).Invoke(input);
+            }
+
+            public void DefaultInvocationSetup(int DefaultInvocationSetup)
+            {
+                _imposter._defaultInvocationSetupMethodImposter.Invoke(DefaultInvocationSetup);
+            }
+
+            public void _invocationSetups(int _invocationSetups)
+            {
+                _imposter.__invocationSetupsMethodImposter.Invoke(_invocationSetups);
+            }
+
+            public void it(int it)
+            {
+                _imposter._itMethodImposter.Invoke(it);
+            }
+
+            public void invocationHistory(int invocationHistory)
+            {
+                _imposter._invocationHistoryMethodImposter.Invoke(invocationHistory);
+            }
+
+            public void nextSetup(int nextSetup)
+            {
+                _imposter._nextSetupMethodImposter.Invoke(nextSetup);
+            }
+
+            public void GetNextSetup(int GetNextSetup)
+            {
+                _imposter._getNextSetupMethodImposter.Invoke(GetNextSetup);
+            }
+
+            public void exceptionGenerator(int exceptionGenerator)
+            {
+                _imposter._exceptionGeneratorMethodImposter.Invoke(exceptionGenerator);
+            }
+
+            public void callback(int callback)
+            {
+                _imposter._callbackMethodImposter.Invoke(callback);
+            }
+
+            public void resultGenerator(int resultGenerator)
+            {
+                _imposter._resultGeneratorMethodImposter.Invoke(resultGenerator);
+            }
+
+            public void argumentsCriteria(int argumentsCriteria)
+            {
+                _imposter._argumentsCriteriaMethodImposter.Invoke(argumentsCriteria);
+            }
+
+            public void TException(int TException)
+            {
+                _imposter._tExceptionMethodImposter.Invoke(TException);
+            }
+
+            public void InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
+            {
+                _imposter._initializeOutParametersWithDefaultValuesMethodImposter.Invoke(InitializeOutParametersWithDefaultValues);
             }
         }
     }

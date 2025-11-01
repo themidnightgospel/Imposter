@@ -12,9 +12,9 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
-    internal readonly SetterCallbacksFieldMetadata SetterCallbacksField;
+    internal readonly CallbacksFieldMetadata CallbacksField;
 
-    internal readonly FieldMetadata SetterInvocationHistoryField;
+    internal readonly FieldMetadata InvocationHistoryField;
 
     internal readonly FieldMetadata DefaultPropertyBehaviourField;
     
@@ -30,8 +30,8 @@ internal readonly struct PropertySetterImposterMetadata
     {
         Name = "SetterImposter";
         TypeSyntax = SyntaxFactory.ParseName(Name);
-        SetterCallbacksField = new SetterCallbacksFieldMetadata(property);
-        SetterInvocationHistoryField = new FieldMetadata("_setterInvocationHistory", WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(property.TypeSyntax));
+        CallbacksField = new CallbacksFieldMetadata(property);
+        InvocationHistoryField = new FieldMetadata("_invocationHistory", WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(property.TypeSyntax));
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
         CallbackMethod = new CallbackMethodMetadata(property);
         CalledMethod = new CalledMethodMetadata(property);
@@ -57,15 +57,15 @@ internal readonly struct PropertySetterImposterMetadata
         }
     }
 
-    internal readonly struct SetterCallbacksFieldMetadata
+    internal readonly struct CallbacksFieldMetadata
     {
-        public static string Name => "_setterCallbacks";
+        public static string Name => "_callbacks";
 
         public TypeSyntax Type { get; }
 
         internal readonly TypeSyntax TupleTypeSyntax;
 
-        internal SetterCallbacksFieldMetadata(in ImposterPropertyCoreMetadata property)
+        internal CallbacksFieldMetadata(in ImposterPropertyCoreMetadata property)
         {
             Type = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
                 TupleTypeSyntax = WellKnownTypes.System.Tuple(
@@ -119,7 +119,7 @@ internal readonly struct PropertySetterImposterMetadata
 
         internal readonly ParameterMetadata CountParameter;
         
-        internal readonly string SetterInvocationCountVariableName = "setterInvocationCount";
+        internal readonly string InvocationCountVariableName = "invocationCount";
 
         internal CalledMethodMetadata(in ImposterPropertyCoreMetadata property)
         {

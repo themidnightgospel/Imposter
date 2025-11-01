@@ -5,14 +5,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
-    public class InvalidSetups
+    public class InvalidSetupsV2
     {
         private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 
         [Fact]
         public void GivenNullFunction_WhenPropertyIsAccessed_ShouldThrowNullReferenceException()
         {
-            _sut.Age.Returns((Func<int>)null);
+            _sut.Age.Getter().Returns((Func<int>)null);
 
             Should.Throw<NullReferenceException>(() => _sut.Instance().Age);
         }
@@ -21,7 +21,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         public void GivenNullCallback_WhenPropertyIsSet_ShouldThrowOnInvocation()
         {
             // This should not throw when setting up
-            Should.NotThrow(() => _sut.Age.SetterCallback(Arg<int>.Any(), null));
+            Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Callback(null));
 
             // But will throw when callback is invoked
             Should.Throw<NullReferenceException>(() => _sut.Instance().Age = 42);

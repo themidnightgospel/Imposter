@@ -12,7 +12,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal partial class ImposterBuilder
+internal readonly ref  partial struct ImposterBuilder
 {
     private readonly ClassDeclarationBuilder _imposterBuilder;
     private readonly ImposterInstanceBuilder _imposterInstanceBuilder;

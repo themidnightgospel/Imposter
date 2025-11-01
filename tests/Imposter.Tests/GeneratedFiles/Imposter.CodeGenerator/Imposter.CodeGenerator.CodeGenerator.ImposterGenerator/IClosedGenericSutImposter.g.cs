@@ -28,21 +28,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             this._imposterInstance = new ImposterTargetInstance(this);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string>
-        {
-            IClosedGenericSutImposter _imposter;
-            public ImposterTargetInstance(IClosedGenericSutImposter _imposter)
-            {
-                this._imposter = _imposter;
-            }
-
-            public string GenericMethod(int age)
-            {
-                return _imposter._genericMethodMethodImposter.Invoke(age);
-            }
-        }
-
         global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string> Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string>>.Instance()
         {
             return _imposterInstance;
@@ -120,6 +105,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericMethodMethodInvocationsSetup : IGenericMethodMethodInvocationsSetup
         {
@@ -265,6 +251,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationsSetup, GenericMethodMethodInvocationVerifier
         {
         }
@@ -394,6 +381,21 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                         throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string>
+        {
+            IClosedGenericSutImposter _imposter;
+            public ImposterTargetInstance(IClosedGenericSutImposter _imposter)
+            {
+                this._imposter = _imposter;
+            }
+
+            public string GenericMethod(int age)
+            {
+                return _imposter._genericMethodMethodImposter.Invoke(age);
             }
         }
     }

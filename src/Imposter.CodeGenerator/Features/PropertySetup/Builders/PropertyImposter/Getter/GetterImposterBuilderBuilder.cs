@@ -18,11 +18,14 @@ internal static class GetterImposterBuilderBuilder
         }
 
         return new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.TypeSyntax))
             .AddMember(BuildGetterReturnValuesField(property.GetterImposterBuilder))
             .AddMember(BuildGetterCallbacksField(property.GetterImposterBuilder))
             .AddMember(BuildLastGetterReturnValueField(property.GetterImposterBuilder))
             .AddMember(BuildGetterInvocationCountField(property.GetterImposterBuilder))
+            .AddMember(SinglePrivateReadonlyVariableField(property.GetterImposterBuilder.DefaultPropertyBehaviourField))
+            .AddMember(BuildConstructor(property))
             .AddMember(BuildAddGetterReturnValueMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .AddMembers(BuildReturnsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMembers(BuildThrowsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
@@ -31,47 +34,53 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .Build();
     }
+    
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
+        new ConstructorWithFieldInitializationBuilder(property.GetterImposterBuilder.Name)
+            .WithModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(property.GetterImposterBuilder.DefaultPropertyBehaviourField)
+            .Build();
 
     private static FieldDeclarationSyntax BuildGetterReturnValuesField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>
         SinglePrivateReadonlyVariableField(
-            getterImposterBuilder.GetterReturnValuesField.TypeSyntax,
-            getterImposterBuilder.GetterReturnValuesField.Name,
-            getterImposterBuilder.GetterReturnValuesField.TypeSyntax.New());
+            getterImposterBuilder.ReturnValuesField.TypeSyntax,
+            getterImposterBuilder.ReturnValuesField.Name,
+            getterImposterBuilder.ReturnValuesField.TypeSyntax.New());
 
     private static FieldDeclarationSyntax BuildGetterCallbacksField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>
         SinglePrivateReadonlyVariableField(
-            getterImposterBuilder.GetterCallbacksField.TypeSyntax,
-            getterImposterBuilder.GetterCallbacksField.Name,
-            getterImposterBuilder.GetterCallbacksField.TypeSyntax.New());
+            getterImposterBuilder.CallbacksField.TypeSyntax,
+            getterImposterBuilder.CallbacksField.Name,
+            getterImposterBuilder.CallbacksField.TypeSyntax.New());
 
     private static FieldDeclarationSyntax BuildLastGetterReturnValueField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>
         SingleVariableField(
-            getterImposterBuilder.LastGetterReturnValueField.TypeSyntax,
-            getterImposterBuilder.LastGetterReturnValueField.Name,
+            getterImposterBuilder.LastReturnValueField.TypeSyntax,
+            getterImposterBuilder.LastReturnValueField.Name,
             TokenList(Token(SyntaxKind.PrivateKeyword)),
             EmptyParametersGoesTo(Default)
         );
 
     private static FieldDeclarationSyntax BuildGetterInvocationCountField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>
         SingleVariableField(
-            getterImposterBuilder.GetterInvocationCountField.TypeSyntax,
-            getterImposterBuilder.GetterInvocationCountField.Name,
+            getterImposterBuilder.InvocationCountField.TypeSyntax,
+            getterImposterBuilder.InvocationCountField.Name,
             SyntaxKind.PrivateKeyword);
 
     private static MethodDeclarationSyntax BuildAddGetterReturnValueMethod(
         in PropertyGetterImposterBuilderMetadata getterImposterBuilder,
         in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour) =>
-        new MethodDeclarationBuilder(getterImposterBuilder.AddGetterReturnValueMethod.ReturnType, getterImposterBuilder.AddGetterReturnValueMethod.Name)
+        new MethodDeclarationBuilder(getterImposterBuilder.AddReturnValueMethod.ReturnType, getterImposterBuilder.AddReturnValueMethod.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddParameter(ParameterSyntax(getterImposterBuilder.AddGetterReturnValueMethod.ValueGeneratorParameter))
+            .AddParameter(ParameterSyntax(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter))
             .WithBody(Block(
                 IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
                     .Assign(False)
                     .ToStatementSyntax(),
-                IdentifierName(getterImposterBuilder.GetterReturnValuesField.Name)
+                IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(IdentifierName(getterImposterBuilder.AddGetterReturnValueMethod.ValueGeneratorParameter.Name)))
+                    .Call(Argument(IdentifierName(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter.Name)))
                     .ToStatementSyntax()
             ))
             .Build();
@@ -84,7 +93,7 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ReturnsMethod.ValueParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddGetterReturnValueMethod.Name)
+                    IdentifierName(builder.AddReturnValueMethod.Name)
                         .Call(
                             Argument(
                                 EmptyParametersGoesTo(IdentifierName(builderInterface.ReturnsMethod.ValueParameter.Name)))
@@ -99,7 +108,7 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ReturnsMethod.ValueGeneratorParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddGetterReturnValueMethod.Name)
+                    IdentifierName(builder.AddReturnValueMethod.Name)
                         .Call(Argument(IdentifierName(builderInterface.ReturnsMethod.ValueGeneratorParameter.Name)))
                         .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
@@ -116,7 +125,7 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ThrowsMethod.ExceptionParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddGetterReturnValueMethod.Name)
+                    IdentifierName(builder.AddReturnValueMethod.Name)
                         .Call(
                             Argument(
                                 EmptyParametersGoesTo(
@@ -134,7 +143,7 @@ internal static class GetterImposterBuilderBuilder
             .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter(builderInterface.ThrowsMethod.GenericTypeParameterName))))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddGetterReturnValueMethod.Name)
+                    IdentifierName(builder.AddReturnValueMethod.Name)
                         .Call(
                             Argument(
                                 EmptyParametersGoesTo(
@@ -156,7 +165,7 @@ internal static class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
             .AddParameter(ParameterSyntax(builderInterface.CallbackMethod.CallbackParameter))
             .WithBody(Block(
-                IdentifierName(builder.GetterCallbacksField.Name)
+                IdentifierName(builder.CallbacksField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(IdentifierName(builderInterface.CallbackMethod.CallbackParameter.Name)))
                     .ToStatementSyntax(),
@@ -175,13 +184,13 @@ internal static class GetterImposterBuilderBuilder
                     Not(
                         IdentifierName(builderInterface.CalledMethod.CountParameter.Name)
                             .Dot(IdentifierName("Matches"))
-                            .Call(Argument(IdentifierName(builder.GetterInvocationCountField.Name)))
+                            .Call(Argument(IdentifierName(builder.InvocationCountField.Name)))
                     ),
                     ThrowStatement(WellKnownTypes.Imposter.Abstractions.VerificationFailedException
                         .New(ArgumentList(SeparatedList(
                                 [
                                     Argument(IdentifierName(builderInterface.CalledMethod.CountParameter.Name)),
-                                    Argument(IdentifierName(builder.GetterInvocationCountField.Name))
+                                    Argument(IdentifierName(builder.InvocationCountField.Name))
                                 ]
                             )
                         ))
@@ -201,14 +210,14 @@ internal static class GetterImposterBuilderBuilder
                     InvokeGetterCallbacks(builder),
                     IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour),
                     DequeNextGetterReturnValue(builder),
-                    ReturnStatement(IdentifierName(builder.LastGetterReturnValueField.Name).Call())
+                    ReturnStatement(IdentifierName(builder.LastReturnValueField.Name).Call())
                 )
             )
             .Build();
 
         static StatementSyntax DequeNextGetterReturnValue(in PropertyGetterImposterBuilderMetadata builder) =>
             IfStatement(
-                IdentifierName(builder.GetterReturnValuesField.Name)
+                IdentifierName(builder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
                     .Call(Argument(
                         null,
@@ -217,7 +226,7 @@ internal static class GetterImposterBuilderBuilder
                             Var,
                             SingleVariableDesignation(Identifier("returnValue"))
                         ))),
-                IdentifierName(builder.LastGetterReturnValueField.Name).Assign(IdentifierName("returnValue")).ToStatementSyntax()
+                IdentifierName(builder.LastReturnValueField.Name).Assign(IdentifierName("returnValue")).ToStatementSyntax()
             );
 
 
@@ -233,7 +242,7 @@ internal static class GetterImposterBuilderBuilder
             ForEachStatement(
                 type: Var,
                 identifier: Identifier("getterCallback"),
-                expression: IdentifierName(builder.GetterCallbacksField.Name),
+                expression: IdentifierName(builder.CallbacksField.Name),
                 statement: Block(
                     IdentifierName("getterCallback")
                         .Call()
@@ -247,7 +256,7 @@ internal static class GetterImposterBuilderBuilder
                 .Call(Argument(
                         null,
                         Token(SyntaxKind.RefKeyword),
-                        IdentifierName(builder.GetterInvocationCountField.Name)
+                        IdentifierName(builder.InvocationCountField.Name)
                     )
                 )
                 .ToStatementSyntax();

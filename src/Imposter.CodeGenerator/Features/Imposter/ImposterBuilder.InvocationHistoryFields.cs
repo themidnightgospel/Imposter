@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal partial class ImposterBuilder
+internal readonly partial struct ImposterBuilder
 {
     private static IEnumerable<FieldDeclarationSyntax> InvocationHistoryCollectionFields(in ImposterGenerationContext imposterGenerationContext) =>
         imposterGenerationContext

@@ -12,6 +12,7 @@ internal static class SetterImposterBuilderBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
         new ClassDeclarationBuilder(property.SetterImposter.Builder.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.SetterImposterField))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.CriteriaField))

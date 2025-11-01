@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Moq;
 using Xunit;
 
 namespace Imposter.Ideation.Whiteboard

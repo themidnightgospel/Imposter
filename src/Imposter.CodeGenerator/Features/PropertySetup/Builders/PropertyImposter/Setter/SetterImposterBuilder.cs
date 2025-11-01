@@ -18,9 +18,10 @@ internal static class SetterImposterBuilder
             return null;
         }
 
-        return new ClassDeclarationBuilder()
-            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.SetterCallbacksField.Type, PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name, property.SetterImposter.SetterCallbacksField.Type.New()))
-            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.SetterInvocationHistoryField, property.SetterImposter.SetterInvocationHistoryField.Type.New()))
+        return new ClassDeclarationBuilder(property.SetterImposter.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.CallbacksField.Type, PropertySetterImposterMetadata.CallbacksFieldMetadata.Name, property.SetterImposter.CallbacksField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationHistoryField, property.SetterImposter.InvocationHistoryField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
@@ -79,7 +80,7 @@ internal static class SetterImposterBuilder
                         Token(SyntaxKind.CloseParenToken)
                     )
                 ),
-                IdentifierName(PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name),
+                IdentifierName(PropertySetterImposterMetadata.CallbacksFieldMetadata.Name),
                 Block(
                     IfStatement(
                         IdentifierName("criteria")
@@ -93,7 +94,7 @@ internal static class SetterImposterBuilder
         }
 
         static StatementSyntax TrackSetterInvocation(in PropertySetterImposterMetadata setterImposter) =>
-            IdentifierName(setterImposter.SetterInvocationHistoryField.Name)
+            IdentifierName(setterImposter.InvocationHistoryField.Name)
                 .Dot(IdentifierName("Add"))
                 .Call(Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name)))
                 .ToStatementSyntax();
@@ -104,8 +105,8 @@ internal static class SetterImposterBuilder
             .AddParameter(ParameterSyntax(setterImposter.CalledMethod.CriteriaParameter))
             .AddParameter(ParameterSyntax(setterImposter.CalledMethod.CountParameter))
             .WithBody(Block(
-                LocalVariableDeclarationSyntax(Var, setterImposter.CalledMethod.SetterInvocationCountVariableName,
-                    IdentifierName(setterImposter.SetterInvocationHistoryField.Name)
+                LocalVariableDeclarationSyntax(Var, setterImposter.CalledMethod.InvocationCountVariableName,
+                    IdentifierName(setterImposter.InvocationHistoryField.Name)
                         .Dot(IdentifierName("Count"))
                         .Call(
                             Argument(
@@ -117,13 +118,13 @@ internal static class SetterImposterBuilder
                     Not(
                         IdentifierName(setterImposter.CalledMethod.CountParameter.Name)
                             .Dot(IdentifierName("Matches"))
-                            .Call(Argument(IdentifierName(setterImposter.CalledMethod.SetterInvocationCountVariableName)))
+                            .Call(Argument(IdentifierName(setterImposter.CalledMethod.InvocationCountVariableName)))
                     ),
                     ThrowStatement(WellKnownTypes.Imposter.Abstractions.VerificationFailedException
                         .New(ArgumentList(SeparatedList(
                                 [
                                     Argument(IdentifierName(setterImposter.CalledMethod.CountParameter.Name)),
-                                    Argument(IdentifierName(setterImposter.CalledMethod.SetterInvocationCountVariableName))
+                                    Argument(IdentifierName(setterImposter.CalledMethod.InvocationCountVariableName))
                                 ]
                             )
                         ))
@@ -138,11 +139,11 @@ internal static class SetterImposterBuilder
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CriteriaParameter))
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CallbackParameter))
             .WithBody(Block(
-                    IdentifierName(PropertySetterImposterMetadata.SetterCallbacksFieldMetadata.Name)
+                    IdentifierName(PropertySetterImposterMetadata.CallbacksFieldMetadata.Name)
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(
                                 setterImposter
-                                    .SetterCallbacksField
+                                    .CallbacksField
                                     .TupleTypeSyntax
                                     .New(ArgumentList(
                                             SeparatedList(
@@ -155,8 +156,7 @@ internal static class SetterImposterBuilder
                                     )
                             )
                         )
-                        .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                        .ToStatementSyntax()
                 )
             )
             .Build();

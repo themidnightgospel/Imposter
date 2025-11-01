@@ -13,14 +13,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
     
     internal readonly CalledMethodMetadata CalledMethod;
     
-    internal readonly SetterCallbackMethodMetadata CallbackMethod;
+    internal readonly CallbackMethodMetadata CallbackMethod;
 
     internal PropertySetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
         Syntax = SyntaxFactory.ParseName(Name);
         CalledMethod = new CalledMethodMetadata();
-        CallbackMethod = new SetterCallbackMethodMetadata(property, Syntax);
+        CallbackMethod = new CallbackMethodMetadata(property, Syntax);
     }
     
     internal readonly struct CalledMethodMetadata
@@ -39,9 +39,8 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
             CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
         }
     }
-    
 
-    internal readonly struct SetterCallbackMethodMetadata
+    internal readonly struct CallbackMethodMetadata
     {
         internal readonly string Name = "Callback";
 
@@ -49,7 +48,7 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
         internal readonly ParameterMetadata CallbackParameter;
 
-        internal SetterCallbackMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax setterBuilderInterfaceTypeSyntax)
+        internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax setterBuilderInterfaceTypeSyntax)
         {
             ReturnType = setterBuilderInterfaceTypeSyntax;
             CallbackParameter = new ParameterMetadata("callback", property.AsSystemActionType);

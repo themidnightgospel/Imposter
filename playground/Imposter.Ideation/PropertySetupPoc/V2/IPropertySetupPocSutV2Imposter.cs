@@ -6,13 +6,13 @@ using Imposter.Abstractions;
 namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IPropertySetupPocV2SutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut>
+    public class IPropertySetupPocSutV2Imposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut>
     {
         private readonly AgePropertyImposterBuilder _Age = new AgePropertyImposterBuilder();
         public IAgePropertyImposterBuilder Age => _Age;
 
         private ImposterTargetInstance _imposterInstance;
-        public IPropertySetupPocV2SutImposter()
+        public IPropertySetupPocSutV2Imposter()
         {
             this._imposterInstance = new ImposterTargetInstance(this);
         }
@@ -20,8 +20,8 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut
         {
-            IPropertySetupPocV2SutImposter _imposter;
-            public ImposterTargetInstance(IPropertySetupPocV2SutImposter _imposter)
+            IPropertySetupPocSutV2Imposter _imposter;
+            public ImposterTargetInstance(IPropertySetupPocSutV2Imposter _imposter)
             {
                 this._imposter = _imposter;
             }
