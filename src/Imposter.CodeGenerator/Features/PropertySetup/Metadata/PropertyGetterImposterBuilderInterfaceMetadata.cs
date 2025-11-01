@@ -67,7 +67,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
     
     internal readonly struct CallbackMethodMetadata
     {
-        internal readonly string Name = "GetterCallback";
+        internal readonly string Name = "Callback";
 
         internal readonly TypeSyntax ReturnType;
 
@@ -82,7 +82,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
     
     internal readonly struct CalledMethodMetadata
     {
-        internal readonly string Name = "GetterCalled";
+        internal readonly string Name = "Called";
 
         internal readonly TypeSyntax ReturnType;
 

@@ -8,7 +8,7 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
 {
     public class AutoPropertyTestsV2
     {
-        private readonly IPropertySetupPocV2SutImposter _sut = new IPropertySetupPocV2SutImposter();
+        private readonly IPropertySetupPocSutV2Imposter _sut = new IPropertySetupPocSutV2Imposter();
 
         [Fact]
         public void GivenNoInteractions_WhenVerifying_ShouldWork()

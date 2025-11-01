@@ -172,111 +172,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             this._imposterInstance = new ImposterTargetInstance(this);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IMethodSetupFeatureSut
-        {
-            IMethodSetupFeatureSutImposter _imposter;
-            public ImposterTargetInstance(IMethodSetupFeatureSutImposter _imposter)
-            {
-                this._imposter = _imposter;
-            }
-
-            public void VoidNoParams()
-            {
-                _imposter._voidNoParamsMethodImposter.Invoke();
-            }
-
-            public int IntNoParams()
-            {
-                return _imposter._intNoParamsMethodImposter.Invoke();
-            }
-
-            public int IntSingleParam(int age)
-            {
-                return _imposter._intSingleParamMethodImposter.Invoke(age);
-            }
-
-            public int IntParams(int age, string name, global::System.Text.RegularExpressions.Regex regex)
-            {
-                return _imposter._intParamsMethodImposter.Invoke(age, name, regex);
-            }
-
-            public int IntOutParam(out int outValue)
-            {
-                return _imposter._intOutParamMethodImposter.Invoke(out outValue);
-            }
-
-            public int IntRefParam(ref int refValue)
-            {
-                return _imposter._intRefParamMethodImposter.Invoke(ref refValue);
-            }
-
-            public int IntParamsParam(string[] paramsStrings)
-            {
-                return _imposter._intParamsParamMethodImposter.Invoke(paramsStrings);
-            }
-
-            public int IntInParam(in string inStringValue)
-            {
-                return _imposter._intInParamMethodImposter.Invoke(in inStringValue);
-            }
-
-            public int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
-            {
-                return _imposter._intAllRefKindsMethodImposter.Invoke(out value, ref refValue, in inValue, valueAsString, paramsStrings);
-            }
-
-            public void GenericSingleParam<TValue>(TValue value)
-            {
-                _imposter._genericSingleParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new GenericSingleParamArguments<TValue>(value)).Invoke(value);
-            }
-
-            public void GenericInnerSingleParam<TValue>(global::System.Collections.Generic.List<TValue> value)
-            {
-                _imposter._genericInnerSingleParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new GenericInnerSingleParamArguments<TValue>(value)).Invoke(value);
-            }
-
-            public TResult GenericOutParam<TValue, TResult>(out TValue value)
-            {
-                return _imposter._genericOutParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>().Invoke(out value);
-            }
-
-            public global::System.Collections.Generic.Stack<TResult> GenericInnerOutParam<TValue, TResult>(out global::System.Collections.Generic.List<TValue> value)
-            {
-                return _imposter._genericInnerOutParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>().Invoke(out value);
-            }
-
-            public TResult GenericRefParam<TValue, TResult>(ref TValue value)
-            {
-                return _imposter._genericRefParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericRefParamArguments<TValue, TResult>(value)).Invoke(ref value);
-            }
-
-            public global::System.Collections.Generic.Stack<TResult> GenericInnerRefParam<TValue, TResult>(ref global::System.Collections.Generic.List<TValue> value)
-            {
-                return _imposter._genericInnerRefParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericInnerRefParamArguments<TValue, TResult>(value)).Invoke(ref value);
-            }
-
-            public TResult GenericParamsParam<TValue, TResult>(TValue[] value)
-            {
-                return _imposter._genericParamsParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericParamsParamArguments<TValue, TResult>(value)).Invoke(value);
-            }
-
-            public global::System.Collections.Generic.Stack<TResult> GenericInnerParamsParam<TValue, TResult>(global::System.Collections.Generic.List<TValue>[] value)
-            {
-                return _imposter._genericInnerParamsParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericInnerParamsParamArguments<TValue, TResult>(value)).Invoke(value);
-            }
-
-            public TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
-            {
-                return _imposter._genericAllRefKindMethodImposterCollection.GetImposterWithMatchingSetup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>(refValue, inValue, paramsValues)).Invoke(out outValue, ref refValue, in inValue, paramsValues);
-            }
-
-            public global::System.Threading.Tasks.Task<int> AsyncTaskIntNoParams()
-            {
-                return _imposter._asyncTaskIntNoParamsMethodImposter.Invoke();
-            }
-        }
-
         global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IMethodSetupFeatureSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IMethodSetupFeatureSut>.Instance()
         {
             return _imposterInstance;
@@ -323,6 +218,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // void IMethodSetupFeatureSut.VoidNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class VoidNoParamsMethodInvocationsSetup : IVoidNoParamsMethodInvocationsSetup
         {
@@ -445,6 +341,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void IMethodSetupFeatureSut.VoidNoParams()
         public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationsSetup, VoidNoParamsMethodInvocationVerifier
         {
         }
@@ -599,6 +496,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntNoParamsMethodInvocationsSetup : IIntNoParamsMethodInvocationsSetup
         {
@@ -741,6 +639,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntNoParams()
         public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationsSetup, IntNoParamsMethodInvocationVerifier
         {
         }
@@ -939,6 +838,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntSingleParamMethodInvocationsSetup : IIntSingleParamMethodInvocationsSetup
         {
@@ -1084,6 +984,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationsSetup, IntSingleParamMethodInvocationVerifier
         {
         }
@@ -1296,6 +1197,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntParamsMethodInvocationsSetup : IIntParamsMethodInvocationsSetup
         {
@@ -1441,6 +1343,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationsSetup, IntParamsMethodInvocationVerifier
         {
         }
@@ -1616,6 +1519,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntOutParamMethodInvocationsSetup : IIntOutParamMethodInvocationsSetup
         {
@@ -1767,6 +1671,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationsSetup, IntOutParamMethodInvocationVerifier
         {
         }
@@ -1970,6 +1875,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntRefParamMethodInvocationsSetup : IIntRefParamMethodInvocationsSetup
         {
@@ -2115,6 +2021,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationsSetup, IntRefParamMethodInvocationVerifier
         {
         }
@@ -2319,6 +2226,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntParamsParamMethodInvocationsSetup : IIntParamsParamMethodInvocationsSetup
         {
@@ -2464,6 +2372,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationsSetup, IntParamsParamMethodInvocationVerifier
         {
         }
@@ -2668,6 +2577,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntInParamMethodInvocationsSetup : IIntInParamMethodInvocationsSetup
         {
@@ -2813,6 +2723,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationsSetup, IntInParamMethodInvocationVerifier
         {
         }
@@ -3031,6 +2942,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntAllRefKindsMethodInvocationsSetup : IIntAllRefKindsMethodInvocationsSetup
         {
@@ -3185,6 +3097,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationsSetup, IntAllRefKindsMethodInvocationVerifier
         {
         }
@@ -3424,6 +3337,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericSingleParamMethodInvocationsSetup<TValue> : IGenericSingleParamMethodInvocationsSetup<TValue>
         {
@@ -3561,6 +3475,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationsSetup<TValue>, GenericSingleParamMethodInvocationVerifier<TValue>
         {
         }
@@ -3814,6 +3729,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerSingleParamMethodInvocationsSetup<TValue> : IGenericInnerSingleParamMethodInvocationsSetup<TValue>
         {
@@ -3951,6 +3867,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationsSetup<TValue>, GenericInnerSingleParamMethodInvocationVerifier<TValue>
         {
         }
@@ -4167,6 +4084,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericOutParamMethodInvocationsSetup<TValue, TResult> : IGenericOutParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -4330,6 +4248,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationsSetup<TValue, TResult>, GenericOutParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -4563,6 +4482,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerOutParamMethodInvocationsSetup<TValue, TResult> : IGenericInnerOutParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -4726,6 +4646,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationsSetup<TValue, TResult>, GenericInnerOutParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -4998,6 +4919,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericRefParamMethodInvocationsSetup<TValue, TResult> : IGenericRefParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -5155,6 +5077,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationsSetup<TValue, TResult>, GenericRefParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -5428,6 +5351,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerRefParamMethodInvocationsSetup<TValue, TResult> : IGenericInnerRefParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -5585,6 +5509,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationsSetup<TValue, TResult>, GenericInnerRefParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -5858,6 +5783,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericParamsParamMethodInvocationsSetup<TValue, TResult> : IGenericParamsParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -6015,6 +5941,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationsSetup<TValue, TResult>, GenericParamsParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -6286,6 +6213,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerParamsParamMethodInvocationsSetup<TValue, TResult> : IGenericInnerParamsParamMethodInvocationsSetup<TValue, TResult>
         {
@@ -6443,6 +6371,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationsSetup<TValue, TResult>, GenericInnerParamsParamMethodInvocationVerifier<TValue, TResult>
         {
         }
@@ -6724,6 +6653,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>
         {
@@ -6890,6 +6820,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
@@ -7109,6 +7040,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class AsyncTaskIntNoParamsMethodInvocationsSetup : IAsyncTaskIntNoParamsMethodInvocationsSetup
         {
@@ -7251,6 +7183,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationsSetup, AsyncTaskIntNoParamsMethodInvocationVerifier
         {
         }
@@ -7374,6 +7307,111 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                         throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IMethodSetupFeatureSut
+        {
+            IMethodSetupFeatureSutImposter _imposter;
+            public ImposterTargetInstance(IMethodSetupFeatureSutImposter _imposter)
+            {
+                this._imposter = _imposter;
+            }
+
+            public void VoidNoParams()
+            {
+                _imposter._voidNoParamsMethodImposter.Invoke();
+            }
+
+            public int IntNoParams()
+            {
+                return _imposter._intNoParamsMethodImposter.Invoke();
+            }
+
+            public int IntSingleParam(int age)
+            {
+                return _imposter._intSingleParamMethodImposter.Invoke(age);
+            }
+
+            public int IntParams(int age, string name, global::System.Text.RegularExpressions.Regex regex)
+            {
+                return _imposter._intParamsMethodImposter.Invoke(age, name, regex);
+            }
+
+            public int IntOutParam(out int outValue)
+            {
+                return _imposter._intOutParamMethodImposter.Invoke(out outValue);
+            }
+
+            public int IntRefParam(ref int refValue)
+            {
+                return _imposter._intRefParamMethodImposter.Invoke(ref refValue);
+            }
+
+            public int IntParamsParam(string[] paramsStrings)
+            {
+                return _imposter._intParamsParamMethodImposter.Invoke(paramsStrings);
+            }
+
+            public int IntInParam(in string inStringValue)
+            {
+                return _imposter._intInParamMethodImposter.Invoke(in inStringValue);
+            }
+
+            public int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
+            {
+                return _imposter._intAllRefKindsMethodImposter.Invoke(out value, ref refValue, in inValue, valueAsString, paramsStrings);
+            }
+
+            public void GenericSingleParam<TValue>(TValue value)
+            {
+                _imposter._genericSingleParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new GenericSingleParamArguments<TValue>(value)).Invoke(value);
+            }
+
+            public void GenericInnerSingleParam<TValue>(global::System.Collections.Generic.List<TValue> value)
+            {
+                _imposter._genericInnerSingleParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue>(new GenericInnerSingleParamArguments<TValue>(value)).Invoke(value);
+            }
+
+            public TResult GenericOutParam<TValue, TResult>(out TValue value)
+            {
+                return _imposter._genericOutParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>().Invoke(out value);
+            }
+
+            public global::System.Collections.Generic.Stack<TResult> GenericInnerOutParam<TValue, TResult>(out global::System.Collections.Generic.List<TValue> value)
+            {
+                return _imposter._genericInnerOutParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>().Invoke(out value);
+            }
+
+            public TResult GenericRefParam<TValue, TResult>(ref TValue value)
+            {
+                return _imposter._genericRefParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericRefParamArguments<TValue, TResult>(value)).Invoke(ref value);
+            }
+
+            public global::System.Collections.Generic.Stack<TResult> GenericInnerRefParam<TValue, TResult>(ref global::System.Collections.Generic.List<TValue> value)
+            {
+                return _imposter._genericInnerRefParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericInnerRefParamArguments<TValue, TResult>(value)).Invoke(ref value);
+            }
+
+            public TResult GenericParamsParam<TValue, TResult>(TValue[] value)
+            {
+                return _imposter._genericParamsParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericParamsParamArguments<TValue, TResult>(value)).Invoke(value);
+            }
+
+            public global::System.Collections.Generic.Stack<TResult> GenericInnerParamsParam<TValue, TResult>(global::System.Collections.Generic.List<TValue>[] value)
+            {
+                return _imposter._genericInnerParamsParamMethodImposterCollection.GetImposterWithMatchingSetup<TValue, TResult>(new GenericInnerParamsParamArguments<TValue, TResult>(value)).Invoke(value);
+            }
+
+            public TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+            {
+                return _imposter._genericAllRefKindMethodImposterCollection.GetImposterWithMatchingSetup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>(refValue, inValue, paramsValues)).Invoke(out outValue, ref refValue, in inValue, paramsValues);
+            }
+
+            public global::System.Threading.Tasks.Task<int> AsyncTaskIntNoParams()
+            {
+                return _imposter._asyncTaskIntNoParamsMethodImposter.Invoke();
             }
         }
     }

@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
+internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
 {
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attribute = new();

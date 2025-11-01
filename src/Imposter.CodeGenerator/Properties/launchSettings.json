@@ -3,7 +3,7 @@
   "profiles": {
     "Imposter.CodeGenerator": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\Imposter.Playground\\Imposter.Playground.csproj"
+      "targetProject": "..\\..\\playground\\Imposter.Playground\\Imposter.Playground.csproj"
     }
   }
 }

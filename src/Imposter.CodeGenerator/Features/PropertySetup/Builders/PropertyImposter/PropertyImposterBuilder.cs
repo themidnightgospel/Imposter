@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposter.Se
 using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -13,10 +14,11 @@ internal static class PropertyImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.DefaultPropertyBehaviourField))
-            .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.SetterImposterField))
-            .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.GetterImposterBuilderField))
+            .AddMember(SingleVariableField(property.ImposterBuilder.SetterImposterField, SyntaxKind.InternalKeyword))
+            .AddMember(SingleVariableField(property.ImposterBuilder.GetterImposterBuilderField, SyntaxKind.InternalKeyword))
             .AddMember(BuildConstructor(property.ImposterBuilder))
             .AddMember(DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour))
             .AddMember(GetterImposterBuilderBuilder.Build(property))
@@ -67,7 +69,10 @@ internal static class PropertyImposterBuilder
 
     internal static ConstructorDeclarationSyntax BuildConstructor(in PropertyImposterBuilderMetadata imposterBuilder) =>
         new ConstructorBuilder(imposterBuilder.Name)
+            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .WithBody(Block(
+                IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name).Assign(imposterBuilder.DefaultPropertyBehaviourField.Type.New())
+                    .ToStatementSyntax(),
                 IdentifierName(imposterBuilder.SetterImposterField.Name)
                     .Assign(imposterBuilder.SetterImposterField.Type
                         .New(Argument(IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
@@ -75,7 +80,7 @@ internal static class PropertyImposterBuilder
                     .ToStatementSyntax(),
                 IdentifierName(imposterBuilder.GetterImposterBuilderField.Name).Assign(
                         imposterBuilder.GetterImposterBuilderField.Type
-                            .New(Argument(IdentifierName(imposterBuilder.GetterImposterBuilderField.Name)).AsSingleArgumentListSyntax())
+                            .New(Argument(IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
                     )
                     .ToStatementSyntax()
             ))

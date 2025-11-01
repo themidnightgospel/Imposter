@@ -1,14 +1,13 @@
 ﻿using System;
 using Imposter.Abstractions;
-using Imposter.CodeGenerator.Tests.Features.PropertySetup;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
+namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
     public class VerificationTestsV2
     {
-        private readonly IPropertySetupPocSutV2Imposter _sut = new IPropertySetupPocSutV2Imposter();
+        private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 
         [Fact]
         public void GivenPropertyInteractions_WhenVerifyingCorrectGetterCount_ShouldNotThrow()

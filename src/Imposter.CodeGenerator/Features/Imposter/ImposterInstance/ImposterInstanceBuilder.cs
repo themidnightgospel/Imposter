@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 
-internal class ImposterInstanceBuilder
+internal readonly ref struct ImposterInstanceBuilder
 {
     // TODO this might collide. Move it to Metadata
     private const string ImposterFieldName = "_imposter";

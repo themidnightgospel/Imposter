@@ -5,7 +5,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter;
 
-internal partial class ImposterBuilder
+internal readonly partial struct ImposterBuilder
 {
     private static MethodDeclarationSyntax InstanceMethod(in ImposterGenerationContext imposterGenerationContext, string imposterInstanceFieldName) =>
         MethodDeclaration(

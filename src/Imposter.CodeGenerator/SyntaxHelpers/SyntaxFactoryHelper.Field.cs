@@ -8,11 +8,14 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(FieldMetadata fieldMetadata, ExpressionSyntax? initializer = null) =>
+    internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(in FieldMetadata fieldMetadata, ExpressionSyntax? initializer = null) =>
         SingleVariableField(fieldMetadata.Type, fieldMetadata.Name, TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)), initializer);
-    
+
     internal static FieldDeclarationSyntax SinglePrivateReadonlyVariableField(TypeSyntax typeSyntax, string name, ExpressionSyntax? initializer = null) =>
         SingleVariableField(typeSyntax, name, TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)), initializer);
+
+    internal static FieldDeclarationSyntax SingleVariableField(in FieldMetadata fieldMetadata, SyntaxKind modifier, ExpressionSyntax? initializer = null) =>
+        SingleVariableField(fieldMetadata.Type, fieldMetadata.Name, TokenList(Token(modifier)), initializer);
 
     internal static FieldDeclarationSyntax SingleVariableField(TypeSyntax typeSyntax, string name, SyntaxKind modifier) =>
         SingleVariableField(typeSyntax, name, TokenList(Token(modifier)));

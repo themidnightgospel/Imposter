@@ -12,47 +12,40 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
-    internal readonly GetterReturnValuesFieldMetadata GetterReturnValuesField;
+    internal readonly ReturnValuesFieldMetadata ReturnValuesField;
 
-    internal readonly GetterCallbacksFieldMetadata GetterCallbacksField;
+    internal readonly CallbacksFieldMetadata CallbacksField;
 
-    internal readonly LastGetterReturnValueFieldMetadata LastGetterReturnValueField;
+    internal readonly LastReturnValueFieldMetadata LastReturnValueField;
 
-    internal readonly GetterInvocationCountFieldMetadata GetterInvocationCountField;
+    internal readonly InvocationCountFieldMetadata InvocationCountField;
 
     internal readonly FieldMetadata DefaultPropertyBehaviourField;
 
-    internal readonly AddGetterReturnValueMethodMetadata AddGetterReturnValueMethod;
+    internal readonly AddReturnValueMethodMetadata AddReturnValueMethod;
 
     internal readonly GetMethodMetadata GetMethod;
-
-    // TODO remove
-    internal PropertyGetterImposterBuilderMetadata(in FieldMetadata defaultPropertyBehaviourMetadata)
-    {
-        Name = "test";
-        TypeSyntax = defaultPropertyBehaviourMetadata.Type;
-    }
 
     internal PropertyGetterImposterBuilderMetadata(in ImposterPropertyCoreMetadata property, in FieldMetadata defaultPropertyBehaviourMetadata)
     {
         Name = "GetterImposterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
-        GetterReturnValuesField = new GetterReturnValuesFieldMetadata(property);
-        GetterCallbacksField = new GetterCallbacksFieldMetadata();
-        LastGetterReturnValueField = new LastGetterReturnValueFieldMetadata(property);
-        GetterInvocationCountField = new GetterInvocationCountFieldMetadata();
+        ReturnValuesField = new ReturnValuesFieldMetadata(property);
+        CallbacksField = new CallbacksFieldMetadata();
+        LastReturnValueField = new LastReturnValueFieldMetadata(property);
+        InvocationCountField = new InvocationCountFieldMetadata();
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
-        AddGetterReturnValueMethod = new AddGetterReturnValueMethodMetadata(property);
+        AddReturnValueMethod = new AddReturnValueMethodMetadata(property);
         GetMethod = new GetMethodMetadata(property);
     }
 
-    internal readonly struct GetterReturnValuesFieldMetadata
+    internal readonly struct ReturnValuesFieldMetadata
     {
-        internal readonly string Name = "_getterReturnValues";
+        internal readonly string Name = "_returnValues";
 
         internal readonly TypeSyntax TypeSyntax;
 
-        internal GetterReturnValuesFieldMetadata(in ImposterPropertyCoreMetadata property)
+        internal ReturnValuesFieldMetadata(in ImposterPropertyCoreMetadata property)
         {
             TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
                 WellKnownTypes.System.FuncOfT(property.TypeSyntax)
@@ -60,13 +53,13 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         }
     }
 
-    internal readonly struct GetterCallbacksFieldMetadata
+    internal readonly struct CallbacksFieldMetadata
     {
-        internal readonly string Name = "_getterCallbacks";
+        internal readonly string Name = "_callbacks";
 
         internal readonly TypeSyntax TypeSyntax;
 
-        public GetterCallbacksFieldMetadata()
+        public CallbacksFieldMetadata()
         {
             TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
                 WellKnownTypes.System.Action
@@ -74,38 +67,38 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         }
     }
 
-    internal readonly struct LastGetterReturnValueFieldMetadata
+    internal readonly struct LastReturnValueFieldMetadata
     {
-        internal readonly string Name = "_lastGetterReturnValue";
+        internal readonly string Name = "_lastReturnValue";
 
         internal readonly TypeSyntax TypeSyntax;
 
-        internal LastGetterReturnValueFieldMetadata(in ImposterPropertyCoreMetadata property)
+        internal LastReturnValueFieldMetadata(in ImposterPropertyCoreMetadata property)
         {
             TypeSyntax = WellKnownTypes.System.FuncOfT(property.TypeSyntax);
         }
     }
 
-    internal readonly struct GetterInvocationCountFieldMetadata
+    internal readonly struct InvocationCountFieldMetadata
     {
-        internal readonly string Name = "_getterInvocationCount";
+        internal readonly string Name = "_invocationCount";
 
         internal readonly TypeSyntax TypeSyntax = WellKnownTypes.Int;
 
-        public GetterInvocationCountFieldMetadata()
+        public InvocationCountFieldMetadata()
         {
         }
     }
 
-    internal readonly struct AddGetterReturnValueMethodMetadata
+    internal readonly struct AddReturnValueMethodMetadata
     {
-        internal readonly string Name = "AddGetterReturnValue";
+        internal readonly string Name = "AddReturnValue";
 
         internal readonly TypeSyntax ReturnType;
 
         internal readonly ParameterMetadata ValueGeneratorParameter;
 
-        internal AddGetterReturnValueMethodMetadata(in ImposterPropertyCoreMetadata property)
+        internal AddReturnValueMethodMetadata(in ImposterPropertyCoreMetadata property)
         {
             ReturnType = WellKnownTypes.Void;
             ValueGeneratorParameter = new ParameterMetadata("valueGenerator",
