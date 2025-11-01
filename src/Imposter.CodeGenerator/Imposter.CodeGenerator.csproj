@@ -63,6 +63,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Features\IndexerImposter\Metadata\" />
       <Folder Include="Features\MethodImposter\" />
     </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -20,7 +21,7 @@ internal static class SetterImposterBuilder
 
         return new ClassDeclarationBuilder(property.SetterImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.CallbacksField.Type, PropertySetterImposterMetadata.CallbacksFieldMetadata.Name, property.SetterImposter.CallbacksField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.CallbacksField.Type, CallbacksFieldMetadata.Name, property.SetterImposter.CallbacksField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationHistoryField, property.SetterImposter.InvocationHistoryField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
             .AddMember(BuildConstructor(property))
@@ -80,7 +81,7 @@ internal static class SetterImposterBuilder
                         Token(SyntaxKind.CloseParenToken)
                     )
                 ),
-                IdentifierName(PropertySetterImposterMetadata.CallbacksFieldMetadata.Name),
+                IdentifierName(CallbacksFieldMetadata.Name),
                 Block(
                     IfStatement(
                         IdentifierName("criteria")
@@ -139,7 +140,7 @@ internal static class SetterImposterBuilder
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CriteriaParameter))
             .AddParameter(ParameterSyntax(setterImposter.CallbackMethod.CallbackParameter))
             .WithBody(Block(
-                    IdentifierName(PropertySetterImposterMetadata.CallbacksFieldMetadata.Name)
+                    IdentifierName(CallbacksFieldMetadata.Name)
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(
                                 setterImposter
