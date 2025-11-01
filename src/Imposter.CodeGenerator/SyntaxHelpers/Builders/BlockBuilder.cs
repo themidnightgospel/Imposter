@@ -29,9 +29,12 @@ internal class BlockBuilder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal BlockBuilder AddExpression(ExpressionSyntax statementSyntax)
+    internal BlockBuilder AddExpression(ExpressionSyntax? statementSyntax)
     {
-        _statements.Add(statementSyntax.ToStatementSyntax());
+        if (statementSyntax is not null)
+        {
+            _statements.Add(statementSyntax.ToStatementSyntax());
+        }
         return this;
     }
 

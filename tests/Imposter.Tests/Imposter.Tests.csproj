@@ -4,7 +4,7 @@
         <TargetFramework>.net9.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <RootNamespace>Imposter.CodeGenerator.Tests</RootNamespace>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>8.0</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 

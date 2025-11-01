@@ -10,14 +10,8 @@ namespace Imposter.CodeGenerator.Features.PropertySetup.Builders.PropertyImposte
 
 internal static class GetterImposterBuilderBuilder
 {
-    internal static ClassDeclarationSyntax? Build(in ImposterPropertyMetadata property)
-    {
-        if (!property.Core.HasGetter)
-        {
-            return null;
-        }
-
-        return new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
+    internal static ClassDeclarationSyntax? Build(in ImposterPropertyMetadata property) =>
+        new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.TypeSyntax))
             .AddMember(BuildGetterReturnValuesField(property.GetterImposterBuilder))
@@ -33,8 +27,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(BuildGetterCalledMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .Build();
-    }
-    
+
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
         new ConstructorWithFieldInitializationBuilder(property.GetterImposterBuilder.Name)
             .WithModifiers(Token(SyntaxKind.InternalKeyword))
