@@ -17,14 +17,14 @@ internal static class PropertyImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.DefaultPropertyBehaviourField))
-            .AddMember(SingleVariableField(property.ImposterBuilder.SetterImposterField, SyntaxKind.InternalKeyword))
-            .AddMember(SingleVariableField(property.ImposterBuilder.GetterImposterBuilderField, SyntaxKind.InternalKeyword))
-            .AddMember(BuildConstructor(property.ImposterBuilder))
+            .AddMember(property.Core.HasSetter ? SingleVariableField(property.ImposterBuilder.SetterImposterField, SyntaxKind.InternalKeyword) : null)
+            .AddMember(property.Core.HasGetter ? SingleVariableField(property.ImposterBuilder.GetterImposterBuilderField, SyntaxKind.InternalKeyword) : null)
+            .AddMember(BuildConstructor(property))
             .AddMember(DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour))
-            .AddMember(GetterImposterBuilderBuilder.Build(property))
-            .AddMember(SetterImposterBuilder.Build(property))
-            .AddMember(BuildGetterMethod(property))
-            .AddMember(BuildSetterMethod(property))
+            .AddMember(property.Core.HasGetter ? GetterImposterBuilderBuilder.Build(property) : null)
+            .AddMember(property.Core.HasSetter ? SetterImposterBuilder.Build(property) : null)
+            .AddMember(property.Core.HasGetter ? BuildGetterMethod(property) : null)
+            .AddMember(property.Core.HasSetter ? BuildSetterMethod(property) : null)
             .Build();
 
     internal static MethodDeclarationSyntax? BuildSetterMethod(in ImposterPropertyMetadata property)
@@ -67,22 +67,25 @@ internal static class PropertyImposterBuilder
             .Build();
     }
 
-    internal static ConstructorDeclarationSyntax BuildConstructor(in PropertyImposterBuilderMetadata imposterBuilder) =>
-        new ConstructorBuilder(imposterBuilder.Name)
+    internal static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
+        new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .WithBody(Block(
-                IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name).Assign(imposterBuilder.DefaultPropertyBehaviourField.Type.New())
-                    .ToStatementSyntax(),
-                IdentifierName(imposterBuilder.SetterImposterField.Name)
-                    .Assign(imposterBuilder.SetterImposterField.Type
-                        .New(Argument(IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
-                    )
-                    .ToStatementSyntax(),
-                IdentifierName(imposterBuilder.GetterImposterBuilderField.Name).Assign(
-                        imposterBuilder.GetterImposterBuilderField.Type
-                            .New(Argument(IdentifierName(imposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
-                    )
-                    .ToStatementSyntax()
-            ))
+            .WithBody(new BlockBuilder()
+                .AddExpression(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name).Assign(property.ImposterBuilder.DefaultPropertyBehaviourField.Type.New()))
+                .AddExpression(
+                    property.Core.HasGetter
+                        ? IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name).Assign(
+                            property.ImposterBuilder.GetterImposterBuilderField.Type
+                                .New(Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
+                        )
+                        : null)
+                .AddExpression(
+                    property.Core.HasSetter
+                        ? IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
+                            .Assign(property.ImposterBuilder.SetterImposterField.Type
+                                .New(Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
+                            )
+                        : null)
+                .Build())
             .Build();
 }

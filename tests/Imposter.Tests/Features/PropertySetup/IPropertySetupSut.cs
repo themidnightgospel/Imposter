@@ -1,15 +1,14 @@
 ﻿using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.PropertySetup;
-
-[GenerateImposter(typeof(IPropertySetupSut))]
-public interface IPropertySetupSut
+namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
-    int Age { get; set; }
+    [GenerateImposter(typeof(IPropertySetupSut))]
+    public interface IPropertySetupSut
+    {
+        int Age { get; set; }
 
-    /*
-    int Name { get; }
+        int Name { get; }
 
-    int LastName { set; }
-*/
+        int LastName { set; }
+    }
 }

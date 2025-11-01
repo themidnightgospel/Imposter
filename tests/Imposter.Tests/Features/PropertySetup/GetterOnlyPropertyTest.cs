@@ -1,0 +1,19 @@
+﻿using Imposter.Abstractions;
+using Shouldly;
+using Xunit;
+
+namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
+{
+    public class GetterOnlyPropertyTest
+    {
+        private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
+        
+        [Fact]
+        public void GivenGetterOnlyProperty_WhenImposterAccessed_ShouldHaveGetterApi()
+        {
+            _sut.Name.Getter().ShouldNotBeNull();
+            _sut.Name.Getter().Callback(() => { }).ShouldNotBeNull();
+            _sut.Name.Getter().Called(Count.Never());
+        }
+    }
+}
