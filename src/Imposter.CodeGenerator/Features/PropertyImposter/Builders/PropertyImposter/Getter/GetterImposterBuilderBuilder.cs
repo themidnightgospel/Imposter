@@ -1,4 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
+using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
