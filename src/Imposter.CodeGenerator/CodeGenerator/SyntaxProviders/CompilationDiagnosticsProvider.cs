@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
-using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
+using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
