@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Features.MethodSetup.Metadata;
-using Imposter.CodeGenerator.Features.PropertySetup.Metadata;
+using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;

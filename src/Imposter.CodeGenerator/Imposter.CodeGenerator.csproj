@@ -63,7 +63,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\MethodSetup\" />
+      <Folder Include="Features\MethodImposter\" />
     </ItemGroup>
 
 </Project>
