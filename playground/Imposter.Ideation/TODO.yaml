@@ -38,6 +38,7 @@ FEATURES:
         - Add support for Strict and Loose modes
         - Add support for open generic imposters. Example, `[GenerateImposter(typeof(IGenericSut<,>))]`
         - Proper diagnostics
+        - NOTE / To avoid namign collision, rename parameters in Invoke/Set methods instead of internal fields/methods
 
   LOW:
     - NOT Started:

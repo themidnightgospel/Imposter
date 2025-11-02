@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
-    public class ThreadSafetyTestsV2
+    public class ThreadSafetyTests
     {
         private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 

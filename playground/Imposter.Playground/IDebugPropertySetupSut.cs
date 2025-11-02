@@ -11,3 +11,9 @@ public interface IPropertySetupSut
 
     int LastName { set; }
 }
+
+[GenerateImposter(typeof(IIndexerSetupPocSut))]
+public interface IIndexerSetupPocSut
+{
+    string Indexer(int value1, string value2, object value3);
+}

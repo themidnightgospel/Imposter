@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
-    public class InvalidSetupsV2
+    public class InvalidSetups
     {
         private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 
