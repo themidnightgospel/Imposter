@@ -33,17 +33,17 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
         }
 
         [Fact]
-        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeAllMatchingCallbacks()
+        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeLastMatchingCallbacks()
         {
             var callback1Invoked = false;
             var callback2Invoked = false;
 
-            _sut.Age.Setter(Arg<int>.Is(x => x > 0)).Callback(_ => callback1Invoked = true);
-            _sut.Age.Setter(Arg<int>.Is(x => x > 10)).Callback(_ => callback2Invoked = true);
+            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback1Invoked = true);
+            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback2Invoked = true);
 
             _sut.Instance().Age = 15;
 
-            callback1Invoked.ShouldBeTrue();
+            callback1Invoked.ShouldBeFalse();
             callback2Invoked.ShouldBeTrue();
         }
 

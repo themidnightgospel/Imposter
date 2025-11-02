@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 {
-    public class CallbackTestsV2
+    public class CallbackTests
     {
         private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 
@@ -31,17 +31,17 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         }
 
         [Fact]
-        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeAllMatchingCallbacks()
+        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeLastMatchingSetupCallback()
         {
             var callback1Invoked = false;
             var callback2Invoked = false;
 
-            _sut.Age.Setter(Arg<int>.Is(x => x > 0)).Callback(_ => callback1Invoked = true);
-            _sut.Age.Setter(Arg<int>.Is(x => x > 10)).Callback(_ => callback2Invoked = true);
+            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback1Invoked = true);
+            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback2Invoked = true);
 
             _sut.Instance().Age = 15;
 
-            callback1Invoked.ShouldBeTrue();
+            callback1Invoked.ShouldBeFalse();
             callback2Invoked.ShouldBeTrue();
         }
 

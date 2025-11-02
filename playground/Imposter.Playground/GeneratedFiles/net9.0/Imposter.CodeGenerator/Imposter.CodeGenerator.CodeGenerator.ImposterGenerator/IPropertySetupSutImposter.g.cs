@@ -36,8 +36,8 @@ namespace Imposter.Playground
             IAgePropertyGetterBuilder Throws(System.Exception exception);
             IAgePropertyGetterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IAgePropertyGetterBuilder GetterCallback(System.Action callback);
-            void GetterCalled(Imposter.Abstractions.Count count);
+            IAgePropertyGetterBuilder Callback(System.Action callback);
+            void Called(Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -55,94 +55,101 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class AgePropertyBuilder : IAgePropertyBuilder
+        internal class AgePropertyBuilder : IAgePropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-            private readonly SetterImposter _setterImposter;
-            private readonly GetterImposterBuilder _getterImposterBuilder;
-            AgePropertyBuilder()
+            internal SetterImposter _setterImposter;
+            internal GetterImposterBuilder _getterImposterBuilder;
+            internal AgePropertyBuilder()
             {
+                _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour);
                 _setterImposter = new SetterImposter(_defaultPropertyBehaviour);
-                _getterImposterBuilder = new GetterImposterBuilder(_getterImposterBuilder);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class DefaultPropertyBehaviour
+            internal class DefaultPropertyBehaviour
             {
-                private readonly bool IsOn = true;
-                private readonly int BackingField = default;
+                internal bool IsOn = true;
+                internal int BackingField = default;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class GetterImposterBuilder : IAgePropertyGetterBuilder
+            internal class GetterImposterBuilder : IAgePropertyGetterBuilder
             {
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _getterReturnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _getterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
-                private System.Func<int> _lastGetterReturnValue = () => default;
-                private int _getterInvocationCount;
-                private void AddGetterReturnValue(System.Func<int> valueGenerator)
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
+                private System.Func<int> _lastReturnValue = () => default;
+                private int _invocationCount;
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+                internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour)
+                {
+                    this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+                }
+
+                private void AddReturnValue(System.Func<int> valueGenerator)
                 {
                     _defaultPropertyBehaviour.IsOn = false;
-                    _getterReturnValues.Enqueue(valueGenerator);
+                    _returnValues.Enqueue(valueGenerator);
                 }
 
                 IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Returns(int value)
                 {
-                    AddGetterReturnValue(() => value);
+                    AddReturnValue(() => value);
                     return this;
                 }
 
                 IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Returns(System.Func<int> valueGenerator)
                 {
-                    AddGetterReturnValue(valueGenerator);
+                    AddReturnValue(valueGenerator);
                     return this;
                 }
 
                 IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Throws(System.Exception exception)
                 {
-                    AddGetterReturnValue(() => throw exception);
+                    AddReturnValue(() => throw exception);
                     return this;
                 }
 
                 IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Throws<TException>()
                 {
-                    AddGetterReturnValue(() => throw new TException());
+                    AddReturnValue(() => throw new TException());
                     return this;
                 }
 
-                IAgePropertyGetterBuilder IAgePropertyGetterBuilder.GetterCallback(System.Action callback)
+                IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Callback(System.Action callback)
                 {
-                    _getterCallbacks.Enqueue(callback);
+                    _callbacks.Enqueue(callback);
                     return this;
                 }
 
-                void IAgePropertyGetterBuilder.GetterCalled(Imposter.Abstractions.Count count)
+                void IAgePropertyGetterBuilder.Called(Imposter.Abstractions.Count count)
                 {
-                    if (!count.Matches(_getterInvocationCount))
-                        throw new Imposter.Abstractions.VerificationFailedException(count, _getterInvocationCount);
+                    if (!count.Matches(_invocationCount))
+                        throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
                 internal int Get()
                 {
-                    System.Threading.Interlocked.Increment(ref _getterInvocationCount);
-                    foreach (var getterCallback in _getterCallbacks)
+                    System.Threading.Interlocked.Increment(ref _invocationCount);
+                    foreach (var getterCallback in _callbacks)
                     {
                         getterCallback();
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
                         return _defaultPropertyBehaviour.BackingField;
-                    if (_getterReturnValues.TryDequeue(out var returnValue))
-                        _lastGetterReturnValue = returnValue;
-                    return _lastGetterReturnValue();
+                    if (_returnValues.TryDequeue(out var returnValue))
+                        _lastReturnValue = returnValue;
+                    return _lastReturnValue();
                 }
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class SetterImposter
+            internal class SetterImposter
             {
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _setterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
-                private readonly System.Collections.Concurrent.ConcurrentBag<int> _setterInvocationHistory = new System.Collections.Concurrent.ConcurrentBag<int>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<int> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<int>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour)
                 {
@@ -151,21 +158,20 @@ namespace Imposter.Playground
 
                 internal void Callback(Imposter.Abstractions.Arg<int> criteria, System.Action<int> callback)
                 {
-                    _setterCallbacks.Enqueue(new System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>(criteria, callback));
-                    return this;
+                    _callbacks.Enqueue(new System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>(criteria, callback));
                 }
 
                 void Called(Imposter.Abstractions.Arg<int> criteria, Imposter.Abstractions.Count count)
                 {
-                    var setterInvocationCount = _setterInvocationHistory.Count(criteria.Matches);
-                    if (!count.Matches(setterInvocationCount))
-                        throw new Imposter.Abstractions.VerificationFailedException(count, setterInvocationCount);
+                    var invocationCount = _invocationHistory.Count(criteria.Matches);
+                    if (!count.Matches(invocationCount))
+                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
                 internal void Set(int value)
                 {
-                    _setterInvocationHistory.Add(value);
-                    foreach (var(criteria, setterCallback)in _setterCallbacks)
+                    _invocationHistory.Add(value);
+                    foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
                             setterCallback(value);
@@ -176,7 +182,7 @@ namespace Imposter.Playground
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                class Builder : IAgePropertySetterBuilder
+                internal class Builder : IAgePropertySetterBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly Imposter.Abstractions.Arg<int> _criteria;
@@ -221,98 +227,102 @@ namespace Imposter.Playground
             INamePropertyGetterBuilder Throws(System.Exception exception);
             INamePropertyGetterBuilder Throws<TException>()
                 where TException : Exception, new();
-            INamePropertyGetterBuilder GetterCallback(System.Action callback);
-            void GetterCalled(Imposter.Abstractions.Count count);
+            INamePropertyGetterBuilder Callback(System.Action callback);
+            void Called(Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertyBuilder
         {
             INamePropertyGetterBuilder Getter();
-            INamePropertySetterBuilder Setter(Imposter.Abstractions.Arg<int> criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class NamePropertyBuilder : INamePropertyBuilder
+        internal class NamePropertyBuilder : INamePropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-            private readonly SetterImposter _setterImposter;
-            private readonly GetterImposterBuilder _getterImposterBuilder;
-            NamePropertyBuilder()
+            internal GetterImposterBuilder _getterImposterBuilder;
+            internal NamePropertyBuilder()
             {
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour);
-                _getterImposterBuilder = new GetterImposterBuilder(_getterImposterBuilder);
+                _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class DefaultPropertyBehaviour
+            internal class DefaultPropertyBehaviour
             {
-                private readonly bool IsOn = true;
-                private readonly int BackingField = default;
+                internal bool IsOn = true;
+                internal int BackingField = default;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class GetterImposterBuilder : INamePropertyGetterBuilder
+            internal class GetterImposterBuilder : INamePropertyGetterBuilder
             {
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _getterReturnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _getterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
-                private System.Func<int> _lastGetterReturnValue = () => default;
-                private int _getterInvocationCount;
-                private void AddGetterReturnValue(System.Func<int> valueGenerator)
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
+                private System.Func<int> _lastReturnValue = () => default;
+                private int _invocationCount;
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+                internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour)
+                {
+                    this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+                }
+
+                private void AddReturnValue(System.Func<int> valueGenerator)
                 {
                     _defaultPropertyBehaviour.IsOn = false;
-                    _getterReturnValues.Enqueue(valueGenerator);
+                    _returnValues.Enqueue(valueGenerator);
                 }
 
                 INamePropertyGetterBuilder INamePropertyGetterBuilder.Returns(int value)
                 {
-                    AddGetterReturnValue(() => value);
+                    AddReturnValue(() => value);
                     return this;
                 }
 
                 INamePropertyGetterBuilder INamePropertyGetterBuilder.Returns(System.Func<int> valueGenerator)
                 {
-                    AddGetterReturnValue(valueGenerator);
+                    AddReturnValue(valueGenerator);
                     return this;
                 }
 
                 INamePropertyGetterBuilder INamePropertyGetterBuilder.Throws(System.Exception exception)
                 {
-                    AddGetterReturnValue(() => throw exception);
+                    AddReturnValue(() => throw exception);
                     return this;
                 }
 
                 INamePropertyGetterBuilder INamePropertyGetterBuilder.Throws<TException>()
                 {
-                    AddGetterReturnValue(() => throw new TException());
+                    AddReturnValue(() => throw new TException());
                     return this;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.GetterCallback(System.Action callback)
+                INamePropertyGetterBuilder INamePropertyGetterBuilder.Callback(System.Action callback)
                 {
-                    _getterCallbacks.Enqueue(callback);
+                    _callbacks.Enqueue(callback);
                     return this;
                 }
 
-                void INamePropertyGetterBuilder.GetterCalled(Imposter.Abstractions.Count count)
+                void INamePropertyGetterBuilder.Called(Imposter.Abstractions.Count count)
                 {
-                    if (!count.Matches(_getterInvocationCount))
-                        throw new Imposter.Abstractions.VerificationFailedException(count, _getterInvocationCount);
+                    if (!count.Matches(_invocationCount))
+                        throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
                 internal int Get()
                 {
-                    System.Threading.Interlocked.Increment(ref _getterInvocationCount);
-                    foreach (var getterCallback in _getterCallbacks)
+                    System.Threading.Interlocked.Increment(ref _invocationCount);
+                    foreach (var getterCallback in _callbacks)
                     {
                         getterCallback();
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
                         return _defaultPropertyBehaviour.BackingField;
-                    if (_getterReturnValues.TryDequeue(out var returnValue))
-                        _lastGetterReturnValue = returnValue;
-                    return _lastGetterReturnValue();
+                    if (_returnValues.TryDequeue(out var returnValue))
+                        _lastReturnValue = returnValue;
+                    return _lastReturnValue();
                 }
             }
 
@@ -335,32 +345,32 @@ namespace Imposter.Playground
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ILastNamePropertyBuilder
         {
+            ILastNamePropertySetterBuilder Setter(Imposter.Abstractions.Arg<int> criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class LastNamePropertyBuilder : ILastNamePropertyBuilder
+        internal class LastNamePropertyBuilder : ILastNamePropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-            private readonly SetterImposter _setterImposter;
-            private readonly GetterImposterBuilder _getterImposterBuilder;
-            LastNamePropertyBuilder()
+            internal SetterImposter _setterImposter;
+            internal LastNamePropertyBuilder()
             {
+                _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _setterImposter = new SetterImposter(_defaultPropertyBehaviour);
-                _getterImposterBuilder = new GetterImposterBuilder(_getterImposterBuilder);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class DefaultPropertyBehaviour
+            internal class DefaultPropertyBehaviour
             {
-                private readonly bool IsOn = true;
-                private readonly int BackingField = default;
+                internal bool IsOn = true;
+                internal int BackingField = default;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            class SetterImposter
+            internal class SetterImposter
             {
-                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _setterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
-                private readonly System.Collections.Concurrent.ConcurrentBag<int> _setterInvocationHistory = new System.Collections.Concurrent.ConcurrentBag<int>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<int> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<int>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour)
                 {
@@ -369,21 +379,20 @@ namespace Imposter.Playground
 
                 internal void Callback(Imposter.Abstractions.Arg<int> criteria, System.Action<int> callback)
                 {
-                    _setterCallbacks.Enqueue(new System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>(criteria, callback));
-                    return this;
+                    _callbacks.Enqueue(new System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>(criteria, callback));
                 }
 
                 void Called(Imposter.Abstractions.Arg<int> criteria, Imposter.Abstractions.Count count)
                 {
-                    var setterInvocationCount = _setterInvocationHistory.Count(criteria.Matches);
-                    if (!count.Matches(setterInvocationCount))
-                        throw new Imposter.Abstractions.VerificationFailedException(count, setterInvocationCount);
+                    var invocationCount = _invocationHistory.Count(criteria.Matches);
+                    if (!count.Matches(invocationCount))
+                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
                 internal void Set(int value)
                 {
-                    _setterInvocationHistory.Add(value);
-                    foreach (var(criteria, setterCallback)in _setterCallbacks)
+                    _invocationHistory.Add(value);
+                    foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
                             setterCallback(value);
@@ -394,7 +403,7 @@ namespace Imposter.Playground
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                class Builder : ILastNamePropertySetterBuilder
+                internal class Builder : ILastNamePropertySetterBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly Imposter.Abstractions.Arg<int> _criteria;

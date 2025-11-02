@@ -1,439 +1,390 @@
-﻿using System;
-using System.Linq;
+﻿/*using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Linq;
 using Imposter.Abstractions;
 
 #pragma warning disable nullable
-namespace Imposter.Ideation.IndexerSetupPoc
+namespace Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IIndexerSetupPocSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Ideation.IndexerSetupPoc.IIndexerSetupPocSut>
+    public class IPropertySetupPocSutV2Imposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc.IPropertySetupPocV2Sut>
     {
-        private readonly TripleParamIndexerImposterBuilder _TripleParamIndexer = new TripleParamIndexerImposterBuilder();
-        public ITripleParamIndexerImposterBuilder TripleParamIndexer => _TripleParamIndexer;
+        private readonly AgePropertyImposterBuilder _Age = new AgePropertyImposterBuilder();
+        public IAgePropertyImposterBuilder Age => _Age;
 
         private ImposterTargetInstance _imposterInstance;
-        public IIndexerSetupPocSutImposter()
+
+        public IPropertySetupPocSutV2Imposter()
         {
             this._imposterInstance = new ImposterTargetInstance(this);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.Ideation.IndexerSetupPoc.IIndexerSetupPocSut
+        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut
         {
-            IIndexerSetupPocSutImposter _imposter;
-            public ImposterTargetInstance(IIndexerSetupPocSutImposter _imposter)
+            IPropertySetupPocSutV2Imposter _imposter;
+
+            public ImposterTargetInstance(IPropertySetupPocSutV2Imposter _imposter)
             {
                 this._imposter = _imposter;
             }
 
-            public string this[int index1, string index2, object index3]
+            public int Age
             {
-                get
-                {
-                    return _imposter._TripleParamIndexer._getterImposterBuilder.Get(index1, index2, index3);
-                }
-                set
-                {
-                    _imposter._TripleParamIndexer._setterImposter.Set(index1, index2, index3, value);
-                }
+                get { return _imposter._Age._getterImposterBuilder.Get(); }
+
+                set { _imposter._Age._setterImposter.Set(value); }
             }
         }
 
-        global::Imposter.Ideation.IndexerSetupPoc.IIndexerSetupPocSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Ideation.IndexerSetupPoc.IIndexerSetupPocSut>.Instance()
+        global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupPocV2Sut>.Instance()
         {
             return _imposterInstance;
         }
-
-        // Triple Parameter Indexer Interfaces
-        public interface ITripleParamIndexerGetterImposterBuilder
+        
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class IndexerArguments
         {
-            ITripleParamIndexerGetterImposterBuilder Returns(string value);
-            ITripleParamIndexerGetterImposterBuilder Returns(System.Func<int, string, object, string> valueGenerator);
-            ITripleParamIndexerGetterImposterBuilder Throws(System.Exception exception);
-            ITripleParamIndexerGetterImposterBuilder Throws<TException>()
+            public int value1;
+            public string value2;
+            public object value3;
+            internal IndexerArguments(int value1, string value2, object value3)
+            {
+                this.value1 = value1;
+                this.value2 = value2;
+                this.value3 = value3;
+            }
+        }
+        
+        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class IndexerArgumentsCriteria
+        {
+            public Imposter.Abstractions.Arg<int> value1 { get; }
+            public Imposter.Abstractions.Arg<string> value2 { get; }
+            public Imposter.Abstractions.Arg<object> value3 { get; }
+
+            public IndexerArgumentsCriteria(Imposter.Abstractions.Arg<int> value1, Imposter.Abstractions.Arg<string> value2, Imposter.Abstractions.Arg<object> value3)
+            {
+                this.value1 = value1;
+                this.value2 = value2;
+                this.value3 = value3;
+            }
+
+            public bool Matches(IndexerArguments arguments)
+            {
+                return value1.Matches(arguments.value1) && value2.Matches(arguments.value2) && value3.Matches(arguments.value3);
+            }
+        }
+        
+        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
+        public delegate int IndexerDelegate(int value1, string value2, object value3);
+        
+        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
+        public delegate void IndexerCallbackDelegate(int value1, string value2, object value3);
+        
+        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
+        public delegate System.Exception IndexerExceptionGeneratorDelegate(int value1, string value2, object value3);
+
+        public interface IAgePropertyGetterImposterBuilder
+        {
+            IAgePropertyGetterImposterBuilder Returns(int value);
+
+            IAgePropertyGetterImposterBuilder Returns(IndexerDelegate valueGenerator);
+
+            IAgePropertyGetterImposterBuilder Throws(System.Exception exception);
+
+            IAgePropertyGetterImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ITripleParamIndexerGetterImposterBuilder Callback(System.Action<int, string, object> callback);
-            void Called(Imposter.Abstractions.Count count);
-        }
-
-        public interface ITripleParamIndexerSetterImposterBuilder
-        {
-            ITripleParamIndexerSetterImposterBuilder Callback(System.Action<int, string, object, string> callback);
-            void Called(Imposter.Abstractions.Count count);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ITripleParamIndexerImposterBuilder
-        {
-            ITripleParamIndexerGetterImposterBuilder Getter(
-                Imposter.Abstractions.Arg<int> index1Criteria,
-                Imposter.Abstractions.Arg<string> index2Criteria,
-                Imposter.Abstractions.Arg<object> index3Criteria);
             
-            ITripleParamIndexerSetterImposterBuilder Setter(
-                Imposter.Abstractions.Arg<int> index1Criteria,
-                Imposter.Abstractions.Arg<string> index2Criteria,
-                Imposter.Abstractions.Arg<object> index3Criteria,
-                Imposter.Abstractions.Arg<string> valueCriteria);
+            IAgePropertyGetterImposterBuilder Throws(IndexerExceptionGeneratorDelegate exception);
+
+            IAgePropertyGetterImposterBuilder Callback(IndexerCallbackDelegate callback);
+
+            void Called(Imposter.Abstractions.Count count);
         }
 
-        // Triple Parameter Indexer Implementation
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class TripleParamIndexerImposterBuilder : ITripleParamIndexerImposterBuilder
+        public interface IAgePropertySetterImposterBuilder
         {
-            internal readonly DefaultIndexerBehaviour _defaultIndexerBehaviour = new DefaultIndexerBehaviour();
+            IAgePropertySetterImposterBuilder Callback(IndexerCallbackDelegate callback);
+
+            void Called(Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertyImposterBuilder
+        {
+            IAgePropertyGetterImposterBuilder Getter(Imposter.Abstractions.Arg<int> value1, Imposter.Abstractions.Arg<string> value2, Imposter.Abstractions.Arg<object> value3);
+
+            IAgePropertySetterImposterBuilder Setter(Imposter.Abstractions.Arg<int> value1, Imposter.Abstractions.Arg<string> value2, Imposter.Abstractions.Arg<object> value3);
+        }
+
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class AgePropertyImposterBuilder : IAgePropertyImposterBuilder
+        {
+            internal readonly DefaultPropertyBehaviour _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
             internal readonly SetterImposter _setterImposter;
             internal readonly GetterImposterBuilder _getterImposterBuilder;
 
-            public TripleParamIndexerImposterBuilder()
+            public AgePropertyImposterBuilder()
             {
-                _setterImposter = new SetterImposter(_defaultIndexerBehaviour);
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultIndexerBehaviour);
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour);
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour);
             }
 
-            internal class DefaultIndexerBehaviour
+            internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
-                internal Dictionary<(int, string, object), string> BackingStore = new Dictionary<(int, string, object), string>();
+
+                internal Dictionary<IndexerArguments, int> BackingField = new Dictionary<IndexerArguments, int>();
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class IndexerMethodInvocationHistory
+            {
+                internal IndexerArguments Arguments;
+                internal int Result;
+                internal System.Exception Exception;
+                public IndexerMethodInvocationHistory(IndexerArguments Arguments, int Result, System.Exception Exception)
+                {
+                    this.Arguments = Arguments;
+                    this.Result = Result;
+                    this.Exception = Exception;
+                }
+
+                public bool Matches(IndexerArgumentsCriteria criteria)
+                {
+                    return criteria.Matches(Arguments);
+                }
             }
 
             internal class SetterImposter
             {
-                private readonly ConcurrentQueue<SetterCallbackEntry> _setterCallbacks = new ConcurrentQueue<SetterCallbackEntry>();
-                private readonly ConcurrentBag<(int, string, object, string)> _setterInvocationHistory = new ConcurrentBag<(int, string, object, string)>();
-                private readonly DefaultIndexerBehaviour _defaultIndexerBehaviour;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<IndexerArgumentsCriteria, IndexerCallbackDelegate>> _setterCallbacks
+                    = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<IndexerArgumentsCriteria, IndexerCallbackDelegate>>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<IndexerArguments> _setterInvocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerArguments>();
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 
-                public SetterImposter(DefaultIndexerBehaviour defaultIndexerBehaviour)
+                public SetterImposter(DefaultPropertyBehaviour defaultPropertyBehaviour)
                 {
-                    _defaultIndexerBehaviour = defaultIndexerBehaviour;
+                    _defaultPropertyBehaviour = defaultPropertyBehaviour;
                 }
 
-                internal void Callback(
-                    Imposter.Abstractions.Arg<int> index1Criteria,
-                    Imposter.Abstractions.Arg<string> index2Criteria,
-                    Imposter.Abstractions.Arg<object> index3Criteria,
-                    Imposter.Abstractions.Arg<string> valueCriteria,
-                    System.Action<int, string, object, string> callback)
+                internal void Callback(IndexerArgumentsCriteria criteria, IndexerCallbackDelegate callback)
                 {
-                    _setterCallbacks.Enqueue(new SetterCallbackEntry(index1Criteria, index2Criteria, index3Criteria, valueCriteria, callback));
+                    _setterCallbacks.Enqueue(new System.Tuple<IndexerArgumentsCriteria, IndexerCallbackDelegate>(criteria, callback));
                 }
 
-                internal void Called(
-                    Imposter.Abstractions.Arg<int> index1Criteria,
-                    Imposter.Abstractions.Arg<string> index2Criteria,
-                    Imposter.Abstractions.Arg<object> index3Criteria,
-                    Imposter.Abstractions.Arg<string> valueCriteria,
-                    Imposter.Abstractions.Count count)
+                internal void Called(IndexerArgumentsCriteria criteria, Imposter.Abstractions.Count count)
                 {
-                    var setterInvocationCount = _setterInvocationHistory.Count(invocation =>
-                        index1Criteria.Matches(invocation.Item1) &&
-                        index2Criteria.Matches(invocation.Item2) &&
-                        index3Criteria.Matches(invocation.Item3) &&
-                        valueCriteria.Matches(invocation.Item4));
-                    
+                    var setterInvocationCount = _setterInvocationHistory.Count(criteria.Matches);
                     if (!count.Matches(setterInvocationCount))
                         throw new Imposter.Abstractions.VerificationFailedException(count, setterInvocationCount);
                 }
 
-                internal void Set(int index1, string index2, object index3, string value)
+                // Name collision
+                internal void Set(int value1, string value2, object value3, int value)
                 {
-                    _setterInvocationHistory.Add((index1, index2, index3, value));
-                    
-                    foreach (var callbackEntry in _setterCallbacks)
+                    var arguments = new IndexerArguments(value1, value2, value3);
+                    _setterInvocationHistory.Add(arguments);
+                    foreach (var (criteria, setterCallback)in _setterCallbacks)
                     {
-                        if (callbackEntry.Index1Criteria.Matches(index1) &&
-                            callbackEntry.Index2Criteria.Matches(index2) &&
-                            callbackEntry.Index3Criteria.Matches(index3) &&
-                            callbackEntry.ValueCriteria.Matches(value))
-                        {
-                            callbackEntry.Callback(index1, index2, index3, value);
-                        }
+                        if (criteria.Matches(arguments))
+                            setterCallback(value1, value2, value3);
                     }
 
-                    if (_defaultIndexerBehaviour.IsOn)
-                        _defaultIndexerBehaviour.BackingStore[(index1, index2, index3)] = value;
+                    if (_defaultPropertyBehaviour.IsOn)
+                        _defaultPropertyBehaviour.BackingField[arguments] = value;
                 }
 
-                private struct SetterCallbackEntry
-                {
-                    public readonly Imposter.Abstractions.Arg<int> Index1Criteria;
-                    public readonly Imposter.Abstractions.Arg<string> Index2Criteria;
-                    public readonly Imposter.Abstractions.Arg<object> Index3Criteria;
-                    public readonly Imposter.Abstractions.Arg<string> ValueCriteria;
-                    public readonly System.Action<int, string, object, string> Callback;
-
-                    public SetterCallbackEntry(
-                        Imposter.Abstractions.Arg<int> index1Criteria,
-                        Imposter.Abstractions.Arg<string> index2Criteria,
-                        Imposter.Abstractions.Arg<object> index3Criteria,
-                        Imposter.Abstractions.Arg<string> valueCriteria,
-                        System.Action<int, string, object, string> callback)
-                    {
-                        Index1Criteria = index1Criteria;
-                        Index2Criteria = index2Criteria;
-                        Index3Criteria = index3Criteria;
-                        ValueCriteria = valueCriteria;
-                        Callback = callback;
-                    }
-                }
-
-                internal class Builder : ITripleParamIndexerSetterImposterBuilder
+                internal class Builder : IAgePropertySetterImposterBuilder
                 {
                     private readonly SetterImposter _setterImposter;
-                    private readonly Imposter.Abstractions.Arg<int> _index1Criteria;
-                    private readonly Imposter.Abstractions.Arg<string> _index2Criteria;
-                    private readonly Imposter.Abstractions.Arg<object> _index3Criteria;
-                    private readonly Imposter.Abstractions.Arg<string> _valueCriteria;
+                    private readonly IndexerArgumentsCriteria _criteria;
 
-                    public Builder(
-                        SetterImposter setterImposter,
-                        Arg<int> index1Criteria,
-                        Arg<string> index2Criteria,
-                        Arg<object> index3Criteria,
-                        Arg<string> valueCriteria)
+                    public Builder(SetterImposter setterImposter, IndexerArgumentsCriteria criteria)
                     {
                         _setterImposter = setterImposter;
-                        _index1Criteria = index1Criteria;
-                        _index2Criteria = index2Criteria;
-                        _index3Criteria = index3Criteria;
-                        _valueCriteria = valueCriteria;
+                        _criteria = criteria;
                     }
 
-                    public ITripleParamIndexerSetterImposterBuilder Callback(Action<int, string, object, string> callback)
+                    public IAgePropertySetterImposterBuilder Callback(IndexerCallbackDelegate callback)
                     {
-                        _setterImposter.Callback(_index1Criteria, _index2Criteria, _index3Criteria, _valueCriteria, callback);
+                        _setterImposter.Callback(_criteria, callback);
                         return this;
                     }
 
                     public void Called(Count count)
                     {
-                        _setterImposter.Called(_index1Criteria, _index2Criteria, _index3Criteria, _valueCriteria, count);
+                        _setterImposter.Called(_criteria, count);
                     }
                 }
             }
 
-            internal class GetterImposterBuilder : ITripleParamIndexerGetterImposterBuilder
+            internal class GetterImposter : IAgePropertyGetterImposterBuilder
             {
-                private readonly ConcurrentQueue<GetterReturnEntry> _getterReturnValues = new ConcurrentQueue<GetterReturnEntry>();
-                private readonly ConcurrentQueue<GetterCallbackEntry> _getterCallbacks = new ConcurrentQueue<GetterCallbackEntry>();
-                private System.Func<int, string, object, string> _lastGetterReturnValue = (i1, i2, i3) => default;
-                private readonly ConcurrentBag<(int, string, object)> _getterInvocationHistory = new ConcurrentBag<(int, string, object)>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _getterReturnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _getterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
+                private System.Func<int> _lastGetterReturnValue = () => default;
+                private readonly System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationHistory>();
 
-                private readonly DefaultIndexerBehaviour _defaultIndexerBehaviour;
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 
-                public GetterImposterBuilder(DefaultIndexerBehaviour defaultIndexerBehaviour)
+                public GetterImposter(DefaultPropertyBehaviour defaultPropertyBehaviour)
                 {
-                    _defaultIndexerBehaviour = defaultIndexerBehaviour;
+                    _defaultPropertyBehaviour = defaultPropertyBehaviour;
                 }
 
-                internal void AddGetterReturnValue(
-                    Imposter.Abstractions.Arg<int> index1Criteria,
-                    Imposter.Abstractions.Arg<string> index2Criteria,
-                    Imposter.Abstractions.Arg<object> index3Criteria,
-                    System.Func<int, string, object, string> valueGenerator)
+                private void AddGetterReturnValue(System.Func<int> valueGenerator)
                 {
-                    _defaultIndexerBehaviour.IsOn = false;
-                    _getterReturnValues.Enqueue(new GetterReturnEntry(index1Criteria, index2Criteria, index3Criteria, valueGenerator));
+                    _defaultPropertyBehaviour.IsOn = false;
+                    _getterReturnValues.Enqueue(valueGenerator);
                 }
 
-                ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerGetterImposterBuilder.Returns(string value)
+                IAgePropertyGetterImposterBuilder IAgePropertyGetterImposterBuilder.Returns(int value)
                 {
-                    AddGetterReturnValue(Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any(), (i1, i2, i3) => value);
+                    AddGetterReturnValue(() => value);
                     return this;
                 }
 
-                ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerGetterImposterBuilder.Returns(System.Func<int, string, object, string> valueGenerator)
+                public IAgePropertyGetterImposterBuilder Returns(IndexerDelegate valueGenerator)
                 {
-                    AddGetterReturnValue(Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any(), valueGenerator);
+                    throw new NotImplementedException();
+                }
+
+                IAgePropertyGetterImposterBuilder IAgePropertyGetterImposterBuilder.Returns(System.Func<int> valueGenerator)
+                {
+                    AddGetterReturnValue(valueGenerator);
                     return this;
                 }
 
-                ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerGetterImposterBuilder.Throws(System.Exception exception)
+                IAgePropertyGetterImposterBuilder IAgePropertyGetterImposterBuilder.Throws(System.Exception exception)
                 {
-                    AddGetterReturnValue(Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any(), (i1, i2, i3) => throw exception);
+                    AddGetterReturnValue(() => throw exception);
                     return this;
                 }
 
-                ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerGetterImposterBuilder.Throws<TException>()
+                IAgePropertyGetterImposterBuilder IAgePropertyGetterImposterBuilder.Throws<TException>()
                 {
-                    AddGetterReturnValue(Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any(), (i1, i2, i3) => throw new TException());
+                    AddGetterReturnValue(() => throw new TException());
                     return this;
                 }
 
-                ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerGetterImposterBuilder.Callback(System.Action<int, string, object> callback)
+                public IAgePropertyGetterImposterBuilder Throws(IndexerExceptionGeneratorDelegate exception)
                 {
-                    _getterCallbacks.Enqueue(new GetterCallbackEntry(Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any(), callback));
+                    throw new NotImplementedException();
+                }
+
+                public IAgePropertyGetterImposterBuilder Callback(IndexerCallbackDelegate callback)
+                {
+                    throw new NotImplementedException();
+                }
+
+                IAgePropertyGetterImposterBuilder IAgePropertyGetterImposterBuilder.Callback(System.Action callback)
+                {
+                    _getterCallbacks.Enqueue(callback);
                     return this;
                 }
 
-                void ITripleParamIndexerGetterImposterBuilder.Called(Imposter.Abstractions.Count count)
+                void IAgePropertyGetterImposterBuilder.Called(Imposter.Abstractions.Count count)
                 {
-                    var getterInvocationCount = _getterInvocationHistory.Count;
-                    if (!count.Matches(getterInvocationCount))
-                        throw new Imposter.Abstractions.VerificationFailedException(count, getterInvocationCount);
+                    if (!count.Matches(_getterInvocationCount))
+                        throw new Imposter.Abstractions.VerificationFailedException(count, _getterInvocationCount);
                 }
 
-                internal string Get(int index1, string index2, object index3)
+                internal int Get(int value1, string value2, object value3)
                 {
-                    _getterInvocationHistory.Add((index1, index2, index3));
-
-                    foreach (var callbackEntry in _getterCallbacks)
+                    System.Threading.Interlocked.Increment(ref _getterInvocationCount);
+                    try
                     {
-                        if (callbackEntry.Index1Criteria.Matches(index1) &&
-                            callbackEntry.Index2Criteria.Matches(index2) &&
-                            callbackEntry.Index3Criteria.Matches(index3))
+                        foreach (var getterCallback in _getterCallbacks)
                         {
-                            callbackEntry.Callback(index1, index2, index3);
+                            getterCallback();
                         }
-                    }
 
-                    if (_defaultIndexerBehaviour.IsOn)
+                        if (_defaultPropertyBehaviour.IsOn)
+                            return _defaultPropertyBehaviour.BackingField;
+
+                        if (_getterReturnValues.TryDequeue(out var returnValue))
+                            _lastGetterReturnValue = returnValue;
+
+                        var result = _lastGetterReturnValue();
+                        
+                        _invocationHistory.Push(new IndexerMethodInvocationHistory(new IndexerArguments(value1, value2, value3), result, null));
+                    }
+                    catch (Exception ex)
                     {
-                        return _defaultIndexerBehaviour.BackingStore.TryGetValue((index1, index2, index3), out var value) ? value : default;
+                        _invocationHistory.Push(new IndexerMethodInvocationHistory(new IndexerArguments(value1, value2, value3), null, ex));
                     }
-
-                    foreach (var returnEntry in _getterReturnValues)
-                    {
-                        if (returnEntry.Index1Criteria.Matches(index1) &&
-                            returnEntry.Index2Criteria.Matches(index2) &&
-                            returnEntry.Index3Criteria.Matches(index3))
-                        {
-                            _lastGetterReturnValue = returnEntry.ValueGenerator;
-                            break;
-                        }
-                    }
-
-                    return _lastGetterReturnValue(index1, index2, index3);
                 }
 
-                private struct GetterReturnEntry
+                internal class Builder : IAgePropertyGetterImposterBuilder
                 {
-                    public readonly Imposter.Abstractions.Arg<int> Index1Criteria;
-                    public readonly Imposter.Abstractions.Arg<string> Index2Criteria;
-                    public readonly Imposter.Abstractions.Arg<object> Index3Criteria;
-                    public readonly System.Func<int, string, object, string> ValueGenerator;
+                    private readonly GetterImposter _getterImposter;
+                    private readonly IndexerArgumentsCriteria _criteria;
 
-                    public GetterReturnEntry(
-                        Imposter.Abstractions.Arg<int> index1Criteria,
-                        Imposter.Abstractions.Arg<string> index2Criteria,
-                        Imposter.Abstractions.Arg<object> index3Criteria,
-                        System.Func<int, string, object, string> valueGenerator)
+                    public Builder(GetterImposter getterImposter, IndexerArgumentsCriteria criteria)
                     {
-                        Index1Criteria = index1Criteria;
-                        Index2Criteria = index2Criteria;
-                        Index3Criteria = index3Criteria;
-                        ValueGenerator = valueGenerator;
+                        _getterImposter = getterImposter;
+                        _criteria = criteria;
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Returns(int value)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Returns(IndexerDelegate valueGenerator)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Throws(Exception exception)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Throws<TException>() where TException : Exception, new()
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Throws(IndexerExceptionGeneratorDelegate exception)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public IAgePropertyGetterImposterBuilder Callback(IndexerCallbackDelegate callback)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    public void Called(Count count)
+                    {
+                        throw new NotImplementedException();
                     }
                 }
-
-                private struct GetterCallbackEntry
-                {
-                    public readonly Imposter.Abstractions.Arg<int> Index1Criteria;
-                    public readonly Imposter.Abstractions.Arg<string> Index2Criteria;
-                    public readonly Imposter.Abstractions.Arg<object> Index3Criteria;
-                    public readonly System.Action<int, string, object> Callback;
-
-                    public GetterCallbackEntry(
-                        Imposter.Abstractions.Arg<int> index1Criteria,
-                        Imposter.Abstractions.Arg<string> index2Criteria,
-                        Imposter.Abstractions.Arg<object> index3Criteria,
-                        System.Action<int, string, object> callback)
-                    {
-                        Index1Criteria = index1Criteria;
-                        Index2Criteria = index2Criteria;
-                        Index3Criteria = index3Criteria;
-                        Callback = callback;
-                    }
-                }
+                
             }
 
-            ITripleParamIndexerGetterImposterBuilder ITripleParamIndexerImposterBuilder.Getter(
-                Imposter.Abstractions.Arg<int> index1Criteria,
-                Imposter.Abstractions.Arg<string> index2Criteria,
-                Imposter.Abstractions.Arg<object> index3Criteria)
+            IAgePropertyGetterImposterBuilder IAgePropertyImposterBuilder.Getter(Imposter.Abstractions.Arg<int> value1, Imposter.Abstractions.Arg<string> value2, Imposter.Abstractions.Arg<object> value3)
             {
-                return new GetterBuilder(_getterImposterBuilder, index1Criteria, index2Criteria, index3Criteria);
+                return new GetterImposter.Builder(_getterImposterBuilder, new IndexerArgumentsCriteria(value1, value2, value3));
             }
 
-            ITripleParamIndexerSetterImposterBuilder ITripleParamIndexerImposterBuilder.Setter(
-                Imposter.Abstractions.Arg<int> index1Criteria,
-                Imposter.Abstractions.Arg<string> index2Criteria,
-                Imposter.Abstractions.Arg<object> index3Criteria,
-                Imposter.Abstractions.Arg<string> valueCriteria)
+            IAgePropertySetterImposterBuilder IAgePropertyImposterBuilder.Setter(Imposter.Abstractions.Arg<int> value1, Imposter.Abstractions.Arg<string> value2, Imposter.Abstractions.Arg<object> value3)
             {
-                return new SetterImposter.Builder(_setterImposter, index1Criteria, index2Criteria, index3Criteria, valueCriteria);
-            }
-
-            internal class GetterBuilder : ITripleParamIndexerGetterImposterBuilder
-            {
-                private readonly GetterImposterBuilder _getterImposterBuilder;
-                private readonly Imposter.Abstractions.Arg<int> _index1Criteria;
-                private readonly Imposter.Abstractions.Arg<string> _index2Criteria;
-                private readonly Imposter.Abstractions.Arg<object> _index3Criteria;
-
-                public GetterBuilder(
-                    GetterImposterBuilder getterImposterBuilder,
-                    Arg<int> index1Criteria,
-                    Arg<string> index2Criteria,
-                    Arg<object> index3Criteria)
-                {
-                    _getterImposterBuilder = getterImposterBuilder;
-                    _index1Criteria = index1Criteria;
-                    _index2Criteria = index2Criteria;
-                    _index3Criteria = index3Criteria;
-                }
-
-                public ITripleParamIndexerGetterImposterBuilder Returns(string value)
-                {
-                    _getterImposterBuilder.AddGetterReturnValue(_index1Criteria, _index2Criteria, _index3Criteria, (i1, i2, i3) => value);
-                    return this;
-                }
-
-                public ITripleParamIndexerGetterImposterBuilder Returns(Func<int, string, object, string> valueGenerator)
-                {
-                    _getterImposterBuilder.AddGetterReturnValue(_index1Criteria, _index2Criteria, _index3Criteria, valueGenerator);
-                    return this;
-                }
-
-                public ITripleParamIndexerGetterImposterBuilder Throws(Exception exception)
-                {
-                    _getterImposterBuilder.AddGetterReturnValue(_index1Criteria, _index2Criteria, _index3Criteria, (i1, i2, i3) => throw exception);
-                    return this;
-                }
-
-                public ITripleParamIndexerGetterImposterBuilder Throws<TException>() where TException : Exception, new()
-                {
-                    _getterImposterBuilder.AddGetterReturnValue(_index1Criteria, _index2Criteria, _index3Criteria, (i1, i2, i3) => throw new TException());
-                    return this;
-                }
-
-                public ITripleParamIndexerGetterImposterBuilder Callback(Action<int, string, object> callback)
-                {
-                    _getterImposterBuilder._getterCallbacks.Enqueue(new GetterImposterBuilder.GetterCallbackEntry(_index1Criteria, _index2Criteria, _index3Criteria, callback));
-                    return this;
-                }
-
-                public void Called(Count count)
-                {
-                    var getterInvocationCount = _getterImposterBuilder._getterInvocationHistory.Count(invocation =>
-                        _index1Criteria.Matches(invocation.Item1) &&
-                        _index2Criteria.Matches(invocation.Item2) &&
-                        _index3Criteria.Matches(invocation.Item3));
-                    
-                    if (!count.Matches(getterInvocationCount))
-                        throw new VerificationFailedException(count, getterInvocationCount);
-                }
+                return new SetterImposter.Builder(_setterImposter, new IndexerArgumentsCriteria(value1, value2, value3));
             }
         }
     }
 }
 
-namespace Imposter.Ideation.IndexerSetupPoc
+namespace Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc
 {
-    public interface IIndexerSetupPocSut
+    public interface IPropertySetupPocV2Sut
     {
-        string this[int index1, string index2, object index3] { get; set; }
+        int this[int value1, string value2, object value3] { get; set; }
     }
-}
+}*/
