@@ -21,11 +21,13 @@ namespace Imposter.Playground
             return new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>.Builder(_genericAllRefKindMethodImposterCollection, _genericAllRefKindMethodInvocationHistoryCollection, new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(outValue, refValue, inValue, paramsValues));
         }
 
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IGenericMethodPocV1Imposter()
+        public IGenericMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection);
+            this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         global::Imposter.Playground.IGenericMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IGenericMethodPocV1>.Instance()
@@ -128,15 +130,17 @@ namespace Imposter.Playground
         internal class GenericAllRefKindMethodImposterCollection
         {
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-            public GenericAllRefKindMethodImposterCollection(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public GenericAllRefKindMethodImposterCollection(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             private readonly System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter> _imposters = new System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter>();
             internal GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> AddNew<TOut, TRef, TIn, TParams, TResult>()
             {
-                var imposter = new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>(_genericAllRefKindMethodInvocationHistoryCollection);
+                var imposter = new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>(_genericAllRefKindMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
                 return imposter;
             }
@@ -182,10 +186,20 @@ namespace Imposter.Playground
                 return _lastestInvocationImposter;
             }
 
-            public TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+            public TResult Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(out outValue, ref refValue, in inValue, paramsValues);
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out outValue, ref refValue, in inValue, paramsValues);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -202,9 +216,18 @@ namespace Imposter.Playground
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>>();
                 internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
-                public TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+                public TResult Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
                 {
-                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
                     TResult result = _resultGenerator.Invoke(out outValue, ref refValue, in inValue, paramsValues);
                     foreach (var callback in _callbacks)
                     {
@@ -296,9 +319,11 @@ namespace Imposter.Playground
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-            public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>? IGenericAllRefKindMethodImposter.As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
@@ -364,10 +389,20 @@ namespace Imposter.Playground
             public TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
             {
                 var arguments = new GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>(refValue, inValue, paramsValues);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Default;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)");
+                    }
+
+                    matchingInvocationImposterGroup = GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Default;
+                }
+
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(out outValue, ref refValue, in inValue, paramsValues);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)", out outValue, ref refValue, in inValue, paramsValues);
                     _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, result, default));
                     return result;
                 }

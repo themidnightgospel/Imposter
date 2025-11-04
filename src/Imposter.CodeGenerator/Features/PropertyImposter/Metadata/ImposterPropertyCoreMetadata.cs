@@ -16,6 +16,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
     
     internal readonly TypeSyntax TypeSyntax;
 
+    internal readonly string DisplayName;
+
     internal readonly TypeSyntax AsSystemActionType;
 
     internal readonly TypeSyntax AsSystemFuncType;
@@ -32,5 +34,6 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(TypeSyntax);
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
+        DisplayName = $"{property.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
     }
 }

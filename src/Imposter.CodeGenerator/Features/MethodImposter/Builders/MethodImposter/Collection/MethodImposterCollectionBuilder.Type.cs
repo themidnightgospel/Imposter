@@ -15,11 +15,16 @@ internal static partial class MethodImposterCollectionBuilder
         }
 
         var historyCollectionField = BuildInvocationHistoryCollectionField(method);
+        var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
+            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+            "_invocationBehavior",
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 
         return ClassDeclaration(method.MethodImposter.Collection.Name)
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddMembers(historyCollectionField)
-            .AddMembers(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField]))
+            .AddMembers(invocationBehaviorField)
+            .AddMembers(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField, invocationBehaviorField]))
             .AddMembers(
                 BuildImpostersField(method),
                 BuildAddNewMethod(method),

@@ -21,11 +21,13 @@ namespace Imposter.Benchmarks
             return new SquareMethodImposter.Builder(_squareMethodImposter, _squareMethodInvocationHistoryCollection, new SquareArgumentsCriteria(input));
         }
 
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public ICalculatorImposter()
+        public ICalculatorImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection);
+            this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>.Instance()
@@ -140,10 +142,20 @@ namespace Imposter.Benchmarks
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(int input)
+            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(input);
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, input);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -160,9 +172,18 @@ namespace Imposter.Benchmarks
                 private readonly System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate>();
                 internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(int input)
+                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input)
                 {
-                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
                     int result = _resultGenerator.Invoke(input);
                     foreach (var callback in _callbacks)
                     {
@@ -235,9 +256,11 @@ namespace Imposter.Benchmarks
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup>();
             private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
-            public SquareMethodImposter(SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public SquareMethodImposter(SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._squareMethodInvocationHistoryCollection = _squareMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             public bool HasMatchingSetup(SquareArguments arguments)
@@ -259,10 +282,20 @@ namespace Imposter.Benchmarks
             public int Invoke(int input)
             {
                 var arguments = new SquareArguments(input);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? SquareMethodInvocationImposterGroup.Default;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("int ImposterVsMoqVsNSub.ICalculator.Square(int input)");
+                    }
+
+                    matchingInvocationImposterGroup = SquareMethodInvocationImposterGroup.Default;
+                }
+
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(input);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ImposterVsMoqVsNSub.ICalculator.Square(int input)", input);
                     _squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, result, default));
                     return result;
                 }

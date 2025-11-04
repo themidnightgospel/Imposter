@@ -9,6 +9,33 @@ namespace Imposter.Playground;
 public class MoqBehaviour
 {
     [Fact]
+    public void StrictMode()
+    {
+        var mock = new Mock<IOrderService>(MockBehavior.Strict);
+
+        mock.Setup(s => s.PlaceOrder(It.IsAny<int>())).Returns(42);
+
+        var result = mock.Object.PlaceOrder(12);
+        result.ShouldBe(42);
+
+        // Callback doesn't count
+        mock.Setup(s => s.RemoveOrder(It.IsAny<int>()))
+            .Callback((int a) => { });
+        
+        Should.Throw<MockException>(() => mock.Object.RemoveOrder(231));
+
+        Should.Throw<MockException>(() => mock.Object.Age);
+        
+        mock.SetupGet(it => it.Age).Returns(11);
+        Should.NotThrow(() => mock.Object.Age);
+        
+        Should.Throw<MockException>(() => mock.Object.Age = 11);
+
+        mock.SetupSet(it => it.Age = It.IsAny<int>());
+        Should.NotThrow(() => mock.Object.Age = 11);
+    }
+
+    [Fact]
     public void MethodSetup_OnlyLastMatchingSetupIsCalled()
     {
         var mock = new Mock<IOrderService>();
@@ -32,7 +59,7 @@ public class MoqBehaviour
 
         invokedCallbacks.Count.ShouldBe(3);
     }
-    
+
     [Fact]
     public void MethodSetup_MultiCallbacks_OnlyLastMatchingSetupIsCalled()
     {
@@ -51,7 +78,7 @@ public class MoqBehaviour
 
         invokedCallbacks.Count.ShouldBe(3);
     }
-    
+
     [Fact]
     public void MethodSetup_OnlyLastMatchingSetupIsCalled2()
     {
@@ -110,6 +137,8 @@ public class MoqBehaviour
     public interface IOrderService
     {
         int PlaceOrder(int orderId);
+
+        int RemoveOrder(int orderId);
 
         int Age { get; set; }
     }

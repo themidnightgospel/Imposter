@@ -159,6 +159,10 @@ internal static class WellKnownTypes
 
             internal static NameSyntax TypeCaster => QualifiedName(Namespace, IdentifierName("TypeCaster"));
 
+            internal static NameSyntax MissingImposterException => QualifiedName(Namespace, IdentifierName("MissingImposterException"));
+
+            internal static NameSyntax ImposterInvocationBehavior => QualifiedName(Namespace, IdentifierName("ImposterInvocationBehavior"));
+
             internal static NameSyntax OutArg(SyntaxNode type)
                 => QualifiedName(Namespace, GenericName(Identifier(nameof(OutArg)), TypeArgumentList(SingletonSeparatedList(type))));
 

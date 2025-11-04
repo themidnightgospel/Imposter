@@ -21,13 +21,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             return new GenericMethodMethodImposter.Builder(_genericMethodMethodImposter, _genericMethodMethodInvocationHistoryCollection, new GenericMethodArgumentsCriteria(age));
         }
 
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IClosedGenericSutImposter()
-        {
-            this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection);
-            this._imposterInstance = new ImposterTargetInstance(this);
-        }
-
         global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string> Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string>>.Instance()
         {
             return _imposterInstance;
@@ -140,10 +135,20 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                 return _lastestInvocationImposter;
             }
 
-            public string Invoke(int age)
+            public string Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(age);
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, age);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -160,9 +165,18 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate>();
                 internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
-                public string Invoke(int age)
+                public string Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
                 {
-                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
                     string result = _resultGenerator.Invoke(age);
                     foreach (var callback in _callbacks)
                     {
@@ -235,9 +249,11 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup>();
             private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
-            public GenericMethodMethodImposter(GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public GenericMethodMethodImposter(GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._genericMethodMethodInvocationHistoryCollection = _genericMethodMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             public bool HasMatchingSetup(GenericMethodArguments arguments)
@@ -259,10 +275,20 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             public string Invoke(int age)
             {
                 var arguments = new GenericMethodArguments(age);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? GenericMethodMethodInvocationImposterGroup.Default;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("string IClosedGenericSut<int, string>.GenericMethod(int age)");
+                    }
+
+                    matchingInvocationImposterGroup = GenericMethodMethodInvocationImposterGroup.Default;
+                }
+
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(age);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string IClosedGenericSut<int, string>.GenericMethod(int age)", age);
                     _genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -351,6 +377,13 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     }
                 }
             }
+        }
+
+        public IClosedGenericSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

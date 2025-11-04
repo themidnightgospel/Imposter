@@ -17,6 +17,7 @@ internal static class PropertyImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.DefaultPropertyBehaviourField))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
             .AddMember(property.Core.HasSetter ? SingleVariableField(property.ImposterBuilder.SetterImposterField, SyntaxKind.InternalKeyword) : null)
             .AddMember(property.Core.HasGetter ? SingleVariableField(property.ImposterBuilder.GetterImposterBuilderField, SyntaxKind.InternalKeyword) : null)
             .AddMember(BuildConstructor(property))
@@ -38,6 +39,10 @@ internal static class PropertyImposterBuilder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax))
             .AddParameter(ParameterSyntax(property.ImposterBuilderInterface.SetterMethod.CriteriaParameter))
             .WithBody(Block(
+                IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
+                    .Dot(IdentifierName("MarkConfigured"))
+                    .Call()
+                    .ToStatementSyntax(),
                 ReturnStatement(
                     property.SetterImposter.Builder.TypeSyntax.New(
                         ArgumentListSyntax([
@@ -67,25 +72,61 @@ internal static class PropertyImposterBuilder
             .Build();
     }
 
-    internal static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
-        new ConstructorBuilder(property.ImposterBuilder.Name)
+    internal static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property)
+    {
+        var invocationBehaviorParameter = Parameter(Identifier("invocationBehavior"))
+            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior);
+        var propertyDisplayLiteral = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(property.Core.DisplayName));
+
+        var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .WithBody(new BlockBuilder()
-                .AddExpression(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name).Assign(property.ImposterBuilder.DefaultPropertyBehaviourField.Type.New()))
-                .AddExpression(
-                    property.Core.HasGetter
-                        ? IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name).Assign(
-                            property.ImposterBuilder.GetterImposterBuilderField.Type
-                                .New(Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
-                        )
-                        : null)
-                .AddExpression(
-                    property.Core.HasSetter
-                        ? IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
-                            .Assign(property.ImposterBuilder.SetterImposterField.Type
-                                .New(Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)).AsSingleArgumentListSyntax())
-                            )
-                        : null)
-                .Build())
+            .AddParameter(invocationBehaviorParameter);
+
+        var bodyBuilder = new BlockBuilder()
+            .AddExpression(
+                IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
+                    .Assign(property.ImposterBuilder.DefaultPropertyBehaviourField.Type.New()))
+            .AddExpression(
+                IdentifierName("_invocationBehavior")
+                    .Assign(IdentifierName("invocationBehavior")));
+
+        if (property.Core.HasGetter)
+        {
+            var getterInitialization =
+                IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name).Assign(
+                    property.ImposterBuilder.GetterImposterBuilderField.Type
+                        .New(
+                            ArgumentListSyntax(
+                                new[]
+                                {
+                                    Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)),
+                                    Argument(IdentifierName("_invocationBehavior")),
+                                    Argument(propertyDisplayLiteral)
+                                })));
+
+            bodyBuilder.AddExpression(getterInitialization);
+        }
+
+        if (property.Core.HasSetter)
+        {
+            var setterArguments = new[]
+            {
+                Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)),
+                Argument(IdentifierName("_invocationBehavior")),
+                Argument(propertyDisplayLiteral)
+            };
+
+            var setterInitialization =
+                IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
+                    .Assign(
+                        property.ImposterBuilder.SetterImposterField.Type
+                            .New(ArgumentListSyntax(setterArguments)));
+
+            bodyBuilder.AddExpression(setterInitialization);
+        }
+
+        return constructorBuilder
+            .WithBody(bodyBuilder.Build())
             .Build();
+    }
 }

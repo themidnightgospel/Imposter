@@ -11,6 +11,8 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [Fact]
         public void GivenSetterOnlyProperty_WhenImposterAccessed_ShouldHaveGetterApi()
         {
+            _sut.LastName.Setter(1);
+            
             _sut.LastName.Setter(1).ShouldNotBeNull();
             _sut.LastName.Setter(1).Callback(_ => { }).ShouldNotBeNull();
             _sut.LastName.Setter(1).Called(Count.Never());
