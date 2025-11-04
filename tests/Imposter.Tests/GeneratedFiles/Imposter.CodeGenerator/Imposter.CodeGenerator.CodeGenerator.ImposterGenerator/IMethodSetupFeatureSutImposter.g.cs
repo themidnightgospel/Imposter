@@ -300,25 +300,25 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidNoParamsMethodInvocationImposterBuilder
+        public interface IVoidNoParamsMethodInvocationImposterGroup
         {
-            IVoidNoParamsMethodInvocationImposterBuilder Throws<TException>()
+            IVoidNoParamsMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IVoidNoParamsMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IVoidNoParamsMethodInvocationImposterBuilder Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator);
-            IVoidNoParamsMethodInvocationImposterBuilder Callback(VoidNoParamsCallbackDelegate callback);
-            IVoidNoParamsMethodInvocationImposterBuilder Then();
+            IVoidNoParamsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IVoidNoParamsMethodInvocationImposterGroup Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator);
+            IVoidNoParamsMethodInvocationImposterGroup Callback(VoidNoParamsCallbackDelegate callback);
+            IVoidNoParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface VoidNoParamsMethodInvocationVerifier
+        public interface VoidNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void IMethodSetupFeatureSut.VoidNoParams()
-        public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationImposterBuilder, VoidNoParamsMethodInvocationVerifier
+        public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationImposterGroup, VoidNoParamsInvocationVerifier
         {
         }
 
@@ -339,8 +339,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private VoidNoParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -376,7 +376,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IVoidNoParamsMethodInvocationImposterBuilder IVoidNoParamsMethodInvocationImposterBuilder.Throws<TException>()
+                IVoidNoParamsMethodInvocationImposterGroup IVoidNoParamsMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -385,7 +385,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IVoidNoParamsMethodInvocationImposterBuilder IVoidNoParamsMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IVoidNoParamsMethodInvocationImposterGroup IVoidNoParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -394,7 +394,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IVoidNoParamsMethodInvocationImposterBuilder IVoidNoParamsMethodInvocationImposterBuilder.Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator)
+                IVoidNoParamsMethodInvocationImposterGroup IVoidNoParamsMethodInvocationImposterGroup.Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -403,19 +403,19 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IVoidNoParamsMethodInvocationImposterBuilder IVoidNoParamsMethodInvocationImposterBuilder.Callback(VoidNoParamsCallbackDelegate callback)
+                IVoidNoParamsMethodInvocationImposterGroup IVoidNoParamsMethodInvocationImposterGroup.Callback(VoidNoParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IVoidNoParamsMethodInvocationImposterBuilder IVoidNoParamsMethodInvocationImposterBuilder.Then()
+                IVoidNoParamsMethodInvocationImposterGroup IVoidNoParamsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void VoidNoParamsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void VoidNoParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _voidNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
@@ -567,27 +567,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntNoParamsMethodInvocationImposterBuilder
+        public interface IIntNoParamsMethodInvocationImposterGroup
         {
-            IIntNoParamsMethodInvocationImposterBuilder Throws<TException>()
+            IIntNoParamsMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntNoParamsMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntNoParamsMethodInvocationImposterBuilder Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator);
-            IIntNoParamsMethodInvocationImposterBuilder Callback(IntNoParamsCallbackDelegate callback);
-            IIntNoParamsMethodInvocationImposterBuilder Returns(IntNoParamsDelegate resultGenerator);
-            IIntNoParamsMethodInvocationImposterBuilder Returns(int value);
-            IIntNoParamsMethodInvocationImposterBuilder Then();
+            IIntNoParamsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntNoParamsMethodInvocationImposterGroup Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator);
+            IIntNoParamsMethodInvocationImposterGroup Callback(IntNoParamsCallbackDelegate callback);
+            IIntNoParamsMethodInvocationImposterGroup Returns(IntNoParamsDelegate resultGenerator);
+            IIntNoParamsMethodInvocationImposterGroup Returns(int value);
+            IIntNoParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntNoParamsMethodInvocationVerifier
+        public interface IntNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntNoParams()
-        public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationImposterBuilder, IntNoParamsMethodInvocationVerifier
+        public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationImposterGroup, IntNoParamsInvocationVerifier
         {
         }
 
@@ -608,8 +608,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntNoParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -646,7 +646,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Throws<TException>()
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -655,7 +655,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -664,7 +664,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -673,31 +673,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Callback(IntNoParamsCallbackDelegate callback)
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Callback(IntNoParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Returns(IntNoParamsDelegate resultGenerator)
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Returns(IntNoParamsDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Returns(int value)
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntNoParamsMethodInvocationImposterBuilder IIntNoParamsMethodInvocationImposterBuilder.Then()
+                IIntNoParamsMethodInvocationImposterGroup IIntNoParamsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntNoParamsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntNoParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
@@ -881,27 +881,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntSingleParamMethodInvocationImposterBuilder
+        public interface IIntSingleParamMethodInvocationImposterGroup
         {
-            IIntSingleParamMethodInvocationImposterBuilder Throws<TException>()
+            IIntSingleParamMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntSingleParamMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntSingleParamMethodInvocationImposterBuilder Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator);
-            IIntSingleParamMethodInvocationImposterBuilder Callback(IntSingleParamCallbackDelegate callback);
-            IIntSingleParamMethodInvocationImposterBuilder Returns(IntSingleParamDelegate resultGenerator);
-            IIntSingleParamMethodInvocationImposterBuilder Returns(int value);
-            IIntSingleParamMethodInvocationImposterBuilder Then();
+            IIntSingleParamMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntSingleParamMethodInvocationImposterGroup Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator);
+            IIntSingleParamMethodInvocationImposterGroup Callback(IntSingleParamCallbackDelegate callback);
+            IIntSingleParamMethodInvocationImposterGroup Returns(IntSingleParamDelegate resultGenerator);
+            IIntSingleParamMethodInvocationImposterGroup Returns(int value);
+            IIntSingleParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntSingleParamMethodInvocationVerifier
+        public interface IntSingleParamInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntSingleParam(int age)
-        public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterBuilder, IntSingleParamMethodInvocationVerifier
+        public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IntSingleParamInvocationVerifier
         {
         }
 
@@ -922,10 +922,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntSingleParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntSingleParamArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -966,7 +966,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Throws<TException>()
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -975,7 +975,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -984,7 +984,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator)
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -993,31 +993,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Callback(IntSingleParamCallbackDelegate callback)
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Callback(IntSingleParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Returns(IntSingleParamDelegate resultGenerator)
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Returns(IntSingleParamDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Returns(int value)
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterBuilder IIntSingleParamMethodInvocationImposterBuilder.Then()
+                IIntSingleParamMethodInvocationImposterGroup IIntSingleParamMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntSingleParamMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntSingleParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intSingleParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -1209,27 +1209,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntParamsMethodInvocationImposterBuilder
+        public interface IIntParamsMethodInvocationImposterGroup
         {
-            IIntParamsMethodInvocationImposterBuilder Throws<TException>()
+            IIntParamsMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntParamsMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntParamsMethodInvocationImposterBuilder Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator);
-            IIntParamsMethodInvocationImposterBuilder Callback(IntParamsCallbackDelegate callback);
-            IIntParamsMethodInvocationImposterBuilder Returns(IntParamsDelegate resultGenerator);
-            IIntParamsMethodInvocationImposterBuilder Returns(int value);
-            IIntParamsMethodInvocationImposterBuilder Then();
+            IIntParamsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntParamsMethodInvocationImposterGroup Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator);
+            IIntParamsMethodInvocationImposterGroup Callback(IntParamsCallbackDelegate callback);
+            IIntParamsMethodInvocationImposterGroup Returns(IntParamsDelegate resultGenerator);
+            IIntParamsMethodInvocationImposterGroup Returns(int value);
+            IIntParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntParamsMethodInvocationVerifier
+        public interface IntParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
-        public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationImposterBuilder, IntParamsMethodInvocationVerifier
+        public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationImposterGroup, IntParamsInvocationVerifier
         {
         }
 
@@ -1250,10 +1250,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntParamsArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -1294,7 +1294,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Throws<TException>()
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int age, string name, global::System.Text.RegularExpressions.Regex regex) =>
                     {
@@ -1303,7 +1303,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int age, string name, global::System.Text.RegularExpressions.Regex regex) =>
                     {
@@ -1312,7 +1312,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator)
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int age, string name, global::System.Text.RegularExpressions.Regex regex) =>
                     {
@@ -1321,31 +1321,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Callback(IntParamsCallbackDelegate callback)
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Callback(IntParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Returns(IntParamsDelegate resultGenerator)
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Returns(IntParamsDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Returns(int value)
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntParamsMethodInvocationImposterBuilder IIntParamsMethodInvocationImposterBuilder.Then()
+                IIntParamsMethodInvocationImposterGroup IIntParamsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntParamsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -1504,27 +1504,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntOutParamMethodInvocationImposterBuilder
+        public interface IIntOutParamMethodInvocationImposterGroup
         {
-            IIntOutParamMethodInvocationImposterBuilder Throws<TException>()
+            IIntOutParamMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntOutParamMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntOutParamMethodInvocationImposterBuilder Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator);
-            IIntOutParamMethodInvocationImposterBuilder Callback(IntOutParamCallbackDelegate callback);
-            IIntOutParamMethodInvocationImposterBuilder Returns(IntOutParamDelegate resultGenerator);
-            IIntOutParamMethodInvocationImposterBuilder Returns(int value);
-            IIntOutParamMethodInvocationImposterBuilder Then();
+            IIntOutParamMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntOutParamMethodInvocationImposterGroup Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator);
+            IIntOutParamMethodInvocationImposterGroup Callback(IntOutParamCallbackDelegate callback);
+            IIntOutParamMethodInvocationImposterGroup Returns(IntOutParamDelegate resultGenerator);
+            IIntOutParamMethodInvocationImposterGroup Returns(int value);
+            IIntOutParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntOutParamMethodInvocationVerifier
+        public interface IntOutParamInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
-        public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationImposterBuilder, IntOutParamMethodInvocationVerifier
+        public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationImposterGroup, IntOutParamInvocationVerifier
         {
         }
 
@@ -1550,8 +1550,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntOutParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -1588,7 +1588,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Throws<TException>()
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out int outValue) =>
                     {
@@ -1597,7 +1597,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out int outValue) =>
                     {
@@ -1606,7 +1606,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator)
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out int outValue) =>
                     {
@@ -1615,31 +1615,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Callback(IntOutParamCallbackDelegate callback)
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Callback(IntOutParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Returns(IntOutParamDelegate resultGenerator)
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Returns(IntOutParamDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Returns(int value)
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntOutParamMethodInvocationImposterBuilder IIntOutParamMethodInvocationImposterBuilder.Then()
+                IIntOutParamMethodInvocationImposterGroup IIntOutParamMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntOutParamMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntOutParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intOutParamMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
@@ -1823,27 +1823,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntRefParamMethodInvocationImposterBuilder
+        public interface IIntRefParamMethodInvocationImposterGroup
         {
-            IIntRefParamMethodInvocationImposterBuilder Throws<TException>()
+            IIntRefParamMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntRefParamMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntRefParamMethodInvocationImposterBuilder Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator);
-            IIntRefParamMethodInvocationImposterBuilder Callback(IntRefParamCallbackDelegate callback);
-            IIntRefParamMethodInvocationImposterBuilder Returns(IntRefParamDelegate resultGenerator);
-            IIntRefParamMethodInvocationImposterBuilder Returns(int value);
-            IIntRefParamMethodInvocationImposterBuilder Then();
+            IIntRefParamMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntRefParamMethodInvocationImposterGroup Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator);
+            IIntRefParamMethodInvocationImposterGroup Callback(IntRefParamCallbackDelegate callback);
+            IIntRefParamMethodInvocationImposterGroup Returns(IntRefParamDelegate resultGenerator);
+            IIntRefParamMethodInvocationImposterGroup Returns(int value);
+            IIntRefParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntRefParamMethodInvocationVerifier
+        public interface IntRefParamInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
-        public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationImposterBuilder, IntRefParamMethodInvocationVerifier
+        public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationImposterGroup, IntRefParamInvocationVerifier
         {
         }
 
@@ -1864,10 +1864,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntRefParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntRefParamArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -1908,7 +1908,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Throws<TException>()
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((ref int refValue) =>
                     {
@@ -1917,7 +1917,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((ref int refValue) =>
                     {
@@ -1926,7 +1926,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator)
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((ref int refValue) =>
                     {
@@ -1935,31 +1935,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Callback(IntRefParamCallbackDelegate callback)
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Callback(IntRefParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Returns(IntRefParamDelegate resultGenerator)
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Returns(IntRefParamDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Returns(int value)
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntRefParamMethodInvocationImposterBuilder IIntRefParamMethodInvocationImposterBuilder.Then()
+                IIntRefParamMethodInvocationImposterGroup IIntRefParamMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntRefParamMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntRefParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intRefParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -2143,27 +2143,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntParamsParamMethodInvocationImposterBuilder
+        public interface IIntParamsParamMethodInvocationImposterGroup
         {
-            IIntParamsParamMethodInvocationImposterBuilder Throws<TException>()
+            IIntParamsParamMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntParamsParamMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntParamsParamMethodInvocationImposterBuilder Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator);
-            IIntParamsParamMethodInvocationImposterBuilder Callback(IntParamsParamCallbackDelegate callback);
-            IIntParamsParamMethodInvocationImposterBuilder Returns(IntParamsParamDelegate resultGenerator);
-            IIntParamsParamMethodInvocationImposterBuilder Returns(int value);
-            IIntParamsParamMethodInvocationImposterBuilder Then();
+            IIntParamsParamMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntParamsParamMethodInvocationImposterGroup Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator);
+            IIntParamsParamMethodInvocationImposterGroup Callback(IntParamsParamCallbackDelegate callback);
+            IIntParamsParamMethodInvocationImposterGroup Returns(IntParamsParamDelegate resultGenerator);
+            IIntParamsParamMethodInvocationImposterGroup Returns(int value);
+            IIntParamsParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntParamsParamMethodInvocationVerifier
+        public interface IntParamsParamInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
-        public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationImposterBuilder, IntParamsParamMethodInvocationVerifier
+        public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationImposterGroup, IntParamsParamInvocationVerifier
         {
         }
 
@@ -2184,10 +2184,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntParamsParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntParamsParamArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -2228,7 +2228,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Throws<TException>()
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((string[] paramsStrings) =>
                     {
@@ -2237,7 +2237,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((string[] paramsStrings) =>
                     {
@@ -2246,7 +2246,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator)
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((string[] paramsStrings) =>
                     {
@@ -2255,31 +2255,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Callback(IntParamsParamCallbackDelegate callback)
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Callback(IntParamsParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Returns(IntParamsParamDelegate resultGenerator)
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Returns(IntParamsParamDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Returns(int value)
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntParamsParamMethodInvocationImposterBuilder IIntParamsParamMethodInvocationImposterBuilder.Then()
+                IIntParamsParamMethodInvocationImposterGroup IIntParamsParamMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntParamsParamMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntParamsParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intParamsParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -2463,27 +2463,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntInParamMethodInvocationImposterBuilder
+        public interface IIntInParamMethodInvocationImposterGroup
         {
-            IIntInParamMethodInvocationImposterBuilder Throws<TException>()
+            IIntInParamMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntInParamMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntInParamMethodInvocationImposterBuilder Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator);
-            IIntInParamMethodInvocationImposterBuilder Callback(IntInParamCallbackDelegate callback);
-            IIntInParamMethodInvocationImposterBuilder Returns(IntInParamDelegate resultGenerator);
-            IIntInParamMethodInvocationImposterBuilder Returns(int value);
-            IIntInParamMethodInvocationImposterBuilder Then();
+            IIntInParamMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntInParamMethodInvocationImposterGroup Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator);
+            IIntInParamMethodInvocationImposterGroup Callback(IntInParamCallbackDelegate callback);
+            IIntInParamMethodInvocationImposterGroup Returns(IntInParamDelegate resultGenerator);
+            IIntInParamMethodInvocationImposterGroup Returns(int value);
+            IIntInParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntInParamMethodInvocationVerifier
+        public interface IntInParamInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
-        public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationImposterBuilder, IntInParamMethodInvocationVerifier
+        public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationImposterGroup, IntInParamInvocationVerifier
         {
         }
 
@@ -2504,10 +2504,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntInParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntInParamArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -2548,7 +2548,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Throws<TException>()
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((in string inStringValue) =>
                     {
@@ -2557,7 +2557,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((in string inStringValue) =>
                     {
@@ -2566,7 +2566,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator)
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((in string inStringValue) =>
                     {
@@ -2575,31 +2575,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Callback(IntInParamCallbackDelegate callback)
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Callback(IntInParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Returns(IntInParamDelegate resultGenerator)
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Returns(IntInParamDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Returns(int value)
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIntInParamMethodInvocationImposterBuilder IIntInParamMethodInvocationImposterBuilder.Then()
+                IIntInParamMethodInvocationImposterGroup IIntInParamMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntInParamMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntInParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intInParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -2804,27 +2804,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntAllRefKindsMethodInvocationImposterBuilder
+        public interface IIntAllRefKindsMethodInvocationImposterGroup
         {
-            IIntAllRefKindsMethodInvocationImposterBuilder Throws<TException>()
+            IIntAllRefKindsMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIntAllRefKindsMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIntAllRefKindsMethodInvocationImposterBuilder Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator);
-            IIntAllRefKindsMethodInvocationImposterBuilder Callback(IntAllRefKindsCallbackDelegate callback);
-            IIntAllRefKindsMethodInvocationImposterBuilder Returns(IntAllRefKindsDelegate resultGenerator);
-            IIntAllRefKindsMethodInvocationImposterBuilder Returns(int value_1);
-            IIntAllRefKindsMethodInvocationImposterBuilder Then();
+            IIntAllRefKindsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIntAllRefKindsMethodInvocationImposterGroup Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator);
+            IIntAllRefKindsMethodInvocationImposterGroup Callback(IntAllRefKindsCallbackDelegate callback);
+            IIntAllRefKindsMethodInvocationImposterGroup Returns(IntAllRefKindsDelegate resultGenerator);
+            IIntAllRefKindsMethodInvocationImposterGroup Returns(int value_1);
+            IIntAllRefKindsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IntAllRefKindsMethodInvocationVerifier
+        public interface IntAllRefKindsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
-        public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationImposterBuilder, IntAllRefKindsMethodInvocationVerifier
+        public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationImposterGroup, IntAllRefKindsInvocationVerifier
         {
         }
 
@@ -2850,10 +2850,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private IntAllRefKindsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntAllRefKindsArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -2894,7 +2894,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Throws<TException>()
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) =>
                     {
@@ -2903,7 +2903,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) =>
                     {
@@ -2912,7 +2912,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator)
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) =>
                     {
@@ -2921,31 +2921,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Callback(IntAllRefKindsCallbackDelegate callback)
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Callback(IntAllRefKindsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Returns(IntAllRefKindsDelegate resultGenerator)
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Returns(IntAllRefKindsDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Returns(int value_1)
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Returns(int value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IIntAllRefKindsMethodInvocationImposterBuilder IIntAllRefKindsMethodInvocationImposterBuilder.Then()
+                IIntAllRefKindsMethodInvocationImposterGroup IIntAllRefKindsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IntAllRefKindsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntAllRefKindsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intAllRefKindsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -3143,14 +3143,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericSingleParamMethodInvocationImposterBuilder<TValue>
+        public interface IGenericSingleParamMethodInvocationImposterGroup<TValue>
         {
-            IGenericSingleParamMethodInvocationImposterBuilder<TValue> Throws<TException>()
+            IGenericSingleParamMethodInvocationImposterGroup<TValue> Throws<TException>()
                 where TException : Exception, new();
-            IGenericSingleParamMethodInvocationImposterBuilder<TValue> Throws(System.Exception exception);
-            IGenericSingleParamMethodInvocationImposterBuilder<TValue> Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
-            IGenericSingleParamMethodInvocationImposterBuilder<TValue> Callback(GenericSingleParamCallbackDelegate<TValue> callback);
-            IGenericSingleParamMethodInvocationImposterBuilder<TValue> Then();
+            IGenericSingleParamMethodInvocationImposterGroup<TValue> Throws(System.Exception exception);
+            IGenericSingleParamMethodInvocationImposterGroup<TValue> Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
+            IGenericSingleParamMethodInvocationImposterGroup<TValue> Callback(GenericSingleParamCallbackDelegate<TValue> callback);
+            IGenericSingleParamMethodInvocationImposterGroup<TValue> Then();
         }
 
         internal interface IGenericSingleParamMethodImposter
@@ -3166,14 +3166,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericSingleParamMethodInvocationVerifier<TValue>
+        public interface GenericSingleParamInvocationVerifier<TValue>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
-        public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationImposterBuilder<TValue>, GenericSingleParamMethodInvocationVerifier<TValue>
+        public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationImposterGroup<TValue>, GenericSingleParamInvocationVerifier<TValue>
         {
         }
 
@@ -3228,10 +3228,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericSingleParamMethodInvocationImposterGroup<TValue>? FindMatchingInvocationImposterGroup(GenericSingleParamArguments<TValue> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -3272,7 +3272,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericSingleParamMethodInvocationImposterBuilder<TValue> IGenericSingleParamMethodInvocationImposterBuilder<TValue>.Throws<TException>()
+                IGenericSingleParamMethodInvocationImposterGroup<TValue> IGenericSingleParamMethodInvocationImposterGroup<TValue>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((TValue value) =>
                     {
@@ -3281,7 +3281,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericSingleParamMethodInvocationImposterBuilder<TValue> IGenericSingleParamMethodInvocationImposterBuilder<TValue>.Throws(System.Exception exception)
+                IGenericSingleParamMethodInvocationImposterGroup<TValue> IGenericSingleParamMethodInvocationImposterGroup<TValue>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((TValue value) =>
                     {
@@ -3290,7 +3290,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericSingleParamMethodInvocationImposterBuilder<TValue> IGenericSingleParamMethodInvocationImposterBuilder<TValue>.Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                IGenericSingleParamMethodInvocationImposterGroup<TValue> IGenericSingleParamMethodInvocationImposterGroup<TValue>.Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((TValue value) =>
                     {
@@ -3299,19 +3299,19 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericSingleParamMethodInvocationImposterBuilder<TValue> IGenericSingleParamMethodInvocationImposterBuilder<TValue>.Callback(GenericSingleParamCallbackDelegate<TValue> callback)
+                IGenericSingleParamMethodInvocationImposterGroup<TValue> IGenericSingleParamMethodInvocationImposterGroup<TValue>.Callback(GenericSingleParamCallbackDelegate<TValue> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericSingleParamMethodInvocationImposterBuilder<TValue> IGenericSingleParamMethodInvocationImposterBuilder<TValue>.Then()
+                IGenericSingleParamMethodInvocationImposterGroup<TValue> IGenericSingleParamMethodInvocationImposterGroup<TValue>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericSingleParamMethodInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
+                void GenericSingleParamInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericSingleParamMethodInvocationHistoryCollection.Count<TValue>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -3509,14 +3509,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>
+        public interface IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>
         {
-            IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> Throws<TException>()
+            IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Throws<TException>()
                 where TException : Exception, new();
-            IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> Throws(System.Exception exception);
-            IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
-            IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> Callback(GenericInnerSingleParamCallbackDelegate<TValue> callback);
-            IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> Then();
+            IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Throws(System.Exception exception);
+            IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
+            IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Callback(GenericInnerSingleParamCallbackDelegate<TValue> callback);
+            IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Then();
         }
 
         internal interface IGenericInnerSingleParamMethodImposter
@@ -3532,14 +3532,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericInnerSingleParamMethodInvocationVerifier<TValue>
+        public interface GenericInnerSingleParamInvocationVerifier<TValue>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
-        public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>, GenericInnerSingleParamMethodInvocationVerifier<TValue>
+        public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>, GenericInnerSingleParamInvocationVerifier<TValue>
         {
         }
 
@@ -3594,10 +3594,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericInnerSingleParamMethodInvocationImposterGroup<TValue>? FindMatchingInvocationImposterGroup(GenericInnerSingleParamArguments<TValue> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -3638,7 +3638,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>.Throws<TException>()
+                IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -3647,7 +3647,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>.Throws(System.Exception exception)
+                IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -3656,7 +3656,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>.Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>.Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -3665,19 +3665,19 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>.Callback(GenericInnerSingleParamCallbackDelegate<TValue> callback)
+                IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>.Callback(GenericInnerSingleParamCallbackDelegate<TValue> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue> IGenericInnerSingleParamMethodInvocationImposterBuilder<TValue>.Then()
+                IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericInnerSingleParamMethodInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
+                void GenericInnerSingleParamInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericInnerSingleParamMethodInvocationHistoryCollection.Count<TValue>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -3858,16 +3858,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericOutParamCallbackDelegate<TValue, TResult> callback);
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericOutParamDelegate<TValue, TResult> resultGenerator);
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Returns(TResult value_1);
-            IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericOutParamCallbackDelegate<TValue, TResult> callback);
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericOutParamDelegate<TValue, TResult> resultGenerator);
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Returns(TResult value_1);
+            IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericOutParamMethodImposter
@@ -3883,14 +3883,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericOutParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericOutParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
-        public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>, GenericOutParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>, GenericOutParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -3953,8 +3953,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericOutParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -3992,7 +3992,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out TValue value) =>
                     {
@@ -4001,7 +4001,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out TValue value) =>
                     {
@@ -4010,7 +4010,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out TValue value) =>
                     {
@@ -4019,31 +4019,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericOutParamCallbackDelegate<TValue, TResult> callback)
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericOutParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericOutParamDelegate<TValue, TResult> resultGenerator)
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericOutParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(TResult value_1)
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Returns(TResult value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericOutParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericOutParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericOutParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericOutParamMethodInvocationHistoryCollection.Count<TValue, TResult>();
                     if (!count.Matches(invocationCount))
@@ -4224,16 +4224,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericInnerOutParamCallbackDelegate<TValue, TResult> callback);
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator);
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
-            IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericInnerOutParamCallbackDelegate<TValue, TResult> callback);
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator);
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
+            IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericInnerOutParamMethodImposter
@@ -4249,14 +4249,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericInnerOutParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
-        public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>, GenericInnerOutParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -4319,8 +4319,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -4358,7 +4358,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -4367,7 +4367,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -4376,7 +4376,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -4385,31 +4385,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericInnerOutParamCallbackDelegate<TValue, TResult> callback)
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericInnerOutParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator)
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericInnerOutParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericInnerOutParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericInnerOutParamMethodInvocationHistoryCollection.Count<TValue, TResult>();
                     if (!count.Matches(invocationCount))
@@ -4625,16 +4625,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericRefParamCallbackDelegate<TValue, TResult> callback);
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericRefParamDelegate<TValue, TResult> resultGenerator);
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Returns(TResult value_1);
-            IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericRefParamCallbackDelegate<TValue, TResult> callback);
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericRefParamDelegate<TValue, TResult> resultGenerator);
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Returns(TResult value_1);
+            IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericRefParamMethodImposter
@@ -4650,14 +4650,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericRefParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericRefParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
-        public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>, GenericRefParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>, GenericRefParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -4715,10 +4715,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericRefParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup(GenericRefParamArguments<TValue, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -4760,7 +4760,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((ref TValue value) =>
                     {
@@ -4769,7 +4769,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((ref TValue value) =>
                     {
@@ -4778,7 +4778,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((ref TValue value) =>
                     {
@@ -4787,31 +4787,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericRefParamCallbackDelegate<TValue, TResult> callback)
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericRefParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericRefParamDelegate<TValue, TResult> resultGenerator)
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericRefParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(TResult value_1)
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Returns(TResult value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericRefParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericRefParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericRefParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericRefParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -5027,16 +5027,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericInnerRefParamCallbackDelegate<TValue, TResult> callback);
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator);
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
-            IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericInnerRefParamCallbackDelegate<TValue, TResult> callback);
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator);
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
+            IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericInnerRefParamMethodImposter
@@ -5052,14 +5052,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericInnerRefParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
-        public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>, GenericInnerRefParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -5117,10 +5117,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup(GenericInnerRefParamArguments<TValue, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -5162,7 +5162,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((ref global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -5171,7 +5171,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((ref global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -5180,7 +5180,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((ref global::System.Collections.Generic.List<TValue> value) =>
                     {
@@ -5189,31 +5189,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericInnerRefParamCallbackDelegate<TValue, TResult> callback)
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericInnerRefParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator)
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericInnerRefParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericInnerRefParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericInnerRefParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -5429,16 +5429,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericParamsParamCallbackDelegate<TValue, TResult> callback);
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericParamsParamDelegate<TValue, TResult> resultGenerator);
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Returns(TResult value_1);
-            IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericParamsParamCallbackDelegate<TValue, TResult> callback);
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericParamsParamDelegate<TValue, TResult> resultGenerator);
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Returns(TResult value_1);
+            IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericParamsParamMethodImposter
@@ -5454,14 +5454,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericParamsParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericParamsParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
-        public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>, GenericParamsParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>, GenericParamsParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -5517,10 +5517,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup(GenericParamsParamArguments<TValue, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -5562,7 +5562,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((TValue[] value) =>
                     {
@@ -5571,7 +5571,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((TValue[] value) =>
                     {
@@ -5580,7 +5580,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((TValue[] value) =>
                     {
@@ -5589,31 +5589,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericParamsParamCallbackDelegate<TValue, TResult> callback)
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericParamsParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericParamsParamDelegate<TValue, TResult> resultGenerator)
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericParamsParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(TResult value_1)
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Returns(TResult value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericParamsParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericParamsParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericParamsParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -5829,16 +5829,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>
+        public interface IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws<TException>()
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws(System.Exception exception);
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Callback(GenericInnerParamsParamCallbackDelegate<TValue, TResult> callback);
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Returns(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator);
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
-            IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> Then();
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws(System.Exception exception);
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Callback(GenericInnerParamsParamCallbackDelegate<TValue, TResult> callback);
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Returns(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator);
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value_1);
+            IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
         internal interface IGenericInnerParamsParamMethodImposter
@@ -5854,14 +5854,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericInnerParamsParamMethodInvocationVerifier<TValue, TResult>
+        public interface GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
-        public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>, GenericInnerParamsParamMethodInvocationVerifier<TValue, TResult>
+        public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
         }
 
@@ -5917,10 +5917,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>? FindMatchingInvocationImposterGroup(GenericInnerParamsParamArguments<TValue, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -5962,7 +5962,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws<TException>()
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue>[] value) =>
                     {
@@ -5971,7 +5971,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(System.Exception exception)
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue>[] value) =>
                     {
@@ -5980,7 +5980,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((global::System.Collections.Generic.List<TValue>[] value) =>
                     {
@@ -5989,31 +5989,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Callback(GenericInnerParamsParamCallbackDelegate<TValue, TResult> callback)
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Callback(GenericInnerParamsParamCallbackDelegate<TValue, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator)
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Returns(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Returns(global::System.Collections.Generic.Stack<TResult> value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterBuilder<TValue, TResult>.Then()
+                IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericInnerParamsParamMethodInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericInnerParamsParamInvocationVerifier<TValue, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericInnerParamsParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -6246,16 +6246,16 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>
+        public interface IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Then();
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Then();
         }
 
         internal interface IGenericAllRefKindMethodImposter
@@ -6271,14 +6271,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
+        public interface GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
-        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
+        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
 
@@ -6343,10 +6343,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>? FindMatchingInvocationImposterGroup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -6388,7 +6388,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -6397,7 +6397,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -6406,7 +6406,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -6415,31 +6415,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Then()
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericAllRefKindMethodInvocationHistoryCollection.Count<TOut, TRef, TIn, TParams, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
@@ -6591,27 +6591,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAsyncTaskIntNoParamsMethodInvocationImposterBuilder
+        public interface IAsyncTaskIntNoParamsMethodInvocationImposterGroup
         {
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Throws<TException>()
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator);
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Callback(AsyncTaskIntNoParamsCallbackDelegate callback);
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Returns(AsyncTaskIntNoParamsDelegate resultGenerator);
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Returns(global::System.Threading.Tasks.Task<int> value);
-            IAsyncTaskIntNoParamsMethodInvocationImposterBuilder Then();
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Callback(AsyncTaskIntNoParamsCallbackDelegate callback);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Returns(AsyncTaskIntNoParamsDelegate resultGenerator);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Returns(global::System.Threading.Tasks.Task<int> value);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface AsyncTaskIntNoParamsMethodInvocationVerifier
+        public interface AsyncTaskIntNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
-        public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationImposterBuilder, AsyncTaskIntNoParamsMethodInvocationVerifier
+        public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationImposterGroup, AsyncTaskIntNoParamsInvocationVerifier
         {
         }
 
@@ -6632,8 +6632,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private AsyncTaskIntNoParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
             {
-                if (_invocationImposters.TryPeek(out var setup))
-                    return setup;
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
                 else
                     return null;
             }
@@ -6670,7 +6670,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Throws<TException>()
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -6679,7 +6679,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -6688,7 +6688,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
@@ -6697,31 +6697,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Callback(AsyncTaskIntNoParamsCallbackDelegate callback)
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Callback(AsyncTaskIntNoParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Returns(AsyncTaskIntNoParamsDelegate resultGenerator)
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Returns(AsyncTaskIntNoParamsDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Returns(global::System.Threading.Tasks.Task<int> value)
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<int> value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IAsyncTaskIntNoParamsMethodInvocationImposterBuilder IAsyncTaskIntNoParamsMethodInvocationImposterBuilder.Then()
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void AsyncTaskIntNoParamsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void AsyncTaskIntNoParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _asyncTaskIntNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))

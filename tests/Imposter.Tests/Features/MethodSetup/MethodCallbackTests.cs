@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Imposter.Abstractions;
 using Shouldly;
@@ -10,7 +11,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
 
         [Fact]
-        public void GivenNonGenericCallback_WhenConfigured_ShouldRunAfterResultAndLastWins()
+        public void GivenNonGenericCallback_WhenConfigured_ShouldRunCallbacksAfterResultInOrder()
         {
             var stages = new List<string>();
 
@@ -25,7 +26,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                 .Callback(() => stages.Add("second"));
 
             _sut.Instance().IntNoParams().ShouldBe(42);
-            stages.ShouldBe(new[] { "return", "second" });
+            stages.ShouldBe(new[] { "return", "first", "second" });
         }
 
         [Fact]
@@ -78,6 +79,43 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             result.ShouldBe(99);
             outValue.ShouldBe(5);
             stages.ShouldBe(new[] { "return", "callback-1", "callback-2" });
+        }
+
+        [Fact]
+        public void GivenThenChainWithCallbacks_WhenInvoked_ShouldScopeCallbacksPerSetup()
+        {
+            var stages = new List<string>();
+
+            _sut.IntSingleParam(Arg<int>.Any())
+                .Returns(_ => 10)
+                .Callback(_ => stages.Add("first"))
+                .Then()
+                .Returns(_ => 20)
+                .Callback(_ => stages.Add("second"));
+
+            _sut.Instance().IntSingleParam(123);
+            stages.ShouldBe(new[] { "first" });
+
+            _sut.Instance().IntSingleParam(456);
+            stages.ShouldBe(new[] { "first", "second" });
+        }
+
+        [Fact]
+        public void GivenCallbackThatThrows_WhenMethodIsInvoked_ShouldPropagateAfterResultGeneration()
+        {
+            var callbackObserved = false;
+
+            _sut.IntSingleParam(Arg<int>.Any())
+                .Returns(age => age)
+                .Callback(_ =>
+                {
+                    callbackObserved = true;
+                    throw new InvalidOperationException("callback-boom");
+                });
+
+            var ex = Should.Throw<InvalidOperationException>(() => _sut.Instance().IntSingleParam(5));
+            ex.Message.ShouldContain("callback-boom");
+            callbackObserved.ShouldBeTrue();
+        }
     }
-}
 }

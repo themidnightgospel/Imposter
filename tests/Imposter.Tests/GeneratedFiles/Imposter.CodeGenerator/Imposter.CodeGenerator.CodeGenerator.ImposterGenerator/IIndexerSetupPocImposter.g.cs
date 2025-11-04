@@ -214,27 +214,27 @@ namespace Imposter.CodeGenerator.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodMethodInvocationImposterBuilder
+        public interface IIndexerMethodMethodInvocationImposterGroup
         {
-            IIndexerMethodMethodInvocationImposterBuilder Throws<TException>()
+            IIndexerMethodMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIndexerMethodMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIndexerMethodMethodInvocationImposterBuilder Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator);
-            IIndexerMethodMethodInvocationImposterBuilder Callback(IndexerMethodCallbackDelegate callback);
-            IIndexerMethodMethodInvocationImposterBuilder Returns(IndexerMethodDelegate resultGenerator);
-            IIndexerMethodMethodInvocationImposterBuilder Returns(string value);
-            IIndexerMethodMethodInvocationImposterBuilder Then();
+            IIndexerMethodMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIndexerMethodMethodInvocationImposterGroup Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator);
+            IIndexerMethodMethodInvocationImposterGroup Callback(IndexerMethodCallbackDelegate callback);
+            IIndexerMethodMethodInvocationImposterGroup Returns(IndexerMethodDelegate resultGenerator);
+            IIndexerMethodMethodInvocationImposterGroup Returns(string value);
+            IIndexerMethodMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IndexerMethodMethodInvocationVerifier
+        public interface IndexerMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
-        public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterBuilder, IndexerMethodMethodInvocationVerifier
+        public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IndexerMethodInvocationVerifier
         {
         }
 
@@ -255,10 +255,10 @@ namespace Imposter.CodeGenerator.Tests.Shared
 
             private IndexerMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IndexerMethodArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -299,7 +299,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Throws<TException>()
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -308,7 +308,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -317,7 +317,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator)
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -326,31 +326,31 @@ namespace Imposter.CodeGenerator.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Callback(IndexerMethodCallbackDelegate callback)
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Callback(IndexerMethodCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Returns(IndexerMethodDelegate resultGenerator)
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Returns(IndexerMethodDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Returns(string value)
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Returns(string value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterBuilder IIndexerMethodMethodInvocationImposterBuilder.Then()
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IndexerMethodMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IndexerMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _indexerMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
