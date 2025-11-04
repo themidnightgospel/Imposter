@@ -31,7 +31,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         }
 
         [Fact]
-        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeLastMatchingSetupCallback()
+        public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeEachMatchingSetupCallback()
         {
             var callback1Invoked = false;
             var callback2Invoked = false;
@@ -41,7 +41,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
 
             _sut.Instance().Age = 15;
 
-            callback1Invoked.ShouldBeFalse();
+            callback1Invoked.ShouldBeTrue();
             callback2Invoked.ShouldBeTrue();
         }
 

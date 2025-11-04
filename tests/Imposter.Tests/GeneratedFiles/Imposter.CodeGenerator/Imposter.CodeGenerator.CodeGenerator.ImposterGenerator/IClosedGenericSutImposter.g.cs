@@ -206,27 +206,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericMethodMethodInvocationImposterBuilder
+        public interface IGenericMethodMethodInvocationImposterGroup
         {
-            IGenericMethodMethodInvocationImposterBuilder Throws<TException>()
+            IGenericMethodMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IGenericMethodMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IGenericMethodMethodInvocationImposterBuilder Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
-            IGenericMethodMethodInvocationImposterBuilder Callback(GenericMethodCallbackDelegate callback);
-            IGenericMethodMethodInvocationImposterBuilder Returns(GenericMethodDelegate resultGenerator);
-            IGenericMethodMethodInvocationImposterBuilder Returns(string value);
-            IGenericMethodMethodInvocationImposterBuilder Then();
+            IGenericMethodMethodInvocationImposterGroup Throws(System.Exception exception);
+            IGenericMethodMethodInvocationImposterGroup Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
+            IGenericMethodMethodInvocationImposterGroup Callback(GenericMethodCallbackDelegate callback);
+            IGenericMethodMethodInvocationImposterGroup Returns(GenericMethodDelegate resultGenerator);
+            IGenericMethodMethodInvocationImposterGroup Returns(string value);
+            IGenericMethodMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericMethodMethodInvocationVerifier
+        public interface GenericMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
-        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterBuilder, GenericMethodMethodInvocationVerifier
+        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, GenericMethodInvocationVerifier
         {
         }
 
@@ -247,10 +247,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             private GenericMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GenericMethodArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -291,7 +291,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws<TException>()
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -300,7 +300,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -309,7 +309,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int age) =>
                     {
@@ -318,31 +318,31 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Callback(GenericMethodCallbackDelegate callback)
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Callback(GenericMethodCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Returns(GenericMethodDelegate resultGenerator)
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Returns(GenericMethodDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Returns(string value)
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Returns(string value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Then()
+                IGenericMethodMethodInvocationImposterGroup IGenericMethodMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericMethodMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void GenericMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))

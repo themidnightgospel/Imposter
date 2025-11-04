@@ -210,27 +210,27 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAddMethodInvocationImposterBuilder
+        public interface IAddMethodInvocationImposterGroup
         {
-            IAddMethodInvocationImposterBuilder Throws<TException>()
+            IAddMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IAddMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IAddMethodInvocationImposterBuilder Throws(AddExceptionGeneratorDelegate exceptionGenerator);
-            IAddMethodInvocationImposterBuilder Callback(AddCallbackDelegate callback);
-            IAddMethodInvocationImposterBuilder Returns(AddDelegate resultGenerator);
-            IAddMethodInvocationImposterBuilder Returns(int value);
-            IAddMethodInvocationImposterBuilder Then();
+            IAddMethodInvocationImposterGroup Throws(System.Exception exception);
+            IAddMethodInvocationImposterGroup Throws(AddExceptionGeneratorDelegate exceptionGenerator);
+            IAddMethodInvocationImposterGroup Callback(AddCallbackDelegate callback);
+            IAddMethodInvocationImposterGroup Returns(AddDelegate resultGenerator);
+            IAddMethodInvocationImposterGroup Returns(int value);
+            IAddMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface AddMethodInvocationVerifier
+        public interface AddInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IOrdinaryMethodPocV1.Add(int a, int b)
-        public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterBuilder, AddMethodInvocationVerifier
+        public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, AddInvocationVerifier
         {
         }
 
@@ -251,10 +251,10 @@ namespace Imposter.Playground
 
             private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(AddArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -295,7 +295,7 @@ namespace Imposter.Playground
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws<TException>()
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int a, int b) =>
                     {
@@ -304,7 +304,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int a, int b) =>
                     {
@@ -313,7 +313,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Throws(AddExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int a, int b) =>
                     {
@@ -322,31 +322,31 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Callback(AddCallbackDelegate callback)
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Callback(AddCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(AddDelegate resultGenerator)
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Returns(AddDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(int value)
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Then()
+                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void AddMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void AddInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _addMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))

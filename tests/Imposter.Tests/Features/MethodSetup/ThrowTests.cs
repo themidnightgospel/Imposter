@@ -81,6 +81,20 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             Should.Throw<ArgumentException>(() => _sut.Instance().IntNoParams());
         }
 
+        [Fact]
+        public void GivenIntMethodSetupToThrowThenReturn_WhenMethodIsInvoked_ShouldSwitchBehavior()
+        {
+            _sut
+                .IntNoParams()
+                .Throws<InvalidOperationException>()
+                .Then()
+                .Returns(7);
+
+            Should.Throw<InvalidOperationException>(() => _sut.Instance().IntNoParams());
+            _sut.Instance().IntNoParams().ShouldBe(7);
+            _sut.Instance().IntNoParams().ShouldBe(7);
+        }
+
         #endregion
 
         #region IntSingleParam Tests
@@ -107,6 +121,20 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             var thrownException = Should.Throw<ArgumentOutOfRangeException>(() => _sut.Instance().IntSingleParam(-1));
             thrownException.ShouldBe(expectedException);
             thrownException.ParamName.ShouldBe("age");
+        }
+
+        [Fact]
+        public void GivenSingleParamMethodSetupToReturnThenThrow_WhenMethodIsInvoked_ShouldKeepThrowingAfterFirstFailure()
+        {
+            _sut
+                .IntSingleParam(Arg<int>.Any())
+                .Returns(_ => 10)
+                .Then()
+                .Throws<InvalidOperationException>();
+
+            _sut.Instance().IntSingleParam(1).ShouldBe(10);
+            Should.Throw<InvalidOperationException>(() => _sut.Instance().IntSingleParam(1));
+            Should.Throw<InvalidOperationException>(() => _sut.Instance().IntSingleParam(2));
         }
 
         [Fact]

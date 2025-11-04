@@ -107,164 +107,133 @@ namespace Imposter.Benchmarks
 
         // int ImposterVsMoqVsNSub.ICalculator.Square(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class SquareMethodInvocationImposterGroup : ISquareMethodInvocationImposterBuilder
+        class SquareMethodInvocationImposterGroup
         {
-            internal static SquareMethodInvocationImposterGroup DefaultInvocationImposterGroup = new SquareMethodInvocationImposterGroup(new SquareArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static SquareMethodInvocationImposterGroup Default = new SquareMethodInvocationImposterGroup(new SquareArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal SquareArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _callSetups = new Queue<MethodInvocationImposter>();
-            private MethodInvocationImposter? _currentlySetupCall;
-            private MethodInvocationImposter GetOrAddInvocationImposter(Func<MethodInvocationImposter, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationImposter();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(int input)
-            {
-                return default;
-            }
-
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
             public SquareMethodInvocationImposterGroup(SquareArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddInvocationImposter(it => true);
             }
 
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Returns(SquareDelegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddInvocationImposter(it => false).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddInvocationImposter(it => false).ResultGenerator = (int input) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws<TException>()
-            {
-                GetOrAddInvocationImposter(it => false).ResultGenerator = (int input) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws(System.Exception exception)
-            {
-                GetOrAddInvocationImposter(it => false).ResultGenerator = (int input) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddInvocationImposter(it => false).ResultGenerator = (int input) =>
-                {
-                    throw exceptionGenerator(input);
-                };
-                return this;
-            }
-
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Callback(SquareCallbackDelegate callback)
-            {
-                GetOrAddInvocationImposter(it => false).Callback = callback;
-                return this;
-            }
-
-            ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Then()
-            {
-                GetOrAddInvocationImposter(it => true);
-                return this;
-            }
-
-            private MethodInvocationImposter _nextSetup;
-            private MethodInvocationImposter? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    if (!callSetup.IsEmpty)
+                    if (!invocationImposter.IsEmpty)
                     {
-                        _nextSetup = callSetup;
+                        _lastestInvocationImposter = invocationImposter;
                     }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(int input)
             {
-                var nextSetup = GetNextSetup() ?? MethodInvocationImposter.Default;
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(input);
-                if (nextSetup.Callback != null)
-                {
-                    nextSetup.Callback(input);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(input);
             }
 
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
             internal class MethodInvocationImposter
             {
-                internal SquareDelegate? ResultGenerator { get; set; }
-                internal bool IsEmpty => ResultGenerator == null && Callback == null;
-                internal SquareCallbackDelegate? Callback { get; set; }
-
                 internal static MethodInvocationImposter Default;
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.ResultGenerator = DefaultResultGenerator;
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private SquareDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(int input)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(input);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(input);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(SquareCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(SquareDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (int input) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int input) =>
+                    {
+                        throw exceptionGenerator(input);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(int input)
+                {
+                    return default;
                 }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISquareMethodInvocationImposterBuilder
+        public interface ISquareMethodInvocationImposterGroup
         {
-            ISquareMethodInvocationImposterBuilder Throws<TException>()
+            ISquareMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            ISquareMethodInvocationImposterBuilder Throws(System.Exception exception);
-            ISquareMethodInvocationImposterBuilder Throws(SquareExceptionGeneratorDelegate exceptionGenerator);
-            ISquareMethodInvocationImposterBuilder Callback(SquareCallbackDelegate callback);
-            ISquareMethodInvocationImposterBuilder Then();
-            ISquareMethodInvocationImposterBuilder Returns(SquareDelegate resultGenerator);
-            ISquareMethodInvocationImposterBuilder Returns(int value);
+            ISquareMethodInvocationImposterGroup Throws(System.Exception exception);
+            ISquareMethodInvocationImposterGroup Throws(SquareExceptionGeneratorDelegate exceptionGenerator);
+            ISquareMethodInvocationImposterGroup Callback(SquareCallbackDelegate callback);
+            ISquareMethodInvocationImposterGroup Returns(SquareDelegate resultGenerator);
+            ISquareMethodInvocationImposterGroup Returns(int value);
+            ISquareMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface SquareMethodInvocationVerifier
+        public interface SquareInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int ImposterVsMoqVsNSub.ICalculator.Square(int input)
-        public interface ISquareMethodImposterBuilder : ISquareMethodInvocationImposterBuilder, SquareMethodInvocationVerifier
+        public interface ISquareMethodImposterBuilder : ISquareMethodInvocationImposterGroup, SquareInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class SquareMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup>();
             private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
             public SquareMethodImposter(SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection)
             {
@@ -273,15 +242,15 @@ namespace Imposter.Benchmarks
 
             public bool HasMatchingSetup(SquareArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private SquareMethodInvocationImposterGroup? FindMatchingSetup(SquareArguments arguments)
+            private SquareMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SquareArguments arguments)
             {
-                foreach (var setup in _invocationSetups)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -290,10 +259,10 @@ namespace Imposter.Benchmarks
             public int Invoke(int input)
             {
                 var arguments = new SquareArguments(input);
-                var matchingSetup = FindMatchingSetup(arguments) ?? SquareMethodInvocationImposterGroup.DefaultInvocationImposterGroup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? SquareMethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(input);
+                    var result = matchingInvocationImposterGroup.Invoke(input);
                     _squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -310,75 +279,70 @@ namespace Imposter.Benchmarks
                 private readonly SquareMethodImposter _imposter;
                 private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
                 private readonly SquareArgumentsCriteria _argumentsCriteria;
-                private SquareMethodInvocationImposterGroup? _existingInvocationSetup;
+                private readonly SquareMethodInvocationImposterGroup _invocationImposterGroup;
+                private SquareMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(SquareMethodImposter _imposter, SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection, SquareArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._squareMethodInvocationHistoryCollection = _squareMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new SquareMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ISquareMethodInvocationImposterBuilder GetOrAddInvocationSetup()
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int input) =>
                     {
-                        _existingInvocationSetup = new SquareMethodInvocationImposterGroup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws<TException>()
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int input) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int input) =>
+                    {
+                        throw exceptionGenerator.Invoke(input);
+                    });
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Callback(SquareCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Callback(SquareCallbackDelegate callback)
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Returns(SquareDelegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Callback(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Then()
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Then();
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Returns(SquareDelegate resultGenerator)
+                ISquareMethodInvocationImposterGroup ISquareMethodInvocationImposterGroup.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
-                ISquareMethodInvocationImposterBuilder ISquareMethodInvocationImposterBuilder.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
-                }
-
-                void SquareMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void SquareInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _squareMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))

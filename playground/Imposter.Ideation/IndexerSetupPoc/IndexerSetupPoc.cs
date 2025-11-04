@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.Abstractions;
@@ -387,4 +387,4 @@ namespace Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc
     {
         int this[int value1, string value2, object value3] { get; set; }
     }
-}*/
+}

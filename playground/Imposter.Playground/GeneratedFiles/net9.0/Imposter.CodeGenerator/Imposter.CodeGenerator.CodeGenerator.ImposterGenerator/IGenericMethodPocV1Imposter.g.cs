@@ -255,16 +255,16 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>
+        public interface IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
                 where TException : Exception, new();
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
-            IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> Then();
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
+            IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Then();
         }
 
         internal interface IGenericAllRefKindMethodImposter
@@ -280,14 +280,14 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
+        public interface GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
-        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
+        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
 
@@ -352,10 +352,10 @@ namespace Imposter.Playground
 
             private GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>? FindMatchingInvocationImposterGroup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -397,7 +397,7 @@ namespace Imposter.Playground
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -406,7 +406,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -415,7 +415,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
                     {
@@ -424,31 +424,31 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Then()
+                IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>.Called(Imposter.Abstractions.Count count)
+                void GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _genericAllRefKindMethodInvocationHistoryCollection.Count<TOut, TRef, TIn, TParams, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))

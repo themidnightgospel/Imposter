@@ -214,27 +214,27 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodInvocationImposterBuilder
+        public interface IIndexerMethodInvocationImposterGroup
         {
-            IIndexerMethodInvocationImposterBuilder Throws<TException>()
+            IIndexerMethodInvocationImposterGroup Throws<TException>()
                 where TException : Exception, new();
-            IIndexerMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IIndexerMethodInvocationImposterBuilder Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
-            IIndexerMethodInvocationImposterBuilder Callback(IndexerCallbackDelegate callback);
-            IIndexerMethodInvocationImposterBuilder Returns(IndexerDelegate resultGenerator);
-            IIndexerMethodInvocationImposterBuilder Returns(string value);
-            IIndexerMethodInvocationImposterBuilder Then();
+            IIndexerMethodInvocationImposterGroup Throws(System.Exception exception);
+            IIndexerMethodInvocationImposterGroup Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
+            IIndexerMethodInvocationImposterGroup Callback(IndexerCallbackDelegate callback);
+            IIndexerMethodInvocationImposterGroup Returns(IndexerDelegate resultGenerator);
+            IIndexerMethodInvocationImposterGroup Returns(string value);
+            IIndexerMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IndexerMethodInvocationVerifier
+        public interface IndexerInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
-        public interface IIndexerMethodImposterBuilder : IIndexerMethodInvocationImposterBuilder, IndexerMethodInvocationVerifier
+        public interface IIndexerMethodImposterBuilder : IIndexerMethodInvocationImposterGroup, IndexerInvocationVerifier
         {
         }
 
@@ -255,10 +255,10 @@ namespace Imposter.Playground
 
             private IndexerMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IndexerArguments arguments)
             {
-                foreach (var setup in _invocationImposters)
+                foreach (var invocationImposterGroup in _invocationImposters)
                 {
-                    if (setup.ArgumentsCriteria.Matches(arguments))
-                        return setup;
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
                 }
 
                 return null;
@@ -299,7 +299,7 @@ namespace Imposter.Playground
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws<TException>()
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
                     {
@@ -308,7 +308,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
                     {
@@ -317,7 +317,7 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
                     {
@@ -326,31 +326,31 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Callback(IndexerCallbackDelegate callback)
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Callback(IndexerCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Returns(IndexerDelegate resultGenerator)
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Returns(IndexerDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Returns(string value)
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Returns(string value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Then()
+                IIndexerMethodInvocationImposterGroup IIndexerMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void IndexerMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IndexerInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _indexerMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))

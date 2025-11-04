@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Shared;
 using Shouldly;
@@ -62,6 +64,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             _sut.IntNoParams().Called(Count.AtLeast(2));
             _sut.IntNoParams().Called(Count.AtLeast(3));
+            Should.Throw<VerificationFailedException>(() => _sut.IntNoParams().Called(Count.AtLeast(4)));
         }
 
         [Fact]
@@ -72,6 +75,51 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             _sut.IntNoParams().Called(Count.AtMost(3));
             _sut.IntNoParams().Called(Count.AtMost(2));
+            Should.Throw<VerificationFailedException>(() => _sut.IntNoParams().Called(Count.AtMost(1)));
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WhenAwaited_VerifiesCallCount()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(() => Task.FromResult(5));
+
+            await _sut.Instance().AsyncTaskIntNoParams();
+            await _sut.Instance().AsyncTaskIntNoParams();
+
+            _sut.AsyncTaskIntNoParams().Called(Count.Exactly(2));
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WhenVerificationDoesNotMatch_ShouldThrow()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(() => Task.FromResult(1));
+
+            await _sut.Instance().AsyncTaskIntNoParams();
+
+            Should.Throw<VerificationFailedException>(() =>
+                _sut.AsyncTaskIntNoParams().Called(Count.Exactly(2)));
+        }
+
+        [Fact]
+        public async Task AsyncTaskIntNoParams_WithChainedThenSetups_VerifiesAcrossAllInvocations()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .Returns(() => Task.FromResult(10))
+                .Then()
+                .Returns(() => Task.FromResult(20));
+
+            await _sut.Instance().AsyncTaskIntNoParams(); // first setup
+            await _sut.Instance().AsyncTaskIntNoParams(); // second setup
+            await _sut.Instance().AsyncTaskIntNoParams(); // repeats last setup
+
+            _sut.AsyncTaskIntNoParams().Called(Count.Exactly(3));
+            Should.Throw<VerificationFailedException>(() =>
+                _sut.AsyncTaskIntNoParams().Called(Count.AtLeast(4)));
         }
 
         [Fact]
@@ -169,6 +217,15 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut.IntParamsParam(Arg<string[]>.Is(arr => arr.Length == 2)).Called(Count.Exactly(2));
             _sut.IntParamsParam(Arg<string[]>.Is(arr => arr.Length == 3)).Called(Count.Once());
             _sut.IntParamsParam(Arg<string[]>.Any()).Called(Count.Exactly(3));
+        }
+
+        [Fact]
+        public void IntParamsParam_WhenCalledWithSpecificSequence_VerifiesExactMatch()
+        {
+            _sut.Instance().IntParamsParam("alpha", "beta", "gamma");
+
+            _sut.IntParamsParam(Arg<string[]>.Is(arr => arr.SequenceEqual(new[] { "alpha", "beta", "gamma" })))
+                .Called(Count.Once());
         }
 
         [Fact]
