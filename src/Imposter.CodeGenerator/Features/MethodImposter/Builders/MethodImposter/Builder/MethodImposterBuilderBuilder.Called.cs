@@ -1,9 +1,8 @@
-﻿using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
 
@@ -13,7 +12,7 @@ internal static partial class MethodImposterBuilderBuilder
     {
         return MethodDeclaration(
                 PredefinedType(Token(SyntaxKind.VoidKeyword)),
-                Identifier(InvocationVerifierInterfaceMetadata.CalledMethodMetadata.Name))
+                Identifier(CalledMethodMetadata.Name))
             .AddParameterListParameters(
                 ParameterSyntax(method.InvocationVerifierInterface.CalledMethod.CountParameter.Type,
                     method.InvocationVerifierInterface.CalledMethod.CountParameter.Name))
@@ -29,7 +28,7 @@ internal static partial class MethodImposterBuilderBuilder
                             "invocationCount",
                             initializer:
                             IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-                                .Dot(WithMethodGenericArguments(InvocationHistoryTypeMetadata.CollectionMetadata.CountMethodMetadata.Name, method))
+                                .Dot(WithMethodGenericArguments(InvocationHistoryCollectionCountMethodMetadata.Name, method))
                                 .Call(method.Parameters.HasInputParameters
                                     ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).ToSingleArgumentList()
                                     : EmptyArgumentListSyntax)

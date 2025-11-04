@@ -1,5 +1,3 @@
-using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
