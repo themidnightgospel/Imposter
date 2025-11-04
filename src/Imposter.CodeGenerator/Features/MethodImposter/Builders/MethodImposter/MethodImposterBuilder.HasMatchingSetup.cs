@@ -9,14 +9,14 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterBuilder
 {
-    private static MethodDeclarationSyntax BuildHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildHasMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(GetHasMatchingSetupParameter(method))
             .WithBody(Block(
                     ReturnStatement(
-                        IdentifierName("FindMatchingSetup")
+                        IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
                             .Call(SyntaxFactoryHelper.ArgumentListSyntax(GetFindMatchingSetupArguments(method)))
                             .IsNotNull()
                     )

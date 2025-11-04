@@ -15,7 +15,7 @@ internal static partial class MethodImposterBuilder
 
         return SingleVariableField(
             invocationSetupsFieldType,
-            method.MethodImposter.InvocationSetupsField.Name,
+            method.MethodImposter.InvocationImpostersField.Name,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
             invocationSetupsFieldType.New()
         );

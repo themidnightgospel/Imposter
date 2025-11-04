@@ -17,7 +17,7 @@ internal partial class MethodImposterBuilder
             .WithParameterList(method.Parameters.ParameterListSyntax)
             .WithBody(new BlockBuilder()
                 .AddStatement(DeclareAndInitializeArgumentsVariable(method))
-                .AddStatement(DeclareMatchingSetupVariable(method))
+                .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
                 .AddStatement(TryStatement(
                         new BlockBuilder()
                             .AddStatement(InvokeMatchingSetup(method))
@@ -94,7 +94,7 @@ internal partial class MethodImposterBuilder
 
     private static StatementSyntax InvokeMatchingSetup(in ImposterTargetMethodMetadata method)
     {
-        var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingSetupVariableName)
+        var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName)
             .Dot(IdentifierName("Invoke"))
             .Call(ArgumentListSyntax(method.Symbol.Parameters));
 
@@ -106,14 +106,14 @@ internal partial class MethodImposterBuilder
         return LocalDeclarationStatement(VariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, initializer: invokeExpression));
     }
 
-    private static LocalDeclarationStatementSyntax DeclareMatchingSetupVariable(in ImposterTargetMethodMetadata method) =>
+    private static LocalDeclarationStatementSyntax DeclareMatchingInvocationImposterGroupVariable(in ImposterTargetMethodMetadata method) =>
         LocalVariableDeclarationSyntax(
             Var,
-            method.MethodImposter.InvokeMethod.MatchingSetupVariableName,
-            IdentifierName(MethodImposterMetadata.FindMatchingSetupMethodMetadata.Name)
+            method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName,
+            IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
                 .Call(method.Parameters.HasInputParameters
                     ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).ToSingleArgumentList()
                     : ArgumentList())
-                .QuestionMarkQuestionMark(method.InvocationSetup.Syntax.Dot(IdentifierName("DefaultInvocationSetup")))
+                .QuestionMarkQuestionMark(method.InvocationSetup.Syntax.Dot(IdentifierName(method.InvocationSetup.DefaultInvocationSetupField.Name)))
         );
 }

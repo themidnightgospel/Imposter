@@ -2,7 +2,8 @@
 
 namespace Imposter.Playground;
 
-public interface IGenericMethodPoc
+[GenerateImposter(typeof(IGenericMethodPocV1))]
+public interface IGenericMethodPocV1
 {
     TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
         out TOut outValue,

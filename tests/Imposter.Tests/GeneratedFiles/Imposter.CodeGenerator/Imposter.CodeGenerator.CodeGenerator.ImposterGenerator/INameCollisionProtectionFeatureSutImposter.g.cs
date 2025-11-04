@@ -299,141 +299,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns<TValue>(TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithReturnsMethodInvocationsSetup<TValue> : ICollisionWithReturnsMethodInvocationsSetup<TValue>
+        class CollisionWithReturnsMethodInvocationImposterGroup<TValue>
         {
-            internal static CollisionWithReturnsMethodInvocationsSetup<TValue> DefaultInvocationSetup = new CollisionWithReturnsMethodInvocationsSetup<TValue>(new CollisionWithReturnsArgumentsCriteria<TValue>(Imposter.Abstractions.Arg<TValue>.Any()));
+            internal static CollisionWithReturnsMethodInvocationImposterGroup<TValue> Default = new CollisionWithReturnsMethodInvocationImposterGroup<TValue>(new CollisionWithReturnsArgumentsCriteria<TValue>(Imposter.Abstractions.Arg<TValue>.Any()));
             internal CollisionWithReturnsArgumentsCriteria<TValue> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(TValue value)
-            {
-                return default;
-            }
-
-            public CollisionWithReturnsMethodInvocationsSetup(CollisionWithReturnsArgumentsCriteria<TValue> argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithReturnsMethodInvocationImposterGroup(CollisionWithReturnsArgumentsCriteria<TValue> argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Returns(CollisionWithReturnsDelegate<TValue> resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Returns(int value_1)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue value) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value_1;
-                };
-                return this;
-            }
-
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue value) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue value) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue value) =>
-                {
-                    throw exceptionGenerator(value);
-                };
-                return this;
-            }
-
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.CallBefore(CollisionWithReturnsCallbackDelegate<TValue> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.CallAfter(CollisionWithReturnsCallbackDelegate<TValue> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(TValue value)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(value);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(value);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(value);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(value);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithReturnsDelegate<TValue>? ResultGenerator { get; set; }
-                internal CollisionWithReturnsCallbackDelegate<TValue>? CallBefore { get; set; }
-                internal CollisionWithReturnsCallbackDelegate<TValue>? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithReturnsDelegate<TValue> _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturnsCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturnsCallbackDelegate<TValue>>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(TValue value)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(value);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+                }
+
+                internal void Callback(CollisionWithReturnsCallbackDelegate<TValue> callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithReturnsDelegate<TValue> resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _resultGenerator = (TValue value) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                {
+                    _resultGenerator = (TValue value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(TValue value)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithReturnsMethodInvocationsSetup<TValue>
+        public interface ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>
         {
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> Throws<TException>()
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> Throws(System.Exception exception);
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator);
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> CallBefore(CollisionWithReturnsCallbackDelegate<TValue> callback);
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> CallAfter(CollisionWithReturnsCallbackDelegate<TValue> callback);
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> Returns(CollisionWithReturnsDelegate<TValue> resultGenerator);
-            ICollisionWithReturnsMethodInvocationsSetup<TValue> Returns(int value_1);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Throws(System.Exception exception);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Callback(CollisionWithReturnsCallbackDelegate<TValue> callback);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Returns(CollisionWithReturnsDelegate<TValue> resultGenerator);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Returns(int value_1);
+            ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> Then();
         }
 
         internal interface ICollisionWithReturnsMethodImposter
@@ -456,14 +429,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns<TValue>(TValue value)
-        public interface ICollisionWithReturnsMethodImposterBuilder<TValue> : ICollisionWithReturnsMethodInvocationsSetup<TValue>, CollisionWithReturnsMethodInvocationVerifier<TValue>
+        public interface ICollisionWithReturnsMethodImposterBuilder<TValue> : ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>, CollisionWithReturnsMethodInvocationVerifier<TValue>
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithReturnsMethodImposter<TValue> : ICollisionWithReturnsMethodImposter<TValue>
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturnsMethodInvocationsSetup<TValue>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturnsMethodInvocationsSetup<TValue>>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturnsMethodInvocationImposterGroup<TValue>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturnsMethodInvocationImposterGroup<TValue>>();
             private readonly CollisionWithReturnsMethodInvocationHistoryCollection _collisionWithReturnsMethodInvocationHistoryCollection;
             public CollisionWithReturnsMethodImposter(CollisionWithReturnsMethodInvocationHistoryCollection _collisionWithReturnsMethodInvocationHistoryCollection)
             {
@@ -507,10 +480,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithReturnsArguments<TValue> arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithReturnsMethodInvocationsSetup<TValue>? FindMatchingSetup(CollisionWithReturnsArguments<TValue> arguments)
+            private CollisionWithReturnsMethodInvocationImposterGroup<TValue>? FindMatchingInvocationImposterGroup(CollisionWithReturnsArguments<TValue> arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -524,10 +497,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(TValue value)
             {
                 var arguments = new CollisionWithReturnsArguments<TValue>(value);
-                var matchingSetup = FindMatchingSetup(arguments) ?? CollisionWithReturnsMethodInvocationsSetup<TValue>.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithReturnsMethodInvocationImposterGroup<TValue>.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(value);
+                    var result = matchingInvocationImposterGroup.Invoke(value);
                     _collisionWithReturnsMethodInvocationHistoryCollection.Add(new CollisionWithReturnsMethodInvocationHistory<TValue>(arguments, result, default));
                     return result;
                 }
@@ -544,72 +517,68 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithReturnsMethodImposterCollection _imposterCollection;
                 private readonly CollisionWithReturnsMethodInvocationHistoryCollection _collisionWithReturnsMethodInvocationHistoryCollection;
                 private readonly CollisionWithReturnsArgumentsCriteria<TValue> _argumentsCriteria;
-                private CollisionWithReturnsMethodInvocationsSetup<TValue>? _existingInvocationSetup;
+                private readonly CollisionWithReturnsMethodInvocationImposterGroup<TValue> _invocationImposterGroup;
+                private CollisionWithReturnsMethodInvocationImposterGroup<TValue>.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithReturnsMethodImposterCollection _imposterCollection, CollisionWithReturnsMethodInvocationHistoryCollection _collisionWithReturnsMethodInvocationHistoryCollection, CollisionWithReturnsArgumentsCriteria<TValue> _argumentsCriteria)
                 {
                     this._imposterCollection = _imposterCollection;
                     this._collisionWithReturnsMethodInvocationHistoryCollection = _collisionWithReturnsMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithReturnsMethodInvocationImposterGroup<TValue>(_argumentsCriteria);
+                    CollisionWithReturnsMethodImposter<TValue> methodImposter = _imposterCollection.AddNew<TValue>();
+                    methodImposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithReturnsMethodInvocationsSetup<TValue> GetOrAddInvocationSetup()
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((TValue value) =>
                     {
-                        _existingInvocationSetup = new CollisionWithReturnsMethodInvocationsSetup<TValue>(_argumentsCriteria);
-                        _imposterCollection.AddNew<TValue>()._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws<TException>()
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((TValue value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws(System.Exception exception)
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((TValue value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Throws(CollisionWithReturnsExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Callback(CollisionWithReturnsCallbackDelegate<TValue> callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.CallBefore(CollisionWithReturnsCallbackDelegate<TValue> callback)
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Returns(CollisionWithReturnsDelegate<TValue> resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.CallAfter(CollisionWithReturnsCallbackDelegate<TValue> callback)
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Returns(int value_1)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
                 }
 
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Returns(CollisionWithReturnsDelegate<TValue> resultGenerator)
+                ICollisionWithReturnsMethodInvocationImposterBuilder<TValue> ICollisionWithReturnsMethodInvocationImposterBuilder<TValue>.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithReturnsMethodInvocationsSetup<TValue> ICollisionWithReturnsMethodInvocationsSetup<TValue>.Returns(int value_1)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value_1);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithReturnsMethodInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
@@ -697,141 +666,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithReturns_1MethodInvocationsSetup : ICollisionWithReturns_1MethodInvocationsSetup
+        class CollisionWithReturns_1MethodInvocationImposterGroup
         {
-            internal static CollisionWithReturns_1MethodInvocationsSetup DefaultInvocationSetup = new CollisionWithReturns_1MethodInvocationsSetup(new CollisionWithReturns_1ArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static CollisionWithReturns_1MethodInvocationImposterGroup Default = new CollisionWithReturns_1MethodInvocationImposterGroup(new CollisionWithReturns_1ArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal CollisionWithReturns_1ArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(int value)
-            {
-                return default;
-            }
-
-            public CollisionWithReturns_1MethodInvocationsSetup(CollisionWithReturns_1ArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithReturns_1MethodInvocationImposterGroup(CollisionWithReturns_1ArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Returns(CollisionWithReturns_1Delegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Returns(int value_1)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value_1;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value) =>
-                {
-                    throw exceptionGenerator(value);
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.CallBefore(CollisionWithReturns_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.CallAfter(CollisionWithReturns_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(int value)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(value);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(value);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(value);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(value);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithReturns_1Delegate? ResultGenerator { get; set; }
-                internal CollisionWithReturns_1CallbackDelegate? CallBefore { get; set; }
-                internal CollisionWithReturns_1CallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithReturns_1Delegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_1CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_1CallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(int value)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(value);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+                }
+
+                internal void Callback(CollisionWithReturns_1CallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithReturns_1Delegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _resultGenerator = (int value) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(int value)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithReturns_1MethodInvocationsSetup
+        public interface ICollisionWithReturns_1MethodInvocationImposterBuilder
         {
-            ICollisionWithReturns_1MethodInvocationsSetup Throws<TException>()
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithReturns_1MethodInvocationsSetup Throws(System.Exception exception);
-            ICollisionWithReturns_1MethodInvocationsSetup Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator);
-            ICollisionWithReturns_1MethodInvocationsSetup CallBefore(CollisionWithReturns_1CallbackDelegate callback);
-            ICollisionWithReturns_1MethodInvocationsSetup CallAfter(CollisionWithReturns_1CallbackDelegate callback);
-            ICollisionWithReturns_1MethodInvocationsSetup Returns(CollisionWithReturns_1Delegate resultGenerator);
-            ICollisionWithReturns_1MethodInvocationsSetup Returns(int value_1);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Throws(System.Exception exception);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Callback(CollisionWithReturns_1CallbackDelegate callback);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Returns(CollisionWithReturns_1Delegate resultGenerator);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Returns(int value_1);
+            ICollisionWithReturns_1MethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -842,14 +784,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(int value)
-        public interface ICollisionWithReturns_1MethodImposterBuilder : ICollisionWithReturns_1MethodInvocationsSetup, CollisionWithReturns_1MethodInvocationVerifier
+        public interface ICollisionWithReturns_1MethodImposterBuilder : ICollisionWithReturns_1MethodInvocationImposterBuilder, CollisionWithReturns_1MethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithReturns_1MethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_1MethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_1MethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_1MethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_1MethodInvocationImposterGroup>();
             private readonly CollisionWithReturns_1MethodInvocationHistoryCollection _collisionWithReturns_1MethodInvocationHistoryCollection;
             public CollisionWithReturns_1MethodImposter(CollisionWithReturns_1MethodInvocationHistoryCollection _collisionWithReturns_1MethodInvocationHistoryCollection)
             {
@@ -858,10 +800,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithReturns_1Arguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithReturns_1MethodInvocationsSetup? FindMatchingSetup(CollisionWithReturns_1Arguments arguments)
+            private CollisionWithReturns_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CollisionWithReturns_1Arguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -875,10 +817,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(int value)
             {
                 var arguments = new CollisionWithReturns_1Arguments(value);
-                var matchingSetup = FindMatchingSetup(arguments) ?? CollisionWithReturns_1MethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithReturns_1MethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(value);
+                    var result = matchingInvocationImposterGroup.Invoke(value);
                     _collisionWithReturns_1MethodInvocationHistoryCollection.Add(new CollisionWithReturns_1MethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -895,72 +837,67 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithReturns_1MethodImposter _imposter;
                 private readonly CollisionWithReturns_1MethodInvocationHistoryCollection _collisionWithReturns_1MethodInvocationHistoryCollection;
                 private readonly CollisionWithReturns_1ArgumentsCriteria _argumentsCriteria;
-                private CollisionWithReturns_1MethodInvocationsSetup? _existingInvocationSetup;
+                private readonly CollisionWithReturns_1MethodInvocationImposterGroup _invocationImposterGroup;
+                private CollisionWithReturns_1MethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithReturns_1MethodImposter _imposter, CollisionWithReturns_1MethodInvocationHistoryCollection _collisionWithReturns_1MethodInvocationHistoryCollection, CollisionWithReturns_1ArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._collisionWithReturns_1MethodInvocationHistoryCollection = _collisionWithReturns_1MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithReturns_1MethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithReturns_1MethodInvocationsSetup GetOrAddInvocationSetup()
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int value) =>
                     {
-                        _existingInvocationSetup = new CollisionWithReturns_1MethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws<TException>()
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws(System.Exception exception)
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Throws(CollisionWithReturns_1ExceptionGeneratorDelegate exceptionGenerator)
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Callback(CollisionWithReturns_1CallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.CallBefore(CollisionWithReturns_1CallbackDelegate callback)
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Returns(CollisionWithReturns_1Delegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.CallAfter(CollisionWithReturns_1CallbackDelegate callback)
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Returns(int value_1)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
                 }
 
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Returns(CollisionWithReturns_1Delegate resultGenerator)
+                ICollisionWithReturns_1MethodInvocationImposterBuilder ICollisionWithReturns_1MethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithReturns_1MethodInvocationsSetup ICollisionWithReturns_1MethodInvocationsSetup.Returns(int value_1)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value_1);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithReturns_1MethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -1048,141 +985,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(string result)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithReturns_2MethodInvocationsSetup : ICollisionWithReturns_2MethodInvocationsSetup
+        class CollisionWithReturns_2MethodInvocationImposterGroup
         {
-            internal static CollisionWithReturns_2MethodInvocationsSetup DefaultInvocationSetup = new CollisionWithReturns_2MethodInvocationsSetup(new CollisionWithReturns_2ArgumentsCriteria(Imposter.Abstractions.Arg<string>.Any()));
+            internal static CollisionWithReturns_2MethodInvocationImposterGroup Default = new CollisionWithReturns_2MethodInvocationImposterGroup(new CollisionWithReturns_2ArgumentsCriteria(Imposter.Abstractions.Arg<string>.Any()));
             internal CollisionWithReturns_2ArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(string result)
-            {
-                return default;
-            }
-
-            public CollisionWithReturns_2MethodInvocationsSetup(CollisionWithReturns_2ArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithReturns_2MethodInvocationImposterGroup(CollisionWithReturns_2ArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Returns(CollisionWithReturns_2Delegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (string result) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (string result) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (string result) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (string result) =>
-                {
-                    throw exceptionGenerator(result);
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.CallBefore(CollisionWithReturns_2CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.CallAfter(CollisionWithReturns_2CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(string result)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(result);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result_1 = nextSetup.ResultGenerator.Invoke(result);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(result);
-                }
-
-                return result_1;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(result);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithReturns_2Delegate? ResultGenerator { get; set; }
-                internal CollisionWithReturns_2CallbackDelegate? CallBefore { get; set; }
-                internal CollisionWithReturns_2CallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithReturns_2Delegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_2CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_2CallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(string result)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(result);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(result);
+                    }
+                }
+
+                internal void Callback(CollisionWithReturns_2CallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithReturns_2Delegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (string result) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (string result) =>
+                    {
+                        throw exceptionGenerator(result);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(string result)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithReturns_2MethodInvocationsSetup
+        public interface ICollisionWithReturns_2MethodInvocationImposterBuilder
         {
-            ICollisionWithReturns_2MethodInvocationsSetup Throws<TException>()
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithReturns_2MethodInvocationsSetup Throws(System.Exception exception);
-            ICollisionWithReturns_2MethodInvocationsSetup Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator);
-            ICollisionWithReturns_2MethodInvocationsSetup CallBefore(CollisionWithReturns_2CallbackDelegate callback);
-            ICollisionWithReturns_2MethodInvocationsSetup CallAfter(CollisionWithReturns_2CallbackDelegate callback);
-            ICollisionWithReturns_2MethodInvocationsSetup Returns(CollisionWithReturns_2Delegate resultGenerator);
-            ICollisionWithReturns_2MethodInvocationsSetup Returns(int value);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Throws(System.Exception exception);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Callback(CollisionWithReturns_2CallbackDelegate callback);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Returns(CollisionWithReturns_2Delegate resultGenerator);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Returns(int value);
+            ICollisionWithReturns_2MethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -1193,14 +1103,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(string result)
-        public interface ICollisionWithReturns_2MethodImposterBuilder : ICollisionWithReturns_2MethodInvocationsSetup, CollisionWithReturns_2MethodInvocationVerifier
+        public interface ICollisionWithReturns_2MethodImposterBuilder : ICollisionWithReturns_2MethodInvocationImposterBuilder, CollisionWithReturns_2MethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithReturns_2MethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_2MethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_2MethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_2MethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_2MethodInvocationImposterGroup>();
             private readonly CollisionWithReturns_2MethodInvocationHistoryCollection _collisionWithReturns_2MethodInvocationHistoryCollection;
             public CollisionWithReturns_2MethodImposter(CollisionWithReturns_2MethodInvocationHistoryCollection _collisionWithReturns_2MethodInvocationHistoryCollection)
             {
@@ -1209,10 +1119,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithReturns_2Arguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithReturns_2MethodInvocationsSetup? FindMatchingSetup(CollisionWithReturns_2Arguments arguments)
+            private CollisionWithReturns_2MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CollisionWithReturns_2Arguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -1226,10 +1136,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(string result)
             {
                 var arguments = new CollisionWithReturns_2Arguments(result);
-                var matchingSetup = FindMatchingSetup(arguments) ?? CollisionWithReturns_2MethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithReturns_2MethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result_1 = matchingSetup.Invoke(result);
+                    var result_1 = matchingInvocationImposterGroup.Invoke(result);
                     _collisionWithReturns_2MethodInvocationHistoryCollection.Add(new CollisionWithReturns_2MethodInvocationHistory(arguments, result_1, default));
                     return result_1;
                 }
@@ -1246,72 +1156,67 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithReturns_2MethodImposter _imposter;
                 private readonly CollisionWithReturns_2MethodInvocationHistoryCollection _collisionWithReturns_2MethodInvocationHistoryCollection;
                 private readonly CollisionWithReturns_2ArgumentsCriteria _argumentsCriteria;
-                private CollisionWithReturns_2MethodInvocationsSetup? _existingInvocationSetup;
+                private readonly CollisionWithReturns_2MethodInvocationImposterGroup _invocationImposterGroup;
+                private CollisionWithReturns_2MethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithReturns_2MethodImposter _imposter, CollisionWithReturns_2MethodInvocationHistoryCollection _collisionWithReturns_2MethodInvocationHistoryCollection, CollisionWithReturns_2ArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._collisionWithReturns_2MethodInvocationHistoryCollection = _collisionWithReturns_2MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithReturns_2MethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithReturns_2MethodInvocationsSetup GetOrAddInvocationSetup()
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((string result) =>
                     {
-                        _existingInvocationSetup = new CollisionWithReturns_2MethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws<TException>()
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((string result) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws(System.Exception exception)
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((string result) =>
+                    {
+                        throw exceptionGenerator.Invoke(result);
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Throws(CollisionWithReturns_2ExceptionGeneratorDelegate exceptionGenerator)
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Callback(CollisionWithReturns_2CallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.CallBefore(CollisionWithReturns_2CallbackDelegate callback)
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Returns(CollisionWithReturns_2Delegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.CallAfter(CollisionWithReturns_2CallbackDelegate callback)
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Returns(CollisionWithReturns_2Delegate resultGenerator)
+                ICollisionWithReturns_2MethodInvocationImposterBuilder ICollisionWithReturns_2MethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithReturns_2MethodInvocationsSetup ICollisionWithReturns_2MethodInvocationsSetup.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithReturns_2MethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -1399,141 +1304,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(double matchingSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithReturns_3MethodInvocationsSetup : ICollisionWithReturns_3MethodInvocationsSetup
+        class CollisionWithReturns_3MethodInvocationImposterGroup
         {
-            internal static CollisionWithReturns_3MethodInvocationsSetup DefaultInvocationSetup = new CollisionWithReturns_3MethodInvocationsSetup(new CollisionWithReturns_3ArgumentsCriteria(Imposter.Abstractions.Arg<double>.Any()));
+            internal static CollisionWithReturns_3MethodInvocationImposterGroup Default = new CollisionWithReturns_3MethodInvocationImposterGroup(new CollisionWithReturns_3ArgumentsCriteria(Imposter.Abstractions.Arg<double>.Any()));
             internal CollisionWithReturns_3ArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(double matchingSetup)
-            {
-                return default;
-            }
-
-            public CollisionWithReturns_3MethodInvocationsSetup(CollisionWithReturns_3ArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithReturns_3MethodInvocationImposterGroup(CollisionWithReturns_3ArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Returns(CollisionWithReturns_3Delegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (double matchingSetup) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (double matchingSetup) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (double matchingSetup) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (double matchingSetup) =>
-                {
-                    throw exceptionGenerator(matchingSetup);
-                };
-                return this;
-            }
-
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.CallBefore(CollisionWithReturns_3CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.CallAfter(CollisionWithReturns_3CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(double matchingSetup)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(matchingSetup);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(matchingSetup);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(matchingSetup);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(matchingSetup);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithReturns_3Delegate? ResultGenerator { get; set; }
-                internal CollisionWithReturns_3CallbackDelegate? CallBefore { get; set; }
-                internal CollisionWithReturns_3CallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithReturns_3Delegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_3CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithReturns_3CallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(double matchingSetup)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(matchingSetup);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(matchingSetup);
+                    }
+                }
+
+                internal void Callback(CollisionWithReturns_3CallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithReturns_3Delegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (double matchingSetup) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (double matchingSetup) =>
+                    {
+                        throw exceptionGenerator(matchingSetup);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(double matchingSetup)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithReturns_3MethodInvocationsSetup
+        public interface ICollisionWithReturns_3MethodInvocationImposterBuilder
         {
-            ICollisionWithReturns_3MethodInvocationsSetup Throws<TException>()
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithReturns_3MethodInvocationsSetup Throws(System.Exception exception);
-            ICollisionWithReturns_3MethodInvocationsSetup Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator);
-            ICollisionWithReturns_3MethodInvocationsSetup CallBefore(CollisionWithReturns_3CallbackDelegate callback);
-            ICollisionWithReturns_3MethodInvocationsSetup CallAfter(CollisionWithReturns_3CallbackDelegate callback);
-            ICollisionWithReturns_3MethodInvocationsSetup Returns(CollisionWithReturns_3Delegate resultGenerator);
-            ICollisionWithReturns_3MethodInvocationsSetup Returns(int value);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Throws(System.Exception exception);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Callback(CollisionWithReturns_3CallbackDelegate callback);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Returns(CollisionWithReturns_3Delegate resultGenerator);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Returns(int value);
+            ICollisionWithReturns_3MethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -1544,14 +1422,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithReturns(double matchingSetup)
-        public interface ICollisionWithReturns_3MethodImposterBuilder : ICollisionWithReturns_3MethodInvocationsSetup, CollisionWithReturns_3MethodInvocationVerifier
+        public interface ICollisionWithReturns_3MethodImposterBuilder : ICollisionWithReturns_3MethodInvocationImposterBuilder, CollisionWithReturns_3MethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithReturns_3MethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_3MethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_3MethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_3MethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithReturns_3MethodInvocationImposterGroup>();
             private readonly CollisionWithReturns_3MethodInvocationHistoryCollection _collisionWithReturns_3MethodInvocationHistoryCollection;
             public CollisionWithReturns_3MethodImposter(CollisionWithReturns_3MethodInvocationHistoryCollection _collisionWithReturns_3MethodInvocationHistoryCollection)
             {
@@ -1560,10 +1438,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithReturns_3Arguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithReturns_3MethodInvocationsSetup? FindMatchingSetup(CollisionWithReturns_3Arguments arguments)
+            private CollisionWithReturns_3MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CollisionWithReturns_3Arguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -1577,10 +1455,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(double matchingSetup)
             {
                 var arguments = new CollisionWithReturns_3Arguments(matchingSetup);
-                var matchingSetup_1 = FindMatchingSetup(arguments) ?? CollisionWithReturns_3MethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithReturns_3MethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup_1.Invoke(matchingSetup);
+                    var result = matchingInvocationImposterGroup.Invoke(matchingSetup);
                     _collisionWithReturns_3MethodInvocationHistoryCollection.Add(new CollisionWithReturns_3MethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -1597,72 +1475,67 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithReturns_3MethodImposter _imposter;
                 private readonly CollisionWithReturns_3MethodInvocationHistoryCollection _collisionWithReturns_3MethodInvocationHistoryCollection;
                 private readonly CollisionWithReturns_3ArgumentsCriteria _argumentsCriteria;
-                private CollisionWithReturns_3MethodInvocationsSetup? _existingInvocationSetup;
+                private readonly CollisionWithReturns_3MethodInvocationImposterGroup _invocationImposterGroup;
+                private CollisionWithReturns_3MethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithReturns_3MethodImposter _imposter, CollisionWithReturns_3MethodInvocationHistoryCollection _collisionWithReturns_3MethodInvocationHistoryCollection, CollisionWithReturns_3ArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._collisionWithReturns_3MethodInvocationHistoryCollection = _collisionWithReturns_3MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithReturns_3MethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithReturns_3MethodInvocationsSetup GetOrAddInvocationSetup()
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((double matchingSetup) =>
                     {
-                        _existingInvocationSetup = new CollisionWithReturns_3MethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws<TException>()
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((double matchingSetup) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws(System.Exception exception)
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((double matchingSetup) =>
+                    {
+                        throw exceptionGenerator.Invoke(matchingSetup);
+                    });
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Throws(CollisionWithReturns_3ExceptionGeneratorDelegate exceptionGenerator)
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Callback(CollisionWithReturns_3CallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.CallBefore(CollisionWithReturns_3CallbackDelegate callback)
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Returns(CollisionWithReturns_3Delegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.CallAfter(CollisionWithReturns_3CallbackDelegate callback)
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Returns(CollisionWithReturns_3Delegate resultGenerator)
+                ICollisionWithReturns_3MethodInvocationImposterBuilder ICollisionWithReturns_3MethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithReturns_3MethodInvocationsSetup ICollisionWithReturns_3MethodInvocationsSetup.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithReturns_3MethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -1782,141 +1655,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithThrows<TValue>(TValue ex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithThrowsMethodInvocationsSetup<TValue> : ICollisionWithThrowsMethodInvocationsSetup<TValue>
+        class CollisionWithThrowsMethodInvocationImposterGroup<TValue>
         {
-            internal static CollisionWithThrowsMethodInvocationsSetup<TValue> DefaultInvocationSetup = new CollisionWithThrowsMethodInvocationsSetup<TValue>(new CollisionWithThrowsArgumentsCriteria<TValue>(Imposter.Abstractions.Arg<TValue>.Any()));
+            internal static CollisionWithThrowsMethodInvocationImposterGroup<TValue> Default = new CollisionWithThrowsMethodInvocationImposterGroup<TValue>(new CollisionWithThrowsArgumentsCriteria<TValue>(Imposter.Abstractions.Arg<TValue>.Any()));
             internal CollisionWithThrowsArgumentsCriteria<TValue> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(TValue ex)
-            {
-                return default;
-            }
-
-            public CollisionWithThrowsMethodInvocationsSetup(CollisionWithThrowsArgumentsCriteria<TValue> argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithThrowsMethodInvocationImposterGroup(CollisionWithThrowsArgumentsCriteria<TValue> argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Returns(CollisionWithThrowsDelegate<TValue> resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue ex) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue ex) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue ex) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (TValue ex) =>
-                {
-                    throw exceptionGenerator(ex);
-                };
-                return this;
-            }
-
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.CallBefore(CollisionWithThrowsCallbackDelegate<TValue> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.CallAfter(CollisionWithThrowsCallbackDelegate<TValue> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(TValue ex)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(ex);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(ex);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(ex);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(ex);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithThrowsDelegate<TValue>? ResultGenerator { get; set; }
-                internal CollisionWithThrowsCallbackDelegate<TValue>? CallBefore { get; set; }
-                internal CollisionWithThrowsCallbackDelegate<TValue>? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithThrowsDelegate<TValue> _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithThrowsCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithThrowsCallbackDelegate<TValue>>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(TValue ex)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(ex);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(ex);
+                    }
+                }
+
+                internal void Callback(CollisionWithThrowsCallbackDelegate<TValue> callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithThrowsDelegate<TValue> resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (TValue ex) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                {
+                    _resultGenerator = (TValue ex) =>
+                    {
+                        throw exceptionGenerator(ex);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(TValue ex)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithThrowsMethodInvocationsSetup<TValue>
+        public interface ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>
         {
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> Throws<TException>()
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> Throws(System.Exception exception);
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator);
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> CallBefore(CollisionWithThrowsCallbackDelegate<TValue> callback);
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> CallAfter(CollisionWithThrowsCallbackDelegate<TValue> callback);
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> Returns(CollisionWithThrowsDelegate<TValue> resultGenerator);
-            ICollisionWithThrowsMethodInvocationsSetup<TValue> Returns(int value);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Throws(System.Exception exception);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Callback(CollisionWithThrowsCallbackDelegate<TValue> callback);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Returns(CollisionWithThrowsDelegate<TValue> resultGenerator);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Returns(int value);
+            ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> Then();
         }
 
         internal interface ICollisionWithThrowsMethodImposter
@@ -1939,14 +1785,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithThrows<TValue>(TValue ex)
-        public interface ICollisionWithThrowsMethodImposterBuilder<TValue> : ICollisionWithThrowsMethodInvocationsSetup<TValue>, CollisionWithThrowsMethodInvocationVerifier<TValue>
+        public interface ICollisionWithThrowsMethodImposterBuilder<TValue> : ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>, CollisionWithThrowsMethodInvocationVerifier<TValue>
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithThrowsMethodImposter<TValue> : ICollisionWithThrowsMethodImposter<TValue>
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithThrowsMethodInvocationsSetup<TValue>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithThrowsMethodInvocationsSetup<TValue>>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithThrowsMethodInvocationImposterGroup<TValue>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithThrowsMethodInvocationImposterGroup<TValue>>();
             private readonly CollisionWithThrowsMethodInvocationHistoryCollection _collisionWithThrowsMethodInvocationHistoryCollection;
             public CollisionWithThrowsMethodImposter(CollisionWithThrowsMethodInvocationHistoryCollection _collisionWithThrowsMethodInvocationHistoryCollection)
             {
@@ -1990,10 +1836,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithThrowsArguments<TValue> arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithThrowsMethodInvocationsSetup<TValue>? FindMatchingSetup(CollisionWithThrowsArguments<TValue> arguments)
+            private CollisionWithThrowsMethodInvocationImposterGroup<TValue>? FindMatchingInvocationImposterGroup(CollisionWithThrowsArguments<TValue> arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -2007,10 +1853,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(TValue ex)
             {
                 var arguments = new CollisionWithThrowsArguments<TValue>(ex);
-                var matchingSetup = FindMatchingSetup(arguments) ?? CollisionWithThrowsMethodInvocationsSetup<TValue>.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithThrowsMethodInvocationImposterGroup<TValue>.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(ex);
+                    var result = matchingInvocationImposterGroup.Invoke(ex);
                     _collisionWithThrowsMethodInvocationHistoryCollection.Add(new CollisionWithThrowsMethodInvocationHistory<TValue>(arguments, result, default));
                     return result;
                 }
@@ -2027,72 +1873,68 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithThrowsMethodImposterCollection _imposterCollection;
                 private readonly CollisionWithThrowsMethodInvocationHistoryCollection _collisionWithThrowsMethodInvocationHistoryCollection;
                 private readonly CollisionWithThrowsArgumentsCriteria<TValue> _argumentsCriteria;
-                private CollisionWithThrowsMethodInvocationsSetup<TValue>? _existingInvocationSetup;
+                private readonly CollisionWithThrowsMethodInvocationImposterGroup<TValue> _invocationImposterGroup;
+                private CollisionWithThrowsMethodInvocationImposterGroup<TValue>.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithThrowsMethodImposterCollection _imposterCollection, CollisionWithThrowsMethodInvocationHistoryCollection _collisionWithThrowsMethodInvocationHistoryCollection, CollisionWithThrowsArgumentsCriteria<TValue> _argumentsCriteria)
                 {
                     this._imposterCollection = _imposterCollection;
                     this._collisionWithThrowsMethodInvocationHistoryCollection = _collisionWithThrowsMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithThrowsMethodInvocationImposterGroup<TValue>(_argumentsCriteria);
+                    CollisionWithThrowsMethodImposter<TValue> methodImposter = _imposterCollection.AddNew<TValue>();
+                    methodImposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithThrowsMethodInvocationsSetup<TValue> GetOrAddInvocationSetup()
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((TValue ex) =>
                     {
-                        _existingInvocationSetup = new CollisionWithThrowsMethodInvocationsSetup<TValue>(_argumentsCriteria);
-                        _imposterCollection.AddNew<TValue>()._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws<TException>()
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((TValue ex) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws(System.Exception exception)
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((TValue ex) =>
+                    {
+                        throw exceptionGenerator.Invoke(ex);
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Throws(CollisionWithThrowsExceptionGeneratorDelegate<TValue> exceptionGenerator)
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Callback(CollisionWithThrowsCallbackDelegate<TValue> callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.CallBefore(CollisionWithThrowsCallbackDelegate<TValue> callback)
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Returns(CollisionWithThrowsDelegate<TValue> resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.CallAfter(CollisionWithThrowsCallbackDelegate<TValue> callback)
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Returns(CollisionWithThrowsDelegate<TValue> resultGenerator)
+                ICollisionWithThrowsMethodInvocationImposterBuilder<TValue> ICollisionWithThrowsMethodInvocationImposterBuilder<TValue>.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithThrowsMethodInvocationsSetup<TValue> ICollisionWithThrowsMethodInvocationsSetup<TValue>.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithThrowsMethodInvocationVerifier<TValue>.Called(Imposter.Abstractions.Count count)
@@ -2180,141 +2022,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.CollisionWithThrows(Exception ex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class CollisionWithThrows_1MethodInvocationsSetup : ICollisionWithThrows_1MethodInvocationsSetup
+        class CollisionWithThrows_1MethodInvocationImposterGroup
         {
-            internal static CollisionWithThrows_1MethodInvocationsSetup DefaultInvocationSetup = new CollisionWithThrows_1MethodInvocationsSetup(new CollisionWithThrows_1ArgumentsCriteria(Imposter.Abstractions.Arg<global::System.Exception>.Any()));
+            internal static CollisionWithThrows_1MethodInvocationImposterGroup Default = new CollisionWithThrows_1MethodInvocationImposterGroup(new CollisionWithThrows_1ArgumentsCriteria(Imposter.Abstractions.Arg<global::System.Exception>.Any()));
             internal CollisionWithThrows_1ArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(global::System.Exception ex)
-            {
-                return default;
-            }
-
-            public CollisionWithThrows_1MethodInvocationsSetup(CollisionWithThrows_1ArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public CollisionWithThrows_1MethodInvocationImposterGroup(CollisionWithThrows_1ArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Returns(CollisionWithThrows_1Delegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (global::System.Exception ex) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (global::System.Exception ex) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (global::System.Exception ex) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (global::System.Exception ex) =>
-                {
-                    throw exceptionGenerator(ex);
-                };
-                return this;
-            }
-
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.CallBefore(CollisionWithThrows_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.CallAfter(CollisionWithThrows_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(global::System.Exception ex)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(ex);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(ex);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(ex);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(ex);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal CollisionWithThrows_1Delegate? ResultGenerator { get; set; }
-                internal CollisionWithThrows_1CallbackDelegate? CallBefore { get; set; }
-                internal CollisionWithThrows_1CallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private CollisionWithThrows_1Delegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<CollisionWithThrows_1CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CollisionWithThrows_1CallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(global::System.Exception ex)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(ex);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(ex);
+                    }
+                }
+
+                internal void Callback(CollisionWithThrows_1CallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(CollisionWithThrows_1Delegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (global::System.Exception ex) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (global::System.Exception ex) =>
+                    {
+                        throw exceptionGenerator(ex);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(global::System.Exception ex)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICollisionWithThrows_1MethodInvocationsSetup
+        public interface ICollisionWithThrows_1MethodInvocationImposterBuilder
         {
-            ICollisionWithThrows_1MethodInvocationsSetup Throws<TException>()
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ICollisionWithThrows_1MethodInvocationsSetup Throws(System.Exception exception);
-            ICollisionWithThrows_1MethodInvocationsSetup Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator);
-            ICollisionWithThrows_1MethodInvocationsSetup CallBefore(CollisionWithThrows_1CallbackDelegate callback);
-            ICollisionWithThrows_1MethodInvocationsSetup CallAfter(CollisionWithThrows_1CallbackDelegate callback);
-            ICollisionWithThrows_1MethodInvocationsSetup Returns(CollisionWithThrows_1Delegate resultGenerator);
-            ICollisionWithThrows_1MethodInvocationsSetup Returns(int value);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Throws(System.Exception exception);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Callback(CollisionWithThrows_1CallbackDelegate callback);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Returns(CollisionWithThrows_1Delegate resultGenerator);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Returns(int value);
+            ICollisionWithThrows_1MethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2325,14 +2140,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.CollisionWithThrows(Exception ex)
-        public interface ICollisionWithThrows_1MethodImposterBuilder : ICollisionWithThrows_1MethodInvocationsSetup, CollisionWithThrows_1MethodInvocationVerifier
+        public interface ICollisionWithThrows_1MethodImposterBuilder : ICollisionWithThrows_1MethodInvocationImposterBuilder, CollisionWithThrows_1MethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class CollisionWithThrows_1MethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithThrows_1MethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithThrows_1MethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<CollisionWithThrows_1MethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<CollisionWithThrows_1MethodInvocationImposterGroup>();
             private readonly CollisionWithThrows_1MethodInvocationHistoryCollection _collisionWithThrows_1MethodInvocationHistoryCollection;
             public CollisionWithThrows_1MethodImposter(CollisionWithThrows_1MethodInvocationHistoryCollection _collisionWithThrows_1MethodInvocationHistoryCollection)
             {
@@ -2341,10 +2156,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(CollisionWithThrows_1Arguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private CollisionWithThrows_1MethodInvocationsSetup? FindMatchingSetup(CollisionWithThrows_1Arguments arguments)
+            private CollisionWithThrows_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CollisionWithThrows_1Arguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -2358,10 +2173,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(global::System.Exception ex)
             {
                 var arguments = new CollisionWithThrows_1Arguments(ex);
-                var matchingSetup = FindMatchingSetup(arguments) ?? CollisionWithThrows_1MethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? CollisionWithThrows_1MethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(ex);
+                    var result = matchingInvocationImposterGroup.Invoke(ex);
                     _collisionWithThrows_1MethodInvocationHistoryCollection.Add(new CollisionWithThrows_1MethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -2378,72 +2193,67 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly CollisionWithThrows_1MethodImposter _imposter;
                 private readonly CollisionWithThrows_1MethodInvocationHistoryCollection _collisionWithThrows_1MethodInvocationHistoryCollection;
                 private readonly CollisionWithThrows_1ArgumentsCriteria _argumentsCriteria;
-                private CollisionWithThrows_1MethodInvocationsSetup? _existingInvocationSetup;
+                private readonly CollisionWithThrows_1MethodInvocationImposterGroup _invocationImposterGroup;
+                private CollisionWithThrows_1MethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(CollisionWithThrows_1MethodImposter _imposter, CollisionWithThrows_1MethodInvocationHistoryCollection _collisionWithThrows_1MethodInvocationHistoryCollection, CollisionWithThrows_1ArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._collisionWithThrows_1MethodInvocationHistoryCollection = _collisionWithThrows_1MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new CollisionWithThrows_1MethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ICollisionWithThrows_1MethodInvocationsSetup GetOrAddInvocationSetup()
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((global::System.Exception ex) =>
                     {
-                        _existingInvocationSetup = new CollisionWithThrows_1MethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws<TException>()
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((global::System.Exception ex) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws(System.Exception exception)
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((global::System.Exception ex) =>
+                    {
+                        throw exceptionGenerator.Invoke(ex);
+                    });
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Throws(CollisionWithThrows_1ExceptionGeneratorDelegate exceptionGenerator)
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Callback(CollisionWithThrows_1CallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.CallBefore(CollisionWithThrows_1CallbackDelegate callback)
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Returns(CollisionWithThrows_1Delegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.CallAfter(CollisionWithThrows_1CallbackDelegate callback)
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Returns(CollisionWithThrows_1Delegate resultGenerator)
+                ICollisionWithThrows_1MethodInvocationImposterBuilder ICollisionWithThrows_1MethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                ICollisionWithThrows_1MethodInvocationsSetup ICollisionWithThrows_1MethodInvocationsSetup.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void CollisionWithThrows_1MethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -2502,138 +2312,111 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class MethodWithSameNameDifferentSignatureMethodInvocationsSetup : IMethodWithSameNameDifferentSignatureMethodInvocationsSetup
+        class MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup
         {
-            internal static MethodWithSameNameDifferentSignatureMethodInvocationsSetup DefaultInvocationSetup = new MethodWithSameNameDifferentSignatureMethodInvocationsSetup();
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
+            internal static MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup Default = new MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup();
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup()
             {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator()
-            {
-                return default;
-            }
-
-            public MethodWithSameNameDifferentSignatureMethodInvocationsSetup()
-            {
-                _nextSetup = GetOrAddMethodSetup(it => true);
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Returns(int value)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = () =>
-                {
-                    return value;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = () =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = () =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = () =>
-                {
-                    throw exceptionGenerator();
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.CallBefore(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.CallAfter(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
-                }
-
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke()
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore();
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke();
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter();
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke();
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal MethodWithSameNameDifferentSignatureDelegate? ResultGenerator { get; set; }
-                internal MethodWithSameNameDifferentSignatureCallbackDelegate? CallBefore { get; set; }
-                internal MethodWithSameNameDifferentSignatureCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private MethodWithSameNameDifferentSignatureDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignatureCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignatureCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke()
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke();
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback();
+                    }
+                }
+
+                internal void Callback(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = () =>
+                    {
+                        throw exceptionGenerator();
+                    };
+                }
+
+                internal static int DefaultResultGenerator()
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IMethodWithSameNameDifferentSignatureMethodInvocationsSetup
+        public interface IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder
         {
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup Throws<TException>()
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup Throws(System.Exception exception);
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator);
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup CallBefore(MethodWithSameNameDifferentSignatureCallbackDelegate callback);
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup CallAfter(MethodWithSameNameDifferentSignatureCallbackDelegate callback);
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator);
-            IMethodWithSameNameDifferentSignatureMethodInvocationsSetup Returns(int value);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Callback(MethodWithSameNameDifferentSignatureCallbackDelegate callback);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Returns(int value);
+            IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2644,14 +2427,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature()
-        public interface IMethodWithSameNameDifferentSignatureMethodImposterBuilder : IMethodWithSameNameDifferentSignatureMethodInvocationsSetup, MethodWithSameNameDifferentSignatureMethodInvocationVerifier
+        public interface IMethodWithSameNameDifferentSignatureMethodImposterBuilder : IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder, MethodWithSameNameDifferentSignatureMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class MethodWithSameNameDifferentSignatureMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignatureMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignatureMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup>();
             private readonly MethodWithSameNameDifferentSignatureMethodInvocationHistoryCollection _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection;
             public MethodWithSameNameDifferentSignatureMethodImposter(MethodWithSameNameDifferentSignatureMethodInvocationHistoryCollection _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection)
             {
@@ -2660,10 +2443,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup()
             {
-                return FindMatchingSetup() != null;
+                return FindMatchingInvocationImposterGroup() != null;
             }
 
-            private MethodWithSameNameDifferentSignatureMethodInvocationsSetup? FindMatchingSetup()
+            private MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
             {
                 if (_invocationSetups.TryPeek(out var setup))
                     return setup;
@@ -2673,10 +2456,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public int Invoke()
             {
-                var matchingSetup = FindMatchingSetup() ?? MethodWithSameNameDifferentSignatureMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup() ?? MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke();
+                    var result = matchingInvocationImposterGroup.Invoke();
                     _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection.Add(new MethodWithSameNameDifferentSignatureMethodInvocationHistory(result, default));
                     return result;
                 }
@@ -2692,71 +2475,66 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             {
                 private readonly MethodWithSameNameDifferentSignatureMethodImposter _imposter;
                 private readonly MethodWithSameNameDifferentSignatureMethodInvocationHistoryCollection _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection;
-                private MethodWithSameNameDifferentSignatureMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup _invocationImposterGroup;
+                private MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(MethodWithSameNameDifferentSignatureMethodImposter _imposter, MethodWithSameNameDifferentSignatureMethodInvocationHistoryCollection _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection)
                 {
                     this._imposter = _imposter;
                     this._methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection = _methodWithSameNameDifferentSignatureMethodInvocationHistoryCollection;
+                    this._invocationImposterGroup = new MethodWithSameNameDifferentSignatureMethodInvocationImposterGroup();
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IMethodWithSameNameDifferentSignatureMethodInvocationsSetup GetOrAddInvocationSetup()
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws(() =>
                     {
-                        _existingInvocationSetup = new MethodWithSameNameDifferentSignatureMethodInvocationsSetup();
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws<TException>()
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws(System.Exception exception)
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exceptionGenerator.Invoke();
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Throws(MethodWithSameNameDifferentSignatureExceptionGeneratorDelegate exceptionGenerator)
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Callback(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.CallBefore(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.CallAfter(MethodWithSameNameDifferentSignatureCallbackDelegate callback)
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Returns(MethodWithSameNameDifferentSignatureDelegate resultGenerator)
+                IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder IMethodWithSameNameDifferentSignatureMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                IMethodWithSameNameDifferentSignatureMethodInvocationsSetup IMethodWithSameNameDifferentSignatureMethodInvocationsSetup.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void MethodWithSameNameDifferentSignatureMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -2844,141 +2622,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class MethodWithSameNameDifferentSignature_1MethodInvocationsSetup : IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup
+        class MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup
         {
-            internal static MethodWithSameNameDifferentSignature_1MethodInvocationsSetup DefaultInvocationSetup = new MethodWithSameNameDifferentSignature_1MethodInvocationsSetup(new MethodWithSameNameDifferentSignature_1ArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup Default = new MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup(new MethodWithSameNameDifferentSignature_1ArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal MethodWithSameNameDifferentSignature_1ArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(int input)
-            {
-                return default;
-            }
-
-            public MethodWithSameNameDifferentSignature_1MethodInvocationsSetup(MethodWithSameNameDifferentSignature_1ArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup(MethodWithSameNameDifferentSignature_1ArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int input) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int input) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int input) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int input) =>
-                {
-                    throw exceptionGenerator(input);
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.CallBefore(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.CallAfter(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(int input)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(input);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(input);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(input);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(input);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal MethodWithSameNameDifferentSignature_1Delegate? ResultGenerator { get; set; }
-                internal MethodWithSameNameDifferentSignature_1CallbackDelegate? CallBefore { get; set; }
-                internal MethodWithSameNameDifferentSignature_1CallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private MethodWithSameNameDifferentSignature_1Delegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignature_1CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignature_1CallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(int input)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(input);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(input);
+                    }
+                }
+
+                internal void Callback(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (int input) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int input) =>
+                    {
+                        throw exceptionGenerator(input);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(int input)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup
+        public interface IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder
         {
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup Throws<TException>()
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup Throws(System.Exception exception);
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator);
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup CallBefore(MethodWithSameNameDifferentSignature_1CallbackDelegate callback);
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup CallAfter(MethodWithSameNameDifferentSignature_1CallbackDelegate callback);
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator);
-            IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup Returns(int value);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Throws(System.Exception exception);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Callback(MethodWithSameNameDifferentSignature_1CallbackDelegate callback);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Returns(int value);
+            IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2989,14 +2740,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature(int input)
-        public interface IMethodWithSameNameDifferentSignature_1MethodImposterBuilder : IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup, MethodWithSameNameDifferentSignature_1MethodInvocationVerifier
+        public interface IMethodWithSameNameDifferentSignature_1MethodImposterBuilder : IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder, MethodWithSameNameDifferentSignature_1MethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class MethodWithSameNameDifferentSignature_1MethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_1MethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_1MethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup>();
             private readonly MethodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection;
             public MethodWithSameNameDifferentSignature_1MethodImposter(MethodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection)
             {
@@ -3005,10 +2756,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(MethodWithSameNameDifferentSignature_1Arguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private MethodWithSameNameDifferentSignature_1MethodInvocationsSetup? FindMatchingSetup(MethodWithSameNameDifferentSignature_1Arguments arguments)
+            private MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(MethodWithSameNameDifferentSignature_1Arguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -3022,10 +2773,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(int input)
             {
                 var arguments = new MethodWithSameNameDifferentSignature_1Arguments(input);
-                var matchingSetup = FindMatchingSetup(arguments) ?? MethodWithSameNameDifferentSignature_1MethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(input);
+                    var result = matchingInvocationImposterGroup.Invoke(input);
                     _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection.Add(new MethodWithSameNameDifferentSignature_1MethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -3042,72 +2793,67 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly MethodWithSameNameDifferentSignature_1MethodImposter _imposter;
                 private readonly MethodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection;
                 private readonly MethodWithSameNameDifferentSignature_1ArgumentsCriteria _argumentsCriteria;
-                private MethodWithSameNameDifferentSignature_1MethodInvocationsSetup? _existingInvocationSetup;
+                private readonly MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup _invocationImposterGroup;
+                private MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(MethodWithSameNameDifferentSignature_1MethodImposter _imposter, MethodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection, MethodWithSameNameDifferentSignature_1ArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection = _methodWithSameNameDifferentSignature_1MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new MethodWithSameNameDifferentSignature_1MethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup GetOrAddInvocationSetup()
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int input) =>
                     {
-                        _existingInvocationSetup = new MethodWithSameNameDifferentSignature_1MethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws<TException>()
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int input) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws(System.Exception exception)
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int input) =>
+                    {
+                        throw exceptionGenerator.Invoke(input);
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Throws(MethodWithSameNameDifferentSignature_1ExceptionGeneratorDelegate exceptionGenerator)
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Callback(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.CallBefore(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.CallAfter(MethodWithSameNameDifferentSignature_1CallbackDelegate callback)
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Returns(MethodWithSameNameDifferentSignature_1Delegate resultGenerator)
+                IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder IMethodWithSameNameDifferentSignature_1MethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup IMethodWithSameNameDifferentSignature_1MethodInvocationsSetup.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void MethodWithSameNameDifferentSignature_1MethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -3227,141 +2973,114 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature<T>(T input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> : IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>
+        class MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>
         {
-            internal static MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> DefaultInvocationSetup = new MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>(new MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T>(Imposter.Abstractions.Arg<T>.Any()));
+            internal static MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T> Default = new MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>(new MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T>(Imposter.Abstractions.Arg<T>.Any()));
             internal MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static int DefaultResultGenerator(T input)
-            {
-                return default;
-            }
-
-            public MethodWithSameNameDifferentSignature_2MethodInvocationsSetup(MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T> argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup(MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T> argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Returns(int value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (T input) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (T input) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (T input) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (T input) =>
-                {
-                    throw exceptionGenerator(input);
-                };
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.CallBefore(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.CallAfter(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public int Invoke(T input)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(input);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(input);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(input);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(input);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal MethodWithSameNameDifferentSignature_2Delegate<T>? ResultGenerator { get; set; }
-                internal MethodWithSameNameDifferentSignature_2CallbackDelegate<T>? CallBefore { get; set; }
-                internal MethodWithSameNameDifferentSignature_2CallbackDelegate<T>? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private MethodWithSameNameDifferentSignature_2Delegate<T> _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignature_2CallbackDelegate<T>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<MethodWithSameNameDifferentSignature_2CallbackDelegate<T>>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(T input)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    int result = _resultGenerator.Invoke(input);
+                    return result;
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(input);
+                    }
+                }
+
+                internal void Callback(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (T input) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator)
+                {
+                    _resultGenerator = (T input) =>
+                    {
+                        throw exceptionGenerator(input);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(T input)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>
+        public interface IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>
         {
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> Throws<TException>()
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Throws<TException>()
                 where TException : Exception, new();
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> Throws(System.Exception exception);
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator);
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> CallBefore(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback);
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> CallAfter(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback);
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator);
-            IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> Returns(int value);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Throws(System.Exception exception);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Callback(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Returns(int value);
+            IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> Then();
         }
 
         internal interface IMethodWithSameNameDifferentSignature_2MethodImposter
@@ -3384,14 +3103,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int INameCollisionProtectionFeatureSut.MethodWithSameNameDifferentSignature<T>(T input)
-        public interface IMethodWithSameNameDifferentSignature_2MethodImposterBuilder<T> : IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>, MethodWithSameNameDifferentSignature_2MethodInvocationVerifier<T>
+        public interface IMethodWithSameNameDifferentSignature_2MethodImposterBuilder<T> : IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>, MethodWithSameNameDifferentSignature_2MethodInvocationVerifier<T>
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class MethodWithSameNameDifferentSignature_2MethodImposter<T> : IMethodWithSameNameDifferentSignature_2MethodImposter<T>
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>>();
             private readonly MethodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection;
             public MethodWithSameNameDifferentSignature_2MethodImposter(MethodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection)
             {
@@ -3435,10 +3154,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(MethodWithSameNameDifferentSignature_2Arguments<T> arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>? FindMatchingSetup(MethodWithSameNameDifferentSignature_2Arguments<T> arguments)
+            private MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(MethodWithSameNameDifferentSignature_2Arguments<T> arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -3452,10 +3171,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public int Invoke(T input)
             {
                 var arguments = new MethodWithSameNameDifferentSignature_2Arguments<T>(input);
-                var matchingSetup = FindMatchingSetup(arguments) ?? MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(input);
+                    var result = matchingInvocationImposterGroup.Invoke(input);
                     _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection.Add(new MethodWithSameNameDifferentSignature_2MethodInvocationHistory<T>(arguments, result, default));
                     return result;
                 }
@@ -3472,72 +3191,68 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly MethodWithSameNameDifferentSignature_2MethodImposterCollection _imposterCollection;
                 private readonly MethodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection;
                 private readonly MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T> _argumentsCriteria;
-                private MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>? _existingInvocationSetup;
+                private readonly MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T> _invocationImposterGroup;
+                private MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(MethodWithSameNameDifferentSignature_2MethodImposterCollection _imposterCollection, MethodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection, MethodWithSameNameDifferentSignature_2ArgumentsCriteria<T> _argumentsCriteria)
                 {
                     this._imposterCollection = _imposterCollection;
                     this._methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection = _methodWithSameNameDifferentSignature_2MethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new MethodWithSameNameDifferentSignature_2MethodInvocationImposterGroup<T>(_argumentsCriteria);
+                    MethodWithSameNameDifferentSignature_2MethodImposter<T> methodImposter = _imposterCollection.AddNew<T>();
+                    methodImposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> GetOrAddInvocationSetup()
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((T input) =>
                     {
-                        _existingInvocationSetup = new MethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>(_argumentsCriteria);
-                        _imposterCollection.AddNew<T>()._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws<TException>()
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((T input) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws(System.Exception exception)
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((T input) =>
+                    {
+                        throw exceptionGenerator.Invoke(input);
+                    });
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Throws(MethodWithSameNameDifferentSignature_2ExceptionGeneratorDelegate<T> exceptionGenerator)
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Callback(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.CallBefore(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.CallAfter(MethodWithSameNameDifferentSignature_2CallbackDelegate<T> callback)
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Returns(int value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Returns(MethodWithSameNameDifferentSignature_2Delegate<T> resultGenerator)
+                IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T> IMethodWithSameNameDifferentSignature_2MethodInvocationImposterBuilder<T>.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T> IMethodWithSameNameDifferentSignature_2MethodInvocationsSetup<T>.Returns(int value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void MethodWithSameNameDifferentSignature_2MethodInvocationVerifier<T>.Called(Imposter.Abstractions.Count count)
@@ -3623,121 +3338,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.DefaultInvocationSetup(int DefaultInvocationSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class DefaultInvocationSetupMethodInvocationsSetup : IDefaultInvocationSetupMethodInvocationsSetup
+        class DefaultInvocationSetupMethodInvocationImposterGroup
         {
-            internal static DefaultInvocationSetupMethodInvocationsSetup DefaultInvocationSetup = new DefaultInvocationSetupMethodInvocationsSetup(new DefaultInvocationSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static DefaultInvocationSetupMethodInvocationImposterGroup Default = new DefaultInvocationSetupMethodInvocationImposterGroup(new DefaultInvocationSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal DefaultInvocationSetupArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int DefaultInvocationSetup)
-            {
-            }
-
-            public DefaultInvocationSetupMethodInvocationsSetup(DefaultInvocationSetupArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public DefaultInvocationSetupMethodInvocationImposterGroup(DefaultInvocationSetupArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int DefaultInvocationSetup) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int DefaultInvocationSetup) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int DefaultInvocationSetup) =>
-                {
-                    throw exceptionGenerator(DefaultInvocationSetup);
-                };
-                return this;
-            }
-
-            IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.CallBefore(DefaultInvocationSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.CallAfter(DefaultInvocationSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int DefaultInvocationSetup)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(DefaultInvocationSetup);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(DefaultInvocationSetup);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(DefaultInvocationSetup);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(DefaultInvocationSetup);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal DefaultInvocationSetupDelegate? ResultGenerator { get; set; }
-                internal DefaultInvocationSetupCallbackDelegate? CallBefore { get; set; }
-                internal DefaultInvocationSetupCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private DefaultInvocationSetupDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<DefaultInvocationSetupCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<DefaultInvocationSetupCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int DefaultInvocationSetup)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(DefaultInvocationSetup);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(DefaultInvocationSetup);
+                    }
+                }
+
+                internal void Callback(DefaultInvocationSetupCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int DefaultInvocationSetup) =>
+                    {
+                        throw exceptionGenerator(DefaultInvocationSetup);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int DefaultInvocationSetup)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IDefaultInvocationSetupMethodInvocationsSetup
+        public interface IDefaultInvocationSetupMethodInvocationImposterBuilder
         {
-            IDefaultInvocationSetupMethodInvocationsSetup Throws<TException>()
+            IDefaultInvocationSetupMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IDefaultInvocationSetupMethodInvocationsSetup Throws(System.Exception exception);
-            IDefaultInvocationSetupMethodInvocationsSetup Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator);
-            IDefaultInvocationSetupMethodInvocationsSetup CallBefore(DefaultInvocationSetupCallbackDelegate callback);
-            IDefaultInvocationSetupMethodInvocationsSetup CallAfter(DefaultInvocationSetupCallbackDelegate callback);
+            IDefaultInvocationSetupMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IDefaultInvocationSetupMethodInvocationImposterBuilder Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator);
+            IDefaultInvocationSetupMethodInvocationImposterBuilder Callback(DefaultInvocationSetupCallbackDelegate callback);
+            IDefaultInvocationSetupMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -3748,14 +3439,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.DefaultInvocationSetup(int DefaultInvocationSetup)
-        public interface IDefaultInvocationSetupMethodImposterBuilder : IDefaultInvocationSetupMethodInvocationsSetup, DefaultInvocationSetupMethodInvocationVerifier
+        public interface IDefaultInvocationSetupMethodImposterBuilder : IDefaultInvocationSetupMethodInvocationImposterBuilder, DefaultInvocationSetupMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class DefaultInvocationSetupMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<DefaultInvocationSetupMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<DefaultInvocationSetupMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<DefaultInvocationSetupMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<DefaultInvocationSetupMethodInvocationImposterGroup>();
             private readonly DefaultInvocationSetupMethodInvocationHistoryCollection _defaultInvocationSetupMethodInvocationHistoryCollection;
             public DefaultInvocationSetupMethodImposter(DefaultInvocationSetupMethodInvocationHistoryCollection _defaultInvocationSetupMethodInvocationHistoryCollection)
             {
@@ -3764,10 +3455,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(DefaultInvocationSetupArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private DefaultInvocationSetupMethodInvocationsSetup? FindMatchingSetup(DefaultInvocationSetupArguments arguments)
+            private DefaultInvocationSetupMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DefaultInvocationSetupArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -3781,10 +3472,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int DefaultInvocationSetup)
             {
                 var arguments = new DefaultInvocationSetupArguments(DefaultInvocationSetup);
-                var matchingSetup = FindMatchingSetup(arguments) ?? DefaultInvocationSetupMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? DefaultInvocationSetupMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(DefaultInvocationSetup);
+                    matchingInvocationImposterGroup.Invoke(DefaultInvocationSetup);
                     _defaultInvocationSetupMethodInvocationHistoryCollection.Add(new DefaultInvocationSetupMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -3800,58 +3491,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly DefaultInvocationSetupMethodImposter _imposter;
                 private readonly DefaultInvocationSetupMethodInvocationHistoryCollection _defaultInvocationSetupMethodInvocationHistoryCollection;
                 private readonly DefaultInvocationSetupArgumentsCriteria _argumentsCriteria;
-                private DefaultInvocationSetupMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly DefaultInvocationSetupMethodInvocationImposterGroup _invocationImposterGroup;
+                private DefaultInvocationSetupMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(DefaultInvocationSetupMethodImposter _imposter, DefaultInvocationSetupMethodInvocationHistoryCollection _defaultInvocationSetupMethodInvocationHistoryCollection, DefaultInvocationSetupArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._defaultInvocationSetupMethodInvocationHistoryCollection = _defaultInvocationSetupMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new DefaultInvocationSetupMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IDefaultInvocationSetupMethodInvocationsSetup GetOrAddInvocationSetup()
+                IDefaultInvocationSetupMethodInvocationImposterBuilder IDefaultInvocationSetupMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int DefaultInvocationSetup) =>
                     {
-                        _existingInvocationSetup = new DefaultInvocationSetupMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws<TException>()
+                IDefaultInvocationSetupMethodInvocationImposterBuilder IDefaultInvocationSetupMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int DefaultInvocationSetup) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws(System.Exception exception)
+                IDefaultInvocationSetupMethodInvocationImposterBuilder IDefaultInvocationSetupMethodInvocationImposterBuilder.Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int DefaultInvocationSetup) =>
+                    {
+                        throw exceptionGenerator.Invoke(DefaultInvocationSetup);
+                    });
+                    return this;
                 }
 
-                IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.Throws(DefaultInvocationSetupExceptionGeneratorDelegate exceptionGenerator)
+                IDefaultInvocationSetupMethodInvocationImposterBuilder IDefaultInvocationSetupMethodInvocationImposterBuilder.Callback(DefaultInvocationSetupCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.CallBefore(DefaultInvocationSetupCallbackDelegate callback)
+                IDefaultInvocationSetupMethodInvocationImposterBuilder IDefaultInvocationSetupMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IDefaultInvocationSetupMethodInvocationsSetup IDefaultInvocationSetupMethodInvocationsSetup.CallAfter(DefaultInvocationSetupCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void DefaultInvocationSetupMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -3937,121 +3625,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut._invocationSetups(int _invocationSetups)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class _invocationSetupsMethodInvocationsSetup : I_invocationSetupsMethodInvocationsSetup
+        class _invocationSetupsMethodInvocationImposterGroup
         {
-            internal static _invocationSetupsMethodInvocationsSetup DefaultInvocationSetup = new _invocationSetupsMethodInvocationsSetup(new _invocationSetupsArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static _invocationSetupsMethodInvocationImposterGroup Default = new _invocationSetupsMethodInvocationImposterGroup(new _invocationSetupsArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal _invocationSetupsArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int _invocationSetups)
-            {
-            }
-
-            public _invocationSetupsMethodInvocationsSetup(_invocationSetupsArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public _invocationSetupsMethodInvocationImposterGroup(_invocationSetupsArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int _invocationSetups) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int _invocationSetups) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int _invocationSetups) =>
-                {
-                    throw exceptionGenerator(_invocationSetups);
-                };
-                return this;
-            }
-
-            I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.CallBefore(_invocationSetupsCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.CallAfter(_invocationSetupsCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int _invocationSetups)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(_invocationSetups);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(_invocationSetups);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(_invocationSetups);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(_invocationSetups);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal _invocationSetupsDelegate? ResultGenerator { get; set; }
-                internal _invocationSetupsCallbackDelegate? CallBefore { get; set; }
-                internal _invocationSetupsCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private _invocationSetupsDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<_invocationSetupsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<_invocationSetupsCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int _invocationSetups)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(_invocationSetups);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(_invocationSetups);
+                    }
+                }
+
+                internal void Callback(_invocationSetupsCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int _invocationSetups) =>
+                    {
+                        throw exceptionGenerator(_invocationSetups);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int _invocationSetups)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface I_invocationSetupsMethodInvocationsSetup
+        public interface I_invocationSetupsMethodInvocationImposterBuilder
         {
-            I_invocationSetupsMethodInvocationsSetup Throws<TException>()
+            I_invocationSetupsMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            I_invocationSetupsMethodInvocationsSetup Throws(System.Exception exception);
-            I_invocationSetupsMethodInvocationsSetup Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator);
-            I_invocationSetupsMethodInvocationsSetup CallBefore(_invocationSetupsCallbackDelegate callback);
-            I_invocationSetupsMethodInvocationsSetup CallAfter(_invocationSetupsCallbackDelegate callback);
+            I_invocationSetupsMethodInvocationImposterBuilder Throws(System.Exception exception);
+            I_invocationSetupsMethodInvocationImposterBuilder Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator);
+            I_invocationSetupsMethodInvocationImposterBuilder Callback(_invocationSetupsCallbackDelegate callback);
+            I_invocationSetupsMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -4062,14 +3726,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut._invocationSetups(int _invocationSetups)
-        public interface I_invocationSetupsMethodImposterBuilder : I_invocationSetupsMethodInvocationsSetup, _invocationSetupsMethodInvocationVerifier
+        public interface I_invocationSetupsMethodImposterBuilder : I_invocationSetupsMethodInvocationImposterBuilder, _invocationSetupsMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class _invocationSetupsMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<_invocationSetupsMethodInvocationsSetup> _invocationSetups_1 = new System.Collections.Concurrent.ConcurrentStack<_invocationSetupsMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<_invocationSetupsMethodInvocationImposterGroup> _invocationSetups_1 = new System.Collections.Concurrent.ConcurrentStack<_invocationSetupsMethodInvocationImposterGroup>();
             private readonly _invocationSetupsMethodInvocationHistoryCollection __invocationSetupsMethodInvocationHistoryCollection;
             public _invocationSetupsMethodImposter(_invocationSetupsMethodInvocationHistoryCollection __invocationSetupsMethodInvocationHistoryCollection)
             {
@@ -4078,10 +3742,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(_invocationSetupsArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private _invocationSetupsMethodInvocationsSetup? FindMatchingSetup(_invocationSetupsArguments arguments)
+            private _invocationSetupsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(_invocationSetupsArguments arguments)
             {
                 foreach (var setup in _invocationSetups_1)
                 {
@@ -4095,10 +3759,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int _invocationSetups)
             {
                 var arguments = new _invocationSetupsArguments(_invocationSetups);
-                var matchingSetup = FindMatchingSetup(arguments) ?? _invocationSetupsMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? _invocationSetupsMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(_invocationSetups);
+                    matchingInvocationImposterGroup.Invoke(_invocationSetups);
                     __invocationSetupsMethodInvocationHistoryCollection.Add(new _invocationSetupsMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -4114,58 +3778,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly _invocationSetupsMethodImposter _imposter;
                 private readonly _invocationSetupsMethodInvocationHistoryCollection __invocationSetupsMethodInvocationHistoryCollection;
                 private readonly _invocationSetupsArgumentsCriteria _argumentsCriteria;
-                private _invocationSetupsMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly _invocationSetupsMethodInvocationImposterGroup _invocationImposterGroup;
+                private _invocationSetupsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(_invocationSetupsMethodImposter _imposter, _invocationSetupsMethodInvocationHistoryCollection __invocationSetupsMethodInvocationHistoryCollection, _invocationSetupsArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this.__invocationSetupsMethodInvocationHistoryCollection = __invocationSetupsMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new _invocationSetupsMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups_1.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private I_invocationSetupsMethodInvocationsSetup GetOrAddInvocationSetup()
+                I_invocationSetupsMethodInvocationImposterBuilder I_invocationSetupsMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int _invocationSetups) =>
                     {
-                        _existingInvocationSetup = new _invocationSetupsMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups_1.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws<TException>()
+                I_invocationSetupsMethodInvocationImposterBuilder I_invocationSetupsMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int _invocationSetups) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws(System.Exception exception)
+                I_invocationSetupsMethodInvocationImposterBuilder I_invocationSetupsMethodInvocationImposterBuilder.Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int _invocationSetups) =>
+                    {
+                        throw exceptionGenerator.Invoke(_invocationSetups);
+                    });
+                    return this;
                 }
 
-                I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.Throws(_invocationSetupsExceptionGeneratorDelegate exceptionGenerator)
+                I_invocationSetupsMethodInvocationImposterBuilder I_invocationSetupsMethodInvocationImposterBuilder.Callback(_invocationSetupsCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.CallBefore(_invocationSetupsCallbackDelegate callback)
+                I_invocationSetupsMethodInvocationImposterBuilder I_invocationSetupsMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                I_invocationSetupsMethodInvocationsSetup I_invocationSetupsMethodInvocationsSetup.CallAfter(_invocationSetupsCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void _invocationSetupsMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -4251,121 +3912,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.it(int it)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class itMethodInvocationsSetup : IitMethodInvocationsSetup
+        class itMethodInvocationImposterGroup
         {
-            internal static itMethodInvocationsSetup DefaultInvocationSetup = new itMethodInvocationsSetup(new itArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static itMethodInvocationImposterGroup Default = new itMethodInvocationImposterGroup(new itArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal itArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int it)
-            {
-            }
-
-            public itMethodInvocationsSetup(itArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public itMethodInvocationImposterGroup(itArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int it) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int it) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws(itExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int it) =>
-                {
-                    throw exceptionGenerator(it);
-                };
-                return this;
-            }
-
-            IitMethodInvocationsSetup IitMethodInvocationsSetup.CallBefore(itCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IitMethodInvocationsSetup IitMethodInvocationsSetup.CallAfter(itCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int it)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(it);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(it);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(it);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(it);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal itDelegate? ResultGenerator { get; set; }
-                internal itCallbackDelegate? CallBefore { get; set; }
-                internal itCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private itDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<itCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<itCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int it)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(it);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(it);
+                    }
+                }
+
+                internal void Callback(itCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(itExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int it) =>
+                    {
+                        throw exceptionGenerator(it);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int it)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IitMethodInvocationsSetup
+        public interface IitMethodInvocationImposterBuilder
         {
-            IitMethodInvocationsSetup Throws<TException>()
+            IitMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IitMethodInvocationsSetup Throws(System.Exception exception);
-            IitMethodInvocationsSetup Throws(itExceptionGeneratorDelegate exceptionGenerator);
-            IitMethodInvocationsSetup CallBefore(itCallbackDelegate callback);
-            IitMethodInvocationsSetup CallAfter(itCallbackDelegate callback);
+            IitMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IitMethodInvocationImposterBuilder Throws(itExceptionGeneratorDelegate exceptionGenerator);
+            IitMethodInvocationImposterBuilder Callback(itCallbackDelegate callback);
+            IitMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -4376,14 +4013,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.it(int it)
-        public interface IitMethodImposterBuilder : IitMethodInvocationsSetup, itMethodInvocationVerifier
+        public interface IitMethodImposterBuilder : IitMethodInvocationImposterBuilder, itMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class itMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<itMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<itMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<itMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<itMethodInvocationImposterGroup>();
             private readonly itMethodInvocationHistoryCollection _itMethodInvocationHistoryCollection;
             public itMethodImposter(itMethodInvocationHistoryCollection _itMethodInvocationHistoryCollection)
             {
@@ -4392,10 +4029,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(itArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private itMethodInvocationsSetup? FindMatchingSetup(itArguments arguments)
+            private itMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(itArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -4409,10 +4046,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int it)
             {
                 var arguments = new itArguments(it);
-                var matchingSetup = FindMatchingSetup(arguments) ?? itMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? itMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(it);
+                    matchingInvocationImposterGroup.Invoke(it);
                     _itMethodInvocationHistoryCollection.Add(new itMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -4428,58 +4065,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly itMethodImposter _imposter;
                 private readonly itMethodInvocationHistoryCollection _itMethodInvocationHistoryCollection;
                 private readonly itArgumentsCriteria _argumentsCriteria;
-                private itMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly itMethodInvocationImposterGroup _invocationImposterGroup;
+                private itMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(itMethodImposter _imposter, itMethodInvocationHistoryCollection _itMethodInvocationHistoryCollection, itArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._itMethodInvocationHistoryCollection = _itMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new itMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IitMethodInvocationsSetup GetOrAddInvocationSetup()
+                IitMethodInvocationImposterBuilder IitMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int it) =>
                     {
-                        _existingInvocationSetup = new itMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws<TException>()
+                IitMethodInvocationImposterBuilder IitMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int it) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws(System.Exception exception)
+                IitMethodInvocationImposterBuilder IitMethodInvocationImposterBuilder.Throws(itExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int it) =>
+                    {
+                        throw exceptionGenerator.Invoke(it);
+                    });
+                    return this;
                 }
 
-                IitMethodInvocationsSetup IitMethodInvocationsSetup.Throws(itExceptionGeneratorDelegate exceptionGenerator)
+                IitMethodInvocationImposterBuilder IitMethodInvocationImposterBuilder.Callback(itCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IitMethodInvocationsSetup IitMethodInvocationsSetup.CallBefore(itCallbackDelegate callback)
+                IitMethodInvocationImposterBuilder IitMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IitMethodInvocationsSetup IitMethodInvocationsSetup.CallAfter(itCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void itMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -4565,121 +4199,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.invocationHistory(int invocationHistory)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class invocationHistoryMethodInvocationsSetup : IinvocationHistoryMethodInvocationsSetup
+        class invocationHistoryMethodInvocationImposterGroup
         {
-            internal static invocationHistoryMethodInvocationsSetup DefaultInvocationSetup = new invocationHistoryMethodInvocationsSetup(new invocationHistoryArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static invocationHistoryMethodInvocationImposterGroup Default = new invocationHistoryMethodInvocationImposterGroup(new invocationHistoryArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal invocationHistoryArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int invocationHistory)
-            {
-            }
-
-            public invocationHistoryMethodInvocationsSetup(invocationHistoryArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public invocationHistoryMethodInvocationImposterGroup(invocationHistoryArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int invocationHistory) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int invocationHistory) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int invocationHistory) =>
-                {
-                    throw exceptionGenerator(invocationHistory);
-                };
-                return this;
-            }
-
-            IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.CallBefore(invocationHistoryCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.CallAfter(invocationHistoryCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int invocationHistory)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(invocationHistory);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(invocationHistory);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(invocationHistory);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(invocationHistory);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal invocationHistoryDelegate? ResultGenerator { get; set; }
-                internal invocationHistoryCallbackDelegate? CallBefore { get; set; }
-                internal invocationHistoryCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private invocationHistoryDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<invocationHistoryCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<invocationHistoryCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int invocationHistory)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(invocationHistory);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(invocationHistory);
+                    }
+                }
+
+                internal void Callback(invocationHistoryCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int invocationHistory) =>
+                    {
+                        throw exceptionGenerator(invocationHistory);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int invocationHistory)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IinvocationHistoryMethodInvocationsSetup
+        public interface IinvocationHistoryMethodInvocationImposterBuilder
         {
-            IinvocationHistoryMethodInvocationsSetup Throws<TException>()
+            IinvocationHistoryMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IinvocationHistoryMethodInvocationsSetup Throws(System.Exception exception);
-            IinvocationHistoryMethodInvocationsSetup Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator);
-            IinvocationHistoryMethodInvocationsSetup CallBefore(invocationHistoryCallbackDelegate callback);
-            IinvocationHistoryMethodInvocationsSetup CallAfter(invocationHistoryCallbackDelegate callback);
+            IinvocationHistoryMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IinvocationHistoryMethodInvocationImposterBuilder Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator);
+            IinvocationHistoryMethodInvocationImposterBuilder Callback(invocationHistoryCallbackDelegate callback);
+            IinvocationHistoryMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -4690,14 +4300,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.invocationHistory(int invocationHistory)
-        public interface IinvocationHistoryMethodImposterBuilder : IinvocationHistoryMethodInvocationsSetup, invocationHistoryMethodInvocationVerifier
+        public interface IinvocationHistoryMethodImposterBuilder : IinvocationHistoryMethodInvocationImposterBuilder, invocationHistoryMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class invocationHistoryMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<invocationHistoryMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<invocationHistoryMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<invocationHistoryMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<invocationHistoryMethodInvocationImposterGroup>();
             private readonly invocationHistoryMethodInvocationHistoryCollection _invocationHistoryMethodInvocationHistoryCollection;
             public invocationHistoryMethodImposter(invocationHistoryMethodInvocationHistoryCollection _invocationHistoryMethodInvocationHistoryCollection)
             {
@@ -4706,10 +4316,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(invocationHistoryArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private invocationHistoryMethodInvocationsSetup? FindMatchingSetup(invocationHistoryArguments arguments)
+            private invocationHistoryMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(invocationHistoryArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -4723,10 +4333,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int invocationHistory)
             {
                 var arguments = new invocationHistoryArguments(invocationHistory);
-                var matchingSetup = FindMatchingSetup(arguments) ?? invocationHistoryMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? invocationHistoryMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(invocationHistory);
+                    matchingInvocationImposterGroup.Invoke(invocationHistory);
                     _invocationHistoryMethodInvocationHistoryCollection.Add(new invocationHistoryMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -4742,58 +4352,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly invocationHistoryMethodImposter _imposter;
                 private readonly invocationHistoryMethodInvocationHistoryCollection _invocationHistoryMethodInvocationHistoryCollection;
                 private readonly invocationHistoryArgumentsCriteria _argumentsCriteria;
-                private invocationHistoryMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly invocationHistoryMethodInvocationImposterGroup _invocationImposterGroup;
+                private invocationHistoryMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(invocationHistoryMethodImposter _imposter, invocationHistoryMethodInvocationHistoryCollection _invocationHistoryMethodInvocationHistoryCollection, invocationHistoryArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._invocationHistoryMethodInvocationHistoryCollection = _invocationHistoryMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new invocationHistoryMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IinvocationHistoryMethodInvocationsSetup GetOrAddInvocationSetup()
+                IinvocationHistoryMethodInvocationImposterBuilder IinvocationHistoryMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int invocationHistory) =>
                     {
-                        _existingInvocationSetup = new invocationHistoryMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws<TException>()
+                IinvocationHistoryMethodInvocationImposterBuilder IinvocationHistoryMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int invocationHistory) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws(System.Exception exception)
+                IinvocationHistoryMethodInvocationImposterBuilder IinvocationHistoryMethodInvocationImposterBuilder.Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int invocationHistory) =>
+                    {
+                        throw exceptionGenerator.Invoke(invocationHistory);
+                    });
+                    return this;
                 }
 
-                IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.Throws(invocationHistoryExceptionGeneratorDelegate exceptionGenerator)
+                IinvocationHistoryMethodInvocationImposterBuilder IinvocationHistoryMethodInvocationImposterBuilder.Callback(invocationHistoryCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.CallBefore(invocationHistoryCallbackDelegate callback)
+                IinvocationHistoryMethodInvocationImposterBuilder IinvocationHistoryMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IinvocationHistoryMethodInvocationsSetup IinvocationHistoryMethodInvocationsSetup.CallAfter(invocationHistoryCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void invocationHistoryMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -4879,121 +4486,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.nextSetup(int nextSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class nextSetupMethodInvocationsSetup : InextSetupMethodInvocationsSetup
+        class nextSetupMethodInvocationImposterGroup
         {
-            internal static nextSetupMethodInvocationsSetup DefaultInvocationSetup = new nextSetupMethodInvocationsSetup(new nextSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static nextSetupMethodInvocationImposterGroup Default = new nextSetupMethodInvocationImposterGroup(new nextSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal nextSetupArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int nextSetup)
-            {
-            }
-
-            public nextSetupMethodInvocationsSetup(nextSetupArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public nextSetupMethodInvocationImposterGroup(nextSetupArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int nextSetup) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int nextSetup) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int nextSetup) =>
-                {
-                    throw exceptionGenerator(nextSetup);
-                };
-                return this;
-            }
-
-            InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.CallBefore(nextSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.CallAfter(nextSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int nextSetup)
             {
-                var nextSetup_1 = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup_1.CallBefore != null)
-                {
-                    nextSetup_1.CallBefore(nextSetup);
-                }
-
-                if (nextSetup_1.ResultGenerator == null)
-                {
-                    nextSetup_1.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup_1.ResultGenerator.Invoke(nextSetup);
-                if (nextSetup_1.CallAfter != null)
-                {
-                    nextSetup_1.CallAfter(nextSetup);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(nextSetup);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal nextSetupDelegate? ResultGenerator { get; set; }
-                internal nextSetupCallbackDelegate? CallBefore { get; set; }
-                internal nextSetupCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private nextSetupDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<nextSetupCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<nextSetupCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int nextSetup)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(nextSetup);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(nextSetup);
+                    }
+                }
+
+                internal void Callback(nextSetupCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int nextSetup) =>
+                    {
+                        throw exceptionGenerator(nextSetup);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int nextSetup)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface InextSetupMethodInvocationsSetup
+        public interface InextSetupMethodInvocationImposterBuilder
         {
-            InextSetupMethodInvocationsSetup Throws<TException>()
+            InextSetupMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            InextSetupMethodInvocationsSetup Throws(System.Exception exception);
-            InextSetupMethodInvocationsSetup Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator);
-            InextSetupMethodInvocationsSetup CallBefore(nextSetupCallbackDelegate callback);
-            InextSetupMethodInvocationsSetup CallAfter(nextSetupCallbackDelegate callback);
+            InextSetupMethodInvocationImposterBuilder Throws(System.Exception exception);
+            InextSetupMethodInvocationImposterBuilder Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator);
+            InextSetupMethodInvocationImposterBuilder Callback(nextSetupCallbackDelegate callback);
+            InextSetupMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -5004,14 +4587,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.nextSetup(int nextSetup)
-        public interface InextSetupMethodImposterBuilder : InextSetupMethodInvocationsSetup, nextSetupMethodInvocationVerifier
+        public interface InextSetupMethodImposterBuilder : InextSetupMethodInvocationImposterBuilder, nextSetupMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class nextSetupMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<nextSetupMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<nextSetupMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<nextSetupMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<nextSetupMethodInvocationImposterGroup>();
             private readonly nextSetupMethodInvocationHistoryCollection _nextSetupMethodInvocationHistoryCollection;
             public nextSetupMethodImposter(nextSetupMethodInvocationHistoryCollection _nextSetupMethodInvocationHistoryCollection)
             {
@@ -5020,10 +4603,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(nextSetupArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private nextSetupMethodInvocationsSetup? FindMatchingSetup(nextSetupArguments arguments)
+            private nextSetupMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(nextSetupArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -5037,10 +4620,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int nextSetup)
             {
                 var arguments = new nextSetupArguments(nextSetup);
-                var matchingSetup = FindMatchingSetup(arguments) ?? nextSetupMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? nextSetupMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(nextSetup);
+                    matchingInvocationImposterGroup.Invoke(nextSetup);
                     _nextSetupMethodInvocationHistoryCollection.Add(new nextSetupMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -5056,58 +4639,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly nextSetupMethodImposter _imposter;
                 private readonly nextSetupMethodInvocationHistoryCollection _nextSetupMethodInvocationHistoryCollection;
                 private readonly nextSetupArgumentsCriteria _argumentsCriteria;
-                private nextSetupMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly nextSetupMethodInvocationImposterGroup _invocationImposterGroup;
+                private nextSetupMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(nextSetupMethodImposter _imposter, nextSetupMethodInvocationHistoryCollection _nextSetupMethodInvocationHistoryCollection, nextSetupArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._nextSetupMethodInvocationHistoryCollection = _nextSetupMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new nextSetupMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private InextSetupMethodInvocationsSetup GetOrAddInvocationSetup()
+                InextSetupMethodInvocationImposterBuilder InextSetupMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int nextSetup) =>
                     {
-                        _existingInvocationSetup = new nextSetupMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws<TException>()
+                InextSetupMethodInvocationImposterBuilder InextSetupMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int nextSetup) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws(System.Exception exception)
+                InextSetupMethodInvocationImposterBuilder InextSetupMethodInvocationImposterBuilder.Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int nextSetup) =>
+                    {
+                        throw exceptionGenerator.Invoke(nextSetup);
+                    });
+                    return this;
                 }
 
-                InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.Throws(nextSetupExceptionGeneratorDelegate exceptionGenerator)
+                InextSetupMethodInvocationImposterBuilder InextSetupMethodInvocationImposterBuilder.Callback(nextSetupCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.CallBefore(nextSetupCallbackDelegate callback)
+                InextSetupMethodInvocationImposterBuilder InextSetupMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                InextSetupMethodInvocationsSetup InextSetupMethodInvocationsSetup.CallAfter(nextSetupCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void nextSetupMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -5193,121 +4773,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.GetNextSetup(int GetNextSetup)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class GetNextSetupMethodInvocationsSetup : IGetNextSetupMethodInvocationsSetup
+        class GetNextSetupMethodInvocationImposterGroup
         {
-            internal static GetNextSetupMethodInvocationsSetup DefaultInvocationSetup = new GetNextSetupMethodInvocationsSetup(new GetNextSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static GetNextSetupMethodInvocationImposterGroup Default = new GetNextSetupMethodInvocationImposterGroup(new GetNextSetupArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal GetNextSetupArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int GetNextSetup)
-            {
-            }
-
-            public GetNextSetupMethodInvocationsSetup(GetNextSetupArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public GetNextSetupMethodInvocationImposterGroup(GetNextSetupArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int GetNextSetup) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int GetNextSetup) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int GetNextSetup) =>
-                {
-                    throw exceptionGenerator(GetNextSetup);
-                };
-                return this;
-            }
-
-            IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.CallBefore(GetNextSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.CallAfter(GetNextSetupCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup_1()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int GetNextSetup)
             {
-                var nextSetup = GetNextSetup_1() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(GetNextSetup);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(GetNextSetup);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(GetNextSetup);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(GetNextSetup);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal GetNextSetupDelegate? ResultGenerator { get; set; }
-                internal GetNextSetupCallbackDelegate? CallBefore { get; set; }
-                internal GetNextSetupCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private GetNextSetupDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<GetNextSetupCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GetNextSetupCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int GetNextSetup)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(GetNextSetup);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(GetNextSetup);
+                    }
+                }
+
+                internal void Callback(GetNextSetupCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int GetNextSetup) =>
+                    {
+                        throw exceptionGenerator(GetNextSetup);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int GetNextSetup)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGetNextSetupMethodInvocationsSetup
+        public interface IGetNextSetupMethodInvocationImposterBuilder
         {
-            IGetNextSetupMethodInvocationsSetup Throws<TException>()
+            IGetNextSetupMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IGetNextSetupMethodInvocationsSetup Throws(System.Exception exception);
-            IGetNextSetupMethodInvocationsSetup Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator);
-            IGetNextSetupMethodInvocationsSetup CallBefore(GetNextSetupCallbackDelegate callback);
-            IGetNextSetupMethodInvocationsSetup CallAfter(GetNextSetupCallbackDelegate callback);
+            IGetNextSetupMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IGetNextSetupMethodInvocationImposterBuilder Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator);
+            IGetNextSetupMethodInvocationImposterBuilder Callback(GetNextSetupCallbackDelegate callback);
+            IGetNextSetupMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -5318,14 +4874,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.GetNextSetup(int GetNextSetup)
-        public interface IGetNextSetupMethodImposterBuilder : IGetNextSetupMethodInvocationsSetup, GetNextSetupMethodInvocationVerifier
+        public interface IGetNextSetupMethodImposterBuilder : IGetNextSetupMethodInvocationImposterBuilder, GetNextSetupMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class GetNextSetupMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<GetNextSetupMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<GetNextSetupMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<GetNextSetupMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<GetNextSetupMethodInvocationImposterGroup>();
             private readonly GetNextSetupMethodInvocationHistoryCollection _getNextSetupMethodInvocationHistoryCollection;
             public GetNextSetupMethodImposter(GetNextSetupMethodInvocationHistoryCollection _getNextSetupMethodInvocationHistoryCollection)
             {
@@ -5334,10 +4890,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(GetNextSetupArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private GetNextSetupMethodInvocationsSetup? FindMatchingSetup(GetNextSetupArguments arguments)
+            private GetNextSetupMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GetNextSetupArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -5351,10 +4907,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int GetNextSetup)
             {
                 var arguments = new GetNextSetupArguments(GetNextSetup);
-                var matchingSetup = FindMatchingSetup(arguments) ?? GetNextSetupMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? GetNextSetupMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(GetNextSetup);
+                    matchingInvocationImposterGroup.Invoke(GetNextSetup);
                     _getNextSetupMethodInvocationHistoryCollection.Add(new GetNextSetupMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -5370,58 +4926,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly GetNextSetupMethodImposter _imposter;
                 private readonly GetNextSetupMethodInvocationHistoryCollection _getNextSetupMethodInvocationHistoryCollection;
                 private readonly GetNextSetupArgumentsCriteria _argumentsCriteria;
-                private GetNextSetupMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly GetNextSetupMethodInvocationImposterGroup _invocationImposterGroup;
+                private GetNextSetupMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(GetNextSetupMethodImposter _imposter, GetNextSetupMethodInvocationHistoryCollection _getNextSetupMethodInvocationHistoryCollection, GetNextSetupArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._getNextSetupMethodInvocationHistoryCollection = _getNextSetupMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new GetNextSetupMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IGetNextSetupMethodInvocationsSetup GetOrAddInvocationSetup()
+                IGetNextSetupMethodInvocationImposterBuilder IGetNextSetupMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int GetNextSetup) =>
                     {
-                        _existingInvocationSetup = new GetNextSetupMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws<TException>()
+                IGetNextSetupMethodInvocationImposterBuilder IGetNextSetupMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int GetNextSetup) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws(System.Exception exception)
+                IGetNextSetupMethodInvocationImposterBuilder IGetNextSetupMethodInvocationImposterBuilder.Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int GetNextSetup) =>
+                    {
+                        throw exceptionGenerator.Invoke(GetNextSetup);
+                    });
+                    return this;
                 }
 
-                IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.Throws(GetNextSetupExceptionGeneratorDelegate exceptionGenerator)
+                IGetNextSetupMethodInvocationImposterBuilder IGetNextSetupMethodInvocationImposterBuilder.Callback(GetNextSetupCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.CallBefore(GetNextSetupCallbackDelegate callback)
+                IGetNextSetupMethodInvocationImposterBuilder IGetNextSetupMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IGetNextSetupMethodInvocationsSetup IGetNextSetupMethodInvocationsSetup.CallAfter(GetNextSetupCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void GetNextSetupMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -5507,121 +5060,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.exceptionGenerator(int exceptionGenerator)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class exceptionGeneratorMethodInvocationsSetup : IexceptionGeneratorMethodInvocationsSetup
+        class exceptionGeneratorMethodInvocationImposterGroup
         {
-            internal static exceptionGeneratorMethodInvocationsSetup DefaultInvocationSetup = new exceptionGeneratorMethodInvocationsSetup(new exceptionGeneratorArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static exceptionGeneratorMethodInvocationImposterGroup Default = new exceptionGeneratorMethodInvocationImposterGroup(new exceptionGeneratorArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal exceptionGeneratorArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int exceptionGenerator)
-            {
-            }
-
-            public exceptionGeneratorMethodInvocationsSetup(exceptionGeneratorArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public exceptionGeneratorMethodInvocationImposterGroup(exceptionGeneratorArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int exceptionGenerator) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int exceptionGenerator) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int exceptionGenerator) =>
-                {
-                    throw exceptionGenerator_1(exceptionGenerator);
-                };
-                return this;
-            }
-
-            IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.CallBefore(exceptionGeneratorCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.CallAfter(exceptionGeneratorCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int exceptionGenerator)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(exceptionGenerator);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(exceptionGenerator);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(exceptionGenerator);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(exceptionGenerator);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal exceptionGeneratorDelegate? ResultGenerator { get; set; }
-                internal exceptionGeneratorCallbackDelegate? CallBefore { get; set; }
-                internal exceptionGeneratorCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private exceptionGeneratorDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<exceptionGeneratorCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<exceptionGeneratorCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int exceptionGenerator)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(exceptionGenerator);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(exceptionGenerator);
+                    }
+                }
+
+                internal void Callback(exceptionGeneratorCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1)
+                {
+                    _resultGenerator = (int exceptionGenerator) =>
+                    {
+                        throw exceptionGenerator_1(exceptionGenerator);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int exceptionGenerator)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IexceptionGeneratorMethodInvocationsSetup
+        public interface IexceptionGeneratorMethodInvocationImposterBuilder
         {
-            IexceptionGeneratorMethodInvocationsSetup Throws<TException>()
+            IexceptionGeneratorMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IexceptionGeneratorMethodInvocationsSetup Throws(System.Exception exception);
-            IexceptionGeneratorMethodInvocationsSetup Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1);
-            IexceptionGeneratorMethodInvocationsSetup CallBefore(exceptionGeneratorCallbackDelegate callback);
-            IexceptionGeneratorMethodInvocationsSetup CallAfter(exceptionGeneratorCallbackDelegate callback);
+            IexceptionGeneratorMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IexceptionGeneratorMethodInvocationImposterBuilder Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1);
+            IexceptionGeneratorMethodInvocationImposterBuilder Callback(exceptionGeneratorCallbackDelegate callback);
+            IexceptionGeneratorMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -5632,14 +5161,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.exceptionGenerator(int exceptionGenerator)
-        public interface IexceptionGeneratorMethodImposterBuilder : IexceptionGeneratorMethodInvocationsSetup, exceptionGeneratorMethodInvocationVerifier
+        public interface IexceptionGeneratorMethodImposterBuilder : IexceptionGeneratorMethodInvocationImposterBuilder, exceptionGeneratorMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class exceptionGeneratorMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<exceptionGeneratorMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<exceptionGeneratorMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<exceptionGeneratorMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<exceptionGeneratorMethodInvocationImposterGroup>();
             private readonly exceptionGeneratorMethodInvocationHistoryCollection _exceptionGeneratorMethodInvocationHistoryCollection;
             public exceptionGeneratorMethodImposter(exceptionGeneratorMethodInvocationHistoryCollection _exceptionGeneratorMethodInvocationHistoryCollection)
             {
@@ -5648,10 +5177,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(exceptionGeneratorArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private exceptionGeneratorMethodInvocationsSetup? FindMatchingSetup(exceptionGeneratorArguments arguments)
+            private exceptionGeneratorMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(exceptionGeneratorArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -5665,10 +5194,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int exceptionGenerator)
             {
                 var arguments = new exceptionGeneratorArguments(exceptionGenerator);
-                var matchingSetup = FindMatchingSetup(arguments) ?? exceptionGeneratorMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? exceptionGeneratorMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(exceptionGenerator);
+                    matchingInvocationImposterGroup.Invoke(exceptionGenerator);
                     _exceptionGeneratorMethodInvocationHistoryCollection.Add(new exceptionGeneratorMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -5684,58 +5213,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly exceptionGeneratorMethodImposter _imposter;
                 private readonly exceptionGeneratorMethodInvocationHistoryCollection _exceptionGeneratorMethodInvocationHistoryCollection;
                 private readonly exceptionGeneratorArgumentsCriteria _argumentsCriteria;
-                private exceptionGeneratorMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly exceptionGeneratorMethodInvocationImposterGroup _invocationImposterGroup;
+                private exceptionGeneratorMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(exceptionGeneratorMethodImposter _imposter, exceptionGeneratorMethodInvocationHistoryCollection _exceptionGeneratorMethodInvocationHistoryCollection, exceptionGeneratorArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._exceptionGeneratorMethodInvocationHistoryCollection = _exceptionGeneratorMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new exceptionGeneratorMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IexceptionGeneratorMethodInvocationsSetup GetOrAddInvocationSetup()
+                IexceptionGeneratorMethodInvocationImposterBuilder IexceptionGeneratorMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int exceptionGenerator) =>
                     {
-                        _existingInvocationSetup = new exceptionGeneratorMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws<TException>()
+                IexceptionGeneratorMethodInvocationImposterBuilder IexceptionGeneratorMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int exceptionGenerator) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws(System.Exception exception)
+                IexceptionGeneratorMethodInvocationImposterBuilder IexceptionGeneratorMethodInvocationImposterBuilder.Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int exceptionGenerator) =>
+                    {
+                        throw exceptionGenerator_1.Invoke(exceptionGenerator);
+                    });
+                    return this;
                 }
 
-                IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.Throws(exceptionGeneratorExceptionGeneratorDelegate exceptionGenerator_1)
+                IexceptionGeneratorMethodInvocationImposterBuilder IexceptionGeneratorMethodInvocationImposterBuilder.Callback(exceptionGeneratorCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator_1);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.CallBefore(exceptionGeneratorCallbackDelegate callback)
+                IexceptionGeneratorMethodInvocationImposterBuilder IexceptionGeneratorMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IexceptionGeneratorMethodInvocationsSetup IexceptionGeneratorMethodInvocationsSetup.CallAfter(exceptionGeneratorCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void exceptionGeneratorMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -5821,121 +5347,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.callback(int callback)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class callbackMethodInvocationsSetup : IcallbackMethodInvocationsSetup
+        class callbackMethodInvocationImposterGroup
         {
-            internal static callbackMethodInvocationsSetup DefaultInvocationSetup = new callbackMethodInvocationsSetup(new callbackArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static callbackMethodInvocationImposterGroup Default = new callbackMethodInvocationImposterGroup(new callbackArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal callbackArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int callback)
-            {
-            }
-
-            public callbackMethodInvocationsSetup(callbackArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public callbackMethodInvocationImposterGroup(callbackArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int callback) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int callback) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws(callbackExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int callback) =>
-                {
-                    throw exceptionGenerator(callback);
-                };
-                return this;
-            }
-
-            IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.CallBefore(callbackCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.CallAfter(callbackCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int callback)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(callback);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(callback);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(callback);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(callback);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal callbackDelegate? ResultGenerator { get; set; }
-                internal callbackCallbackDelegate? CallBefore { get; set; }
-                internal callbackCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private callbackDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<callbackCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<callbackCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int callback)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(callback);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(callback);
+                    }
+                }
+
+                internal void Callback(callbackCallbackDelegate callback_1)
+                {
+                    _callbacks.Enqueue(callback_1);
+                }
+
+                internal void Throws(callbackExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int callback) =>
+                    {
+                        throw exceptionGenerator(callback);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int callback)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IcallbackMethodInvocationsSetup
+        public interface IcallbackMethodInvocationImposterBuilder
         {
-            IcallbackMethodInvocationsSetup Throws<TException>()
+            IcallbackMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IcallbackMethodInvocationsSetup Throws(System.Exception exception);
-            IcallbackMethodInvocationsSetup Throws(callbackExceptionGeneratorDelegate exceptionGenerator);
-            IcallbackMethodInvocationsSetup CallBefore(callbackCallbackDelegate callback_1);
-            IcallbackMethodInvocationsSetup CallAfter(callbackCallbackDelegate callback_1);
+            IcallbackMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IcallbackMethodInvocationImposterBuilder Throws(callbackExceptionGeneratorDelegate exceptionGenerator);
+            IcallbackMethodInvocationImposterBuilder Callback(callbackCallbackDelegate callback_1);
+            IcallbackMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -5946,14 +5448,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.callback(int callback)
-        public interface IcallbackMethodImposterBuilder : IcallbackMethodInvocationsSetup, callbackMethodInvocationVerifier
+        public interface IcallbackMethodImposterBuilder : IcallbackMethodInvocationImposterBuilder, callbackMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class callbackMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<callbackMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<callbackMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<callbackMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<callbackMethodInvocationImposterGroup>();
             private readonly callbackMethodInvocationHistoryCollection _callbackMethodInvocationHistoryCollection;
             public callbackMethodImposter(callbackMethodInvocationHistoryCollection _callbackMethodInvocationHistoryCollection)
             {
@@ -5962,10 +5464,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(callbackArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private callbackMethodInvocationsSetup? FindMatchingSetup(callbackArguments arguments)
+            private callbackMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(callbackArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -5979,10 +5481,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int callback)
             {
                 var arguments = new callbackArguments(callback);
-                var matchingSetup = FindMatchingSetup(arguments) ?? callbackMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? callbackMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(callback);
+                    matchingInvocationImposterGroup.Invoke(callback);
                     _callbackMethodInvocationHistoryCollection.Add(new callbackMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -5998,58 +5500,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly callbackMethodImposter _imposter;
                 private readonly callbackMethodInvocationHistoryCollection _callbackMethodInvocationHistoryCollection;
                 private readonly callbackArgumentsCriteria _argumentsCriteria;
-                private callbackMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly callbackMethodInvocationImposterGroup _invocationImposterGroup;
+                private callbackMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(callbackMethodImposter _imposter, callbackMethodInvocationHistoryCollection _callbackMethodInvocationHistoryCollection, callbackArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._callbackMethodInvocationHistoryCollection = _callbackMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new callbackMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IcallbackMethodInvocationsSetup GetOrAddInvocationSetup()
+                IcallbackMethodInvocationImposterBuilder IcallbackMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int callback) =>
                     {
-                        _existingInvocationSetup = new callbackMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws<TException>()
+                IcallbackMethodInvocationImposterBuilder IcallbackMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int callback) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws(System.Exception exception)
+                IcallbackMethodInvocationImposterBuilder IcallbackMethodInvocationImposterBuilder.Throws(callbackExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int callback) =>
+                    {
+                        throw exceptionGenerator.Invoke(callback);
+                    });
+                    return this;
                 }
 
-                IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.Throws(callbackExceptionGeneratorDelegate exceptionGenerator)
+                IcallbackMethodInvocationImposterBuilder IcallbackMethodInvocationImposterBuilder.Callback(callbackCallbackDelegate callback_1)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback_1);
+                    return this;
                 }
 
-                IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.CallBefore(callbackCallbackDelegate callback_1)
+                IcallbackMethodInvocationImposterBuilder IcallbackMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback_1);
-                    return invocationSetup;
-                }
-
-                IcallbackMethodInvocationsSetup IcallbackMethodInvocationsSetup.CallAfter(callbackCallbackDelegate callback_1)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback_1);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void callbackMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -6135,121 +5634,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.resultGenerator(int resultGenerator)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class resultGeneratorMethodInvocationsSetup : IresultGeneratorMethodInvocationsSetup
+        class resultGeneratorMethodInvocationImposterGroup
         {
-            internal static resultGeneratorMethodInvocationsSetup DefaultInvocationSetup = new resultGeneratorMethodInvocationsSetup(new resultGeneratorArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static resultGeneratorMethodInvocationImposterGroup Default = new resultGeneratorMethodInvocationImposterGroup(new resultGeneratorArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal resultGeneratorArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int resultGenerator)
-            {
-            }
-
-            public resultGeneratorMethodInvocationsSetup(resultGeneratorArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public resultGeneratorMethodInvocationImposterGroup(resultGeneratorArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int resultGenerator) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int resultGenerator) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int resultGenerator) =>
-                {
-                    throw exceptionGenerator(resultGenerator);
-                };
-                return this;
-            }
-
-            IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.CallBefore(resultGeneratorCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.CallAfter(resultGeneratorCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int resultGenerator)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(resultGenerator);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(resultGenerator);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(resultGenerator);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(resultGenerator);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal resultGeneratorDelegate? ResultGenerator { get; set; }
-                internal resultGeneratorCallbackDelegate? CallBefore { get; set; }
-                internal resultGeneratorCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private resultGeneratorDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<resultGeneratorCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<resultGeneratorCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int resultGenerator)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(resultGenerator);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(resultGenerator);
+                    }
+                }
+
+                internal void Callback(resultGeneratorCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int resultGenerator) =>
+                    {
+                        throw exceptionGenerator(resultGenerator);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int resultGenerator)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IresultGeneratorMethodInvocationsSetup
+        public interface IresultGeneratorMethodInvocationImposterBuilder
         {
-            IresultGeneratorMethodInvocationsSetup Throws<TException>()
+            IresultGeneratorMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IresultGeneratorMethodInvocationsSetup Throws(System.Exception exception);
-            IresultGeneratorMethodInvocationsSetup Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator);
-            IresultGeneratorMethodInvocationsSetup CallBefore(resultGeneratorCallbackDelegate callback);
-            IresultGeneratorMethodInvocationsSetup CallAfter(resultGeneratorCallbackDelegate callback);
+            IresultGeneratorMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IresultGeneratorMethodInvocationImposterBuilder Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator);
+            IresultGeneratorMethodInvocationImposterBuilder Callback(resultGeneratorCallbackDelegate callback);
+            IresultGeneratorMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -6260,14 +5735,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.resultGenerator(int resultGenerator)
-        public interface IresultGeneratorMethodImposterBuilder : IresultGeneratorMethodInvocationsSetup, resultGeneratorMethodInvocationVerifier
+        public interface IresultGeneratorMethodImposterBuilder : IresultGeneratorMethodInvocationImposterBuilder, resultGeneratorMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class resultGeneratorMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<resultGeneratorMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<resultGeneratorMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<resultGeneratorMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<resultGeneratorMethodInvocationImposterGroup>();
             private readonly resultGeneratorMethodInvocationHistoryCollection _resultGeneratorMethodInvocationHistoryCollection;
             public resultGeneratorMethodImposter(resultGeneratorMethodInvocationHistoryCollection _resultGeneratorMethodInvocationHistoryCollection)
             {
@@ -6276,10 +5751,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(resultGeneratorArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private resultGeneratorMethodInvocationsSetup? FindMatchingSetup(resultGeneratorArguments arguments)
+            private resultGeneratorMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(resultGeneratorArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -6293,10 +5768,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int resultGenerator)
             {
                 var arguments = new resultGeneratorArguments(resultGenerator);
-                var matchingSetup = FindMatchingSetup(arguments) ?? resultGeneratorMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? resultGeneratorMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(resultGenerator);
+                    matchingInvocationImposterGroup.Invoke(resultGenerator);
                     _resultGeneratorMethodInvocationHistoryCollection.Add(new resultGeneratorMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -6312,58 +5787,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly resultGeneratorMethodImposter _imposter;
                 private readonly resultGeneratorMethodInvocationHistoryCollection _resultGeneratorMethodInvocationHistoryCollection;
                 private readonly resultGeneratorArgumentsCriteria _argumentsCriteria;
-                private resultGeneratorMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly resultGeneratorMethodInvocationImposterGroup _invocationImposterGroup;
+                private resultGeneratorMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(resultGeneratorMethodImposter _imposter, resultGeneratorMethodInvocationHistoryCollection _resultGeneratorMethodInvocationHistoryCollection, resultGeneratorArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._resultGeneratorMethodInvocationHistoryCollection = _resultGeneratorMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new resultGeneratorMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IresultGeneratorMethodInvocationsSetup GetOrAddInvocationSetup()
+                IresultGeneratorMethodInvocationImposterBuilder IresultGeneratorMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int resultGenerator) =>
                     {
-                        _existingInvocationSetup = new resultGeneratorMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws<TException>()
+                IresultGeneratorMethodInvocationImposterBuilder IresultGeneratorMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int resultGenerator) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws(System.Exception exception)
+                IresultGeneratorMethodInvocationImposterBuilder IresultGeneratorMethodInvocationImposterBuilder.Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int resultGenerator) =>
+                    {
+                        throw exceptionGenerator.Invoke(resultGenerator);
+                    });
+                    return this;
                 }
 
-                IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.Throws(resultGeneratorExceptionGeneratorDelegate exceptionGenerator)
+                IresultGeneratorMethodInvocationImposterBuilder IresultGeneratorMethodInvocationImposterBuilder.Callback(resultGeneratorCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.CallBefore(resultGeneratorCallbackDelegate callback)
+                IresultGeneratorMethodInvocationImposterBuilder IresultGeneratorMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IresultGeneratorMethodInvocationsSetup IresultGeneratorMethodInvocationsSetup.CallAfter(resultGeneratorCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void resultGeneratorMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -6449,121 +5921,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.argumentsCriteria(int argumentsCriteria)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class argumentsCriteriaMethodInvocationsSetup : IargumentsCriteriaMethodInvocationsSetup
+        class argumentsCriteriaMethodInvocationImposterGroup
         {
-            internal static argumentsCriteriaMethodInvocationsSetup DefaultInvocationSetup = new argumentsCriteriaMethodInvocationsSetup(new argumentsCriteriaArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static argumentsCriteriaMethodInvocationImposterGroup Default = new argumentsCriteriaMethodInvocationImposterGroup(new argumentsCriteriaArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal argumentsCriteriaArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int argumentsCriteria)
-            {
-            }
-
-            public argumentsCriteriaMethodInvocationsSetup(argumentsCriteriaArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public argumentsCriteriaMethodInvocationImposterGroup(argumentsCriteriaArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int argumentsCriteria) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int argumentsCriteria) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int argumentsCriteria) =>
-                {
-                    throw exceptionGenerator(argumentsCriteria);
-                };
-                return this;
-            }
-
-            IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.CallBefore(argumentsCriteriaCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.CallAfter(argumentsCriteriaCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int argumentsCriteria)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(argumentsCriteria);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(argumentsCriteria);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(argumentsCriteria);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(argumentsCriteria);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal argumentsCriteriaDelegate? ResultGenerator { get; set; }
-                internal argumentsCriteriaCallbackDelegate? CallBefore { get; set; }
-                internal argumentsCriteriaCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private argumentsCriteriaDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<argumentsCriteriaCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<argumentsCriteriaCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int argumentsCriteria)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(argumentsCriteria);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(argumentsCriteria);
+                    }
+                }
+
+                internal void Callback(argumentsCriteriaCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int argumentsCriteria) =>
+                    {
+                        throw exceptionGenerator(argumentsCriteria);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int argumentsCriteria)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IargumentsCriteriaMethodInvocationsSetup
+        public interface IargumentsCriteriaMethodInvocationImposterBuilder
         {
-            IargumentsCriteriaMethodInvocationsSetup Throws<TException>()
+            IargumentsCriteriaMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IargumentsCriteriaMethodInvocationsSetup Throws(System.Exception exception);
-            IargumentsCriteriaMethodInvocationsSetup Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator);
-            IargumentsCriteriaMethodInvocationsSetup CallBefore(argumentsCriteriaCallbackDelegate callback);
-            IargumentsCriteriaMethodInvocationsSetup CallAfter(argumentsCriteriaCallbackDelegate callback);
+            IargumentsCriteriaMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IargumentsCriteriaMethodInvocationImposterBuilder Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator);
+            IargumentsCriteriaMethodInvocationImposterBuilder Callback(argumentsCriteriaCallbackDelegate callback);
+            IargumentsCriteriaMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -6574,14 +6022,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.argumentsCriteria(int argumentsCriteria)
-        public interface IargumentsCriteriaMethodImposterBuilder : IargumentsCriteriaMethodInvocationsSetup, argumentsCriteriaMethodInvocationVerifier
+        public interface IargumentsCriteriaMethodImposterBuilder : IargumentsCriteriaMethodInvocationImposterBuilder, argumentsCriteriaMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class argumentsCriteriaMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<argumentsCriteriaMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<argumentsCriteriaMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<argumentsCriteriaMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<argumentsCriteriaMethodInvocationImposterGroup>();
             private readonly argumentsCriteriaMethodInvocationHistoryCollection _argumentsCriteriaMethodInvocationHistoryCollection;
             public argumentsCriteriaMethodImposter(argumentsCriteriaMethodInvocationHistoryCollection _argumentsCriteriaMethodInvocationHistoryCollection)
             {
@@ -6590,10 +6038,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(argumentsCriteriaArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private argumentsCriteriaMethodInvocationsSetup? FindMatchingSetup(argumentsCriteriaArguments arguments)
+            private argumentsCriteriaMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(argumentsCriteriaArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -6607,10 +6055,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int argumentsCriteria)
             {
                 var arguments = new argumentsCriteriaArguments(argumentsCriteria);
-                var matchingSetup = FindMatchingSetup(arguments) ?? argumentsCriteriaMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? argumentsCriteriaMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(argumentsCriteria);
+                    matchingInvocationImposterGroup.Invoke(argumentsCriteria);
                     _argumentsCriteriaMethodInvocationHistoryCollection.Add(new argumentsCriteriaMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -6626,58 +6074,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly argumentsCriteriaMethodImposter _imposter;
                 private readonly argumentsCriteriaMethodInvocationHistoryCollection _argumentsCriteriaMethodInvocationHistoryCollection;
                 private readonly argumentsCriteriaArgumentsCriteria _argumentsCriteria;
-                private argumentsCriteriaMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly argumentsCriteriaMethodInvocationImposterGroup _invocationImposterGroup;
+                private argumentsCriteriaMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(argumentsCriteriaMethodImposter _imposter, argumentsCriteriaMethodInvocationHistoryCollection _argumentsCriteriaMethodInvocationHistoryCollection, argumentsCriteriaArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._argumentsCriteriaMethodInvocationHistoryCollection = _argumentsCriteriaMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new argumentsCriteriaMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IargumentsCriteriaMethodInvocationsSetup GetOrAddInvocationSetup()
+                IargumentsCriteriaMethodInvocationImposterBuilder IargumentsCriteriaMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int argumentsCriteria) =>
                     {
-                        _existingInvocationSetup = new argumentsCriteriaMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws<TException>()
+                IargumentsCriteriaMethodInvocationImposterBuilder IargumentsCriteriaMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int argumentsCriteria) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws(System.Exception exception)
+                IargumentsCriteriaMethodInvocationImposterBuilder IargumentsCriteriaMethodInvocationImposterBuilder.Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int argumentsCriteria) =>
+                    {
+                        throw exceptionGenerator.Invoke(argumentsCriteria);
+                    });
+                    return this;
                 }
 
-                IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.Throws(argumentsCriteriaExceptionGeneratorDelegate exceptionGenerator)
+                IargumentsCriteriaMethodInvocationImposterBuilder IargumentsCriteriaMethodInvocationImposterBuilder.Callback(argumentsCriteriaCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.CallBefore(argumentsCriteriaCallbackDelegate callback)
+                IargumentsCriteriaMethodInvocationImposterBuilder IargumentsCriteriaMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IargumentsCriteriaMethodInvocationsSetup IargumentsCriteriaMethodInvocationsSetup.CallAfter(argumentsCriteriaCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void argumentsCriteriaMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -6763,121 +6208,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.TException(int TException)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class TExceptionMethodInvocationsSetup : ITExceptionMethodInvocationsSetup
+        class TExceptionMethodInvocationImposterGroup
         {
-            internal static TExceptionMethodInvocationsSetup DefaultInvocationSetup = new TExceptionMethodInvocationsSetup(new TExceptionArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static TExceptionMethodInvocationImposterGroup Default = new TExceptionMethodInvocationImposterGroup(new TExceptionArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal TExceptionArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int TException)
-            {
-            }
-
-            public TExceptionMethodInvocationsSetup(TExceptionArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public TExceptionMethodInvocationImposterGroup(TExceptionArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int TException) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int TException) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int TException) =>
-                {
-                    throw exceptionGenerator(TException);
-                };
-                return this;
-            }
-
-            ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.CallBefore(TExceptionCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.CallAfter(TExceptionCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int TException)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(TException);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(TException);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(TException);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(TException);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal TExceptionDelegate? ResultGenerator { get; set; }
-                internal TExceptionCallbackDelegate? CallBefore { get; set; }
-                internal TExceptionCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private TExceptionDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<TExceptionCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<TExceptionCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int TException)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(TException);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(TException);
+                    }
+                }
+
+                internal void Callback(TExceptionCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int TException) =>
+                    {
+                        throw exceptionGenerator(TException);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int TException)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ITExceptionMethodInvocationsSetup
+        public interface ITExceptionMethodInvocationImposterBuilder
         {
-            ITExceptionMethodInvocationsSetup Throws<TException>()
+            ITExceptionMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            ITExceptionMethodInvocationsSetup Throws(System.Exception exception);
-            ITExceptionMethodInvocationsSetup Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator);
-            ITExceptionMethodInvocationsSetup CallBefore(TExceptionCallbackDelegate callback);
-            ITExceptionMethodInvocationsSetup CallAfter(TExceptionCallbackDelegate callback);
+            ITExceptionMethodInvocationImposterBuilder Throws(System.Exception exception);
+            ITExceptionMethodInvocationImposterBuilder Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator);
+            ITExceptionMethodInvocationImposterBuilder Callback(TExceptionCallbackDelegate callback);
+            ITExceptionMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -6888,14 +6309,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.TException(int TException)
-        public interface ITExceptionMethodImposterBuilder : ITExceptionMethodInvocationsSetup, TExceptionMethodInvocationVerifier
+        public interface ITExceptionMethodImposterBuilder : ITExceptionMethodInvocationImposterBuilder, TExceptionMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class TExceptionMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<TExceptionMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<TExceptionMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<TExceptionMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<TExceptionMethodInvocationImposterGroup>();
             private readonly TExceptionMethodInvocationHistoryCollection _tExceptionMethodInvocationHistoryCollection;
             public TExceptionMethodImposter(TExceptionMethodInvocationHistoryCollection _tExceptionMethodInvocationHistoryCollection)
             {
@@ -6904,10 +6325,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(TExceptionArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private TExceptionMethodInvocationsSetup? FindMatchingSetup(TExceptionArguments arguments)
+            private TExceptionMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(TExceptionArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -6921,10 +6342,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int TException)
             {
                 var arguments = new TExceptionArguments(TException);
-                var matchingSetup = FindMatchingSetup(arguments) ?? TExceptionMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? TExceptionMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(TException);
+                    matchingInvocationImposterGroup.Invoke(TException);
                     _tExceptionMethodInvocationHistoryCollection.Add(new TExceptionMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -6940,58 +6361,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly TExceptionMethodImposter _imposter;
                 private readonly TExceptionMethodInvocationHistoryCollection _tExceptionMethodInvocationHistoryCollection;
                 private readonly TExceptionArgumentsCriteria _argumentsCriteria;
-                private TExceptionMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly TExceptionMethodInvocationImposterGroup _invocationImposterGroup;
+                private TExceptionMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(TExceptionMethodImposter _imposter, TExceptionMethodInvocationHistoryCollection _tExceptionMethodInvocationHistoryCollection, TExceptionArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._tExceptionMethodInvocationHistoryCollection = _tExceptionMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new TExceptionMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private ITExceptionMethodInvocationsSetup GetOrAddInvocationSetup()
+                ITExceptionMethodInvocationImposterBuilder ITExceptionMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int TException) =>
                     {
-                        _existingInvocationSetup = new TExceptionMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws<TException>()
+                ITExceptionMethodInvocationImposterBuilder ITExceptionMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int TException) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws(System.Exception exception)
+                ITExceptionMethodInvocationImposterBuilder ITExceptionMethodInvocationImposterBuilder.Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int TException) =>
+                    {
+                        throw exceptionGenerator.Invoke(TException);
+                    });
+                    return this;
                 }
 
-                ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.Throws(TExceptionExceptionGeneratorDelegate exceptionGenerator)
+                ITExceptionMethodInvocationImposterBuilder ITExceptionMethodInvocationImposterBuilder.Callback(TExceptionCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.CallBefore(TExceptionCallbackDelegate callback)
+                ITExceptionMethodInvocationImposterBuilder ITExceptionMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                ITExceptionMethodInvocationsSetup ITExceptionMethodInvocationsSetup.CallAfter(TExceptionCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void TExceptionMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
@@ -7077,121 +6495,97 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         // void INameCollisionProtectionFeatureSut.InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class InitializeOutParametersWithDefaultValuesMethodInvocationsSetup : IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup
+        class InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup
         {
-            internal static InitializeOutParametersWithDefaultValuesMethodInvocationsSetup DefaultInvocationSetup = new InitializeOutParametersWithDefaultValuesMethodInvocationsSetup(new InitializeOutParametersWithDefaultValuesArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup Default = new InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup(new InitializeOutParametersWithDefaultValuesArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal InitializeOutParametersWithDefaultValuesArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static void DefaultResultGenerator(int InitializeOutParametersWithDefaultValues)
-            {
-            }
-
-            public InitializeOutParametersWithDefaultValuesMethodInvocationsSetup(InitializeOutParametersWithDefaultValuesArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup(InitializeOutParametersWithDefaultValuesArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws<TException>()
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int InitializeOutParametersWithDefaultValues) =>
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int InitializeOutParametersWithDefaultValues) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int InitializeOutParametersWithDefaultValues) =>
-                {
-                    throw exceptionGenerator(InitializeOutParametersWithDefaultValues);
-                };
-                return this;
-            }
-
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.CallBefore(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.CallAfter(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public void Invoke(int InitializeOutParametersWithDefaultValues)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(InitializeOutParametersWithDefaultValues);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                nextSetup.ResultGenerator.Invoke(InitializeOutParametersWithDefaultValues);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(InitializeOutParametersWithDefaultValues);
-                };
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                invocationImposter.Invoke(InitializeOutParametersWithDefaultValues);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal InitializeOutParametersWithDefaultValuesDelegate? ResultGenerator { get; set; }
-                internal InitializeOutParametersWithDefaultValuesCallbackDelegate? CallBefore { get; set; }
-                internal InitializeOutParametersWithDefaultValuesCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private InitializeOutParametersWithDefaultValuesDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<InitializeOutParametersWithDefaultValuesCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<InitializeOutParametersWithDefaultValuesCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(int InitializeOutParametersWithDefaultValues)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    _resultGenerator.Invoke(InitializeOutParametersWithDefaultValues);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(InitializeOutParametersWithDefaultValues);
+                    }
+                }
+
+                internal void Callback(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int InitializeOutParametersWithDefaultValues) =>
+                    {
+                        throw exceptionGenerator(InitializeOutParametersWithDefaultValues);
+                    };
+                }
+
+                internal static void DefaultResultGenerator(int InitializeOutParametersWithDefaultValues)
+                {
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup
+        public interface IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder
         {
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup Throws<TException>()
+            IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup Throws(System.Exception exception);
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator);
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup CallBefore(InitializeOutParametersWithDefaultValuesCallbackDelegate callback);
-            IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup CallAfter(InitializeOutParametersWithDefaultValuesCallbackDelegate callback);
+            IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator);
+            IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder Callback(InitializeOutParametersWithDefaultValuesCallbackDelegate callback);
+            IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -7202,14 +6596,14 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // void INameCollisionProtectionFeatureSut.InitializeOutParametersWithDefaultValues(int InitializeOutParametersWithDefaultValues)
-        public interface IInitializeOutParametersWithDefaultValuesMethodImposterBuilder : IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup, InitializeOutParametersWithDefaultValuesMethodInvocationVerifier
+        public interface IInitializeOutParametersWithDefaultValuesMethodImposterBuilder : IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder, InitializeOutParametersWithDefaultValuesMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class InitializeOutParametersWithDefaultValuesMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<InitializeOutParametersWithDefaultValuesMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<InitializeOutParametersWithDefaultValuesMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup>();
             private readonly InitializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection;
             public InitializeOutParametersWithDefaultValuesMethodImposter(InitializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection)
             {
@@ -7218,10 +6612,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 
             public bool HasMatchingSetup(InitializeOutParametersWithDefaultValuesArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private InitializeOutParametersWithDefaultValuesMethodInvocationsSetup? FindMatchingSetup(InitializeOutParametersWithDefaultValuesArguments arguments)
+            private InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InitializeOutParametersWithDefaultValuesArguments arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -7235,10 +6629,10 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
             public void Invoke(int InitializeOutParametersWithDefaultValues)
             {
                 var arguments = new InitializeOutParametersWithDefaultValuesArguments(InitializeOutParametersWithDefaultValues);
-                var matchingSetup = FindMatchingSetup(arguments) ?? InitializeOutParametersWithDefaultValuesMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup.Default;
                 try
                 {
-                    matchingSetup.Invoke(InitializeOutParametersWithDefaultValues);
+                    matchingInvocationImposterGroup.Invoke(InitializeOutParametersWithDefaultValues);
                     _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection.Add(new InitializeOutParametersWithDefaultValuesMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
@@ -7254,58 +6648,55 @@ namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
                 private readonly InitializeOutParametersWithDefaultValuesMethodImposter _imposter;
                 private readonly InitializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection;
                 private readonly InitializeOutParametersWithDefaultValuesArgumentsCriteria _argumentsCriteria;
-                private InitializeOutParametersWithDefaultValuesMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup _invocationImposterGroup;
+                private InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(InitializeOutParametersWithDefaultValuesMethodImposter _imposter, InitializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection, InitializeOutParametersWithDefaultValuesArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection = _initializeOutParametersWithDefaultValuesMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new InitializeOutParametersWithDefaultValuesMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationSetups.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup GetOrAddInvocationSetup()
+                IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int InitializeOutParametersWithDefaultValues) =>
                     {
-                        _existingInvocationSetup = new InitializeOutParametersWithDefaultValuesMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws<TException>()
+                IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int InitializeOutParametersWithDefaultValues) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws(System.Exception exception)
+                IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder.Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int InitializeOutParametersWithDefaultValues) =>
+                    {
+                        throw exceptionGenerator.Invoke(InitializeOutParametersWithDefaultValues);
+                    });
+                    return this;
                 }
 
-                IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.Throws(InitializeOutParametersWithDefaultValuesExceptionGeneratorDelegate exceptionGenerator)
+                IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder.Callback(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.CallBefore(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
+                IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder IInitializeOutParametersWithDefaultValuesMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
-                }
-
-                IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup IInitializeOutParametersWithDefaultValuesMethodInvocationsSetup.CallAfter(InitializeOutParametersWithDefaultValuesCallbackDelegate callback)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void InitializeOutParametersWithDefaultValuesMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)

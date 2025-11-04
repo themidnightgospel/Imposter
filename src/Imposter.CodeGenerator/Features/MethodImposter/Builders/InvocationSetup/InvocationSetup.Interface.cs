@@ -36,12 +36,8 @@ internal static partial class InvocationSetupBuilder
                     .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.InvocationSetup.ThrowsMethod.ExceptionGeneratorParameter))
                     .WithSemicolon()
                     .Build(),
-                new MethodDeclarationBuilder(method.InvocationSetup.CallBeforeCallbackMethod.ReturnType, method.InvocationSetup.CallBeforeCallbackMethod.Name)
-                    .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.InvocationSetup.CallBeforeCallbackMethod.CallbackParameter))
-                    .WithSemicolon()
-                    .Build(),
-                new MethodDeclarationBuilder(method.InvocationSetup.CallAfterCallbackMethod.ReturnType, method.InvocationSetup.CallAfterCallbackMethod.Name)
-                    .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.InvocationSetup.CallAfterCallbackMethod.CallbackParameter))
+                new MethodDeclarationBuilder(method.InvocationSetup.CallbackMethod.ReturnType, method.InvocationSetup.CallbackMethod.Name)
+                    .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.InvocationSetup.CallbackMethod.CallbackParameter))
                     .WithSemicolon()
                     .Build(),
             };
@@ -59,6 +55,10 @@ internal static partial class InvocationSetupBuilder
                         .Build()
                 ]);
             }
+
+            methods.Add(new MethodDeclarationBuilder(method.InvocationSetup.ThenMethod.ReturnType, method.InvocationSetup.ThenMethod.Name)
+                .WithSemicolon()
+                .Build());
 
             return methods;
         }

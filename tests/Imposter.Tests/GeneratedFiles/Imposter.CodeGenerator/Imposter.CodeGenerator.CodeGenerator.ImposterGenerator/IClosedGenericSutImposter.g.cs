@@ -107,141 +107,115 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class GenericMethodMethodInvocationsSetup : IGenericMethodMethodInvocationsSetup
+        class GenericMethodMethodInvocationImposterGroup
         {
-            internal static GenericMethodMethodInvocationsSetup DefaultInvocationSetup = new GenericMethodMethodInvocationsSetup(new GenericMethodArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static GenericMethodMethodInvocationImposterGroup Default = new GenericMethodMethodInvocationImposterGroup(new GenericMethodArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
             internal GenericMethodArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static string DefaultResultGenerator(int age)
-            {
-                return default;
-            }
-
-            public GenericMethodMethodInvocationsSetup(GenericMethodArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public GenericMethodMethodInvocationImposterGroup(GenericMethodArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Returns(GenericMethodDelegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Returns(string value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int age) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int age) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int age) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int age) =>
-                {
-                    throw exceptionGenerator(age);
-                };
-                return this;
-            }
-
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.CallBefore(GenericMethodCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.CallAfter(GenericMethodCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public string Invoke(int age)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(age);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(age);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(age);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(age);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal GenericMethodDelegate? ResultGenerator { get; set; }
-                internal GenericMethodCallbackDelegate? CallBefore { get; set; }
-                internal GenericMethodCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private GenericMethodDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public string Invoke(int age)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    string result = _resultGenerator.Invoke(age);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(age);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(GenericMethodCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(GenericMethodDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(string value)
+                {
+                    _resultGenerator = (int age) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int age) =>
+                    {
+                        throw exceptionGenerator(age);
+                    };
+                }
+
+                internal static string DefaultResultGenerator(int age)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericMethodMethodInvocationsSetup
+        public interface IGenericMethodMethodInvocationImposterBuilder
         {
-            IGenericMethodMethodInvocationsSetup Throws<TException>()
+            IGenericMethodMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IGenericMethodMethodInvocationsSetup Throws(System.Exception exception);
-            IGenericMethodMethodInvocationsSetup Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
-            IGenericMethodMethodInvocationsSetup CallBefore(GenericMethodCallbackDelegate callback);
-            IGenericMethodMethodInvocationsSetup CallAfter(GenericMethodCallbackDelegate callback);
-            IGenericMethodMethodInvocationsSetup Returns(GenericMethodDelegate resultGenerator);
-            IGenericMethodMethodInvocationsSetup Returns(string value);
+            IGenericMethodMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IGenericMethodMethodInvocationImposterBuilder Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
+            IGenericMethodMethodInvocationImposterBuilder Callback(GenericMethodCallbackDelegate callback);
+            IGenericMethodMethodInvocationImposterBuilder Returns(GenericMethodDelegate resultGenerator);
+            IGenericMethodMethodInvocationImposterBuilder Returns(string value);
+            IGenericMethodMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -252,14 +226,14 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
-        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationsSetup, GenericMethodMethodInvocationVerifier
+        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterBuilder, GenericMethodMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class GenericMethodMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup>();
             private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
             public GenericMethodMethodImposter(GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection)
             {
@@ -268,12 +242,12 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
             public bool HasMatchingSetup(GenericMethodArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private GenericMethodMethodInvocationsSetup? FindMatchingSetup(GenericMethodArguments arguments)
+            private GenericMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GenericMethodArguments arguments)
             {
-                foreach (var setup in _invocationSetups)
+                foreach (var setup in _invocationImposters)
                 {
                     if (setup.ArgumentsCriteria.Matches(arguments))
                         return setup;
@@ -285,10 +259,10 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             public string Invoke(int age)
             {
                 var arguments = new GenericMethodArguments(age);
-                var matchingSetup = FindMatchingSetup(arguments) ?? GenericMethodMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? GenericMethodMethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(age);
+                    var result = matchingInvocationImposterGroup.Invoke(age);
                     _genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -305,72 +279,67 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                 private readonly GenericMethodMethodImposter _imposter;
                 private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
                 private readonly GenericMethodArgumentsCriteria _argumentsCriteria;
-                private GenericMethodMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly GenericMethodMethodInvocationImposterGroup _invocationImposterGroup;
+                private GenericMethodMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(GenericMethodMethodImposter _imposter, GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection, GenericMethodArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._genericMethodMethodInvocationHistoryCollection = _genericMethodMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new GenericMethodMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IGenericMethodMethodInvocationsSetup GetOrAddInvocationSetup()
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int age) =>
                     {
-                        _existingInvocationSetup = new GenericMethodMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws<TException>()
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int age) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws(System.Exception exception)
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int age) =>
+                    {
+                        throw exceptionGenerator.Invoke(age);
+                    });
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Callback(GenericMethodCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.CallBefore(GenericMethodCallbackDelegate callback)
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Returns(GenericMethodDelegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.CallAfter(GenericMethodCallbackDelegate callback)
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Returns(string value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Returns(GenericMethodDelegate resultGenerator)
+                IGenericMethodMethodInvocationImposterBuilder IGenericMethodMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                IGenericMethodMethodInvocationsSetup IGenericMethodMethodInvocationsSetup.Returns(string value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void GenericMethodMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)

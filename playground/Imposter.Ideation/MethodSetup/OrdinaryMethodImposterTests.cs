@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.Abstractions;
@@ -7,7 +6,7 @@ using Imposter.Playground;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.Ideation.MethodSetupV2
+namespace Imposter.Ideation.MethodSetup
 {
     public class OrdinaryMethodImposterTests
     {
@@ -176,17 +175,14 @@ namespace Imposter.Ideation.MethodSetupV2
         public void GivenCallBeforeAndCallAfterChained_WhenMethodIsInvoked_ShouldInvokeBothCallbacks()
         {
             var callBeforeCount = 0;
-            var callAfterCount = 0;
 
             _sut
                 .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Callback((a, b) => callBeforeCount++)
-                .CallAfter((a, b) => callAfterCount++);
+                .Callback((a, b) => callBeforeCount++);
 
             _sut.Instance().Add(1, 2);
 
             callBeforeCount.ShouldBe(1);
-            callAfterCount.ShouldBe(1);
         }
 
         [Fact]
@@ -199,7 +195,7 @@ namespace Imposter.Ideation.MethodSetupV2
                 .Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => callBeforeValues.Add((a, b)))
                 .Returns((a, b) => a + b)
-                .CallAfter((a, b) => callAfterValues.Add((a, b)));
+                .Callback((a, b) => callAfterValues.Add((a, b)));
 
             var result = _sut.Instance().Add(42, 24);
 
@@ -367,11 +363,11 @@ namespace Imposter.Ideation.MethodSetupV2
                 .Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => executionOrder.Add("before-1"))
                 .Returns((a, b) => { executionOrder.Add("during-1"); return 10; })
-                .CallAfter((a, b) => executionOrder.Add("after-1"))
+                .Callback((a, b) => executionOrder.Add("after-1"))
                 .Then()
-                .CallBefore((a, b) => executionOrder.Add("before-2"))
+                .Callback((a, b) => executionOrder.Add("before-2"))
                 .Returns((a, b) => { executionOrder.Add("during-2"); return 20; })
-                .CallAfter((a, b) => executionOrder.Add("after-2"));
+                .Callback((a, b) => executionOrder.Add("after-2"));
 
             _sut.Instance().Add(1, 1);
             _sut.Instance().Add(1, 1);

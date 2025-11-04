@@ -19,5 +19,15 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Remove="MethodSetup\V1\IMethodSetupFeatureSutImposter.g.cs" />
+    <Compile Remove="MethodSetup\V1\IOrdinaryMethodPocV1Imposter.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="MethodSetup\V1\IMethodSetupFeatureSutImposter.g.cs" />
+    <None Include="MethodSetup\V1\IOrdinaryMethodPocV1Imposter.g.cs" />
+  </ItemGroup>
 
 </Project>

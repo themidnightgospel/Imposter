@@ -1,52 +1,47 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Imposter.Abstractions;
 
 #pragma warning disable nullable
-namespace Imposter.Ideation.GenericMethodPoc.V2
+
+// ReSharper disable once CheckNamespace
+namespace Imposter.Playground
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IGenericMethodPocImposter : Imposter.Abstractions.IHaveImposterInstance<IGenericMethodPoc>
+    public class IGenericMethodPocV1Imposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IGenericMethodPocV1>
     {
         private readonly GenericAllRefKindMethodImposterCollection _genericAllRefKindMethodImposterCollection;
         private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
-
         public IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(Imposter.Abstractions.OutArg<TOut> outValue, Imposter.Abstractions.Arg<TRef> refValue, Imposter.Abstractions.Arg<TIn> inValue, Imposter.Abstractions.Arg<TParams[]> paramsValues)
         {
             return new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>.Builder(_genericAllRefKindMethodImposterCollection, _genericAllRefKindMethodInvocationHistoryCollection, new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(outValue, refValue, inValue, paramsValues));
         }
 
         private ImposterTargetInstance _imposterInstance;
-
-        public IGenericMethodPocImposter()
+        public IGenericMethodPocV1Imposter()
         {
             this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection);
             this._imposterInstance = new ImposterTargetInstance(this);
         }
 
-        global::Imposter.Ideation.GenericMethodPoc.V2.IGenericMethodPoc Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Ideation.GenericMethodPoc.V2.IGenericMethodPoc>.Instance()
+        global::Imposter.Playground.IGenericMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IGenericMethodPocV1>.Instance()
         {
             return _imposterInstance;
         }
 
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public delegate TResult GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
-
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public delegate void GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
-
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public delegate System.Exception GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
-
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>
         {
             public TRef refValue;
             public TIn inValue;
             public TParams[] paramsValues;
-
             internal GenericAllRefKindArguments(TRef refValue, TIn inValue, TParams[] paramsValues)
             {
                 this.refValue = refValue;
@@ -60,7 +55,7 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             }
         }
 
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>
         {
@@ -99,7 +94,6 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             internal GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments;
             internal TResult Result;
             internal System.Exception Exception;
-
             public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments, TResult Result, System.Exception Exception)
             {
                 this.Arguments = Arguments;
@@ -117,7 +111,6 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         internal class GenericAllRefKindMethodInvocationHistoryCollection
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory>();
-
             internal void Add(IGenericAllRefKindMethodInvocationHistory invocationHistory)
             {
                 _invocationHistory.Push(invocationHistory);
@@ -132,14 +125,12 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         internal class GenericAllRefKindMethodImposterCollection
         {
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-
             public GenericAllRefKindMethodImposterCollection(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
             }
 
             private readonly System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter> _imposters = new System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter>();
-
             internal GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> AddNew<TOut, TRef, TIn, TParams, TResult>()
             {
                 var imposter = new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>(_genericAllRefKindMethodInvocationHistoryCollection);
@@ -153,131 +144,152 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             }
         }
 
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>
+        class GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>
         {
-            internal static GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult> Default =
-                new GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(
-                    Imposter.Abstractions.OutArg<TOut>.Any(),
-                    Imposter.Abstractions.Arg<TRef>.Any(),
-                    Imposter.Abstractions.Arg<TIn>.Any(),
-                    Imposter.Abstractions.Arg<TParams[]>.Any()));
-
+            internal static GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> DefaultInvocationSetup = new GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(Imposter.Abstractions.OutArg<TOut>.Any(), Imposter.Abstractions.Arg<TRef>.Any(), Imposter.Abstractions.Arg<TIn>.Any(), Imposter.Abstractions.Arg<TParams[]>.Any()));
             internal GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
-
-            internal MethodInvocationImposter AddInvocationImposter()
+            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
+            private MethodInvocationSetup? _currentlySetupCall;
+            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
             {
-                var invocationImposter = new MethodInvocationImposter();
-                _invocationImposters.Enqueue(invocationImposter);
-                return invocationImposter;
-            }
-
-            public GenericAllRefKindMethodInvocationsImposterGroup(GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> argumentsCriteria)
-            {
-                ArgumentsCriteria = argumentsCriteria;
-            }
-
-            private MethodInvocationImposter _lastestInvocationImposter;
-
-            private MethodInvocationImposter? GetInvocationImposter()
-            {
-                if (_invocationImposters.TryDequeue(out var invocationImposter) && !invocationImposter.IsEmpty)
+                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
                 {
-                    _lastestInvocationImposter = invocationImposter;
+                    _currentlySetupCall = new MethodInvocationSetup();
+                    _callSetups.Enqueue(_currentlySetupCall);
                 }
 
-                return _lastestInvocationImposter;
+                return _currentlySetupCall;
+            }
+
+            internal static TResult DefaultResultGenerator(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+            {
+                InitializeOutParametersWithDefaultValues(out outValue);
+                return default;
+            }
+
+            public GenericAllRefKindMethodInvocationsSetup(GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+                _nextSetup = GetOrAddMethodSetup(it => true);
+            }
+
+            private static void InitializeOutParametersWithDefaultValues(out TOut outValue)
+            {
+                outValue = default(TOut);
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
+            {
+                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
+            {
+                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
+                {
+                    InitializeOutParametersWithDefaultValues(out outValue);
+                    return value;
+                };
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
+            {
+                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
+                {
+                    InitializeOutParametersWithDefaultValues(out outValue);
+                    throw new TException();
+                };
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
+            {
+                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
+                {
+                    InitializeOutParametersWithDefaultValues(out outValue);
+                    throw exception;
+                };
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
+            {
+                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
+                {
+                    throw exceptionGenerator(out outValue, ref refValue, in inValue, paramsValues);
+                };
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.CallBefore(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
+            {
+                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
+                return this;
+            }
+
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.CallAfter(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
+            {
+                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
+                return this;
+            }
+
+            private MethodInvocationSetup _nextSetup;
+            private MethodInvocationSetup? GetNextSetup()
+            {
+                if (_callSetups.TryDequeue(out var callSetup))
+                {
+                    _nextSetup = callSetup;
+                }
+
+                return _nextSetup;
             }
 
             public TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
             {
-                var invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(out outValue, ref refValue, in inValue, paramsValues);
+                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
+                if (nextSetup.CallBefore != null)
+                {
+                    nextSetup.CallBefore(out outValue, ref refValue, in inValue, paramsValues);
+                }
+
+                if (nextSetup.ResultGenerator == null)
+                {
+                    nextSetup.ResultGenerator = DefaultResultGenerator;
+                }
+
+                var result = nextSetup.ResultGenerator.Invoke(out outValue, ref refValue, in inValue, paramsValues);
+                if (nextSetup.CallAfter != null)
+                {
+                    nextSetup.CallAfter(out outValue, ref refValue, in inValue, paramsValues);
+                }
+
+                return result;
             }
 
-            internal class MethodInvocationImposter
+            internal class MethodInvocationSetup
             {
-                internal static MethodInvocationImposter Default;
-
-                static MethodInvocationImposter()
-                {
-                    Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
-                }
-
-                private GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult>? _resultGenerator;
-
-                private ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>> _callbacks = new ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>>();
-                
-                internal TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
-                {
-                    _resultGenerator ??= DefaultResultGenerator;
-
-                    var result = _resultGenerator.Invoke(out outValue, ref refValue, in inValue, paramsValues);
-                    
-                    foreach (var callback in _callbacks)
-                    {
-                        callback(out outValue, ref refValue, in inValue, paramsValues);
-                    }
-
-                    return result;
-                }
-                
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
-
-                internal void Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
-                {
-                    _callbacks.Enqueue(callback);
-                }
-
-                internal void Returns(TResult value)
-                {
-                    _resultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] values) =>
-                    {
-                        InitializeOutParametersWithDefaultValues(out outValue);
-                        return value;
-                    };
-                }
-
-                internal void Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
-                {
-                    _resultGenerator = resultGenerator;
-                }
-
-                internal void Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
-                {
-                    _resultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) => { throw exceptionGenerator(out outValue, ref refValue, in inValue, paramsValues); };
-                }
-
-                private static TResult DefaultResultGenerator(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
-                {
-                    InitializeOutParametersWithDefaultValues(out outValue);
-                    return default;
-                }
-
-                private static void InitializeOutParametersWithDefaultValues(out TOut outValue)
-                {
-                    outValue = default(TOut);
-                }
+                internal GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult>? ResultGenerator { get; set; }
+                internal GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>? CallBefore { get; set; }
+                internal GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>? CallAfter { get; set; }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>
+        public interface IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>
         {
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
                 where TException : Exception, new();
-
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
-            
-            IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> Then(TResult value);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> CallBefore(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> CallAfter(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
+            IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
         }
 
         internal interface IGenericAllRefKindMethodImposter
@@ -299,17 +311,16 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // TResult IGenericMethodPoc.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
-        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
+        public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>>();
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-
             public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
@@ -328,7 +339,6 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             private class Adapter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> : IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>
             {
                 private readonly GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> _target;
-
                 public Adapter(GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> target)
                 {
                     _target = target;
@@ -362,10 +372,10 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
 
             public bool HasMatchingSetup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
             {
-                return FindMatchingInvocationImposterGroup(arguments) != null;
+                return FindMatchingSetup(arguments) != null;
             }
 
-            private GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>? FindMatchingInvocationImposterGroup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
+            private GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>? FindMatchingSetup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -379,10 +389,10 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             public TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
             {
                 var arguments = new GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>(refValue, inValue, paramsValues);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>.Default;
+                var matchingSetup = FindMatchingSetup(arguments) ?? GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.DefaultInvocationSetup;
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(out outValue, ref refValue, in inValue, paramsValues);
+                    var result = matchingSetup.Invoke(out outValue, ref refValue, in inValue, paramsValues);
                     _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, result, default));
                     return result;
                 }
@@ -399,65 +409,72 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                 private readonly GenericAllRefKindMethodImposterCollection _imposterCollection;
                 private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
                 private readonly GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> _argumentsCriteria;
-                private readonly GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult> _genericAllRefKindMethodInvocationsImposterGroup;
-                private GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>.MethodInvocationImposter _currentInvocationImoster;
-
-                public Builder(
-                    GenericAllRefKindMethodImposterCollection _imposterCollection,
-                    GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection,
-                    GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> _argumentsCriteria)
+                private GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>? _existingInvocationSetup;
+                public Builder(GenericAllRefKindMethodImposterCollection _imposterCollection, GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> _argumentsCriteria)
                 {
                     this._imposterCollection = _imposterCollection;
                     this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
-
-                    var methodImposter = _imposterCollection.AddNew<TOut, TRef, TIn, TParams, TResult>();
-                    _genericAllRefKindMethodInvocationsImposterGroup = new GenericAllRefKindMethodInvocationsImposterGroup<TOut, TRef, TIn, TParams, TResult>(_argumentsCriteria);
-                    methodImposter._invocationSetups.Push(_genericAllRefKindMethodInvocationsImposterGroup);
-
-                    _currentInvocationImoster = _genericAllRefKindMethodInvocationsImposterGroup.AddInvocationImposter();
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
+                private IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> GetOrAddInvocationSetup()
                 {
-                    _currentInvocationImoster.Throws((out TOut value, ref TRef refValue, in TIn inValue, TParams[] values) => throw new TException());
-                    return this;
+                    if (_existingInvocationSetup is null)
+                    {
+                        _existingInvocationSetup = new GenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>(_argumentsCriteria);
+                        _imposterCollection.AddNew<TOut, TRef, TIn, TParams, TResult>()._invocationSetups.Push(_existingInvocationSetup);
+                    }
+
+                    return _existingInvocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws<TException>()
                 {
-                    _currentInvocationImoster.Throws((out TOut value, ref TRef refValue, in TIn inValue, TParams[] values) => throw exception);
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.Throws<TException>();
+                    return invocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws(System.Exception exception)
                 {
-                    _currentInvocationImoster.Returns((out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) => { throw exceptionGenerator(out outValue, ref refValue, in inValue, paramsValues); });
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.Throws(exception);
+                    return invocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
                 {
-                    _currentInvocationImoster.Callback(callback);
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.Throws(exceptionGenerator);
+                    return invocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.CallBefore(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
                 {
-                    _currentInvocationImoster.Returns(resultGenerator);
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.CallBefore(callback);
+                    return invocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.CallAfter(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback)
                 {
-                    _currentInvocationImoster.Returns(value);
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.CallAfter(callback);
+                    return invocationSetup;
                 }
 
-                IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsImposterBuilder<TOut, TRef, TIn, TParams, TResult>.Then(TResult value)
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
                 {
-                    _currentInvocationImoster = _genericAllRefKindMethodInvocationsImposterGroup.AddInvocationImposter();
-                    return this;
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.Returns(resultGenerator);
+                    return invocationSetup;
+                }
+
+                IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult> IGenericAllRefKindMethodInvocationsSetup<TOut, TRef, TIn, TParams, TResult>.Returns(TResult value)
+                {
+                    var invocationSetup = GetOrAddInvocationSetup();
+                    invocationSetup.Returns(value);
+                    return invocationSetup;
                 }
 
                 void GenericAllRefKindMethodInvocationVerifier<TOut, TRef, TIn, TParams, TResult>.Called(Imposter.Abstractions.Count count)
@@ -472,11 +489,10 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.Ideation.GenericMethodPoc.V2.IGenericMethodPoc
+        class ImposterTargetInstance : global::Imposter.Playground.IGenericMethodPocV1
         {
-            private readonly IGenericMethodPocImposter _imposter;
-
-            public ImposterTargetInstance(IGenericMethodPocImposter _imposter)
+            IGenericMethodPocV1Imposter _imposter;
+            public ImposterTargetInstance(IGenericMethodPocV1Imposter _imposter)
             {
                 this._imposter = _imposter;
             }
@@ -487,8 +503,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             }
         }
     }
-
-    public interface IGenericMethodPoc
+    
+    public interface IGenericMethodPocV1
     {
         TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
             out TOut outValue,
