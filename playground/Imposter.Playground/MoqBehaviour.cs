@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -30,6 +31,55 @@ public class MoqBehaviour
         mock.Object.PlaceOrder(3).ShouldBe(12);
 
         invokedCallbacks.Count.ShouldBe(3);
+    }
+    
+    [Fact]
+    public void MethodSetup_MultiCallbacks_OnlyLastMatchingSetupIsCalled()
+    {
+        var mock = new Mock<IOrderService>();
+        var invokedCallbacks = new List<int>();
+
+        mock
+            .Setup(it => it.PlaceOrder(It.Is<int>(i => i > 2)))
+            .Callback((int i) => { invokedCallbacks.Add(i); })
+            .Returns(12)
+            .Callback((int i) => { invokedCallbacks.Add(i); })
+            .Throws(new Exception());
+
+//        mock.Object.PlaceOrder(3).ShouldBe(12);
+        Should.Throw<Exception>(() => mock.Object.PlaceOrder(3));
+
+        invokedCallbacks.Count.ShouldBe(3);
+    }
+    
+    [Fact]
+    public void MethodSetup_OnlyLastMatchingSetupIsCalled2()
+    {
+        var mock = new Mock<IOrderService>();
+        var invokedCallbacks = new List<int>();
+
+        mock
+            .Setup(it => it.PlaceOrder(It.Is<int>(i => i > 0)))
+            .Callback((int i) => { invokedCallbacks.Add(i); })
+            .Returns(11);
+
+        mock
+            .Setup(it => it.PlaceOrder(It.Is<int>(i => i > 1)))
+            .Callback((int i) => { invokedCallbacks.Add(i); });
+
+        mock
+            .Setup(it => it.PlaceOrder(It.Is<int>(i => i > 2)))
+            .Callback((int i) => { invokedCallbacks.Add(i); })
+            .Returns(12);
+
+        mock
+            .Setup(it => it.PlaceOrder(It.Is<int>(i => i == 3)))
+            .Callback((int i) => { invokedCallbacks.Add(i); });
+
+        mock.Object.PlaceOrder(3).ShouldBe(0);
+
+        // So it invoked last matching setup, even when it had no "Returns" on it
+        invokedCallbacks.Count.ShouldBe(1);
     }
 
     [Fact]
