@@ -14,10 +14,12 @@ namespace Imposter.Playground
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
     public class IPropertySetupSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IPropertySetupSut>
     {
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IPropertySetupSutImposter()
+        public IPropertySetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         global::Imposter.Playground.IPropertySetupSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IPropertySetupSut>.Instance()

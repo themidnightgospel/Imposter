@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -24,19 +24,46 @@ internal static class SetterImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.CallbacksField.Type, CallbacksFieldMetadata.Name, property.SetterImposter.CallbacksField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationHistoryField, property.SetterImposter.InvocationHistoryField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
+            .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
+            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_hasConfiguredSetter", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
             .AddMember(BuildSetMethod(property.SetterImposter, property.DefaultPropertyBehaviour))
+            .AddMember(BuildEnsureSetterConfiguredMethod())
+            .AddMember(BuildMarkConfiguredMethod())
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
     }
 
-    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
-        new ConstructorWithFieldInitializationBuilder(property.SetterImposter.Name)
-            .WithModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(property.SetterImposter.DefaultPropertyBehaviourField)
-            .Build();
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property)
+    {
+        var constructor = new ConstructorBuilder(property.SetterImposter.Name)
+            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            .AddParameter(ParameterSyntax(property.SetterImposter.DefaultPropertyBehaviourField.Type, property.SetterImposter.DefaultPropertyBehaviourField.Name))
+            .AddParameter(Parameter(Identifier("invocationBehavior")).WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior))
+            .AddParameter(Parameter(Identifier("propertyDisplayName")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))));
+
+        var body = new BlockBuilder()
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name))
+                    .Assign(IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name))
+                    .ToStatementSyntax())
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName("_invocationBehavior"))
+                    .Assign(IdentifierName("invocationBehavior"))
+                    .ToStatementSyntax())
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName("_propertyDisplayName"))
+                    .Assign(IdentifierName("propertyDisplayName"))
+                    .ToStatementSyntax());
+
+        return constructor.WithBody(body.Build()).Build();
+    }
 
 
     internal static MethodDeclarationSyntax BuildSetMethod(in PropertySetterImposterMetadata setterImposter, in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
@@ -45,6 +72,7 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
             .WithBody(Block(
+                    IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax(),
                     TrackSetterInvocation(setterImposter),
                     InvokeCallbacks(setterImposter),
                     SetBackingField(setterImposter, defaultPropertyBehaviour)
@@ -161,4 +189,43 @@ internal static class SetterImposterBuilder
                 )
             )
             .Build();
+
+    private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod()
+    {
+        var condition = BinaryExpression(
+            SyntaxKind.LogicalAndExpression,
+            BinaryExpression(
+                SyntaxKind.EqualsExpression,
+                IdentifierName("_invocationBehavior"),
+                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
+            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredSetter")));
+
+        return MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureSetterConfigured")
+            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+            .WithBody(Block(
+                IfStatement(
+                    condition,
+                    ThrowStatement(
+                        ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                            .WithArgumentList(
+                                Argument(
+                                        BinaryExpression(
+                                            SyntaxKind.AddExpression,
+                                            IdentifierName("_propertyDisplayName"),
+                                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (setter)"))))
+                                    .AsSingleArgumentListSyntax()
+                            )
+                    )
+                )
+            ));
+    }
+
+    private static MethodDeclarationSyntax BuildMarkConfiguredMethod() =>
+        MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "MarkConfigured")
+            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+            .WithBody(Block(
+                IdentifierName("_hasConfiguredSetter")
+                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .ToStatementSyntax()
+            ));
 }

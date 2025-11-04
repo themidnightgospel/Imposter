@@ -21,11 +21,13 @@ namespace Imposter.Playground
             return new IndexerMethodImposter.Builder(_indexerMethodImposter, _indexerMethodInvocationHistoryCollection, new IndexerArgumentsCriteria(value1, value2, value3));
         }
 
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IIndexerSetupPocSutImposter()
+        public IIndexerSetupPocSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._indexerMethodImposter = new IndexerMethodImposter(_indexerMethodInvocationHistoryCollection);
+            this._indexerMethodImposter = new IndexerMethodImposter(_indexerMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         global::Imposter.Playground.IIndexerSetupPocSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IIndexerSetupPocSut>.Instance()
@@ -148,10 +150,20 @@ namespace Imposter.Playground
                 return _lastestInvocationImposter;
             }
 
-            public string Invoke(int value1, string value2, object value3)
+            public string Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value1, string value2, object value3)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(value1, value2, value3);
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value1, value2, value3);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -168,9 +180,18 @@ namespace Imposter.Playground
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerCallbackDelegate>();
                 internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
-                public string Invoke(int value1, string value2, object value3)
+                public string Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value1, string value2, object value3)
                 {
-                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
                     string result = _resultGenerator.Invoke(value1, value2, value3);
                     foreach (var callback in _callbacks)
                     {
@@ -243,9 +264,11 @@ namespace Imposter.Playground
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationImposterGroup>();
             private readonly IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection;
-            public IndexerMethodImposter(IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public IndexerMethodImposter(IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._indexerMethodInvocationHistoryCollection = _indexerMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             public bool HasMatchingSetup(IndexerArguments arguments)
@@ -267,10 +290,20 @@ namespace Imposter.Playground
             public string Invoke(int value1, string value2, object value3)
             {
                 var arguments = new IndexerArguments(value1, value2, value3);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? IndexerMethodInvocationImposterGroup.Default;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)");
+                    }
+
+                    matchingInvocationImposterGroup = IndexerMethodInvocationImposterGroup.Default;
+                }
+
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(value1, value2, value3);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)", value1, value2, value3);
                     _indexerMethodInvocationHistoryCollection.Add(new IndexerMethodInvocationHistory(arguments, result, default));
                     return result;
                 }

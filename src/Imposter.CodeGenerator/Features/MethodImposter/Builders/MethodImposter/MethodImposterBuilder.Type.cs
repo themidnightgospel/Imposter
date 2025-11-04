@@ -28,10 +28,16 @@ internal static partial class MethodImposterBuilder
                 method.InvocationHistory.Collection.AsField.Name,
                 TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 
+        var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
+            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+            "_invocationBehavior",
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
+
         return methodImposterClassBuilder
             .AddMember(BuildInvocationSetupsField(method))
             .AddMember(invocationHistoryCollectionField)
-            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField]))
+            .AddMember(invocationBehaviorField)
+            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField, invocationBehaviorField]))
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))

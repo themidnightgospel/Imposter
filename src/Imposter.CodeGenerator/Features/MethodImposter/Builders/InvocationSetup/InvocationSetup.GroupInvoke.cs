@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,33 +20,50 @@ internal static partial class InvocationSetupBuilder
                         VariableDeclarator(Identifier("invocationImposter"))
                             .WithInitializer(
                                 EqualsValueClause(
-                                    BinaryExpression(
-                                        SyntaxKind.CoalesceExpression,
-                                        InvocationExpression(IdentifierName("GetInvocationImposter")),
-                                        MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            invocationImposterType,
-                                            IdentifierName("Default")))
-                                )
-                            )
-                    )
-                )
-        );
+                                    InvocationExpression(IdentifierName("GetInvocationImposter")))))));
+
+        var guardMissingImposter = IfStatement(
+            BinaryExpression(
+                SyntaxKind.EqualsExpression,
+                IdentifierName("invocationImposter"),
+                LiteralExpression(SyntaxKind.NullLiteralExpression)),
+            Block(
+                IfStatement(
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        IdentifierName("invocationBehavior"),
+                        QualifiedName(
+                            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                            IdentifierName("Explicit"))),
+                    Block(
+                        ThrowStatement(
+                            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                                .WithArgumentList(
+                                    Argument(IdentifierName("methodDisplayName"))
+                                        .AsSingleArgumentListSyntax())))),
+                ExpressionStatement(
+                    AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        IdentifierName("invocationImposter"),
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            invocationImposterType,
+                            IdentifierName("Default"))))));
 
         var invokeCall = InvocationExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 invocationImposterIdentifier,
                 IdentifierName("Invoke")),
-            SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters)
-        );
+            BuildInvokeArgumentList(method));
 
         var methodDeclaration = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(method.Parameters.ParameterListSyntax)
+            .WithParameterList(BuildParameterList(method))
             .WithBody(
                 Block(
                     invocationImposterAssignment,
+                    guardMissingImposter,
                     method.Symbol.ReturnsVoid
                         ? ExpressionStatement(invokeCall)
                         : ReturnStatement(invokeCall)
@@ -54,5 +72,33 @@ internal static partial class InvocationSetupBuilder
             .Build();
 
         return methodDeclaration;
+
+        static ParameterListSyntax BuildParameterList(in ImposterTargetMethodMetadata method)
+        {
+            var parameters = new List<ParameterSyntax>
+            {
+                Parameter(Identifier("invocationBehavior"))
+                    .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior),
+                Parameter(Identifier("methodDisplayName"))
+                    .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+            };
+
+            parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
+
+            return ParameterList(SeparatedList(parameters));
+        }
+
+        static ArgumentListSyntax BuildInvokeArgumentList(in ImposterTargetMethodMetadata method)
+        {
+            var arguments = new List<ArgumentSyntax>
+            {
+                Argument(IdentifierName("invocationBehavior")),
+                Argument(IdentifierName("methodDisplayName"))
+            };
+
+            arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+
+            return ArgumentList(SeparatedList(arguments));
+        }
     }
 }

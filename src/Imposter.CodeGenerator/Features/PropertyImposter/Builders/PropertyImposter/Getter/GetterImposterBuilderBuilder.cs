@@ -21,6 +21,9 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(BuildLastGetterReturnValueField(property.GetterImposterBuilder))
             .AddMember(BuildGetterInvocationCountField(property.GetterImposterBuilder))
             .AddMember(SinglePrivateReadonlyVariableField(property.GetterImposterBuilder.DefaultPropertyBehaviourField))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
+            .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
+            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_hasConfiguredReturn", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildAddGetterReturnValueMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .AddMembers(BuildReturnsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
@@ -28,13 +31,36 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(BuildGetterCallbackMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetterCalledMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
+            .AddMember(BuildEnsureGetterConfiguredMethod())
             .Build();
 
-    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
-        new ConstructorWithFieldInitializationBuilder(property.GetterImposterBuilder.Name)
-            .WithModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(property.GetterImposterBuilder.DefaultPropertyBehaviourField)
-            .Build();
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property)
+    {
+        var constructor = new ConstructorBuilder(property.GetterImposterBuilder.Name)
+            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            .AddParameter(ParameterSyntax(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Type, property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
+            .AddParameter(Parameter(Identifier("invocationBehavior")).WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior))
+            .AddParameter(Parameter(Identifier("propertyDisplayName")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))));
+
+        var body = new BlockBuilder()
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
+                    .Assign(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
+                    .ToStatementSyntax())
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName("_invocationBehavior"))
+                    .Assign(IdentifierName("invocationBehavior"))
+                    .ToStatementSyntax())
+            .AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName("_propertyDisplayName"))
+                    .Assign(IdentifierName("propertyDisplayName"))
+                    .ToStatementSyntax());
+
+        return constructor.WithBody(body.Build()).Build();
+    }
 
     private static FieldDeclarationSyntax BuildGetterReturnValuesField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>
         SinglePrivateReadonlyVariableField(
@@ -71,11 +97,14 @@ internal static class GetterImposterBuilderBuilder
             .WithBody(Block(
                 IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
-                    .Assign(False)
+                    .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
                     .ToStatementSyntax(),
                 IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(IdentifierName(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter.Name)))
+                    .ToStatementSyntax(),
+                IdentifierName("_hasConfiguredReturn")
+                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
                     .ToStatementSyntax()
             ))
             .Build();
@@ -201,6 +230,7 @@ internal static class GetterImposterBuilderBuilder
         return new MethodDeclarationBuilder(builder.GetMethod.ReturnType, builder.GetMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
+                    IdentifierName("EnsureGetterConfigured").Call().ToStatementSyntax(),
                     TrackGetterInvocation(builder),
                     InvokeGetterCallbacks(builder),
                     IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour),
@@ -255,5 +285,35 @@ internal static class GetterImposterBuilderBuilder
                     )
                 )
                 .ToStatementSyntax();
+    }
+
+    private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod()
+    {
+        var condition = BinaryExpression(
+            SyntaxKind.LogicalAndExpression,
+            BinaryExpression(
+                SyntaxKind.EqualsExpression,
+                IdentifierName("_invocationBehavior"),
+                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
+            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredReturn")));
+
+        return MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureGetterConfigured")
+            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+            .WithBody(Block(
+                IfStatement(
+                    condition,
+                    ThrowStatement(
+                        ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                            .WithArgumentList(
+                                Argument(
+                                        BinaryExpression(
+                                            SyntaxKind.AddExpression,
+                                            IdentifierName("_propertyDisplayName"),
+                                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (getter)"))))
+                                    .AsSingleArgumentListSyntax()
+                            )
+                    )
+                )
+            ));
     }
 }

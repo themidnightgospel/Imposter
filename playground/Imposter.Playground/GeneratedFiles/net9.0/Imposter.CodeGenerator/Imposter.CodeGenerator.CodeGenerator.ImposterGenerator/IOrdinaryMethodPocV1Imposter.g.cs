@@ -21,11 +21,13 @@ namespace Imposter.Playground
             return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(a, b));
         }
 
+        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IOrdinaryMethodPocV1Imposter()
+        public IOrdinaryMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection);
+            this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         global::Imposter.Playground.IOrdinaryMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IOrdinaryMethodPocV1>.Instance()
@@ -144,10 +146,20 @@ namespace Imposter.Playground
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(int a, int b)
+            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int a, int b)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
-                return invocationImposter.Invoke(a, b);
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, a, b);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -164,9 +176,18 @@ namespace Imposter.Playground
                 private readonly System.Collections.Concurrent.ConcurrentQueue<AddCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AddCallbackDelegate>();
                 internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(int a, int b)
+                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int a, int b)
                 {
-                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
                     int result = _resultGenerator.Invoke(a, b);
                     foreach (var callback in _callbacks)
                     {
@@ -239,9 +260,11 @@ namespace Imposter.Playground
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
             private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-            public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection)
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._addMethodInvocationHistoryCollection = _addMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
             }
 
             public bool HasMatchingSetup(AddArguments arguments)
@@ -263,10 +286,20 @@ namespace Imposter.Playground
             public int Invoke(int a, int b)
             {
                 var arguments = new AddArguments(a, b);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? AddMethodInvocationImposterGroup.Default;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("int IOrdinaryMethodPocV1.Add(int a, int b)");
+                    }
+
+                    matchingInvocationImposterGroup = AddMethodInvocationImposterGroup.Default;
+                }
+
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(a, b);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IOrdinaryMethodPocV1.Add(int a, int b)", a, b);
                     _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, result, default));
                     return result;
                 }

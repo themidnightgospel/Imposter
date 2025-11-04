@@ -1,5 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -19,7 +20,15 @@ internal static partial class MethodImposterCollectionBuilder
                     LocalDeclarationStatement(
                         VariableDeclarationSyntax(Var, "imposter",
                                 method.MethodImposter.Syntax
-                                    .New(Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)).AsSingleArgumentListSyntax())
+                                    .New(
+                                        ArgumentList(
+                                            SeparatedList<ArgumentSyntax>(
+                                                new SyntaxNodeOrToken[]
+                                                {
+                                                    Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(IdentifierName("_invocationBehavior"))
+                                                })))
                             )
                     ),
                     IdentifierName("_imposters")

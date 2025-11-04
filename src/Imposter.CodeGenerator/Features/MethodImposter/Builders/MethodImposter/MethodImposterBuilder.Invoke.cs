@@ -17,6 +17,7 @@ internal partial class MethodImposterBuilder
             .WithBody(new BlockBuilder()
                 .AddStatement(DeclareAndInitializeArgumentsVariable(method))
                 .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
+                .AddStatement(EnsureMatchingInvocationImposterGroup(method))
                 .AddStatement(TryStatement(
                         new BlockBuilder()
                             .AddStatement(InvokeMatchingSetup(method))
@@ -93,9 +94,16 @@ internal partial class MethodImposterBuilder
 
     private static StatementSyntax InvokeMatchingSetup(in ImposterTargetMethodMetadata method)
     {
+        var invokeArguments = new List<ArgumentSyntax>
+        {
+            Argument(IdentifierName("_invocationBehavior")),
+            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
+        };
+        invokeArguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+
         var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName)
             .Dot(IdentifierName("Invoke"))
-            .Call(ArgumentListSyntax(method.Symbol.Parameters));
+            .Call(ArgumentList(SeparatedList(invokeArguments)));
 
         if (method.Symbol.ReturnsVoid)
         {
@@ -112,7 +120,33 @@ internal partial class MethodImposterBuilder
             IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
                 .Call(method.Parameters.HasInputParameters
                     ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).ToSingleArgumentList()
-                    : ArgumentList())
-                .QuestionMarkQuestionMark(method.InvocationSetup.Syntax.Dot(IdentifierName(method.InvocationSetup.DefaultInvocationSetupField.Name)))
-        );
+                    : ArgumentList()));
+
+    private static StatementSyntax EnsureMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
+    {
+        var matchingIdentifier = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName);
+        var defaultGroup = method.InvocationSetup.Syntax.Dot(IdentifierName(method.InvocationSetup.DefaultInvocationSetupField.Name));
+
+        return IfStatement(
+            BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Null),
+            Block(
+                IfStatement(
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        IdentifierName("_invocationBehavior"),
+                        QualifiedName(
+                            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                            IdentifierName("Explicit"))),
+                    Block(
+                        ThrowStatement(
+                            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                                .WithArgumentList(
+                                    Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
+                                        .AsSingleArgumentListSyntax())))),
+                ExpressionStatement(
+                    AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        matchingIdentifier,
+                        defaultGroup))));
+    }
 }

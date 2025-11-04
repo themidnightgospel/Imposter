@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -109,16 +110,33 @@ internal static partial class InvocationSetupBuilder
 
     private static MethodDeclarationSyntax InvokeInvocationMethod(in ImposterTargetMethodMetadata method)
     {
+        var parameterList = BuildInvocationParameterList(method);
         var blockBuilder = new BlockBuilder()
             .AddStatement(
-                AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
+                IfStatement(
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
                         IdentifierName("_resultGenerator"),
-                        BinaryExpression(
-                            SyntaxKind.CoalesceExpression,
-                            IdentifierName("_resultGenerator"),
-                            IdentifierName(method.InvocationSetup.DefaultResultGeneratorMethod.Name)))
-                    .ToStatementSyntax());
+                        LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                    Block(
+                        IfStatement(
+                            BinaryExpression(
+                                SyntaxKind.EqualsExpression,
+                                IdentifierName("invocationBehavior"),
+                                QualifiedName(
+                                    WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                                    IdentifierName("Explicit"))),
+                            Block(
+                                ThrowStatement(
+                                    ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                                        .WithArgumentList(
+                                            Argument(IdentifierName("methodDisplayName"))
+                                                .AsSingleArgumentListSyntax())))),
+                        ExpressionStatement(
+                            AssignmentExpression(
+                                SyntaxKind.SimpleAssignmentExpression,
+                                IdentifierName("_resultGenerator"),
+                                IdentifierName(method.InvocationSetup.DefaultResultGeneratorMethod.Name))))));
 
         var invokeExpression = IdentifierName("_resultGenerator")
             .Dot(IdentifierName("Invoke"))
@@ -156,8 +174,23 @@ internal static partial class InvocationSetupBuilder
 
         return MethodDeclaration(method.ReturnTypeSyntax, "Invoke")
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(method.Parameters.ParameterListSyntax)
+            .WithParameterList(parameterList)
             .WithBody(blockBuilder.Build());
+
+        static ParameterListSyntax BuildInvocationParameterList(in ImposterTargetMethodMetadata method)
+        {
+            var parameters = new List<ParameterSyntax>
+            {
+                Parameter(Identifier("invocationBehavior"))
+                    .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior),
+                Parameter(Identifier("methodDisplayName"))
+                    .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+            };
+
+            parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
+
+            return ParameterList(SeparatedList(parameters));
+        }
     }
 
     private static MethodDeclarationSyntax CallbackMethod(in ImposterTargetMethodMetadata method) =>
