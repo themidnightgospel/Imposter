@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -48,7 +48,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntNoParams()
                 .Returns(1)
+                .Then()
                 .Returns(2)
+                .Then()
                 .Returns(3);
 
             _sut.Instance().IntNoParams().ShouldBe(1);
@@ -114,7 +116,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         {
             _sut
                 .IntSingleParam(Arg<int>.Any())
-                .Returns(1).Returns(2).Returns(3);
+                .Returns(1).Then().Returns(2).Then().Returns(3);
 
             _sut.Instance().IntSingleParam(1).ShouldBe(1);
             _sut.Instance().IntSingleParam(2).ShouldBe(2);
@@ -180,6 +182,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         {
             _sut.GenericAllRefKind<int, string, double, bool, long>(OutArg<int>.Any(), Arg<string>.Any(), Arg<double>.Any(), Arg<bool[]>.Any())
                 .Returns(1L)
+                .Then()
                 .Returns((out int o, ref string r, in double i, bool[] p) =>
                 {
                     o = (int)(i * 2);
@@ -570,7 +573,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntSingleParam(Arg<int>.Any())
                 .Returns(100)
+                .Then()
                 .Returns(x => x * 2)
+                .Then()
                 .Returns(300);
 
             _sut.Instance().IntSingleParam(50).ShouldBe(100);
@@ -698,11 +703,13 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .AsyncTaskIntNoParams()
                 .Returns(Task.FromResult(100))
+                .Then()
                 .Returns(async () =>
                 {
                     await Task.Delay(5);
                     return 200;
                 })
+                .Then()
                 .Returns(Task.FromResult(300));
 
             var result1 = await _sut.Instance().AsyncTaskIntNoParams();

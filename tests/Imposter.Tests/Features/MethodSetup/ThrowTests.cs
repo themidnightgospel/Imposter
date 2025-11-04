@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -74,6 +74,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntNoParams()
                 .Returns(42)
+                .Then()
                 .Throws<ArgumentException>();
 
             _sut.Instance().IntNoParams().ShouldBe(42);
@@ -453,7 +454,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntSingleParam(Arg<int>.Any())
                 .Throws<ArgumentException>()
+                .Then()
                 .Throws<InvalidOperationException>()
+                .Then()
                 .Throws<NotImplementedException>();
 
             Should.Throw<ArgumentException>(() => _sut.Instance().IntSingleParam(1));
@@ -471,6 +474,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntNoParams()
                 .Throws(exception1)
+                .Then()
                 .Throws(exception2);
 
             var thrown1 = Should.Throw<ArgumentException>(() => _sut.Instance().IntNoParams());
@@ -489,7 +493,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             _sut
                 .IntSingleParam(Arg<int>.Any())
                 .Returns(100)
+                .Then()
                 .Throws<ArgumentException>()
+                .Then()
                 .Returns(200);
 
             _sut.Instance().IntSingleParam(1).ShouldBe(100);

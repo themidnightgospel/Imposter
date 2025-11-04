@@ -115,141 +115,115 @@ namespace Imposter.Playground
 
         // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class IndexerMethodInvocationsSetup : IIndexerMethodInvocationsSetup
+        class IndexerMethodInvocationImposterGroup
         {
-            internal static IndexerMethodInvocationsSetup DefaultInvocationSetup = new IndexerMethodInvocationsSetup(new IndexerArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<string>.Any(), Imposter.Abstractions.Arg<object>.Any()));
+            internal static IndexerMethodInvocationImposterGroup Default = new IndexerMethodInvocationImposterGroup(new IndexerArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<string>.Any(), Imposter.Abstractions.Arg<object>.Any()));
             internal IndexerArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationSetup> _callSetups = new Queue<MethodInvocationSetup>();
-            private MethodInvocationSetup? _currentlySetupCall;
-            private MethodInvocationSetup GetOrAddMethodSetup(Func<MethodInvocationSetup, bool> addNew)
-            {
-                if (_currentlySetupCall is null || addNew(_currentlySetupCall))
-                {
-                    _currentlySetupCall = new MethodInvocationSetup();
-                    _callSetups.Enqueue(_currentlySetupCall);
-                }
-
-                return _currentlySetupCall;
-            }
-
-            internal static string DefaultResultGenerator(int value1, string value2, object value3)
-            {
-                return default;
-            }
-
-            public IndexerMethodInvocationsSetup(IndexerArgumentsCriteria argumentsCriteria)
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public IndexerMethodInvocationImposterGroup(IndexerArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
-                _nextSetup = GetOrAddMethodSetup(it => true);
             }
 
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Returns(IndexerDelegate resultGenerator)
+            internal MethodInvocationImposter AddInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = resultGenerator;
-                return this;
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
             }
 
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Returns(string value)
+            private MethodInvocationImposter? GetInvocationImposter()
             {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value1, string value2, object value3) =>
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
                 {
-                    return value;
-                };
-                return this;
-            }
-
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws<TException>()
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value1, string value2, object value3) =>
-                {
-                    throw new TException();
-                };
-                return this;
-            }
-
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws(System.Exception exception)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value1, string value2, object value3) =>
-                {
-                    throw exception;
-                };
-                return this;
-            }
-
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
-            {
-                GetOrAddMethodSetup(it => it.ResultGenerator != null).ResultGenerator = (int value1, string value2, object value3) =>
-                {
-                    throw exceptionGenerator(value1, value2, value3);
-                };
-                return this;
-            }
-
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.CallBefore(IndexerCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallBefore != null).CallBefore = callback;
-                return this;
-            }
-
-            IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.CallAfter(IndexerCallbackDelegate callback)
-            {
-                GetOrAddMethodSetup(it => it.CallAfter != null).CallAfter = callback;
-                return this;
-            }
-
-            private MethodInvocationSetup _nextSetup;
-            private MethodInvocationSetup? GetNextSetup()
-            {
-                if (_callSetups.TryDequeue(out var callSetup))
-                {
-                    _nextSetup = callSetup;
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
                 }
 
-                return _nextSetup;
+                return _lastestInvocationImposter;
             }
 
             public string Invoke(int value1, string value2, object value3)
             {
-                var nextSetup = GetNextSetup() ?? throw new InvalidOperationException("Invalid Setup");
-                if (nextSetup.CallBefore != null)
-                {
-                    nextSetup.CallBefore(value1, value2, value3);
-                }
-
-                if (nextSetup.ResultGenerator == null)
-                {
-                    nextSetup.ResultGenerator = DefaultResultGenerator;
-                }
-
-                var result = nextSetup.ResultGenerator.Invoke(value1, value2, value3);
-                if (nextSetup.CallAfter != null)
-                {
-                    nextSetup.CallAfter(value1, value2, value3);
-                }
-
-                return result;
+                MethodInvocationImposter invocationImposter = GetInvocationImposter() ?? MethodInvocationImposter.Default;
+                return invocationImposter.Invoke(value1, value2, value3);
             }
 
-            internal class MethodInvocationSetup
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
             {
-                internal IndexerDelegate? ResultGenerator { get; set; }
-                internal IndexerCallbackDelegate? CallBefore { get; set; }
-                internal IndexerCallbackDelegate? CallAfter { get; set; }
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private IndexerDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public string Invoke(int value1, string value2, object value3)
+                {
+                    _resultGenerator = _resultGenerator ?? DefaultResultGenerator;
+                    string result = _resultGenerator.Invoke(value1, value2, value3);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value1, value2, value3);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(IndexerCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(IndexerDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(string value)
+                {
+                    _resultGenerator = (int value1, string value2, object value3) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int value1, string value2, object value3) =>
+                    {
+                        throw exceptionGenerator(value1, value2, value3);
+                    };
+                }
+
+                internal static string DefaultResultGenerator(int value1, string value2, object value3)
+                {
+                    return default;
+                }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodInvocationsSetup
+        public interface IIndexerMethodInvocationImposterBuilder
         {
-            IIndexerMethodInvocationsSetup Throws<TException>()
+            IIndexerMethodInvocationImposterBuilder Throws<TException>()
                 where TException : Exception, new();
-            IIndexerMethodInvocationsSetup Throws(System.Exception exception);
-            IIndexerMethodInvocationsSetup Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
-            IIndexerMethodInvocationsSetup CallBefore(IndexerCallbackDelegate callback);
-            IIndexerMethodInvocationsSetup CallAfter(IndexerCallbackDelegate callback);
-            IIndexerMethodInvocationsSetup Returns(IndexerDelegate resultGenerator);
-            IIndexerMethodInvocationsSetup Returns(string value);
+            IIndexerMethodInvocationImposterBuilder Throws(System.Exception exception);
+            IIndexerMethodInvocationImposterBuilder Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
+            IIndexerMethodInvocationImposterBuilder Callback(IndexerCallbackDelegate callback);
+            IIndexerMethodInvocationImposterBuilder Returns(IndexerDelegate resultGenerator);
+            IIndexerMethodInvocationImposterBuilder Returns(string value);
+            IIndexerMethodInvocationImposterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -260,14 +234,14 @@ namespace Imposter.Playground
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
-        public interface IIndexerMethodImposterBuilder : IIndexerMethodInvocationsSetup, IndexerMethodInvocationVerifier
+        public interface IIndexerMethodImposterBuilder : IIndexerMethodInvocationImposterBuilder, IndexerMethodInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class IndexerMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationsSetup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationsSetup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IndexerMethodInvocationImposterGroup>();
             private readonly IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection;
             public IndexerMethodImposter(IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection)
             {
@@ -276,12 +250,12 @@ namespace Imposter.Playground
 
             public bool HasMatchingSetup(IndexerArguments arguments)
             {
-                return FindMatchingSetup(arguments) != null;
+                return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private IndexerMethodInvocationsSetup? FindMatchingSetup(IndexerArguments arguments)
+            private IndexerMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IndexerArguments arguments)
             {
-                foreach (var setup in _invocationSetups)
+                foreach (var setup in _invocationImposters)
                 {
                     if (setup.ArgumentsCriteria.Matches(arguments))
                         return setup;
@@ -293,10 +267,10 @@ namespace Imposter.Playground
             public string Invoke(int value1, string value2, object value3)
             {
                 var arguments = new IndexerArguments(value1, value2, value3);
-                var matchingSetup = FindMatchingSetup(arguments) ?? IndexerMethodInvocationsSetup.DefaultInvocationSetup;
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? IndexerMethodInvocationImposterGroup.Default;
                 try
                 {
-                    var result = matchingSetup.Invoke(value1, value2, value3);
+                    var result = matchingInvocationImposterGroup.Invoke(value1, value2, value3);
                     _indexerMethodInvocationHistoryCollection.Add(new IndexerMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -313,72 +287,67 @@ namespace Imposter.Playground
                 private readonly IndexerMethodImposter _imposter;
                 private readonly IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection;
                 private readonly IndexerArgumentsCriteria _argumentsCriteria;
-                private IndexerMethodInvocationsSetup? _existingInvocationSetup;
+                private readonly IndexerMethodInvocationImposterGroup _invocationImposterGroup;
+                private IndexerMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
                 public Builder(IndexerMethodImposter _imposter, IndexerMethodInvocationHistoryCollection _indexerMethodInvocationHistoryCollection, IndexerArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
                     this._indexerMethodInvocationHistoryCollection = _indexerMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new IndexerMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                private IIndexerMethodInvocationsSetup GetOrAddInvocationSetup()
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws<TException>()
                 {
-                    if (_existingInvocationSetup is null)
+                    _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
                     {
-                        _existingInvocationSetup = new IndexerMethodInvocationsSetup(_argumentsCriteria);
-                        _imposter._invocationSetups.Push(_existingInvocationSetup);
-                    }
-
-                    return _existingInvocationSetup;
+                        throw new TException();
+                    });
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws<TException>()
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws(System.Exception exception)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws<TException>();
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws(System.Exception exception)
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exception);
-                    return invocationSetup;
+                    _currentInvocationImposter.Throws((int value1, string value2, object value3) =>
+                    {
+                        throw exceptionGenerator.Invoke(value1, value2, value3);
+                    });
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Callback(IndexerCallbackDelegate callback)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Throws(exceptionGenerator);
-                    return invocationSetup;
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.CallBefore(IndexerCallbackDelegate callback)
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Returns(IndexerDelegate resultGenerator)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallBefore(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.CallAfter(IndexerCallbackDelegate callback)
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Returns(string value)
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.CallAfter(callback);
-                    return invocationSetup;
+                    _currentInvocationImposter.Returns(value);
+                    return this;
                 }
 
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Returns(IndexerDelegate resultGenerator)
+                IIndexerMethodInvocationImposterBuilder IIndexerMethodInvocationImposterBuilder.Then()
                 {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(resultGenerator);
-                    return invocationSetup;
-                }
-
-                IIndexerMethodInvocationsSetup IIndexerMethodInvocationsSetup.Returns(string value)
-                {
-                    var invocationSetup = GetOrAddInvocationSetup();
-                    invocationSetup.Returns(value);
-                    return invocationSetup;
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
                 }
 
                 void IndexerMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)

@@ -10,9 +10,12 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal partial class MethodImposterBuilder
 {
-    internal static MemberDeclarationSyntax BuildFindMatchingSetupMethod(in ImposterTargetMethodMetadata method)
+    internal static MemberDeclarationSyntax BuildFindMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method)
     {
-        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.InvocationSetup.Syntax), "FindMatchingSetup")
+        var setupIdentifier = Identifier(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName);
+        var setupIdentifierName = IdentifierName(setupIdentifier);
+
+        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.InvocationSetup.Syntax), method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(GetArgumentsParameter(method));
 
@@ -22,15 +25,15 @@ internal partial class MethodImposterBuilder
                 .WithBody(Block(
                     ForEachStatement(
                         Var,
-                        Identifier("setup"),
-                        IdentifierName(method.MethodImposter.InvocationSetupsField.Name),
+                        setupIdentifier,
+                        IdentifierName(method.MethodImposter.InvocationImpostersField.Name),
                         Block(
                             IfStatement(
-                                IdentifierName("setup")
+                                setupIdentifierName
                                     .Dot(IdentifierName("ArgumentsCriteria"))
                                     .Dot(IdentifierName("Matches"))
                                     .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
-                                ReturnStatement(IdentifierName("setup"))
+                                ReturnStatement(setupIdentifierName)
                             )
                         )
                     ),
@@ -42,11 +45,11 @@ internal partial class MethodImposterBuilder
         return findMatchingSetupMethod
             .WithBody(Block(
                 IfStatement(
-                    IdentifierName(method.MethodImposter.InvocationSetupsField.Name)
+                    IdentifierName(method.MethodImposter.InvocationImpostersField.Name)
                         .Dot(ConcurrentStackSyntaxHelper.TryPeek)
-                        .Call(ArgumentListSyntax(OutVarArgument("setup"))
+                        .Call(ArgumentListSyntax(OutVarArgument(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName))
                         ),
-                    ReturnStatement(IdentifierName("setup")),
+                    ReturnStatement(setupIdentifierName),
                     ElseClause(ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression)))
                 )
             ))

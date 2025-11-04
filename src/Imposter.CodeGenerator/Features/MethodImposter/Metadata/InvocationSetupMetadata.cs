@@ -1,11 +1,12 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 
 internal readonly record struct InvocationSetupMetadata
 {
-    internal const string GetOrAddMethodSetupMethodName = "GetOrAddMethodSetup";
+    internal const string MethodInvocationImposterTypeName = "MethodInvocationImposter";
 
     internal readonly string Name;
 
@@ -13,34 +14,31 @@ internal readonly record struct InvocationSetupMetadata
 
     internal readonly NameSyntax Syntax;
 
+    internal readonly NameSyntax MethodInvocationImposterSyntax;
+
     internal readonly ReturnsMethodMetadata ReturnsMethod;
 
-    internal readonly InvokeMethoMetadata InvokeMethod;
-
-    internal readonly GetNextSetupMethodMetadata GetNextSetupMethod;
-
     internal readonly ThrowsMethodMetadata ThrowsMethod;
-    
-    internal readonly CallBeforeCallbackMethodMetadata CallBeforeCallbackMethod;
-    
-    internal readonly CallAfterCallbackMethodMetadata CallAfterCallbackMethod;
-    
+
+    internal readonly CallbackMethodMetadata CallbackMethod;
+
+    internal readonly ThenMethodMetadata ThenMethod;
+
     internal readonly DefaultInvocationSetupFieldMetadata DefaultInvocationSetupField;
-    
+
     internal readonly DefaultResultGeneratorMethodMetadata DefaultResultGeneratorMethod;
 
     internal InvocationSetupMetadata(in ImposterTargetMethodMetadata method)
     {
-        Name = $"{method.UniqueName}MethodInvocationsSetup";
-        Interface = TypeMetadataFactory.Create($"I{Name}", method.GenericTypeArguments);
+        Name = $"{method.UniqueName}MethodInvocationImposterGroup";
+        Interface = TypeMetadataFactory.Create($"I{method.UniqueName}MethodInvocationImposterBuilder", method.GenericTypeArguments);
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
+        MethodInvocationImposterSyntax = SyntaxFactory.QualifiedName(Syntax, SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName));
         ReturnsMethod = new ReturnsMethodMetadata(method, method.ReturnTypeSyntax, Interface.Syntax, method.Delegate.Syntax);
-        InvokeMethod = new InvokeMethoMetadata(method);
-        GetNextSetupMethod = new GetNextSetupMethodMetadata(method);
         ThrowsMethod = new ThrowsMethodMetadata(method, method.ExceptionGeneratorDelegate.Syntax, Interface.Syntax);
-        CallBeforeCallbackMethod = new CallBeforeCallbackMethodMetadata(method, Interface.Syntax, method.CallbackDelegate.Syntax);
-        CallAfterCallbackMethod = new CallAfterCallbackMethodMetadata(method, Interface.Syntax, method.CallbackDelegate.Syntax);
-        DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata(method.ReturnTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(method, Interface.Syntax, method.CallbackDelegate.Syntax);
+        ThenMethod = new ThenMethodMetadata(Interface.Syntax);
+        DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
         DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(method.ReturnTypeSyntax);
     }
 
@@ -80,76 +78,11 @@ internal readonly record struct InvocationSetupMetadata
     
     internal readonly struct DefaultInvocationSetupFieldMetadata
     {
-        internal readonly string Name = "DefaultInvocationSetup";
-        
-        internal DefaultInvocationSetupFieldMetadata(TypeSyntax methodReturnTypeSyntax)
-        {
-        }
-    }
-    
-    internal readonly struct CallAfterCallbackMethodMetadata
-    {
-        internal readonly string Name = "CallAfter";
-        
-        internal readonly TypeSyntax ReturnType;
-        
-        internal readonly ParameterMetadata CallbackParameter;
-
-        public CallAfterCallbackMethodMetadata(
-            IParameterNameContextProvider parameterNameContextProvider,
-            NameSyntax interfaceSyntax,
-            TypeSyntax callbackTypeSyntax)
-        {
-            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-            ReturnType = interfaceSyntax;
-            CallbackParameter = new ParameterMetadata(nameContext.Use("callback"), callbackTypeSyntax);
-        }
-    }
-
-
-    internal readonly struct CallBeforeCallbackMethodMetadata
-    {
-        internal readonly string Name = "CallBefore";
-        
-        internal readonly TypeSyntax ReturnType;
-        
-        internal readonly ParameterMetadata CallbackParameter;
-
-        public CallBeforeCallbackMethodMetadata(
-            IParameterNameContextProvider parameterNameContextProvider,
-            NameSyntax interfaceSyntax,
-            TypeSyntax callbackTypeSyntax)
-        {
-            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-            ReturnType = interfaceSyntax;
-            CallbackParameter = new ParameterMetadata(nameContext.Use("callback"), callbackTypeSyntax);
-        }
-    }
-
-    internal readonly struct GetNextSetupMethodMetadata
-    {
         internal readonly string Name;
 
-        public GetNextSetupMethodMetadata(IParameterNameContextProvider parameterNameContextProvider)
+        public DefaultInvocationSetupFieldMetadata()
         {
-            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-            Name = nameContext.Use("GetNextSetup");
-        }
-    }
-
-    internal readonly struct InvokeMethoMetadata
-    {
-        internal readonly string Name = "Invoke";
-
-        internal readonly string ResultVariableName;
-
-        internal readonly string NextSetupVariableName;
-
-        public InvokeMethoMetadata(IParameterNameContextProvider parameterNameContextProvider)
-        {
-            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-            ResultVariableName = nameContext.Use("result");
-            NextSetupVariableName = nameContext.Use("nextSetup");
+            Name = "Default";
         }
     }
 
@@ -173,6 +106,37 @@ internal readonly record struct InvocationSetupMetadata
             var nameContext = parameterNameContextProvider.CreateParameterNameContext();
             ValueParameter = new ParameterMetadata(nameContext.Use("value"), imposterMethodReturnType);
             ResultGeneratorParameter = new ParameterMetadata(nameContext.Use("resultGenerator"), methodDelegateTypeSyntax);
+        }
+    }
+
+    internal readonly struct CallbackMethodMetadata
+    {
+        internal readonly string Name = "Callback";
+
+        internal readonly TypeSyntax ReturnType;
+
+        internal readonly ParameterMetadata CallbackParameter;
+
+        public CallbackMethodMetadata(
+            IParameterNameContextProvider parameterNameContextProvider,
+            NameSyntax interfaceSyntax,
+            TypeSyntax callbackTypeSyntax)
+        {
+            var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+            ReturnType = interfaceSyntax;
+            CallbackParameter = new ParameterMetadata(nameContext.Use("callback"), callbackTypeSyntax);
+        }
+    }
+
+    internal readonly struct ThenMethodMetadata
+    {
+        internal readonly string Name = "Then";
+
+        internal readonly TypeSyntax ReturnType;
+
+        public ThenMethodMetadata(NameSyntax interfaceSyntax)
+        {
+            ReturnType = interfaceSyntax;
         }
     }
 }

@@ -36,8 +36,8 @@ internal static partial class MethodImposterBuilder
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))
-            .AddMember(BuildHasMatchingSetupMethod(method))
-            .AddMember(BuildFindMatchingSetupMethod(method))
+            .AddMember(BuildHasMatchingInvocationImposterGroupMethod(method))
+            .AddMember(BuildFindMatchingInvocationImposterGroupMethod(method))
             .AddMember(InvokeMethod(method))
             .AddMember(MethodImposterBuilderBuilder.Build(method, invocationSetupBuilderInterface))
             .Build();
