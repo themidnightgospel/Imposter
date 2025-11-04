@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;

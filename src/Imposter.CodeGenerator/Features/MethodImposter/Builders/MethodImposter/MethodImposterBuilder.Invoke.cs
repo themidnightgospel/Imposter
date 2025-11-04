@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
-using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter;
 
 internal partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
-        new MethodDeclarationBuilder(method.ReturnTypeSyntax, MethodImposterMetadata.InvokeMethodMetadata.Name)
+        new MethodDeclarationBuilder(method.ReturnTypeSyntax, MethodImposterInvokeMethodMetadata.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(method.Parameters.ParameterListSyntax)
             .WithBody(new BlockBuilder()

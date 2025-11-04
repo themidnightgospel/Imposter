@@ -6,25 +6,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.ImposterTargetMethod;
 
-// TODO Split this similar to how property metada is
 internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextProvider
 {
-    internal IMethodSymbol Symbol { get; }
+    internal readonly IMethodSymbol Symbol;
 
     internal readonly ImposterTargetMethodParametersMetadata Parameters;
 
-    internal readonly MethodImposterMetadata MethodImposter;
-
-    // As method names aren't unique in the class, we add a number at the end to make it so
-    internal readonly string UniqueName;
-
-    internal bool HasReturnValue => !Symbol.ReturnsVoid;
-
-    internal readonly string DisplayName;
-
-    internal readonly InvocationVerifierInterfaceMetadata InvocationVerifierInterface;
+    internal readonly InvocationSetupMetadata InvocationSetup;
 
     internal readonly TypeMetadata Delegate;
 
@@ -32,57 +22,58 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly TypeMetadata ExceptionGeneratorDelegate;
 
-    internal readonly TypeMetadata Arguments;
-
     internal readonly ArgumentCriteriaTypeMetadata ArgumentsCriteria;
+
+    internal readonly TypeMetadata Arguments;
 
     internal readonly InvocationHistoryTypeMetadata InvocationHistory;
 
-    internal readonly InvocationSetupMetadata InvocationSetup;
+    internal readonly InvocationVerifierInterfaceMetadata InvocationVerifierInterface;
+
+    internal readonly MethodImposterMetadata MethodImposter;
+
+    internal readonly ReturnTypeMetadata ReturnType;
+
+    internal readonly bool HasReturnValue;
+
+    internal readonly string UniqueName;
+
+    internal readonly string DisplayName;
 
     internal readonly TypeSyntax ReturnTypeSyntax;
 
-    internal readonly bool IsAsync;
-
-    // TODO: Put those into GenericTypeArgumentsMetadata
     internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
-
-    internal readonly TypeParameterListSyntax? GenericTypeParameterListSyntax;
 
     internal readonly TypeArgumentListSyntax? GenericTypeArgumentListSyntax;
 
-    internal readonly IReadOnlyList<IdentifierNameSyntax> TargetGenericTypeArguments;
+    internal readonly TypeParameterListSyntax? GenericTypeParameterListSyntax;
+
+    internal readonly IReadOnlyList<NameSyntax> TargetGenericTypeArguments;
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 
-    public NameSet CreateParameterNameContext() => new(Symbol.Parameters.Select(p => p.Name));
+    internal readonly string Namespace;
+
+    internal bool IsAsync { get; }
 
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,
         string uniqueName)
     {
         Symbol = symbol;
+        UniqueName = uniqueName;
         DisplayName = Symbol.ToFullDisplayName();
+        Namespace = Symbol.ContainingNamespace.ToDisplayString();
+        ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Symbol.ReturnType);
+        ReturnType = new ReturnTypeMetadata(Symbol.ReturnType);
+        HasReturnValue = !Symbol.ReturnsVoid;
         IsAsync = IsMethodAsync(symbol);
 
-        UniqueName = uniqueName;
-        ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Symbol.ReturnType);
-
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
-
-        GenericTypeArguments = Symbol
-            .TypeParameters
-            .Select(p => SyntaxFactory.IdentifierName(p.Name))
-            .ToArray();
-
-        GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
+        GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
-
-        TargetGenericTypeArguments = Symbol
-            .TypeParameters
-            .Select(p => SyntaxFactory.IdentifierName(p.Name + "Target"))
-            .ToArray();
-
+        GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
+        TargetGenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName($"{p.Name}Target")).ToArray();
         TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TargetGenericTypeArguments);
 
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
@@ -98,7 +89,17 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         MethodImposter = new MethodImposterMetadata(this);
     }
 
-    // TODO improve
+    public NameSet CreateParameterNameContext()
+    {
+        var names = new List<string>(Parameters.Parameters.Select(p => p.Name))
+        {
+            UniqueName,
+            Namespace
+        };
+
+        return new NameSet(names);
+    }
+
     private static bool IsMethodAsync(IMethodSymbol methodSymbol) =>
         methodSymbol.ReturnsVoid == false
         && methodSymbol.ReturnType.AllInterfaces.Any(i => i.ToDisplayString() == "System.Runtime.CompilerServices.IAsyncStateMachine")
@@ -108,34 +109,4 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
              (namedType.IsGenericType &&
               (namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.Task<TResult>" ||
                namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.ValueTask<TResult>"))));
-}
-
-internal readonly struct InvocationVerifierInterfaceMetadata
-{
-    internal const string VerifyMethodArgumentsParameterName = "arguments";
-
-    internal readonly NameSyntax Syntax;
-
-    internal readonly CalledMethodMetadata CalledMethod;
-
-    internal readonly string Name;
-
-    public InvocationVerifierInterfaceMetadata(ImposterTargetMethodMetadata method)
-    {
-        Name = $"{method.UniqueName}MethodInvocationVerifier";
-        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
-        CalledMethod = new CalledMethodMetadata();
-    }
-
-    internal readonly struct CalledMethodMetadata
-    {
-        internal const string Name = "Called";
-
-        internal readonly ParameterMetadata CountParameter;
-
-        public CalledMethodMetadata()
-        {
-            CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
-        }
-    }
 }

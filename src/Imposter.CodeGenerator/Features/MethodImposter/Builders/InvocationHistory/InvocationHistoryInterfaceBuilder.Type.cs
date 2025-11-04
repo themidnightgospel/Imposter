@@ -1,5 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,7 +15,7 @@ public static class InvocationHistoryInterfaceBuilder
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), InvocationHistoryMatchesMethodMetadata.Name)
             .WithSemicolon()
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))
@@ -25,7 +24,7 @@ public static class InvocationHistoryInterfaceBuilder
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
         {
             return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments, "criteria")
+                ? SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments, InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName)
                 : null;
         }
     }

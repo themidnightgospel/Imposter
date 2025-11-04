@@ -1,6 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Adapter;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
-using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
