@@ -16,6 +16,7 @@ namespace Imposter.Playground
     {
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Playground.IPropertySetupSut Instance() => _imposterInstance;
         global::Imposter.Playground.IPropertySetupSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IPropertySetupSut>.Instance()
         {
             return _imposterInstance;

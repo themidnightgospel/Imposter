@@ -1,5 +1,3 @@
-﻿using System.Text.RegularExpressions;
-
 namespace Imposter.Abstractions;
 
 /// <summary>
@@ -23,16 +21,82 @@ public class Arg<T>
     /// <summary>
     /// Matches an argument based on a custom predicate.
     /// </summary>
-    public static Arg<T> Is(Func<T, bool> predicate) => new(predicate);
+    public static Arg<T> Is(Func<T, bool> predicate)
+    {
+        if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+        return new(predicate);
+    }
 
     /// <summary>
     /// Matches an argument that is equal to the provided value.
     /// </summary>
-    public static Arg<T> Is(T? value) => new(it =>
+    public static Arg<T> Is(T? value) => Is(value, EqualityComparer<T>.Default);
+
+    /// <summary>
+    /// Matches an argument that is equal to the provided value, using a custom comparer.
+    /// </summary>
+    public static Arg<T> Is(T? value, IEqualityComparer<T> comparer)
     {
-        if (value == null) return it == null;
-        return EqualityComparer<T>.Default.Equals(it, value);
-    });
+        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        return new(it => comparer.Equals(it, value!));
+    }
+
+    /// <summary>
+    /// Matches an argument that does not satisfy the provided predicate.
+    /// </summary>
+    public static Arg<T> IsNot(Func<T, bool> predicate)
+    {
+        if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+        return new(it => !predicate(it));
+    }
+
+    /// <summary>
+    /// Matches an argument that is not equal to the provided value.
+    /// </summary>
+    public static Arg<T> IsNot(T? value) => IsNot(value, EqualityComparer<T>.Default);
+
+    /// <summary>
+    /// Matches an argument that is not equal to the provided value, using a custom comparer.
+    /// </summary>
+    public static Arg<T> IsNot(T? value, IEqualityComparer<T> comparer)
+    {
+        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        return new(it => !comparer.Equals(it, value!));
+    }
+
+    /// <summary>
+    /// Matches an argument if it belongs to the provided set of values.
+    /// </summary>
+    public static Arg<T> IsIn(IEnumerable<T> values) => IsIn(values, EqualityComparer<T>.Default);
+
+    /// <summary>
+    /// Matches an argument if it belongs to the provided set of values, using a custom comparer.
+    /// </summary>
+    public static Arg<T> IsIn(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    {
+        if (values is null) throw new ArgumentNullException(nameof(values));
+        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+
+        var lookup = new HashSet<T>(values, comparer);
+        return new(lookup.Contains);
+    }
+
+    /// <summary>
+    /// Matches an argument if it does not belong to the provided set of values.
+    /// </summary>
+    public static Arg<T> IsNotIn(IEnumerable<T> values) => IsNotIn(values, EqualityComparer<T>.Default);
+
+    /// <summary>
+    /// Matches an argument if it does not belong to the provided set of values, using a custom comparer.
+    /// </summary>
+    public static Arg<T> IsNotIn(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    {
+        if (values is null) throw new ArgumentNullException(nameof(values));
+        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+
+        var lookup = new HashSet<T>(values, comparer);
+        return new(it => !lookup.Contains(it));
+    }
 
     /// <summary>
     /// Matches an argument that is the default value for its type (e.g., 0 for int, null for string).
@@ -51,15 +115,6 @@ public class Arg<T>
     /// </summary>
     /// <param name="value">The value to convert to an argument matcher.</param>
     public static implicit operator Arg<T>(T value) => Is(value);
-
-    /// <summary>
-    /// Matches a string argument against a regular expression.
-    /// </summary>
-    public static Arg<string> MatchesRegex(string regex)
-    {
-        var re = new Regex(regex);
-        return new Arg<string>(value => value != null && re.IsMatch(value));
-    }
 }
 
 /// <summary>
@@ -79,7 +134,8 @@ public class OutArg<T>
     }
 
     /// <summary>
-    /// Checks if criteria matches the value
+    /// Always returns <c>true</c>; out arguments cannot be constrained and are treated as unconstrained wildcards.
+    /// Use the appropriate <c>Arg&lt;T&gt;.Is(...)</c> overload for in/ref arguments when matching specific values is required.
     /// </summary>
     public bool Matches(T value) => true;
 }

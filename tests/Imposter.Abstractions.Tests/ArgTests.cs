@@ -1,4 +1,5 @@
-﻿using Imposter.Abstractions;
+using System;
+using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
@@ -40,6 +41,50 @@ public class ArgTests
         arg.Matches(42).ShouldBeTrue();
         arg.Matches(43).ShouldBeFalse();
     }
+
+    [Fact]
+    public void Arg_IsNot_Value_ShouldMatchAnythingExceptProvidedValue()
+    {
+        // Arrange
+        var arg = Arg<int>.IsNot(42);
+
+        // Act & Assert
+        arg.Matches(41).ShouldBeTrue();
+        arg.Matches(42).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsNot_Null_ShouldMatchNonNullReferencesOnly()
+    {
+        // Arrange
+        var arg = Arg<string>.IsNot((string?)null);
+
+        // Act & Assert
+        arg.Matches("value").ShouldBeTrue();
+        arg.Matches(null).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_Is_WithCustomComparer_ShouldUseComparer()
+    {
+        // Arrange
+        var arg = Arg<string>.Is("foo", StringComparer.OrdinalIgnoreCase);
+
+        // Act & Assert
+        arg.Matches("FOO").ShouldBeTrue();
+        arg.Matches("bar").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsNot_WithCustomComparer_ShouldUseComparer()
+    {
+        // Arrange
+        var arg = Arg<string>.IsNot("foo", StringComparer.OrdinalIgnoreCase);
+
+        // Act & Assert
+        arg.Matches("bar").ShouldBeTrue();
+        arg.Matches("FOO").ShouldBeFalse();
+    }
         
     [Fact]
     public void Arg_Is_Reference_ShouldMatchEqualReference()
@@ -64,6 +109,17 @@ public class ArgTests
     }
 
     [Fact]
+    public void Arg_IsNot_Predicate_ShouldMatchWhenPredicateIsFalse()
+    {
+        // Arrange
+        var arg = Arg<int>.IsNot(x => x % 2 == 0);
+
+        // Act & Assert
+        arg.Matches(3).ShouldBeTrue();
+        arg.Matches(4).ShouldBeFalse();
+    }
+
+    [Fact]
     public void Arg_Is_Predicate_ShouldMatchBasedOnPredicate()
     {
         // Arrange
@@ -73,6 +129,52 @@ public class ArgTests
         arg.Matches(11).ShouldBeTrue();
         arg.Matches(10).ShouldBeFalse();
         arg.Matches(9).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsIn_ShouldMatchValuesPresentInCollection()
+    {
+        // Arrange
+        var arg = Arg<int>.IsIn(new[] { 1, 2, 3 });
+
+        // Act & Assert
+        arg.Matches(2).ShouldBeTrue();
+        arg.Matches(4).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsIn_WithCustomComparer_ShouldUseComparer()
+    {
+        // Arrange
+        var arg = Arg<string>.IsIn(new[] { "foo", "bar" }, StringComparer.OrdinalIgnoreCase);
+
+        // Act & Assert
+        arg.Matches("FOO").ShouldBeTrue();
+        arg.Matches("baz").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsNotIn_ShouldRejectValuesPresentInCollection()
+    {
+        // Arrange
+        var forbidden = new[] { "alpha", "beta" };
+        var arg = Arg<string>.IsNotIn(forbidden);
+
+        // Act & Assert
+        arg.Matches("gamma").ShouldBeTrue();
+        arg.Matches("beta").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Arg_IsNotIn_WithCustomComparer_ShouldUseComparer()
+    {
+        // Arrange
+        var forbidden = new[] { "foo", "bar" };
+        var arg = Arg<string>.IsNotIn(forbidden, StringComparer.OrdinalIgnoreCase);
+
+        // Act & Assert
+        arg.Matches("baz").ShouldBeTrue();
+        arg.Matches("FOO").ShouldBeFalse();
     }
         
     [Fact]
@@ -108,36 +210,6 @@ public class ArgTests
         arg.Matches(new TestStruct(1)).ShouldBeFalse();
     }
         
-    [Fact]
-    public void Arg_MatchesRegex_ShouldMatchValidString()
-    {
-        // Arrange
-        var arg = Arg<string>.MatchesRegex(@"^\d{3}-\d{2}-\d{4}$");
-            
-        // Act & Assert
-        arg.Matches("123-45-6789").ShouldBeTrue();
-    }
-        
-    [Fact]
-    public void Arg_MatchesRegex_ShouldNotMatchInvalidString()
-    {
-        // Arrange
-        var arg = Arg<string>.MatchesRegex(@"^\d+$");
-            
-        // Act & Assert
-        arg.Matches("123a").ShouldBeFalse();
-    }
-        
-    [Fact]
-    public void Arg_MatchesRegex_ShouldNotMatchNull()
-    {
-        // Arrange
-        var arg = Arg<string>.MatchesRegex(".*"); // Match any non-null string
-            
-        // Act & Assert
-        arg.Matches(null).ShouldBeFalse();
-    }
-
     [Fact]
     public void OutArg_Any_ShouldAlwaysMatch()
     {
