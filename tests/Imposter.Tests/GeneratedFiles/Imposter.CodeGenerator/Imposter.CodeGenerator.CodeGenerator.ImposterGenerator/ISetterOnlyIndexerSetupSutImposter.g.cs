@@ -112,11 +112,6 @@ namespace Imposter.CodeGenerator.Tests.Features.IndexerSetup
                 this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
             }
 
-            internal IIndexerIndexerGetterBuilder CreateGetter(IndexerIndexerArgumentsCriteria criteria)
-            {
-                return new GetterImposter.Builder(_getterImposter, criteria);
-            }
-
             internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
             {
                 _setterImposter.MarkConfigured();
@@ -132,11 +127,6 @@ namespace Imposter.CodeGenerator.Tests.Features.IndexerSetup
                 {
                     this._builder = builder;
                     this._criteria = criteria;
-                }
-
-                public IIndexerIndexerGetterBuilder Getter()
-                {
-                    return _builder.CreateGetter(_criteria);
                 }
 
                 public IIndexerIndexerSetterBuilder Setter()

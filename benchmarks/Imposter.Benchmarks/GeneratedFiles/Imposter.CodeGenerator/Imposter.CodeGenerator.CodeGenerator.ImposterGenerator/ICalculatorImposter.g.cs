@@ -23,6 +23,7 @@ namespace Imposter.Benchmarks
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator Instance() => _imposterInstance;
         global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>.Instance()
         {
             return _imposterInstance;

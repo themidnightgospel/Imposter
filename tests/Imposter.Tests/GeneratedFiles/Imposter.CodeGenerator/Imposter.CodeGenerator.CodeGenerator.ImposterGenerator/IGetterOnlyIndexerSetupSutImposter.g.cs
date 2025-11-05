@@ -122,11 +122,6 @@ namespace Imposter.CodeGenerator.Tests.Features.IndexerSetup
                 return new GetterImposter.Builder(_getterImposter, criteria);
             }
 
-            internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
-            {
-                return new SetterImposter.Builder(_setterImposter, criteria);
-            }
-
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
             internal class InvocationBuilder : IIndexerIndexerBuilder
             {
@@ -141,11 +136,6 @@ namespace Imposter.CodeGenerator.Tests.Features.IndexerSetup
                 public IIndexerIndexerGetterBuilder Getter()
                 {
                     return _builder.CreateGetter(_criteria);
-                }
-
-                public IIndexerIndexerSetterBuilder Setter()
-                {
-                    return _builder.CreateSetter(_criteria);
                 }
             }
 

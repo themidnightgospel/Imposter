@@ -29,8 +29,8 @@ internal static class IndexerImposterBuilderBuilder
             .AddMember(indexer.Core.HasSetter ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.SetterImposterField) : null)
             .AddMember(DefaultIndexerBehaviourBuilder.Build(indexer))
             .AddMember(BuildConstructor(indexer))
-            .AddMember(BuildCreateGetterMethod(indexer))
-            .AddMember(BuildCreateSetterMethod(indexer))
+            .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
+            .AddMember(indexer.Core.HasSetter ? BuildCreateSetterMethod(indexer) : null)
             .AddMember(BuildInvocationBuilder(indexer))
             .AddMember(indexer.Core.HasGetter ? BuildGetForwarder(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildSetForwarder(indexer) : null)
@@ -143,7 +143,8 @@ internal static class IndexerImposterBuilderBuilder
     }
 
     private static ClassDeclarationSyntax BuildInvocationBuilder(in ImposterIndexerMetadata indexer)
-        => new ClassDeclarationBuilder("InvocationBuilder")
+    {
+        var invocationBuilder = new ClassDeclarationBuilder("InvocationBuilder")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.BuilderInterface.TypeSyntax))
             .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, "_builder"))
@@ -156,22 +157,34 @@ internal static class IndexerImposterBuilderBuilder
                     .AddStatement(ThisExpression().Dot(IdentifierName("_builder")).Assign(IdentifierName("builder")).ToStatementSyntax())
                     .AddStatement(ThisExpression().Dot(IdentifierName("_criteria")).Assign(IdentifierName("criteria")).ToStatementSyntax())
                     .Build())
-                .Build())
-            .AddMember(new MethodDeclarationBuilder(indexer.GetterBuilderInterface.TypeSyntax, indexer.BuilderInterface.GetterMethod.Name)
-                .AddModifier(Token(SyntaxKind.PublicKeyword))
-                .WithBody(Block(ReturnStatement(
-                    IdentifierName("_builder")
-                        .Dot(IdentifierName("CreateGetter"))
-                        .Call(Argument(IdentifierName("_criteria"))))))
-                .Build())
-            .AddMember(new MethodDeclarationBuilder(indexer.SetterBuilderInterface.TypeSyntax, indexer.BuilderInterface.SetterMethod.Name)
-                .AddModifier(Token(SyntaxKind.PublicKeyword))
-                .WithBody(Block(ReturnStatement(
-                    IdentifierName("_builder")
-                        .Dot(IdentifierName("CreateSetter"))
-                        .Call(Argument(IdentifierName("_criteria"))))))
-                .Build())
-            .Build();
+                .Build());
+
+        if (indexer.Core.HasGetter)
+        {
+            invocationBuilder = invocationBuilder.AddMember(
+                new MethodDeclarationBuilder(indexer.GetterBuilderInterface.TypeSyntax, indexer.BuilderInterface.GetterMethod.Name)
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .WithBody(Block(ReturnStatement(
+                        IdentifierName("_builder")
+                            .Dot(IdentifierName("CreateGetter"))
+                            .Call(Argument(IdentifierName("_criteria"))))))
+                    .Build());
+        }
+
+        if (indexer.Core.HasSetter)
+        {
+            invocationBuilder = invocationBuilder.AddMember(
+                new MethodDeclarationBuilder(indexer.SetterBuilderInterface.TypeSyntax, indexer.BuilderInterface.SetterMethod.Name)
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .WithBody(Block(ReturnStatement(
+                        IdentifierName("_builder")
+                            .Dot(IdentifierName("CreateSetter"))
+                            .Call(Argument(IdentifierName("_criteria"))))))
+                    .Build());
+        }
+
+        return invocationBuilder.Build();
+    }
 
     private static MethodDeclarationSyntax BuildGetForwarder(in ImposterIndexerMetadata indexer)
         => new MethodDeclarationBuilder(indexer.Core.TypeSyntax, "Get")
