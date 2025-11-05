@@ -1,6 +1,6 @@
 ﻿using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
+namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
 {
     [GenerateImposter(typeof(IClosedGenericSut<int, string>))]
     interface IClosedGenericSut<TInput, TOutput>

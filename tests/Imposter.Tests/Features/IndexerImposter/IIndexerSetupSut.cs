@@ -1,6 +1,6 @@
 using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.IndexerSetup
+namespace Imposter.CodeGenerator.Tests.Features.IndexerImposter
 {
     [GenerateImposter(typeof(IIndexerSetupSut))]
     public interface IIndexerSetupSut
