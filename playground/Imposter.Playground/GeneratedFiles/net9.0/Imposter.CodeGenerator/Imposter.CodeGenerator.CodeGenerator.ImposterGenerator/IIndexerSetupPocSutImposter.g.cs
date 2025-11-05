@@ -23,13 +23,6 @@ namespace Imposter.Playground
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IIndexerSetupPocSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
-        {
-            this._indexerMethodImposter = new IndexerMethodImposter(_indexerMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
-        }
-
         global::Imposter.Playground.IIndexerSetupPocSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IIndexerSetupPocSut>.Instance()
         {
             return _imposterInstance;
@@ -392,6 +385,13 @@ namespace Imposter.Playground
                     }
                 }
             }
+        }
+
+        public IIndexerSetupPocSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._indexerMethodImposter = new IndexerMethodImposter(_indexerMethodInvocationHistoryCollection, invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
