@@ -123,6 +123,20 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
         }
 
         [Fact]
+        public async Task AsyncValueTaskIntNoParams_WhenAwaited_VerifiesCallCount()
+        {
+            _sut
+                .AsyncValueTaskIntNoParams()
+                .ReturnsAsync(7);
+
+            await _sut.Instance().AsyncValueTaskIntNoParams();
+            await _sut.Instance().AsyncValueTaskIntNoParams();
+            await _sut.Instance().AsyncValueTaskIntNoParams();
+
+            _sut.AsyncValueTaskIntNoParams().Called(Count.Exactly(3));
+        }
+
+        [Fact]
         public void IntSingleParam_WhenCalledWithDifferentValues_VerifiesWithArgMatching()
         {
             _sut.Instance().IntSingleParam(42);
