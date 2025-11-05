@@ -623,6 +623,65 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         
         
         [Fact]
+        public async Task GivenAsyncTaskMethodSetupWithThrowsAsync_WhenMethodIsInvoked_ShouldReturnFaultedTask()
+        {
+            var expectedException = new InvalidOperationException("Async failure");
+
+            _sut
+                .AsyncTaskIntNoParams()
+                .ThrowsAsync(expectedException);
+
+            var task = _sut.Instance().AsyncTaskIntNoParams();
+
+            task.ShouldNotBeNull();
+            task.IsFaulted.ShouldBeTrue();
+
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await task);
+            exception.ShouldBe(expectedException);
+        }
+        
+        [Fact]
+        public async Task GivenAsyncValueTaskMethodSetupWithThrowsAsync_WhenMethodIsInvoked_ShouldReturnFaultedTask()
+        {
+            var expectedException = new InvalidOperationException("Async failure");
+
+            _sut
+                .AsyncValueTaskIntNoParams()
+                .ThrowsAsync(expectedException);
+
+            var task = _sut.Instance().AsyncValueTaskIntNoParams();
+
+            task.IsFaulted.ShouldBeTrue();
+
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await task);
+            exception.ShouldBe(expectedException);
+        }
+
+        [Fact]
+        public async Task GivenAsyncTaskMethodSetupWithThrowsAsync_WhenMethodIsCalled_ShouldNotThrowSynchronously()
+        {
+            var expectedException = new InvalidOperationException("Async failure");
+
+            _sut
+                .AsyncTaskIntNoParams()
+                .ThrowsAsync(expectedException);
+
+            Task<int>? pendingTask = null;
+
+            var syncException = Record.Exception(() =>
+            {
+                pendingTask = _sut.Instance().AsyncTaskIntNoParams();
+            });
+            syncException.ShouldBeNull();
+
+            pendingTask.ShouldNotBeNull();
+            pendingTask!.IsFaulted.ShouldBeTrue();
+
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await pendingTask!);
+            exception.ShouldBe(expectedException);
+        }
+
+        [Fact]
         public async Task GivenAsyncTaskMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
             var testException = new InvalidOperationException("Test async exception");

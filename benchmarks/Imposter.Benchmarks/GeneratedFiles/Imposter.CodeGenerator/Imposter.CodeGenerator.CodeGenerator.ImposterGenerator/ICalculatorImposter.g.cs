@@ -23,13 +23,6 @@ namespace Imposter.Benchmarks
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public ICalculatorImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
-        {
-            this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
-        }
-
         global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>.Instance()
         {
             return _imposterInstance;
@@ -384,6 +377,13 @@ namespace Imposter.Benchmarks
                     }
                 }
             }
+        }
+
+        public ICalculatorImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

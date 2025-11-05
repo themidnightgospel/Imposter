@@ -1,4 +1,6 @@
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.ImposterTargetMethod;
 
@@ -12,12 +14,18 @@ internal readonly struct ReturnTypeMetadata
 
     internal readonly bool IsGenericValueTask;
 
+    internal readonly bool SupportsAsyncValueResult;
+
+    internal readonly TypeSyntax? AsyncValueTypeSyntax;
+
     internal ReturnTypeMetadata(ITypeSymbol returnTypeSymbol)
     {
         var isTask = false;
         var isGenericTask = false;
         var isValueTask = false;
         var isGenericValueTask = false;
+        var supportsAsyncValueResult = false;
+        TypeSyntax? asyncValueTypeSyntax = null;
 
         if (returnTypeSymbol is INamedTypeSymbol namedType)
         {
@@ -40,6 +48,12 @@ internal readonly struct ReturnTypeMetadata
                 {
                     isValueTask = true;
                 }
+
+                if (isGenericTask || isGenericValueTask)
+                {
+                    supportsAsyncValueResult = true;
+                    asyncValueTypeSyntax = SyntaxFactoryHelper.TypeSyntax(namedType.TypeArguments[0]);
+                }
             }
         }
 
@@ -47,5 +61,7 @@ internal readonly struct ReturnTypeMetadata
         IsGenericTask = isGenericTask;
         IsValueTask = isValueTask;
         IsGenericValueTask = isGenericValueTask;
+        SupportsAsyncValueResult = supportsAsyncValueResult;
+        AsyncValueTypeSyntax = asyncValueTypeSyntax;
     }
 }

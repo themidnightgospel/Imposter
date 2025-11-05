@@ -18,7 +18,11 @@ internal readonly record struct InvocationSetupMetadata
 
     internal readonly ReturnsMethodMetadata ReturnsMethod;
 
+    internal readonly ReturnsAsyncMethodMetadata? ReturnsAsyncMethod;
+
     internal readonly ThrowsMethodMetadata ThrowsMethod;
+
+    internal readonly ThrowsAsyncMethodMetadata? ThrowsAsyncMethod;
 
     internal readonly CallbackMethodMetadata CallbackMethod;
 
@@ -35,7 +39,13 @@ internal readonly record struct InvocationSetupMetadata
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
         MethodInvocationImposterSyntax = SyntaxFactory.QualifiedName(Syntax, SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName));
         ReturnsMethod = new ReturnsMethodMetadata(method, method.ReturnTypeSyntax, Interface.Syntax, method.Delegate.Syntax);
+        ReturnsAsyncMethod = method.ReturnType.SupportsAsyncValueResult
+            ? new ReturnsAsyncMethodMetadata(method, Interface.Syntax, method.ReturnType.AsyncValueTypeSyntax!)
+            : null;
         ThrowsMethod = new ThrowsMethodMetadata(method, method.ExceptionGeneratorDelegate.Syntax, Interface.Syntax);
+        ThrowsAsyncMethod = method.IsAsync
+            ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax)
+            : null;
         CallbackMethod = new CallbackMethodMetadata(method, Interface.Syntax, method.CallbackDelegate.Syntax);
         ThenMethod = new ThenMethodMetadata(Interface.Syntax);
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
