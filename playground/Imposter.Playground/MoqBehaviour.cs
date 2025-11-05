@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Moq;
+using NSubstitute;
+using NSubstitute.Exceptions;
 using Shouldly;
 using Xunit;
 
@@ -8,6 +10,29 @@ namespace Imposter.Playground;
 
 public class MoqBehaviour
 {
+    [Fact]
+    public void InOrderVerification()
+    {
+        var service = Substitute.For<IOrderService>();
+
+// Act
+        service.RemoveOrder(1);
+        service.PlaceOrder(1);
+
+// Assert
+        Received.InOrder(() =>
+        {
+            service.RemoveOrder(1);
+            service.PlaceOrder(1);
+        });
+        
+        Should.Throw<CallSequenceNotFoundException>( () => Received.InOrder(() =>
+        {
+            service.PlaceOrder(1);
+            service.RemoveOrder(1);
+        }));
+    }
+
     [Fact]
     public void StrictMode()
     {
@@ -21,14 +46,14 @@ public class MoqBehaviour
         // Callback doesn't count
         mock.Setup(s => s.RemoveOrder(It.IsAny<int>()))
             .Callback((int a) => { });
-        
+
         Should.Throw<MockException>(() => mock.Object.RemoveOrder(231));
 
         Should.Throw<MockException>(() => mock.Object.Age);
-        
+
         mock.SetupGet(it => it.Age).Returns(11);
         Should.NotThrow(() => mock.Object.Age);
-        
+
         Should.Throw<MockException>(() => mock.Object.Age = 11);
 
         mock.SetupSet(it => it.Age = It.IsAny<int>());

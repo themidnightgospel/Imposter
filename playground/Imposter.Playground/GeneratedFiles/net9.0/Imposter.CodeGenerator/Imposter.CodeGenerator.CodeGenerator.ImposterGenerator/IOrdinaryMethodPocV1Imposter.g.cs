@@ -23,13 +23,6 @@ namespace Imposter.Playground
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IOrdinaryMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
-        {
-            this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
-        }
-
         global::Imposter.Playground.IOrdinaryMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IOrdinaryMethodPocV1>.Instance()
         {
             return _imposterInstance;
@@ -388,6 +381,13 @@ namespace Imposter.Playground
                     }
                 }
             }
+        }
+
+        public IOrdinaryMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

@@ -23,13 +23,6 @@ namespace Imposter.Playground
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public IGenericMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
-        {
-            this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
-        }
-
         global::Imposter.Playground.IGenericMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IGenericMethodPocV1>.Instance()
         {
             return _imposterInstance;
@@ -492,6 +485,13 @@ namespace Imposter.Playground
                     }
                 }
             }
+        }
+
+        public IGenericMethodPocV1Imposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
