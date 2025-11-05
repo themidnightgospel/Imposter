@@ -108,7 +108,6 @@ namespace Imposter.CodeGenerator.Tests.Shared
             }
         }
 
-        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IndexerMethodMethodInvocationImposterGroup
         {
@@ -247,7 +246,6 @@ namespace Imposter.CodeGenerator.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IndexerMethodInvocationVerifier
         {
         }

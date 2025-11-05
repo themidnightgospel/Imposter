@@ -34,6 +34,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                 where TException : Exception, new();
             IAgePropertyGetterBuilder Callback(System.Action callback);
             void Called(Imposter.Abstractions.Count count);
+            IAgePropertyGetterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -41,6 +42,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         {
             IAgePropertySetterBuilder Callback(System.Action<int> callback);
             void Called(Imposter.Abstractions.Count count);
+            IAgePropertySetterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -131,6 +133,11 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                 {
                     if (!count.Matches(_invocationCount))
                         throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+                }
+
+                IAgePropertyGetterBuilder IAgePropertyGetterBuilder.Then()
+                {
+                    return this;
                 }
 
                 internal int Get()
@@ -230,6 +237,11 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                     {
                         _setterImposter.Called(_criteria, count);
                     }
+
+                    IAgePropertySetterBuilder IAgePropertySetterBuilder.Then()
+                    {
+                        return this;
+                    }
                 }
             }
 
@@ -258,6 +270,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                 where TException : Exception, new();
             INamePropertyGetterBuilder Callback(System.Action callback);
             void Called(Imposter.Abstractions.Count count);
+            INamePropertyGetterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -347,6 +360,11 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                         throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
+                INamePropertyGetterBuilder INamePropertyGetterBuilder.Then()
+                {
+                    return this;
+                }
+
                 internal int Get()
                 {
                     EnsureGetterConfigured();
@@ -384,6 +402,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         {
             ILastNamePropertySetterBuilder Callback(System.Action<int> callback);
             void Called(Imposter.Abstractions.Count count);
+            ILastNamePropertySetterBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -485,6 +504,11 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
                     void ILastNamePropertySetterBuilder.Called(Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
+                    }
+
+                    ILastNamePropertySetterBuilder ILastNamePropertySetterBuilder.Then()
+                    {
+                        return this;
                     }
                 }
             }

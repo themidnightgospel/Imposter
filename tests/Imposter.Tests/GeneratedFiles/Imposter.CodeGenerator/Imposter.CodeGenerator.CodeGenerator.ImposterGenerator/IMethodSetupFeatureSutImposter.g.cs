@@ -202,7 +202,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // void IMethodSetupFeatureSut.VoidNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class VoidNoParamsMethodInvocationImposterGroup
         {
@@ -320,7 +319,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // void IMethodSetupFeatureSut.VoidNoParams()
         public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationImposterGroup, VoidNoParamsInvocationVerifier
         {
         }
@@ -484,7 +482,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntNoParamsMethodInvocationImposterGroup
         {
@@ -620,7 +617,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntNoParams()
         public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationImposterGroup, IntNoParamsInvocationVerifier
         {
         }
@@ -826,7 +822,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntSingleParamMethodInvocationImposterGroup
         {
@@ -965,7 +960,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IntSingleParamInvocationVerifier
         {
         }
@@ -1185,7 +1179,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntParamsMethodInvocationImposterGroup
         {
@@ -1324,7 +1317,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationImposterGroup, IntParamsInvocationVerifier
         {
         }
@@ -1507,7 +1499,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntOutParamMethodInvocationImposterGroup
         {
@@ -1650,7 +1641,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationImposterGroup, IntOutParamInvocationVerifier
         {
         }
@@ -1861,7 +1851,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntRefParamMethodInvocationImposterGroup
         {
@@ -2000,7 +1989,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationImposterGroup, IntRefParamInvocationVerifier
         {
         }
@@ -2212,7 +2200,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntParamsParamMethodInvocationImposterGroup
         {
@@ -2351,7 +2338,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationImposterGroup, IntParamsParamInvocationVerifier
         {
         }
@@ -2563,7 +2549,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntInParamMethodInvocationImposterGroup
         {
@@ -2702,7 +2687,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationImposterGroup, IntInParamInvocationVerifier
         {
         }
@@ -2928,7 +2912,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntAllRefKindsMethodInvocationImposterGroup
         {
@@ -3074,7 +3057,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationImposterGroup, IntAllRefKindsInvocationVerifier
         {
         }
@@ -3323,7 +3305,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericSingleParamMethodInvocationImposterGroup<TValue>
         {
@@ -3456,7 +3437,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationImposterGroup<TValue>, GenericSingleParamInvocationVerifier<TValue>
         {
         }
@@ -3722,7 +3702,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerSingleParamMethodInvocationImposterGroup<TValue>
         {
@@ -3855,7 +3834,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>, GenericInnerSingleParamInvocationVerifier<TValue>
         {
         }
@@ -4084,7 +4062,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -4239,7 +4216,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>, GenericOutParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -4483,7 +4459,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -4638,7 +4613,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -4921,7 +4895,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -5072,7 +5045,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>, GenericRefParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -5356,7 +5328,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -5507,7 +5478,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -5791,7 +5761,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -5942,7 +5911,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>, GenericParamsParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -6224,7 +6192,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -6375,7 +6342,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>, GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -6667,7 +6633,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
@@ -6825,7 +6790,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
@@ -7053,7 +7017,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class AsyncTaskIntNoParamsMethodInvocationImposterGroup
         {
@@ -7207,7 +7170,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationImposterGroup, AsyncTaskIntNoParamsInvocationVerifier
         {
         }
@@ -7396,7 +7358,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class AsyncValueTaskIntNoParamsMethodInvocationImposterGroup
         {
@@ -7550,7 +7511,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         public interface IAsyncValueTaskIntNoParamsMethodImposterBuilder : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup, AsyncValueTaskIntNoParamsInvocationVerifier
         {
         }

@@ -100,7 +100,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
-        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericMethodMethodInvocationImposterGroup
         {
@@ -239,7 +238,6 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, GenericMethodInvocationVerifier
         {
         }

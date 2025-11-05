@@ -13,11 +13,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly CallbackMethodMetadata CallbackMethod;
 
+    internal readonly ThenMethodMetadata ThenMethod;
+
     internal PropertySetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
         Syntax = SyntaxFactory.ParseName(Name);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(property, Syntax);
+        ThenMethod = new ThenMethodMetadata(Syntax);
     }
 }

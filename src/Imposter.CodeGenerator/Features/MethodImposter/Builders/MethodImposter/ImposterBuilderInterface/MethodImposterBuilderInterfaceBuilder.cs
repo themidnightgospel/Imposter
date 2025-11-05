@@ -1,7 +1,7 @@
-﻿#if DEBUG
-#endif
-using Imposter.CodeGenerator.Helpers;
+﻿using Imposter.CodeGenerator.Helpers;
+#if DEBUG
 using Imposter.CodeGenerator.SyntaxHelpers;
+#endif
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;

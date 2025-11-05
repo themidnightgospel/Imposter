@@ -122,7 +122,7 @@ internal partial class MethodImposterBuilder
                     ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).ToSingleArgumentList()
                     : ArgumentList()));
 
-    private static StatementSyntax EnsureMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
+    private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
     {
         var matchingIdentifier = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName);
         var defaultGroup = method.InvocationSetup.Syntax.Dot(IdentifierName(method.InvocationSetup.DefaultInvocationSetupField.Name));

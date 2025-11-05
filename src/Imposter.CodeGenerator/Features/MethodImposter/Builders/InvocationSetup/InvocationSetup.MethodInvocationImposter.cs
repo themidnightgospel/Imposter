@@ -335,7 +335,7 @@ internal static partial class InvocationSetupBuilder
         return faultedTaskExpression;
     }
 
-    private static ExpressionSyntax BuildTaskFromExceptionExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax exceptionExpression)
+    private static InvocationExpressionSyntax BuildTaskFromExceptionExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax exceptionExpression)
     {
         SimpleNameSyntax fromExceptionIdentifier = method.ReturnType.IsGenericTask || method.ReturnType.IsGenericValueTask
             ? GenericName(Identifier("FromException"))

@@ -19,6 +19,7 @@ internal static class SetterImposterBuilderBuilder
             .AddMember(BuildConstructor(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
+            .AddMember(BuildThenMethod(property))
             .Build();
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
@@ -60,6 +61,14 @@ internal static class SetterImposterBuilderBuilder
                     )
                     .ToStatementSyntax()
                 ,
+                ReturnStatement(ThisExpression())
+            ))
+            .Build();
+
+    private static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
+        new MethodDeclarationBuilder(property.SetterImposterBuilderInterface.ThenMethod.ReturnType, property.SetterImposterBuilderInterface.ThenMethod.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.Syntax))
+            .WithBody(Block(
                 ReturnStatement(ThisExpression())
             ))
             .Build();

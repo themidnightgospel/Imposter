@@ -36,8 +36,10 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
             var callback1Invoked = false;
             var callback2Invoked = false;
 
-            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback1Invoked = true);
-            _sut.Age.Setter(Arg<int>.Is(x => x == 15)).Callback(_ => callback2Invoked = true);
+            _sut.Age.Setter(Arg<int>.Is(x => x == 15))
+                .Callback(_ => callback1Invoked = true)
+                .Then()
+                .Callback(_ => callback2Invoked = true);
 
             _sut.Instance().Age = 15;
 
@@ -63,8 +65,10 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
             var callback1Count = 0;
             var callback2Count = 0;
 
-            _sut.Age.Getter().Callback(() => callback1Count++);
-            _sut.Age.Getter().Callback(() => callback2Count++);
+            _sut.Age.Getter()
+                .Callback(() => callback1Count++)
+                .Then()
+                .Callback(() => callback2Count++);
 
             _sut.Instance().Age.ShouldBe(0);
 

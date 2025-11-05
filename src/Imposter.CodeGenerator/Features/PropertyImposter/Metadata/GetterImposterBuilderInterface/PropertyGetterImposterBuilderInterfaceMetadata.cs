@@ -17,6 +17,8 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly CalledMethodMetadata CalledMethod;
 
+    internal readonly ThenMethodMetadata ThenMethod;
+
     internal PropertyGetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
         Name = $"I{property.UniqueName}PropertyGetterBuilder";
@@ -26,5 +28,6 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         ThrowsMethod = new ThrowsMethodMetadata(TypeSyntax);
         CallbackMethod = new CallbackMethodMetadata(TypeSyntax);
         CalledMethod = new CalledMethodMetadata();
+        ThenMethod = new ThenMethodMetadata(TypeSyntax);
     }
 }

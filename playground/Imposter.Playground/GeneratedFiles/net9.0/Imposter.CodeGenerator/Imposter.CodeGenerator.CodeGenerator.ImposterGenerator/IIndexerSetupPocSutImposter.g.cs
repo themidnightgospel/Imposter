@@ -108,7 +108,6 @@ namespace Imposter.Playground
             }
         }
 
-        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IndexerMethodInvocationImposterGroup
         {
@@ -247,7 +246,6 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // string IIndexerSetupPocSut.Indexer(int value1, string value2, object value3)
         public interface IIndexerMethodImposterBuilder : IIndexerMethodInvocationImposterGroup, IndexerInvocationVerifier
         {
         }

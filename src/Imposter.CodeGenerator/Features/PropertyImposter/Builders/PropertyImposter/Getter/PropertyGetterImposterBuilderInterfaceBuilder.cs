@@ -21,6 +21,7 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             .AddMembers(BuildThrowsValueMethod(property))
             .AddMember(BuildGetterCallbackMethod(property))
             .AddMember(BuildGetterCalledMethod(property))
+            .AddMember(BuildThenMethod(property))
             .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
     }
 
@@ -62,4 +63,9 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             .WithSemicolon()
             .Build(),
     ];
+
+    internal static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
+        new MethodDeclarationBuilder(property.GetterImposterBuilderInterface.ThenMethod.ReturnType, property.GetterImposterBuilderInterface.ThenMethod.Name)
+            .WithSemicolon()
+            .Build();
 }
