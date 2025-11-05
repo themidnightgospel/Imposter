@@ -104,7 +104,6 @@ namespace Imposter.Playground
             }
         }
 
-        // int IOrdinaryMethodPocV1.Add(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class AddMethodInvocationImposterGroup
         {
@@ -243,7 +242,6 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int IOrdinaryMethodPocV1.Add(int a, int b)
         public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, AddInvocationVerifier
         {
         }

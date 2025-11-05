@@ -30,6 +30,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMembers(BuildThrowsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetterCallbackMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetterCalledMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
+            .AddMember(BuildThenMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
             .AddMember(BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .AddMember(BuildEnsureGetterConfiguredMethod())
             .Build();
@@ -220,6 +221,16 @@ internal static class GetterImposterBuilderBuilder
                         ))
                     )
                 )
+            ))
+            .Build();
+
+    private static MethodDeclarationSyntax BuildThenMethod(
+        in PropertyGetterImposterBuilderMetadata builder,
+        in PropertyGetterImposterBuilderInterfaceMetadata builderInterface) =>
+        new MethodDeclarationBuilder(builderInterface.ThenMethod.ReturnType, builderInterface.ThenMethod.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.TypeSyntax))
+            .WithBody(Block(
+                ReturnStatement(ThisExpression())
             ))
             .Build();
     

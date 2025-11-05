@@ -100,7 +100,6 @@ namespace Imposter.Benchmarks
             }
         }
 
-        // int ImposterVsMoqVsNSub.ICalculator.Square(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class SquareMethodInvocationImposterGroup
         {
@@ -239,7 +238,6 @@ namespace Imposter.Benchmarks
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // int ImposterVsMoqVsNSub.ICalculator.Square(int input)
         public interface ISquareMethodImposterBuilder : ISquareMethodInvocationImposterGroup, SquareInvocationVerifier
         {
         }

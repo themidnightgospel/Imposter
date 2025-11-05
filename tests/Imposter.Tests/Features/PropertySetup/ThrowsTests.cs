@@ -30,7 +30,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [Fact]
         public void GivenSequenceWithException_WhenPropertyIsAccessedSequentially_ShouldWorkCorrectly()
         {
-            _sut.Age.Getter().Returns(10).Throws<ArgumentException>().Returns(30);
+            _sut.Age.Getter().Returns(10).Then().Throws<ArgumentException>().Then().Returns(30);
 
             _sut.Instance().Age.ShouldBe(10);
             Should.Throw<ArgumentException>(() => _sut.Instance().Age);

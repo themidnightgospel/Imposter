@@ -54,7 +54,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [Fact]
         public void GivenMixedFunctionAndValueSetup_WhenPropertyIsAccessedSequentially_ShouldWorkInSequence()
         {
-            _sut.Age.Getter().Returns(10).Returns(() => 20).Returns(30);
+            _sut.Age.Getter().Returns(10).Then().Returns(() => 20).Then().Returns(30);
 
             _sut.Instance().Age.ShouldBe(10);
             _sut.Instance().Age.ShouldBe(20);
@@ -64,7 +64,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [Fact]
         public void GivenSequentialSetup_WhenMultipleCallsMade_ShouldReturnInSequence()
         {
-            _sut.Age.Getter().Returns(10).Returns(20).Returns(30);
+            _sut.Age.Getter().Returns(10).Then().Returns(20).Then().Returns(30);
 
             _sut.Instance().Age.ShouldBe(10);
             _sut.Instance().Age.ShouldBe(20);
@@ -74,7 +74,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
         [Fact]
         public void GivenSequentialSetupExhausted_WhenPropertyIsAccessed_ShouldReturnLastValue()
         {
-            _sut.Age.Getter().Returns(10).Returns(20);
+            _sut.Age.Getter().Returns(10).Then().Returns(20);
 
             _sut.Instance().Age.ShouldBe(10);
             _sut.Instance().Age.ShouldBe(20);

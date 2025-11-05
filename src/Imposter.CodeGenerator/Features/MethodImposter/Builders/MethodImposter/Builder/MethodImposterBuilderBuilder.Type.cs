@@ -72,7 +72,7 @@ internal static partial class MethodImposterBuilderBuilder
     private static bool MatchesParameter(MethodDeclarationSyntax methodDeclaration, string parameterName) =>
         methodDeclaration.ParameterList.Parameters.Any(p => p.Identifier.ValueText == parameterName);
 
-    private static ExpressionSyntax CurrentInvocationImposterAccess(in ImposterTargetMethodMetadata method) =>
+    private static IdentifierNameSyntax CurrentInvocationImposterAccess(in ImposterTargetMethodMetadata method) =>
         IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name);
 
     private static MethodDeclarationSyntax BuildThrowsGenericImplementation(in ImposterTargetMethodMetadata method, MethodDeclarationSyntax interfaceMethod)
@@ -225,7 +225,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         var constructor = SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Builder.Name, fields);
         constructor = constructor.WithBody(
-            constructor.Body.AddStatements(BuildInvocationSetupInitializationStatements(method).ToArray()));
+            constructor.Body!.AddStatements(BuildInvocationSetupInitializationStatements(method).ToArray()));
 
         return builderClass
             .AddMember(constructor)
@@ -234,7 +234,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Build();
     }
 
-    private static IEnumerable<StatementSyntax> BuildInvocationSetupInitializationStatements(in ImposterTargetMethodMetadata method)
+    private static List<StatementSyntax> BuildInvocationSetupInitializationStatements(in ImposterTargetMethodMetadata method)
     {
         var statements = new List<StatementSyntax>();
 

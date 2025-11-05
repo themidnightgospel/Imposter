@@ -53,3 +53,8 @@ OPTIMIZATIONS:
   - Add benchamrks for syntax builder classes, showcase that it performs better than built-in .With methods.
   - Take a look at file name convention, specially of "Builders" and make sure they are consistent across
   - Make sure Metadata is always stack allocated and not copied
+
+MISSING FEATURES:
+  - VerifyNoOtherCalls
+  - Ordered verification, Substitute.InOrder. It can be achieved currently by setting up callbacks and storing some flags in a list.
+  - 

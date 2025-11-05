@@ -19,6 +19,7 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
         return new InterfaceDeclarationBuilder(property.SetterImposterBuilderInterface.Name)
             .AddMember(BuildSetterCallbackMethod(property))
             .AddMember(BuildSetterCalledMethod(property))
+            .AddMember(BuildThenMethod(property))
             .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
     }
 
@@ -40,4 +41,9 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
             .WithSemicolon()
             .Build();
     }
+
+    internal static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
+        new MethodDeclarationBuilder(property.SetterImposterBuilderInterface.ThenMethod.ReturnType, property.SetterImposterBuilderInterface.ThenMethod.Name)
+            .WithSemicolon()
+            .Build();
 }
