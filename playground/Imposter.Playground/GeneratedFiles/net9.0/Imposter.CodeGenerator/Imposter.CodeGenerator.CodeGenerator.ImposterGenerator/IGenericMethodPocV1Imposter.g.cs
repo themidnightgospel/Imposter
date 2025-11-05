@@ -23,6 +23,7 @@ namespace Imposter.Playground
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Playground.IGenericMethodPocV1 Instance() => _imposterInstance;
         global::Imposter.Playground.IGenericMethodPocV1 Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IGenericMethodPocV1>.Instance()
         {
             return _imposterInstance;

@@ -23,6 +23,7 @@ namespace Imposter.Playground
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Playground.IIndexerSetupPocSut Instance() => _imposterInstance;
         global::Imposter.Playground.IIndexerSetupPocSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IIndexerSetupPocSut>.Instance()
         {
             return _imposterInstance;

@@ -38,6 +38,16 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter
         }
 
         [Fact]
+        public void GivenSetupToThrow_WhenPropertyIsAccessed_ShouldCountCallDespiteException()
+        {
+            _sut.Age.Getter().Throws<InvalidOperationException>();
+
+            Should.Throw<InvalidOperationException>(() => _sut.Instance().Age);
+
+            _sut.Age.Getter().Called(Count.Exactly(1));
+        }
+
+        [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ValueShouldNotBeSet()
         {
             _sut.Age.Setter(Arg<int>.Any()).Callback(_ => throw new InvalidOperationException("Callback error"));
