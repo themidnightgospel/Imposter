@@ -101,6 +101,21 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
         }
 
         [Fact]
+        public void GivenOverlappingSetups_WhenLaterSetupIsAdded_ShouldUseLatestMatch()
+        {
+            _sut
+                .IntSingleParam(Arg<int>.Any())
+                .Returns(100);
+
+            _sut
+                .IntSingleParam(Arg<int>.Is(value => value == 5))
+                .Returns(500);
+
+            _sut.Instance().IntSingleParam(5).ShouldBe(500);
+            _sut.Instance().IntSingleParam(6).ShouldBe(100);
+        }
+
+        [Fact]
         public void GivenMethodSetupWithDelegate_WhenMethodIsInvoked_ShouldReturnComputedValue()
         {
             _sut
