@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
+using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.Helpers;
@@ -80,6 +81,52 @@ internal readonly ref  partial struct ImposterBuilder
         return this;
     }
 
+    internal ImposterBuilder AddIndexerImposter(in ImposterIndexerMetadata indexer)
+    {
+        var propertyDisplayLiteral = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(indexer.Core.DisplayName));
+
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, indexer.BuilderField.Name)
+        );
+
+        var invocationBuilderCreation = indexer.Builder.InvocationBuilderTypeSyntax
+            .New(
+                SyntaxFactoryHelper.ArgumentListSyntax(
+                [
+                    Argument(IdentifierName(indexer.BuilderField.Name)),
+                    Argument(
+                        indexer.ArgumentsCriteria.TypeSyntax.New(
+                            SyntaxFactoryHelper.ArgumentListSyntax(
+                                indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))))
+                ]));
+
+        _imposterBuilder.AddMember(
+            IndexerDeclaration(indexer.BuilderInterface.TypeSyntax)
+                .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                .WithParameterList(
+                    BracketedParameterList(
+                        SeparatedList(indexer.Core.Parameters.Select(parameter => SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name)))))
+                .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+
+        _constructorBodyBuilder.AddStatement(
+            ThisExpression()
+                .Dot(IdentifierName(indexer.BuilderField.Name))
+                .Assign(
+                    indexer.Builder.TypeSyntax
+                        .New(
+                            SyntaxFactoryHelper.ArgumentListSyntax(
+                            [
+                                Argument(IdentifierName(_invocationBehaviorParameterName)),
+                                Argument(propertyDisplayLiteral)
+                            ])))
+                .ToStatementSyntax());
+
+        _imposterInstanceBuilder.AddIndexer(indexer);
+
+        return this;
+    }
+
     internal ClassDeclarationSyntax Build()
     {
         var constructor = _constructorBuilder.WithBody(_constructorBodyBuilder.Build()).Build();
@@ -118,7 +165,7 @@ internal readonly ref  partial struct ImposterBuilder
         var imposterClassBuilder = imposterBuilder
             .AddMember(invocationBehaviorField)
             .AddMember(ImposterInstanceField(imposterTargetInstanceClassName, imposterInstanceFieldName))
-            .AddMember(InstanceMethod(imposterGenerationContext, imposterInstanceFieldName))
+            .AddMembers(InstanceMethods(imposterGenerationContext, imposterInstanceFieldName))
             .AddModifier(Token(SyntaxKind.PublicKeyword));
 
         var imposterInstanceBuilder = ImposterInstanceBuilder.Create(imposterGenerationContext, imposterTargetInstanceClassName);
@@ -191,3 +238,5 @@ internal readonly ref  partial struct ImposterBuilder
     private static FieldDeclarationSyntax ImposterInstanceField(in string imposterTargetInstanceClassName, string imposterInstanceFieldName) =>
         SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterTargetInstanceClassName), imposterInstanceFieldName, SyntaxKind.PrivateKeyword);
 }
+
+

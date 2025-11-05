@@ -13,11 +13,19 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<AttributeListSyntax> _attributes = new();
     private readonly List<BaseTypeSyntax> _baseTypes = new();
+    private readonly List<SyntaxToken> _modifiers = new(1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddBaseType(BaseTypeSyntax baseType)
     {
         _baseTypes.Add(baseType);
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal InterfaceDeclarationBuilder AddModifier(SyntaxToken modifier)
+    {
+        _modifiers.Add(modifier);
         return this;
     }
 
@@ -58,12 +66,11 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public InterfaceDeclarationSyntax Build(
-        SyntaxTokenList modifiers = default,
         SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
     {
         return InterfaceDeclaration(
             List(DefaultAttributes.DefaultTypeAttributes.Concat(_attributes)),
-            modifiers,
+            _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,

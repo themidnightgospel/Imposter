@@ -15,10 +15,10 @@ internal static class MethodImposterBuilderInterfaceBuilder
             .CreateForMethod(method.Symbol, method.MethodImposter.BuilderInterface.Name)
             .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
-            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)
+            .AddModifier(Token(SyntaxKind.PublicKeyword)
 #if DEBUG
-                        .WithLeadingTriviaComment(method.DisplayName)
+                    .WithLeadingTriviaComment(method.DisplayName)
 #endif
-                )
-            );
+            )
+            .Build();
 }

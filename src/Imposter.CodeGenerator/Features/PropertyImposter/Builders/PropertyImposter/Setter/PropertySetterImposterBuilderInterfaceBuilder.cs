@@ -17,10 +17,11 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
         }
         
         return new InterfaceDeclarationBuilder(property.SetterImposterBuilderInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(BuildSetterCallbackMethod(property))
             .AddMember(BuildSetterCalledMethod(property))
             .AddMember(BuildThenMethod(property))
-            .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
+            .Build();
     }
 
     internal static MethodDeclarationSyntax BuildSetterCalledMethod(in ImposterPropertyMetadata property) =>

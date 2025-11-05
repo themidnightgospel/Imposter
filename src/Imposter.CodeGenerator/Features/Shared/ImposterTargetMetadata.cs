@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
@@ -16,13 +17,18 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyCollection<IPropertySymbol> PropertySymbols;
 
+    internal readonly IReadOnlyCollection<IPropertySymbol> IndexerSymbols;
+
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
     {
         Name = targetSymbol.Name + "Imposter";
         Methods = GetMethods(targetSymbol, _symbolNameNamespace);
-        PropertySymbols = GetPropertySymbols(targetSymbol, _symbolNameNamespace);
+
+        var propertySymbols = GetPropertySymbols(targetSymbol);
+        PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
+        IndexerSymbols = propertySymbols.Where(property => property.IsIndexer).ToArray();
     }
 
     private static List<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
@@ -39,7 +45,7 @@ internal readonly struct ImposterTargetMetadata
         throw new InvalidOperationException("Only interfaces are supported");
     }
 
-    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol, NameSet nameSet)
+    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
@@ -55,4 +61,7 @@ internal readonly struct ImposterTargetMetadata
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol)
         => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name));
+
+    internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol)
+        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name));
 }

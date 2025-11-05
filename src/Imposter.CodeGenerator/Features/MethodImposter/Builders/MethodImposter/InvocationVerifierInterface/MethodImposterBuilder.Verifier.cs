@@ -10,6 +10,7 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.InvocationVerifierInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(
                 MethodDeclaration(
                         PredefinedType(Token(SyntaxKind.VoidKeyword)),
@@ -19,5 +20,5 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
                             .WithType(IdentifierName("Count")))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             )
-            .Build(modifiers: TokenList(Token(SyntaxKind.PublicKeyword)));
+            .Build();
 }

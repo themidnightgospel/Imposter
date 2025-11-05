@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Text;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.Imposter;
+using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Delegates;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationHistory;
@@ -121,6 +122,22 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(PropertyImposterBuilder.Build(property));
         }
 
+        foreach (var indexerSymbol in imposterGenerationContext.Imposter.IndexerSymbols)
+        {
+            var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(indexerSymbol);
+
+            imposterBuilder
+                .AddIndexerImposter(indexer)
+                .AddMembers(IndexerDelegatesBuilder.Build(indexer))
+                .AddMember(IndexerArgumentsBuilder.Build(indexer))
+                .AddMember(IndexerArgumentsCriteriaBuilder.Build(indexer))
+                .AddMember(IndexerImposterBuilderBuilder.Build(indexer))
+                .AddMember(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
+                .AddMember(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
+                .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer))
+                ;
+        }
+
         var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
             imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
                 ? imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString()
@@ -145,3 +162,6 @@ public class ImposterGenerator : IIncrementalGenerator
         );
     }
 }
+
+
+

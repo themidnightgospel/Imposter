@@ -22,7 +22,8 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             .AddMember(BuildGetterCallbackMethod(property))
             .AddMember(BuildGetterCalledMethod(property))
             .AddMember(BuildThenMethod(property))
-            .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .Build();
     }
 
     internal static MethodDeclarationSyntax? BuildGetterCalledMethod(in ImposterPropertyMetadata property) =>

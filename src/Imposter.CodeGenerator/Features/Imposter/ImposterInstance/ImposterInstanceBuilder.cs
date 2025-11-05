@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -50,6 +51,52 @@ internal readonly ref struct ImposterInstanceBuilder
                         : null
                 ));
         
+        return this;
+    }
+
+    internal ImposterInstanceBuilder AddIndexer(in ImposterIndexerMetadata indexer)
+    {
+        var parameters = indexer.Core.Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
+        var parameterList = BracketedParameterList(SeparatedList(parameters));
+
+        var accessors = new List<AccessorDeclarationSyntax>();
+
+        if (indexer.Core.HasGetter)
+        {
+            var getterCall = IdentifierName(ImposterFieldName)
+                .Dot(IdentifierName(indexer.BuilderField.Name))
+                .Dot(IdentifierName("Get"))
+                .Call(SyntaxFactoryHelper.ArgumentListSyntax(
+                    indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))));
+
+            accessors.Add(
+                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithBody(Block(ReturnStatement(getterCall))));
+        }
+
+        if (indexer.Core.HasSetter)
+        {
+            var setterArguments = indexer.Core.Parameters
+                .Select(parameter => Argument(IdentifierName(parameter.Name)))
+                .Concat(new[] { Argument(IdentifierName("value")) });
+
+            var setterCall = IdentifierName(ImposterFieldName)
+                .Dot(IdentifierName(indexer.BuilderField.Name))
+                .Dot(IdentifierName("Set"))
+                .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments));
+
+            accessors.Add(
+                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithBody(Block(ExpressionStatement(setterCall))));
+        }
+
+        var indexerDeclaration = IndexerDeclaration(indexer.Core.TypeSyntax)
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithParameterList(parameterList)
+            .WithAccessorList(AccessorList(List(accessors)));
+
+        _imposterInstanceBuilder.AddMember(indexerDeclaration);
+
         return this;
     }
     
