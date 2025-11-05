@@ -3,7 +3,7 @@ using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
+namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter
 {
     public class InvalidSetups
     {

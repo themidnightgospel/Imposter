@@ -1,6 +1,6 @@
 ﻿using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
+namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter
 {
     [GenerateImposter(typeof(IPropertySetupSut))]
     public interface IPropertySetupSut

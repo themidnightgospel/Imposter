@@ -8,7 +8,7 @@ using Imposter.CodeGenerator.Tests.Shared;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
+namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
 {
     public class ThrowTests
     {
