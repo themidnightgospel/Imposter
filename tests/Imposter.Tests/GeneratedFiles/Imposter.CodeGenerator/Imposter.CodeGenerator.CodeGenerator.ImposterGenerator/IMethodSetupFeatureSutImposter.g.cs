@@ -33,6 +33,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         private readonly GenericInnerParamsParamMethodImposterCollection _genericInnerParamsParamMethodImposterCollection;
         private readonly GenericAllRefKindMethodImposterCollection _genericAllRefKindMethodImposterCollection;
         private readonly AsyncTaskIntNoParamsMethodImposter _asyncTaskIntNoParamsMethodImposter;
+        private readonly AsyncValueTaskIntNoParamsMethodImposter _asyncValueTaskIntNoParamsMethodImposter;
         private readonly VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection = new VoidNoParamsMethodInvocationHistoryCollection();
         private readonly IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection = new IntNoParamsMethodInvocationHistoryCollection();
         private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
@@ -52,6 +53,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection = new GenericInnerParamsParamMethodInvocationHistoryCollection();
         private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
         private readonly AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncTaskIntNoParamsMethodInvocationHistoryCollection();
+        private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection();
         public IVoidNoParamsMethodImposterBuilder VoidNoParams()
         {
             return new VoidNoParamsMethodImposter.Builder(_voidNoParamsMethodImposter, _voidNoParamsMethodInvocationHistoryCollection);
@@ -145,6 +147,11 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         public IAsyncTaskIntNoParamsMethodImposterBuilder AsyncTaskIntNoParams()
         {
             return new AsyncTaskIntNoParamsMethodImposter.Builder(_asyncTaskIntNoParamsMethodImposter, _asyncTaskIntNoParamsMethodInvocationHistoryCollection);
+        }
+
+        public IAsyncValueTaskIntNoParamsMethodImposterBuilder AsyncValueTaskIntNoParams()
+        {
+            return new AsyncValueTaskIntNoParamsMethodImposter.Builder(_asyncValueTaskIntNoParamsMethodImposter, _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection);
         }
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
@@ -7147,11 +7154,27 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     };
                 }
 
+                internal void ReturnsAsync(int value)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return System.Threading.Tasks.Task.FromResult(value);
+                    };
+                }
+
                 internal void Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _resultGenerator = () =>
                     {
                         throw exceptionGenerator();
+                    };
+                }
+
+                internal void ThrowsAsync(System.Exception exception)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return System.Threading.Tasks.Task.FromException<int>(exception);
                     };
                 }
 
@@ -7172,6 +7195,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             IAsyncTaskIntNoParamsMethodInvocationImposterGroup Callback(AsyncTaskIntNoParamsCallbackDelegate callback);
             IAsyncTaskIntNoParamsMethodInvocationImposterGroup Returns(AsyncTaskIntNoParamsDelegate resultGenerator);
             IAsyncTaskIntNoParamsMethodInvocationImposterGroup Returns(global::System.Threading.Tasks.Task<int> value);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup ReturnsAsync(int value);
+            IAsyncTaskIntNoParamsMethodInvocationImposterGroup ThrowsAsync(System.Exception exception);
             IAsyncTaskIntNoParamsMethodInvocationImposterGroup Then();
         }
 
@@ -7299,6 +7324,18 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                     return this;
                 }
 
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.ReturnsAsync(int value)
+                {
+                    _currentInvocationImposter.ReturnsAsync(value);
+                    return this;
+                }
+
+                IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.ThrowsAsync(System.Exception exception)
+                {
+                    _currentInvocationImposter.ThrowsAsync(exception);
+                    return this;
+                }
+
                 IAsyncTaskIntNoParamsMethodInvocationImposterGroup IAsyncTaskIntNoParamsMethodInvocationImposterGroup.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
@@ -7308,6 +7345,349 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
                 void AsyncTaskIntNoParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _asyncTaskIntNoParamsMethodInvocationHistoryCollection.Count();
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
+        public delegate global::System.Threading.Tasks.ValueTask<int> AsyncValueTaskIntNoParamsDelegate();
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
+        public delegate System.Threading.Tasks.Task AsyncValueTaskIntNoParamsCallbackDelegate();
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
+        public delegate System.Exception AsyncValueTaskIntNoParamsExceptionGeneratorDelegate();
+        public interface IAsyncValueTaskIntNoParamsMethodInvocationHistory
+        {
+            bool Matches();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class AsyncValueTaskIntNoParamsMethodInvocationHistory : IAsyncValueTaskIntNoParamsMethodInvocationHistory
+        {
+            internal global::System.Threading.Tasks.ValueTask<int> Result;
+            internal System.Exception Exception;
+            public AsyncValueTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.ValueTask<int> Result, System.Exception Exception)
+            {
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches()
+            {
+                return true;
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IAsyncValueTaskIntNoParamsMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IAsyncValueTaskIntNoParamsMethodInvocationHistory>();
+            internal void Add(IAsyncValueTaskIntNoParamsMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count()
+            {
+                return _invocationHistory.Count(it => it.Matches());
+            }
+        }
+
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class AsyncValueTaskIntNoParamsMethodInvocationImposterGroup
+        {
+            internal static AsyncValueTaskIntNoParamsMethodInvocationImposterGroup Default = new AsyncValueTaskIntNoParamsMethodInvocationImposterGroup();
+            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public AsyncValueTaskIntNoParamsMethodInvocationImposterGroup()
+            {
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public global::System.Threading.Tasks.ValueTask<int> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private AsyncValueTaskIntNoParamsDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate>();
+                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+
+                public global::System.Threading.Tasks.ValueTask<int> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+                {
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    global::System.Threading.Tasks.ValueTask<int> result = _resultGenerator.Invoke();
+                    foreach (var callback in _callbacks)
+                    {
+                        callback();
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(AsyncValueTaskIntNoParamsCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(AsyncValueTaskIntNoParamsDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(global::System.Threading.Tasks.ValueTask<int> value)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void ReturnsAsync(int value)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return new System.Threading.Tasks.ValueTask<int>(value);
+                    };
+                }
+
+                internal void Throws(AsyncValueTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = () =>
+                    {
+                        throw exceptionGenerator();
+                    };
+                }
+
+                internal void ThrowsAsync(System.Exception exception)
+                {
+                    _resultGenerator = () =>
+                    {
+                        return new System.Threading.Tasks.ValueTask<int>(System.Threading.Tasks.Task.FromException<int>(exception));
+                    };
+                }
+
+                internal static async global::System.Threading.Tasks.ValueTask<int> DefaultResultGenerator()
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup
+        {
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Throws<TException>()
+                where TException : Exception, new();
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Throws(System.Exception exception);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Throws(AsyncValueTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Callback(AsyncValueTaskIntNoParamsCallbackDelegate callback);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Returns(AsyncValueTaskIntNoParamsDelegate resultGenerator);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Returns(global::System.Threading.Tasks.ValueTask<int> value);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup ReturnsAsync(int value);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup ThrowsAsync(System.Exception exception);
+            IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface AsyncValueTaskIntNoParamsInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
+        public interface IAsyncValueTaskIntNoParamsMethodImposterBuilder : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup, AsyncValueTaskIntNoParamsInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class AsyncValueTaskIntNoParamsMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup>();
+            private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
+            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public AsyncValueTaskIntNoParamsMethodImposter(AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup()
+            {
+                return FindMatchingInvocationImposterGroup() != null;
+            }
+
+            private AsyncValueTaskIntNoParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
+            {
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
+                else
+                    return null;
+            }
+
+            public global::System.Threading.Tasks.ValueTask<int> Invoke()
+            {
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new Imposter.Abstractions.MissingImposterException("ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()");
+                    }
+
+                    matchingInvocationImposterGroup = AsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()");
+                    _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IAsyncValueTaskIntNoParamsMethodImposterBuilder
+            {
+                private readonly AsyncValueTaskIntNoParamsMethodImposter _imposter;
+                private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
+                private readonly AsyncValueTaskIntNoParamsMethodInvocationImposterGroup _invocationImposterGroup;
+                private AsyncValueTaskIntNoParamsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(AsyncValueTaskIntNoParamsMethodImposter _imposter, AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection)
+                {
+                    this._imposter = _imposter;
+                    this._asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
+                    this._invocationImposterGroup = new AsyncValueTaskIntNoParamsMethodInvocationImposterGroup();
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Throws(AsyncValueTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exceptionGenerator.Invoke();
+                    });
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Callback(AsyncValueTaskIntNoParamsCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Returns(AsyncValueTaskIntNoParamsDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.ValueTask<int> value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.ReturnsAsync(int value)
+                {
+                    _currentInvocationImposter.ReturnsAsync(value);
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.ThrowsAsync(System.Exception exception)
+                {
+                    _currentInvocationImposter.ThrowsAsync(exception);
+                    return this;
+                }
+
+                IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void AsyncValueTaskIntNoParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
                         throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
@@ -7337,6 +7717,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             this._genericInnerParamsParamMethodImposterCollection = new GenericInnerParamsParamMethodImposterCollection(_genericInnerParamsParamMethodInvocationHistoryCollection, invocationBehavior);
             this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
             this._asyncTaskIntNoParamsMethodImposter = new AsyncTaskIntNoParamsMethodImposter(_asyncTaskIntNoParamsMethodInvocationHistoryCollection, invocationBehavior);
+            this._asyncValueTaskIntNoParamsMethodImposter = new AsyncValueTaskIntNoParamsMethodImposter(_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
@@ -7443,6 +7824,11 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             public global::System.Threading.Tasks.Task<int> AsyncTaskIntNoParams()
             {
                 return _imposter._asyncTaskIntNoParamsMethodImposter.Invoke();
+            }
+
+            public global::System.Threading.Tasks.ValueTask<int> AsyncValueTaskIntNoParams()
+            {
+                return _imposter._asyncValueTaskIntNoParamsMethodImposter.Invoke();
             }
         }
     }

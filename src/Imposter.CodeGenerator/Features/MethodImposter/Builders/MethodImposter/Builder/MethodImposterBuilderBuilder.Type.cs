@@ -49,6 +49,14 @@ internal static partial class MethodImposterBuilderBuilder
                     implementation = BuildReturnsValueImplementation(method, interfaceMethod);
                 }
             }
+            else if (method.InvocationSetup.ReturnsAsyncMethod is { } returnsAsyncMethod && identifier == returnsAsyncMethod.Name)
+            {
+                implementation = BuildReturnsAsyncImplementation(method, interfaceMethod);
+            }
+            else if (method.InvocationSetup.ThrowsAsyncMethod is { } throwsAsyncMethod && identifier == throwsAsyncMethod.Name)
+            {
+                implementation = BuildThrowsAsyncImplementation(method, interfaceMethod);
+            }
             else if (identifier == method.InvocationSetup.ThenMethod.Name)
             {
                 implementation = BuildThenImplementation(method, interfaceMethod);
@@ -119,6 +127,17 @@ internal static partial class MethodImposterBuilderBuilder
         return BuildExplicitInterfaceImplementation(method, interfaceMethod, ExpressionStatement(invocation));
     }
 
+    private static MethodDeclarationSyntax BuildThrowsAsyncImplementation(in ImposterTargetMethodMetadata method, MethodDeclarationSyntax interfaceMethod)
+    {
+        var parameterName = method.InvocationSetup.ThrowsAsyncMethod!.Value.ExceptionParameter.Name;
+
+        var invocation = CurrentInvocationImposterAccess(method)
+            .Dot(IdentifierName(method.InvocationSetup.ThrowsAsyncMethod.Value.Name))
+            .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
+
+        return BuildExplicitInterfaceImplementation(method, interfaceMethod, ExpressionStatement(invocation));
+    }
+
     private static MethodDeclarationSyntax BuildCallbackImplementation(in ImposterTargetMethodMetadata method, MethodDeclarationSyntax interfaceMethod)
     {
         var parameterName = method.InvocationSetup.CallbackMethod.CallbackParameter.Name;
@@ -147,6 +166,17 @@ internal static partial class MethodImposterBuilderBuilder
 
         var invocation = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.InvocationSetup.ReturnsMethod.Name))
+            .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
+
+        return BuildExplicitInterfaceImplementation(method, interfaceMethod, ExpressionStatement(invocation));
+    }
+
+    private static MethodDeclarationSyntax BuildReturnsAsyncImplementation(in ImposterTargetMethodMetadata method, MethodDeclarationSyntax interfaceMethod)
+    {
+        var parameterName = method.InvocationSetup.ReturnsAsyncMethod!.Value.ValueParameter.Name;
+
+        var invocation = CurrentInvocationImposterAccess(method)
+            .Dot(IdentifierName(method.InvocationSetup.ReturnsAsyncMethod.Value.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
         return BuildExplicitInterfaceImplementation(method, interfaceMethod, ExpressionStatement(invocation));

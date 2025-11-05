@@ -49,5 +49,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             params TParams[] paramsValues);
         
         Task<int> AsyncTaskIntNoParams();
+        
+        ValueTask<int> AsyncValueTaskIntNoParams();
     }
 }

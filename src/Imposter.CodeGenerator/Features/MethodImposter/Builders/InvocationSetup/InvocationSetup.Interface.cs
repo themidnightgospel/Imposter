@@ -55,6 +55,24 @@ internal static partial class InvocationSetupBuilder
                 ]);
             }
 
+            if (method.InvocationSetup.ReturnsAsyncMethod is { } returnsAsyncMethod)
+            {
+                methods.Add(
+                    new MethodDeclarationBuilder(returnsAsyncMethod.ReturnType, returnsAsyncMethod.Name)
+                        .AddParameter(SyntaxFactoryHelper.ParameterSyntax(returnsAsyncMethod.ValueParameter))
+                        .WithSemicolon()
+                        .Build());
+            }
+
+            if (method.InvocationSetup.ThrowsAsyncMethod is { } throwsAsyncMethod)
+            {
+                methods.Add(
+                    new MethodDeclarationBuilder(throwsAsyncMethod.ReturnType, throwsAsyncMethod.Name)
+                        .AddParameter(SyntaxFactoryHelper.ParameterSyntax(throwsAsyncMethod.ExceptionParameter))
+                        .WithSemicolon()
+                        .Build());
+            }
+
             methods.Add(new MethodDeclarationBuilder(method.InvocationSetup.ThenMethod.ReturnType, method.InvocationSetup.ThenMethod.Name)
                 .WithSemicolon()
                 .Build());

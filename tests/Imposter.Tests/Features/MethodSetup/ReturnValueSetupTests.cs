@@ -682,6 +682,58 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [Fact]
+        public async Task GivenAsyncTaskMethodSetupWithReturnsAsync_WhenMethodIsInvoked_ShouldWrapValueInTask()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .ReturnsAsync(4242);
+
+            var task = _sut.Instance().AsyncTaskIntNoParams();
+
+            task.ShouldNotBeNull();
+            task.IsCompleted.ShouldBeTrue();
+
+            var result = await task;
+            result.ShouldBe(4242);
+        }
+        
+        [Fact]
+        public async Task GivenAsyncValueTaskMethodSetupWithReturnsAsync_WhenMethodIsInvoked_ShouldWrapValueInTask()
+        {
+            _sut
+                .AsyncValueTaskIntNoParams()
+                .ReturnsAsync(4242);
+
+            var task = _sut.Instance().AsyncValueTaskIntNoParams();
+            task.IsCompleted.ShouldBeTrue();
+
+            var result = await task;
+            result.ShouldBe(4242);
+        }
+
+        [Fact]
+        public async Task GivenChainedAsyncTaskMethodSetupUsingReturnsAsync_WhenMethodIsInvokedMultipleTimes_ShouldReturnInSequence()
+        {
+            _sut
+                .AsyncTaskIntNoParams()
+                .ReturnsAsync(10)
+                .Then()
+                .ReturnsAsync(20)
+                .Then()
+                .ReturnsAsync(30);
+
+            var first = await _sut.Instance().AsyncTaskIntNoParams();
+            var second = await _sut.Instance().AsyncTaskIntNoParams();
+            var third = await _sut.Instance().AsyncTaskIntNoParams();
+            var fourth = await _sut.Instance().AsyncTaskIntNoParams();
+
+            first.ShouldBe(10);
+            second.ShouldBe(20);
+            third.ShouldBe(30);
+            fourth.ShouldBe(30);
+        }
+
+        [Fact]
         public async Task GivenAsyncTaskMethodSetupWithAsyncDelegate_WhenMethodIsInvoked_ShouldExecuteAsync()
         {
             _sut
