@@ -2,7 +2,6 @@
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -16,7 +15,8 @@ internal static partial class InvocationSetupBuilder
         return InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.InvocationSetup.Interface.Name)
             .AddMembers(GetMethods(method))
-            .Build(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .Build();
 
         static IReadOnlyCollection<MemberDeclarationSyntax> GetMethods(in ImposterTargetMethodMetadata method)
         {

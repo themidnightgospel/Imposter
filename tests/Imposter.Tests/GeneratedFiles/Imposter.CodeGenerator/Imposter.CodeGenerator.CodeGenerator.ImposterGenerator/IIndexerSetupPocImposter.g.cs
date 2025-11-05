@@ -23,6 +23,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc Instance() => _imposterInstance;
         global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc>.Instance()
         {
             return _imposterInstance;
@@ -108,6 +109,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
             }
         }
 
+        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IndexerMethodMethodInvocationImposterGroup
         {
@@ -246,6 +248,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IndexerMethodInvocationVerifier
         {
         }

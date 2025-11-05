@@ -144,6 +144,7 @@ namespace Imposter.Playground
             }
         }
 
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
@@ -301,6 +302,7 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // TResult IGenericMethodPocV1.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }

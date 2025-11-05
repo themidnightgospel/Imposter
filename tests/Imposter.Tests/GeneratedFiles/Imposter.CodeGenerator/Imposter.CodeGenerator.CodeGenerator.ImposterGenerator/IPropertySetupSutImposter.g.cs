@@ -16,6 +16,7 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertySetup
     {
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupSut Instance() => _imposterInstance;
         global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.PropertySetup.IPropertySetupSut>.Instance()
         {
             return _imposterInstance;

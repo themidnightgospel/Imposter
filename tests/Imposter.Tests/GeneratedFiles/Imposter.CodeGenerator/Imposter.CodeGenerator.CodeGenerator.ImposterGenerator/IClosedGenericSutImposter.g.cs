@@ -23,6 +23,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
+        internal global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string> Instance() => _imposterInstance;
         global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string> Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodSetup.IClosedGenericSut<int, string>>.Instance()
         {
             return _imposterInstance;
@@ -100,6 +101,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
             }
         }
 
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class GenericMethodMethodInvocationImposterGroup
         {
@@ -238,6 +240,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodSetup
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, GenericMethodInvocationVerifier
         {
         }

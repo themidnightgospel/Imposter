@@ -89,6 +89,41 @@ internal static class WellKnownTypes
                         TypeArgumentList(SingletonSeparatedList(typeArgument))
                     )
                 );
+
+                internal static TypeSyntax ConcurrentDictionary(TypeSyntax keyType, TypeSyntax valueType) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("ConcurrentDictionary"),
+                        TypeArgumentList(
+                            SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
+                            {
+                                keyType,
+                                Token(SyntaxKind.CommaToken),
+                                valueType
+                            })
+                        )
+                    )
+                );
+            }
+
+            public static class Generic
+            {
+                internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Collections.Namespace, IdentifierName("Generic"));
+
+                internal static TypeSyntax Dictionary(TypeSyntax keyType, TypeSyntax valueType) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("Dictionary"),
+                        TypeArgumentList(
+                            SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
+                            {
+                                keyType,
+                                Token(SyntaxKind.CommaToken),
+                                valueType
+                            })
+                        )
+                    )
+                );
             }
         }
 
@@ -99,6 +134,11 @@ internal static class WellKnownTypes
             internal static TypeSyntax Interlocked = QualifiedName(
                 Namespace,
                 IdentifierName("Interlocked")
+            );
+
+            internal static TypeSyntax Volatile = QualifiedName(
+                Namespace,
+                IdentifierName("Volatile")
             );
 
             public static class Tasks

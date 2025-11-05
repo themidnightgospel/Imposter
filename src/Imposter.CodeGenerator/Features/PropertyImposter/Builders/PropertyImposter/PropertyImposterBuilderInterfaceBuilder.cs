@@ -11,9 +11,10 @@ internal static class PropertyImposterBuilderInterfaceBuilder
 {
     internal static InterfaceDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
         new InterfaceDeclarationBuilder(property.ImposterBuilderInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(property.Core.HasGetter ? BuildGetterMethod(property) : null)
             .AddMember(property.Core.HasSetter ? BuildSetterMethod(property) : null)
-            .Build(TokenList(Token(SyntaxKind.PublicKeyword)));
+            .Build();
     
     internal static MethodDeclarationSyntax? BuildGetterMethod(in ImposterPropertyMetadata property) =>
         new MethodDeclarationBuilder(property.ImposterBuilderInterface.GetterMethod.ReturnType, property.ImposterBuilderInterface.GetterMethod.Name)

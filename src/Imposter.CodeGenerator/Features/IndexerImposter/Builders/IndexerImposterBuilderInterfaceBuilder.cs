@@ -1,0 +1,36 @@
+using System.Linq;
+using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
+using Imposter.CodeGenerator.Features.IndexerImposter.Metadata.ImposterBuilderInterface;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
+
+internal static class IndexerImposterBuilderInterfaceBuilder
+{
+    internal static InterfaceDeclarationSyntax Build(in ImposterIndexerMetadata indexer)
+    {
+        var builderInterface = indexer.BuilderInterface;
+
+        return new InterfaceDeclarationBuilder(builderInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(indexer.Core.HasGetter ? BuildGetterMethod(builderInterface.GetterMethod) : null)
+            .AddMember(indexer.Core.HasSetter ? BuildSetterMethod(builderInterface.SetterMethod) : null)
+            .Build();
+    }
+
+    private static MethodDeclarationSyntax BuildGetterMethod(GetterMethodMetadata getterMethod) =>
+        new MethodDeclarationBuilder(getterMethod.ReturnType, getterMethod.Name)
+            .AddParameters(getterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray())
+            .WithSemicolon()
+            .Build();
+
+    private static MethodDeclarationSyntax BuildSetterMethod(SetterMethodMetadata setterMethod) =>
+        new MethodDeclarationBuilder(setterMethod.ReturnType, setterMethod.Name)
+            .AddParameters(setterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray())
+            .WithSemicolon()
+            .Build();
+}

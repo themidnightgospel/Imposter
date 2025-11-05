@@ -41,9 +41,10 @@ internal static class MethodImposterGenericInterfaceBuilder
 
         return InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, genericInterfaceType.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)
             .AddMember(hasMatchingSetupMethod)
-            .Build(modifiers: TokenList(Token(SyntaxKind.InternalKeyword)));
+            .Build();
     }
 }
