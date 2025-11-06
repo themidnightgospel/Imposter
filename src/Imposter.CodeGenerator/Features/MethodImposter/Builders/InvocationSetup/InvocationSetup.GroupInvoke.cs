@@ -11,7 +11,7 @@ internal static partial class InvocationSetupBuilder
 {
     internal static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
     {
-        var invocationImposterType = IdentifierName(InvocationSetupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
         var invocationImposterIdentifier = IdentifierName("invocationImposter");
         var invocationImposterAssignment = LocalDeclarationStatement(
             VariableDeclaration(invocationImposterType)

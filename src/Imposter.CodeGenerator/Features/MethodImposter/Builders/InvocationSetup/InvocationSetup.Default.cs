@@ -11,10 +11,10 @@ internal static partial class InvocationSetupBuilder
     internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(in ImposterTargetMethodMetadata method) =>
         SyntaxFactoryHelper
             .SingleVariableField(
-                method.InvocationSetup.Syntax,
-                method.InvocationSetup.DefaultInvocationSetupField.Name,
+                method.MethodInvocationImposterGroup.Syntax,
+                method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name,
                 TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword)),
-                method.InvocationSetup.Syntax
+                method.MethodInvocationImposterGroup.Syntax
                     .New(method.Parameters.HasInputParameters
                         ? Argument(ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
                                 .WithArgumentList(SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters))
@@ -26,7 +26,7 @@ internal static partial class InvocationSetupBuilder
 
     internal static MethodDeclarationSyntax DefaultResultGenerator(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(method.InvocationSetup.DefaultResultGeneratorMethod.ReturnType, method.InvocationSetup.DefaultResultGeneratorMethod.Name)
+        return new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnType, method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddModifierIf(method.IsAsync, () => Token(SyntaxKind.AsyncKeyword))

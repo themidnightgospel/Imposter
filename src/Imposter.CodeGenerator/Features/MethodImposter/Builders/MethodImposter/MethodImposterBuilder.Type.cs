@@ -11,7 +11,7 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterBuilder
 {
-    internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method, in InterfaceDeclarationSyntax invocationSetupBuilderInterface)
+    internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         var methodImposterClassBuilder = ClassDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodImposter.Name)
@@ -44,7 +44,7 @@ internal static partial class MethodImposterBuilder
             .AddMember(BuildHasMatchingInvocationImposterGroupMethod(method))
             .AddMember(BuildFindMatchingInvocationImposterGroupMethod(method))
             .AddMember(InvokeMethod(method))
-            .AddMember(MethodImposterBuilderBuilder.Build(method, invocationSetupBuilderInterface))
+            .AddMember(MethodImposterBuilderBuilder.Build(method))
             .Build();
 
         static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(in ImposterTargetMethodMetadata method) =>

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
 
-internal readonly record struct InvocationSetupMetadata
+internal readonly record struct MethodInvocationImposterGroupMetadata
 {
     internal const string MethodInvocationImposterTypeName = "MethodInvocationImposter";
 
@@ -32,7 +32,7 @@ internal readonly record struct InvocationSetupMetadata
 
     internal readonly DefaultResultGeneratorMethodMetadata DefaultResultGeneratorMethod;
 
-    internal InvocationSetupMetadata(in ImposterTargetMethodMetadata method)
+    internal MethodInvocationImposterGroupMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodInvocationImposterGroup";
         Interface = TypeMetadataFactory.Create($"I{Name}", method.GenericTypeArguments);

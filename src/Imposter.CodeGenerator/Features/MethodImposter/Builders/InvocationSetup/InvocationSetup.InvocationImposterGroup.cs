@@ -8,7 +8,7 @@ internal static partial class InvocationSetupBuilder
 {
     internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(in ImposterTargetMethodMetadata method)
     {
-        var invocationImposterType = IdentifierName(InvocationSetupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
         var queueType = GenericName(Identifier("Queue"))
             .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList<TypeSyntax>(invocationImposterType)));
 
@@ -31,7 +31,7 @@ internal static partial class InvocationSetupBuilder
 
     internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in ImposterTargetMethodMetadata method) =>
         FieldDeclaration(
-                VariableDeclaration(IdentifierName(InvocationSetupMetadata.MethodInvocationImposterTypeName))
+                VariableDeclaration(IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName))
                     .WithVariables(
                         SingletonSeparatedList(
                             VariableDeclarator(Identifier("_lastestInvocationImposter"))
@@ -42,7 +42,7 @@ internal static partial class InvocationSetupBuilder
 
     internal static MethodDeclarationSyntax AddInvocationImposterMethod(in ImposterTargetMethodMetadata method)
     {
-        var invocationImposterType = IdentifierName(InvocationSetupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
 
         return MethodDeclaration(invocationImposterType, Identifier("AddInvocationImposter"))
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
@@ -76,7 +76,7 @@ internal static partial class InvocationSetupBuilder
 
     internal static MethodDeclarationSyntax GetInvocationImposterMethod(in ImposterTargetMethodMetadata method)
     {
-        var invocationImposterType = IdentifierName(InvocationSetupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
 
         return MethodDeclaration(NullableType(invocationImposterType), Identifier("GetInvocationImposter"))
             .AddModifiers(Token(SyntaxKind.PrivateKeyword))

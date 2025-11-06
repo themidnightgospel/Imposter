@@ -14,7 +14,7 @@ internal partial class MethodImposterBuilder
         var setupIdentifier = Identifier(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName);
         var setupIdentifierName = IdentifierName(setupIdentifier);
 
-        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.InvocationSetup.Syntax), method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
+        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.MethodInvocationImposterGroup.Syntax), method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(GetArgumentsParameter(method));
 

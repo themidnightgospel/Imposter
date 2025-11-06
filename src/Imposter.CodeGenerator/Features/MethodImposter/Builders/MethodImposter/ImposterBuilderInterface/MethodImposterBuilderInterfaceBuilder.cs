@@ -13,7 +13,7 @@ internal static class MethodImposterBuilderInterfaceBuilder
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodImposter.BuilderInterface.Name)
-            .AddBaseType(SimpleBaseType(method.InvocationSetup.Interface.Syntax))
+            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.Interface.Syntax))
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
             .AddModifier(Token(SyntaxKind.PublicKeyword)
 #if DEBUG
