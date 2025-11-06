@@ -125,7 +125,7 @@ internal partial class MethodImposterBuilder
     private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
     {
         var matchingIdentifier = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName);
-        var defaultGroup = method.InvocationSetup.Syntax.Dot(IdentifierName(method.InvocationSetup.DefaultInvocationSetupField.Name));
+        var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(IdentifierName(method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name));
 
         return IfStatement(
             BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Null),

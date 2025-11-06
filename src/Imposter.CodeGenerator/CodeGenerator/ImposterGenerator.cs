@@ -107,7 +107,7 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterBuilderInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterBuilder.Build(method, invocationSetupInterface));
+                .AddMember(MethodImposterBuilder.Build(method));
         }
 
         foreach (var propertySymbol in imposterGenerationContext.Imposter.PropertySymbols)

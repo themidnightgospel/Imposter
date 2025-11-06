@@ -11,7 +11,7 @@ internal static partial class InvocationSetupBuilder
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         return ClassDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, method.InvocationSetup.Name)
+            .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.Name)
             .AddMember(DefaultInstanceLazyInitializer(method))
             .AddMember(method.Parameters.HasInputParameters ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax) : null)
             .AddMember(InvocationImpostersFieldDeclaration(method))
@@ -30,7 +30,7 @@ internal static partial class InvocationSetupBuilder
 
     private static ConstructorDeclarationSyntax Constructor(in ImposterTargetMethodMetadata method)
     {
-        var ctor = ConstructorDeclaration(method.InvocationSetup.Name)
+        var ctor = ConstructorDeclaration(method.MethodInvocationImposterGroup.Name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword));
 
         if (method.Parameters.HasInputParameters)

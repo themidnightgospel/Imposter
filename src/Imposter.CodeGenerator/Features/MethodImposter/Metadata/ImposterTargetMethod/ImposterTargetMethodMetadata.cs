@@ -14,7 +14,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly ImposterTargetMethodParametersMetadata Parameters;
 
-    internal readonly InvocationSetupMetadata InvocationSetup;
+    internal readonly MethodInvocationImposterGroupMetadata MethodInvocationImposterGroup;
 
     internal readonly TypeMetadata Delegate;
 
@@ -84,7 +84,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         Arguments = new TypeMetadata(argumentsTypeName, SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName));
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
-        InvocationSetup = new InvocationSetupMetadata(this);
+        MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
     }

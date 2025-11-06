@@ -48,7 +48,7 @@ internal readonly struct MethodImposterMetadata
             Syntax,
             Collection.Syntax,
             method.ArgumentsCriteria.Syntax,
-            method.InvocationSetup.Syntax,
-            method.InvocationSetup.MethodInvocationImposterSyntax);
+            method.MethodInvocationImposterGroup.Syntax,
+            method.MethodInvocationImposterGroup.MethodInvocationImposterSyntax);
     }
 }
