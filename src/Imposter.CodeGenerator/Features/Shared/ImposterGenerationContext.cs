@@ -13,10 +13,15 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly string ImposterComponentsNamespace;
 
-    internal ImposterGenerationContext(GenerateImposterDeclaration generateImposterDeclaration)
+    internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
+
+    internal ImposterGenerationContext(
+        GenerateImposterDeclaration generateImposterDeclaration,
+        in SupportedCSharpFeatures supportedCSharpFeatures)
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget);
         ImposterComponentsNamespace = $"Imposters.{TargetSymbol.ToDisplayString()}";
+        SupportedCSharpFeatures = supportedCSharpFeatures;
     }
 }

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc
+namespace Imposter.Ideation.IndexerSetupPoc
 {
     public delegate int IndexerDelegate(int value1, string value2, object? value3);
     public delegate Exception IndexerExceptionGeneratorDelegate(int value1, string value2, object? value3);

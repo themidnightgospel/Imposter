@@ -11,3 +11,4 @@ public interface IGenericMethodPocV1
         in TIn inValue,
         params TParams[] paramsValues);
 }
+

@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
+using Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
 using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Delegates;
@@ -60,10 +61,13 @@ public class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration);
+            var supportedCSharpFeatures = new SupportedCSharpFeatures(compilationContext.Compilation);
+            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures);
             sourceProductionContext.AddSource(
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
-                SourceText.From(BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(), Encoding.UTF8));
+                SourceText.From(
+                    BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(),
+                    Encoding.UTF8));
         }
         // TODO
         catch (Exception ex)
@@ -84,6 +88,11 @@ public class ImposterGenerator : IIncrementalGenerator
     private static CompilationUnitSyntax BuildImposter(in ImposterGenerationContext imposterGenerationContext)
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
+        var targetNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace
+            .ToDisplayString();
+        var imposterNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
+            ? targetNamespaceName
+            : imposterGenerationContext.ImposterComponentsNamespace;
 
         foreach (var method in imposterGenerationContext.Imposter.Methods)
         {
@@ -139,34 +148,33 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(IndexerImposterBuilderBuilder.Build(indexer))
                 .AddMember(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
                 .AddMember(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
-                .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer))
-                ;
+                .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer));
         }
 
-        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
-            imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
-                ? imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString()
-                : imposterGenerationContext.ImposterComponentsNamespace);
+        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(imposterNamespaceName);
+
+        imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
+
+        if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
+        {
+            imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
+                imposterGenerationContext,
+                imposterNamespaceName));
+        }
 
         var imposterNamespace = imposterNamespaceBuilder
-            .AddMember(imposterBuilder.Build())
             .Build()
             // TODO this will cause copying of enitere namespace syntax
-            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia())
-            );
+            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
 
         return CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
             usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
             attributeLists: List<AttributeListSyntax>(),
-            members: List<MemberDeclarationSyntax>(
-                [
+            members: List<MemberDeclarationSyntax>([
                     imposterNamespace
                 ]
             )
         );
     }
 }
-
-
-

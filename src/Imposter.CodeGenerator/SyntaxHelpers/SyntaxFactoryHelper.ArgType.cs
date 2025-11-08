@@ -24,7 +24,7 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentSyntax ArgAnyArgument(IParameterSymbol parameter) =>
         Argument(ArgType(parameter).Dot(IdentifierName("Any")).Call());
 
-    internal static InvocationExpressionSyntax OutArgAny(SyntaxNode type) =>
+    internal static InvocationExpressionSyntax OutArgAny(TypeSyntax type) =>
         WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
 
     internal static InvocationExpressionSyntax ArgAny(TypeSyntax type) =>

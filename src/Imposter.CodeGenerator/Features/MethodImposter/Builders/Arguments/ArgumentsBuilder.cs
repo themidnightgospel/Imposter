@@ -49,7 +49,9 @@ internal static class ArgumentsBuilder
     {
         var typeParameters = method.Symbol.TypeParameters;
         var asMethodTypeParams = typeParameters.Select(p => TypeParameter(p.Name + "Target")).ToArray();
-        var targetTypeArgs = typeParameters.Select(p => IdentifierName(p.Name + "Target")).ToArray();
+        var targetTypeArgs = typeParameters
+            .Select(p => (TypeSyntax)IdentifierName(p.Name + "Target"))
+            .ToArray();
 
         var returnType = GenericName(method.Arguments.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs)));
@@ -69,7 +71,7 @@ internal static class ArgumentsBuilder
                             IdentifierName("TypeCaster"),
                             GenericName("Cast")
                                 .WithTypeArgumentList(
-                                    TypeArgumentList(SeparatedList([sourceType, targetType]))
+                                    TypeArgumentList(SeparatedList<TypeSyntax>(new[] { sourceType, targetType }))
                                 )
                         ),
                         ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name))))

@@ -59,7 +59,9 @@ public static class ArgumentsCriteriaBuilder
     {
         var typeParameters = method.Symbol.TypeParameters;
         var asMethodTypeParams = typeParameters.Select(p => TypeParameter(p.Name + "Target")).ToArray();
-        var targetTypeArgs = typeParameters.Select(p => IdentifierName(p.Name + "Target")).ToArray();
+        var targetTypeArgs = typeParameters
+            .Select(p => (TypeSyntax)IdentifierName(p.Name + "Target"))
+            .ToArray();
         var returnType = GenericName(method.ArgumentsCriteria.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs)));
 
@@ -69,7 +71,7 @@ public static class ArgumentsCriteriaBuilder
             .Select(p =>
             {
                 var renamer = new TypeParameterRenamer(typeParameters, "Target");
-                var targetType = renamer.Visit(SyntaxFactoryHelper.TypeSyntax(p.Type));
+                var targetType = (TypeSyntax)renamer.Visit(SyntaxFactoryHelper.TypeSyntax(p.Type));
 
                 if (p.RefKind is RefKind.Out)
                 {
@@ -90,7 +92,7 @@ public static class ArgumentsCriteriaBuilder
                                             Parameter(SyntaxFactoryHelper.It.Identifier),
                                             WellKnownTypes.Imposter.Abstractions.TypeCaster
                                                 .Dot(GenericName("TryCast")
-                                                    .WithTypeArgumentList(TypeArgumentList(SeparatedList([targetType, sourceType])))
+                                                    .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(new[] { targetType, sourceType })))
                                                 )
                                                 .Call(ArgumentList(SeparatedList([
                                                     Argument(SyntaxFactoryHelper.It),

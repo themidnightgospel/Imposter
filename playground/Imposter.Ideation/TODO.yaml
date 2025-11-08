@@ -16,15 +16,14 @@ FEATURES:
         - Verify set
       - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions. - DONE
       - Indexer setup support
-    IN Progress:
       - Event setup support
-      - Chaining event raise to method, property and indexer. Can be achieved with .Callback + Raise, so no need to be high priority. Although addd tests.
+    IN Progress:
+      - For c# 14, declare Impsoter as an extension to imposter target type
     NOT Started:
       - Impostering class (abstract class, virtual methods)
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
       - Use fully qualified name wherever possible
-      - For c# 14, declare Impsoter as an extension to imposter target type
       - Make sure metadata structs are passed as readonly
       - fix TODOs in code
       - cleanup SyntaxFactoryHelper
@@ -45,6 +44,7 @@ FEATURES:
     - NOT Started:
         - Support for 'scoped' parameters
         - Add unit tests for InterfaceSymbolExtensions
+        - Chaining event raise to method, property and indexer. Can be achieved with Method.Callback + Event.Raise, so probably not important.
 
 OPTIMIZATIONS:
   - Need to make sure that every name in imposter class has unique name and does not collide with user provided names 
