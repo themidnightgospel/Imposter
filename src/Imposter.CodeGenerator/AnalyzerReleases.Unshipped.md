@@ -5,5 +5,7 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-IMP001 | Imposter | Error | EnumValueAnalyzer
-IMP003 | Imposter | Error | EnumValueAnalyzer
+IMP001 | Imposter | Error | ImposterGenerator
+IMP002 | Imposter | Error | ImposterGenerator
+IMP003 | Imposter | Error | ImposterGenerator
+IMP004 | Imposter | Error | ImposterGenerator

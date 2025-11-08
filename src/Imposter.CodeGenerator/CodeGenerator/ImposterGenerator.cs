@@ -53,10 +53,37 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             return;
         }
-
-        if (generateImposterDeclaration.ImposterTarget.TypeKind != TypeKind.Interface)
+        
+        if (!IsInterfaceOrNonSealedClass(generateImposterDeclaration.ImposterTarget))
         {
-            throw new InvalidOperationException("TODO: Only interfaces supported");
+            var targetLocation = generateImposterDeclaration.ImposterTarget.Locations.Length > 0
+                ? generateImposterDeclaration.ImposterTarget.Locations[0]
+                : Location.None;
+
+            var targetDisplayName = generateImposterDeclaration.ImposterTarget.ToDisplayString();
+
+            sourceProductionContext.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.ImposterTargetMustBeInterface,
+                    targetLocation,
+                    targetDisplayName,
+                    generateImposterDeclaration.ImposterTarget.TypeKind));
+            return;
+        }
+
+        if (generateImposterDeclaration.ImposterTarget.TypeKind == TypeKind.Class &&
+            !HasAccessibleConstructor(generateImposterDeclaration.ImposterTarget))
+        {
+            var targetLocation = generateImposterDeclaration.ImposterTarget.Locations.Length > 0
+                ? generateImposterDeclaration.ImposterTarget.Locations[0]
+                : Location.None;
+
+            sourceProductionContext.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
+                    targetLocation,
+                    generateImposterDeclaration.ImposterTarget.ToDisplayString()));
+            return;
         }
 
         try
@@ -83,13 +110,35 @@ public class ImposterGenerator : IIncrementalGenerator
                 Location.None));
             throw;
         }
+        
+        bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol)
+            => typeSymbol.TypeKind == TypeKind.Interface || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
+
+        bool HasAccessibleConstructor(INamedTypeSymbol typeSymbol)
+        {
+            if (typeSymbol.InstanceConstructors.Length == 0)
+            {
+                return true;
+            }
+
+            foreach (var constructor in typeSymbol.InstanceConstructors)
+            {
+                if (constructor.DeclaredAccessibility is Accessibility.Private)
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
     }
 
     private static CompilationUnitSyntax BuildImposter(in ImposterGenerationContext imposterGenerationContext)
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
-        var targetNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace
-            .ToDisplayString();
+        var targetNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString();
         var imposterNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
             ? targetNamespaceName
             : imposterGenerationContext.ImposterComponentsNamespace;

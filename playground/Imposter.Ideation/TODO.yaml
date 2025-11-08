@@ -19,7 +19,7 @@ FEATURES:
       - Event setup support
       - For c# 14, declare Impsoter as an extension to imposter target type
     IN Progress:
-      - Impostering class (abstract class, virtual methods)
+      - Impostering class (abstract class, virtual methods) - see NonInterfaceTargets/ for the latest PoC
     NOT Started:
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
