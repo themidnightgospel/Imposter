@@ -26,31 +26,36 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
     {
-        _imposterInstanceBuilder
-            .AddMember(SyntaxFactoryHelper
-                .PropertyDeclarationSyntax(
-                    property.Core.TypeSyntax,
-                    property.Core.Name,
-                    property.Core.HasGetter
-                        ? Block(
-                            ReturnStatement(
-                                IdentifierName("_imposter")
-                                    .Dot(IdentifierName(property.AsField.Name))
-                                    .Dot(IdentifierName("_getterImposterBuilder"))
-                                    .Dot(IdentifierName("Get"))
-                                    .Call()
-                            ))
-                        : null,
-                    property.Core.HasSetter
-                        ? Block(
-                            IdentifierName("_imposter")
-                                .Dot(IdentifierName(property.AsField.Name))
-                                .Dot(IdentifierName("_setterImposter"))
-                                .Dot(IdentifierName("Set"))
-                                .Call(Argument(IdentifierName("value")))
-                                .ToStatementSyntax())
-                        : null
-                ));
+        var propertyBuilder = new PropertyDeclarationBuilder(property.Core.TypeSyntax, property.Core.Name)
+            .AddModifiers(property.ImposterInstanceModifiers);
+
+        if (property.Core.HasGetter)
+        {
+            var getterBody = Block(
+                ReturnStatement(
+                    IdentifierName("_imposter")
+                        .Dot(IdentifierName(property.AsField.Name))
+                        .Dot(IdentifierName("_getterImposterBuilder"))
+                        .Dot(IdentifierName("Get"))
+                        .Call()));
+
+            propertyBuilder = propertyBuilder.WithGetterBody(getterBody);
+        }
+
+        if (property.Core.HasSetter)
+        {
+            var setterBody = Block(
+                IdentifierName("_imposter")
+                    .Dot(IdentifierName(property.AsField.Name))
+                    .Dot(IdentifierName("_setterImposter"))
+                    .Dot(IdentifierName("Set"))
+                    .Call(Argument(IdentifierName("value")))
+                    .ToStatementSyntax());
+
+            propertyBuilder = propertyBuilder.WithSetterBody(setterBody);
+        }
+
+        _imposterInstanceBuilder.AddMember(propertyBuilder.Build());
         
         return this;
     }
