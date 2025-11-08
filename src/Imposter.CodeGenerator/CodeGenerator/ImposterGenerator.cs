@@ -95,14 +95,9 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(InvocationHistoryInterfaceBuilder.Build(method))
                 .AddMember(InvocationHistoryBuilder.Build(method))
                 .AddMember(InvocationHistoryCollectionBuilder.Build(method))
-                .AddMember(MethodImposterCollectionBuilder.Build(method));
-
-            // TODO clean it up
-            var invocationSetupInterface = InvocationSetupBuilder.BuildInvocationSetupInterface(method);
-
-            imposterBuilder
+                .AddMember(MethodImposterCollectionBuilder.Build(method))
                 .AddMember(InvocationSetupBuilder.Build(method))
-                .AddMember(invocationSetupInterface)
+                .AddMember(InvocationSetupBuilder.BuildInvocationSetupInterface(method))
                 .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))
