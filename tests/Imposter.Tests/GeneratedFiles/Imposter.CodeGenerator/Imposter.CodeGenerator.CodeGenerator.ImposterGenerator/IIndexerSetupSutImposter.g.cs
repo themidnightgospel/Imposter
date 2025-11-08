@@ -990,10 +990,10 @@ namespace Imposter.Tests.Features.IndexerImposter
 
         public IIndexerSetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut.this[int key1, string key2, object key3]");
             this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut.this[int key1]");
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

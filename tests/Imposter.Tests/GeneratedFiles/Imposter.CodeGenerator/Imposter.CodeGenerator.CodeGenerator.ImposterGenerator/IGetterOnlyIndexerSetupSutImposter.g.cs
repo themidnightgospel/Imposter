@@ -389,9 +389,9 @@ namespace Imposter.Tests.Features.IndexerImposter
 
         public IGetterOnlyIndexerSetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut.this[int key, string name]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut.this[int key, string name]");
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

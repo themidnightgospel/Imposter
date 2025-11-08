@@ -13,7 +13,7 @@ namespace Imposter.CodeGenerator.Tests.Generators;
 
 public class ImposterGeneratorExtensionsTests
 {
-private const string Source = """
+    private const string Source = """
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.IOrderService))]
@@ -23,6 +23,24 @@ namespace Sample;
 public interface IOrderService
 {
     int Sum(int left, int right);
+}
+""";
+    private const string ClassSource = """
+using Imposter.Abstractions;
+
+[assembly: GenerateImposter(typeof(Sample.MultiCtorClass))]
+
+namespace Sample;
+
+public class MultiCtorClass
+{
+    public MultiCtorClass()
+    {
+    }
+
+    public MultiCtorClass(int value, string label)
+    {
+    }
 }
 """;
 
@@ -45,9 +63,20 @@ public interface IOrderService
         generatedSource.ShouldNotContain("IOrderServiceImposterExtensions");
     }
 
-    private static GeneratorRunResult RunGenerator(LanguageVersion languageVersion)
+    [Fact]
+    public void ClassTargets_Expose_Constructor_Overloads_In_Extension_Methods()
     {
-        var compilation = CreateCompilation(languageVersion);
+        var runResult = RunGenerator(LanguageVersion.Preview, ClassSource);
+        var generatedSource = string.Join(Environment.NewLine, runResult.GeneratedSources.Select(static source => source.SourceText.ToString()));
+
+        generatedSource.ShouldContain("public static class MultiCtorClassImposterExtensions");
+        generatedSource.ShouldContain("extension (global::Sample.MultiCtorClass imposter)");
+        generatedSource.ShouldContain("public static global::Sample.MultiCtorClassImposter Imposter(int value, string label, Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)");
+    }
+
+    private static GeneratorRunResult RunGenerator(LanguageVersion languageVersion, string source = Source)
+    {
+        var compilation = CreateCompilation(languageVersion, source);
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
 
         var runResult = driver.RunGenerators(compilation).GetRunResult();
@@ -59,7 +88,7 @@ public interface IOrderService
         return generatorResult;
     }
 
-    private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion)
+    private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion, string source)
     {
         var parseOptions = new CSharpParseOptions(languageVersion);
 
@@ -74,7 +103,7 @@ public interface IOrderService
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorExtensionsTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
+            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(source, parseOptions) },
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
