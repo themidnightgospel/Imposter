@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
+using Imposter.CodeGenerator.Features.EventImposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
 using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
@@ -19,7 +20,6 @@ using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter;
 using Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Setter;
-using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -115,6 +115,16 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilder.Build(property));
+        }
+
+        foreach (var eventSymbol in imposterGenerationContext.Imposter.EventSymbols)
+        {
+            var @event = imposterGenerationContext.Imposter.CreateEventMetadata(eventSymbol);
+
+            imposterBuilder
+                .AddEventImposter(@event)
+                .AddMember(EventImposterBuilderInterfaceBuilder.Build(@event))
+                .AddMember(EventImposterBuilderBuilder.Build(@event));
         }
 
         foreach (var indexerSymbol in imposterGenerationContext.Imposter.IndexerSymbols)

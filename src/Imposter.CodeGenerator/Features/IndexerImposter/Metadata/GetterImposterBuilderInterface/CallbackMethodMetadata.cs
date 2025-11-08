@@ -1,4 +1,3 @@
-using Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Metadata.GetterImposterBuilderInterface;

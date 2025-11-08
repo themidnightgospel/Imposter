@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
-using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -77,6 +77,31 @@ internal readonly ref  partial struct ImposterBuilder
                 .ToStatementSyntax());
 
         _imposterInstanceBuilder.AddImposterProperty(property);
+
+        return this;
+    }
+
+    internal ImposterBuilder AddEventImposter(in ImposterEventMetadata @event)
+    {
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.ReadOnlyPropertyDeclarationSyntax(
+                @event.BuilderInterface.TypeSyntax,
+                @event.Core.Name,
+                IdentifierName(@event.BuilderField.Name)
+            ));
+
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+                @event.Builder.TypeSyntax,
+                @event.BuilderField.Name));
+
+        _constructorBodyBuilder.AddStatement(
+            ThisExpression()
+                .Dot(IdentifierName(@event.BuilderField.Name))
+                .Assign(@event.Builder.TypeSyntax.New())
+                .ToStatementSyntax());
+
+        _imposterInstanceBuilder.AddEvent(@event);
 
         return this;
     }

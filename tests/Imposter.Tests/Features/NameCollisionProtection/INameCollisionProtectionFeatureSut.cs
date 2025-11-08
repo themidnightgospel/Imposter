@@ -1,5 +1,4 @@
 ﻿using System;
-using Imposter.Abstractions;
 
 namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
 {

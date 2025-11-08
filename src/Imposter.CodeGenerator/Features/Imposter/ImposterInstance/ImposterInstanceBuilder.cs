@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
-using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -99,6 +100,25 @@ internal readonly ref struct ImposterInstanceBuilder
 
         return this;
     }
+
+    internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
+    {
+        var eventDeclaration = EventDeclaration(@event.Core.HandlerTypeSyntax, Identifier(@event.Core.Name))
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithAccessorList(
+                AccessorList(
+                    List(new[]
+                    {
+                        AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
+                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: true)),
+                        AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
+                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: false))
+                    })));
+
+        _imposterInstanceBuilder.AddMember(eventDeclaration);
+
+        return this;
+    }
     
     internal ClassDeclarationSyntax Build() => _imposterInstanceBuilder.Build();
 
@@ -168,4 +188,21 @@ internal readonly ref struct ImposterInstanceBuilder
             }
         }
     }
+
+    private static BlockSyntax BuildEventAccessorBody(in ImposterEventMetadata @event, bool isSubscribe)
+    {
+        var builderAccess = IdentifierName(ImposterFieldName)
+            .Dot(IdentifierName(@event.BuilderField.Name));
+
+        return Block(
+            IdentifierName(nameof(ArgumentNullException))
+                .Dot(IdentifierName("ThrowIfNull"))
+                .Call(Argument(IdentifierName("value")))
+                .ToStatementSyntax(),
+            builderAccess
+                .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
+                .Call(Argument(IdentifierName("value")))
+                .ToStatementSyntax());
+    }
 }
+

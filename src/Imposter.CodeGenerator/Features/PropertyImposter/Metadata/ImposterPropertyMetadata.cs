@@ -3,7 +3,6 @@ using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBu
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposterBuilderInterface;
-using Imposter.CodeGenerator.Features.Shared;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
