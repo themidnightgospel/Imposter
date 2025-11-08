@@ -7,9 +7,9 @@ internal static class WellKnownAssemblyNames
     internal const string Mscorlib = "mscorlib";
 
     internal static readonly string[] SystemAssemblies =
-    {
+    [
         SystemRuntime,
         SystemPrivateCoreLib,
         Mscorlib
-    };
+    ];
 }

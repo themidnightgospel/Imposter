@@ -53,12 +53,11 @@ internal static class IndexerImposterBuilderBuilder
                     IdentifierName("GetterImposter")
                         .New(
                             SyntaxFactoryHelper.ArgumentListSyntax(
-                                new[]
-                                {
-                                    Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
+                            [
+                                Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                                     Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
                                     Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text))
-                                })))
+                            ])))
                 .ToStatementSyntax()
             : null;
 
@@ -69,12 +68,11 @@ internal static class IndexerImposterBuilderBuilder
                     IdentifierName("SetterImposter")
                         .New(
                             SyntaxFactoryHelper.ArgumentListSyntax(
-                                new[]
-                                {
-                                    Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
+                            [
+                                Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                                     Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
                                     Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text))
-                                })))
+                            ])))
                 .ToStatementSyntax()
             : null;
 
@@ -97,11 +95,10 @@ internal static class IndexerImposterBuilderBuilder
                 QualifiedName(IdentifierName("GetterImposter"), IdentifierName("Builder"))
                     .New(
                         SyntaxFactoryHelper.ArgumentListSyntax(
-                            new[]
-                            {
-                                Argument(IdentifierName(indexer.Builder.GetterImposterField.Name)),
+                        [
+                            Argument(IdentifierName(indexer.Builder.GetterImposterField.Name)),
                                 Argument(IdentifierName("criteria"))
-                            }))));
+                        ]))));
 
         return new MethodDeclarationBuilder(indexer.GetterBuilderInterface.TypeSyntax, "CreateGetter")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -128,11 +125,10 @@ internal static class IndexerImposterBuilderBuilder
                 QualifiedName(IdentifierName("SetterImposter"), IdentifierName("Builder"))
                     .New(
                         SyntaxFactoryHelper.ArgumentListSyntax(
-                            new[]
-                            {
-                                Argument(IdentifierName(indexer.Builder.SetterImposterField.Name)),
+                        [
+                            Argument(IdentifierName(indexer.Builder.SetterImposterField.Name)),
                                 Argument(IdentifierName("criteria"))
-                            }))));
+                        ]))));
 
         return new MethodDeclarationBuilder(indexer.SetterBuilderInterface.TypeSyntax, "CreateSetter")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -200,7 +196,7 @@ internal static class IndexerImposterBuilderBuilder
     {
         var parameters = indexer.Core.Parameters
             .Select(parameter => parameter.ParameterSyntax)
-            .Concat(new[] { Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax) })
+            .Concat([Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax)])
             .ToArray();
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
@@ -210,7 +206,7 @@ internal static class IndexerImposterBuilderBuilder
                 IdentifierName(indexer.Builder.SetterImposterField.Name)
                     .Dot(IdentifierName("Set"))
                     .Call(SyntaxFactoryHelper.ArgumentListSyntax(
-                        indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))).Concat(new[] { Argument(IdentifierName("value")) })))
+                        indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))).Concat([Argument(IdentifierName("value"))])))
                     .ToStatementSyntax()))
             .Build();
     }
@@ -434,11 +430,10 @@ internal static class IndexerImposterBuilderBuilder
                 Block(
                     IdentifierName(builderMetadata.ImposterFieldName)
                         .Dot(IdentifierName("Called"))
-                        .Call(new[]
-                        {
+                        .Call([
                             Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
                             Argument(IdentifierName(parameter.Identifier))
-                        })
+                        ])
                         .ToStatementSyntax()))
             .Build();
     }
@@ -454,7 +449,7 @@ internal static class IndexerImposterBuilderBuilder
 
     private static BlockSyntax BuildFluentBodyReturningThis(params StatementSyntax[] statements)
     {
-        var fluentStatements = statements.Concat(new[] { ReturnStatement(ThisExpression()) }).ToArray();
+        var fluentStatements = statements.Concat([ReturnStatement(ThisExpression())]).ToArray();
         return Block(fluentStatements);
     }
 
@@ -488,13 +483,12 @@ internal static class IndexerImposterBuilderBuilder
                 .AddModifiers(Token(SyntaxKind.InternalKeyword))
                 .WithAccessorList(
                     AccessorList(
-                        List(new[]
-                        {
+                        List([
                             AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                             AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                                 .AddModifiers(Token(SyntaxKind.PrivateKeyword))
                                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                        }))))
+                        ]))))
             .AddMember(PropertyDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)), Identifier("InvocationCount"))
                 .AddModifiers(Token(SyntaxKind.InternalKeyword))
                 .WithExpressionBody(
@@ -783,7 +777,7 @@ internal static class IndexerImposterBuilderBuilder
         var argumentsVariable = IdentifierName(indexer.GetterImplementation.ArgumentsVariableName);
         var parameters = indexer.Core.Parameters
             .Select(parameter => parameter.ParameterSyntax)
-            .Concat(new[] { Parameter(Identifier(setter.ValueParameterName)).WithType(indexer.Core.TypeSyntax) })
+            .Concat([Parameter(Identifier(setter.ValueParameterName)).WithType(indexer.Core.TypeSyntax)])
             .ToArray();
 
         var foreachStatement = ForEachStatement(
@@ -814,11 +808,10 @@ internal static class IndexerImposterBuilderBuilder
                 IdentifierName(setter.DefaultBehaviourField.Name)
                     .Dot(IdentifierName("Set"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(new[]
-                        {
+                        SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(argumentsVariable),
                             Argument(IdentifierName(setter.ValueParameterName))
-                        }))
+                        ]))
                     .ToStatementSyntax()));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
@@ -918,11 +911,10 @@ internal static class IndexerImposterBuilderBuilder
             .WithBody(Block(
                 IdentifierName(builderMetadata.ImposterFieldName)
                     .Dot(IdentifierName("Callback"))
-                    .Call(new[]
-                    {
+                    .Call([
                         Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
                         Argument(IdentifierName(parameter.Identifier))
-                    })
+                    ])
                     .ToStatementSyntax(),
                 ReturnStatement(ThisExpression())))
             .Build();
@@ -940,11 +932,10 @@ internal static class IndexerImposterBuilderBuilder
             .WithBody(Block(
                 IdentifierName(builderMetadata.ImposterFieldName)
                     .Dot(IdentifierName("Called"))
-                    .Call(new[]
-                    {
+                    .Call([
                         Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
                         Argument(IdentifierName(parameter.Identifier))
-                    })
+                    ])
                     .ToStatementSyntax()))
             .Build();
     }
@@ -1179,12 +1170,11 @@ internal static class IndexerImposterBuilderBuilder
                                                     .WithInitializer(
                                                         EqualsValueClause(
                                                             getterInvocationType.New(
-                                                                SyntaxFactoryHelper.ArgumentListSyntax(new[]
-                                                                {
+                                                                SyntaxFactoryHelper.ArgumentListSyntax([
                                                                     Argument(ThisExpression()),
                                                                     Argument(IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)),
                                                                     Argument(IdentifierName("key"))
-                                                                }))))))),
+                                                                ]))))))),
                                 IdentifierName(indexer.GetterImplementation.SetupsField.Name)
                                     .Dot(IdentifierName("Push"))
                                     .Call(Argument(IdentifierName(indexer.GetterImplementation.SetupVariableName)))

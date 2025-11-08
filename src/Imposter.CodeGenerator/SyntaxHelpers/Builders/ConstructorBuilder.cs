@@ -8,8 +8,8 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal struct ConstructorBuilder(string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = new();
-    private readonly List<ParameterSyntax> _parameters = new();
+    private readonly List<AttributeListSyntax> _attributes = [];
+    private readonly List<ParameterSyntax> _parameters = [];
     private ConstructorInitializerSyntax? _initializers;
     private BlockSyntax? _body;
     private SyntaxTokenList _modifiers = default;

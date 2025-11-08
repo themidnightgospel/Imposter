@@ -92,7 +92,7 @@ public static class ArgumentsCriteriaBuilder
                                             Parameter(SyntaxFactoryHelper.It.Identifier),
                                             WellKnownTypes.Imposter.Abstractions.TypeCaster
                                                 .Dot(GenericName("TryCast")
-                                                    .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(new[] { targetType, sourceType })))
+                                                    .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>([targetType, sourceType])))
                                                 )
                                                 .Call(ArgumentList(SeparatedList([
                                                     Argument(SyntaxFactoryHelper.It),

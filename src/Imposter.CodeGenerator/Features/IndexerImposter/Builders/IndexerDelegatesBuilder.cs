@@ -32,7 +32,7 @@ internal static class IndexerDelegatesBuilder
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(
                 IndexerParameters(indexer)
-                    .Concat(new[] { Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax) })
+                    .Concat([Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax)])
                     .ToArray());
 
     private static DelegateDeclarationSyntax BuildExceptionDelegate(in ImposterIndexerMetadata indexer)

@@ -84,7 +84,7 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var setterArguments = indexer.Core.Parameters
                 .Select(parameter => Argument(IdentifierName(parameter.Name)))
-                .Concat(new[] { Argument(IdentifierName("value")) });
+                .Concat([Argument(IdentifierName("value"))]);
 
             var setterCall = IdentifierName(ImposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
@@ -97,7 +97,7 @@ internal readonly ref struct ImposterInstanceBuilder
         }
 
         var indexerDeclaration = IndexerDeclaration(indexer.Core.TypeSyntax)
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithModifiers(indexer.ImposterInstanceModifiers)
             .WithParameterList(parameterList)
             .WithAccessorList(AccessorList(List(accessors)));
 
@@ -112,13 +112,12 @@ internal readonly ref struct ImposterInstanceBuilder
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .WithAccessorList(
                 AccessorList(
-                    List(new[]
-                    {
+                    List([
                         AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
                             .WithBody(BuildEventAccessorBody(@event, isSubscribe: true)),
                         AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
                             .WithBody(BuildEventAccessorBody(@event, isSubscribe: false))
-                    })));
+                    ])));
 
         _imposterInstanceBuilder.AddMember(eventDeclaration);
 

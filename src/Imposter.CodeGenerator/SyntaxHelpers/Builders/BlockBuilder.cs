@@ -8,7 +8,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal class BlockBuilder
 {
-    private readonly List<StatementSyntax> _statements = new();
+    private readonly List<StatementSyntax> _statements = [];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockBuilder AddStatements(IEnumerable<StatementSyntax> statementSyntaxes)

@@ -43,7 +43,7 @@ internal static partial class MethodImposterBuilderBuilder
         MethodDeclarationSyntax template,
         params StatementSyntax[] statements)
     {
-        var bodyStatements = statements.Concat(new[] { ReturnStatement(ThisExpression()) });
+        var bodyStatements = statements.Concat([ReturnStatement(ThisExpression())]);
 
         return template
             .WithModifiers(TokenList())

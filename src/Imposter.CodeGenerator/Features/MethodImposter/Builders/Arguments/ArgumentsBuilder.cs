@@ -71,7 +71,7 @@ internal static class ArgumentsBuilder
                             IdentifierName("TypeCaster"),
                             GenericName("Cast")
                                 .WithTypeArgumentList(
-                                    TypeArgumentList(SeparatedList<TypeSyntax>(new[] { sourceType, targetType }))
+                                    TypeArgumentList(SeparatedList<TypeSyntax>([sourceType, targetType]))
                                 )
                         ),
                         ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name))))

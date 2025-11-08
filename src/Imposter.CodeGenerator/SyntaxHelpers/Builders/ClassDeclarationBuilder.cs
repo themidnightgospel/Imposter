@@ -11,9 +11,9 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
 {
-    private readonly List<MemberDeclarationSyntax> _members = new();
-    private readonly List<AttributeListSyntax> _attribute = new();
-    private readonly List<BaseTypeSyntax> _baseTypes = new();
+    private readonly List<MemberDeclarationSyntax> _members = [];
+    private readonly List<AttributeListSyntax> _attribute = [];
+    private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
 
     internal IReadOnlyList<MemberDeclarationSyntax> Members => _members;
