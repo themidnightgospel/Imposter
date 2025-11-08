@@ -4,11 +4,11 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
-using Imposter.CodeGenerator.Tests.Shared;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImposter
 {
     public class ThrowTests
     {

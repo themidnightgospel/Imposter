@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Imposter.CodeGenerator.Tests.Features.NameCollisionProtection
+namespace Imposter.Tests.Features.NameCollisionProtection
 {
     // Not need for test, if it builds then there is no collision
     // TODO 

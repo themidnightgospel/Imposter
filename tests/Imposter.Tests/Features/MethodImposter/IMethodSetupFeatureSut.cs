@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImposter
 {
     [GenerateImposter(typeof(IMethodSetupFeatureSut))]
     public interface IMethodSetupFeatureSut

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Features.EventImposter
+namespace Imposter.Tests.Features.EventImposter
 {
     [GenerateImposter(typeof(IEventSetupSut))]
     public interface IEventSetupSut
