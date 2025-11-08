@@ -6,13 +6,13 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Imposter.Abstractions;
 using System.Collections.Concurrent;
-using Imposter.CodeGenerator.Tests.Features.MethodImposter;
+using Imposter.Tests.Features.MethodImposter;
 
 #pragma warning disable nullable
-namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IMethodSetupFeatureSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodImposter.IMethodSetupFeatureSut>
+    public class IMethodSetupFeatureSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut>
     {
         private readonly VoidNoParamsMethodImposter _voidNoParamsMethodImposter;
         private readonly IntNoParamsMethodImposter _intNoParamsMethodImposter;
@@ -156,8 +156,8 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.CodeGenerator.Tests.Features.MethodImposter.IMethodSetupFeatureSut Instance() => _imposterInstance;
-        global::Imposter.CodeGenerator.Tests.Features.MethodImposter.IMethodSetupFeatureSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Features.MethodImposter.IMethodSetupFeatureSut>.Instance()
+        public global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut Instance() => _imposterInstance;
+        global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -7724,7 +7724,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Features.MethodImposter.IMethodSetupFeatureSut
+        class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut
         {
             IMethodSetupFeatureSutImposter _imposter;
             public ImposterTargetInstance(IMethodSetupFeatureSutImposter _imposter)

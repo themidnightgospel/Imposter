@@ -6,13 +6,13 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Imposter.Abstractions;
 using System.Collections.Concurrent;
-using Imposter.CodeGenerator.Tests.Shared;
+using Imposter.Tests.Shared;
 
 #pragma warning disable nullable
-namespace Imposter.CodeGenerator.Tests.Shared
+namespace Imposter.Tests.Shared
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IIndexerSetupPocImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc>
+    public class IIndexerSetupPocImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>
     {
         private readonly IndexerMethodMethodImposter _indexerMethodMethodImposter;
         private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection = new IndexerMethodMethodInvocationHistoryCollection();
@@ -23,8 +23,8 @@ namespace Imposter.CodeGenerator.Tests.Shared
 
         private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc Instance() => _imposterInstance;
-        global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc Imposter.Abstractions.IHaveImposterInstance<global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc>.Instance()
+        public global::Imposter.Tests.Shared.IIndexerSetupPoc Instance() => _imposterInstance;
+        global::Imposter.Tests.Shared.IIndexerSetupPoc Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>.Instance()
         {
             return _imposterInstance;
         }
@@ -396,7 +396,7 @@ namespace Imposter.CodeGenerator.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.CodeGenerator.Tests.Shared.IIndexerSetupPoc
+        class ImposterTargetInstance : global::Imposter.Tests.Shared.IIndexerSetupPoc
         {
             IIndexerSetupPocImposter _imposter;
             public ImposterTargetInstance(IIndexerSetupPocImposter _imposter)

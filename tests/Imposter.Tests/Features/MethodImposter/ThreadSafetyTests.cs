@@ -3,7 +3,7 @@ using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImposter
 {
     public class ThreadSafetyTests
     {

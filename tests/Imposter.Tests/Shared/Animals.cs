@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Imposter.Abstractions;
 
-namespace Imposter.CodeGenerator.Tests.Shared
+namespace Imposter.Tests.Shared
 {
     public interface IMammal
     {

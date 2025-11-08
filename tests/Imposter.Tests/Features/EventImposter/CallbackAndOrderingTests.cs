@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.EventImposter
+namespace Imposter.Tests.Features.EventImposter
 {
     public class CallbackAndOrderingTests
     {

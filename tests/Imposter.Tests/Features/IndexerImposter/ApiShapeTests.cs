@@ -1,7 +1,7 @@
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.IndexerImposter
+namespace Imposter.Tests.Features.IndexerImposter
 {
     public class ApiShapeTests
     {

@@ -2,7 +2,7 @@ using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.PropertyImposter
 {
     public class PropertyBehaviorTests
     {
