@@ -15,10 +15,11 @@ FEATURES:
         - Setup all properties (move to an interface as explicit implementation)
         - Verify set
       - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions. - DONE
-    IN Progress:
       - Indexer setup support
-    NOT Started:
+    IN Progress:
       - Event setup support
+      - Chaining event raise to method, property and indexer. Can be achieved with .Callback + Raise, so no need to be high priority. Although addd tests.
+    NOT Started:
       - Impostering class (abstract class, virtual methods)
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
