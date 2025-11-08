@@ -383,7 +383,8 @@ namespace Imposter.Tests.Features.MethodImposter
         public MethodSetupFeatureClassSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(this);
+            this._imposterInstance = new ImposterTargetInstance();
+            this._imposterInstance.InitializeImposter(this);
             this._invocationBehavior = invocationBehavior;
         }
 
@@ -391,9 +392,13 @@ namespace Imposter.Tests.Features.MethodImposter
         class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut
         {
             MethodSetupFeatureClassSutImposter _imposter;
-            public ImposterTargetInstance(MethodSetupFeatureClassSutImposter _imposter)
+            internal void InitializeImposter(MethodSetupFeatureClassSutImposter imposter)
             {
-                this._imposter = _imposter;
+                _imposter = imposter;
+            }
+
+            internal ImposterTargetInstance() : base()
+            {
             }
 
             internal override int IntSingleParam(int age)

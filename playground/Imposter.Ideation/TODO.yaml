@@ -33,6 +33,7 @@ FEATURES:
       - Publish as a nuget package from github actions
       - Test nuget package for different versions of the Roslyn
       - Analyze if [MethodImpl(MethodImplOptions.AggressiveInlining)] is productive or counter-productive 
+      - Make sure all the metadata structs are passed as readonly using in modifier
 
   MEDIUM:
     - NOT Started:

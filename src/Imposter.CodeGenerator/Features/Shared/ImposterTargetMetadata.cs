@@ -14,6 +14,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly bool IsClass;
 
+    internal readonly IReadOnlyList<ImposterTargetConstructorMetadata> AccessibleConstructors;
+
     // TODO this will make ImposterTargetMethodMetadata allocate on heap
     internal readonly List<ImposterTargetMethodMetadata> Methods;
 
@@ -30,6 +32,7 @@ internal readonly struct ImposterTargetMetadata
         Name = targetSymbol.Name + "Imposter";
         Methods = GetMethods(targetSymbol, _symbolNameNamespace);
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
+        AccessibleConstructors = GetAccessibleConstructors(targetSymbol);
 
         var propertySymbols = GetPropertySymbols(targetSymbol);
         PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
@@ -53,6 +56,34 @@ internal readonly struct ImposterTargetMetadata
                 .GetAllOverridableMethods()
                 .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name)))
                 .ToList();
+        }
+
+        return [];
+    }
+
+    private static IReadOnlyList<ImposterTargetConstructorMetadata> GetAccessibleConstructors(INamedTypeSymbol typeSymbol)
+    {
+        if (typeSymbol.TypeKind is not TypeKind.Class)
+        {
+            return [];
+        }
+
+        var declaredConstructors = typeSymbol.InstanceConstructors
+            .Where(constructor => !constructor.IsImplicitlyDeclared && constructor.DeclaredAccessibility != Accessibility.Private)
+            .Select(ImposterTargetConstructorMetadata.FromSymbol)
+            .ToArray();
+
+        if (declaredConstructors.Length > 0)
+        {
+            return declaredConstructors;
+        }
+
+        if (!typeSymbol.InstanceConstructors.Any(constructor => !constructor.IsImplicitlyDeclared))
+        {
+            return new[]
+            {
+                ImposterTargetConstructorMetadata.CreateImplicitParameterless(typeSymbol.DeclaredAccessibility),
+            };
         }
 
         return [];

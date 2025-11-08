@@ -719,7 +719,7 @@ internal static class EventImposterBuilderBuilder
                                 .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))))))));
     }
 
-    private static StatementSyntax ForEachAsyncHandlerInvocation(in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
+    private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
     {
         var asyncResultType = usesValueTask
             ? WellKnownTypes.System.Threading.Tasks.ValueTask

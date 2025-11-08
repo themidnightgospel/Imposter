@@ -523,11 +523,11 @@ namespace Imposter.Tests.Features.PropertyImposter
 
         public IPropertySetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
             this._Age = new AgePropertyBuilder(invocationBehavior);
             this._Name = new NamePropertyBuilder(invocationBehavior);
             this._LastName = new LastNamePropertyBuilder(invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

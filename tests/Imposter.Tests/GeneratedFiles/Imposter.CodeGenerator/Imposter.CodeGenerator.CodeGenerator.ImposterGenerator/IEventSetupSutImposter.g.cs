@@ -794,12 +794,12 @@ namespace Imposter.Tests.Features.EventImposter
 
         public IEventSetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._imposterInstance = new ImposterTargetInstance(this);
-            this._invocationBehavior = invocationBehavior;
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
             this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();
             this._ValueTaskSomethingHappened = new ValueTaskSomethingHappenedEventImposterBuilder();
             this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder();
+            this._imposterInstance = new ImposterTargetInstance(this);
+            this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

@@ -132,8 +132,15 @@ internal readonly ref struct ImposterInstanceBuilder
 
         var imposterClassBuilder = new ClassDeclarationBuilder(name)
             .AddBaseType(SimpleBaseType(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)))
-            .AddMembers(fields)
-            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(name, fields))
+            .AddMembers(fields);
+
+        imposterClassBuilder = imposterGenerationContext.Imposter.IsClass
+            ? imposterClassBuilder
+                .AddMember(BuildInitializeImposterMethod(imposterGenerationContext.Imposter.Name))
+                .AddMembers(BuildConstructorsForClassTarget(imposterGenerationContext, name))
+            : imposterClassBuilder.AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(name, fields));
+
+        imposterClassBuilder = imposterClassBuilder
             .AddMembers(ImposterMethods(imposterGenerationContext));
 
         return new ImposterInstanceBuilder(imposterClassBuilder);
@@ -143,6 +150,53 @@ internal readonly ref struct ImposterInstanceBuilder
     [
         SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
     ];
+
+    private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName)
+    {
+        var assignment = AssignmentExpression(
+            SyntaxKind.SimpleAssignmentExpression,
+            IdentifierName(ImposterFieldName),
+            IdentifierName("imposter"));
+
+        return new MethodDeclarationBuilder(
+                PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                "InitializeImposter")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(
+                Parameter(Identifier("imposter"))
+                    .WithType(IdentifierName(imposterName)))
+            .WithBody(Block(ExpressionStatement(assignment)))
+            .Build();
+    }
+
+    private static List<ConstructorDeclarationSyntax> BuildConstructorsForClassTarget(
+        in ImposterGenerationContext imposterGenerationContext,
+        string name)
+    {
+        if (!imposterGenerationContext.Imposter.IsClass)
+        {
+            return [];
+        }
+
+        return imposterGenerationContext
+            .Imposter
+            .AccessibleConstructors
+            .Select(constructorMetadata =>
+            {
+                var parameterList = SyntaxFactoryHelper.ParameterListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+                var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+
+                return new ConstructorBuilder(name)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .WithParameterList(parameterList)
+                    .AddInitializer(
+                        ConstructorInitializer(
+                            SyntaxKind.BaseConstructorInitializer,
+                            argumentList))
+                    .Build();
+
+            }).ToList();
+    }
 
     private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(in ImposterGenerationContext imposterGenerationContext)
     {
