@@ -27,7 +27,12 @@ internal static class ImposterExtensionsBuilder
                         .WithArgumentList(ArgumentList())))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-        var extensionDeclaration = ExtensionDeclaration()
+        var extensionDeclaration = 
+#if ROSLYN5
+            ExtensionBlockDeclaration()
+#else
+            ExtensionDeclaration()
+#endif
             .WithKeyword(Token(SyntaxKind.ExtensionKeyword))
             .WithParameterList(
                 ParameterList(
@@ -45,6 +50,7 @@ internal static class ImposterExtensionsBuilder
             .Build();
     }
 
+    // TODO move to metadata
     private static string GetImposterTypeName(string namespaceName, string imposterName)
     {
         if (string.IsNullOrWhiteSpace(namespaceName))

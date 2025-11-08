@@ -7,6 +7,5 @@ public class ImposterAsStaticExtensionTests
     [Fact]
     public void CSharp14_ImposterIsGenerated_ImposterIsAccessibleViaStaticExtension()
     {
-        
     }
 }

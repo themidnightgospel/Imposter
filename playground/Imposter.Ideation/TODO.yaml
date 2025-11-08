@@ -17,10 +17,10 @@ FEATURES:
       - Put method related types in a sub-class of Imposter class, that way we won't have to repeat generics every time and less things to worry about for naming collisions. - DONE
       - Indexer setup support
       - Event setup support
-    IN Progress:
       - For c# 14, declare Impsoter as an extension to imposter target type
-    NOT Started:
+    IN Progress:
       - Impostering class (abstract class, virtual methods)
+    NOT Started:
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
       - Use fully qualified name wherever possible
@@ -29,6 +29,7 @@ FEATURES:
       - cleanup SyntaxFactoryHelper
       - Setup github action to build, test and publish nuget packages
       - Add Wiki page
+      - Test nuget package for different versions of the Roslyn
 
   MEDIUM:
     - NOT Started:

@@ -13,8 +13,7 @@
         <RootNamespace>Imposter.CodeGenerator</RootNamespace>
         <PackageId>Imposter.CodeGenerator</PackageId>
         <ROSLYN_VERSION Condition="'$(ROSLYN_VERSION)' == ''">4.14</ROSLYN_VERSION>
-        <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' &gt;= '4.4.0.0'">$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants>
-        <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' &gt;= '4.7.0.0'">$(DefineConstants);ROSLYN4_7_OR_GREATER</DefineConstants>
+        <DefineConstants Condition="$(ROSLYN_VERSION.StartsWith('5.'))">$(DefineConstants);ROSLYN5</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
