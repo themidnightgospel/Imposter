@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImposter.Metadata;
@@ -48,8 +47,15 @@ internal readonly struct ImposterTargetMetadata
                 .ToList();
         }
 
-        // TODO Add class support.
-        throw new InvalidOperationException("Only interfaces are supported");
+        if (typeSymbol.TypeKind is TypeKind.Class)
+        {
+            return typeSymbol
+                .GetAllOverridableMethods()
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name)))
+                .ToList();
+        }
+
+        return new List<ImposterTargetMethodMetadata>();
     }
 
     private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol)
@@ -59,8 +65,12 @@ internal readonly struct ImposterTargetMetadata
             return typeSymbol.GetAllInterfaceProperties();
         }
 
-        // TODO Add class support.
-        throw new InvalidOperationException("Only interfaces are supported");
+        if (typeSymbol.TypeKind is TypeKind.Class)
+        {
+            return typeSymbol.GetAllOverridableProperties();
+        }
+
+        return [];
     }
 
     internal ImposterTargetMethodMetadata CreateMethodMetadata(IMethodSymbol methodSymbol)
@@ -82,6 +92,11 @@ internal readonly struct ImposterTargetMetadata
             return typeSymbol.GetAllInterfaceEvents();
         }
 
-        throw new InvalidOperationException("Only interfaces are supported");
+        if (typeSymbol.TypeKind is TypeKind.Class)
+        {
+            return typeSymbol.GetAllOverridableEvents();
+        }
+
+        return [];
     }
 }

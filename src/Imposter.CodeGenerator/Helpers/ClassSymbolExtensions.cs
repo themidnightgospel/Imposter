@@ -15,62 +15,209 @@ public static class ClassSymbolExtensions
 
         var methods = new List<IMethodSymbol>();
         var visitedTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+        var overriddenMembers = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
 
-        CollectOverridableMethodsRecursive(classSymbol, methods, visitedTypes);
+        CollectOverridableMethodsRecursive(classSymbol, methods, visitedTypes, overriddenMembers);
 
         return methods;
     }
 
+    public static List<IPropertySymbol> GetAllOverridableProperties(this INamedTypeSymbol classSymbol)
+    {
+        return GetOverridableProperties(classSymbol);
+    }
+
+    public static List<IEventSymbol> GetAllOverridableEvents(this INamedTypeSymbol classSymbol)
+    {
+        if (!classSymbol.IsClass() || classSymbol.IsSealed())
+        {
+            return [];
+        }
+
+        var events = new List<IEventSymbol>();
+        var visitedTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+        var overriddenEvents = new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
+
+        CollectOverridableEventsRecursive(classSymbol, events, visitedTypes, overriddenEvents);
+
+        return events;
+    }
+
+    private static List<IPropertySymbol> GetOverridableProperties(INamedTypeSymbol classSymbol)
+    {
+        if (!classSymbol.IsClass() || classSymbol.IsSealed())
+        {
+            return [];
+        }
+
+        var properties = new List<IPropertySymbol>();
+        var visitedTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+        var overriddenProperties = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
+
+        CollectOverridablePropertiesRecursive(classSymbol, properties, visitedTypes, overriddenProperties);
+
+        return properties;
+    }
+
     private static void CollectOverridableMethodsRecursive(
         INamedTypeSymbol typeSymbol,
-        List<IMethodSymbol> methods,
-        HashSet<INamedTypeSymbol> visitedTypes)
+        ICollection<IMethodSymbol> methods,
+        HashSet<INamedTypeSymbol> visitedTypes,
+        HashSet<IMethodSymbol> overriddenMembers)
     {
-        if (typeSymbol == null || !visitedTypes.Add(typeSymbol))
+        if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
         {
             return;
         }
 
-        // Get overridable methods from current type
-        methods.AddRange(typeSymbol.GetMembers()
-            .OfType<IMethodSymbol>()
-            .Where(IsOverridableMethod));
-
-        // Process base class
-        if (typeSymbol.BaseType != null && typeSymbol.BaseType.SpecialType != SpecialType.System_Object)
+        foreach (var method in typeSymbol.GetMembers().OfType<IMethodSymbol>().Where(IsOverridableMethod))
         {
-            CollectOverridableMethodsRecursive(typeSymbol.BaseType, methods, visitedTypes);
+            if (method.OverriddenMethod is { } overridden)
+            {
+                overriddenMembers.Add(overridden);
+            }
+
+            if (overriddenMembers.Contains(method))
+            {
+                continue;
+            }
+
+            methods.Add(method);
         }
 
-        // Process implemented interfaces (for interface methods that can be explicitly implemented)
-        foreach (var implementedInterface in typeSymbol.Interfaces)
+        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
         {
-            CollectOverridableMethodsRecursive(implementedInterface, methods, visitedTypes);
+            CollectOverridableMethodsRecursive(baseType, methods, visitedTypes, overriddenMembers);
+        }
+    }
+
+    private static void CollectOverridablePropertiesRecursive(
+        INamedTypeSymbol typeSymbol,
+        ICollection<IPropertySymbol> properties,
+        HashSet<INamedTypeSymbol> visitedTypes,
+        HashSet<IPropertySymbol> overriddenProperties)
+    {
+        if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
+        {
+            return;
+        }
+
+        foreach (var property in typeSymbol.GetMembers().OfType<IPropertySymbol>().Where(IsOverridableProperty))
+        {
+            if (property.OverriddenProperty is { } overridden)
+            {
+                overriddenProperties.Add(overridden);
+            }
+
+            if (overriddenProperties.Contains(property))
+            {
+                continue;
+            }
+
+            properties.Add(property);
+        }
+
+        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
+        {
+            CollectOverridablePropertiesRecursive(baseType, properties, visitedTypes, overriddenProperties);
+        }
+    }
+
+    private static void CollectOverridableEventsRecursive(
+        INamedTypeSymbol typeSymbol,
+        ICollection<IEventSymbol> events,
+        HashSet<INamedTypeSymbol> visitedTypes,
+        HashSet<IEventSymbol> overriddenEvents)
+    {
+        if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
+        {
+            return;
+        }
+
+        foreach (var @event in typeSymbol.GetMembers().OfType<IEventSymbol>().Where(IsOverridableEvent))
+        {
+            if (@event.OverriddenEvent is { } overridden)
+            {
+                overriddenEvents.Add(overridden);
+            }
+
+            if (overriddenEvents.Contains(@event))
+            {
+                continue;
+            }
+
+            events.Add(@event);
+        }
+
+        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
+        {
+            CollectOverridableEventsRecursive(baseType, events, visitedTypes, overriddenEvents);
         }
     }
 
     private static bool IsOverridableMethod(IMethodSymbol method)
     {
-        // Must be an ordinary method (not constructor, destructor, etc.)
         if (method.MethodKind != MethodKind.Ordinary)
         {
             return false;
         }
 
-        // Must be instance method (not static)
         if (method.IsStatic)
         {
             return false;
         }
 
-        // Must be accessible and overridable
         if (method.IsSealed || method.DeclaredAccessibility == Accessibility.Private)
         {
             return false;
         }
 
-        // Check if method is virtual, abstract, or override (and not final)
         return method.IsVirtual || method.IsAbstract || method.IsOverride;
+    }
+
+    private static bool IsOverridableProperty(IPropertySymbol property)
+    {
+        if (property.IsStatic || property.DeclaredAccessibility == Accessibility.Private || property.IsSealed)
+        {
+            return false;
+        }
+
+        if (property.IsAbstract || property.IsVirtual || property.IsOverride)
+        {
+            return true;
+        }
+
+        return IsOverridableAccessor(property.GetMethod) || IsOverridableAccessor(property.SetMethod);
+    }
+
+    private static bool IsOverridableAccessor(IMethodSymbol? accessor)
+    {
+        if (accessor is null)
+        {
+            return false;
+        }
+
+        if (accessor.IsStatic || accessor.DeclaredAccessibility == Accessibility.Private || accessor.IsSealed)
+        {
+            return false;
+        }
+
+        return accessor.IsAbstract || accessor.IsVirtual || accessor.IsOverride;
+    }
+
+    private static bool IsOverridableEvent(IEventSymbol @event)
+    {
+        if (@event.IsStatic || @event.DeclaredAccessibility == Accessibility.Private || @event.IsSealed)
+        {
+            return false;
+        }
+
+        if (@event.IsAbstract || @event.IsVirtual || @event.IsOverride)
+        {
+            return true;
+        }
+
+        return IsOverridableAccessor(@event.AddMethod) || IsOverridableAccessor(@event.RemoveMethod);
     }
 
     public static bool IsClass(this INamedTypeSymbol typeSymbol)

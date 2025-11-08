@@ -48,6 +48,22 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MethodDeclarationBuilder AddModifiers(SyntaxTokenList modifiers)
+    {
+        if (modifiers.Count == 0)
+        {
+            return this;
+        }
+
+        foreach (var modifier in modifiers)
+        {
+            _modifiers.Add(modifier);
+        }
+
+        return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithParameterList(ParameterListSyntax parameterListSyntax)
     {
         _parameterListSyntax = parameterListSyntax;

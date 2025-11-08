@@ -156,7 +156,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         ? ReturnStatement(invokeMethodInvocationExpression)
                         : ExpressionStatement(invokeMethodInvocationExpression))
                 )
-                .AddModifier(Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
                 .Build();
         });
 
