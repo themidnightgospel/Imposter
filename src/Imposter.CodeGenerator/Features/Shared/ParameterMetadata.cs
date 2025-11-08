@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct ParameterMetadata(string name, TypeSyntax type, ExpressionSyntax? defaultValue = null)
 {

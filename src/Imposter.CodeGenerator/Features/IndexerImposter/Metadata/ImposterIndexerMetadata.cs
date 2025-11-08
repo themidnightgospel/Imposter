@@ -1,7 +1,6 @@
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata.SetterImposterBuilderInterface;
-using Imposter.CodeGenerator.Features.Shared;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Metadata;

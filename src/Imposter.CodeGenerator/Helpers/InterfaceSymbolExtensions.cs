@@ -73,4 +73,37 @@ public static class InterfaceSymbolExtensions
         }
     }
 
+    internal static IReadOnlyCollection<IEventSymbol> GetAllInterfaceEvents(this INamedTypeSymbol interfaceSymbol)
+    {
+        var events = new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
+        var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+
+        CollectInterfaceEventsRecursive(interfaceSymbol, events, visitedInterfaces);
+
+        return events;
+    }
+
+    private static void CollectInterfaceEventsRecursive(
+        INamedTypeSymbol interfaceSymbol,
+        HashSet<IEventSymbol> events,
+        HashSet<INamedTypeSymbol> visitedInterfaces)
+    {
+        if (!visitedInterfaces.Add(interfaceSymbol))
+        {
+            return;
+        }
+
+        foreach (var eventSymbol in interfaceSymbol
+                     .GetMembers()
+                     .OfType<IEventSymbol>())
+        {
+            events.Add(eventSymbol);
+        }
+
+        foreach (var implementedInterface in interfaceSymbol.Interfaces)
+        {
+            CollectInterfaceEventsRecursive(implementedInterface, events, visitedInterfaces);
+        }
+    }
+
 }

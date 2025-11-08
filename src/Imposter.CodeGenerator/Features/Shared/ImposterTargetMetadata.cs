@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
@@ -19,6 +20,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyCollection<IPropertySymbol> IndexerSymbols;
 
+    internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
+
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
@@ -29,6 +32,7 @@ internal readonly struct ImposterTargetMetadata
         var propertySymbols = GetPropertySymbols(targetSymbol);
         PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
         IndexerSymbols = propertySymbols.Where(property => property.IsIndexer).ToArray();
+        EventSymbols = GetEventSymbols(targetSymbol);
     }
 
     private static List<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
@@ -64,4 +68,17 @@ internal readonly struct ImposterTargetMetadata
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol)
         => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name));
+
+    internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol)
+        => new(eventSymbol, _symbolNameNamespace.Use(eventSymbol.Name));
+
+    private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(INamedTypeSymbol typeSymbol)
+    {
+        if (typeSymbol.TypeKind is TypeKind.Interface)
+        {
+            return typeSymbol.GetAllInterfaceEvents();
+        }
+
+        throw new InvalidOperationException("Only interfaces are supported");
+    }
 }

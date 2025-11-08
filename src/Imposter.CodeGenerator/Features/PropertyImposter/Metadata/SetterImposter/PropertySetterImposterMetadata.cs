@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter.Builder;
-using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
