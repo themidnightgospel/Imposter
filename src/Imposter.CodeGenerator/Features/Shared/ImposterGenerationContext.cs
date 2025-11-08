@@ -1,4 +1,6 @@
-﻿using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
+﻿using System;
+using System.Text;
+using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Features.Shared;
@@ -21,7 +23,39 @@ internal readonly struct ImposterGenerationContext
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget);
-        ImposterComponentsNamespace = $"Imposters.{TargetSymbol.ToDisplayString()}";
+        ImposterComponentsNamespace = BuildImposterComponentsNamespace(TargetSymbol);
         SupportedCSharpFeatures = supportedCSharpFeatures;
+    }
+
+    private static string BuildImposterComponentsNamespace(INamedTypeSymbol targetSymbol)
+    {
+        var display = targetSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        const string globalPrefix = "global::";
+        if (display.StartsWith(globalPrefix, StringComparison.Ordinal))
+        {
+            display = display[globalPrefix.Length..];
+        }
+
+        return $"Imposters.{SanitizeForNamespace(display)}";
+    }
+
+    private static string SanitizeForNamespace(string value)
+    {
+        var builder = new StringBuilder(value.Length);
+
+        foreach (var ch in value)
+        {
+            if (char.IsLetterOrDigit(ch) || ch is '_' or '.')
+            {
+                builder.Append(ch);
+            }
+            else
+            {
+                builder.Append('_');
+            }
+        }
+
+        return builder.ToString();
     }
 }
