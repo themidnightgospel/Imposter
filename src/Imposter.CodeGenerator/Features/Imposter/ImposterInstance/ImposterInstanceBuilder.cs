@@ -109,7 +109,7 @@ internal readonly ref struct ImposterInstanceBuilder
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
         var eventDeclaration = EventDeclaration(@event.Core.HandlerTypeSyntax, Identifier(@event.Core.Name))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithModifiers(@event.ImposterInstanceModifiers)
             .WithAccessorList(
                 AccessorList(
                     List([

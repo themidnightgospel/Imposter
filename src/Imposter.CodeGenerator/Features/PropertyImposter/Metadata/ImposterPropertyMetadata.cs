@@ -3,8 +3,8 @@ using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBu
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 
@@ -50,30 +50,6 @@ internal readonly ref struct ImposterPropertyMetadata
         ImposterBuilderInterface = new PropertyImposterBuilderInterfaceMetadata(Core, SetterImposterBuilderInterface, GetterImposterBuilderInterface);
         ImposterBuilder = new PropertyImposterBuilderMetadata(Core, DefaultPropertyBehaviourField, SetterImposter, GetterImposterBuilder);
 
-        ImposterInstanceModifiers = BuildImposterInstanceModifiers(property);
-    }
-
-    private static SyntaxTokenList BuildImposterInstanceModifiers(IPropertySymbol propertySymbol)
-    {
-        if (propertySymbol.ContainingType?.TypeKind == TypeKind.Class)
-        {
-            return GetAccessibilityModifiers(propertySymbol.DeclaredAccessibility)
-                .Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-        }
-
-        return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-    }
-
-    private static SyntaxTokenList GetAccessibilityModifiers(Accessibility accessibility)
-    {
-        return accessibility switch
-        {
-            Accessibility.Public => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-            Accessibility.Internal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-            Accessibility.Protected => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-            Accessibility.ProtectedOrInternal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword), SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-            Accessibility.ProtectedAndInternal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword), SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-            _ => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-        };
+        ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property);
     }
 }

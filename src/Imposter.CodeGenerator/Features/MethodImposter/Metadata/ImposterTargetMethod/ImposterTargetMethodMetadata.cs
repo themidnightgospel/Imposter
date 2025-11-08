@@ -90,7 +90,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
-        ImposterInstanceMethodModifiers = BuildImposterInstanceMethodModifiers(symbol);
+        ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(symbol);
     }
 
     public NameSet CreateParameterNameContext()
@@ -114,31 +114,4 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
                (namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.Task<TResult>" ||
                 namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.ValueTask<TResult>"))));
 
-    private static SyntaxTokenList BuildImposterInstanceMethodModifiers(IMethodSymbol symbol)
-    {
-        if (symbol?.ContainingType?.TypeKind == TypeKind.Class)
-        {
-            return CombineWithOverrideKeyword(GetAccessibilityModifiers(symbol.DeclaredAccessibility));
-        }
-
-        return TokenList(Token(SyntaxKind.PublicKeyword));
-    }
-
-    private static SyntaxTokenList CombineWithOverrideKeyword(SyntaxTokenList modifiers)
-    {
-        return modifiers.Add(Token(SyntaxKind.OverrideKeyword));
-    }
-
-    private static SyntaxTokenList GetAccessibilityModifiers(Accessibility accessibility)
-    {
-        return accessibility switch
-        {
-            Accessibility.Public => TokenList(Token(SyntaxKind.PublicKeyword)),
-            Accessibility.Internal => TokenList(Token(SyntaxKind.InternalKeyword)),
-            Accessibility.Protected => TokenList(Token(SyntaxKind.ProtectedKeyword)),
-            Accessibility.ProtectedOrInternal => TokenList(Token(SyntaxKind.ProtectedKeyword), Token(SyntaxKind.InternalKeyword)),
-            Accessibility.ProtectedAndInternal => TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ProtectedKeyword)),
-            _ => TokenList(Token(SyntaxKind.PublicKeyword))
-        };
-    }
 }
