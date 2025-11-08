@@ -13,6 +13,8 @@ internal readonly struct ImposterTargetMetadata
 {
     internal readonly string Name;
 
+    internal readonly bool IsClass;
+
     // TODO this will make ImposterTargetMethodMetadata allocate on heap
     internal readonly List<ImposterTargetMethodMetadata> Methods;
 
@@ -28,6 +30,7 @@ internal readonly struct ImposterTargetMetadata
     {
         Name = targetSymbol.Name + "Imposter";
         Methods = GetMethods(targetSymbol, _symbolNameNamespace);
+        IsClass = targetSymbol.TypeKind is TypeKind.Class;
 
         var propertySymbols = GetPropertySymbols(targetSymbol);
         PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
