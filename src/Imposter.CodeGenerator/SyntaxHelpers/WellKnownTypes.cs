@@ -203,10 +203,10 @@ internal static class WellKnownTypes
 
             internal static NameSyntax ImposterInvocationBehavior => QualifiedName(Namespace, IdentifierName("ImposterInvocationBehavior"));
 
-            internal static NameSyntax OutArg(SyntaxNode type)
+            internal static NameSyntax OutArg(TypeSyntax type)
                 => QualifiedName(Namespace, GenericName(Identifier(nameof(OutArg)), TypeArgumentList(SingletonSeparatedList(type))));
 
-            internal static NameSyntax Arg(SyntaxNode type)
+            internal static NameSyntax Arg(TypeSyntax type)
                 => QualifiedName(Namespace, GenericName(Identifier(nameof(Arg)), TypeArgumentList(SingletonSeparatedList(type))));
         }
     }

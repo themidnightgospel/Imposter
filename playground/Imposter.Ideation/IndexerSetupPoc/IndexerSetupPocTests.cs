@@ -3,7 +3,7 @@ using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc
+namespace Imposter.Ideation.IndexerSetupPoc
 {
     public sealed class IndexerSetupPocTests
     {
