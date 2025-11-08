@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "tests\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{1C311BB1-125A-40D4-925E-6C3C7E9F523A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Tests.CSharp14", "tests\Imposter.Tests .CSharp14\Imposter.Tests.CSharp14.csproj", "{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Tests.CSharp14", "tests\Imposter.Tests.CSharp14\Imposter.Tests.CSharp14.csproj", "{7B64C226-8B7A-448B-879C-958CB6CFD408}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,10 +67,10 @@ Global
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B64C226-8B7A-448B-879C-958CB6CFD408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B64C226-8B7A-448B-879C-958CB6CFD408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B64C226-8B7A-448B-879C-958CB6CFD408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B64C226-8B7A-448B-879C-958CB6CFD408}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +87,6 @@ Global
 		{33085C7F-CA21-48BF-A093-F95BC50225FB} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 		{E843F42C-80F8-427D-84DD-8FC0CF7AF995} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
-		{9871BA87-CDB1-446F-AEEE-6C1B4FE319D6} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
+		{7B64C226-8B7A-448B-879C-958CB6CFD408} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 	EndGlobalSection
 EndGlobal
