@@ -10,9 +10,9 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = null)
 {
-    private readonly List<MemberDeclarationSyntax> _members = new();
-    private readonly List<AttributeListSyntax> _attributes = new();
-    private readonly List<BaseTypeSyntax> _baseTypes = new();
+    private readonly List<MemberDeclarationSyntax> _members = [];
+    private readonly List<AttributeListSyntax> _attributes = [];
+    private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

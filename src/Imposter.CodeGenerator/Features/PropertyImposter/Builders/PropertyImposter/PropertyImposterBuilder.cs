@@ -97,12 +97,11 @@ internal static class PropertyImposterBuilder
                     property.ImposterBuilder.GetterImposterBuilderField.Type
                         .New(
                             ArgumentListSyntax(
-                                new[]
-                                {
-                                    Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)),
+                            [
+                                Argument(IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)),
                                     Argument(IdentifierName("_invocationBehavior")),
                                     Argument(propertyDisplayLiteral)
-                                })));
+                            ])));
 
             bodyBuilder.AddExpression(getterInitialization);
         }

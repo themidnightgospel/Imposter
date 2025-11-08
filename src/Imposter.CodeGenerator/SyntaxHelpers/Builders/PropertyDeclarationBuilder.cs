@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = new();
-    private readonly List<SyntaxToken> _modifiers = new();
+    private readonly List<AttributeListSyntax> _attributes = [];
+    private readonly List<SyntaxToken> _modifiers = [];
     private AccessorDeclarationSyntax? _getter;
     private AccessorDeclarationSyntax? _setter;
 

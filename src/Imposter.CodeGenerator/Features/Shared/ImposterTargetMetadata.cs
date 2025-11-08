@@ -55,7 +55,7 @@ internal readonly struct ImposterTargetMetadata
                 .ToList();
         }
 
-        return new List<ImposterTargetMethodMetadata>();
+        return [];
     }
 
     private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol)

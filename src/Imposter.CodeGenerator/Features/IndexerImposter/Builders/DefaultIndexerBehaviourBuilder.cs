@@ -35,9 +35,9 @@ internal static class DefaultIndexerBehaviourBuilder
                 WellKnownTypes.System.Threading.Volatile
                     .Dot(IdentifierName("Read"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(new[] {
+                        SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name))
-                        })
+                        ])
                     )
             )
         );
@@ -47,10 +47,10 @@ internal static class DefaultIndexerBehaviourBuilder
                 WellKnownTypes.System.Threading.Volatile
                     .Dot(IdentifierName("Write"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(new[] {
+                        SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)),
                             Argument(IdentifierName("value"))
-                        })
+                        ])
                     )
             )
         );
@@ -59,11 +59,10 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .WithAccessorList(
                 AccessorList(
-                    List<AccessorDeclarationSyntax>(new[]
-                    {
+                    List<AccessorDeclarationSyntax>([
                         AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithBody(getBody),
                         AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(setBody)
-                    })
+                    ])
                 )
             );
     }
@@ -88,11 +87,10 @@ internal static class DefaultIndexerBehaviourBuilder
                         .Dot(IdentifierName("TryGetValue"))
                         .Call(
                             SyntaxFactoryHelper.ArgumentListSyntax(
-                                new[]
-                                {
-                                    Argument(IdentifierName("arguments")),
+                            [
+                                Argument(IdentifierName("arguments")),
                                     Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
-                                })),
+                            ])),
                     ReturnStatement(valueIdentifier)),
                 ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))));
     }

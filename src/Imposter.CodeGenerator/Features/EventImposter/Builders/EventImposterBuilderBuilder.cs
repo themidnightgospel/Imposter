@@ -110,12 +110,11 @@ internal static class EventImposterBuilderBuilder
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.HandlerCounts)
                             .Dot(IdentifierName("AddOrUpdate"))
-                            .Call(new[]
-                            {
+                            .Call([
                                 Argument(handlerIdentifier),
                                 Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                                 Argument(BuildUnsubscribeLambda())
-                            }))
+                            ]))
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
                             .Dot(IdentifierName("Enqueue"))
@@ -209,11 +208,10 @@ internal static class EventImposterBuilderBuilder
         ParenthesizedLambdaExpression()
             .WithParameterList(
                 ParameterList(
-                    SeparatedList(new[]
-                    {
+                    SeparatedList([
                         Parameter(Identifier("_")),
                         Parameter(Identifier("count"))
-                    })))
+                    ])))
             .WithBlock(
                 Block(
                     IfStatement(
@@ -358,20 +356,18 @@ internal static class EventImposterBuilderBuilder
                             null,
                             EqualsValueClause(
                                 countMatchesIdentifier
-                                    .Call(new[]
-                                    {
+                                    .Call([
                                         Argument(FieldIdentifier(@event.Builder.Fields.History)),
                                         Argument(predicate)
-                                    })))))));
+                                    ])))))));
 
         blockBuilder.AddExpression(
             ensureCountMatchesIdentifier
-                .Call(new[]
-                {
+                .Call([
                     Argument(IdentifierName("actual")),
                     Argument(countIdentifier),
                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("raised")))
-                }));
+                ]));
 
         blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
 
@@ -450,23 +446,21 @@ internal static class EventImposterBuilderBuilder
                             null,
                             EqualsValueClause(
                                 countMatchesIdentifier
-                                    .Call(new[]
-                                    {
+                                    .Call([
                                         Argument(FieldIdentifier(historyField)),
                                         Argument(
                                             SimpleLambdaExpression(
                                                 Parameter(Identifier("entry")),
                                                 predicateFactory(IdentifierName("entry"))))
-                                    })))))));
+                                    ])))))));
 
         blockBuilder.AddExpression(
             ensureCountMatchesIdentifier
-                .Call(new[]
-                {
+                .Call([
                     Argument(IdentifierName("actual")),
                     Argument(countIdentifier),
                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(action)))
-                }));
+                ]));
 
         blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
 
@@ -624,11 +618,10 @@ internal static class EventImposterBuilderBuilder
                             IdentifierName("budgets")
                                 .Dot(IdentifierName("TryGetValue")))
                             .WithArgumentList(
-                                ArgumentList(SeparatedList(new[]
-                                {
-                                Argument(IdentifierName("handler")),
+                                ArgumentList(SeparatedList([
+                                    Argument(IdentifierName("handler")),
                                 Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("remaining"))
-                                }))),
+                                ]))),
                         Block(
                             IfStatement(
                                 BinaryExpression(
@@ -777,22 +770,20 @@ internal static class EventImposterBuilderBuilder
             GenericName(
                 Identifier("Func"),
                 TypeArgumentList(
-                    SeparatedList<TypeSyntax>(new TypeSyntax[]
-                    {
+                    SeparatedList<TypeSyntax>([
                         IdentifierName("T"),
                         PredefinedType(Token(SyntaxKind.BoolKeyword))
-                    }))));
+                    ]))));
 
         return MethodDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)), Identifier(methods.CountMatchesName))
             .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword))
             .WithTypeParameterList(TypeParameterList(SingletonSeparatedList(TypeParameter("T"))))
             .WithParameterList(
                 ParameterList(
-                    SeparatedList(new[]
-                    {
+                    SeparatedList([
                         Parameter(Identifier("source")).WithType(enumerableType),
                         Parameter(Identifier("predicate")).WithType(funcType)
-                    })))
+                    ])))
             .WithBody(
                 Block(
                     LocalDeclarationStatement(
@@ -821,12 +812,11 @@ internal static class EventImposterBuilderBuilder
         MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier(methods.EnsureCountMatchesName))
             .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword))
             .WithParameterList(
-                ParameterList(SeparatedList(new[]
-                {
+                ParameterList(SeparatedList([
                     Parameter(Identifier("actual")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
                     Parameter(Identifier("expected")).WithType(WellKnownTypes.Imposter.Abstractions.Count),
                     Parameter(Identifier("action")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
-                })))
+                ])))
             .WithBody(
                 Block(
                     IfStatement(
@@ -839,11 +829,10 @@ internal static class EventImposterBuilderBuilder
                             ThrowStatement(
                                 ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.VerificationFailedException)
                                     .WithArgumentList(
-                                        ArgumentList(SeparatedList(new[]
-                                        {
+                                        ArgumentList(SeparatedList([
                                             Argument(IdentifierName("expected")),
                                             Argument(IdentifierName("actual"))
-                                        }))))))));
+                                        ]))))))));
 
     private static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
         ParameterSyntax(@event.Builder.Methods.CountParameter);

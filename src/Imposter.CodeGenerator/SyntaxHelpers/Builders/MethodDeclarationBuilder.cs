@@ -11,12 +11,12 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 // TODO Add consttructor that accepts IMethodMetadata
 internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = new();
-    private readonly List<SyntaxToken> _modifiers = new();
+    private readonly List<AttributeListSyntax> _attributes = [];
+    private readonly List<SyntaxToken> _modifiers = [];
     private ParameterListSyntax? _parameterListSyntax;
-    private readonly List<ParameterSyntax> _parameters = new();
-    private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = new();
-    private readonly List<TypeParameterSyntax> _typeParameters = new();
+    private readonly List<ParameterSyntax> _parameters = [];
+    private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = [];
+    private readonly List<TypeParameterSyntax> _typeParameters = [];
     private TypeParameterListSyntax? _typeParameterList;
     private BlockSyntax? _body;
     private ArrowExpressionClauseSyntax? _expressionBody;
