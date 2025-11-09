@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Generators;
+namespace Imposter.CodeGenerator.Tests.Features.ClassImposter;
 
 public class ImposterGeneratorConstructorTests
 {

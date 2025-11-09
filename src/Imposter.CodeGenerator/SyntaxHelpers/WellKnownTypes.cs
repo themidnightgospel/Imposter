@@ -176,7 +176,9 @@ internal static class WellKnownTypes
 
     internal static class Imposter
     {
-        internal static NameSyntax Namespace = IdentifierName("Imposter");
+        internal static NameSyntax Namespace = AliasQualifiedName(
+            IdentifierName(Token(SyntaxKind.GlobalKeyword)),
+            IdentifierName("Imposter"));
 
         internal static class Abstractions
         {
