@@ -43,6 +43,19 @@ internal static class WellKnownTypes
             )
         );
         
+        internal static TypeSyntax IEquatable(TypeSyntax typeArgument) => QualifiedName(
+            Namespace,
+            GenericName(
+                Identifier("IEquatable"),
+                TypeArgumentList(SingletonSeparatedList(typeArgument))
+            )
+        );
+
+        internal static readonly TypeSyntax HashCode = QualifiedName(
+            Namespace,
+            IdentifierName("HashCode")
+        );
+        
         internal static TypeSyntax Tuple(TypeSyntax item1Type, TypeSyntax item2Type) => QualifiedName(
             Namespace,
             GenericName(
@@ -124,6 +137,26 @@ internal static class WellKnownTypes
                         )
                     )
                 );
+            }
+        }
+
+        public static class Linq
+        {
+            internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Linq"));
+        }
+
+        public static class Diagnostics
+        {
+            internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Diagnostics"));
+        }
+
+        public static class Runtime
+        {
+            internal static NameSyntax Namespace = QualifiedName(WellKnownTypes.System.Namespace, IdentifierName("Runtime"));
+
+            public static class CompilerServices
+            {
+                internal static NameSyntax Namespace = QualifiedName(Runtime.Namespace, IdentifierName("CompilerServices"));
             }
         }
 

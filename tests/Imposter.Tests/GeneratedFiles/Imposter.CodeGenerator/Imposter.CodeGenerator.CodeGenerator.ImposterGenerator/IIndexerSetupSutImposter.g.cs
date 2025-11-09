@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Imposter.Abstractions;
+using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
 using Imposter.Tests.Features.IndexerImposter;
 
@@ -29,7 +29,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         public delegate void IndexerIndexerSetterCallback(int key1, string key2, object key3, int value);
         public delegate System.Exception IndexerIndexerExceptionGenerator(int key1, string key2, object key3);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
+        internal class IndexerIndexerArguments : System.IEquatable<IndexerIndexerArguments>
         {
             public int key1;
             public string key2;
@@ -53,7 +53,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public override int GetHashCode()
             {
-                global::System.HashCode hash = new global::System.HashCode();
+                System.HashCode hash = new System.HashCode();
                 hash.Add(key1);
                 hash.Add(key2);
                 hash.Add(key3);
@@ -561,7 +561,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         public delegate void Indexer_1IndexerSetterCallback(int key1, int value);
         public delegate System.Exception Indexer_1IndexerExceptionGenerator(int key1);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class Indexer_1IndexerArguments : global::System.IEquatable<Indexer_1IndexerArguments>
+        internal class Indexer_1IndexerArguments : System.IEquatable<Indexer_1IndexerArguments>
         {
             public int key1;
             internal Indexer_1IndexerArguments(int key1)
@@ -581,7 +581,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public override int GetHashCode()
             {
-                global::System.HashCode hash = new global::System.HashCode();
+                System.HashCode hash = new System.HashCode();
                 hash.Add(key1);
                 return hash.ToHashCode();
             }

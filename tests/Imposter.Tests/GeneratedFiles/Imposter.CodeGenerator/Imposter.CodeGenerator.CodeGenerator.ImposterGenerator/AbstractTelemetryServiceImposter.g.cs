@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Imposter.Abstractions;
+using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
 using Imposter.Tests.Features.ClassImposter;
 
@@ -870,7 +870,7 @@ namespace Imposter.Tests.Features.ClassImposter
         public delegate void IndexerIndexerSetterCallback(int index, int value);
         public delegate System.Exception IndexerIndexerExceptionGenerator(int index);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
+        internal class IndexerIndexerArguments : System.IEquatable<IndexerIndexerArguments>
         {
             public int index;
             internal IndexerIndexerArguments(int index)
@@ -890,7 +890,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             public override int GetHashCode()
             {
-                global::System.HashCode hash = new global::System.HashCode();
+                System.HashCode hash = new System.HashCode();
                 hash.Add(index);
                 return hash.ToHashCode();
             }

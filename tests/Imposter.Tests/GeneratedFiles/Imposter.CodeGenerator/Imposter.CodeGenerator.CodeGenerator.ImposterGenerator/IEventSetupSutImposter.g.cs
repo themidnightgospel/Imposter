@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Imposter.Abstractions;
+using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
 using Imposter.Tests.Features.EventImposter;
 
