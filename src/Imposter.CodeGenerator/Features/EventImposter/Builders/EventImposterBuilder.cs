@@ -569,9 +569,7 @@ internal static class EventImposterBuilder
                 Block(
                     ExpressionStatement(
                         AwaitExpression(
-                            QualifiedName(
-                                    IdentifierName("System.Threading.Tasks"),
-                                    IdentifierName("Task"))
+                            WellKnownTypes.System.Threading.Tasks.Task
                                 .Dot(IdentifierName("WhenAll"))
                                 .Call(Argument(IdentifierName("pendingTasks")))
                                 .Dot(IdentifierName("ConfigureAwait"))

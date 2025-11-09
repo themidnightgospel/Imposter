@@ -12,11 +12,7 @@ internal static class IndexerArgumentsBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterIndexerMetadata indexer)
     {
-        var equatableType = QualifiedName(
-            ParseName("global::System"),
-            GenericName(
-                Identifier("IEquatable"),
-                TypeArgumentList(SingletonSeparatedList<TypeSyntax>(indexer.Arguments.TypeSyntax))));
+        var equatableType = WellKnownTypes.System.IEquatable(indexer.Arguments.TypeSyntax);
 
         var classBuilder = new ClassDeclarationBuilder(indexer.Arguments.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -108,11 +104,14 @@ internal static class IndexerArgumentsBuilder
         var statements = new List<StatementSyntax>
         {
             LocalDeclarationStatement(
-                VariableDeclaration(IdentifierName("global::System.HashCode"))
+                VariableDeclaration(WellKnownTypes.System.HashCode)
                     .WithVariables(
                         SingletonSeparatedList(
                             VariableDeclarator(Identifier("hash"))
-                                .WithInitializer(EqualsValueClause(ObjectCreationExpression(IdentifierName("global::System.HashCode")).WithArgumentList(ArgumentList()))))))
+                                .WithInitializer(
+                                    EqualsValueClause(
+                                        ObjectCreationExpression(WellKnownTypes.System.HashCode)
+                                            .WithArgumentList(ArgumentList()))))))
         };
 
         foreach (var parameter in indexer.Core.Parameters)
