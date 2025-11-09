@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.FluentApi;
+namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 
 public class MethodFluentApiTests
 {

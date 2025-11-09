@@ -29,7 +29,6 @@
 
     <ItemGroup>
       <Folder Include="Features\ClassImposter\" />
-      <Folder Include="Features\PropertyImposter\" />
     </ItemGroup>
 
 </Project>
