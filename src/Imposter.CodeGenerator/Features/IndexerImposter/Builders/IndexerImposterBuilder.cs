@@ -13,7 +13,7 @@ using GetterThrowsMetadata = Imposter.CodeGenerator.Features.IndexerImposter.Met
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 
-internal static class IndexerImposterBuilderBuilder
+internal static class IndexerImposterBuilder
 {
     private const string DefaultBehaviourParameterName = "defaultBehaviour";
     private const string InvocationBehaviorParameterName = "invocationBehavior";

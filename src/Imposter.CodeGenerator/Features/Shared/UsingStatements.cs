@@ -19,8 +19,8 @@ internal static class UsingStatements
         UsingDirective(ParseName("Imposter.Abstractions")),
         UsingDirective(ParseName("System.Collections.Concurrent"))
     ];
-    
-    internal static IEnumerable<UsingDirectiveSyntax> Build(INamespaceSymbol imposterTargetNamespace)
+
+    internal static List<UsingDirectiveSyntax> Build(INamespaceSymbol imposterTargetNamespace)
     {
         if (!imposterTargetNamespace.ContainingNamespace.IsGlobalNamespace)
         {
@@ -28,7 +28,8 @@ internal static class UsingStatements
                 .Concat([
                     UsingDirective(
                         ParseName(imposterTargetNamespace.ToDisplayString()))
-                ]);
+                ])
+                .ToList();
         }
 
         return DefaultUsings;

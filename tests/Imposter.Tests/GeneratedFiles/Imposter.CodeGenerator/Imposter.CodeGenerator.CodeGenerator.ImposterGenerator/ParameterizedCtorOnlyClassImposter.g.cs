@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable nullable
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using Imposter.Abstractions;
 using System.Collections.Concurrent;
 using Imposter.Tests.Features.ClassImposter;
 
-#pragma warning disable nullable
 namespace Imposter.Tests.Features.ClassImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

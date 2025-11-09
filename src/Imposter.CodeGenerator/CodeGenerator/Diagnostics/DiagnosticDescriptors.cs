@@ -40,4 +40,13 @@ public static class DiagnosticDescriptors
         true
     );
 
+    public static readonly DiagnosticDescriptor GeneratorCrash = new(
+        "IMP005",
+        "Generator crash",
+        "Unhandled exception while generating imposters: {0}",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true
+    );
+
 }

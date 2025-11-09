@@ -23,6 +23,7 @@ FEATURES:
       - segegate imposter group interface to guide user users to use correct builder methods, for properties, indexers and events also.
     IN Progress:
       - protected method mocking.
+      - add test that checks that multiple [GenerateImposter] attribute for the same type still works and does not generate 2 imposters but 1.
     NOT Started:
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
@@ -38,6 +39,7 @@ FEATURES:
       - Make sure all the metadata structs are passed as readonly using in modifier
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
+      - Add a sample project.
 
   MEDIUM:
     - NOT Started:

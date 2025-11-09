@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImposter.Builders;
@@ -31,8 +33,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Imposter.CodeGenerator.CodeGenerator;
 
 [Generator]
-public class ImposterGenerator : IIncrementalGenerator
+public sealed class ImposterGenerator : IIncrementalGenerator
 {
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
@@ -51,36 +54,9 @@ public class ImposterGenerator : IIncrementalGenerator
         {
             return;
         }
-        
-        if (!IsInterfaceOrNonSealedClass(generateImposterDeclaration.ImposterTarget))
+
+        if (!ImposterTargetValidator.Validate(sourceProductionContext, generateImposterDeclaration))
         {
-            var targetLocation = generateImposterDeclaration.ImposterTarget.Locations.Length > 0
-                ? generateImposterDeclaration.ImposterTarget.Locations[0]
-                : Location.None;
-
-            var targetDisplayName = generateImposterDeclaration.ImposterTarget.ToDisplayString();
-
-            sourceProductionContext.ReportDiagnostic(
-                Diagnostic.Create(
-                    DiagnosticDescriptors.ImposterTargetMustBeInterface,
-                    targetLocation,
-                    targetDisplayName,
-                    generateImposterDeclaration.ImposterTarget.TypeKind));
-            return;
-        }
-
-        if (generateImposterDeclaration.ImposterTarget.TypeKind == TypeKind.Class &&
-            !HasAccessibleConstructor(generateImposterDeclaration.ImposterTarget))
-        {
-            var targetLocation = generateImposterDeclaration.ImposterTarget.Locations.Length > 0
-                ? generateImposterDeclaration.ImposterTarget.Locations[0]
-                : Location.None;
-
-            sourceProductionContext.ReportDiagnostic(
-                Diagnostic.Create(
-                    DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
-                    targetLocation,
-                    generateImposterDeclaration.ImposterTarget.ToDisplayString()));
             return;
         }
 
@@ -90,60 +66,69 @@ public class ImposterGenerator : IIncrementalGenerator
             var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures);
             sourceProductionContext.AddSource(
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
+                // NOTE: NormalizeWhitespace has a performance impact.
                 SourceText.From(
-                    BuildImposter(imposterGenerationContext).NormalizeWhitespace().ToFullString(),
+                    BuildImposter(imposterGenerationContext, sourceProductionContext.CancellationToken).NormalizeWhitespace().ToFullString(),
                     Encoding.UTF8));
         }
-        // TODO
         catch (Exception ex)
         {
-            sourceProductionContext.ReportDiagnostic(Diagnostic.Create(
-                new DiagnosticDescriptor(
-                    id: "IMP001",
-                    title: "Generator crash",
-                    messageFormat: $"Exception: {ex.Message} {ex.StackTrace.Replace("\r", " ").Replace("\n", " ")}",
-                    category: "ImposterGenerator",
-                    DiagnosticSeverity.Error,
-                    isEnabledByDefault: true),
-                Location.None));
+            CrashDiagnosticsReporter.Report(sourceProductionContext, ex);
+#if DEBUG
             throw;
-        }
-        
-        bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol)
-            => typeSymbol.TypeKind == TypeKind.Interface || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
-
-        bool HasAccessibleConstructor(INamedTypeSymbol typeSymbol)
-        {
-            if (typeSymbol.InstanceConstructors.Length == 0)
-            {
-                return true;
-            }
-
-            foreach (var constructor in typeSymbol.InstanceConstructors)
-            {
-                if (constructor.DeclaredAccessibility is Accessibility.Private)
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            return false;
+#endif
         }
     }
 
-    private static CompilationUnitSyntax BuildImposter(in ImposterGenerationContext imposterGenerationContext)
+    private static CompilationUnitSyntax BuildImposter(
+        in ImposterGenerationContext imposterGenerationContext,
+        CancellationToken cancellationToken)
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
-        var targetNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.ImposterTarget.ContainingNamespace.ToDisplayString();
-        var imposterNamespaceName = imposterGenerationContext.GenerateImposterDeclaration.PutInTheSameNamespace
-            ? targetNamespaceName
-            : imposterGenerationContext.ImposterComponentsNamespace;
 
-        foreach (var method in imposterGenerationContext.Imposter.Methods)
+        BuildMethodImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
+        BuildPropertyImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
+        BuildEventImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
+        BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
+
+        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.ImposterNamespaceName);
+
+        imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
+
+        if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
         {
-            // TODO move all this to MethodSetupBuilder
+            imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
+                imposterGenerationContext,
+                imposterGenerationContext.ImposterNamespaceName));
+        }
+
+        var imposterNamespace = imposterNamespaceBuilder
+             .Build();
+
+        return CompilationUnit(
+            externs: List<ExternAliasDirectiveSyntax>(),
+            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
+            attributeLists: List<AttributeListSyntax>(),
+            members: List<MemberDeclarationSyntax>([
+                    imposterNamespace
+                ]
+            )
+        ).WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
+    }
+
+    private static void BuildMethodImposter(
+        ImposterBuilder imposterBuilder,
+        in ImposterGenerationContext imposterGenerationContext,
+        CancellationToken cancellationToken)
+    {
+        foreach (var method in imposterGenerationContext
+                     .Imposter
+                     .Methods
+                     .OrderBy(method => method.Symbol.MetadataName, StringComparer.Ordinal)
+                     .ThenBy(method => method.DisplayName, StringComparer.Ordinal))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             imposterBuilder
                 .AddMembers(MethodDelegateTypeBuilder.Build(method))
                 .AddMember(ArgumentsBuilder.Build(method))
@@ -160,9 +145,21 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(MethodImposterBuilderInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterBuilder.Build(method));
         }
+    }
 
-        foreach (var propertySymbol in imposterGenerationContext.Imposter.PropertySymbols)
+    private static void BuildPropertyImposter(
+        ImposterBuilder imposterBuilder,
+        in ImposterGenerationContext imposterGenerationContext,
+        CancellationToken cancellationToken)
+    {
+        foreach (var propertySymbol in imposterGenerationContext
+                     .Imposter
+                     .PropertySymbols
+                     .OrderBy(property => property.MetadataName, StringComparer.Ordinal)
+                     .ThenBy(property => property.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(propertySymbol);
 
             imposterBuilder
@@ -172,19 +169,43 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilder.Build(property));
         }
+    }
 
-        foreach (var eventSymbol in imposterGenerationContext.Imposter.EventSymbols)
+    private static void BuildEventImposter(
+        ImposterBuilder imposterBuilder,
+        in ImposterGenerationContext imposterGenerationContext,
+        CancellationToken cancellationToken)
+    {
+        foreach (var eventSymbol in imposterGenerationContext
+                     .Imposter
+                     .EventSymbols
+                     .OrderBy(@event => @event.MetadataName, StringComparer.Ordinal)
+                     .ThenBy(@event => @event.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var @event = imposterGenerationContext.Imposter.CreateEventMetadata(eventSymbol);
 
             imposterBuilder
                 .AddEventImposter(@event)
                 .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))
-                .AddMember(EventImposterBuilderBuilder.Build(@event));
+                .AddMember(EventImposterBuilder.Build(@event));
         }
+    }
 
-        foreach (var indexerSymbol in imposterGenerationContext.Imposter.IndexerSymbols)
+    private static void BuildIndexerImposter(
+        ImposterBuilder imposterBuilder,
+        in ImposterGenerationContext imposterGenerationContext,
+        CancellationToken cancellationToken)
+    {
+        foreach (var indexerSymbol in imposterGenerationContext
+                     .Imposter
+                     .IndexerSymbols
+                     .OrderBy(indexer => indexer.MetadataName, StringComparer.Ordinal)
+                     .ThenBy(indexer => indexer.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(indexerSymbol);
 
             imposterBuilder
@@ -192,36 +213,11 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMembers(IndexerDelegatesBuilder.Build(indexer))
                 .AddMember(IndexerArgumentsBuilder.Build(indexer))
                 .AddMember(IndexerArgumentsCriteriaBuilder.Build(indexer))
-                .AddMember(IndexerImposterBuilderBuilder.Build(indexer))
+                .AddMember(IndexerImposterBuilder.Build(indexer))
                 .AddMembers(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
                 .AddMembers(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
                 .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer));
         }
-
-        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(imposterNamespaceName);
-
-        imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
-
-        if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
-        {
-            imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
-                imposterGenerationContext,
-                imposterNamespaceName));
-        }
-
-        var imposterNamespace = imposterNamespaceBuilder
-            .Build()
-            // TODO this will cause copying of enitere namespace syntax
-            .WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
-
-        return CompilationUnit(
-            externs: List<ExternAliasDirectiveSyntax>(),
-            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
-            attributeLists: List<AttributeListSyntax>(),
-            members: List<MemberDeclarationSyntax>([
-                    imposterNamespace
-                ]
-            )
-        );
     }
+
 }

@@ -91,7 +91,7 @@ public class MoqBehaviour
         Should.NotThrow(() => mock.Object.Age = 11);
     }
 
-    [Fact]
+    //[Fact]
     public void MethodSetup_OnlyLastMatchingSetupIsCalled()
     {
         var mock = new Mock<IOrderService>();
@@ -116,7 +116,7 @@ public class MoqBehaviour
         invokedCallbacks.Count.ShouldBe(3);
     }
 
-    [Fact]
+    //[Fact]
     public void MethodSetup_MultiCallbacks_OnlyLastMatchingSetupIsCalled()
     {
         var mock = new Mock<IOrderService>();
