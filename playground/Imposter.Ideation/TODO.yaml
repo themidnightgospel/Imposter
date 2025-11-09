@@ -19,9 +19,9 @@ FEATURES:
       - Event setup support
       - For c# 14, declare Impsoter as an extension to imposter target type
       - Add support for Strict and Loose modes (called explicit and implicit)
-    IN Progress:
       - Impostering class (abstract class, virtual methods) - see NonInterfaceTargets/ for the latest PoC
-      - segegate imposter group interface to guide user users to use correct builder methods.
+    IN Progress:
+      - segegate imposter group interface to guide user users to use correct builder methods, for properties, indexers and events also.
     NOT Started:
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
@@ -35,6 +35,7 @@ FEATURES:
       - Test nuget package for different versions of the Roslyn
       - Analyze if [MethodImpl(MethodImplOptions.AggressiveInlining)] is productive or counter-productive 
       - Make sure all the metadata structs are passed as readonly using in modifier
+      - Review entire codebase and refactor
 
   MEDIUM:
     - NOT Started:
