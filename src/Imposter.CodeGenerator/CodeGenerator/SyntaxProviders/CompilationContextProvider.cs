@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// <summary>
 /// Supplies compilation context and early diagnostics for language/version.
 /// </summary>
-internal static class CompilationDiagnosticsProvider
+internal static class CompilationContextProvider
 {
     internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this IncrementalGeneratorInitializationContext context)
     {
@@ -20,14 +20,16 @@ internal static class CompilationDiagnosticsProvider
                     (CSharpCompilation)compilation,
                     new NameSet([])
                 )
-            );
+            )
+            .WithTrackingName("CompilationContext");
     }
 
     internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this IncrementalGeneratorInitializationContext context)
     {
         return context
             .CompilationProvider
-            .SelectMany(static (compilation, _) => ValidateCSharpCompilation(compilation));
+            .SelectMany(static (compilation, _) => ValidateCSharpCompilation(compilation))
+            .WithTrackingName("CompilationDiagnostics");
     }
 
     private static IEnumerable<Diagnostic> ValidateCSharpCompilation(Compilation compilation)
@@ -36,7 +38,7 @@ internal static class CompilationDiagnosticsProvider
         {
             yield return Diagnostic.Create(
                 DiagnosticDescriptors.OnlyCSharpIsSupported,
-                null,
+                Location.None,
                 compilation.Language,
                 LanguageVersion.CSharp8.ToDisplayString()
             );
@@ -47,7 +49,7 @@ internal static class CompilationDiagnosticsProvider
         {
             yield return Diagnostic.Create(
                 DiagnosticDescriptors.HigherCSharpVersionIsRequired,
-                null,
+                Location.None,
                 csCompilation.LanguageVersion.ToDisplayString(), LanguageVersion.CSharp8.ToDisplayString()
             );
         }
