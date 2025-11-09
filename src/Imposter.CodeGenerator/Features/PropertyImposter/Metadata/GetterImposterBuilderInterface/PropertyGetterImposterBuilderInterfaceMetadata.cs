@@ -18,6 +18,10 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax ContinuationInterfaceTypeSyntax;
 
+    internal readonly string CallbackInterfaceName;
+
+    internal readonly NameSyntax CallbackInterfaceTypeSyntax;
+
     internal readonly string VerificationInterfaceName;
 
     internal readonly NameSyntax VerificationInterfaceTypeSyntax;
@@ -44,6 +48,8 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         OutcomeInterfaceTypeSyntax = SyntaxFactory.ParseName(OutcomeInterfaceName);
         ContinuationInterfaceName = $"I{property.UniqueName}PropertyGetterContinuationBuilder";
         ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+        CallbackInterfaceName = $"I{property.UniqueName}PropertyGetterCallbackBuilder";
+        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
         VerificationInterfaceName = $"I{property.UniqueName}PropertyGetterVerifier";
         VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
         FluentInterfaceName = $"I{property.UniqueName}PropertyGetterFluentBuilder";
@@ -51,7 +57,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
         ReturnsMethod = new ReturnsMethodMetadata(in property, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
         ThrowsMethod = new ThrowsMethodMetadata(ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
-        CallbackMethod = new CallbackMethodMetadata(ContinuationInterfaceTypeSyntax, ContinuationInterfaceTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
         CalledMethod = new CalledMethodMetadata();
         ThenMethod = new PropertyGetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
     }

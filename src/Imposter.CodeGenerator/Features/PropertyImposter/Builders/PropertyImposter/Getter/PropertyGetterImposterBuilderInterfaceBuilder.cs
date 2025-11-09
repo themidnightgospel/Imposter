@@ -20,6 +20,7 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
         return
         [
             BuildOutcomeInterface(property),
+            BuildCallbackInterface(property),
             BuildContinuationInterface(property),
             BuildVerificationInterface(property),
             BuildFluentInterface(property),
@@ -29,7 +30,8 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
 
     private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterPropertyMetadata property) =>
         new InterfaceDeclarationBuilder(property.GetterImposterBuilderInterface.Name)
-            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.FluentInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.OutcomeInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.VerificationInterfaceTypeSyntax))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
@@ -48,10 +50,16 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             .AddMembers(BuildThrowsValueMethod(property))
             .Build();
 
+    private static InterfaceDeclarationSyntax BuildCallbackInterface(in ImposterPropertyMetadata property) =>
+        new InterfaceDeclarationBuilder(property.GetterImposterBuilderInterface.CallbackInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(BuildGetterCallbackMethod(property))
+            .Build();
+
     private static InterfaceDeclarationSyntax BuildContinuationInterface(in ImposterPropertyMetadata property) =>
         new InterfaceDeclarationBuilder(property.GetterImposterBuilderInterface.ContinuationInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildGetterCallbackMethod(property))
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddMember(BuildThenMethod(property))
             .Build();
 

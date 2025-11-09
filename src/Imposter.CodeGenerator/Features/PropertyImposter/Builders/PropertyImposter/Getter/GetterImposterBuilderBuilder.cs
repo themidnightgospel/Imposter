@@ -16,6 +16,7 @@ internal static class GetterImposterBuilderBuilder
         new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.TypeSyntax))
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.FluentInterfaceTypeSyntax))
             .AddMember(BuildGetterReturnValuesField(property.GetterImposterBuilder))
             .AddMember(BuildGetterCallbacksField(property.GetterImposterBuilder))
             .AddMember(BuildLastGetterReturnValueField(property.GetterImposterBuilder))

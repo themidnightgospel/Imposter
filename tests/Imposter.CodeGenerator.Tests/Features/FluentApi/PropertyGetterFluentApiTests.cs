@@ -49,6 +49,126 @@ namespace Sample
     }
 
     [Fact]
+    public void GivenGetterSetup_WhenReturningDelegateThenValueWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(() => 1).Returns(2);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterSetup_WhenRepeatingThrowsWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws(new System.Exception("fail")).Throws(new System.Exception("fail again"));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterSetup_WhenReturnsThenThrowsGenericWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Throws<System.InvalidOperationException>();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterSetup_WhenReturnsThenThrowsWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Throws(new System.Exception("fail"));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterSetup_WhenThrowsGenericThenReturnsWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws<System.InvalidOperationException>().Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterSetup_WhenThrowsThenReturnsWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws(new System.Exception("fail")).Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
     public void GivenGetterContinuation_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = CompileSnippet(/*lang=csharp*/"""
@@ -109,6 +229,46 @@ namespace Sample
     }
 
     [Fact]
+    public void GivenGetterCallback_WhenReturningWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Callback(() => { }).Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterCallback_WhenThrowingWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Callback(() => { }).Throws(new System.Exception("fail"));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
     public void GivenGetterThrows_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = CompileSnippet(/*lang=csharp*/"""
@@ -160,6 +320,186 @@ namespace Sample
         {
             var imposter = new SampleServiceImposter();
             imposter.Age.Getter().Called(Imposter.Abstractions.Count.AtLeast(1));
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterThen_WhenReturning_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Then().Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterThen_WhenCallingCallback_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Then().Callback(() => { });
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterThen_WhenCallingCalledFromStart_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Then().Called(Imposter.Abstractions.Count.AtLeast(1));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenGetterReturns_WhenCallingCallback_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Callback(() => { });
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterReturns_WhenCallingThen_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Then();
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterCallback_WhenChainingCallback_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Callback(() => { }).Callback(() => { });
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterCallback_WhenCallingThen_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Callback(() => { }).Then();
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterThrows_WhenCallingCallback_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws(new System.Exception("fail")).Callback(() => { });
+        }
+    }
+}
+""");
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GivenGetterThrowsGeneric_WhenCallingCallback_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws<System.InvalidOperationException>().Callback(() => { });
         }
     }
 }

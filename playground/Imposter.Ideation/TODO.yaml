@@ -51,6 +51,7 @@ FEATURES:
         - Support for 'scoped' parameters
         - Add unit tests for InterfaceSymbolExtensions
         - Chaining event raise to method, property and indexer. Can be achieved with Method.Callback + Event.Raise, so probably not important.
+        - Write a blog posts about the project
 
 OPTIMIZATIONS:
   - Need to make sure that every name in imposter class has unique name and does not collide with user provided names 
