@@ -9,11 +9,14 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata CallbackParameter;
 
-    internal CallbackMethodMetadata(TypeSyntax builderInterfaceTypeSyntax)
+    internal CallbackMethodMetadata(TypeSyntax returnType, NameSyntax interfaceSyntax)
     {
-        ReturnType = builderInterfaceTypeSyntax;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         CallbackParameter = new ParameterMetadata("callback", WellKnownTypes.System.Action);
     }
 }

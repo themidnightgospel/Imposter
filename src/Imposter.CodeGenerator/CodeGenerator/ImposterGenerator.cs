@@ -169,7 +169,7 @@ public class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddPropertyImposter(property)
-                .AddMember(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
+                .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilder.Build(property));
