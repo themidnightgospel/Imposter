@@ -190,8 +190,9 @@ namespace Imposter.Tests.Features.IndexerImposter
             var callbackHits = 0;
 
             var builder = _sut[Arg<int>.Is(x => x == 15)]
-                .Setter()
-                .Callback((key, value) =>
+                .Setter();
+
+            builder.Callback((key, value) =>
                 {
                     callbackHits++;
                     key.ShouldBe(15);
