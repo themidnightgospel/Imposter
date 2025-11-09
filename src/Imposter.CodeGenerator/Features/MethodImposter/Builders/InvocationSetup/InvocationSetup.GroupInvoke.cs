@@ -84,6 +84,13 @@ internal static partial class InvocationSetupBuilder
             };
 
             parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
+            if (method.SupportsBaseImplementation)
+            {
+                parameters.Add(
+                    Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                        .WithType(method.Delegate.Syntax)
+                        .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+            }
 
             return ParameterList(SeparatedList(parameters));
         }
@@ -97,6 +104,10 @@ internal static partial class InvocationSetupBuilder
             };
 
             arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+            if (method.SupportsBaseImplementation)
+            {
+                arguments.Add(Argument(IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)));
+            }
 
             return ArgumentList(SeparatedList(arguments));
         }

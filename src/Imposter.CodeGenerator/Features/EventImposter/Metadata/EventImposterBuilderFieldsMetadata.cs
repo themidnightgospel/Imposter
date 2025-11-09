@@ -62,7 +62,7 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         return TupleType(SeparatedList(tupleElements));
     }
 
-    private static TypeSyntax BuildHandlerInvocationEntryType(in ImposterEventCoreMetadata core)
+    private static TupleTypeSyntax BuildHandlerInvocationEntryType(in ImposterEventCoreMetadata core)
     {
         var elements = new List<TupleElementSyntax>
         {

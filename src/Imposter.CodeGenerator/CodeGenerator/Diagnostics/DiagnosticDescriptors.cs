@@ -34,7 +34,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor ImposterTargetMustHaveAccessibleConstructor = new(
         "IMP004",
         "Imposter target must expose an accessible constructor",
-        "Type '{0}' must declare at least one constructor accessible to generated imposters.",
+        "Type '{0}' must declare at least one constructor accessible to generated imposters",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
         true

@@ -12,6 +12,8 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string ArgumentsVariableName;
 
+    internal readonly string BaseInvocationParameterName;
+
     public MethodImposterInvokeMethodMetadata(IParameterNameContextProvider parameterNameContextProvider)
     {
         var parameterNameContext = parameterNameContextProvider.CreateParameterNameContext();
@@ -20,5 +22,6 @@ internal readonly struct MethodImposterInvokeMethodMetadata
         ResultVariableName = parameterNameContext.Use("result");
         MatchingInvocationImposterGroupVariableName = parameterNameContext.Use("matchingInvocationImposterGroup");
         ArgumentsVariableName = parameterNameContext.Use("arguments");
+        BaseInvocationParameterName = parameterNameContext.Use("baseImplementation");
     }
 }

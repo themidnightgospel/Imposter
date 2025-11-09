@@ -136,7 +136,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value)
+            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -149,7 +149,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -164,10 +164,16 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 private ComputeDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<ComputeCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ComputeCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value)
+                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
                 {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
                     if (_resultGenerator == null)
                     {
                         if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
@@ -194,11 +200,13 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 internal void Returns(ComputeDelegate resultGenerator)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = resultGenerator;
                 }
 
                 internal void Returns(int value_1)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = (int value) =>
                     {
                         return value_1;
@@ -207,10 +215,17 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 internal void Throws(ComputeExceptionGeneratorDelegate exceptionGenerator)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = (int value) =>
                     {
                         throw exceptionGenerator(value);
                     };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
                 }
 
                 internal static int DefaultResultGenerator(int value)
@@ -230,6 +245,7 @@ namespace Imposter.Tests.Features.ClassImposter
             IComputeMethodInvocationImposterGroup Callback(ComputeCallbackDelegate callback);
             IComputeMethodInvocationImposterGroup Returns(ComputeDelegate resultGenerator);
             IComputeMethodInvocationImposterGroup Returns(int value_1);
+            IComputeMethodInvocationImposterGroup UseBaseImplementation();
             IComputeMethodInvocationImposterGroup Then();
         }
 
@@ -273,7 +289,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return null;
             }
 
-            public int Invoke(int value)
+            public int Invoke(int value, ComputeDelegate baseImplementation = null)
             {
                 var arguments = new ComputeArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -289,7 +305,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int ParameterizedCtorOnlyClass.Compute(int value)", value);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int ParameterizedCtorOnlyClass.Compute(int value)", value, baseImplementation);
                     _computeMethodInvocationHistoryCollection.Add(new ComputeMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -360,6 +376,12 @@ namespace Imposter.Tests.Features.ClassImposter
                 IComputeMethodInvocationImposterGroup IComputeMethodInvocationImposterGroup.Returns(int value_1)
                 {
                     _currentInvocationImposter.Returns(value_1);
+                    return this;
+                }
+
+                IComputeMethodInvocationImposterGroup IComputeMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
@@ -1302,7 +1324,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             public override int Compute(int value)
             {
-                return _imposter._computeMethodImposter.Invoke(value);
+                return _imposter._computeMethodImposter.Invoke(value, base.Compute);
             }
 
             public override string Name

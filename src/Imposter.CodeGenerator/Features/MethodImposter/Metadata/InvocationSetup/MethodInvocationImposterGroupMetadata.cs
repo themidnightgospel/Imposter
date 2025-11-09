@@ -28,6 +28,8 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 
     internal readonly ThenMethodMetadata ThenMethod;
 
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+
     internal readonly DefaultInvocationSetupFieldMetadata DefaultInvocationSetupField;
 
     internal readonly DefaultResultGeneratorMethodMetadata DefaultResultGeneratorMethod;
@@ -48,6 +50,9 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             : null;
         CallbackMethod = new CallbackMethodMetadata(method, Interface.Syntax, method.CallbackDelegate.Syntax);
         ThenMethod = new ThenMethodMetadata(Interface.Syntax);
+        UseBaseImplementationMethod = method.SupportsBaseImplementation
+            ? new UseBaseImplementationMethodMetadata(Interface.Syntax)
+            : null;
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
         DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(method.ReturnTypeSyntax);
     }

@@ -152,6 +152,19 @@ internal static partial class MethodImposterBuilderBuilder
         return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
     }
 
+    private static MethodDeclarationSyntax BuildUseBaseImplementationImplementation(in ImposterTargetMethodMetadata method)
+    {
+        var metadata = method.MethodInvocationImposterGroup.UseBaseImplementationMethod!.Value;
+        var template = new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
+            .Build();
+
+        var invocation = CurrentInvocationImposterAccess(method)
+            .Dot(IdentifierName("UseBaseImplementation"))
+            .Call();
+
+        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+    }
+
     private static MethodDeclarationSyntax BuildThenImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThenMethod.ReturnType, method.MethodInvocationImposterGroup.ThenMethod.Name)

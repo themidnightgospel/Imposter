@@ -8,7 +8,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         private readonly IIndexerSetupSutImposter _sut = new IIndexerSetupSutImposter();
 
         [Fact]
-        public void Builder_Chaining_Supported()
+        public void GivenIndexerBuilder_WhenChaining_ThenSupported()
         {
             var builder = _sut
                 [Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<string>.Any(), Imposter.Abstractions.Arg<object>.Any()]
@@ -24,7 +24,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void Exposes_Indexer_Builder_On_Imposter()
+        public void GivenImposter_WhenAccessingIndexerBuilder_ThenExposesBuilder()
         {
             _sut[Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<string>.Any(), Imposter.Abstractions.Arg<object>.Any()]
                 .ShouldNotBeNull();

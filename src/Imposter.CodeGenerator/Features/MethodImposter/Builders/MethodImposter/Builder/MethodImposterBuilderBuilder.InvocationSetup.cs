@@ -33,6 +33,11 @@ internal static partial class MethodImposterBuilderBuilder
             implementations.Add(BuildThrowsAsyncImplementation(method));
         }
 
+        if (method.MethodInvocationImposterGroup.UseBaseImplementationMethod is not null)
+        {
+            implementations.Add(BuildUseBaseImplementationImplementation(method));
+        }
+
         implementations.Add(BuildThenImplementation(method));
 
         return implementations;
