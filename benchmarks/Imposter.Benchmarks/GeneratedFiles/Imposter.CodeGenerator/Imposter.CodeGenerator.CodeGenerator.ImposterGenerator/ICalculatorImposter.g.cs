@@ -108,7 +108,7 @@ namespace Imposter.Benchmarks
             internal static SquareMethodInvocationImposterGroup Default = new SquareMethodInvocationImposterGroup(new SquareArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal SquareArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public SquareMethodInvocationImposterGroup(SquareArgumentsCriteria argumentsCriteria)
             {

@@ -108,7 +108,7 @@ namespace Imposter.Tests.Features.ClassImposter
             internal static ComputeMethodInvocationImposterGroup Default = new ComputeMethodInvocationImposterGroup(new ComputeArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal ComputeArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public ComputeMethodInvocationImposterGroup(ComputeArgumentsCriteria argumentsCriteria)
             {
@@ -675,20 +675,30 @@ namespace Imposter.Tests.Features.ClassImposter
 
         private readonly StreamAdvancedEventImposterBuilder _StreamAdvanced;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IStreamAdvancedEventImposterBuilder
+        public interface IStreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterSetupBuilder, IStreamAdvancedEventImposterVerificationBuilder
         {
-            IStreamAdvancedEventImposterBuilder Callback(global::System.EventHandler callback);
-            IStreamAdvancedEventImposterBuilder Raise(object sender, global::System.EventArgs e);
-            IStreamAdvancedEventImposterBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
-            IStreamAdvancedEventImposterBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
-            IStreamAdvancedEventImposterBuilder OnSubscribe(System.Action<global::System.EventHandler> interceptor);
-            IStreamAdvancedEventImposterBuilder OnUnsubscribe(System.Action<global::System.EventHandler> interceptor);
-            IStreamAdvancedEventImposterBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
-            IStreamAdvancedEventImposterBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal sealed class StreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterBuilder
+        public interface IStreamAdvancedEventImposterSetupBuilder
+        {
+            IStreamAdvancedEventImposterSetupBuilder Callback(global::System.EventHandler callback);
+            IStreamAdvancedEventImposterSetupBuilder Raise(object sender, global::System.EventArgs e);
+            IStreamAdvancedEventImposterSetupBuilder OnSubscribe(System.Action<global::System.EventHandler> interceptor);
+            IStreamAdvancedEventImposterSetupBuilder OnUnsubscribe(System.Action<global::System.EventHandler> interceptor);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IStreamAdvancedEventImposterVerificationBuilder
+        {
+            IStreamAdvancedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
+            IStreamAdvancedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
+            IStreamAdvancedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+            IStreamAdvancedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal sealed class StreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterBuilder, IStreamAdvancedEventImposterSetupBuilder, IStreamAdvancedEventImposterVerificationBuilder
         {
             private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _handlerOrder = new System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
             private readonly System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int> _handlerCounts = new System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int>();
@@ -734,20 +744,20 @@ namespace Imposter.Tests.Features.ClassImposter
                 }
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.Callback(global::System.EventHandler callback)
+            IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.Callback(global::System.EventHandler callback)
             {
                 ArgumentNullException.ThrowIfNull(callback);
                 _callbacks.Enqueue(callback);
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.Raise(object sender, global::System.EventArgs e)
+            IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.Raise(object sender, global::System.EventArgs e)
             {
                 RaiseInternal(sender, e);
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
+            IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -756,7 +766,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
+            IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -765,21 +775,21 @@ namespace Imposter.Tests.Features.ClassImposter
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.OnSubscribe(System.Action<global::System.EventHandler> interceptor)
+            IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.OnSubscribe(System.Action<global::System.EventHandler> interceptor)
             {
                 ArgumentNullException.ThrowIfNull(interceptor);
                 _subscribeInterceptors.Enqueue(interceptor);
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.OnUnsubscribe(System.Action<global::System.EventHandler> interceptor)
+            IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.OnUnsubscribe(System.Action<global::System.EventHandler> interceptor)
             {
                 ArgumentNullException.ThrowIfNull(interceptor);
                 _unsubscribeInterceptors.Enqueue(interceptor);
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
+            IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(eCriteria);
@@ -789,7 +799,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return this;
             }
 
-            IStreamAdvancedEventImposterBuilder IStreamAdvancedEventImposterBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
+            IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);

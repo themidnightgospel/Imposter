@@ -108,7 +108,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericMethodMethodInvocationImposterGroup Default = new GenericMethodMethodInvocationImposterGroup(new GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal GenericMethodArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericMethodMethodInvocationImposterGroup(GenericMethodArgumentsCriteria argumentsCriteria)
             {

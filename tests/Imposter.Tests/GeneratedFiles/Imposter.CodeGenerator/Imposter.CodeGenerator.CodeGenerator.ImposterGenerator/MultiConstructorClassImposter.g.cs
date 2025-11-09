@@ -108,7 +108,7 @@ namespace Imposter.Tests.Features.ClassImposter
             internal static CalculateMethodInvocationImposterGroup Default = new CalculateMethodInvocationImposterGroup(new CalculateArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal CalculateArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public CalculateMethodInvocationImposterGroup(CalculateArgumentsCriteria argumentsCriteria)
             {

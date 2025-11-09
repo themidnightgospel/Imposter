@@ -208,7 +208,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class VoidNoParamsMethodInvocationImposterGroup
         {
             internal static VoidNoParamsMethodInvocationImposterGroup Default = new VoidNoParamsMethodInvocationImposterGroup();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public VoidNoParamsMethodInvocationImposterGroup()
             {
@@ -500,7 +500,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class IntNoParamsMethodInvocationImposterGroup
         {
             internal static IntNoParamsMethodInvocationImposterGroup Default = new IntNoParamsMethodInvocationImposterGroup();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntNoParamsMethodInvocationImposterGroup()
             {
@@ -854,7 +854,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntSingleParamMethodInvocationImposterGroup Default = new IntSingleParamMethodInvocationImposterGroup(new IntSingleParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal IntSingleParamArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntSingleParamMethodInvocationImposterGroup(IntSingleParamArgumentsCriteria argumentsCriteria)
             {
@@ -1223,7 +1223,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntParamsMethodInvocationImposterGroup Default = new IntParamsMethodInvocationImposterGroup(new IntParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex>.Any()));
             internal IntParamsArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntParamsMethodInvocationImposterGroup(IntParamsArgumentsCriteria argumentsCriteria)
             {
@@ -1553,7 +1553,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class IntOutParamMethodInvocationImposterGroup
         {
             internal static IntOutParamMethodInvocationImposterGroup Default = new IntOutParamMethodInvocationImposterGroup();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntOutParamMethodInvocationImposterGroup()
             {
@@ -1919,7 +1919,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntRefParamMethodInvocationImposterGroup Default = new IntRefParamMethodInvocationImposterGroup(new IntRefParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal IntRefParamArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntRefParamMethodInvocationImposterGroup(IntRefParamArgumentsCriteria argumentsCriteria)
             {
@@ -2280,7 +2280,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntParamsParamMethodInvocationImposterGroup Default = new IntParamsParamMethodInvocationImposterGroup(new IntParamsParamArgumentsCriteria(global::Imposter.Abstractions.Arg<string[]>.Any()));
             internal IntParamsParamArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntParamsParamMethodInvocationImposterGroup(IntParamsParamArgumentsCriteria argumentsCriteria)
             {
@@ -2641,7 +2641,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntInParamMethodInvocationImposterGroup Default = new IntInParamMethodInvocationImposterGroup(new IntInParamArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
             internal IntInParamArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntInParamMethodInvocationImposterGroup(IntInParamArgumentsCriteria argumentsCriteria)
             {
@@ -3016,7 +3016,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntAllRefKindsMethodInvocationImposterGroup Default = new IntAllRefKindsMethodInvocationImposterGroup(new IntAllRefKindsArgumentsCriteria(global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string[]>.Any()));
             internal IntAllRefKindsArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntAllRefKindsMethodInvocationImposterGroup(IntAllRefKindsArgumentsCriteria argumentsCriteria)
             {
@@ -3421,7 +3421,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericSingleParamMethodInvocationImposterGroup<TValue> Default = new GenericSingleParamMethodInvocationImposterGroup<TValue>(new GenericSingleParamArgumentsCriteria<TValue>(global::Imposter.Abstractions.Arg<TValue>.Any()));
             internal GenericSingleParamArgumentsCriteria<TValue> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericSingleParamMethodInvocationImposterGroup(GenericSingleParamArgumentsCriteria<TValue> argumentsCriteria)
             {
@@ -3830,7 +3830,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericInnerSingleParamMethodInvocationImposterGroup<TValue> Default = new GenericInnerSingleParamMethodInvocationImposterGroup<TValue>(new GenericInnerSingleParamArgumentsCriteria<TValue>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>>.Any()));
             internal GenericInnerSingleParamArgumentsCriteria<TValue> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericInnerSingleParamMethodInvocationImposterGroup(GenericInnerSingleParamArgumentsCriteria<TValue> argumentsCriteria)
             {
@@ -4200,7 +4200,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class GenericOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericOutParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericOutParamMethodInvocationImposterGroup<TValue, TResult>();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericOutParamMethodInvocationImposterGroup()
             {
@@ -4609,7 +4609,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericInnerOutParamMethodInvocationImposterGroup()
             {
@@ -5059,7 +5059,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericRefParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericRefParamMethodInvocationImposterGroup<TValue, TResult>(new GenericRefParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<TValue>.Any()));
             internal GenericRefParamArgumentsCriteria<TValue, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericRefParamMethodInvocationImposterGroup(GenericRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
@@ -5504,7 +5504,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>(new GenericInnerRefParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>>.Any()));
             internal GenericInnerRefParamArgumentsCriteria<TValue, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericInnerRefParamMethodInvocationImposterGroup(GenericInnerRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
@@ -5949,7 +5949,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>(new GenericParamsParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<TValue[]>.Any()));
             internal GenericParamsParamArgumentsCriteria<TValue, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericParamsParamMethodInvocationImposterGroup(GenericParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
@@ -6392,7 +6392,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>(new GenericInnerParamsParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>[]>.Any()));
             internal GenericInnerParamsParamArgumentsCriteria<TValue, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericInnerParamsParamMethodInvocationImposterGroup(GenericInnerParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
@@ -6845,7 +6845,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Default = new GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(global::Imposter.Abstractions.OutArg<TOut>.Any(), global::Imposter.Abstractions.Arg<TRef>.Any(), global::Imposter.Abstractions.Arg<TIn>.Any(), global::Imposter.Abstractions.Arg<TParams[]>.Any()));
             internal GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public GenericAllRefKindMethodInvocationImposterGroup(GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> argumentsCriteria)
             {
@@ -7239,7 +7239,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class AsyncTaskIntNoParamsMethodInvocationImposterGroup
         {
             internal static AsyncTaskIntNoParamsMethodInvocationImposterGroup Default = new AsyncTaskIntNoParamsMethodInvocationImposterGroup();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public AsyncTaskIntNoParamsMethodInvocationImposterGroup()
             {
@@ -7592,7 +7592,7 @@ namespace Imposter.Tests.Features.MethodImposter
         class AsyncValueTaskIntNoParamsMethodInvocationImposterGroup
         {
             internal static AsyncValueTaskIntNoParamsMethodInvocationImposterGroup Default = new AsyncValueTaskIntNoParamsMethodInvocationImposterGroup();
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public AsyncValueTaskIntNoParamsMethodInvocationImposterGroup()
             {

@@ -30,8 +30,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.CodeGenerator;
 
-#pragma warning disable RS1014
-
 [Generator]
 public class ImposterGenerator : IIncrementalGenerator
 {
@@ -181,7 +179,7 @@ public class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddEventImposter(@event)
-                .AddMember(EventImposterBuilderInterfaceBuilder.Build(@event))
+                .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))
                 .AddMember(EventImposterBuilderBuilder.Build(@event));
         }
 

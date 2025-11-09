@@ -10,6 +10,14 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
+    internal readonly string SetupInterfaceName;
+
+    internal readonly NameSyntax SetupInterfaceTypeSyntax;
+
+    internal readonly string VerificationInterfaceName;
+
+    internal readonly NameSyntax VerificationInterfaceTypeSyntax;
+
     internal readonly string RaiseMethodName;
 
     internal readonly TypeSyntax RaiseMethodReturnType;
@@ -18,9 +26,13 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
     {
         Name = $"I{core.UniqueName}EventImposterBuilder";
         TypeSyntax = IdentifierName(Name);
+        SetupInterfaceName = $"I{core.UniqueName}EventImposterSetupBuilder";
+        SetupInterfaceTypeSyntax = IdentifierName(SetupInterfaceName);
+        VerificationInterfaceName = $"I{core.UniqueName}EventImposterVerificationBuilder";
+        VerificationInterfaceTypeSyntax = IdentifierName(VerificationInterfaceName);
         RaiseMethodName = core.IsAsync ? "RaiseAsync" : "Raise";
         RaiseMethodReturnType = core.IsAsync
-            ? WellKnownTypes.System.Threading.Tasks.TaskOfT(TypeSyntax)
-            : TypeSyntax;
+            ? WellKnownTypes.System.Threading.Tasks.TaskOfT(SetupInterfaceTypeSyntax)
+            : SetupInterfaceTypeSyntax;
     }
 }
