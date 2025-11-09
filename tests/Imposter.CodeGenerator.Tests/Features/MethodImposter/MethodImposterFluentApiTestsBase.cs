@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
+using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 
@@ -53,14 +54,18 @@ public abstract class MethodImposterFluentApiTestsBase
     internal const string BaseSourceFileName = "GeneratorInput.cs";
     internal const string SnippetFileName = "Snippet.cs";
 
-    internal static readonly GeneratorTestContext TestContext =
+    internal static readonly Task<GeneratorTestContext> TestContextTask =
         GeneratorTestHelper.CreateContext(
             Source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(MethodImposterFluentApiTestsBase));
 
-    internal static ImmutableArray<Diagnostic> CompileSnippet(string snippet) => TestContext.CompileSnippet(snippet);
+    internal static async Task<ImmutableArray<Diagnostic>> CompileSnippet(string snippet)
+    {
+        var context = await TestContextTask.ConfigureAwait(false);
+        return context.CompileSnippet(snippet);
+    }
 
     internal static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
         GeneratorTestHelper.AssertNoDiagnostics(diagnostics);

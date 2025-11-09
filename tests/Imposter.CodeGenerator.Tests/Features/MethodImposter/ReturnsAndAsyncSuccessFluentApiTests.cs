@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
@@ -5,9 +6,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public void GivenMethodWithReturn_WhenReturningValues_ShouldCompile()
+    public async Task GivenMethodWithReturn_WhenReturningValues_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -26,9 +27,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncMethod_WhenReturningAsyncValue_ShouldCompile()
+    public async Task GivenAsyncMethod_WhenReturningAsyncValue_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -46,9 +47,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncMethod_WhenReturningTaskFromDelegate_ShouldCompile()
+    public async Task GivenAsyncMethod_WhenReturningTaskFromDelegate_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -66,9 +67,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncMethod_WhenChainingReturnsAsyncThenDelegate_ShouldCompile()
+    public async Task GivenAsyncMethod_WhenChainingReturnsAsyncThenDelegate_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -89,9 +90,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenMethod_WhenChainingReturnsThenDelegate_ShouldCompile()
+    public async Task GivenMethod_WhenChainingReturnsThenDelegate_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -112,9 +113,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenTaskMethod_WhenReturningCompletedTask_ShouldCompile()
+    public async Task GivenTaskMethod_WhenReturningCompletedTask_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -132,9 +133,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenMethod_WhenThrowing_ShouldCompile()
+    public async Task GivenMethod_WhenThrowing_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -154,9 +155,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncMethod_WhenThrowingAsync_ShouldCompile()
+    public async Task GivenAsyncMethod_WhenThrowingAsync_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -174,9 +175,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassVirtualMethod_WhenUsingBaseImplementation_ShouldCompile()
+    public async Task GivenClassVirtualMethod_WhenUsingBaseImplementation_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -195,9 +196,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethod_WhenCallbackUsesParameters_ShouldCompile()
+    public async Task GivenClassMethod_WhenCallbackUsesParameters_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -215,9 +216,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethod_WhenCallbackAfterReturnChain_ShouldCompile()
+    public async Task GivenClassMethod_WhenCallbackAfterReturnChain_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -238,9 +239,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassVoidMethod_WhenCallbackThenUsesBaseImplementation_ShouldCompile()
+    public async Task GivenClassVoidMethod_WhenCallbackThenUsesBaseImplementation_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -261,9 +262,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethod_WhenReturningWithDelegate_ShouldCompile()
+    public async Task GivenClassMethod_WhenReturningWithDelegate_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -282,9 +283,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassAsyncMethod_WhenReturningAsyncValue_ShouldCompile()
+    public async Task GivenClassAsyncMethod_WhenReturningAsyncValue_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -303,9 +304,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenMethod_WhenCallbackThen_ShouldCompile()
+    public async Task GivenMethod_WhenCallbackThen_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -323,9 +324,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenMethod_WhenCallingCalledOnGetNumber_ShouldCompile()
+    public async Task GivenMethod_WhenCallingCalledOnGetNumber_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -343,9 +344,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenMethod_WhenCallingCalledOnDoWork_ShouldCompile()
+    public async Task GivenMethod_WhenCallingCalledOnDoWork_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -363,9 +364,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncMethod_WhenCallingCalled_ShouldCompile()
+    public async Task GivenAsyncMethod_WhenCallingCalled_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -383,9 +384,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenInterfaceMethodWithParameters_WhenReturningWithDelegate_ShouldCompile()
+    public async Task GivenInterfaceMethodWithParameters_WhenReturningWithDelegate_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -404,9 +405,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethod_WhenCallingCalled_ShouldCompile()
+    public async Task GivenClassMethod_WhenCallingCalled_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -424,9 +425,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethodWithMultipleParameters_WhenReturning_ShouldCompile()
+    public async Task GivenClassMethodWithMultipleParameters_WhenReturning_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -447,9 +448,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethodWithMultipleParameters_WhenCallback_ShouldCompile()
+    public async Task GivenClassMethodWithMultipleParameters_WhenCallback_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -468,9 +469,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenInterfaceMethodWithRefOutParams_WhenReturning_ShouldCompile()
+    public async Task GivenInterfaceMethodWithRefOutParams_WhenReturning_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -492,9 +493,9 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
     }
 
     [Fact]
-    public void GivenClassMethodWithRefOutParams_WhenCallback_ShouldCompile()
+    public async Task GivenClassMethodWithRefOutParams_WhenCallback_ShouldCompile()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -515,3 +516,4 @@ public class ReturnsAndAsyncSuccessFluentApiTests : MethodImposterFluentApiTests
         AssertNoDiagnostics(diagnostics);
     }
 }
+

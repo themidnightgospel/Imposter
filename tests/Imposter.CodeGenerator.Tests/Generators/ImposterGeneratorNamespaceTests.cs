@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using Imposter.Abstractions;
-using Imposter.CodeGenerator.CodeGenerator;
+using System.Threading.Tasks;
+using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Testing;
 using Shouldly;
 using Xunit;
 
@@ -14,7 +12,9 @@ namespace Imposter.CodeGenerator.Tests.Generators;
 
 public class ImposterGeneratorNamespaceTests
 {
-    private const string Source = @"using Imposter.Abstractions;
+    private const string Source =
+        /*lang=csharp*/
+        @"using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.IGeneric<int, string>), false)]
 
@@ -26,10 +26,23 @@ public interface IGeneric<TFirst, TSecond>
 }
 ";
 
+    private const string BaseSourceFileName = "GeneratorInput.cs";
+    private const string SnippetFileName = "Snippet.cs";
+
+    private static readonly Task<GeneratorTestContext> TestContextTask =
+        GeneratorTestHelper.CreateContext(
+            Source,
+            baseSourceFileName: BaseSourceFileName,
+            snippetFileName: SnippetFileName,
+            assemblyName: nameof(ImposterGeneratorNamespaceTests),
+            languageVersion: LanguageVersion.CSharp13);
+
     [Fact]
-    public void Generator_Uses_Sanitized_Components_Namespace_For_Generic_Targets()
+    public async Task Generator_Uses_Sanitized_Components_Namespace_For_Generic_Targets()
     {
-        var (result, compilation) = RunGenerator(LanguageVersion.CSharp13);
+        var testContext = await TestContextTask.ConfigureAwait(false);
+        var result = testContext.RunGenerator();
+        var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source => source.HintName == "IGenericImposter.g.cs");
         var namespaceLine = imposterSource.SourceText
@@ -43,40 +56,6 @@ public interface IGeneric<TFirst, TSecond>
         namespaceLine.ShouldBe(expectedNamespace);
         namespaceLine.ShouldNotContain("<");
         namespaceLine.ShouldNotContain(">");
-    }
-
-    private static (GeneratorRunResult Result, CSharpCompilation Compilation) RunGenerator(LanguageVersion languageVersion)
-    {
-        var compilation = CreateCompilation(languageVersion);
-        var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
-
-        var runResult = driver.RunGenerators(compilation).GetRunResult();
-        var generatorResult = runResult.Results.Single();
-
-        runResult.Diagnostics.ShouldBeEmpty();
-        generatorResult.Exception.ShouldBeNull();
-
-        return (generatorResult, compilation);
-    }
-
-    private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion)
-    {
-        var parseOptions = new CSharpParseOptions(languageVersion);
-
-        var references = ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult()
-            .Concat(new[]
-            {
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            });
-
-        return CSharpCompilation.Create(
-            assemblyName: "ImposterGeneratorNamespaceTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
-            references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
 
     private static string BuildSanitizedSuffix(CSharpCompilation compilation)

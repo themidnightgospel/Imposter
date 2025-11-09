@@ -96,7 +96,6 @@ internal static partial class MethodImposterBuilder
             ));
     }
 
-
     private static bool ContainsTypeParameter(ITypeSymbol typeSymbol, ITypeParameterSymbol typeParameter)
     {
         if (SymbolEqualityComparer.Default.Equals(typeSymbol, typeParameter))

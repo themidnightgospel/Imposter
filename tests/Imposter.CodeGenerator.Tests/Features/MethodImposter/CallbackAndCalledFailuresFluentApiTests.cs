@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
@@ -5,9 +6,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class CallbackAndCalledFailuresFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public void GivenMethod_WhenCallingThen_ShouldFail()
+    public async Task GivenMethod_WhenCallingThen_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -25,9 +26,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenCallingCalled_ShouldFail()
+    public async Task GivenMethodReturns_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -45,9 +46,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenCallingThenCalled_ShouldFail()
+    public async Task GivenMethodReturns_WhenCallingThenCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -65,9 +66,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenCallingCalled_ShouldFail()
+    public async Task GivenMethodCallback_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -87,9 +88,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenThenCallingCalled_ShouldFail()
+    public async Task GivenMethodCallback_WhenThenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -110,9 +111,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodThrows_WhenCallingCalled_ShouldFail()
+    public async Task GivenMethodThrows_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -130,9 +131,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodThrowsAsync_WhenCallingCalled_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -150,9 +151,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodUseBaseImplementation_WhenCallingCalled_ShouldFail()
+    public async Task GivenMethodUseBaseImplementation_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -170,9 +171,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenReturning_ShouldFail()
+    public async Task GivenMethodCallback_WhenReturning_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -192,9 +193,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodCallback_WhenReturningAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -214,9 +215,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenThrowing_ShouldFail()
+    public async Task GivenMethodCallback_WhenThrowing_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -236,9 +237,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodCallback_WhenThrowingAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -258,9 +259,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenMethodCallback_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodCallback_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -279,3 +280,4 @@ namespace Sample
         AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
     }
 }
+
