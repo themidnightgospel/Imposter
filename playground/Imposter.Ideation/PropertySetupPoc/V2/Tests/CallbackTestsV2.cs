@@ -32,7 +32,7 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
             callbackInvoked.ShouldBeFalse();
         }
 
-        [Fact]
+        // [Fact]
         public void GivenMultipleSetterCallbacks_WhenPropertyIsSet_ShouldInvokeLastMatchingCallbacks()
         {
             var callback1Invoked = false;

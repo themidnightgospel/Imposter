@@ -15,6 +15,10 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly string ImposterComponentsNamespace;
 
+    internal readonly string TargetNamespaceName;
+
+    internal readonly string ImposterNamespaceName;
+
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
     internal ImposterGenerationContext(
@@ -24,6 +28,10 @@ internal readonly struct ImposterGenerationContext
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget);
         ImposterComponentsNamespace = BuildImposterComponentsNamespace(TargetSymbol);
+        TargetNamespaceName = TargetSymbol.ContainingNamespace.ToDisplayString();
+        ImposterNamespaceName = generateImposterDeclaration.PutInTheSameNamespace
+            ? TargetNamespaceName
+            : ImposterComponentsNamespace;
         SupportedCSharpFeatures = supportedCSharpFeatures;
     }
 

@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImposter.Builders;
 
-internal static class EventImposterBuilderBuilder
+internal static class EventImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterEventMetadata @event) =>
         new ClassDeclarationBuilder(@event.Builder.Name)

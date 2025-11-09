@@ -7,6 +7,9 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
+/// <summary>
+/// Supplies compilation context and early diagnostics for language/version.
+/// </summary>
 internal static class CompilationDiagnosticsProvider
 {
     internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this IncrementalGeneratorInitializationContext context)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable nullable
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using Imposter.Abstractions;
 using System.Collections.Concurrent;
 using Imposter.Tests.Features.MethodImposter;
 
-#pragma warning disable nullable
 namespace Imposter.Tests.Features.MethodImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -55,6 +55,425 @@ namespace Imposter.Tests.Features.MethodImposter
         global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>.Instance()
         {
             return _imposterInstance;
+        }
+
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        public delegate global::System.Threading.Tasks.ValueTask<string> BuildLabelAsyncDelegate(string prefix, string suffix);
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        public delegate System.Threading.Tasks.Task BuildLabelAsyncCallbackDelegate(string prefix, string suffix);
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        public delegate System.Exception BuildLabelAsyncExceptionGeneratorDelegate(string prefix, string suffix);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class BuildLabelAsyncArguments
+        {
+            public string prefix;
+            public string suffix;
+            internal BuildLabelAsyncArguments(string prefix, string suffix)
+            {
+                this.prefix = prefix;
+                this.suffix = suffix;
+            }
+        }
+
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class BuildLabelAsyncArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<string> prefix { get; }
+            public global::Imposter.Abstractions.Arg<string> suffix { get; }
+
+            public BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string> prefix, global::Imposter.Abstractions.Arg<string> suffix)
+            {
+                this.prefix = prefix;
+                this.suffix = suffix;
+            }
+
+            public bool Matches(BuildLabelAsyncArguments arguments)
+            {
+                return prefix.Matches(arguments.prefix) && suffix.Matches(arguments.suffix);
+            }
+        }
+
+        public interface IBuildLabelAsyncMethodInvocationHistory
+        {
+            bool Matches(BuildLabelAsyncArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class BuildLabelAsyncMethodInvocationHistory : IBuildLabelAsyncMethodInvocationHistory
+        {
+            internal BuildLabelAsyncArguments Arguments;
+            internal global::System.Threading.Tasks.ValueTask<string> Result;
+            internal System.Exception Exception;
+            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string> Result, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(BuildLabelAsyncArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class BuildLabelAsyncMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IBuildLabelAsyncMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IBuildLabelAsyncMethodInvocationHistory>();
+            internal void Add(IBuildLabelAsyncMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(BuildLabelAsyncArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class BuildLabelAsyncMethodInvocationImposterGroup
+        {
+            internal static BuildLabelAsyncMethodInvocationImposterGroup Default = new BuildLabelAsyncMethodInvocationImposterGroup(new BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string>.Any()));
+            internal BuildLabelAsyncArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public BuildLabelAsyncMethodInvocationImposterGroup(BuildLabelAsyncArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, prefix, suffix, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private BuildLabelAsyncDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    global::System.Threading.Tasks.ValueTask<string> result = _resultGenerator.Invoke(prefix, suffix);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(prefix, suffix);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(BuildLabelAsyncCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(BuildLabelAsyncDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(global::System.Threading.Tasks.ValueTask<string> value)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (string prefix, string suffix) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void ReturnsAsync(string value)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (string prefix, string suffix) =>
+                    {
+                        return new System.Threading.Tasks.ValueTask<string>(value);
+                    };
+                }
+
+                internal void Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (string prefix, string suffix) =>
+                    {
+                        throw exceptionGenerator(prefix, suffix);
+                    };
+                }
+
+                internal void ThrowsAsync(System.Exception exception)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (string prefix, string suffix) =>
+                    {
+                        return new System.Threading.Tasks.ValueTask<string>(System.Threading.Tasks.Task.FromException<string>(exception));
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static async global::System.Threading.Tasks.ValueTask<string> DefaultResultGenerator(string prefix, string suffix)
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        {
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Callback(BuildLabelAsyncCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IBuildLabelAsyncMethodInvocationImposterGroupContinuation : IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        {
+            IBuildLabelAsyncMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IBuildLabelAsyncMethodInvocationImposterGroup : IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        {
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Returns(BuildLabelAsyncDelegate resultGenerator);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Returns(global::System.Threading.Tasks.ValueTask<string> value);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation ReturnsAsync(string value);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation ThrowsAsync(System.Exception exception);
+            IBuildLabelAsyncMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface BuildLabelAsyncInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class BuildLabelAsyncMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup>();
+            private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public BuildLabelAsyncMethodImposter(BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._buildLabelAsyncMethodInvocationHistoryCollection = _buildLabelAsyncMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(BuildLabelAsyncArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private BuildLabelAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(BuildLabelAsyncArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public global::System.Threading.Tasks.ValueTask<string> Invoke(string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+            {
+                var arguments = new BuildLabelAsyncArguments(prefix, suffix);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)");
+                    }
+
+                    matchingInvocationImposterGroup = BuildLabelAsyncMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)", prefix, suffix, baseImplementation);
+                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IBuildLabelAsyncMethodImposterBuilder, IBuildLabelAsyncMethodInvocationImposterGroupContinuation
+            {
+                private readonly BuildLabelAsyncMethodImposter _imposter;
+                private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
+                private readonly BuildLabelAsyncArgumentsCriteria _argumentsCriteria;
+                private readonly BuildLabelAsyncMethodInvocationImposterGroup _invocationImposterGroup;
+                private BuildLabelAsyncMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(BuildLabelAsyncMethodImposter _imposter, BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, BuildLabelAsyncArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._buildLabelAsyncMethodInvocationHistoryCollection = _buildLabelAsyncMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new BuildLabelAsyncMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    {
+                        throw exceptionGenerator.Invoke(prefix, suffix);
+                    });
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroupCallback.Callback(BuildLabelAsyncCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Returns(BuildLabelAsyncDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.ValueTask<string> value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.ReturnsAsync(string value)
+                {
+                    _currentInvocationImposter.ReturnsAsync(value);
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.ThrowsAsync(System.Exception exception)
+                {
+                    _currentInvocationImposter.ThrowsAsync(exception);
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IBuildLabelAsyncMethodInvocationImposterGroup IBuildLabelAsyncMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void BuildLabelAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _buildLabelAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
         }
 
         // virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)
@@ -440,86 +859,94 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
-        public delegate void VoidWithSideEffectDelegate(int delta);
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
-        public delegate void VoidWithSideEffectCallbackDelegate(int delta);
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
-        public delegate System.Exception VoidWithSideEffectExceptionGeneratorDelegate(int delta);
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
+        public delegate int RefOutWithParamsDelegate(ref int seed, out int doubled, int[] adjustments);
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
+        public delegate void RefOutWithParamsCallbackDelegate(ref int seed, out int doubled, int[] adjustments);
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
+        public delegate System.Exception RefOutWithParamsExceptionGeneratorDelegate(ref int seed, out int doubled, int[] adjustments);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class VoidWithSideEffectArguments
+        public class RefOutWithParamsArguments
         {
-            public int delta;
-            internal VoidWithSideEffectArguments(int delta)
+            public int seed;
+            public int[] adjustments;
+            internal RefOutWithParamsArguments(int seed, int[] adjustments)
             {
-                this.delta = delta;
+                this.seed = seed;
+                this.adjustments = adjustments;
             }
         }
 
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class VoidWithSideEffectArgumentsCriteria
+        public class RefOutWithParamsArgumentsCriteria
         {
-            public global::Imposter.Abstractions.Arg<int> delta { get; }
+            public global::Imposter.Abstractions.Arg<int> seed { get; }
+            public global::Imposter.Abstractions.OutArg<int> doubled { get; }
+            public global::Imposter.Abstractions.Arg<int[]> adjustments { get; }
 
-            public VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int> delta)
+            public RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int> seed, global::Imposter.Abstractions.OutArg<int> doubled, global::Imposter.Abstractions.Arg<int[]> adjustments)
             {
-                this.delta = delta;
+                this.seed = seed;
+                this.doubled = doubled;
+                this.adjustments = adjustments;
             }
 
-            public bool Matches(VoidWithSideEffectArguments arguments)
+            public bool Matches(RefOutWithParamsArguments arguments)
             {
-                return delta.Matches(arguments.delta);
+                return seed.Matches(arguments.seed) && adjustments.Matches(arguments.adjustments);
             }
         }
 
-        public interface IVoidWithSideEffectMethodInvocationHistory
+        public interface IRefOutWithParamsMethodInvocationHistory
         {
-            bool Matches(VoidWithSideEffectArgumentsCriteria criteria);
+            bool Matches(RefOutWithParamsArgumentsCriteria criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class VoidWithSideEffectMethodInvocationHistory : IVoidWithSideEffectMethodInvocationHistory
+        internal class RefOutWithParamsMethodInvocationHistory : IRefOutWithParamsMethodInvocationHistory
         {
-            internal VoidWithSideEffectArguments Arguments;
+            internal RefOutWithParamsArguments Arguments;
+            internal int Result;
             internal System.Exception Exception;
-            public VoidWithSideEffectMethodInvocationHistory(VoidWithSideEffectArguments Arguments, System.Exception Exception)
+            public RefOutWithParamsMethodInvocationHistory(RefOutWithParamsArguments Arguments, int Result, System.Exception Exception)
             {
                 this.Arguments = Arguments;
+                this.Result = Result;
                 this.Exception = Exception;
             }
 
-            public bool Matches(VoidWithSideEffectArgumentsCriteria criteria)
+            public bool Matches(RefOutWithParamsArgumentsCriteria criteria)
             {
                 return criteria.Matches(Arguments);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class VoidWithSideEffectMethodInvocationHistoryCollection
+        internal class RefOutWithParamsMethodInvocationHistoryCollection
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<IVoidWithSideEffectMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IVoidWithSideEffectMethodInvocationHistory>();
-            internal void Add(IVoidWithSideEffectMethodInvocationHistory invocationHistory)
+            private readonly System.Collections.Concurrent.ConcurrentStack<IRefOutWithParamsMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IRefOutWithParamsMethodInvocationHistory>();
+            internal void Add(IRefOutWithParamsMethodInvocationHistory invocationHistory)
             {
                 _invocationHistory.Push(invocationHistory);
             }
 
-            internal int Count(VoidWithSideEffectArgumentsCriteria argumentsCriteria)
+            internal int Count(RefOutWithParamsArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
             }
         }
 
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class VoidWithSideEffectMethodInvocationImposterGroup
+        class RefOutWithParamsMethodInvocationImposterGroup
         {
-            internal static VoidWithSideEffectMethodInvocationImposterGroup Default = new VoidWithSideEffectMethodInvocationImposterGroup(new VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
-            internal VoidWithSideEffectArgumentsCriteria ArgumentsCriteria { get; }
+            internal static RefOutWithParamsMethodInvocationImposterGroup Default = new RefOutWithParamsMethodInvocationImposterGroup(new RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int[]>.Any()));
+            internal RefOutWithParamsArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
-            public VoidWithSideEffectMethodInvocationImposterGroup(VoidWithSideEffectArgumentsCriteria argumentsCriteria)
+            public RefOutWithParamsMethodInvocationImposterGroup(RefOutWithParamsArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
             }
@@ -545,7 +972,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -558,7 +985,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                invocationImposter.Invoke(invocationBehavior, methodDisplayName, delta, baseImplementation);
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref seed, out doubled, adjustments, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -568,15 +995,15 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default._resultGenerator = DefaultResultGenerator;
+                    Default.Returns(DefaultResultGenerator);
                 }
 
-                private VoidWithSideEffectDelegate _resultGenerator;
-                private readonly System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate>();
+                private RefOutWithParamsDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate>();
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
@@ -593,24 +1020,42 @@ namespace Imposter.Tests.Features.MethodImposter
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    _resultGenerator.Invoke(delta);
+                    int result = _resultGenerator.Invoke(ref seed, out doubled, adjustments);
                     foreach (var callback in _callbacks)
                     {
-                        callback(delta);
+                        callback(ref seed, out doubled, adjustments);
                     }
+
+                    return result;
                 }
 
-                internal void Callback(VoidWithSideEffectCallbackDelegate callback)
+                internal void Callback(RefOutWithParamsCallbackDelegate callback)
                 {
                     _callbacks.Enqueue(callback);
                 }
 
-                internal void Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator)
+                internal void Returns(RefOutWithParamsDelegate resultGenerator)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int delta) =>
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (ref int seed, out int doubled, int[] adjustments) =>
                     {
-                        throw exceptionGenerator(delta);
+                        InitializeOutParametersWithDefaultValues(out doubled);
+                        return value;
+                    };
+                }
+
+                internal void Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (ref int seed, out int doubled, int[] adjustments) =>
+                    {
+                        throw exceptionGenerator(ref seed, out doubled, adjustments);
                     };
                 }
 
@@ -620,64 +1065,78 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static void DefaultResultGenerator(int delta)
+                private static void InitializeOutParametersWithDefaultValues(out int doubled)
                 {
+                    doubled = default(int);
+                }
+
+                internal static int DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
+                {
+                    InitializeOutParametersWithDefaultValues(out doubled);
+                    return default;
                 }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidWithSideEffectMethodInvocationImposterGroupCallback
+        public interface IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
-            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Callback(VoidWithSideEffectCallbackDelegate callback);
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Callback(RefOutWithParamsCallbackDelegate callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidWithSideEffectMethodInvocationImposterGroupContinuation : IVoidWithSideEffectMethodInvocationImposterGroupCallback
+        public interface IRefOutWithParamsMethodInvocationImposterGroupContinuation : IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
-            IVoidWithSideEffectMethodInvocationImposterGroup Then();
+            IRefOutWithParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidWithSideEffectMethodInvocationImposterGroup : IVoidWithSideEffectMethodInvocationImposterGroupCallback
+        public interface IRefOutWithParamsMethodInvocationImposterGroup : IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
-            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws<TException>()
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
-            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
-            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator);
-            IVoidWithSideEffectMethodInvocationImposterGroupContinuation UseBaseImplementation();
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator);
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Returns(RefOutWithParamsDelegate resultGenerator);
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation Returns(int value);
+            IRefOutWithParamsMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface VoidWithSideEffectInvocationVerifier
+        public interface RefOutWithParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
-        public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier
+        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
+        public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class VoidWithSideEffectMethodImposter
+        internal class RefOutWithParamsMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup>();
-            private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
+            private readonly System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup>();
+            private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
             private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public VoidWithSideEffectMethodImposter(VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            public RefOutWithParamsMethodImposter(RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
-                this._voidWithSideEffectMethodInvocationHistoryCollection = _voidWithSideEffectMethodInvocationHistoryCollection;
+                this._refOutWithParamsMethodInvocationHistoryCollection = _refOutWithParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(VoidWithSideEffectArguments arguments)
+            private static void InitializeOutParametersWithDefaultValues(out int doubled)
+            {
+                doubled = default(int);
+            }
+
+            public bool HasMatchingSetup(RefOutWithParamsArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private VoidWithSideEffectMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(VoidWithSideEffectArguments arguments)
+            private RefOutWithParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RefOutWithParamsArguments arguments)
             {
                 foreach (var invocationImposterGroup in _invocationImposters)
                 {
@@ -688,98 +1147,111 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            public void Invoke(int delta, VoidWithSideEffectDelegate baseImplementation = null)
+            public int Invoke(ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
             {
-                var arguments = new VoidWithSideEffectArguments(delta);
+                var arguments = new RefOutWithParamsArguments(seed, adjustments);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)");
                     }
 
-                    matchingInvocationImposterGroup = VoidWithSideEffectMethodInvocationImposterGroup.Default;
+                    matchingInvocationImposterGroup = RefOutWithParamsMethodInvocationImposterGroup.Default;
                 }
 
                 try
                 {
-                    matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)", delta, baseImplementation);
-                    _voidWithSideEffectMethodInvocationHistoryCollection.Add(new VoidWithSideEffectMethodInvocationHistory(arguments, default));
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)", ref seed, out doubled, adjustments, baseImplementation);
+                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, result, default));
+                    return result;
                 }
                 catch (System.Exception ex)
                 {
-                    _voidWithSideEffectMethodInvocationHistoryCollection.Add(new VoidWithSideEffectMethodInvocationHistory(arguments, ex));
+                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, default, ex));
                     throw;
                 }
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IVoidWithSideEffectMethodImposterBuilder, IVoidWithSideEffectMethodInvocationImposterGroupContinuation
+            internal class Builder : IRefOutWithParamsMethodImposterBuilder, IRefOutWithParamsMethodInvocationImposterGroupContinuation
             {
-                private readonly VoidWithSideEffectMethodImposter _imposter;
-                private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
-                private readonly VoidWithSideEffectArgumentsCriteria _argumentsCriteria;
-                private readonly VoidWithSideEffectMethodInvocationImposterGroup _invocationImposterGroup;
-                private VoidWithSideEffectMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(VoidWithSideEffectMethodImposter _imposter, VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, VoidWithSideEffectArgumentsCriteria _argumentsCriteria)
+                private readonly RefOutWithParamsMethodImposter _imposter;
+                private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
+                private readonly RefOutWithParamsArgumentsCriteria _argumentsCriteria;
+                private readonly RefOutWithParamsMethodInvocationImposterGroup _invocationImposterGroup;
+                private RefOutWithParamsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(RefOutWithParamsMethodImposter _imposter, RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, RefOutWithParamsArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
-                    this._voidWithSideEffectMethodInvocationHistoryCollection = _voidWithSideEffectMethodInvocationHistoryCollection;
+                    this._refOutWithParamsMethodInvocationHistoryCollection = _refOutWithParamsMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new VoidWithSideEffectMethodInvocationImposterGroup(_argumentsCriteria);
+                    this._invocationImposterGroup = new RefOutWithParamsMethodInvocationImposterGroup(_argumentsCriteria);
                     _imposter._invocationImposters.Push(_invocationImposterGroup);
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws<TException>()
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws<TException>()
                 {
-                    _currentInvocationImposter.Throws((int delta) =>
+                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
                     {
                         throw new TException();
                     });
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws(System.Exception exception)
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
-                    _currentInvocationImposter.Throws((int delta) =>
+                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
                     {
                         throw exception;
                     });
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator)
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    _currentInvocationImposter.Throws((int delta) =>
+                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
                     {
-                        throw exceptionGenerator.Invoke(delta);
+                        throw exceptionGenerator.Invoke(ref seed, out doubled, adjustments);
                     });
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroupCallback.Callback(VoidWithSideEffectCallbackDelegate callback)
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroupCallback.Callback(RefOutWithParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.UseBaseImplementation()
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Returns(RefOutWithParamsDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Returns(int value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.UseBaseImplementation()
                 {
                     _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroup IVoidWithSideEffectMethodInvocationImposterGroupContinuation.Then()
+                IRefOutWithParamsMethodInvocationImposterGroup IRefOutWithParamsMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void VoidWithSideEffectInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                void RefOutWithParamsInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
-                    var invocationCount = _voidWithSideEffectMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    var invocationCount = _refOutWithParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
@@ -1207,92 +1679,86 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
-        public delegate global::System.Threading.Tasks.ValueTask<string> BuildLabelAsyncDelegate(string prefix, string suffix);
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
-        public delegate System.Threading.Tasks.Task BuildLabelAsyncCallbackDelegate(string prefix, string suffix);
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
-        public delegate System.Exception BuildLabelAsyncExceptionGeneratorDelegate(string prefix, string suffix);
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        public delegate void VoidWithSideEffectDelegate(int delta);
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        public delegate void VoidWithSideEffectCallbackDelegate(int delta);
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        public delegate System.Exception VoidWithSideEffectExceptionGeneratorDelegate(int delta);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class BuildLabelAsyncArguments
+        public class VoidWithSideEffectArguments
         {
-            public string prefix;
-            public string suffix;
-            internal BuildLabelAsyncArguments(string prefix, string suffix)
+            public int delta;
+            internal VoidWithSideEffectArguments(int delta)
             {
-                this.prefix = prefix;
-                this.suffix = suffix;
+                this.delta = delta;
             }
         }
 
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class BuildLabelAsyncArgumentsCriteria
+        public class VoidWithSideEffectArgumentsCriteria
         {
-            public global::Imposter.Abstractions.Arg<string> prefix { get; }
-            public global::Imposter.Abstractions.Arg<string> suffix { get; }
+            public global::Imposter.Abstractions.Arg<int> delta { get; }
 
-            public BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string> prefix, global::Imposter.Abstractions.Arg<string> suffix)
+            public VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int> delta)
             {
-                this.prefix = prefix;
-                this.suffix = suffix;
+                this.delta = delta;
             }
 
-            public bool Matches(BuildLabelAsyncArguments arguments)
+            public bool Matches(VoidWithSideEffectArguments arguments)
             {
-                return prefix.Matches(arguments.prefix) && suffix.Matches(arguments.suffix);
+                return delta.Matches(arguments.delta);
             }
         }
 
-        public interface IBuildLabelAsyncMethodInvocationHistory
+        public interface IVoidWithSideEffectMethodInvocationHistory
         {
-            bool Matches(BuildLabelAsyncArgumentsCriteria criteria);
+            bool Matches(VoidWithSideEffectArgumentsCriteria criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class BuildLabelAsyncMethodInvocationHistory : IBuildLabelAsyncMethodInvocationHistory
+        internal class VoidWithSideEffectMethodInvocationHistory : IVoidWithSideEffectMethodInvocationHistory
         {
-            internal BuildLabelAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.ValueTask<string> Result;
+            internal VoidWithSideEffectArguments Arguments;
             internal System.Exception Exception;
-            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string> Result, System.Exception Exception)
+            public VoidWithSideEffectMethodInvocationHistory(VoidWithSideEffectArguments Arguments, System.Exception Exception)
             {
                 this.Arguments = Arguments;
-                this.Result = Result;
                 this.Exception = Exception;
             }
 
-            public bool Matches(BuildLabelAsyncArgumentsCriteria criteria)
+            public bool Matches(VoidWithSideEffectArgumentsCriteria criteria)
             {
                 return criteria.Matches(Arguments);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class BuildLabelAsyncMethodInvocationHistoryCollection
+        internal class VoidWithSideEffectMethodInvocationHistoryCollection
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<IBuildLabelAsyncMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IBuildLabelAsyncMethodInvocationHistory>();
-            internal void Add(IBuildLabelAsyncMethodInvocationHistory invocationHistory)
+            private readonly System.Collections.Concurrent.ConcurrentStack<IVoidWithSideEffectMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IVoidWithSideEffectMethodInvocationHistory>();
+            internal void Add(IVoidWithSideEffectMethodInvocationHistory invocationHistory)
             {
                 _invocationHistory.Push(invocationHistory);
             }
 
-            internal int Count(BuildLabelAsyncArgumentsCriteria argumentsCriteria)
+            internal int Count(VoidWithSideEffectArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
             }
         }
 
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class BuildLabelAsyncMethodInvocationImposterGroup
+        class VoidWithSideEffectMethodInvocationImposterGroup
         {
-            internal static BuildLabelAsyncMethodInvocationImposterGroup Default = new BuildLabelAsyncMethodInvocationImposterGroup(new BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string>.Any()));
-            internal BuildLabelAsyncArgumentsCriteria ArgumentsCriteria { get; }
+            internal static VoidWithSideEffectMethodInvocationImposterGroup Default = new VoidWithSideEffectMethodInvocationImposterGroup(new VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal VoidWithSideEffectArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
-            public BuildLabelAsyncMethodInvocationImposterGroup(BuildLabelAsyncArgumentsCriteria argumentsCriteria)
+            public VoidWithSideEffectMethodInvocationImposterGroup(VoidWithSideEffectArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
             }
@@ -1318,7 +1784,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -1331,7 +1797,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, prefix, suffix, baseImplementation);
+                invocationImposter.Invoke(invocationBehavior, methodDisplayName, delta, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -1341,15 +1807,15 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default._resultGenerator = DefaultResultGenerator;
                 }
 
-                private BuildLabelAsyncDelegate _resultGenerator;
-                private readonly System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate>();
+                private VoidWithSideEffectDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate>();
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
@@ -1366,59 +1832,24 @@ namespace Imposter.Tests.Features.MethodImposter
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    global::System.Threading.Tasks.ValueTask<string> result = _resultGenerator.Invoke(prefix, suffix);
+                    _resultGenerator.Invoke(delta);
                     foreach (var callback in _callbacks)
                     {
-                        callback(prefix, suffix);
+                        callback(delta);
                     }
-
-                    return result;
                 }
 
-                internal void Callback(BuildLabelAsyncCallbackDelegate callback)
+                internal void Callback(VoidWithSideEffectCallbackDelegate callback)
                 {
                     _callbacks.Enqueue(callback);
                 }
 
-                internal void Returns(BuildLabelAsyncDelegate resultGenerator)
+                internal void Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = resultGenerator;
-                }
-
-                internal void Returns(global::System.Threading.Tasks.ValueTask<string> value)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
+                    _resultGenerator = (int delta) =>
                     {
-                        return value;
-                    };
-                }
-
-                internal void ReturnsAsync(string value)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
-                    {
-                        return new System.Threading.Tasks.ValueTask<string>(value);
-                    };
-                }
-
-                internal void Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
-                    {
-                        throw exceptionGenerator(prefix, suffix);
-                    };
-                }
-
-                internal void ThrowsAsync(System.Exception exception)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
-                    {
-                        return new System.Threading.Tasks.ValueTask<string>(System.Threading.Tasks.Task.FromException<string>(exception));
+                        throw exceptionGenerator(delta);
                     };
                 }
 
@@ -1428,69 +1859,64 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.ValueTask<string> DefaultResultGenerator(string prefix, string suffix)
+                internal static void DefaultResultGenerator(int delta)
                 {
-                    return default;
                 }
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        public interface IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Callback(BuildLabelAsyncCallbackDelegate callback);
+            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Callback(VoidWithSideEffectCallbackDelegate callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IBuildLabelAsyncMethodInvocationImposterGroupContinuation : IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        public interface IVoidWithSideEffectMethodInvocationImposterGroupContinuation : IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
-            IBuildLabelAsyncMethodInvocationImposterGroup Then();
+            IVoidWithSideEffectMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IBuildLabelAsyncMethodInvocationImposterGroup : IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        public interface IVoidWithSideEffectMethodInvocationImposterGroup : IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
+            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Returns(BuildLabelAsyncDelegate resultGenerator);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation Returns(global::System.Threading.Tasks.ValueTask<string> value);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation ReturnsAsync(string value);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation ThrowsAsync(System.Exception exception);
-            IBuildLabelAsyncMethodInvocationImposterGroupContinuation UseBaseImplementation();
+            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator);
+            IVoidWithSideEffectMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface BuildLabelAsyncInvocationVerifier
+        public interface VoidWithSideEffectInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
-        public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier
+        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
+        public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class BuildLabelAsyncMethodImposter
+        internal class VoidWithSideEffectMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup>();
-            private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
+            private readonly System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup>();
+            private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
             private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public BuildLabelAsyncMethodImposter(BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            public VoidWithSideEffectMethodImposter(VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
-                this._buildLabelAsyncMethodInvocationHistoryCollection = _buildLabelAsyncMethodInvocationHistoryCollection;
+                this._voidWithSideEffectMethodInvocationHistoryCollection = _voidWithSideEffectMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(BuildLabelAsyncArguments arguments)
+            public bool HasMatchingSetup(VoidWithSideEffectArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private BuildLabelAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(BuildLabelAsyncArguments arguments)
+            private VoidWithSideEffectMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(VoidWithSideEffectArguments arguments)
             {
                 foreach (var invocationImposterGroup in _invocationImposters)
                 {
@@ -1501,524 +1927,98 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            public global::System.Threading.Tasks.ValueTask<string> Invoke(string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+            public void Invoke(int delta, VoidWithSideEffectDelegate baseImplementation = null)
             {
-                var arguments = new BuildLabelAsyncArguments(prefix, suffix);
+                var arguments = new VoidWithSideEffectArguments(delta);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)");
                     }
 
-                    matchingInvocationImposterGroup = BuildLabelAsyncMethodInvocationImposterGroup.Default;
+                    matchingInvocationImposterGroup = VoidWithSideEffectMethodInvocationImposterGroup.Default;
                 }
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)", prefix, suffix, baseImplementation);
-                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, result, default));
-                    return result;
+                    matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)", delta, baseImplementation);
+                    _voidWithSideEffectMethodInvocationHistoryCollection.Add(new VoidWithSideEffectMethodInvocationHistory(arguments, default));
                 }
                 catch (System.Exception ex)
                 {
-                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, default, ex));
+                    _voidWithSideEffectMethodInvocationHistoryCollection.Add(new VoidWithSideEffectMethodInvocationHistory(arguments, ex));
                     throw;
                 }
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IBuildLabelAsyncMethodImposterBuilder, IBuildLabelAsyncMethodInvocationImposterGroupContinuation
+            internal class Builder : IVoidWithSideEffectMethodImposterBuilder, IVoidWithSideEffectMethodInvocationImposterGroupContinuation
             {
-                private readonly BuildLabelAsyncMethodImposter _imposter;
-                private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
-                private readonly BuildLabelAsyncArgumentsCriteria _argumentsCriteria;
-                private readonly BuildLabelAsyncMethodInvocationImposterGroup _invocationImposterGroup;
-                private BuildLabelAsyncMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(BuildLabelAsyncMethodImposter _imposter, BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, BuildLabelAsyncArgumentsCriteria _argumentsCriteria)
+                private readonly VoidWithSideEffectMethodImposter _imposter;
+                private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
+                private readonly VoidWithSideEffectArgumentsCriteria _argumentsCriteria;
+                private readonly VoidWithSideEffectMethodInvocationImposterGroup _invocationImposterGroup;
+                private VoidWithSideEffectMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(VoidWithSideEffectMethodImposter _imposter, VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, VoidWithSideEffectArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
-                    this._buildLabelAsyncMethodInvocationHistoryCollection = _buildLabelAsyncMethodInvocationHistoryCollection;
+                    this._voidWithSideEffectMethodInvocationHistoryCollection = _voidWithSideEffectMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new BuildLabelAsyncMethodInvocationImposterGroup(_argumentsCriteria);
+                    this._invocationImposterGroup = new VoidWithSideEffectMethodInvocationImposterGroup(_argumentsCriteria);
                     _imposter._invocationImposters.Push(_invocationImposterGroup);
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws<TException>()
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws<TException>()
                 {
-                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    _currentInvocationImposter.Throws((int delta) =>
                     {
                         throw new TException();
                     });
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws(System.Exception exception)
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
-                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    _currentInvocationImposter.Throws((int delta) =>
                     {
                         throw exception;
                     });
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator)
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    _currentInvocationImposter.Throws((string prefix, string suffix) =>
+                    _currentInvocationImposter.Throws((int delta) =>
                     {
-                        throw exceptionGenerator.Invoke(prefix, suffix);
+                        throw exceptionGenerator.Invoke(delta);
                     });
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroupCallback.Callback(BuildLabelAsyncCallbackDelegate callback)
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroupCallback.Callback(VoidWithSideEffectCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Returns(BuildLabelAsyncDelegate resultGenerator)
-                {
-                    _currentInvocationImposter.Returns(resultGenerator);
-                    return this;
-                }
-
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.ValueTask<string> value)
-                {
-                    _currentInvocationImposter.Returns(value);
-                    return this;
-                }
-
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.ReturnsAsync(string value)
-                {
-                    _currentInvocationImposter.ReturnsAsync(value);
-                    return this;
-                }
-
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.ThrowsAsync(System.Exception exception)
-                {
-                    _currentInvocationImposter.ThrowsAsync(exception);
-                    return this;
-                }
-
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroup.UseBaseImplementation()
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroup.UseBaseImplementation()
                 {
                     _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroup IBuildLabelAsyncMethodInvocationImposterGroupContinuation.Then()
+                IVoidWithSideEffectMethodInvocationImposterGroup IVoidWithSideEffectMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void BuildLabelAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                void VoidWithSideEffectInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
-                    var invocationCount = _buildLabelAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
-                    if (!count.Matches(invocationCount))
-                    {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
-                    }
-                }
-            }
-        }
-
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        public delegate int RefOutWithParamsDelegate(ref int seed, out int doubled, int[] adjustments);
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        public delegate void RefOutWithParamsCallbackDelegate(ref int seed, out int doubled, int[] adjustments);
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        public delegate System.Exception RefOutWithParamsExceptionGeneratorDelegate(ref int seed, out int doubled, int[] adjustments);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class RefOutWithParamsArguments
-        {
-            public int seed;
-            public int[] adjustments;
-            internal RefOutWithParamsArguments(int seed, int[] adjustments)
-            {
-                this.seed = seed;
-                this.adjustments = adjustments;
-            }
-        }
-
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public class RefOutWithParamsArgumentsCriteria
-        {
-            public global::Imposter.Abstractions.Arg<int> seed { get; }
-            public global::Imposter.Abstractions.OutArg<int> doubled { get; }
-            public global::Imposter.Abstractions.Arg<int[]> adjustments { get; }
-
-            public RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int> seed, global::Imposter.Abstractions.OutArg<int> doubled, global::Imposter.Abstractions.Arg<int[]> adjustments)
-            {
-                this.seed = seed;
-                this.doubled = doubled;
-                this.adjustments = adjustments;
-            }
-
-            public bool Matches(RefOutWithParamsArguments arguments)
-            {
-                return seed.Matches(arguments.seed) && adjustments.Matches(arguments.adjustments);
-            }
-        }
-
-        public interface IRefOutWithParamsMethodInvocationHistory
-        {
-            bool Matches(RefOutWithParamsArgumentsCriteria criteria);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class RefOutWithParamsMethodInvocationHistory : IRefOutWithParamsMethodInvocationHistory
-        {
-            internal RefOutWithParamsArguments Arguments;
-            internal int Result;
-            internal System.Exception Exception;
-            public RefOutWithParamsMethodInvocationHistory(RefOutWithParamsArguments Arguments, int Result, System.Exception Exception)
-            {
-                this.Arguments = Arguments;
-                this.Result = Result;
-                this.Exception = Exception;
-            }
-
-            public bool Matches(RefOutWithParamsArgumentsCriteria criteria)
-            {
-                return criteria.Matches(Arguments);
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class RefOutWithParamsMethodInvocationHistoryCollection
-        {
-            private readonly System.Collections.Concurrent.ConcurrentStack<IRefOutWithParamsMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IRefOutWithParamsMethodInvocationHistory>();
-            internal void Add(IRefOutWithParamsMethodInvocationHistory invocationHistory)
-            {
-                _invocationHistory.Push(invocationHistory);
-            }
-
-            internal int Count(RefOutWithParamsArgumentsCriteria argumentsCriteria)
-            {
-                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
-            }
-        }
-
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class RefOutWithParamsMethodInvocationImposterGroup
-        {
-            internal static RefOutWithParamsMethodInvocationImposterGroup Default = new RefOutWithParamsMethodInvocationImposterGroup(new RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int[]>.Any()));
-            internal RefOutWithParamsArgumentsCriteria ArgumentsCriteria { get; }
-
-            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-            private MethodInvocationImposter _lastestInvocationImposter;
-            public RefOutWithParamsMethodInvocationImposterGroup(RefOutWithParamsArgumentsCriteria argumentsCriteria)
-            {
-                ArgumentsCriteria = argumentsCriteria;
-            }
-
-            internal MethodInvocationImposter AddInvocationImposter()
-            {
-                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-                _invocationImposters.Enqueue(invocationImposter);
-                return invocationImposter;
-            }
-
-            private MethodInvocationImposter? GetInvocationImposter()
-            {
-                MethodInvocationImposter invocationImposter;
-                if (_invocationImposters.TryDequeue(out invocationImposter))
-                {
-                    if (!invocationImposter.IsEmpty)
-                    {
-                        _lastestInvocationImposter = invocationImposter;
-                    }
-                }
-
-                return _lastestInvocationImposter;
-            }
-
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
-            {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter();
-                if (invocationImposter == null)
-                {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
-                    {
-                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                    }
-
-                    invocationImposter = MethodInvocationImposter.Default;
-                }
-
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref seed, out doubled, adjustments, baseImplementation);
-            }
-
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class MethodInvocationImposter
-            {
-                internal static MethodInvocationImposter Default;
-                static MethodInvocationImposter()
-                {
-                    Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
-                }
-
-                private RefOutWithParamsDelegate _resultGenerator;
-                private readonly System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate>();
-                private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
-
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
-                {
-                    if (_useBaseImplementation)
-                    {
-                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                    }
-
-                    if (_resultGenerator == null)
-                    {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
-                        {
-                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                        }
-
-                        _resultGenerator = DefaultResultGenerator;
-                    }
-
-                    int result = _resultGenerator.Invoke(ref seed, out doubled, adjustments);
-                    foreach (var callback in _callbacks)
-                    {
-                        callback(ref seed, out doubled, adjustments);
-                    }
-
-                    return result;
-                }
-
-                internal void Callback(RefOutWithParamsCallbackDelegate callback)
-                {
-                    _callbacks.Enqueue(callback);
-                }
-
-                internal void Returns(RefOutWithParamsDelegate resultGenerator)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = resultGenerator;
-                }
-
-                internal void Returns(int value)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (ref int seed, out int doubled, int[] adjustments) =>
-                    {
-                        InitializeOutParametersWithDefaultValues(out doubled);
-                        return value;
-                    };
-                }
-
-                internal void Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (ref int seed, out int doubled, int[] adjustments) =>
-                    {
-                        throw exceptionGenerator(ref seed, out doubled, adjustments);
-                    };
-                }
-
-                internal void UseBaseImplementation()
-                {
-                    _useBaseImplementation = true;
-                    _resultGenerator = null;
-                }
-
-                private static void InitializeOutParametersWithDefaultValues(out int doubled)
-                {
-                    doubled = default(int);
-                }
-
-                internal static int DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
-                {
-                    InitializeOutParametersWithDefaultValues(out doubled);
-                    return default;
-                }
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IRefOutWithParamsMethodInvocationImposterGroupCallback
-        {
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Callback(RefOutWithParamsCallbackDelegate callback);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IRefOutWithParamsMethodInvocationImposterGroupContinuation : IRefOutWithParamsMethodInvocationImposterGroupCallback
-        {
-            IRefOutWithParamsMethodInvocationImposterGroup Then();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IRefOutWithParamsMethodInvocationImposterGroup : IRefOutWithParamsMethodInvocationImposterGroupCallback
-        {
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator);
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Returns(RefOutWithParamsDelegate resultGenerator);
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation Returns(int value);
-            IRefOutWithParamsMethodInvocationImposterGroupContinuation UseBaseImplementation();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface RefOutWithParamsInvocationVerifier
-        {
-            void Called(Count count);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier
-        {
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class RefOutWithParamsMethodImposter
-        {
-            private readonly System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup>();
-            private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public RefOutWithParamsMethodImposter(RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
-            {
-                this._refOutWithParamsMethodInvocationHistoryCollection = _refOutWithParamsMethodInvocationHistoryCollection;
-                this._invocationBehavior = _invocationBehavior;
-            }
-
-            private static void InitializeOutParametersWithDefaultValues(out int doubled)
-            {
-                doubled = default(int);
-            }
-
-            public bool HasMatchingSetup(RefOutWithParamsArguments arguments)
-            {
-                return FindMatchingInvocationImposterGroup(arguments) != null;
-            }
-
-            private RefOutWithParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RefOutWithParamsArguments arguments)
-            {
-                foreach (var invocationImposterGroup in _invocationImposters)
-                {
-                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-                        return invocationImposterGroup;
-                }
-
-                return null;
-            }
-
-            public int Invoke(ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
-            {
-                var arguments = new RefOutWithParamsArguments(seed, adjustments);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-                if (matchingInvocationImposterGroup == default)
-                {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
-                    {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)");
-                    }
-
-                    matchingInvocationImposterGroup = RefOutWithParamsMethodInvocationImposterGroup.Default;
-                }
-
-                try
-                {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)", ref seed, out doubled, adjustments, baseImplementation);
-                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, result, default));
-                    return result;
-                }
-                catch (System.Exception ex)
-                {
-                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, default, ex));
-                    throw;
-                }
-            }
-
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IRefOutWithParamsMethodImposterBuilder, IRefOutWithParamsMethodInvocationImposterGroupContinuation
-            {
-                private readonly RefOutWithParamsMethodImposter _imposter;
-                private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
-                private readonly RefOutWithParamsArgumentsCriteria _argumentsCriteria;
-                private readonly RefOutWithParamsMethodInvocationImposterGroup _invocationImposterGroup;
-                private RefOutWithParamsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(RefOutWithParamsMethodImposter _imposter, RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, RefOutWithParamsArgumentsCriteria _argumentsCriteria)
-                {
-                    this._imposter = _imposter;
-                    this._refOutWithParamsMethodInvocationHistoryCollection = _refOutWithParamsMethodInvocationHistoryCollection;
-                    this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new RefOutWithParamsMethodInvocationImposterGroup(_argumentsCriteria);
-                    _imposter._invocationImposters.Push(_invocationImposterGroup);
-                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws<TException>()
-                {
-                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
-                    {
-                        throw new TException();
-                    });
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws(System.Exception exception)
-                {
-                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
-                    {
-                        throw exception;
-                    });
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator)
-                {
-                    _currentInvocationImposter.Throws((ref int seed, out int doubled, int[] adjustments) =>
-                    {
-                        throw exceptionGenerator.Invoke(ref seed, out doubled, adjustments);
-                    });
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroupCallback.Callback(RefOutWithParamsCallbackDelegate callback)
-                {
-                    _currentInvocationImposter.Callback(callback);
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Returns(RefOutWithParamsDelegate resultGenerator)
-                {
-                    _currentInvocationImposter.Returns(resultGenerator);
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.Returns(int value)
-                {
-                    _currentInvocationImposter.Returns(value);
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroup.UseBaseImplementation()
-                {
-                    _currentInvocationImposter.UseBaseImplementation();
-                    return this;
-                }
-
-                IRefOutWithParamsMethodInvocationImposterGroup IRefOutWithParamsMethodInvocationImposterGroupContinuation.Then()
-                {
-                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
-                    return this;
-                }
-
-                void RefOutWithParamsInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
-                {
-                    var invocationCount = _refOutWithParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    var invocationCount = _voidWithSideEffectMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);

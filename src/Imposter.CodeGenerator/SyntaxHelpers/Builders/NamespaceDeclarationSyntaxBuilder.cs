@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -30,12 +31,10 @@ internal readonly struct NamespaceDeclarationSyntaxBuilder(string @namespace)
         return this;
     }
 
-    internal NamespaceDeclarationSyntax Build()
-    {
-        return NamespaceDeclaration(
+    internal NamespaceDeclarationSyntax Build(SyntaxTrivia leadingTrivia = default) =>
+        NamespaceDeclaration(
             IdentifierName(@namespace),
             externs: List<ExternAliasDirectiveSyntax>(),
             usings: List<UsingDirectiveSyntax>(),
             members: List(_members));
-    }
 }

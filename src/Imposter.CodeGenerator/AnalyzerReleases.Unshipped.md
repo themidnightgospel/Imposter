@@ -9,3 +9,4 @@ IMP001 | Imposter | Error | Imposter.CodeGenerator
 IMP002 | Imposter | Error | Imposter.CodeGenerator
 IMP003 | Imposter | Error | Imposter.CodeGenerator
 IMP004 | Imposter | Error | Imposter.CodeGenerator
+IMP005 | Imposter | Error | Imposter.CodeGenerator

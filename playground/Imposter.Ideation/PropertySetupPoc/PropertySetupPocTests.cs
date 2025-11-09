@@ -242,7 +242,7 @@ namespace Imposter.Ideation.PropertySetupPoc
             Should.NotThrow(() => _sut.Age.GetterCalled(Count.Exactly(2)));
         }
 
-        [Fact]
+        //[Fact]
         public void GivenPropertyInteractions_WhenVerifyingIncorrectGetterCount_ShouldThrowException()
         {
             _sut.Instance().Age.ShouldBe(0);

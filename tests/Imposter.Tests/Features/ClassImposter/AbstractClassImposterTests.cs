@@ -22,6 +22,7 @@ namespace Imposter.Tests.Features.ClassImposter
             var eventRaised = false;
             var instance = imposter.Instance();
             instance.StreamAdvanced += (sender, args) => eventRaised = true;
+            
 
             instance.Compute(1).ShouldBe(256);
             instance.Name.ShouldBe("overridden");
