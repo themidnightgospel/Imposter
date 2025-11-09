@@ -116,7 +116,7 @@ namespace Imposter.Tests.Shared
             internal static IndexerMethodMethodInvocationImposterGroup Default = new IndexerMethodMethodInvocationImposterGroup(new IndexerMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex>.Any()));
             internal IndexerMethodArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IndexerMethodMethodInvocationImposterGroup(IndexerMethodArgumentsCriteria argumentsCriteria)
             {

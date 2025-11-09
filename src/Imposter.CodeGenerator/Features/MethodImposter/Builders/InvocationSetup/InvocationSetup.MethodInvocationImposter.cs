@@ -133,7 +133,7 @@ internal static partial class InvocationSetupBuilder
     private static MethodDeclarationSyntax InvokeInvocationMethod(in ImposterTargetMethodMetadata method)
     {
         var parameterList = BuildInvocationParameterList(method);
-        var arguments = SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters);
+        var arguments = ArgumentListSyntax(method.Symbol.Parameters);
         var resultInvocation = IdentifierName("_resultGenerator")
             .Dot(IdentifierName("Invoke"))
             .Call(arguments);
@@ -307,7 +307,7 @@ internal static partial class InvocationSetupBuilder
 
         blockBuilder.AddStatement(
             IdentifierName("_resultGenerator")
-                .Assign(SyntaxFactoryHelper.Lambda(method.Symbol.Parameters, lambdaBody.Build()))
+                .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
                 .ToStatementSyntax());
 
         return MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
@@ -330,12 +330,12 @@ internal static partial class InvocationSetupBuilder
         blockBuilder.AddStatement(
             IdentifierName("_resultGenerator")
                 .Assign(
-                    SyntaxFactoryHelper.Lambda(
+                    Lambda(
                         method.Symbol.Parameters,
                         Block(
                             ThrowStatement(
                                 IdentifierName(throwsParameter.Name)
-                                    .Call(SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters))))))
+                                    .Call(ArgumentListSyntax(method.Symbol.Parameters))))))
                 .ToStatementSyntax());
 
         return MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
@@ -383,7 +383,7 @@ internal static partial class InvocationSetupBuilder
 
         blockBuilder.AddStatement(
             IdentifierName("_resultGenerator")
-                .Assign(SyntaxFactoryHelper.Lambda(method.Symbol.Parameters, lambdaBody.Build()))
+                .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
                 .ToStatementSyntax());
 
         return MethodDeclaration(WellKnownTypes.Void, returnsAsync.Name)
@@ -407,7 +407,7 @@ internal static partial class InvocationSetupBuilder
         blockBuilder.AddStatement(
             IdentifierName("_resultGenerator")
                 .Assign(
-                    SyntaxFactoryHelper.Lambda(
+                    Lambda(
                         method.Symbol.Parameters,
                         Block(
                             ReturnStatement(

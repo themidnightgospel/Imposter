@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -9,8 +10,7 @@ internal static partial class InvocationSetupBuilder
     internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(in ImposterTargetMethodMetadata method)
     {
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
-        var queueType = GenericName(Identifier("Queue"))
-            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList<TypeSyntax>(invocationImposterType)));
+        var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(invocationImposterType);
 
         return FieldDeclaration(
                 VariableDeclaration(queueType)

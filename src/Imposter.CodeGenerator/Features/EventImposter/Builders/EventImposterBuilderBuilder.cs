@@ -18,6 +18,8 @@ internal static class EventImposterBuilderBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.TypeSyntax))
+            .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
             .AddMembers(BuildFields(@event))
             .AddMember(BuildConstructor(@event))
             .AddMember(BuildSubscribeMethod(@event))
@@ -129,7 +131,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.Callback;
         var callbackIdentifier = IdentifierName(method.CallbackParameter.Name);
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.CallbackParameter))
             .WithBody(
                 new BlockBuilder()
@@ -146,9 +151,9 @@ internal static class EventImposterBuilderBuilder
     private static MethodDeclarationSyntax BuildRaiseMethod(in ImposterEventMetadata @event)
     {
         var methodBuilder = ExplicitInterfaceMethod(
-            @event,
-            @event.BuilderInterface.RaiseMethodName,
-            @event.Core.IsAsync ? @event.BuilderInterface.RaiseMethodReturnType : null)
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.BuilderInterface.RaiseMethodReturnType,
+                @event.BuilderInterface.RaiseMethodName)
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax));
 
         if (@event.Core.IsAsync)
@@ -175,11 +180,11 @@ internal static class EventImposterBuilderBuilder
     }
 
     private static MethodDeclarationBuilder ExplicitInterfaceMethod(
-        in ImposterEventMetadata @event,
-        string name,
-        TypeSyntax? returnType = null) =>
-        new MethodDeclarationBuilder(returnType ?? @event.BuilderInterface.TypeSyntax, name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax));
+        NameSyntax interfaceType,
+        TypeSyntax returnType,
+        string name) =>
+        new MethodDeclarationBuilder(returnType, name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(interfaceType));
 
     private static ExpressionStatementSyntax BuildAwaitRaiseAsyncStatement(in ImposterEventMetadata @event) =>
         ExpressionStatement(
@@ -190,7 +195,7 @@ internal static class EventImposterBuilderBuilder
                     .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))));
 
     private static InvocationExpressionSyntax ThrowIfNull(string parameterName) =>
-        IdentifierName(nameof(System.ArgumentNullException))
+        IdentifierName(nameof(ArgumentNullException))
             .Dot(IdentifierName("ThrowIfNull"))
             .Call(Argument(IdentifierName(parameterName)));
 
@@ -246,7 +251,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.Subscribed;
         var criteriaName = method.CriteriaParameter.Name;
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(
@@ -266,7 +274,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.Unsubscribed;
         var criteriaName = method.CriteriaParameter.Name;
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(
@@ -286,7 +297,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.OnSubscribe;
         var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.InterceptorParameter))
             .WithBody(
                 new BlockBuilder()
@@ -305,7 +319,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.OnUnsubscribe;
         var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.InterceptorParameter))
             .WithBody(
                 new BlockBuilder()
@@ -321,7 +338,10 @@ internal static class EventImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildRaisedVerificationMethod(in ImposterEventMetadata @event)
     {
-        var methodBuilder = ExplicitInterfaceMethod(@event, @event.Builder.Methods.RaisedVerificationName)
+        var methodBuilder = ExplicitInterfaceMethod(
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.Builder.Methods.RaisedVerificationName)
             .AddParameters(@event.Core.Parameters.Select(parameter =>
                 ParameterSyntax(parameter.ArgTypeSyntax, $"{parameter.Name}Criteria")))
             .AddParameter(CountParameter(@event));
@@ -405,7 +425,10 @@ internal static class EventImposterBuilderBuilder
         var method = @event.Builder.Methods.HandlerInvoked;
         var criteriaName = method.HandlerCriteriaParameter.Name;
 
-        return ExplicitInterfaceMethod(@event, method.Name)
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                method.Name)
             .AddParameter(ParameterSyntax(method.HandlerCriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(

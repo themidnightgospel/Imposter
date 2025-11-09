@@ -136,7 +136,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static IntSingleParamMethodInvocationImposterGroup Default = new IntSingleParamMethodInvocationImposterGroup(new IntSingleParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal IntSingleParamArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public IntSingleParamMethodInvocationImposterGroup(IntSingleParamArgumentsCriteria argumentsCriteria)
             {
@@ -517,7 +517,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static VoidWithSideEffectMethodInvocationImposterGroup Default = new VoidWithSideEffectMethodInvocationImposterGroup(new VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal VoidWithSideEffectArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public VoidWithSideEffectMethodInvocationImposterGroup(VoidWithSideEffectArgumentsCriteria argumentsCriteria)
             {
@@ -871,7 +871,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static SumAsyncMethodInvocationImposterGroup Default = new SumAsyncMethodInvocationImposterGroup(new SumAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
             internal SumAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public SumAsyncMethodInvocationImposterGroup(SumAsyncArgumentsCriteria argumentsCriteria)
             {
@@ -1290,7 +1290,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static BuildLabelAsyncMethodInvocationImposterGroup Default = new BuildLabelAsyncMethodInvocationImposterGroup(new BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string>.Any()));
             internal BuildLabelAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public BuildLabelAsyncMethodInvocationImposterGroup(BuildLabelAsyncArgumentsCriteria argumentsCriteria)
             {
@@ -1711,7 +1711,7 @@ namespace Imposter.Tests.Features.MethodImposter
             internal static RefOutWithParamsMethodInvocationImposterGroup Default = new RefOutWithParamsMethodInvocationImposterGroup(new RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int[]>.Any()));
             internal RefOutWithParamsArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter _lastestInvocationImposter;
             public RefOutWithParamsMethodInvocationImposterGroup(RefOutWithParamsArgumentsCriteria argumentsCriteria)
             {
