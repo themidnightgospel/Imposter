@@ -37,7 +37,7 @@ internal static class CompilationContextProvider
         if (compilation is not CSharpCompilation csCompilation)
         {
             yield return Diagnostic.Create(
-                DiagnosticDescriptors.OnlyCSharpIsSupported,
+                DiagnosticDescriptors.UnsupportedLanguage,
                 Location.None,
                 compilation.Language,
                 LanguageVersion.CSharp8.ToDisplayString()
@@ -48,7 +48,7 @@ internal static class CompilationContextProvider
         if (csCompilation.LanguageVersion < LanguageVersion.CSharp8)
         {
             yield return Diagnostic.Create(
-                DiagnosticDescriptors.HigherCSharpVersionIsRequired,
+                DiagnosticDescriptors.NotSupportedCSharpVersion,
                 Location.None,
                 csCompilation.LanguageVersion.ToDisplayString(), LanguageVersion.CSharp8.ToDisplayString()
             );
