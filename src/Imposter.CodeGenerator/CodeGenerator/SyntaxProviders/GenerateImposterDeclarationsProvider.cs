@@ -6,6 +6,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
+/// <summary>
+/// Discover GenerateImposterAttribute usages and produce GenerateImposterDeclaration values for the generator pipeline.
+/// </summary>
 internal static class GenerateImposterDeclarationsProvider
 {
     private static readonly string GenerateImposterAttribute = typeof(GenerateImposterAttribute).FullName!;

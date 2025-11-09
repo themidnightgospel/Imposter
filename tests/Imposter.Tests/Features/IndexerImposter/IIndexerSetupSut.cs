@@ -1,8 +1,10 @@
 using Imposter.Abstractions;
+using Imposter.Tests.Features.IndexerImposter;
+
+[assembly:GenerateImposter(typeof(IIndexerSetupSut))]
 
 namespace Imposter.Tests.Features.IndexerImposter
 {
-    [GenerateImposter(typeof(IIndexerSetupSut))]
     public interface IIndexerSetupSut
     {
         int this[int key1, string key2, object key3] { get; set; }

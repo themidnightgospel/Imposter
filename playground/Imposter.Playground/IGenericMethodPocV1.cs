@@ -1,8 +1,10 @@
 ﻿using Imposter.Abstractions;
+using Imposter.Playground;
+
+[assembly: GenerateImposter(typeof(IGenericMethodPocV1))]
 
 namespace Imposter.Playground;
 
-[GenerateImposter(typeof(IGenericMethodPocV1))]
 public interface IGenericMethodPocV1
 {
     TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
@@ -11,4 +13,3 @@ public interface IGenericMethodPocV1
         in TIn inValue,
         params TParams[] paramsValues);
 }
-

@@ -1,5 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
+
+[assembly: GenerateImposter(typeof(IIndexerSetupPoc))]
 
 namespace Imposter.Tests.Shared
 {
@@ -64,12 +67,10 @@ namespace Imposter.Tests.Shared
         {
         }
     }
-    
+
     // TODO
-    [GenerateImposter(typeof(IIndexerSetupPoc))]
     public interface IIndexerSetupPoc
     {
         string IndexerMethod(int name, string lastname, in Regex dog);
     }
-
 }

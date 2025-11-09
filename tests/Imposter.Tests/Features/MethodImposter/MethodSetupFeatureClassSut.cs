@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.MethodImposter;
+
+[assembly: GenerateImposter(typeof(MethodSetupFeatureClassSut))]
 
 namespace Imposter.Tests.Features.MethodImposter
 {
-    [GenerateImposter(typeof(MethodSetupFeatureClassSut))]
     public class MethodSetupFeatureClassSut
     {
         public int VoidSideEffectCount { get; private set; }
@@ -37,8 +39,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal virtual int RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
         {
             var applied = 0;
-        if (adjustments != null && adjustments.Length > 0)
-        {
+            if (adjustments != null && adjustments.Length > 0)
+            {
                 foreach (var adjustment in adjustments)
                 {
                     applied += adjustment;

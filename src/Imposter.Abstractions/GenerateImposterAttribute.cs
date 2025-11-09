@@ -4,7 +4,7 @@
 /// Specifies that a mock implementation should be generated for the specified type.
 /// When applied to a method, class, assembly, interface, or struct, this attribute triggers the generation of an imposter (mock) implementation.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 public class GenerateImposterAttribute : Attribute
 {
     /// <summary>
