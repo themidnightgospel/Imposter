@@ -195,8 +195,8 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(IndexerArgumentsBuilder.Build(indexer))
                 .AddMember(IndexerArgumentsCriteriaBuilder.Build(indexer))
                 .AddMember(IndexerImposterBuilderBuilder.Build(indexer))
-                .AddMember(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
-                .AddMember(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
+                .AddMembers(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
+                .AddMembers(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
                 .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer));
         }
 

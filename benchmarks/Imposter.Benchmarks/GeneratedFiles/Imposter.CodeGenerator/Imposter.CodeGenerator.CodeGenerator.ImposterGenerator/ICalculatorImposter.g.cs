@@ -233,7 +233,7 @@ namespace Imposter.Benchmarks
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISquareMethodInvocationImposterGroup
+        public interface ISquareMethodInvocationImposterGroup : ISquareMethodInvocationImposterGroupCallback
         {
             ISquareMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();

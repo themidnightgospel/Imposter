@@ -8,6 +8,8 @@ internal readonly struct ReturnsMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata ValueParameter;
 
     internal readonly ParameterMetadata FuncParameter;
@@ -17,9 +19,11 @@ internal readonly struct ReturnsMethodMetadata
     internal ReturnsMethodMetadata(
         in ImposterIndexerCoreMetadata core,
         in IndexerDelegateMetadata delegatesMetadata,
-        TypeSyntax interfaceType)
+        TypeSyntax returnType,
+        NameSyntax interfaceSyntax)
     {
-        ReturnType = interfaceType;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         ValueParameter = new ParameterMetadata("value", core.TypeSyntax);
         FuncParameter = new ParameterMetadata("valueGenerator", core.AsSystemFuncType);
         DelegateParameter = new ParameterMetadata("valueGenerator", delegatesMetadata.ValueDelegateType);
