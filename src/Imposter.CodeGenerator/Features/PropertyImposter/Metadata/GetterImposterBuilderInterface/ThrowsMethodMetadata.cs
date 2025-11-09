@@ -11,11 +11,14 @@ internal readonly struct ThrowsMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata ExceptionParameter;
 
-    internal ThrowsMethodMetadata(TypeSyntax builderInterfaceTypeSyntax)
+    internal ThrowsMethodMetadata(TypeSyntax returnType, NameSyntax interfaceSyntax)
     {
-        ReturnType = builderInterfaceTypeSyntax;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         ExceptionParameter = new ParameterMetadata("exception", WellKnownTypes.System.Exception);
     }
 }

@@ -8,13 +8,16 @@ internal readonly struct ReturnsMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata ValueParameter;
 
     internal readonly ParameterMetadata ValueGeneratorParameter;
 
-    internal ReturnsMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax builderInterfaceTypeSyntax)
+    internal ReturnsMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax returnType, NameSyntax interfaceSyntax)
     {
-        ReturnType = builderInterfaceTypeSyntax;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         ValueParameter = new ParameterMetadata("value", property.TypeSyntax);
         ValueGeneratorParameter = new ParameterMetadata("valueGenerator", property.AsSystemFuncType);
     }

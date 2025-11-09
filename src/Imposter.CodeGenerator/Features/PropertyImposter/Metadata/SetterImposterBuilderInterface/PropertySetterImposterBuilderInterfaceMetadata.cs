@@ -1,5 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PropertySetterThenMethodMetadata = Imposter.CodeGenerator.Features.PropertyImposter.Metadata.Common.ThenMethodMetadata;
 
 namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposterBuilderInterface;
 
@@ -13,7 +14,7 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly CallbackMethodMetadata CallbackMethod;
 
-    internal readonly ThenMethodMetadata ThenMethod;
+    internal readonly PropertySetterThenMethodMetadata ThenMethod;
 
     internal PropertySetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
@@ -21,6 +22,6 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         Syntax = SyntaxFactory.ParseName(Name);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(property, Syntax);
-        ThenMethod = new ThenMethodMetadata(Syntax, Syntax);
+        ThenMethod = new PropertySetterThenMethodMetadata(Syntax, Syntax);
     }
 }

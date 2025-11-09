@@ -389,16 +389,31 @@ namespace Imposter.Tests.Features.ClassImposter
 
         private readonly NamePropertyBuilder _Name;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterBuilder
+        public interface INamePropertyGetterOutcomeBuilder
         {
-            INamePropertyGetterBuilder Returns(string value);
-            INamePropertyGetterBuilder Returns(System.Func<string> valueGenerator);
-            INamePropertyGetterBuilder Throws(System.Exception exception);
-            INamePropertyGetterBuilder Throws<TException>()
+            INamePropertyGetterContinuationBuilder Returns(string value);
+            INamePropertyGetterContinuationBuilder Returns(System.Func<string> valueGenerator);
+            INamePropertyGetterContinuationBuilder Throws(System.Exception exception);
+            INamePropertyGetterContinuationBuilder Throws<TException>()
                 where TException : Exception, new();
-            INamePropertyGetterBuilder Callback(System.Action callback);
-            void Called(Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterContinuationBuilder
+        {
+            INamePropertyGetterContinuationBuilder Callback(System.Action callback);
             INamePropertyGetterBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterVerifier
+        {
+            void Called(Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder, INamePropertyGetterVerifier
+        {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -463,43 +478,43 @@ namespace Imposter.Tests.Features.ClassImposter
                     _hasConfiguredReturn = true;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Returns(string value)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(string value)
                 {
                     AddReturnValue(() => value);
                     return this;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Returns(System.Func<string> valueGenerator)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(System.Func<string> valueGenerator)
                 {
                     AddReturnValue(valueGenerator);
                     return this;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Throws(System.Exception exception)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws(System.Exception exception)
                 {
                     AddReturnValue(() => throw exception);
                     return this;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Throws<TException>()
+                INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws<TException>()
                 {
                     AddReturnValue(() => throw new TException());
                     return this;
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Callback(System.Action callback)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterContinuationBuilder.Callback(System.Action callback)
                 {
                     _callbacks.Enqueue(callback);
                     return this;
                 }
 
-                void INamePropertyGetterBuilder.Called(Imposter.Abstractions.Count count)
+                void INamePropertyGetterVerifier.Called(Imposter.Abstractions.Count count)
                 {
                     if (!count.Matches(_invocationCount))
                         throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterBuilder.Then()
+                INamePropertyGetterBuilder INamePropertyGetterContinuationBuilder.Then()
                 {
                     return this;
                 }
