@@ -232,7 +232,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : IIndexerIndexerGetterBuilder
+                internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
                 {
                     private readonly GetterImposter _imposter;
                     private readonly IndexerIndexerArgumentsCriteria _criteria;
@@ -244,55 +244,54 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                     private GetterInvocationImposter InvocationImposter => _imposter.GetOrCreate(_criteria);
 
-                    public IIndexerIndexerGetterBuilder Returns(int value)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(int value)
                     {
                         InvocationImposter.AddReturnValue(arguments => value);
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Returns(System.Func<int> valueGenerator)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(System.Func<int> valueGenerator)
                     {
                         InvocationImposter.AddReturnValue(arguments => valueGenerator());
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Returns(IndexerIndexerDelegate valueGenerator)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(IndexerIndexerDelegate valueGenerator)
                     {
                         InvocationImposter.AddReturnValue(arguments => valueGenerator(arguments.key, arguments.name));
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Throws(System.Exception exception)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(System.Exception exception)
                     {
                         InvocationImposter.AddReturnValue(arguments => throw exception);
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Throws<TException>()
-                        where TException : Exception, new()
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws<TException>()
                     {
                         InvocationImposter.AddReturnValue(arguments => throw new TException());
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(IndexerIndexerExceptionGenerator exceptionGenerator)
                     {
                         InvocationImposter.AddReturnValue(arguments => throw exceptionGenerator(arguments.key, arguments.name));
                         return this;
                     }
 
-                    public IIndexerIndexerGetterBuilder Callback(IndexerIndexerGetterCallback callback)
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterCallbackBuilder.Callback(IndexerIndexerGetterCallback callback)
                     {
                         InvocationImposter.AddCallback(callback);
                         return this;
                     }
 
-                    public void Called(Imposter.Abstractions.Count count)
+                    void IIndexerIndexerGetterVerifier.Called(Imposter.Abstractions.Count count)
                     {
                         _imposter.Called(_criteria, count);
                     }
 
-                    public IIndexerIndexerGetterBuilder Then()
+                    IIndexerIndexerGetterFluentBuilder IIndexerIndexerGetterContinuationBuilder.Then()
                     {
                         return this;
                     }
@@ -367,18 +366,43 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerIndexerGetterBuilder
+        public interface IIndexerIndexerGetterOutcomeBuilder
         {
-            IIndexerIndexerGetterBuilder Returns(int value);
-            IIndexerIndexerGetterBuilder Returns(System.Func<int> valueGenerator);
-            IIndexerIndexerGetterBuilder Returns(IndexerIndexerDelegate valueGenerator);
-            IIndexerIndexerGetterBuilder Throws(System.Exception exception);
-            IIndexerIndexerGetterBuilder Throws<TException>()
+            IIndexerIndexerGetterContinuationBuilder Returns(int value);
+            IIndexerIndexerGetterContinuationBuilder Returns(System.Func<int> valueGenerator);
+            IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
+            IIndexerIndexerGetterContinuationBuilder Throws(System.Exception exception);
+            IIndexerIndexerGetterContinuationBuilder Throws<TException>()
                 where TException : Exception, new();
-            IIndexerIndexerGetterBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
-            IIndexerIndexerGetterBuilder Callback(IndexerIndexerGetterCallback callback);
+            IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterCallbackBuilder
+        {
+            IIndexerIndexerGetterContinuationBuilder Callback(IndexerIndexerGetterCallback callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterContinuationBuilder : IIndexerIndexerGetterCallbackBuilder
+        {
+            IIndexerIndexerGetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterVerifier
+        {
             void Called(Imposter.Abstractions.Count count);
-            IIndexerIndexerGetterBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterFluentBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
+        {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]

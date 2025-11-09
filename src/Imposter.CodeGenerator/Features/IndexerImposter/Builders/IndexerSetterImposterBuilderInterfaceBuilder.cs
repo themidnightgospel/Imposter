@@ -10,22 +10,55 @@ namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 
 internal static class IndexerSetterImposterBuilderInterfaceBuilder
 {
-    internal static InterfaceDeclarationSyntax? Build(in ImposterIndexerMetadata indexer)
+    internal static MemberDeclarationSyntax[] Build(in ImposterIndexerMetadata indexer)
     {
         if (!indexer.Core.HasSetter)
         {
-            return null;
+            return [];
         }
 
-        var setterInterface = indexer.SetterBuilderInterface;
-
-        return new InterfaceDeclarationBuilder(setterInterface.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildCallbackMethod(setterInterface))
-            .AddMember(BuildCalledMethod(setterInterface))
-            .AddMember(BuildThenMethod(setterInterface))
-            .Build();
+        return
+        [
+            BuildCallbackInterface(indexer),
+            BuildContinuationInterface(indexer),
+            BuildFluentInterface(indexer),
+            BuildVerificationInterface(indexer),
+            BuildBuilderInterface(indexer),
+        ];
     }
+
+    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterIndexerMetadata indexer) =>
+        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax))
+            .Build();
+
+    private static InterfaceDeclarationSyntax BuildFluentInterface(in ImposterIndexerMetadata indexer) =>
+        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.FluentInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.ContinuationInterfaceTypeSyntax))
+            .Build();
+
+    private static InterfaceDeclarationSyntax BuildContinuationInterface(in ImposterIndexerMetadata indexer) =>
+        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.ContinuationInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
+            .AddMember(BuildThenMethod(indexer.SetterBuilderInterface))
+            .Build();
+
+    private static InterfaceDeclarationSyntax BuildCallbackInterface(in ImposterIndexerMetadata indexer) =>
+        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.CallbackInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(BuildCallbackMethod(indexer.SetterBuilderInterface))
+            .Build();
+
+    private static InterfaceDeclarationSyntax BuildVerificationInterface(in ImposterIndexerMetadata indexer) =>
+        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.VerificationInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(BuildCalledMethod(indexer.SetterBuilderInterface))
+            .Build();
 
     private static MethodDeclarationSyntax BuildCallbackMethod(IndexerSetterImposterBuilderInterfaceMetadata setterInterface) =>
         new MethodDeclarationBuilder(setterInterface.CallbackMethod.ReturnType, setterInterface.CallbackMethod.Name)

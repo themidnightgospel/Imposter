@@ -8,11 +8,17 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata CallbackParameter;
 
-    internal CallbackMethodMetadata(in IndexerDelegateMetadata delegatesMetadata, TypeSyntax interfaceType)
+    internal CallbackMethodMetadata(
+        in IndexerDelegateMetadata delegatesMetadata,
+        TypeSyntax returnType,
+        NameSyntax interfaceSyntax)
     {
-        ReturnType = interfaceType;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         CallbackParameter = new ParameterMetadata("callback", delegatesMetadata.SetterCallbackDelegateType);
     }
 }

@@ -8,8 +8,11 @@ internal readonly struct ThenMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal ThenMethodMetadata(TypeSyntax interfaceType)
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal ThenMethodMetadata(NameSyntax interfaceSyntax, TypeSyntax returnType)
     {
-        ReturnType = interfaceType;
+        InterfaceSyntax = interfaceSyntax;
+        ReturnType = returnType;
     }
 }

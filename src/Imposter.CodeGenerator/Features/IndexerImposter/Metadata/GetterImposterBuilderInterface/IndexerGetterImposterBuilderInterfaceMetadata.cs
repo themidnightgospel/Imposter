@@ -9,6 +9,26 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
+    internal readonly string OutcomeInterfaceName;
+
+    internal readonly NameSyntax OutcomeInterfaceTypeSyntax;
+
+    internal readonly string ContinuationInterfaceName;
+
+    internal readonly NameSyntax ContinuationInterfaceTypeSyntax;
+
+    internal readonly string CallbackInterfaceName;
+
+    internal readonly NameSyntax CallbackInterfaceTypeSyntax;
+
+    internal readonly string VerificationInterfaceName;
+
+    internal readonly NameSyntax VerificationInterfaceTypeSyntax;
+
+    internal readonly string FluentInterfaceName;
+
+    internal readonly NameSyntax FluentInterfaceTypeSyntax;
+
     internal readonly ReturnsMethodMetadata ReturnsMethod;
 
     internal readonly ThrowsMethodMetadata ThrowsMethod;
@@ -25,10 +45,26 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
     {
         Name = $"I{core.UniqueName}IndexerGetterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
-        ReturnsMethod = new ReturnsMethodMetadata(core, delegatesMetadata, TypeSyntax);
-        ThrowsMethod = new ThrowsMethodMetadata(delegatesMetadata, TypeSyntax);
-        CallbackMethod = new CallbackMethodMetadata(delegatesMetadata, TypeSyntax);
+
+        OutcomeInterfaceName = $"I{core.UniqueName}IndexerGetterOutcomeBuilder";
+        OutcomeInterfaceTypeSyntax = SyntaxFactory.ParseName(OutcomeInterfaceName);
+
+        ContinuationInterfaceName = $"I{core.UniqueName}IndexerGetterContinuationBuilder";
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+
+        CallbackInterfaceName = $"I{core.UniqueName}IndexerGetterCallbackBuilder";
+        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+
+        VerificationInterfaceName = $"I{core.UniqueName}IndexerGetterVerifier";
+        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+
+        FluentInterfaceName = $"I{core.UniqueName}IndexerGetterFluentBuilder";
+        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+
+        ReturnsMethod = new ReturnsMethodMetadata(core, delegatesMetadata, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
+        ThrowsMethod = new ThrowsMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new ThenMethodMetadata(TypeSyntax);
+        ThenMethod = new ThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
     }
 }

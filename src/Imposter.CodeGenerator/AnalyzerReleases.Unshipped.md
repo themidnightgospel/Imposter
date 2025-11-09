@@ -5,7 +5,7 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-IMP001 | Imposter | Error | ImposterGenerator
-IMP002 | Imposter | Error | ImposterGenerator
-IMP003 | Imposter | Error | ImposterGenerator
-IMP004 | Imposter | Error | ImposterGenerator
+IMP001 | Imposter | Error | Imposter.CodeGenerator
+IMP002 | Imposter | Error | Imposter.CodeGenerator
+IMP003 | Imposter | Error | Imposter.CodeGenerator
+IMP004 | Imposter | Error | Imposter.CodeGenerator

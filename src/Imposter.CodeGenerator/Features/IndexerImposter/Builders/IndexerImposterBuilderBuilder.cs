@@ -259,6 +259,7 @@ internal static class IndexerImposterBuilderBuilder
         return new ClassDeclarationBuilder(builderMetadata.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.TypeSyntax))
+            .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax))
             .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.GetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
             .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
             .AddMember(new ConstructorBuilder(builderMetadata.Name)
@@ -306,7 +307,7 @@ internal static class IndexerImposterBuilderBuilder
             IdentifierName(parameter.Identifier));
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)))
@@ -323,7 +324,7 @@ internal static class IndexerImposterBuilderBuilder
             InvocationExpression(IdentifierName(parameter.Identifier)));
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)))
@@ -345,7 +346,7 @@ internal static class IndexerImposterBuilderBuilder
                         fromArguments: true)));
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)))
@@ -362,7 +363,7 @@ internal static class IndexerImposterBuilderBuilder
             ThrowExpression(IdentifierName(parameter.Identifier)));
 
         return new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)))
@@ -373,15 +374,16 @@ internal static class IndexerImposterBuilderBuilder
         in ImposterIndexerMetadata indexer,
         GetterThrowsMetadata throwsMetadata)
         => new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
-            .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax))
+            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter(throwsMetadata.GenericTypeParameterName))))
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(
                     indexer.GetterImplementation.Builder,
                     SimpleLambdaExpression(
                         Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
-                        ThrowExpression(ObjectCreationExpression(IdentifierName("TException")).WithArgumentList(ArgumentList()))))))
+                        ThrowExpression(
+                            ObjectCreationExpression(IdentifierName(throwsMetadata.GenericTypeParameterName))
+                                .WithArgumentList(ArgumentList()))))))
             .Build();
 
     private static MethodDeclarationSyntax BuildGetterBuilderThrowsDelegateMethod(
@@ -400,7 +402,7 @@ internal static class IndexerImposterBuilderBuilder
                             fromArguments: true))));
 
         return new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)))
@@ -411,7 +413,7 @@ internal static class IndexerImposterBuilderBuilder
     {
         var parameter = SyntaxFactoryHelper.ParameterSyntax(indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter);
         return new MethodDeclarationBuilder(indexer.GetterBuilderInterface.CallbackMethod.ReturnType, indexer.GetterBuilderInterface.CallbackMethod.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.GetterBuilderInterface.CallbackMethod.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(BuildFluentBodyReturningThis(
                 InvocationImposterAddCallback(indexer.GetterImplementation.Builder, IdentifierName(parameter.Identifier))))
@@ -424,7 +426,7 @@ internal static class IndexerImposterBuilderBuilder
         var parameter = SyntaxFactoryHelper.ParameterSyntax(indexer.GetterBuilderInterface.CalledMethod.CountParameter);
 
         return new MethodDeclarationBuilder(indexer.GetterBuilderInterface.CalledMethod.ReturnType, indexer.GetterBuilderInterface.CalledMethod.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax))
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -442,7 +444,7 @@ internal static class IndexerImposterBuilderBuilder
     {
         var thenMetadata = indexer.GetterBuilderInterface.ThenMethod;
         return new MethodDeclarationBuilder(thenMetadata.ReturnType, thenMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax))
             .WithBody(Block(ReturnStatement(ThisExpression())))
             .Build();
     }
@@ -882,6 +884,7 @@ internal static class IndexerImposterBuilderBuilder
         return new ClassDeclarationBuilder(builderMetadata.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.TypeSyntax))
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax))
             .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.SetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
             .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
             .AddMember(new ConstructorBuilder(builderMetadata.Name)
@@ -906,7 +909,7 @@ internal static class IndexerImposterBuilderBuilder
         var parameter = SyntaxFactoryHelper.ParameterSyntax(callbackMetadata.CallbackParameter);
 
         return new MethodDeclarationBuilder(callbackMetadata.ReturnType, callbackMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.SetterBuilderInterface.CallbackMethod.InterfaceSyntax))
             .AddParameter(parameter)
             .WithBody(Block(
                 IdentifierName(builderMetadata.ImposterFieldName)
@@ -927,7 +930,7 @@ internal static class IndexerImposterBuilderBuilder
         var parameter = SyntaxFactoryHelper.ParameterSyntax(calledMetadata.CountParameter);
 
         return new MethodDeclarationBuilder(calledMetadata.ReturnType, calledMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax))
             .AddParameter(parameter)
             .WithBody(Block(
                 IdentifierName(builderMetadata.ImposterFieldName)
@@ -945,7 +948,7 @@ internal static class IndexerImposterBuilderBuilder
         var thenMetadata = indexer.SetterBuilderInterface.ThenMethod;
 
         return new MethodDeclarationBuilder(thenMetadata.ReturnType, thenMetadata.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax))
             .WithBody(Block(ReturnStatement(ThisExpression())))
             .Build();
     }
