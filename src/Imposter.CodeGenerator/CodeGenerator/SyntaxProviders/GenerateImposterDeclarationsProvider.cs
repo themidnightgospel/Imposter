@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
@@ -19,25 +20,23 @@ internal static class GenerateImposterDeclarationsProvider
             .SyntaxProvider
             .ForAttributeWithMetadataName(
                 GenerateImposterAttribute,
-                predicate: static (_, _) => true,
+                predicate: static (node, _) => node is AttributeSyntax { ArgumentList.Arguments.Count: > 0 },
                 transform: static (ctx, token) => GetImposterTargetTypeSymbol(ctx, token))
             .SelectMany((symbols, _) => symbols)
             .Collect()
-            .SelectMany((targetSymbols, _) => targetSymbols.Distinct());
+            .SelectMany((targetSymbols, _) => targetSymbols.Distinct())
+            .WithTrackingName("GenerateImposterDeclarations");
     }
-
     private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(GeneratorAttributeSyntaxContext context, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
-        {
-            return [];
-        }
+        token.ThrowIfCancellationRequested();
 
         return context
             .Attributes
             .Select(it =>
             {
-                if (it.ConstructorArguments.Length > 0 && it.ConstructorArguments[0].Value is INamedTypeSymbol imposterType)
+                if (it.ConstructorArguments.Length > 0
+                    && it.ConstructorArguments[0].Value is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType)
                 {
                     return new GenerateImposterDeclaration(imposterType, GetPutInTheSameNamespaceValue(it));
                 }
@@ -49,20 +48,6 @@ internal static class GenerateImposterDeclarationsProvider
             .Select(it => it!);
     }
 
-    // TODO refactor
-    static bool GetPutInTheSameNamespaceValue(AttributeData attributeData)
-    {
-        if (attributeData.ConstructorArguments.Length > 1)
-        {
-            var arg = attributeData.ConstructorArguments[1];
-
-            if (arg is { Kind: TypedConstantKind.Primitive, Type.SpecialType: SpecialType.System_Boolean }
-                && arg.Value is bool value)
-            {
-                return value;
-            }
-        }
-
-        return true;
-    }
+    private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
+        attributeData.ConstructorArguments.Length != 2 || (bool)attributeData.ConstructorArguments[1].Value!;
 }
