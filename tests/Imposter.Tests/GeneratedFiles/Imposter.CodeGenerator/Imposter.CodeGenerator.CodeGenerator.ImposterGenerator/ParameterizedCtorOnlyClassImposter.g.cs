@@ -741,7 +741,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 _handlerOrder.Enqueue(handler);
                 _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
                 _subscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                foreach (var interceptor in _subscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -760,7 +760,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return 0;
                 });
                 _unsubscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -833,7 +833,7 @@ namespace Imposter.Tests.Features.ClassImposter
             private void RaiseInternal(object sender, global::System.EventArgs e)
             {
                 _history.Enqueue((sender, e));
-                foreach (var callback in _callbacks.ToArray())
+                foreach (var callback in _callbacks)
                 {
                     callback(sender, e);
                 }
@@ -848,7 +848,7 @@ namespace Imposter.Tests.Features.ClassImposter
             private System.Collections.Generic.IEnumerable<global::System.EventHandler> EnumerateActiveHandlers()
             {
                 System.Collections.Generic.Dictionary<global::System.EventHandler, int> budgets = new System.Collections.Generic.Dictionary<global::System.EventHandler, int>(_handlerCounts);
-                foreach (var handler in _handlerOrder.ToArray())
+                foreach (var handler in _handlerOrder)
                 {
                     int remaining;
                     if (budgets.TryGetValue(handler, out remaining))

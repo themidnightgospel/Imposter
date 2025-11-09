@@ -70,7 +70,7 @@ namespace Imposter.Tests.Features.EventImposter
                 _handlerOrder.Enqueue(handler);
                 _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
                 _subscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                foreach (var interceptor in _subscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -89,7 +89,7 @@ namespace Imposter.Tests.Features.EventImposter
                     return 0;
                 });
                 _unsubscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -163,7 +163,7 @@ namespace Imposter.Tests.Features.EventImposter
             {
                 _history.Enqueue((arg1, arg2));
                 System.Collections.Generic.List<System.Threading.Tasks.Task> pendingTasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks.ToArray())
+                foreach (var callback in _callbacks)
                 {
                     System.Threading.Tasks.Task task = callback(arg1, arg2);
                     if (task != null)
@@ -191,7 +191,7 @@ namespace Imposter.Tests.Features.EventImposter
             private System.Collections.Generic.IEnumerable<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> EnumerateActiveHandlers()
             {
                 System.Collections.Generic.Dictionary<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>, int> budgets = new System.Collections.Generic.Dictionary<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>, int>(_handlerCounts);
-                foreach (var handler in _handlerOrder.ToArray())
+                foreach (var handler in _handlerOrder)
                 {
                     int remaining;
                     if (budgets.TryGetValue(handler, out remaining))
@@ -276,7 +276,7 @@ namespace Imposter.Tests.Features.EventImposter
                 _handlerOrder.Enqueue(handler);
                 _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
                 _subscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                foreach (var interceptor in _subscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -295,7 +295,7 @@ namespace Imposter.Tests.Features.EventImposter
                     return 0;
                 });
                 _unsubscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -369,7 +369,7 @@ namespace Imposter.Tests.Features.EventImposter
             {
                 _history.Enqueue((sender, args));
                 System.Collections.Generic.List<System.Threading.Tasks.Task> pendingTasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks.ToArray())
+                foreach (var callback in _callbacks)
                 {
                     System.Threading.Tasks.Task task = callback(sender, args);
                     if (task != null)
@@ -397,7 +397,7 @@ namespace Imposter.Tests.Features.EventImposter
             private System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> EnumerateActiveHandlers()
             {
                 System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int> budgets = new System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int>(_handlerCounts);
-                foreach (var handler in _handlerOrder.ToArray())
+                foreach (var handler in _handlerOrder)
                 {
                     int remaining;
                     if (budgets.TryGetValue(handler, out remaining))
@@ -482,7 +482,7 @@ namespace Imposter.Tests.Features.EventImposter
                 _handlerOrder.Enqueue(handler);
                 _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
                 _subscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                foreach (var interceptor in _subscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -501,7 +501,7 @@ namespace Imposter.Tests.Features.EventImposter
                     return 0;
                 });
                 _unsubscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -574,7 +574,7 @@ namespace Imposter.Tests.Features.EventImposter
             private void RaiseInternal(object sender, global::System.EventArgs e)
             {
                 _history.Enqueue((sender, e));
-                foreach (var callback in _callbacks.ToArray())
+                foreach (var callback in _callbacks)
                 {
                     callback(sender, e);
                 }
@@ -589,7 +589,7 @@ namespace Imposter.Tests.Features.EventImposter
             private System.Collections.Generic.IEnumerable<global::System.EventHandler> EnumerateActiveHandlers()
             {
                 System.Collections.Generic.Dictionary<global::System.EventHandler, int> budgets = new System.Collections.Generic.Dictionary<global::System.EventHandler, int>(_handlerCounts);
-                foreach (var handler in _handlerOrder.ToArray())
+                foreach (var handler in _handlerOrder)
                 {
                     int remaining;
                     if (budgets.TryGetValue(handler, out remaining))
@@ -674,7 +674,7 @@ namespace Imposter.Tests.Features.EventImposter
                 _handlerOrder.Enqueue(handler);
                 _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
                 _subscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                foreach (var interceptor in _subscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -693,7 +693,7 @@ namespace Imposter.Tests.Features.EventImposter
                     return 0;
                 });
                 _unsubscribeHistory.Enqueue(handler);
-                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
                 }
@@ -767,7 +767,7 @@ namespace Imposter.Tests.Features.EventImposter
             {
                 _history.Enqueue((arg1, arg2));
                 System.Collections.Generic.List<System.Threading.Tasks.Task> pendingTasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks.ToArray())
+                foreach (var callback in _callbacks)
                 {
                     System.Threading.Tasks.ValueTask task = callback(arg1, arg2);
                     if (task != null)
@@ -795,7 +795,7 @@ namespace Imposter.Tests.Features.EventImposter
             private System.Collections.Generic.IEnumerable<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> EnumerateActiveHandlers()
             {
                 System.Collections.Generic.Dictionary<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>, int> budgets = new System.Collections.Generic.Dictionary<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>, int>(_handlerCounts);
-                foreach (var handler in _handlerOrder.ToArray())
+                foreach (var handler in _handlerOrder)
                 {
                     int remaining;
                     if (budgets.TryGetValue(handler, out remaining))
