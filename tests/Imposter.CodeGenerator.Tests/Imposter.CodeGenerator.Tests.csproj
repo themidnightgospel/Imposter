@@ -27,8 +27,4 @@
         <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\ClassImposter\" />
-    </ItemGroup>
-
 </Project>
