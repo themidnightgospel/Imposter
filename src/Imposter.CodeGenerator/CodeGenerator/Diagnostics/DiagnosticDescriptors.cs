@@ -4,49 +4,64 @@ namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 
 public static class DiagnosticDescriptors
 {
-    public static readonly DiagnosticDescriptor OnlyCSharpIsSupported = new(
+    // TODO Update links when docs page is added.
+    private const string LanguageSupportHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#c-language-version-support";
+    private const string TargetHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#valid-imposter-targets";
+    private const string AccessibleConstructorHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#accessible-constructors";
+    private const string CrashIssueUrl = "https://github.com/themidnightgospel/Imposter/issues/new?labels=bug&title=Generator%20crash:%20IMP005";
+    
+    public static readonly DiagnosticDescriptor UnsupportedLanguage = new(
         "IMP001",
-        "Only C# language is supported",
-        "Imposter does not support {0} but C# is required",
+        "Unsupported language",
+        "Imposter only supports 'C#' language version '{1}' or higher. Current language is '{0}'.",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
-        true
+        true,
+        description: "The generator runs only for C# projects targeting language version 8.0 or newer.",
+        helpLinkUri: LanguageSupportHelpUrl
     );
 
-    public static readonly DiagnosticDescriptor ImposterTargetMustBeInterface = new(
+    public static readonly DiagnosticDescriptor InvalidImposterTarget = new(
         "IMP002",
         "Imposter target must be an interface or non-sealed class",
-        "GenerateImposterAttribute can only target interfaces or non-sealed classes. '{0}' is a {1}.",
+        "Apply [GenerateImposter] to an interface or make '{0}' non-sealed (currently a '{1}')",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
-        true
+        true,
+        description: "Unsupported target type. Imposters can target interfaces or extensible classes only.",
+        helpLinkUri: TargetHelpUrl
     );
 
-    public static readonly DiagnosticDescriptor HigherCSharpVersionIsRequired = new(
+    public static readonly DiagnosticDescriptor NotSupportedCSharpVersion = new(
         "IMP003",
-        "Higher C# version is required",
-        "Current C# version {0} is not supported, version {1} or higher is required",
+        "C# version not supported",
+        "Current C# version '{0}' is not supported, version '{1}' or higher is required",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
-        true
+        true,
+        description: "The generator relies on C# 8.0 features. Update the consuming project to a supported language version.",
+        helpLinkUri: LanguageSupportHelpUrl
     );
 
     public static readonly DiagnosticDescriptor ImposterTargetMustHaveAccessibleConstructor = new(
         "IMP004",
         "Imposter target must expose an accessible constructor",
-        "Type '{0}' must declare at least one constructor accessible to generated imposters",
+        "Declare a public, internal, or protected constructor on '{0}' that the generated imposter can call",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
-        true
+        true,
+        description: "Accessible constructor required so generated imposters can instantiate the target.",
+        helpLinkUri: AccessibleConstructorHelpUrl
     );
 
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",
-        "Unhandled exception while generating imposters: {0}",
+        "Unhandled exception while generating imposters: '{0}'",
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
-        true
+        true,
+        description: "An unexpected exception bubbled out of the source generator.",
+        helpLinkUri: CrashIssueUrl
     );
-
 }

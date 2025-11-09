@@ -36,7 +36,7 @@ internal static class ImposterTargetValidator
 
         sourceProductionContext.ReportDiagnostic(
             Diagnostic.Create(
-                DiagnosticDescriptors.ImposterTargetMustBeInterface,
+                DiagnosticDescriptors.InvalidImposterTarget,
                 targetLocation,
                 targetDisplayName,
                 target.TypeKind));

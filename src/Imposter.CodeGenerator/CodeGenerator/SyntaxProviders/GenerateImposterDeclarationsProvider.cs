@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
@@ -20,7 +19,7 @@ internal static class GenerateImposterDeclarationsProvider
             .SyntaxProvider
             .ForAttributeWithMetadataName(
                 GenerateImposterAttribute,
-                predicate: static (node, _) => node is AttributeSyntax { ArgumentList.Arguments.Count: > 0 },
+                predicate: static (_, _) => true,
                 transform: static (ctx, token) => GetImposterTargetTypeSymbol(ctx, token))
             .SelectMany((symbols, _) => symbols)
             .Collect()
@@ -30,6 +29,11 @@ internal static class GenerateImposterDeclarationsProvider
     private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(GeneratorAttributeSyntaxContext context, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
+
+        if (!context.Attributes.Any(static attribute => attribute.ConstructorArguments.Length > 0))
+        {
+            return [];
+        }
 
         return context
             .Attributes
