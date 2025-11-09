@@ -33,6 +33,259 @@ namespace Sample
 """;
 
     [Fact]
+    public void GivenIndexerGetterSetup_WhenReturningValue_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Is(v => v > 0)].Getter().Returns(10);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterSetup_WhenReturningDelegate_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Returns(() => 7);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterReturns_WhenChainingReturns_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Returns(1).Then().Returns(2);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterReturns_WhenChainingDelegate_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Returns(() => 1).Then().Returns(2);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterThrows_WhenSwitchingToReturns_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Throws(new System.Exception("fail")).Then().Returns(5);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterReturns_WhenMixingCallbacks_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter()
+                .Returns(1)
+                .Then()
+                .Callback(value => { })
+                .Then()
+                .Returns(() => 2);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenCallingCalled_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Called(Imposter.Abstractions.Count.Exactly(1));
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenRegisteringCallback_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Callback((index, value) => { });
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenChainingCallbacks_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter()
+                .Callback((index, value) => { })
+                .Callback((index, value) => { });
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenUsingThen_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter()
+                .Callback((index, value) => { })
+                .Then();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenMixingCallbacksAndThen_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter()
+                .Callback((index, value) => { })
+                .Then()
+                .Callback((index, value) => { })
+                .Then();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenUsingPredicateMatcher_ShouldCompile()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Is(i => i > 10)].Setter().Called(Imposter.Abstractions.Count.Once());
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
     public void GivenIndexerGetterSetup_WhenCallingThenWithoutOutcome_ShouldFail()
     {
         var diagnostics = CompileSnippet(/*lang=csharp*/"""
@@ -73,6 +326,66 @@ namespace Sample
     }
 
     [Fact]
+    public void GivenIndexerGetterThrows_WhenRepeatingThrowsWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Throws(new System.Exception("first")).Throws(new System.Exception("second"));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterReturns_WhenThrowingGenericWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Returns(1).Throws<System.InvalidOperationException>();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterThrowsGeneric_WhenReturningWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Throws<System.InvalidOperationException>().Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
     public void GivenIndexerGetterCallback_WhenReturningWithoutThen_ShouldFail()
     {
         var diagnostics = CompileSnippet(/*lang=csharp*/"""
@@ -84,6 +397,126 @@ namespace Sample
         {
             var imposter = new IndexerServiceImposter();
             imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Callback(_ => { }).Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerGetterCallback_WhenCallingCalled_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().Callback(value => { }).Called(Imposter.Abstractions.Count.AtLeast(1));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenReturningValue_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Returns(1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenReturningDelegate_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Returns(() => 1);
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenThrowingInstance_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Throws(new System.Exception("fail"));
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerSetter_WhenThrowingGeneric_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Throws<System.InvalidOperationException>();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public void GivenIndexerSetterCallback_WhenThrowingWithoutThen_ShouldFail()
+    {
+        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().Callback((index, value) => { }).Throws(new System.Exception("fail"));
         }
     }
 }
@@ -258,6 +691,11 @@ namespace Sample
         var span = diagnostic.Location.GetLineSpan();
         span.Path.ShouldBe(SnippetFileName);
         (span.StartLinePosition.Line + 1).ShouldBe(expectedLine);
+    }
+
+    private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+    {
+        diagnostics.ShouldBeEmpty();
     }
 
     private const string BaseSourceFileName = "IndexerFluentApiTests.Base.cs";
