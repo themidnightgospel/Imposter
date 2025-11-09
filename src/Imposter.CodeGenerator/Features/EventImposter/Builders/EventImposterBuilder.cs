@@ -203,7 +203,7 @@ internal static class EventImposterBuilder
         ForEachStatement(
             Var,
             Identifier("interceptor"),
-            FieldIdentifier(interceptorsField).Dot(IdentifierName("ToArray")).Call(),
+            FieldIdentifier(interceptorsField),
             Block(
                 ExpressionStatement(
                     IdentifierName("interceptor")
@@ -628,7 +628,7 @@ internal static class EventImposterBuilder
             ForEachStatement(
                 Var,
                 Identifier("handler"),
-                handlerOrder.Dot(IdentifierName("ToArray")).Call(),
+                handlerOrder,
                 Block(
                     LocalDeclarationStatement(
                         VariableDeclaration(
@@ -688,7 +688,7 @@ internal static class EventImposterBuilder
         ForEachStatement(
             Var,
             Identifier("callback"),
-            FieldIdentifier(field).Dot(IdentifierName("ToArray")).Call(),
+            FieldIdentifier(field),
             Block(
                 ExpressionStatement(
                     IdentifierName("callback")
@@ -718,7 +718,7 @@ internal static class EventImposterBuilder
         ForEachStatement(
             Var,
             Identifier("callback"),
-            FieldIdentifier(field).Dot(IdentifierName("ToArray")).Call(),
+            FieldIdentifier(field),
             Block(
                 LocalDeclarationStatement(
                     VariableDeclaration(
