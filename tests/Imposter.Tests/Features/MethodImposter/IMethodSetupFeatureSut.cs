@@ -2,10 +2,12 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.MethodImposter;
+
+[assembly: GenerateImposter(typeof(IMethodSetupFeatureSut))]
 
 namespace Imposter.Tests.Features.MethodImposter
 {
-    [GenerateImposter(typeof(IMethodSetupFeatureSut))]
     public interface IMethodSetupFeatureSut
     {
         void VoidNoParams();
@@ -27,19 +29,19 @@ namespace Imposter.Tests.Features.MethodImposter
         int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings);
 
         void GenericSingleParam<TValue>(TValue value);
-        
+
         void GenericInnerSingleParam<TValue>(List<TValue> value);
-        
+
         TResult GenericOutParam<TValue, TResult>(out TValue value);
-        
+
         Stack<TResult> GenericInnerOutParam<TValue, TResult>(out List<TValue> value);
 
         TResult GenericRefParam<TValue, TResult>(ref TValue value);
-        
+
         Stack<TResult> GenericInnerRefParam<TValue, TResult>(ref List<TValue> value);
 
         TResult GenericParamsParam<TValue, TResult>(params TValue[] value);
-        
+
         Stack<TResult> GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value);
 
         TResult GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(
@@ -47,9 +49,9 @@ namespace Imposter.Tests.Features.MethodImposter
             ref TRef refValue,
             in TIn inValue,
             params TParams[] paramsValues);
-        
+
         Task<int> AsyncTaskIntNoParams();
-        
+
         ValueTask<int> AsyncValueTaskIntNoParams();
     }
 }

@@ -1,9 +1,11 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter;
+
+[assembly: GenerateImposter(typeof(AbstractTelemetryService))]
 
 namespace Imposter.Tests.Features.ClassImposter
 {
-    [GenerateImposter(typeof(AbstractTelemetryService))]
     public abstract class AbstractTelemetryService
     {
         protected AbstractTelemetryService()

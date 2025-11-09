@@ -1,8 +1,10 @@
 ﻿using Imposter.Abstractions;
+using Imposter.Tests.Features.PropertyImposter;
+
+[assembly: GenerateImposter(typeof(IPropertySetupSut))]
 
 namespace Imposter.Tests.Features.PropertyImposter
 {
-    [GenerateImposter(typeof(IPropertySetupSut))]
     public interface IPropertySetupSut
     {
         int Age { get; set; }

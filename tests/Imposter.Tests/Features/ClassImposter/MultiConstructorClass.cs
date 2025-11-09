@@ -1,9 +1,11 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter;
+
+[assembly: GenerateImposter(typeof(MultiConstructorClass))]
 
 namespace Imposter.Tests.Features.ClassImposter
 {
-    [GenerateImposter(typeof(MultiConstructorClass))]
     public class MultiConstructorClass
     {
         public string CtorSignature { get; }

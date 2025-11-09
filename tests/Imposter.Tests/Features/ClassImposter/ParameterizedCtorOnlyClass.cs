@@ -1,9 +1,11 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter;
+
+[assembly: GenerateImposter(typeof(ParameterizedCtorOnlyClass))]
 
 namespace Imposter.Tests.Features.ClassImposter
 {
-    [GenerateImposter(typeof(ParameterizedCtorOnlyClass))]
     public class ParameterizedCtorOnlyClass
     {
         private string _name;

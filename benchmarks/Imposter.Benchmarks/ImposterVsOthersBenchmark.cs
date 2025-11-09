@@ -1,11 +1,13 @@
-﻿using BenchmarkDotNet.Attributes;
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
+using Imposter.Benchmarks;
+using BenchmarkDotNet.Attributes;
 using Moq;
 using NSubstitute;
 
+[assembly: GenerateImposter(typeof(ImposterVsMoqVsNSub.ICalculator))]
+
 namespace Imposter.Benchmarks;
 
-[GenerateImposter(typeof(ICalculator))]
 [MemoryDiagnoser]
 public class ImposterVsMoqVsNSub
 {
@@ -24,7 +26,7 @@ public class ImposterVsMoqVsNSub
                 .Setup(it => it.Square(input))
                 .Returns(input * input);
         }
-        
+
         var mockObject = calculatorMock.Object;
 
         for (var i = 0; i < Iteration; i++)
@@ -54,7 +56,7 @@ public class ImposterVsMoqVsNSub
     public void Imposter()
     {
         var imposter = new ICalculatorImposter();
-        
+
         for (var i = 0; i < Iteration; i++)
         {
             var input = i;
