@@ -181,7 +181,7 @@ internal static class EventImposterBuilderBuilder
         new MethodDeclarationBuilder(returnType ?? @event.BuilderInterface.TypeSyntax, name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax));
 
-    private static StatementSyntax BuildAwaitRaiseAsyncStatement(in ImposterEventMetadata @event) =>
+    private static ExpressionStatementSyntax BuildAwaitRaiseAsyncStatement(in ImposterEventMetadata @event) =>
         ExpressionStatement(
             AwaitExpression(
                 IdentifierName(@event.Builder.Methods.RaiseCoreAsyncName)
@@ -189,12 +189,12 @@ internal static class EventImposterBuilderBuilder
                     .Dot(IdentifierName("ConfigureAwait"))
                     .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))));
 
-    private static ExpressionSyntax ThrowIfNull(string parameterName) =>
+    private static InvocationExpressionSyntax ThrowIfNull(string parameterName) =>
         IdentifierName(nameof(System.ArgumentNullException))
             .Dot(IdentifierName("ThrowIfNull"))
             .Call(Argument(IdentifierName(parameterName)));
 
-    private static StatementSyntax ForEachInterceptor(in FieldMetadata interceptorsField, string handlerIdentifier) =>
+    private static ForEachStatementSyntax ForEachInterceptor(in FieldMetadata interceptorsField, string handlerIdentifier) =>
         ForEachStatement(
             Var,
             Identifier("interceptor"),
@@ -654,14 +654,14 @@ internal static class EventImposterBuilderBuilder
             SeparatedList(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))));
     }
 
-    private static ExpressionSyntax BuildHandlerInvocationTuple(ExpressionSyntax handlerExpression, in ImposterEventMetadata @event)
+    private static TupleExpressionSyntax BuildHandlerInvocationTuple(ExpressionSyntax handlerExpression, in ImposterEventMetadata @event)
     {
         var arguments = new List<ArgumentSyntax> { Argument(handlerExpression) };
         arguments.AddRange(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))));
         return TupleExpression(SeparatedList(arguments));
     }
 
-    private static StatementSyntax ForEachInvocation(in FieldMetadata field, in ImposterEventMetadata @event) =>
+    private static ForEachStatementSyntax ForEachInvocation(in FieldMetadata field, in ImposterEventMetadata @event) =>
         ForEachStatement(
             Var,
             Identifier("callback"),
@@ -671,7 +671,7 @@ internal static class EventImposterBuilderBuilder
                     IdentifierName("callback")
                         .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))))));
 
-    private static StatementSyntax ForEachHandlerInvocation(in ImposterEventMetadata @event) =>
+    private static ForEachStatementSyntax ForEachHandlerInvocation(in ImposterEventMetadata @event) =>
         ForEachStatement(
             Var,
             Identifier("handler"),
@@ -685,7 +685,7 @@ internal static class EventImposterBuilderBuilder
                     IdentifierName("handler")
                         .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))))));
 
-    private static StatementSyntax ForEachAsyncInvocation(in FieldMetadata field, in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
+    private static ForEachStatementSyntax ForEachAsyncInvocation(in FieldMetadata field, in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
     {
         var asyncResultType = usesValueTask
             ? WellKnownTypes.System.Threading.Tasks.ValueTask
@@ -757,7 +757,7 @@ internal static class EventImposterBuilderBuilder
                                 .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))))))));
     }
 
-    private static MemberDeclarationSyntax BuildCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods)
+    private static MethodDeclarationSyntax BuildCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods)
     {
         var enumerableType = QualifiedName(
             WellKnownTypes.System.Collections.Generic.Namespace,
@@ -808,7 +808,7 @@ internal static class EventImposterBuilderBuilder
                     ReturnStatement(IdentifierName("count"))));
     }
 
-    private static MemberDeclarationSyntax BuildEnsureCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods) =>
+    private static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods) =>
         MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier(methods.EnsureCountMatchesName))
             .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword))
             .WithParameterList(

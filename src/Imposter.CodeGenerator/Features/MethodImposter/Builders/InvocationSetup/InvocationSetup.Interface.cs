@@ -73,6 +73,13 @@ internal static partial class InvocationSetupBuilder
                         .Build());
             }
 
+            if (method.MethodInvocationImposterGroup.UseBaseImplementationMethod is { } useBaseImplementationMethod)
+            {
+                methods.Add(new MethodDeclarationBuilder(useBaseImplementationMethod.ReturnType, useBaseImplementationMethod.Name)
+                    .WithSemicolon()
+                    .Build());
+            }
+
             methods.Add(new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThenMethod.ReturnType, method.MethodInvocationImposterGroup.ThenMethod.Name)
                 .WithSemicolon()
                 .Build());

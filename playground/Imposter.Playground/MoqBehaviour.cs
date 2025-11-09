@@ -10,6 +10,37 @@ namespace Imposter.Playground;
 
 public class MoqBehaviour
 {
+
+    public class TestClas
+    {
+        public virtual int VirtualMethod()
+        {
+            Console.WriteLine("Test");
+            return 1;
+        }
+    }
+
+    [Fact]
+    public void Callback()
+    {
+        var mock1 = new Mock<TestClas>()
+        {
+            CallBase = true
+        };
+        
+        mock1.Object.VirtualMethod().ShouldBe(1);
+        
+        var mock2 = new Mock<TestClas>()
+        {
+            CallBase = true
+        };
+        
+        mock2.Setup(s => s.VirtualMethod()).Returns(33);
+        mock2.Object.VirtualMethod().ShouldBe(33);
+
+
+    }
+
     [Fact]
     public void InOrderVerification()
     {

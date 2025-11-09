@@ -13,7 +13,7 @@ internal partial class MethodImposterBuilder
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
         new MethodDeclarationBuilder(method.ReturnTypeSyntax, MethodImposterInvokeMethodMetadata.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(method.Parameters.ParameterListSyntax)
+            .WithParameterList(BuildMethodParameters(method))
             .WithBody(new BlockBuilder()
                 .AddStatement(DeclareAndInitializeArgumentsVariable(method))
                 .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
@@ -92,6 +92,21 @@ internal partial class MethodImposterBuilder
     }
 
 
+    private static ParameterListSyntax BuildMethodParameters(in ImposterTargetMethodMetadata method)
+    {
+        var parameterList = method.Parameters.ParameterListSyntax;
+
+        if (method.SupportsBaseImplementation)
+        {
+            parameterList = parameterList.AddParameters(
+                Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                    .WithType(method.Delegate.Syntax)
+                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+        }
+
+        return parameterList;
+    }
+
     private static StatementSyntax InvokeMatchingSetup(in ImposterTargetMethodMetadata method)
     {
         var invokeArguments = new List<ArgumentSyntax>
@@ -100,6 +115,11 @@ internal partial class MethodImposterBuilder
             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
         };
         invokeArguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+
+        if (method.SupportsBaseImplementation)
+        {
+            invokeArguments.Add(Argument(IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)));
+        }
 
         var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName)
             .Dot(IdentifierName("Invoke"))

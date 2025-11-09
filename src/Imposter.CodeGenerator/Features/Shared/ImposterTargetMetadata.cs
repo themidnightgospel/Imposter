@@ -14,7 +14,7 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly bool IsClass;
 
-    internal readonly IReadOnlyList<ImposterTargetConstructorMetadata> AccessibleConstructors;
+    internal readonly ImposterTargetConstructorMetadata[] AccessibleConstructors;
 
     // TODO this will make ImposterTargetMethodMetadata allocate on heap
     internal readonly List<ImposterTargetMethodMetadata> Methods;
@@ -61,7 +61,7 @@ internal readonly struct ImposterTargetMetadata
         return [];
     }
 
-    private static IReadOnlyList<ImposterTargetConstructorMetadata> GetAccessibleConstructors(INamedTypeSymbol typeSymbol)
+    private static ImposterTargetConstructorMetadata[] GetAccessibleConstructors(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol.TypeKind is not TypeKind.Class)
         {

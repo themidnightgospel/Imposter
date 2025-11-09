@@ -136,7 +136,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input)
+            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -149,7 +149,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, input);
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, input, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -164,10 +164,16 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 private CalculateDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input)
+                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
                 {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
                     if (_resultGenerator == null)
                     {
                         if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
@@ -194,11 +200,13 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 internal void Returns(CalculateDelegate resultGenerator)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = resultGenerator;
                 }
 
                 internal void Returns(int value)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = (int input) =>
                     {
                         return value;
@@ -207,10 +215,17 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 internal void Throws(CalculateExceptionGeneratorDelegate exceptionGenerator)
                 {
+                    _useBaseImplementation = false;
                     _resultGenerator = (int input) =>
                     {
                         throw exceptionGenerator(input);
                     };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
                 }
 
                 internal static int DefaultResultGenerator(int input)
@@ -230,6 +245,7 @@ namespace Imposter.Tests.Features.ClassImposter
             ICalculateMethodInvocationImposterGroup Callback(CalculateCallbackDelegate callback);
             ICalculateMethodInvocationImposterGroup Returns(CalculateDelegate resultGenerator);
             ICalculateMethodInvocationImposterGroup Returns(int value);
+            ICalculateMethodInvocationImposterGroup UseBaseImplementation();
             ICalculateMethodInvocationImposterGroup Then();
         }
 
@@ -273,7 +289,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 return null;
             }
 
-            public int Invoke(int input)
+            public int Invoke(int input, CalculateDelegate baseImplementation = null)
             {
                 var arguments = new CalculateArguments(input);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -289,7 +305,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MultiConstructorClass.Calculate(int input)", input);
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MultiConstructorClass.Calculate(int input)", input, baseImplementation);
                     _calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
@@ -360,6 +376,12 @@ namespace Imposter.Tests.Features.ClassImposter
                 ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
@@ -439,7 +461,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             public override int Calculate(int input)
             {
-                return _imposter._calculateMethodImposter.Invoke(input);
+                return _imposter._calculateMethodImposter.Invoke(input, base.Calculate);
             }
         }
     }

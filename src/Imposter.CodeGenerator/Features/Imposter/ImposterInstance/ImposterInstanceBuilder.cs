@@ -202,9 +202,20 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
+            var invokeArguments = new List<ArgumentSyntax>(SyntaxFactoryHelper.ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true).Arguments);
+
+            if (imposterMethod.SupportsBaseImplementation)
+            {
+                var baseMethodExpression = MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    BaseExpression(),
+                    IdentifierName(imposterMethod.Symbol.Name));
+                invokeArguments.Add(Argument(baseMethodExpression));
+            }
+
             var invokeMethodInvocationExpression = GetImposterWithMatchingSetupExpression(imposterMethod)
                 .Dot(IdentifierName("Invoke"))
-                .Call(SyntaxFactoryHelper.ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true));
+                .Call(ArgumentList(SeparatedList(invokeArguments)));
 
             return new MethodDeclarationBuilder(SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
                 .AddTypeParameters(SyntaxFactoryHelper.TypeParametersSyntax(imposterMethod.Symbol))

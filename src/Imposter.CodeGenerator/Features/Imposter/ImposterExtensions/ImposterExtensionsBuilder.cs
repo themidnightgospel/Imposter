@@ -65,7 +65,7 @@ internal static class ImposterExtensionsBuilder
         in ImposterGenerationContext imposterGenerationContext)
     {
         var constructors = imposterGenerationContext.Imposter.AccessibleConstructors;
-        var methods = new List<MethodDeclarationSyntax>(constructors.Count + 1);
+        var methods = new List<MethodDeclarationSyntax>(constructors.Length + 1);
 
         if (constructors.Any(constructor => constructor.Parameters.Length == 0))
         {

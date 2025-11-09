@@ -8,7 +8,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class ParameterizedCtorOnlyClassTests
     {
         [Fact]
-        public void Parameterized_Class_Imposter_Overrides_All_Member_Types()
+        public void GivenParameterizedClass_WhenGeneratingImposter_ThenOverridesAllMembers()
         {
             var imposter = new ParameterizedCtorOnlyClassImposter(10, "alpha");
 

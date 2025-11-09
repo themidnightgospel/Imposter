@@ -8,7 +8,7 @@ namespace Imposter.Tests.Generator;
 public class WhenGenerateImposterAttributeIsUsed
 {
     [Fact]
-    public void OnClassLevel_ShouldGenerateImposter()
+    public void GivenClassLevelAttribute_WhenGeneratorRuns_ThenGeneratesImposter()
     {
         var imposterTargetSourceCode = /*lang=c##1#
             """
