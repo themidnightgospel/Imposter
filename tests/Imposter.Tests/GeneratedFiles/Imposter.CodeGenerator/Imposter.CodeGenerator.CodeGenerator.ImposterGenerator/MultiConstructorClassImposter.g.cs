@@ -236,17 +236,22 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICalculateMethodInvocationImposterGroup
+        public interface ICalculateMethodInvocationImposterGroupContinuation
         {
-            ICalculateMethodInvocationImposterGroup Throws<TException>()
-                where TException : Exception, new();
-            ICalculateMethodInvocationImposterGroup Throws(System.Exception exception);
-            ICalculateMethodInvocationImposterGroup Throws(CalculateExceptionGeneratorDelegate exceptionGenerator);
-            ICalculateMethodInvocationImposterGroup Callback(CalculateCallbackDelegate callback);
-            ICalculateMethodInvocationImposterGroup Returns(CalculateDelegate resultGenerator);
-            ICalculateMethodInvocationImposterGroup Returns(int value);
-            ICalculateMethodInvocationImposterGroup UseBaseImplementation();
+            ICalculateMethodInvocationImposterGroupContinuation Callback(CalculateCallbackDelegate callback);
             ICalculateMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ICalculateMethodInvocationImposterGroup : ICalculateMethodInvocationImposterGroupContinuation
+        {
+            ICalculateMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            ICalculateMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            ICalculateMethodInvocationImposterGroupContinuation Throws(CalculateExceptionGeneratorDelegate exceptionGenerator);
+            ICalculateMethodInvocationImposterGroupContinuation Returns(CalculateDelegate resultGenerator);
+            ICalculateMethodInvocationImposterGroupContinuation Returns(int value);
+            ICalculateMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -334,7 +339,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Throws<TException>()
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int input) =>
                     {
@@ -343,7 +348,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Throws(System.Exception exception)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int input) =>
                     {
@@ -352,7 +357,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Throws(CalculateExceptionGeneratorDelegate exceptionGenerator)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Throws(CalculateExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int input) =>
                     {
@@ -361,31 +366,31 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Callback(CalculateCallbackDelegate callback)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroupContinuation.Callback(CalculateCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Returns(CalculateDelegate resultGenerator)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Returns(CalculateDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Returns(int value)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Returns(int value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.UseBaseImplementation()
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.UseBaseImplementation()
                 {
                     _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroup.Then()
+                ICalculateMethodInvocationImposterGroup ICalculateMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;

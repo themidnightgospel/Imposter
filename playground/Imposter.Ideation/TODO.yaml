@@ -21,6 +21,7 @@ FEATURES:
       - Add support for Strict and Loose modes (called explicit and implicit)
     IN Progress:
       - Impostering class (abstract class, virtual methods) - see NonInterfaceTargets/ for the latest PoC
+      - segegate imposter group interface to guide user users to use correct builder methods.
     NOT Started:
       - Make imposter thread safe
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE

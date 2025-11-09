@@ -155,7 +155,7 @@ public class ImposterGenerator : IIncrementalGenerator
                 .AddMember(InvocationHistoryCollectionBuilder.Build(method))
                 .AddMember(MethodImposterCollectionBuilder.Build(method))
                 .AddMember(InvocationSetupBuilder.Build(method))
-                .AddMember(InvocationSetupBuilder.BuildInvocationSetupInterface(method))
+                .AddMembers(InvocationSetupBuilder.BuildInvocationSetupInterfaces(method))
                 .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))

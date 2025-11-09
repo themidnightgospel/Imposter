@@ -29,7 +29,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(lambda).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildThrowsExceptionInstanceImplementation(in ImposterTargetMethodMetadata method)
@@ -48,7 +52,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(lambda).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildThrowsExceptionGeneratorImplementation(in ImposterTargetMethodMetadata method)
@@ -72,7 +80,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(lambda).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildThrowsAsyncImplementation(in ImposterTargetMethodMetadata method)
@@ -88,7 +100,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(throwsAsyncMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            throwsAsyncMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildCallbackImplementation(in ImposterTargetMethodMetadata method)
@@ -103,7 +119,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildReturnsDelegateImplementation(in ImposterTargetMethodMetadata method)
@@ -118,7 +138,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildReturnsValueImplementation(in ImposterTargetMethodMetadata method)
@@ -133,7 +157,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildReturnsAsyncImplementation(in ImposterTargetMethodMetadata method)
@@ -149,7 +177,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(returnsAsyncMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            returnsAsyncMethod.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationImplementation(in ImposterTargetMethodMetadata method)
@@ -162,7 +194,11 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName("UseBaseImplementation"))
             .Call();
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(invocation));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            metadata.InterfaceSyntax,
+            ExpressionStatement(invocation));
     }
 
     private static MethodDeclarationSyntax BuildThenImplementation(in ImposterTargetMethodMetadata method)
@@ -177,6 +213,10 @@ internal static partial class MethodImposterBuilderBuilder
                     .Dot(IdentifierName("AddInvocationImposter"))
                     .Call());
 
-        return BuildExplicitInterfaceImplementation(method, template, ExpressionStatement(assignment));
+        return BuildExplicitInterfaceImplementation(
+            method,
+            template,
+            method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax,
+            ExpressionStatement(assignment));
     }
 }

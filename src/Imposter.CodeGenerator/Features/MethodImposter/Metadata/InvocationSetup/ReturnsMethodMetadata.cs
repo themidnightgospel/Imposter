@@ -12,15 +12,25 @@ internal readonly struct ReturnsMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal readonly string InterfaceValueParameterName;
+
+    internal readonly string InterfaceResultGeneratorParameterName;
+
     public ReturnsMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
         TypeSyntax imposterMethodReturnType,
         NameSyntax interfaceSyntax,
+        NameSyntax continuationInterfaceSyntax,
         TypeSyntax methodDelegateTypeSyntax)
     {
-        ReturnType = interfaceSyntax;
+        InterfaceSyntax = interfaceSyntax;
+        ReturnType = continuationInterfaceSyntax;
+        InterfaceValueParameterName = "value";
+        InterfaceResultGeneratorParameterName = "resultGenerator";
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-        ValueParameter = new ParameterMetadata(nameContext.Use("value"), imposterMethodReturnType);
-        ResultGeneratorParameter = new ParameterMetadata(nameContext.Use("resultGenerator"), methodDelegateTypeSyntax);
+        ValueParameter = new ParameterMetadata(nameContext.Use(InterfaceValueParameterName), imposterMethodReturnType);
+        ResultGeneratorParameter = new ParameterMetadata(nameContext.Use(InterfaceResultGeneratorParameterName), methodDelegateTypeSyntax);
     }
 }

@@ -50,7 +50,7 @@ public class OverrideableService : AbstractOnlyService
         var runResult = RunGenerator();
         var generatedSource = GetGeneratedSource(runResult, "OverrideableServiceImposter.g.cs");
 
-        generatedSource.ShouldContain("IVirtualMethodMethodInvocationImposterGroup UseBaseImplementation()");
+        generatedSource.ShouldContain("IVirtualMethodMethodInvocationImposterGroupContinuation UseBaseImplementation()");
     }
 
     [Fact]

@@ -8,8 +8,11 @@ internal readonly struct UseBaseImplementationMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal UseBaseImplementationMethodMetadata(NameSyntax interfaceSyntax)
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal UseBaseImplementationMethodMetadata(NameSyntax interfaceSyntax, NameSyntax continuationInterfaceSyntax)
     {
-        ReturnType = interfaceSyntax;
+        InterfaceSyntax = interfaceSyntax;
+        ReturnType = continuationInterfaceSyntax;
     }
 }

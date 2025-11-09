@@ -46,6 +46,7 @@ internal static partial class MethodImposterBuilderBuilder
     private static MethodDeclarationSyntax BuildExplicitInterfaceImplementation(
         in ImposterTargetMethodMetadata method,
         MethodDeclarationSyntax template,
+        NameSyntax interfaceSyntax,
         params StatementSyntax[] statements)
     {
         var bodyStatements = statements.Concat([ReturnStatement(ThisExpression())]);
@@ -54,7 +55,7 @@ internal static partial class MethodImposterBuilderBuilder
             .WithModifiers(TokenList())
             .WithSemicolonToken(default)
             .WithConstraintClauses(default)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.Interface.Syntax))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(interfaceSyntax))
             .WithBody(Block(bodyStatements));
     }
 }

@@ -229,16 +229,21 @@ namespace Imposter.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodMethodInvocationImposterGroup
+        public interface IIndexerMethodMethodInvocationImposterGroupContinuation
         {
-            IIndexerMethodMethodInvocationImposterGroup Throws<TException>()
-                where TException : Exception, new();
-            IIndexerMethodMethodInvocationImposterGroup Throws(System.Exception exception);
-            IIndexerMethodMethodInvocationImposterGroup Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator);
-            IIndexerMethodMethodInvocationImposterGroup Callback(IndexerMethodCallbackDelegate callback);
-            IIndexerMethodMethodInvocationImposterGroup Returns(IndexerMethodDelegate resultGenerator);
-            IIndexerMethodMethodInvocationImposterGroup Returns(string value);
+            IIndexerMethodMethodInvocationImposterGroupContinuation Callback(IndexerMethodCallbackDelegate callback);
             IIndexerMethodMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerMethodMethodInvocationImposterGroup : IIndexerMethodMethodInvocationImposterGroupContinuation
+        {
+            IIndexerMethodMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IIndexerMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IIndexerMethodMethodInvocationImposterGroupContinuation Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator);
+            IIndexerMethodMethodInvocationImposterGroupContinuation Returns(IndexerMethodDelegate resultGenerator);
+            IIndexerMethodMethodInvocationImposterGroupContinuation Returns(string value);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -326,7 +331,7 @@ namespace Imposter.Tests.Shared
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws<TException>()
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Throws<TException>()
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -335,7 +340,7 @@ namespace Imposter.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -344,7 +349,7 @@ namespace Imposter.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _currentInvocationImposter.Throws((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
                     {
@@ -353,25 +358,25 @@ namespace Imposter.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Callback(IndexerMethodCallbackDelegate callback)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroupContinuation.Callback(IndexerMethodCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Returns(IndexerMethodDelegate resultGenerator)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Returns(IndexerMethodDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Returns(string value)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Returns(string value)
                 {
                     _currentInvocationImposter.Returns(value);
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroup.Then()
+                IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
