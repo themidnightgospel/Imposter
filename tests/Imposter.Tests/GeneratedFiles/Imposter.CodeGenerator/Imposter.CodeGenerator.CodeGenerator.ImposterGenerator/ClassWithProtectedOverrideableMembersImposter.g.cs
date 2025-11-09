@@ -1,0 +1,1481 @@
+﻿#pragma warning disable nullable
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Imposter.Abstractions;
+using System.Collections.Concurrent;
+using Imposter.Tests.Features.ClassImposter;
+
+namespace Imposter.Tests.Features.ClassImposter
+{
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    public class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers>
+    {
+        private readonly ProtectedVirtualMethodMethodImposter _protectedVirtualMethodMethodImposter;
+        private readonly ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection = new ProtectedVirtualMethodMethodInvocationHistoryCollection();
+        public IProtectedVirtualMethodMethodImposterBuilder ProtectedVirtualMethod(global::Imposter.Abstractions.Arg<int> value)
+        {
+            return new ProtectedVirtualMethodMethodImposter.Builder(_protectedVirtualMethodMethodImposter, _protectedVirtualMethodMethodInvocationHistoryCollection, new ProtectedVirtualMethodArgumentsCriteria(value));
+        }
+
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers Instance() => _imposterInstance;
+        global::Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers>.Instance()
+        {
+            return _imposterInstance;
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        public delegate int ProtectedVirtualMethodDelegate(int value);
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        public delegate void ProtectedVirtualMethodCallbackDelegate(int value);
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        public delegate System.Exception ProtectedVirtualMethodExceptionGeneratorDelegate(int value);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ProtectedVirtualMethodArguments
+        {
+            public int value;
+            internal ProtectedVirtualMethodArguments(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ProtectedVirtualMethodArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> value { get; }
+
+            public ProtectedVirtualMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value)
+            {
+                this.value = value;
+            }
+
+            public bool Matches(ProtectedVirtualMethodArguments arguments)
+            {
+                return value.Matches(arguments.value);
+            }
+        }
+
+        public interface IProtectedVirtualMethodMethodInvocationHistory
+        {
+            bool Matches(ProtectedVirtualMethodArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ProtectedVirtualMethodMethodInvocationHistory : IProtectedVirtualMethodMethodInvocationHistory
+        {
+            internal ProtectedVirtualMethodArguments Arguments;
+            internal int Result;
+            internal System.Exception Exception;
+            public ProtectedVirtualMethodMethodInvocationHistory(ProtectedVirtualMethodArguments Arguments, int Result, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(ProtectedVirtualMethodArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ProtectedVirtualMethodMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IProtectedVirtualMethodMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IProtectedVirtualMethodMethodInvocationHistory>();
+            internal void Add(IProtectedVirtualMethodMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(ProtectedVirtualMethodArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ProtectedVirtualMethodMethodInvocationImposterGroup
+        {
+            internal static ProtectedVirtualMethodMethodInvocationImposterGroup Default = new ProtectedVirtualMethodMethodInvocationImposterGroup(new ProtectedVirtualMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal ProtectedVirtualMethodArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public ProtectedVirtualMethodMethodInvocationImposterGroup(ProtectedVirtualMethodArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ProtectedVirtualMethodDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private ProtectedVirtualMethodDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<ProtectedVirtualMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ProtectedVirtualMethodCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ProtectedVirtualMethodDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(value);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(ProtectedVirtualMethodCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(ProtectedVirtualMethodDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(ProtectedVirtualMethodExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static int DefaultResultGenerator(int value)
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualMethodMethodInvocationImposterGroupCallback
+        {
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Callback(ProtectedVirtualMethodCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualMethodMethodInvocationImposterGroupContinuation : IProtectedVirtualMethodMethodInvocationImposterGroupCallback
+        {
+            IProtectedVirtualMethodMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualMethodMethodInvocationImposterGroup : IProtectedVirtualMethodMethodInvocationImposterGroupCallback
+        {
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws(ProtectedVirtualMethodExceptionGeneratorDelegate exceptionGenerator);
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Returns(ProtectedVirtualMethodDelegate resultGenerator);
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Returns(int value);
+            IProtectedVirtualMethodMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ProtectedVirtualMethodInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
+        public interface IProtectedVirtualMethodMethodImposterBuilder : IProtectedVirtualMethodMethodInvocationImposterGroup, IProtectedVirtualMethodMethodInvocationImposterGroupCallback, ProtectedVirtualMethodInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ProtectedVirtualMethodMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup>();
+            private readonly ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public ProtectedVirtualMethodMethodImposter(ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._protectedVirtualMethodMethodInvocationHistoryCollection = _protectedVirtualMethodMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(ProtectedVirtualMethodArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private ProtectedVirtualMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedVirtualMethodArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(int value, ProtectedVirtualMethodDelegate baseImplementation = null)
+            {
+                var arguments = new ProtectedVirtualMethodArguments(value);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)");
+                    }
+
+                    matchingInvocationImposterGroup = ProtectedVirtualMethodMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)", value, baseImplementation);
+                    _protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IProtectedVirtualMethodMethodImposterBuilder, IProtectedVirtualMethodMethodInvocationImposterGroupContinuation
+            {
+                private readonly ProtectedVirtualMethodMethodImposter _imposter;
+                private readonly ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection;
+                private readonly ProtectedVirtualMethodArgumentsCriteria _argumentsCriteria;
+                private readonly ProtectedVirtualMethodMethodInvocationImposterGroup _invocationImposterGroup;
+                private ProtectedVirtualMethodMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(ProtectedVirtualMethodMethodImposter _imposter, ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection, ProtectedVirtualMethodArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._protectedVirtualMethodMethodInvocationHistoryCollection = _protectedVirtualMethodMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new ProtectedVirtualMethodMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.Throws(ProtectedVirtualMethodExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroupCallback.Callback(ProtectedVirtualMethodCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.Returns(ProtectedVirtualMethodDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.Returns(int value_1)
+                {
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroupContinuation IProtectedVirtualMethodMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IProtectedVirtualMethodMethodInvocationImposterGroup IProtectedVirtualMethodMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void ProtectedVirtualMethodInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _protectedVirtualMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        public IProtectedVirtualPropertyPropertyBuilder ProtectedVirtualProperty => _ProtectedVirtualProperty;
+
+        private readonly ProtectedVirtualPropertyPropertyBuilder _ProtectedVirtualProperty;
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterOutcomeBuilder
+        {
+            IProtectedVirtualPropertyPropertyGetterContinuationBuilder Returns(string value);
+            IProtectedVirtualPropertyPropertyGetterContinuationBuilder Returns(System.Func<string> valueGenerator);
+            IProtectedVirtualPropertyPropertyGetterContinuationBuilder Throws(System.Exception exception);
+            IProtectedVirtualPropertyPropertyGetterContinuationBuilder Throws<TException>()
+                where TException : Exception, new();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterCallbackBuilder
+        {
+            IProtectedVirtualPropertyPropertyGetterContinuationBuilder Callback(System.Action callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterContinuationBuilder : IProtectedVirtualPropertyPropertyGetterCallbackBuilder
+        {
+            IProtectedVirtualPropertyPropertyGetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterVerifier
+        {
+            void Called(global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterFluentBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterCallbackBuilder, IProtectedVirtualPropertyPropertyGetterVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterCallbackBuilder
+        {
+            IProtectedVirtualPropertyPropertySetterContinuationBuilder Callback(System.Action<string> callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterContinuationBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder
+        {
+            IProtectedVirtualPropertyPropertySetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterFluentBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterVerifier
+        {
+            void Called(global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyBuilder
+        {
+            IProtectedVirtualPropertyPropertyGetterBuilder Getter();
+            IProtectedVirtualPropertyPropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<string> criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ProtectedVirtualPropertyPropertyBuilder : IProtectedVirtualPropertyPropertyBuilder
+        {
+            private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            internal SetterImposter _setterImposter;
+            internal GetterImposterBuilder _getterImposterBuilder;
+            internal ProtectedVirtualPropertyPropertyBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior)
+            {
+                _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+                _invocationBehavior = invocationBehavior;
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class DefaultPropertyBehaviour
+            {
+                internal bool IsOn = true;
+                internal string BackingField = default;
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class GetterImposterBuilder : IProtectedVirtualPropertyPropertyGetterBuilder, IProtectedVirtualPropertyPropertyGetterFluentBuilder
+            {
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<string>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<string>>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
+                private System.Func<string> _lastReturnValue = () => default;
+                private int _invocationCount;
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly string _propertyDisplayName;
+                private bool _hasConfiguredReturn;
+                internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                {
+                    this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+                    this._invocationBehavior = invocationBehavior;
+                    this._propertyDisplayName = propertyDisplayName;
+                }
+
+                private void AddReturnValue(System.Func<string> valueGenerator)
+                {
+                    _defaultPropertyBehaviour.IsOn = false;
+                    _returnValues.Enqueue(valueGenerator);
+                    _hasConfiguredReturn = true;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterContinuationBuilder IProtectedVirtualPropertyPropertyGetterOutcomeBuilder.Returns(string value)
+                {
+                    AddReturnValue(() => value);
+                    return this;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterContinuationBuilder IProtectedVirtualPropertyPropertyGetterOutcomeBuilder.Returns(System.Func<string> valueGenerator)
+                {
+                    AddReturnValue(valueGenerator);
+                    return this;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterContinuationBuilder IProtectedVirtualPropertyPropertyGetterOutcomeBuilder.Throws(System.Exception exception)
+                {
+                    AddReturnValue(() => throw exception);
+                    return this;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterContinuationBuilder IProtectedVirtualPropertyPropertyGetterOutcomeBuilder.Throws<TException>()
+                {
+                    AddReturnValue(() => throw new TException());
+                    return this;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterContinuationBuilder IProtectedVirtualPropertyPropertyGetterCallbackBuilder.Callback(System.Action callback)
+                {
+                    _callbacks.Enqueue(callback);
+                    return this;
+                }
+
+                void IProtectedVirtualPropertyPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    if (!count.Matches(_invocationCount))
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+                }
+
+                IProtectedVirtualPropertyPropertyGetterFluentBuilder IProtectedVirtualPropertyPropertyGetterContinuationBuilder.Then()
+                {
+                    return this;
+                }
+
+                internal string Get()
+                {
+                    EnsureGetterConfigured();
+                    System.Threading.Interlocked.Increment(ref _invocationCount);
+                    foreach (var getterCallback in _callbacks)
+                    {
+                        getterCallback();
+                    }
+
+                    if (_defaultPropertyBehaviour.IsOn)
+                        return _defaultPropertyBehaviour.BackingField;
+                    if (_returnValues.TryDequeue(out var returnValue))
+                        _lastReturnValue = returnValue;
+                    return _lastReturnValue();
+                }
+
+                private void EnsureGetterConfigured()
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredReturn)
+                        throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class SetterImposter
+            {
+                private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<global::Imposter.Abstractions.Arg<string>, System.Action<string>>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<global::Imposter.Abstractions.Arg<string>, System.Action<string>>>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<string> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<string>();
+                private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly string _propertyDisplayName;
+                private bool _hasConfiguredSetter;
+                internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                {
+                    this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+                    this._invocationBehavior = invocationBehavior;
+                    this._propertyDisplayName = propertyDisplayName;
+                }
+
+                internal void Callback(global::Imposter.Abstractions.Arg<string> criteria, System.Action<string> callback)
+                {
+                    _callbacks.Enqueue(new System.Tuple<global::Imposter.Abstractions.Arg<string>, System.Action<string>>(criteria, callback));
+                }
+
+                void Called(global::Imposter.Abstractions.Arg<string> criteria, global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _invocationHistory.Count(criteria.Matches);
+                    if (!count.Matches(invocationCount))
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                }
+
+                internal void Set(string value)
+                {
+                    EnsureSetterConfigured();
+                    _invocationHistory.Add(value);
+                    foreach (var(criteria, setterCallback)in _callbacks)
+                    {
+                        if (criteria.Matches(value))
+                            setterCallback(value);
+                    }
+
+                    if (_defaultPropertyBehaviour.IsOn)
+                        _defaultPropertyBehaviour.BackingField = value;
+                }
+
+                private void EnsureSetterConfigured()
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredSetter)
+                        throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+                }
+
+                internal void MarkConfigured()
+                {
+                    _hasConfiguredSetter = true;
+                }
+
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                internal class Builder : IProtectedVirtualPropertyPropertySetterBuilder, IProtectedVirtualPropertyPropertySetterFluentBuilder
+                {
+                    private readonly SetterImposter _setterImposter;
+                    private readonly global::Imposter.Abstractions.Arg<string> _criteria;
+                    internal Builder(SetterImposter _setterImposter, global::Imposter.Abstractions.Arg<string> _criteria)
+                    {
+                        this._setterImposter = _setterImposter;
+                        this._criteria = _criteria;
+                    }
+
+                    IProtectedVirtualPropertyPropertySetterContinuationBuilder IProtectedVirtualPropertyPropertySetterCallbackBuilder.Callback(System.Action<string> callback)
+                    {
+                        _setterImposter.Callback(_criteria, callback);
+                        return this;
+                    }
+
+                    void IProtectedVirtualPropertyPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                    {
+                        _setterImposter.Called(_criteria, count);
+                    }
+
+                    IProtectedVirtualPropertyPropertySetterFluentBuilder IProtectedVirtualPropertyPropertySetterContinuationBuilder.Then()
+                    {
+                        return this;
+                    }
+                }
+            }
+
+            IProtectedVirtualPropertyPropertyGetterBuilder IProtectedVirtualPropertyPropertyBuilder.Getter()
+            {
+                return _getterImposterBuilder;
+            }
+
+            IProtectedVirtualPropertyPropertySetterBuilder IProtectedVirtualPropertyPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string> criteria)
+            {
+                _setterImposter.MarkConfigured();
+                return new SetterImposter.Builder(_setterImposter, criteria);
+            }
+        }
+
+        public IProtectedVirtualEventEventImposterBuilder ProtectedVirtualEvent => _ProtectedVirtualEvent;
+
+        private readonly ProtectedVirtualEventEventImposterBuilder _ProtectedVirtualEvent;
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualEventEventImposterBuilder : IProtectedVirtualEventEventImposterSetupBuilder, IProtectedVirtualEventEventImposterVerificationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualEventEventImposterSetupBuilder
+        {
+            IProtectedVirtualEventEventImposterSetupBuilder Callback(global::System.EventHandler callback);
+            IProtectedVirtualEventEventImposterSetupBuilder Raise(object sender, global::System.EventArgs e);
+            IProtectedVirtualEventEventImposterSetupBuilder OnSubscribe(System.Action<global::System.EventHandler> interceptor);
+            IProtectedVirtualEventEventImposterSetupBuilder OnUnsubscribe(System.Action<global::System.EventHandler> interceptor);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualEventEventImposterVerificationBuilder
+        {
+            IProtectedVirtualEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
+            IProtectedVirtualEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
+            IProtectedVirtualEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+            IProtectedVirtualEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal sealed class ProtectedVirtualEventEventImposterBuilder : IProtectedVirtualEventEventImposterBuilder, IProtectedVirtualEventEventImposterSetupBuilder, IProtectedVirtualEventEventImposterVerificationBuilder
+        {
+            private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _handlerOrder = new System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
+            private readonly System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int> _handlerCounts = new System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _subscribeHistory = new System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _unsubscribeHistory = new System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
+            internal ProtectedVirtualEventEventImposterBuilder()
+            {
+            }
+
+            internal void Subscribe(global::System.EventHandler handler)
+            {
+                ArgumentNullException.ThrowIfNull(handler);
+                _handlerOrder.Enqueue(handler);
+                _handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
+                _subscribeHistory.Enqueue(handler);
+                foreach (var interceptor in _subscribeInterceptors.ToArray())
+                {
+                    interceptor(handler);
+                }
+            }
+
+            internal void Unsubscribe(global::System.EventHandler handler)
+            {
+                ArgumentNullException.ThrowIfNull(handler);
+                _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
+                {
+                    if (count > 0)
+                    {
+                        return count - 1;
+                    }
+
+                    return 0;
+                });
+                _unsubscribeHistory.Enqueue(handler);
+                foreach (var interceptor in _unsubscribeInterceptors.ToArray())
+                {
+                    interceptor(handler);
+                }
+            }
+
+            IProtectedVirtualEventEventImposterSetupBuilder IProtectedVirtualEventEventImposterSetupBuilder.Callback(global::System.EventHandler callback)
+            {
+                ArgumentNullException.ThrowIfNull(callback);
+                _callbacks.Enqueue(callback);
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterSetupBuilder IProtectedVirtualEventEventImposterSetupBuilder.Raise(object sender, global::System.EventArgs e)
+            {
+                RaiseInternal(sender, e);
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterVerificationBuilder IProtectedVirtualEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
+            {
+                ArgumentNullException.ThrowIfNull(criteria);
+                ArgumentNullException.ThrowIfNull(count);
+                int actual = CountMatches(_subscribeHistory, entry => criteria.Matches(entry));
+                EnsureCountMatches(actual, count, "subscribed");
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterVerificationBuilder IProtectedVirtualEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
+            {
+                ArgumentNullException.ThrowIfNull(criteria);
+                ArgumentNullException.ThrowIfNull(count);
+                int actual = CountMatches(_unsubscribeHistory, entry => criteria.Matches(entry));
+                EnsureCountMatches(actual, count, "unsubscribed");
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterSetupBuilder IProtectedVirtualEventEventImposterSetupBuilder.OnSubscribe(System.Action<global::System.EventHandler> interceptor)
+            {
+                ArgumentNullException.ThrowIfNull(interceptor);
+                _subscribeInterceptors.Enqueue(interceptor);
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterSetupBuilder IProtectedVirtualEventEventImposterSetupBuilder.OnUnsubscribe(System.Action<global::System.EventHandler> interceptor)
+            {
+                ArgumentNullException.ThrowIfNull(interceptor);
+                _unsubscribeInterceptors.Enqueue(interceptor);
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterVerificationBuilder IProtectedVirtualEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
+            {
+                ArgumentNullException.ThrowIfNull(senderCriteria);
+                ArgumentNullException.ThrowIfNull(eCriteria);
+                ArgumentNullException.ThrowIfNull(count);
+                int actual = CountMatches(_history, entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
+                EnsureCountMatches(actual, count, "raised");
+                return this;
+            }
+
+            IProtectedVirtualEventEventImposterVerificationBuilder IProtectedVirtualEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
+            {
+                ArgumentNullException.ThrowIfNull(handlerCriteria);
+                ArgumentNullException.ThrowIfNull(count);
+                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry.Handler));
+                EnsureCountMatches(actual, count, "invoked");
+                return this;
+            }
+
+            private void RaiseInternal(object sender, global::System.EventArgs e)
+            {
+                _history.Enqueue((sender, e));
+                foreach (var callback in _callbacks.ToArray())
+                {
+                    callback(sender, e);
+                }
+
+                foreach (var handler in EnumerateActiveHandlers())
+                {
+                    _handlerInvocations.Enqueue((handler, sender, e));
+                    handler(sender, e);
+                }
+            }
+
+            private System.Collections.Generic.IEnumerable<global::System.EventHandler> EnumerateActiveHandlers()
+            {
+                System.Collections.Generic.Dictionary<global::System.EventHandler, int> budgets = new System.Collections.Generic.Dictionary<global::System.EventHandler, int>(_handlerCounts);
+                foreach (var handler in _handlerOrder.ToArray())
+                {
+                    int remaining;
+                    if (budgets.TryGetValue(handler, out remaining))
+                    {
+                        if (remaining > 0)
+                        {
+                            budgets[handler] = remaining - 1;
+                            yield return handler;
+                        }
+                    }
+                }
+            }
+
+            private static int CountMatches<T>(System.Collections.Generic.IEnumerable<T> source, System.Func<T, bool> predicate)
+            {
+                int count = 0;
+                foreach (var item in source)
+                {
+                    if (predicate(item))
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            {
+                if (!expected.Matches(actual))
+                {
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                }
+            }
+        }
+
+        private readonly IndexerIndexerBuilder _IndexerIndexer;
+        public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> index] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(index));
+        public delegate int IndexerIndexerDelegate(int index);
+        public delegate void IndexerIndexerGetterCallback(int index);
+        public delegate void IndexerIndexerSetterCallback(int index, int value);
+        public delegate System.Exception IndexerIndexerExceptionGenerator(int index);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
+        {
+            public int index;
+            internal IndexerIndexerArguments(int index)
+            {
+                this.index = index;
+            }
+
+            public bool Equals(IndexerIndexerArguments other)
+            {
+                return true && index == other.index;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is IndexerIndexerArguments other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                global::System.HashCode hash = new global::System.HashCode();
+                hash.Add(index);
+                return hash.ToHashCode();
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class IndexerIndexerArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> index;
+            internal IndexerIndexerArgumentsCriteria(global::Imposter.Abstractions.Arg<int> index)
+            {
+                this.index = index;
+            }
+
+            public bool Matches(IndexerIndexerArguments arguments)
+            {
+                return index.Matches(arguments.index);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class IndexerIndexerBuilder
+        {
+            private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
+            private readonly GetterImposter _getterImposter;
+            private readonly SetterImposter _setterImposter;
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class DefaultIndexerIndexerBehaviour
+            {
+                private bool _isOn = true;
+                internal bool IsOn
+                {
+                    get
+                    {
+                        return System.Threading.Volatile.Read(ref _isOn);
+                    }
+
+                    set
+                    {
+                        System.Threading.Volatile.Write(ref _isOn, value);
+                    }
+                }
+
+                internal System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
+                internal int Get(IndexerIndexerArguments arguments)
+                {
+                    int value = default(int);
+                    if (BackingField.TryGetValue(arguments, out value))
+                        return value;
+                    return default(int);
+                }
+
+                internal void Set(IndexerIndexerArguments arguments, int value)
+                {
+                    BackingField[arguments] = value;
+                }
+            }
+
+            internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            {
+                this._getterImposter = new GetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
+                this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
+            }
+
+            internal IIndexerIndexerGetterBuilder CreateGetter(IndexerIndexerArgumentsCriteria criteria)
+            {
+                return new GetterImposter.Builder(_getterImposter, criteria);
+            }
+
+            internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
+            {
+                _setterImposter.MarkConfigured();
+                return new SetterImposter.Builder(_setterImposter, criteria);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class InvocationBuilder : IIndexerIndexerBuilder
+            {
+                private readonly IndexerIndexerBuilder _builder;
+                private readonly IndexerIndexerArgumentsCriteria _criteria;
+                internal InvocationBuilder(IndexerIndexerBuilder builder, IndexerIndexerArgumentsCriteria criteria)
+                {
+                    this._builder = builder;
+                    this._criteria = criteria;
+                }
+
+                public IIndexerIndexerGetterBuilder Getter()
+                {
+                    return _builder.CreateGetter(_criteria);
+                }
+
+                public IIndexerIndexerSetterBuilder Setter()
+                {
+                    return _builder.CreateSetter(_criteria);
+                }
+            }
+
+            internal int Get(int index)
+            {
+                return _getterImposter.Get(index);
+            }
+
+            internal void Set(int index, int value)
+            {
+                _setterImposter.Set(index, value);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            private sealed class GetterImposter
+            {
+                private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
+                private readonly System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _setups = new System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+                private readonly System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly string _propertyDisplayName;
+                private bool _hasConfiguredReturn;
+                internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                {
+                    this._defaultBehaviour = defaultBehaviour;
+                    this._invocationBehavior = invocationBehavior;
+                    this._propertyDisplayName = propertyDisplayName;
+                }
+
+                internal int Get(int index)
+                {
+                    IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
+                    try
+                    {
+                        var setup = FindMatchingSetup(arguments);
+                        if (setup is null)
+                        {
+                            EnsureGetterConfigured();
+                            if (_defaultBehaviour.IsOn)
+                                return _defaultBehaviour.Get(arguments);
+                            throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
+                        return setup.Invoke(arguments);
+                    }
+                    finally
+                    {
+                        _invocationHistory.Add(arguments);
+                    }
+                }
+
+                private GetterInvocationImposter FindMatchingSetup(IndexerIndexerArguments arguments)
+                {
+                    foreach (var setup in _setups)
+                    {
+                        if (setup.Criteria.Matches(arguments))
+                        {
+                            return setup;
+                        }
+                    }
+
+                    return null;
+                }
+
+                private GetterInvocationImposter GetOrCreate(IndexerIndexerArgumentsCriteria criteria)
+                {
+                    return _setupLookup.GetOrAdd(criteria, CreateSetup);
+                    GetterInvocationImposter CreateSetup(IndexerIndexerArgumentsCriteria key)
+                    {
+                        GetterInvocationImposter setup = new GetterInvocationImposter(this, _defaultBehaviour, key);
+                        _setups.Push(setup);
+                        return setup;
+                    }
+                }
+
+                private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
+                {
+                    int invocationCount = _invocationHistory.Count(criteria.Matches);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+
+                internal string PropertyDisplayName => _propertyDisplayName;
+
+                internal void MarkReturnConfigured()
+                {
+                    System.Threading.Volatile.Write(ref _hasConfiguredReturn, true);
+                }
+
+                private void EnsureGetterConfigured()
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                    }
+                }
+
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
+                {
+                    private readonly GetterImposter _imposter;
+                    private readonly IndexerIndexerArgumentsCriteria _criteria;
+                    internal Builder(GetterImposter _imposter, IndexerIndexerArgumentsCriteria _criteria)
+                    {
+                        this._imposter = _imposter;
+                        this._criteria = _criteria;
+                    }
+
+                    private GetterInvocationImposter InvocationImposter => _imposter.GetOrCreate(_criteria);
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(int value)
+                    {
+                        InvocationImposter.AddReturnValue(arguments => value);
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(System.Func<int> valueGenerator)
+                    {
+                        InvocationImposter.AddReturnValue(arguments => valueGenerator());
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(IndexerIndexerDelegate valueGenerator)
+                    {
+                        InvocationImposter.AddReturnValue(arguments => valueGenerator(arguments.index));
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(System.Exception exception)
+                    {
+                        InvocationImposter.AddReturnValue(arguments => throw exception);
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws<TException>()
+                    {
+                        InvocationImposter.AddReturnValue(arguments => throw new TException());
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(IndexerIndexerExceptionGenerator exceptionGenerator)
+                    {
+                        InvocationImposter.AddReturnValue(arguments => throw exceptionGenerator(arguments.index));
+                        return this;
+                    }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterCallbackBuilder.Callback(IndexerIndexerGetterCallback callback)
+                    {
+                        InvocationImposter.AddCallback(callback);
+                        return this;
+                    }
+
+                    void IIndexerIndexerGetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                    {
+                        _imposter.Called(_criteria, count);
+                    }
+
+                    IIndexerIndexerGetterFluentBuilder IIndexerIndexerGetterContinuationBuilder.Then()
+                    {
+                        return this;
+                    }
+                }
+
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                private sealed class GetterInvocationImposter
+                {
+                    private readonly GetterImposter _parent;
+                    private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
+                    private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, int>>();
+                    private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
+                    private System.Func<IndexerIndexerArguments, int>? _lastReturnValue;
+                    private int _invocationCount;
+                    private string _propertyDisplayName;
+                    internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
+                    internal int InvocationCount => System.Threading.Volatile.Read(ref _invocationCount);
+
+                    internal GetterInvocationImposter(GetterImposter parent, DefaultIndexerIndexerBehaviour defaultBehaviour, IndexerIndexerArgumentsCriteria criteria)
+                    {
+                        this._parent = parent;
+                        this._defaultBehaviour = defaultBehaviour;
+                        this._propertyDisplayName = parent.PropertyDisplayName;
+                        this.Criteria = criteria;
+                    }
+
+                    internal void AddReturnValue(System.Func<IndexerIndexerArguments, int> generator)
+                    {
+                        _defaultBehaviour.IsOn = false;
+                        _returnValues.Enqueue(generator);
+                        _parent.MarkReturnConfigured();
+                    }
+
+                    internal void AddCallback(IndexerIndexerGetterCallback callback)
+                    {
+                        _callbacks.Enqueue(callback);
+                    }
+
+                    internal int Invoke(IndexerIndexerArguments arguments)
+                    {
+                        System.Threading.Interlocked.Increment(ref _invocationCount);
+                        foreach (var callback in _callbacks)
+                        {
+                            callback(arguments.index);
+                        }
+
+                        System.Func<IndexerIndexerArguments, int> generator = ResolveNextGenerator(arguments);
+                        return generator(arguments);
+                    }
+
+                    private System.Func<IndexerIndexerArguments, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
+                    {
+                        if (_defaultBehaviour.IsOn)
+                        {
+                            return arguments => _defaultBehaviour.Get(arguments);
+                        }
+
+                        if (_returnValues.TryDequeue(out System.Func<IndexerIndexerArguments, int> returnValue))
+                        {
+                            _lastReturnValue = returnValue;
+                        }
+
+                        if (_lastReturnValue == null)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
+                        return _lastReturnValue;
+                    }
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            private sealed class SetterImposter
+            {
+                private readonly System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
+                private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
+                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly string _propertyDisplayName;
+                private bool _hasConfiguredSetter;
+                internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                {
+                    this._defaultBehaviour = defaultBehaviour;
+                    this._invocationBehavior = invocationBehavior;
+                    this._propertyDisplayName = propertyDisplayName;
+                }
+
+                public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
+                {
+                    _callbacks.Enqueue((criteria, callback));
+                }
+
+                public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
+                {
+                    int invocationCount = _invocationHistory.Count(criteria.Matches);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+
+                internal void Set(int index, int value)
+                {
+                    EnsureSetterConfigured();
+                    IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
+                    _invocationHistory.Add(arguments);
+                    foreach (var registration in _callbacks)
+                    {
+                        if (registration.Criteria.Matches(arguments))
+                        {
+                            registration.Callback(arguments.index, value);
+                        }
+                    }
+
+                    if (_defaultBehaviour.IsOn)
+                    {
+                        _defaultBehaviour.Set(arguments, value);
+                    }
+                }
+
+                private void EnsureSetterConfigured()
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+                    }
+                }
+
+                internal void MarkConfigured()
+                {
+                    System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
+                }
+
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                internal class Builder : IIndexerIndexerSetterBuilder, IIndexerIndexerSetterFluentBuilder
+                {
+                    private readonly SetterImposter _setterImposter;
+                    private readonly IndexerIndexerArgumentsCriteria _criteria;
+                    internal Builder(SetterImposter _setterImposter, IndexerIndexerArgumentsCriteria _criteria)
+                    {
+                        this._setterImposter = _setterImposter;
+                        this._criteria = _criteria;
+                    }
+
+                    IIndexerIndexerSetterContinuationBuilder IIndexerIndexerSetterCallbackBuilder.Callback(IndexerIndexerSetterCallback callback)
+                    {
+                        _setterImposter.Callback(_criteria, callback);
+                        return this;
+                    }
+
+                    void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                    {
+                        _setterImposter.Called(_criteria, count);
+                    }
+
+                    IIndexerIndexerSetterFluentBuilder IIndexerIndexerSetterContinuationBuilder.Then()
+                    {
+                        return this;
+                    }
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterOutcomeBuilder
+        {
+            IIndexerIndexerGetterContinuationBuilder Returns(int value);
+            IIndexerIndexerGetterContinuationBuilder Returns(System.Func<int> valueGenerator);
+            IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
+            IIndexerIndexerGetterContinuationBuilder Throws(System.Exception exception);
+            IIndexerIndexerGetterContinuationBuilder Throws<TException>()
+                where TException : Exception, new();
+            IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterCallbackBuilder
+        {
+            IIndexerIndexerGetterContinuationBuilder Callback(IndexerIndexerGetterCallback callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterContinuationBuilder : IIndexerIndexerGetterCallbackBuilder
+        {
+            IIndexerIndexerGetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterVerifier
+        {
+            void Called(global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterFluentBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerGetterBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerSetterCallbackBuilder
+        {
+            IIndexerIndexerSetterContinuationBuilder Callback(IndexerIndexerSetterCallback callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerSetterContinuationBuilder : IIndexerIndexerSetterCallbackBuilder
+        {
+            IIndexerIndexerSetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerSetterFluentBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerSetterVerifier
+        {
+            void Called(global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerSetterBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerIndexerBuilder
+        {
+            IIndexerIndexerGetterBuilder Getter();
+            IIndexerIndexerSetterBuilder Setter();
+        }
+
+        public ClassWithProtectedOverrideableMembersImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._protectedVirtualMethodMethodImposter = new ProtectedVirtualMethodMethodImposter(_protectedVirtualMethodMethodInvocationHistoryCollection, invocationBehavior);
+            this._ProtectedVirtualProperty = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
+            this._ProtectedVirtualEvent = new ProtectedVirtualEventEventImposterBuilder();
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers.this[int index]");
+            this._imposterInstance = new ImposterTargetInstance();
+            this._imposterInstance.InitializeImposter(this);
+            this._invocationBehavior = invocationBehavior;
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.ClassWithProtectedOverrideableMembers
+        {
+            ClassWithProtectedOverrideableMembersImposter _imposter;
+            internal void InitializeImposter(ClassWithProtectedOverrideableMembersImposter imposter)
+            {
+                _imposter = imposter;
+            }
+
+            internal ImposterTargetInstance() : base()
+            {
+            }
+
+            protected override int ProtectedVirtualMethod(int value)
+            {
+                return _imposter._protectedVirtualMethodMethodImposter.Invoke(value, base.ProtectedVirtualMethod);
+            }
+
+            protected override string ProtectedVirtualProperty
+            {
+                get
+                {
+                    return _imposter._ProtectedVirtualProperty._getterImposterBuilder.Get();
+                }
+
+                set
+                {
+                    _imposter._ProtectedVirtualProperty._setterImposter.Set(value);
+                }
+            }
+
+            protected override event global::System.EventHandler ProtectedVirtualEvent
+            {
+                add
+                {
+                    ArgumentNullException.ThrowIfNull(value);
+                    _imposter._ProtectedVirtualEvent.Subscribe(value);
+                }
+
+                remove
+                {
+                    ArgumentNullException.ThrowIfNull(value);
+                    _imposter._ProtectedVirtualEvent.Unsubscribe(value);
+                }
+            }
+
+            protected override int this[int index]
+            {
+                get
+                {
+                    return _imposter._IndexerIndexer.Get(index);
+                }
+
+                set
+                {
+                    _imposter._IndexerIndexer.Set(index, value);
+                }
+            }
+        }
+    }
+}
