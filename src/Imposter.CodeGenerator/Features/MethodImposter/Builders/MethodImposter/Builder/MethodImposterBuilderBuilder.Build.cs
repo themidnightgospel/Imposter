@@ -15,6 +15,7 @@ internal static partial class MethodImposterBuilderBuilder
         var builderClass = new ClassDeclarationBuilder(method.MethodImposter.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.BuilderInterface.Syntax))
+            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.ContinuationInterface.Syntax))
             .AddMembers(fields)
             .AddMember(SinglePrivateReadonlyVariableField(method.MethodImposter.Builder.InvocationImposterGroupField.Type, method.MethodImposter.Builder.InvocationImposterGroupField.Name))
             .AddMember(SingleVariableField(

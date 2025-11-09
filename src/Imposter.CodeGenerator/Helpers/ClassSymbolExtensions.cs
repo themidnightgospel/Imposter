@@ -70,14 +70,22 @@ public static class ClassSymbolExtensions
             return;
         }
 
-        foreach (var method in typeSymbol.GetMembers().OfType<IMethodSymbol>().Where(IsOverridableMethod))
+        foreach (var method in typeSymbol.GetMembers().OfType<IMethodSymbol>())
         {
             if (method.OverriddenMethod is { } overridden)
             {
-                overriddenMembers.Add(overridden);
+                var overriddenKey = overridden.OriginalDefinition ?? overridden;
+                overriddenMembers.Add(overriddenKey);
             }
 
-            if (overriddenMembers.Contains(method))
+            if (!IsOverridableMethod(method))
+            {
+                continue;
+            }
+
+            var methodKey = method.OriginalDefinition ?? method;
+
+            if (overriddenMembers.Contains(methodKey))
             {
                 continue;
             }
@@ -172,7 +180,7 @@ public static class ClassSymbolExtensions
             return false;
         }
 
-        return method.IsVirtual || method.IsAbstract || method.IsOverride;
+        return method.IsVirtual || method.IsAbstract;
     }
 
     private static bool IsOverridableProperty(IPropertySymbol property)

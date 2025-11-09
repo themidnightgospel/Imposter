@@ -12,13 +12,22 @@ internal static partial class InvocationSetupBuilder
 {
     internal static IEnumerable<MemberDeclarationSyntax> BuildInvocationSetupInterfaces(ImposterTargetMethodMetadata method)
     {
+        yield return BuildCallbackInterface(method);
         yield return BuildContinuationInterface(method);
         yield return BuildStartInterface(method);
     }
 
+    private static InterfaceDeclarationSyntax BuildCallbackInterface(in ImposterTargetMethodMetadata method) =>
+        InterfaceDeclarationBuilderFactory
+            .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.CallbackInterface.Name)
+            .AddMember(BuildCallbackInterfaceMethod(method))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .Build();
+
     private static InterfaceDeclarationSyntax BuildContinuationInterface(in ImposterTargetMethodMetadata method) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.ContinuationInterface.Name)
+            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax))
             .AddMembers(GetContinuationMethods(method))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
@@ -26,22 +35,25 @@ internal static partial class InvocationSetupBuilder
     private static InterfaceDeclarationSyntax BuildStartInterface(in ImposterTargetMethodMetadata method) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.Interface.Name)
-            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.ContinuationInterface.Syntax))
+            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax))
             .AddMembers(GetOutcomeMethods(method))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .Build();
+
+    private static MethodDeclarationSyntax BuildCallbackInterfaceMethod(in ImposterTargetMethodMetadata method) =>
+        new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.CallbackMethod.ReturnType, method.MethodInvocationImposterGroup.CallbackMethod.Name)
+            .AddParameter(
+                SyntaxFactoryHelper.ParameterSyntax(
+                    InterfaceParameter(
+                        method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter,
+                        method.MethodInvocationImposterGroup.CallbackMethod.InterfaceCallbackParameterName)))
+            .WithSemicolon()
             .Build();
 
     private static List<MemberDeclarationSyntax> GetContinuationMethods(in ImposterTargetMethodMetadata method)
     {
         return new List<MemberDeclarationSyntax>
         {
-            new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.CallbackMethod.ReturnType, method.MethodInvocationImposterGroup.CallbackMethod.Name)
-                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(
-                    InterfaceParameter(
-                        method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter,
-                        method.MethodInvocationImposterGroup.CallbackMethod.InterfaceCallbackParameterName)))
-                .WithSemicolon()
-                .Build(),
             new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThenMethod.ReturnType, method.MethodInvocationImposterGroup.ThenMethod.Name)
                 .WithSemicolon()
                 .Build()

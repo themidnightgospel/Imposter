@@ -33,7 +33,7 @@ internal static partial class InvocationSetupBuilder
             .WithParameterList(method.Parameters.ParameterListSyntax)
             .WithBody(new BlockBuilder()
                 .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
-                .AddStatement(method.HasReturnValue ? SyntaxFactoryHelper.ReturnDefault : null)
+                .AddStatement(BuildDefaultReturnStatement(method))
                 .Build())
             .Build();
 
@@ -41,5 +41,21 @@ internal static partial class InvocationSetupBuilder
             method.Parameters.HasOutputParameters
                 ? InitializeOutParametersMethodBuilder.Invoke(method)
                 : null;
+
+        static StatementSyntax? BuildDefaultReturnStatement(in ImposterTargetMethodMetadata method)
+        {
+            if (!method.HasReturnValue)
+            {
+                return null;
+            }
+
+            if (!method.ReturnType.SupportsAsyncValueResult &&
+                (method.ReturnType.IsTask || method.ReturnType.IsValueTask))
+            {
+                return SyntaxFactoryHelper.ReturnVoid;
+            }
+
+            return SyntaxFactoryHelper.ReturnDefault;
+        }
     }
 }

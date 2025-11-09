@@ -36,9 +36,14 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAgePropertyGetterContinuationBuilder
+        public interface IAgePropertyGetterCallbackBuilder
         {
             IAgePropertyGetterContinuationBuilder Callback(System.Action callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertyGetterContinuationBuilder : IAgePropertyGetterCallbackBuilder
+        {
             IAgePropertyGetterFluentBuilder Then();
         }
 
@@ -54,16 +59,36 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAgePropertyGetterBuilder : IAgePropertyGetterFluentBuilder, IAgePropertyGetterVerifier
+        public interface IAgePropertyGetterBuilder : IAgePropertyGetterOutcomeBuilder, IAgePropertyGetterCallbackBuilder, IAgePropertyGetterVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAgePropertySetterBuilder
+        public interface IAgePropertySetterCallbackBuilder
         {
-            IAgePropertySetterBuilder Callback(System.Action<int> callback);
+            IAgePropertySetterContinuationBuilder Callback(System.Action<int> callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertySetterContinuationBuilder : IAgePropertySetterCallbackBuilder
+        {
+            IAgePropertySetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertySetterFluentBuilder : IAgePropertySetterCallbackBuilder, IAgePropertySetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertySetterVerifier
+        {
             void Called(Imposter.Abstractions.Count count);
-            IAgePropertySetterBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertySetterBuilder : IAgePropertySetterCallbackBuilder, IAgePropertySetterVerifier
+        {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -96,7 +121,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : IAgePropertyGetterBuilder
+            internal class GetterImposterBuilder : IAgePropertyGetterBuilder, IAgePropertyGetterFluentBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -144,7 +169,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     return this;
                 }
 
-                IAgePropertyGetterContinuationBuilder IAgePropertyGetterContinuationBuilder.Callback(System.Action callback)
+                IAgePropertyGetterContinuationBuilder IAgePropertyGetterCallbackBuilder.Callback(System.Action callback)
                 {
                     _callbacks.Enqueue(callback);
                     return this;
@@ -238,7 +263,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : IAgePropertySetterBuilder
+                internal class Builder : IAgePropertySetterBuilder, IAgePropertySetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly Imposter.Abstractions.Arg<int> _criteria;
@@ -248,18 +273,18 @@ namespace Imposter.Tests.Features.PropertyImposter
                         this._criteria = _criteria;
                     }
 
-                    IAgePropertySetterBuilder IAgePropertySetterBuilder.Callback(System.Action<int> callback)
+                    IAgePropertySetterContinuationBuilder IAgePropertySetterCallbackBuilder.Callback(System.Action<int> callback)
                     {
                         _setterImposter.Callback(_criteria, callback);
                         return this;
                     }
 
-                    void IAgePropertySetterBuilder.Called(Imposter.Abstractions.Count count)
+                    void IAgePropertySetterVerifier.Called(Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    IAgePropertySetterBuilder IAgePropertySetterBuilder.Then()
+                    IAgePropertySetterFluentBuilder IAgePropertySetterContinuationBuilder.Then()
                     {
                         return this;
                     }
@@ -292,9 +317,14 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterContinuationBuilder
+        public interface INamePropertyGetterCallbackBuilder
         {
             INamePropertyGetterContinuationBuilder Callback(System.Action callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterContinuationBuilder : INamePropertyGetterCallbackBuilder
+        {
             INamePropertyGetterFluentBuilder Then();
         }
 
@@ -310,7 +340,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterBuilder : INamePropertyGetterFluentBuilder, INamePropertyGetterVerifier
+        public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterCallbackBuilder, INamePropertyGetterVerifier
         {
         }
 
@@ -341,7 +371,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : INamePropertyGetterBuilder
+            internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -389,7 +419,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     return this;
                 }
 
-                INamePropertyGetterContinuationBuilder INamePropertyGetterContinuationBuilder.Callback(System.Action callback)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterCallbackBuilder.Callback(System.Action callback)
                 {
                     _callbacks.Enqueue(callback);
                     return this;
@@ -439,11 +469,31 @@ namespace Imposter.Tests.Features.PropertyImposter
 
         private readonly LastNamePropertyBuilder _LastName;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ILastNamePropertySetterBuilder
+        public interface ILastNamePropertySetterCallbackBuilder
         {
-            ILastNamePropertySetterBuilder Callback(System.Action<int> callback);
+            ILastNamePropertySetterContinuationBuilder Callback(System.Action<int> callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ILastNamePropertySetterContinuationBuilder : ILastNamePropertySetterCallbackBuilder
+        {
+            ILastNamePropertySetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ILastNamePropertySetterFluentBuilder : ILastNamePropertySetterCallbackBuilder, ILastNamePropertySetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ILastNamePropertySetterVerifier
+        {
             void Called(Imposter.Abstractions.Count count);
-            ILastNamePropertySetterBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ILastNamePropertySetterBuilder : ILastNamePropertySetterCallbackBuilder, ILastNamePropertySetterVerifier
+        {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -526,7 +576,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : ILastNamePropertySetterBuilder
+                internal class Builder : ILastNamePropertySetterBuilder, ILastNamePropertySetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly Imposter.Abstractions.Arg<int> _criteria;
@@ -536,18 +586,18 @@ namespace Imposter.Tests.Features.PropertyImposter
                         this._criteria = _criteria;
                     }
 
-                    ILastNamePropertySetterBuilder ILastNamePropertySetterBuilder.Callback(System.Action<int> callback)
+                    ILastNamePropertySetterContinuationBuilder ILastNamePropertySetterCallbackBuilder.Callback(System.Action<int> callback)
                     {
                         _setterImposter.Callback(_criteria, callback);
                         return this;
                     }
 
-                    void ILastNamePropertySetterBuilder.Called(Imposter.Abstractions.Count count)
+                    void ILastNamePropertySetterVerifier.Called(Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    ILastNamePropertySetterBuilder ILastNamePropertySetterBuilder.Then()
+                    ILastNamePropertySetterFluentBuilder ILastNamePropertySetterContinuationBuilder.Then()
                     {
                         return this;
                     }

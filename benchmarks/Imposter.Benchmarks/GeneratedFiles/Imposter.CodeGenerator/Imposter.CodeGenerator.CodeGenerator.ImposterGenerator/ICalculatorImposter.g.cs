@@ -221,14 +221,19 @@ namespace Imposter.Benchmarks
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISquareMethodInvocationImposterGroupContinuation
+        public interface ISquareMethodInvocationImposterGroupCallback
         {
             ISquareMethodInvocationImposterGroupContinuation Callback(SquareCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ISquareMethodInvocationImposterGroupContinuation : ISquareMethodInvocationImposterGroupCallback
+        {
             ISquareMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISquareMethodInvocationImposterGroup : ISquareMethodInvocationImposterGroupContinuation
+        public interface ISquareMethodInvocationImposterGroup
         {
             ISquareMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -246,7 +251,7 @@ namespace Imposter.Benchmarks
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int ImposterVsMoqVsNSub.ICalculator.Square(int input)
-        public interface ISquareMethodImposterBuilder : ISquareMethodInvocationImposterGroup, SquareInvocationVerifier
+        public interface ISquareMethodImposterBuilder : ISquareMethodInvocationImposterGroup, ISquareMethodInvocationImposterGroupCallback, SquareInvocationVerifier
         {
         }
 
@@ -306,7 +311,7 @@ namespace Imposter.Benchmarks
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : ISquareMethodImposterBuilder
+            internal class Builder : ISquareMethodImposterBuilder, ISquareMethodInvocationImposterGroupContinuation
             {
                 private readonly SquareMethodImposter _imposter;
                 private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
@@ -350,7 +355,7 @@ namespace Imposter.Benchmarks
                     return this;
                 }
 
-                ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroupContinuation.Callback(SquareCallbackDelegate callback)
+                ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroupCallback.Callback(SquareCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;

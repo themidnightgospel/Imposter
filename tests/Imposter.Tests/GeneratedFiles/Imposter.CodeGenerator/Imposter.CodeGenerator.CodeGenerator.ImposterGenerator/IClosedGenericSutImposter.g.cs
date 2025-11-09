@@ -221,14 +221,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericMethodMethodInvocationImposterGroupContinuation
+        public interface IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroupContinuation Callback(GenericMethodCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IGenericMethodMethodInvocationImposterGroupContinuation : IGenericMethodMethodInvocationImposterGroupCallback
+        {
             IGenericMethodMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IGenericMethodMethodInvocationImposterGroup : IGenericMethodMethodInvocationImposterGroupContinuation
+        public interface IGenericMethodMethodInvocationImposterGroup : IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -246,7 +251,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
-        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, GenericMethodInvocationVerifier
+        public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, IGenericMethodMethodInvocationImposterGroupCallback, GenericMethodInvocationVerifier
         {
         }
 
@@ -306,7 +311,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IGenericMethodMethodImposterBuilder
+            internal class Builder : IGenericMethodMethodImposterBuilder, IGenericMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly GenericMethodMethodImposter _imposter;
                 private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
@@ -350,7 +355,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroupContinuation.Callback(GenericMethodCallbackDelegate callback)
+                IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroupCallback.Callback(GenericMethodCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
