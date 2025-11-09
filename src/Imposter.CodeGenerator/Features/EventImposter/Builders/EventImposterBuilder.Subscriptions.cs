@@ -22,7 +22,7 @@ internal static partial class EventImposterBuilder
                 .Call([
                     Argument(handlerIdentifier),
                     Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))),
-                    Argument(BuildIncrementLambda())
+                    Argument(CounterIncrementLambda())
                 ]);
 
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), method.Name)
@@ -62,7 +62,7 @@ internal static partial class EventImposterBuilder
                             .Call([
                                 Argument(handlerIdentifier),
                                 Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
-                                Argument(BuildUnsubscribeLambda())
+                                Argument(CounterDecrementLambda())
                             ]))
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
@@ -95,49 +95,17 @@ internal static partial class EventImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildOnSubscribeMethod(in ImposterEventMetadata @event)
-    {
-        var method = @event.Builder.Methods.OnSubscribe;
-        var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
+    private static MethodDeclarationSyntax BuildOnSubscribeMethod(in ImposterEventMetadata @event) =>
+        BuildInterceptorRegistrationMethod(
+            @event,
+            @event.Builder.Methods.OnSubscribe,
+            @event.Builder.Fields.SubscribeInterceptors);
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name)
-            .AddParameter(ParameterSyntax(method.InterceptorParameter))
-            .WithBody(
-                new BlockBuilder()
-                    .AddExpression(ThrowIfNull(method.InterceptorParameter.Name))
-                    .AddExpression(
-                        FieldIdentifier(@event.Builder.Fields.SubscribeInterceptors)
-                            .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(interceptorIdentifier)))
-                    .AddStatement(ReturnStatement(ThisExpression()))
-                    .Build())
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(in ImposterEventMetadata @event)
-    {
-        var method = @event.Builder.Methods.OnUnsubscribe;
-        var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
-
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name)
-            .AddParameter(ParameterSyntax(method.InterceptorParameter))
-            .WithBody(
-                new BlockBuilder()
-                    .AddExpression(ThrowIfNull(method.InterceptorParameter.Name))
-                    .AddExpression(
-                        FieldIdentifier(@event.Builder.Fields.UnsubscribeInterceptors)
-                            .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(interceptorIdentifier)))
-                    .AddStatement(ReturnStatement(ThisExpression()))
-                    .Build())
-            .Build();
-    }
+    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(in ImposterEventMetadata @event) =>
+        BuildInterceptorRegistrationMethod(
+            @event,
+            @event.Builder.Methods.OnUnsubscribe,
+            @event.Builder.Fields.UnsubscribeInterceptors);
 
     private static ForEachStatementSyntax ForEachInterceptor(in FieldMetadata interceptorsField, string handlerIdentifier) =>
         ForEachStatement(
@@ -149,40 +117,27 @@ internal static partial class EventImposterBuilder
                     IdentifierName("interceptor")
                         .Call(Argument(IdentifierName(handlerIdentifier))))));
 
-    private static ParenthesizedLambdaExpressionSyntax BuildUnsubscribeLambda() =>
-        ParenthesizedLambdaExpression()
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList([
-                        Parameter(Identifier("_")),
-                        Parameter(Identifier("count"))
-                    ])))
-            .WithBlock(
-                Block(
-                    IfStatement(
-                        BinaryExpression(
-                            SyntaxKind.GreaterThanExpression,
-                            IdentifierName("count"),
-                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
-                        Block(
-                            ReturnStatement(
-                                BinaryExpression(
-                                    SyntaxKind.SubtractExpression,
-                                    IdentifierName("count"),
-                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))))),
-                    ReturnStatement(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0)))));
+    private static MethodDeclarationSyntax BuildInterceptorRegistrationMethod(
+        in ImposterEventMetadata @event,
+        in EventImposterBuilderMethodsMetadata.InterceptorMethodMetadata method,
+        in FieldMetadata interceptorsField)
+    {
+        var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
 
-    private static ParenthesizedLambdaExpressionSyntax BuildIncrementLambda() =>
-        ParenthesizedLambdaExpression()
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList([
-                        Parameter(Identifier("_")),
-                        Parameter(Identifier("count"))
-                    ])))
-            .WithExpressionBody(
-                BinaryExpression(
-                    SyntaxKind.AddExpression,
-                    IdentifierName("count"),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))));
+        return ExplicitInterfaceMethod(
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                method.Name)
+            .AddParameter(ParameterSyntax(method.InterceptorParameter))
+            .WithBody(
+                new BlockBuilder()
+                    .AddExpression(ThrowIfNull(method.InterceptorParameter.Name))
+                    .AddExpression(
+                        FieldIdentifier(interceptorsField)
+                            .Dot(IdentifierName("Enqueue"))
+                            .Call(Argument(interceptorIdentifier)))
+                    .AddStatement(ReturnStatement(ThisExpression()))
+                    .Build())
+            .Build();
+    }
 }

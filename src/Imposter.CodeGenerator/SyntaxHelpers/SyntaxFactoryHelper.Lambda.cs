@@ -22,4 +22,45 @@ internal static partial class SyntaxFactoryHelper
 
     public static SimpleLambdaExpressionSyntax Lambda(this SyntaxToken lambdaParameter, CSharpSyntaxNode body)
         => SimpleLambdaExpression(Parameter(lambdaParameter), body);
+
+    public static ParenthesizedLambdaExpressionSyntax CounterIncrementLambda(
+        string discardParameterName = "_",
+        string counterParameterName = "count") =>
+        ParenthesizedLambdaExpression()
+            .WithParameterList(
+                ParameterList(
+                    SeparatedList([
+                        Parameter(Identifier(discardParameterName)),
+                        Parameter(Identifier(counterParameterName))
+                    ])))
+            .WithExpressionBody(
+                BinaryExpression(
+                    SyntaxKind.AddExpression,
+                    IdentifierName(counterParameterName),
+                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))));
+
+    public static ParenthesizedLambdaExpressionSyntax CounterDecrementLambda(
+        string discardParameterName = "_",
+        string counterParameterName = "count") =>
+        ParenthesizedLambdaExpression()
+            .WithParameterList(
+                ParameterList(
+                    SeparatedList([
+                        Parameter(Identifier(discardParameterName)),
+                        Parameter(Identifier(counterParameterName))
+                    ])))
+            .WithBlock(
+                Block(
+                    IfStatement(
+                        BinaryExpression(
+                            SyntaxKind.GreaterThanExpression,
+                            IdentifierName(counterParameterName),
+                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
+                        Block(
+                            ReturnStatement(
+                                BinaryExpression(
+                                    SyntaxKind.SubtractExpression,
+                                    IdentifierName(counterParameterName),
+                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))))),
+                    ReturnStatement(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0)))));
 }
