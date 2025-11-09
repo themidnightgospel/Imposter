@@ -31,9 +31,9 @@ public class SampleService
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IAgePropertySetterFluentBuilder");
-        source.ShouldContain("IAgePropertySetterFluentBuilder Callback(System.Action<int> callback);");
-        source.ShouldContain("IAgePropertySetterFluentBuilder Then();");
+        source.ShouldContain("public interface IAgePropertySetterCallbackBuilder");
+        source.ShouldContain("public interface IAgePropertySetterContinuationBuilder : IAgePropertySetterCallbackBuilder");
+        source.ShouldContain("public interface IAgePropertySetterFluentBuilder : IAgePropertySetterCallbackBuilder, IAgePropertySetterContinuationBuilder");
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class SampleService
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IAgePropertySetterBuilder : IAgePropertySetterFluentBuilder, IAgePropertySetterVerifier");
+        source.ShouldContain("public interface IAgePropertySetterBuilder : IAgePropertySetterCallbackBuilder, IAgePropertySetterVerifier");
         source.ShouldContain("public interface IAgePropertySetterVerifier");
         source.ShouldContain("void Called(Imposter.Abstractions.Count count);");
     }

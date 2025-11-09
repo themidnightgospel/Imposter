@@ -14,6 +14,7 @@ internal static class SetterImposterBuilderBuilder
         new ClassDeclarationBuilder(property.SetterImposter.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.Syntax))
+            .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.FluentInterfaceTypeSyntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.SetterImposterField))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.CriteriaField))
             .AddMember(BuildConstructor(property))

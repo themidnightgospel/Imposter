@@ -1,5 +1,0 @@
-Test cases
-
-1. Members with the same name, make sure theri corresponding imposter component names does not collide
-2. Generic interfaces, generic methods
-3. Members inherited from base interface. IA : IB, IC
