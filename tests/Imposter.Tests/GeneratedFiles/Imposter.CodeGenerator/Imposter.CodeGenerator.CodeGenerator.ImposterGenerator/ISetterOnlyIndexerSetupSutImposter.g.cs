@@ -12,18 +12,18 @@ using Imposter.Tests.Features.IndexerImposter;
 namespace Imposter.Tests.Features.IndexerImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ISetterOnlyIndexerSetupSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut>
+    public class ISetterOnlyIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut>
     {
-        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         public global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut>.Instance()
+        global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut>.Instance()
         {
             return _imposterInstance;
         }
 
         private readonly IndexerIndexerBuilder _IndexerIndexer;
-        public IIndexerIndexerBuilder this[Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
+        public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
         public delegate int IndexerIndexerDelegate(int key);
         public delegate void IndexerIndexerGetterCallback(int key);
         public delegate void IndexerIndexerSetterCallback(int key, int value);
@@ -58,8 +58,8 @@ namespace Imposter.Tests.Features.IndexerImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class IndexerIndexerArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> key;
-            internal IndexerIndexerArgumentsCriteria(Imposter.Abstractions.Arg<int> key)
+            public global::Imposter.Abstractions.Arg<int> key;
+            internal IndexerIndexerArgumentsCriteria(global::Imposter.Abstractions.Arg<int> key)
             {
                 this.key = key;
             }
@@ -107,7 +107,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                 }
             }
 
-            internal IndexerIndexerBuilder(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
             {
                 this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
             }
@@ -146,10 +146,10 @@ namespace Imposter.Tests.Features.IndexerImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
                 private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
-                internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultBehaviour = defaultBehaviour;
                     this._invocationBehavior = invocationBehavior;
@@ -161,12 +161,12 @@ namespace Imposter.Tests.Features.IndexerImposter
                     _callbacks.Enqueue((criteria, callback));
                 }
 
-                public void Called(IndexerIndexerArgumentsCriteria criteria, Imposter.Abstractions.Count count)
+                public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
                 {
                     int invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
 
@@ -191,9 +191,9 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+                        throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }
                 }
 
@@ -219,7 +219,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                         return this;
                     }
 
-                    void IIndexerIndexerSetterVerifier.Called(Imposter.Abstractions.Count count)
+                    void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
                     }
@@ -252,7 +252,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IIndexerIndexerSetterVerifier
         {
-            void Called(Imposter.Abstractions.Count count);
+            void Called(global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -266,7 +266,7 @@ namespace Imposter.Tests.Features.IndexerImposter
             IIndexerIndexerSetterBuilder Setter();
         }
 
-        public ISetterOnlyIndexerSetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public ISetterOnlyIndexerSetupSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.ISetterOnlyIndexerSetupSut.this[int key]");
             this._imposterInstance = new ImposterTargetInstance(this);

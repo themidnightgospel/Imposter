@@ -12,19 +12,19 @@ using Imposter.Tests.Features.ClassImposter;
 namespace Imposter.Tests.Features.ClassImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class MultiConstructorClassImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>
+    public class MultiConstructorClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>
     {
         private readonly CalculateMethodImposter _calculateMethodImposter;
         private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-        public ICalculateMethodImposterBuilder Calculate(Imposter.Abstractions.Arg<int> input)
+        public ICalculateMethodImposterBuilder Calculate(global::Imposter.Abstractions.Arg<int> input)
         {
             return new CalculateMethodImposter.Builder(_calculateMethodImposter, _calculateMethodInvocationHistoryCollection, new CalculateArgumentsCriteria(input));
         }
 
-        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         public global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>.Instance()
+        global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>.Instance()
         {
             return _imposterInstance;
         }
@@ -49,9 +49,9 @@ namespace Imposter.Tests.Features.ClassImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class CalculateArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> input { get; }
+            public global::Imposter.Abstractions.Arg<int> input { get; }
 
-            public CalculateArgumentsCriteria(Imposter.Abstractions.Arg<int> input)
+            public CalculateArgumentsCriteria(global::Imposter.Abstractions.Arg<int> input)
             {
                 this.input = input;
             }
@@ -105,7 +105,7 @@ namespace Imposter.Tests.Features.ClassImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class CalculateMethodInvocationImposterGroup
         {
-            internal static CalculateMethodInvocationImposterGroup Default = new CalculateMethodInvocationImposterGroup(new CalculateArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static CalculateMethodInvocationImposterGroup Default = new CalculateMethodInvocationImposterGroup(new CalculateArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal CalculateArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -136,14 +136,14 @@ namespace Imposter.Tests.Features.ClassImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -167,18 +167,18 @@ namespace Imposter.Tests.Features.ClassImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -276,8 +276,8 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup>();
             private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public CalculateMethodImposter(CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public CalculateMethodImposter(CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._calculateMethodInvocationHistoryCollection = _calculateMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -305,9 +305,9 @@ namespace Imposter.Tests.Features.ClassImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual int MultiConstructorClass.Calculate(int input)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MultiConstructorClass.Calculate(int input)");
                     }
 
                     matchingInvocationImposterGroup = CalculateMethodInvocationImposterGroup.Default;
@@ -401,18 +401,18 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                void CalculateInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void CalculateInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _calculateMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
         }
 
-        public MultiConstructorClassImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public MultiConstructorClassImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance();
@@ -420,7 +420,7 @@ namespace Imposter.Tests.Features.ClassImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        public MultiConstructorClassImposter(int value, string label, Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public MultiConstructorClassImposter(int value, string label, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(value, label);
@@ -428,7 +428,7 @@ namespace Imposter.Tests.Features.ClassImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        public MultiConstructorClassImposter(global::System.Guid correlationId, Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public MultiConstructorClassImposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(correlationId);
@@ -436,7 +436,7 @@ namespace Imposter.Tests.Features.ClassImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        public MultiConstructorClassImposter(bool enabled, Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public MultiConstructorClassImposter(bool enabled, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(enabled);

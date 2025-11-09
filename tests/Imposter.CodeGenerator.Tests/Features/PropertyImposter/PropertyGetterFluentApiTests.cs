@@ -1,13 +1,6 @@
-using System;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using Imposter.Abstractions;
-using Imposter.CodeGenerator.CodeGenerator;
+using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Testing;
-using Shouldly;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter;
@@ -588,73 +581,21 @@ namespace Sample
         AssertNoDiagnostics(diagnostics);
     }
 
-    private static GeneratorRunResult RunGenerator()
-    {
-        var compilation = CSharpCompilation.Create(
-            assemblyName: "PropertyGetterInterfaceSegregationTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, ParseOptions, path: BaseSourceFileName) },
-            references: References,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
-        var runResult = driver.RunGenerators(compilation).GetRunResult();
-        var generatorResult = runResult.Results.Single();
-
-        runResult.Diagnostics.ShouldBeEmpty();
-        generatorResult.Exception.ShouldBeNull();
-
-        return generatorResult;
-    }
-
-    private static ImmutableArray<Diagnostic> CompileSnippet(string snippet)
-    {
-        var generatorResult = RunGenerator();
-        var baseTree = CSharpSyntaxTree.ParseText(Source, ParseOptions, path: BaseSourceFileName);
-        var snippetTree = CSharpSyntaxTree.ParseText(snippet, ParseOptions, path: SnippetFileName);
-        var generatedTrees = generatorResult.GeneratedSources
-            .Select(gs => CSharpSyntaxTree.ParseText(gs.SourceText.ToString(), ParseOptions, path: gs.HintName));
-
-        var compilation = CSharpCompilation.Create(
-            assemblyName: "PropertyGetterInterfaceSegregationTests.Snippet",
-            syntaxTrees: new[] { baseTree, snippetTree }.Concat(generatedTrees),
-            references: References,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        return compilation
-            .GetDiagnostics()
-            .Where(d => d.Severity == DiagnosticSeverity.Error)
-            .ToImmutableArray();
-    }
-
-    private static readonly CSharpParseOptions ParseOptions = new CSharpParseOptions(LanguageVersion.CSharp8);
     private const string BaseSourceFileName = "GeneratorInput.cs";
     private const string SnippetFileName = "Snippet.cs";
-    
-    private static readonly Lazy<MetadataReference[]> CachedReferences = new(() =>
-        ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult()
-            .Concat(new[]
-            {
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            })
-            .ToArray());
 
-    private static MetadataReference[] References => CachedReferences.Value;
+    private static readonly GeneratorTestContext TestContext =
+        GeneratorTestHelper.CreateContext(
+            Source,
+            baseSourceFileName: BaseSourceFileName,
+            snippetFileName: SnippetFileName,
+            assemblyName: nameof(PropertyGetterFluentApiTests));
 
-    private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
-    {
-        diagnostics.ShouldBeEmpty();
-    }
+    private static ImmutableArray<Diagnostic> CompileSnippet(string snippet) => TestContext.CompileSnippet(snippet);
 
-    private static void AssertSingleDiagnostic(ImmutableArray<Diagnostic> diagnostics, string expectedId, int expectedLine)
-    {
-        diagnostics.Length.ShouldBe(1);
-        var diagnostic = diagnostics[0];
-        diagnostic.Id.ShouldBe(expectedId);
-        var span = diagnostic.Location.GetLineSpan();
-        span.Path.ShouldBe(SnippetFileName);
-        (span.StartLinePosition.Line + 1).ShouldBe(expectedLine);
-    }
+    private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
+        GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
+
+    private static void AssertSingleDiagnostic(ImmutableArray<Diagnostic> diagnostics, string expectedId, int expectedLine) =>
+        GeneratorTestHelper.AssertSingleDiagnostic(diagnostics, expectedId, expectedLine, SnippetFileName);
 }
