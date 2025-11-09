@@ -31,7 +31,7 @@ public class SampleService
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IComputeMethodInvocationImposterGroup : IComputeMethodInvocationImposterGroupContinuation");
+        source.ShouldContain("public interface IComputeMethodInvocationImposterGroup");
         source.ShouldContain("IComputeMethodInvocationImposterGroupContinuation Returns(ComputeDelegate resultGenerator);");
         source.ShouldContain("IComputeMethodInvocationImposterGroupContinuation Returns(int value);");
         source.ShouldContain("IComputeMethodInvocationImposterGroupContinuation Throws<TException>()");
@@ -44,8 +44,9 @@ public class SampleService
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IComputeMethodInvocationImposterGroupContinuation");
-        source.ShouldContain("IComputeMethodInvocationImposterGroupContinuation Callback(ComputeCallbackDelegate callback);");
+        source.ShouldContain("public interface IComputeMethodInvocationImposterGroupCallback");
+        source.ShouldContain("IComputeMethodInvocationImposterGroupContinuation Callback");
+        source.ShouldContain("public interface IComputeMethodInvocationImposterGroupContinuation : IComputeMethodInvocationImposterGroupCallback");
         source.ShouldContain("IComputeMethodInvocationImposterGroup Then();");
     }
 

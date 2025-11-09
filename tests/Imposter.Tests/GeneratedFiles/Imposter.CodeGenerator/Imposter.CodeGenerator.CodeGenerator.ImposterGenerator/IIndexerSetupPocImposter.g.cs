@@ -229,14 +229,19 @@ namespace Imposter.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodMethodInvocationImposterGroupContinuation
+        public interface IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroupContinuation Callback(IndexerMethodCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIndexerMethodMethodInvocationImposterGroupContinuation : IIndexerMethodMethodInvocationImposterGroupCallback
+        {
             IIndexerMethodMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIndexerMethodMethodInvocationImposterGroup : IIndexerMethodMethodInvocationImposterGroupContinuation
+        public interface IIndexerMethodMethodInvocationImposterGroup : IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -254,7 +259,7 @@ namespace Imposter.Tests.Shared
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
-        public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IndexerMethodInvocationVerifier
+        public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IIndexerMethodMethodInvocationImposterGroupCallback, IndexerMethodInvocationVerifier
         {
         }
 
@@ -314,7 +319,7 @@ namespace Imposter.Tests.Shared
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IIndexerMethodMethodImposterBuilder
+            internal class Builder : IIndexerMethodMethodImposterBuilder, IIndexerMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly IndexerMethodMethodImposter _imposter;
                 private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection;
@@ -358,7 +363,7 @@ namespace Imposter.Tests.Shared
                     return this;
                 }
 
-                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroupContinuation.Callback(IndexerMethodCallbackDelegate callback)
+                IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroupCallback.Callback(IndexerMethodCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;

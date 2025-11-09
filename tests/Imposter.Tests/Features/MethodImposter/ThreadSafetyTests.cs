@@ -41,10 +41,10 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenSequentialReturnsSetup_WhenMethodsInvokedConcurrently_ShouldConsumeUniqueValues()
         {
             var builder = _sut.IntNoParams();
-            builder.Returns(0);
+            var continuation = builder.Returns(0);
             for (int i = 1; i < ThreadCount; i++)
             {
-                builder.Then().Returns(i);
+                continuation = continuation.Then().Returns(i);
             }
 
             var results = new int[ThreadCount];

@@ -325,7 +325,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -405,7 +405,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -425,7 +425,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -445,7 +445,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -465,7 +465,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -485,7 +485,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -505,7 +505,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -525,7 +525,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -545,7 +545,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -565,7 +565,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
@@ -585,7 +585,7 @@ namespace Sample
 }
 """);
 
-        diagnostics.ShouldBeEmpty();
+        AssertNoDiagnostics(diagnostics);
     }
 
     private static GeneratorRunResult RunGenerator()
@@ -642,6 +642,11 @@ namespace Sample
             .ToArray());
 
     private static MetadataReference[] References => CachedReferences.Value;
+
+    private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+    {
+        diagnostics.ShouldBeEmpty();
+    }
 
     private static void AssertSingleDiagnostic(ImmutableArray<Diagnostic> diagnostics, string expectedId, int expectedLine)
     {

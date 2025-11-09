@@ -9,4 +9,6 @@ internal static partial class SyntaxFactoryHelper
     internal static readonly LiteralExpressionSyntax Default = LiteralExpression(SyntaxKind.DefaultLiteralExpression);
 
     internal static readonly ReturnStatementSyntax ReturnDefault = ReturnStatement(Default);
+
+    internal static readonly ReturnStatementSyntax ReturnVoid = ReturnStatement();
 }

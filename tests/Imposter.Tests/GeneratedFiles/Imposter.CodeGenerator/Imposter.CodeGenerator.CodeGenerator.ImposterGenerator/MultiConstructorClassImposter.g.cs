@@ -236,14 +236,19 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICalculateMethodInvocationImposterGroupContinuation
+        public interface ICalculateMethodInvocationImposterGroupCallback
         {
             ICalculateMethodInvocationImposterGroupContinuation Callback(CalculateCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ICalculateMethodInvocationImposterGroupContinuation : ICalculateMethodInvocationImposterGroupCallback
+        {
             ICalculateMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ICalculateMethodInvocationImposterGroup : ICalculateMethodInvocationImposterGroupContinuation
+        public interface ICalculateMethodInvocationImposterGroup : ICalculateMethodInvocationImposterGroupCallback
         {
             ICalculateMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -262,7 +267,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual int MultiConstructorClass.Calculate(int input)
-        public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, CalculateInvocationVerifier
+        public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier
         {
         }
 
@@ -322,7 +327,7 @@ namespace Imposter.Tests.Features.ClassImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : ICalculateMethodImposterBuilder
+            internal class Builder : ICalculateMethodImposterBuilder, ICalculateMethodInvocationImposterGroupContinuation
             {
                 private readonly CalculateMethodImposter _imposter;
                 private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
@@ -366,7 +371,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroupContinuation.Callback(CalculateCallbackDelegate callback)
+                ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroupCallback.Callback(CalculateCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;

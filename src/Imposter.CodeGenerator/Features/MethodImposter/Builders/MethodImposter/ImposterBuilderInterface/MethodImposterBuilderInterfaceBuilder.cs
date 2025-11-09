@@ -14,6 +14,7 @@ internal static class MethodImposterBuilderInterfaceBuilder
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodImposter.BuilderInterface.Name)
             .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.Interface.Syntax))
+            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax))
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
             .AddModifier(Token(SyntaxKind.PublicKeyword)
 #if DEBUG

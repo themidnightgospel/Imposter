@@ -236,14 +236,19 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IComputeMethodInvocationImposterGroupContinuation
+        public interface IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroupContinuation Callback(ComputeCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IComputeMethodInvocationImposterGroupContinuation : IComputeMethodInvocationImposterGroupCallback
+        {
             IComputeMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IComputeMethodInvocationImposterGroup : IComputeMethodInvocationImposterGroupContinuation
+        public interface IComputeMethodInvocationImposterGroup : IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -262,7 +267,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual int ParameterizedCtorOnlyClass.Compute(int value)
-        public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, ComputeInvocationVerifier
+        public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
 
@@ -322,7 +327,7 @@ namespace Imposter.Tests.Features.ClassImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IComputeMethodImposterBuilder
+            internal class Builder : IComputeMethodImposterBuilder, IComputeMethodInvocationImposterGroupContinuation
             {
                 private readonly ComputeMethodImposter _imposter;
                 private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection;
@@ -366,7 +371,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroupContinuation.Callback(ComputeCallbackDelegate callback)
+                IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroupCallback.Callback(ComputeCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
@@ -421,9 +426,14 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterContinuationBuilder
+        public interface INamePropertyGetterCallbackBuilder
         {
             INamePropertyGetterContinuationBuilder Callback(System.Action callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterContinuationBuilder : INamePropertyGetterCallbackBuilder
+        {
             INamePropertyGetterFluentBuilder Then();
         }
 
@@ -439,16 +449,36 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterBuilder : INamePropertyGetterFluentBuilder, INamePropertyGetterVerifier
+        public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterCallbackBuilder, INamePropertyGetterVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertySetterBuilder
+        public interface INamePropertySetterCallbackBuilder
         {
-            INamePropertySetterBuilder Callback(System.Action<string> callback);
+            INamePropertySetterContinuationBuilder Callback(System.Action<string> callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertySetterContinuationBuilder : INamePropertySetterCallbackBuilder
+        {
+            INamePropertySetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertySetterFluentBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertySetterVerifier
+        {
             void Called(Imposter.Abstractions.Count count);
-            INamePropertySetterBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertySetterBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterVerifier
+        {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -481,7 +511,7 @@ namespace Imposter.Tests.Features.ClassImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : INamePropertyGetterBuilder
+            internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<string>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<string>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -529,7 +559,7 @@ namespace Imposter.Tests.Features.ClassImposter
                     return this;
                 }
 
-                INamePropertyGetterContinuationBuilder INamePropertyGetterContinuationBuilder.Callback(System.Action callback)
+                INamePropertyGetterContinuationBuilder INamePropertyGetterCallbackBuilder.Callback(System.Action callback)
                 {
                     _callbacks.Enqueue(callback);
                     return this;
@@ -623,7 +653,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : INamePropertySetterBuilder
+                internal class Builder : INamePropertySetterBuilder, INamePropertySetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly Imposter.Abstractions.Arg<string> _criteria;
@@ -633,18 +663,18 @@ namespace Imposter.Tests.Features.ClassImposter
                         this._criteria = _criteria;
                     }
 
-                    INamePropertySetterBuilder INamePropertySetterBuilder.Callback(System.Action<string> callback)
+                    INamePropertySetterContinuationBuilder INamePropertySetterCallbackBuilder.Callback(System.Action<string> callback)
                     {
                         _setterImposter.Callback(_criteria, callback);
                         return this;
                     }
 
-                    void INamePropertySetterBuilder.Called(Imposter.Abstractions.Count count)
+                    void INamePropertySetterVerifier.Called(Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    INamePropertySetterBuilder INamePropertySetterBuilder.Then()
+                    INamePropertySetterFluentBuilder INamePropertySetterContinuationBuilder.Then()
                     {
                         return this;
                     }

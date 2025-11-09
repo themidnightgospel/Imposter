@@ -264,14 +264,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntSingleParamMethodInvocationImposterGroupContinuation
+        public interface IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Callback(IntSingleParamCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IIntSingleParamMethodInvocationImposterGroupContinuation : IIntSingleParamMethodInvocationImposterGroupCallback
+        {
             IIntSingleParamMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IIntSingleParamMethodInvocationImposterGroup : IIntSingleParamMethodInvocationImposterGroupContinuation
+        public interface IIntSingleParamMethodInvocationImposterGroup : IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -290,7 +295,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)
-        public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IntSingleParamInvocationVerifier
+        public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier
         {
         }
 
@@ -350,7 +355,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IIntSingleParamMethodImposterBuilder
+            internal class Builder : IIntSingleParamMethodImposterBuilder, IIntSingleParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntSingleParamMethodImposter _imposter;
                 private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
@@ -394,7 +399,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                IIntSingleParamMethodInvocationImposterGroupContinuation IIntSingleParamMethodInvocationImposterGroupContinuation.Callback(IntSingleParamCallbackDelegate callback)
+                IIntSingleParamMethodInvocationImposterGroupContinuation IIntSingleParamMethodInvocationImposterGroupCallback.Callback(IntSingleParamCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
@@ -622,14 +627,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidWithSideEffectMethodInvocationImposterGroupContinuation
+        public interface IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation Callback(VoidWithSideEffectCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IVoidWithSideEffectMethodInvocationImposterGroupContinuation : IVoidWithSideEffectMethodInvocationImposterGroupCallback
+        {
             IVoidWithSideEffectMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IVoidWithSideEffectMethodInvocationImposterGroup : IVoidWithSideEffectMethodInvocationImposterGroupContinuation
+        public interface IVoidWithSideEffectMethodInvocationImposterGroup : IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -646,7 +656,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
-        public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, VoidWithSideEffectInvocationVerifier
+        public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier
         {
         }
 
@@ -705,7 +715,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IVoidWithSideEffectMethodImposterBuilder
+            internal class Builder : IVoidWithSideEffectMethodImposterBuilder, IVoidWithSideEffectMethodInvocationImposterGroupContinuation
             {
                 private readonly VoidWithSideEffectMethodImposter _imposter;
                 private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
@@ -749,7 +759,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroupContinuation.Callback(VoidWithSideEffectCallbackDelegate callback)
+                IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroupCallback.Callback(VoidWithSideEffectCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
@@ -1007,14 +1017,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISumAsyncMethodInvocationImposterGroupContinuation
+        public interface ISumAsyncMethodInvocationImposterGroupCallback
         {
             ISumAsyncMethodInvocationImposterGroupContinuation Callback(SumAsyncCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ISumAsyncMethodInvocationImposterGroupContinuation : ISumAsyncMethodInvocationImposterGroupCallback
+        {
             ISumAsyncMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface ISumAsyncMethodInvocationImposterGroup : ISumAsyncMethodInvocationImposterGroupContinuation
+        public interface ISumAsyncMethodInvocationImposterGroup : ISumAsyncMethodInvocationImposterGroupCallback
         {
             ISumAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -1035,7 +1050,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual Task<int> MethodSetupFeatureClassSut.SumAsync(int left, int right)
-        public interface ISumAsyncMethodImposterBuilder : ISumAsyncMethodInvocationImposterGroup, SumAsyncInvocationVerifier
+        public interface ISumAsyncMethodImposterBuilder : ISumAsyncMethodInvocationImposterGroup, ISumAsyncMethodInvocationImposterGroupCallback, SumAsyncInvocationVerifier
         {
         }
 
@@ -1095,7 +1110,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : ISumAsyncMethodImposterBuilder
+            internal class Builder : ISumAsyncMethodImposterBuilder, ISumAsyncMethodInvocationImposterGroupContinuation
             {
                 private readonly SumAsyncMethodImposter _imposter;
                 private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection;
@@ -1139,7 +1154,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                ISumAsyncMethodInvocationImposterGroupContinuation ISumAsyncMethodInvocationImposterGroupContinuation.Callback(SumAsyncCallbackDelegate callback)
+                ISumAsyncMethodInvocationImposterGroupContinuation ISumAsyncMethodInvocationImposterGroupCallback.Callback(SumAsyncCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
@@ -1421,14 +1436,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IBuildLabelAsyncMethodInvocationImposterGroupContinuation
+        public interface IBuildLabelAsyncMethodInvocationImposterGroupCallback
         {
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Callback(BuildLabelAsyncCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IBuildLabelAsyncMethodInvocationImposterGroupContinuation : IBuildLabelAsyncMethodInvocationImposterGroupCallback
+        {
             IBuildLabelAsyncMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IBuildLabelAsyncMethodInvocationImposterGroup : IBuildLabelAsyncMethodInvocationImposterGroupContinuation
+        public interface IBuildLabelAsyncMethodInvocationImposterGroup : IBuildLabelAsyncMethodInvocationImposterGroupCallback
         {
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -1449,7 +1469,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
-        public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, BuildLabelAsyncInvocationVerifier
+        public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier
         {
         }
 
@@ -1509,7 +1529,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IBuildLabelAsyncMethodImposterBuilder
+            internal class Builder : IBuildLabelAsyncMethodImposterBuilder, IBuildLabelAsyncMethodInvocationImposterGroupContinuation
             {
                 private readonly BuildLabelAsyncMethodImposter _imposter;
                 private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
@@ -1553,7 +1573,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroupContinuation.Callback(BuildLabelAsyncCallbackDelegate callback)
+                IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroupCallback.Callback(BuildLabelAsyncCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
@@ -1826,14 +1846,19 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IRefOutWithParamsMethodInvocationImposterGroupContinuation
+        public interface IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Callback(RefOutWithParamsCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IRefOutWithParamsMethodInvocationImposterGroupContinuation : IRefOutWithParamsMethodInvocationImposterGroupCallback
+        {
             IRefOutWithParamsMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IRefOutWithParamsMethodInvocationImposterGroup : IRefOutWithParamsMethodInvocationImposterGroupContinuation
+        public interface IRefOutWithParamsMethodInvocationImposterGroup : IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : Exception, new();
@@ -1852,7 +1877,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
-        public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, RefOutWithParamsInvocationVerifier
+        public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier
         {
         }
 
@@ -1917,7 +1942,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class Builder : IRefOutWithParamsMethodImposterBuilder
+            internal class Builder : IRefOutWithParamsMethodImposterBuilder, IRefOutWithParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly RefOutWithParamsMethodImposter _imposter;
                 private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
@@ -1961,7 +1986,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroupContinuation.Callback(RefOutWithParamsCallbackDelegate callback)
+                IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroupCallback.Callback(RefOutWithParamsCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;

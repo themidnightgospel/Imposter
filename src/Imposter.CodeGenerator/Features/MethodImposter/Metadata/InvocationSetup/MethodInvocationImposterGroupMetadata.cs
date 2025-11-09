@@ -14,6 +14,8 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 
     internal readonly TypeMetadata ContinuationInterface;
 
+    internal readonly TypeMetadata CallbackInterface;
+
     internal readonly NameSyntax Syntax;
 
     internal readonly NameSyntax MethodInvocationImposterSyntax;
@@ -41,6 +43,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         Name = $"{method.UniqueName}MethodInvocationImposterGroup";
         Interface = TypeMetadataFactory.Create($"I{Name}", method.GenericTypeArguments);
         ContinuationInterface = TypeMetadataFactory.Create($"I{Name}Continuation", method.GenericTypeArguments);
+        CallbackInterface = TypeMetadataFactory.Create($"I{Name}Callback", method.GenericTypeArguments);
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
         MethodInvocationImposterSyntax = SyntaxFactory.QualifiedName(Syntax, SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName));
         ReturnsMethod = new ReturnsMethodMetadata(
@@ -56,7 +59,11 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ThrowsAsyncMethod = method.IsAsync
             ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax)
             : null;
-        CallbackMethod = new CallbackMethodMetadata(method, ContinuationInterface.Syntax, method.CallbackDelegate.Syntax);
+        CallbackMethod = new CallbackMethodMetadata(
+            method,
+            ContinuationInterface.Syntax,
+            CallbackInterface.Syntax,
+            method.CallbackDelegate.Syntax);
         ThenMethod = new ThenMethodMetadata(Interface.Syntax, ContinuationInterface.Syntax);
         UseBaseImplementationMethod = method.SupportsBaseImplementation
             ? new UseBaseImplementationMethodMetadata(Interface.Syntax, ContinuationInterface.Syntax)
