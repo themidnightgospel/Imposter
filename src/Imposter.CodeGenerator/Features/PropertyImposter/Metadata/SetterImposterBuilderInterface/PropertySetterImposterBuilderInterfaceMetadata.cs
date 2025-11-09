@@ -10,6 +10,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax Syntax;
 
+    internal readonly string FluentInterfaceName;
+
+    internal readonly NameSyntax FluentInterfaceTypeSyntax;
+
+    internal readonly string VerificationInterfaceName;
+
+    internal readonly NameSyntax VerificationInterfaceTypeSyntax;
+
     internal readonly CalledMethodMetadata CalledMethod;
 
     internal readonly CallbackMethodMetadata CallbackMethod;
@@ -20,8 +28,12 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
         Syntax = SyntaxFactory.ParseName(Name);
+        FluentInterfaceName = $"I{property.UniqueName}PropertySetterFluentBuilder";
+        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        VerificationInterfaceName = $"I{property.UniqueName}PropertySetterVerifier";
+        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
-        CallbackMethod = new CallbackMethodMetadata(property, Syntax);
-        ThenMethod = new PropertySetterThenMethodMetadata(Syntax, Syntax);
+        CallbackMethod = new CallbackMethodMetadata(property, FluentInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        ThenMethod = new PropertySetterThenMethodMetadata(FluentInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
     }
 }

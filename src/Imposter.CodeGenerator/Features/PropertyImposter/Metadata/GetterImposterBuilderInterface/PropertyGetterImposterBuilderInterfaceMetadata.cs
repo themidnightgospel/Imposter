@@ -22,6 +22,10 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax VerificationInterfaceTypeSyntax;
 
+    internal readonly string FluentInterfaceName;
+
+    internal readonly NameSyntax FluentInterfaceTypeSyntax;
+
     internal readonly ReturnsMethodMetadata ReturnsMethod;
 
     internal readonly ThrowsMethodMetadata ThrowsMethod;
@@ -42,11 +46,13 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
         VerificationInterfaceName = $"I{property.UniqueName}PropertyGetterVerifier";
         VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+        FluentInterfaceName = $"I{property.UniqueName}PropertyGetterFluentBuilder";
+        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
 
         ReturnsMethod = new ReturnsMethodMetadata(in property, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
         ThrowsMethod = new ThrowsMethodMetadata(ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
         CallbackMethod = new CallbackMethodMetadata(ContinuationInterfaceTypeSyntax, ContinuationInterfaceTypeSyntax);
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new PropertyGetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, TypeSyntax);
+        ThenMethod = new PropertyGetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
     }
 }

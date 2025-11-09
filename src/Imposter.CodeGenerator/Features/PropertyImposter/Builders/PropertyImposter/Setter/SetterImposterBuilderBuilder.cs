@@ -31,7 +31,7 @@ internal static class SetterImposterBuilderBuilder
 
     internal static MethodDeclarationSyntax BuildCalledMethod(in ImposterPropertyMetadata property) =>
         new MethodDeclarationBuilder(property.SetterImposterBuilderInterface.CalledMethod.ReturnType, property.SetterImposterBuilderInterface.CalledMethod.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.Syntax))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.VerificationInterfaceTypeSyntax))
             .AddParameter(ParameterSyntax(property.SetterImposterBuilderInterface.CalledMethod.CountParameter))
             .WithBody(Block(
                 IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
@@ -48,7 +48,7 @@ internal static class SetterImposterBuilderBuilder
 
     internal static MethodDeclarationSyntax BuildCallbackMethod(in ImposterPropertyMetadata property) =>
         new MethodDeclarationBuilder(property.SetterImposterBuilderInterface.CallbackMethod.ReturnType, property.SetterImposterBuilderInterface.CallbackMethod.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.Syntax))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.CallbackMethod.InterfaceSyntax))
             .AddParameter(ParameterSyntax(property.SetterImposterBuilderInterface.CallbackMethod.CallbackParameter))
             .WithBody(Block(
                 IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
@@ -67,7 +67,7 @@ internal static class SetterImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
         new MethodDeclarationBuilder(property.SetterImposterBuilderInterface.ThenMethod.ReturnType, property.SetterImposterBuilderInterface.ThenMethod.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.Syntax))
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.SetterImposterBuilderInterface.ThenMethod.InterfaceSyntax))
             .WithBody(Block(
                 ReturnStatement(ThisExpression())
             ))
