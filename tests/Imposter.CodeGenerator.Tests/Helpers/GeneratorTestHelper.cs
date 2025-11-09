@@ -2,6 +2,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.CodeGenerator.CodeGenerator;
 using Microsoft.CodeAnalysis;
@@ -13,17 +14,9 @@ namespace Imposter.CodeGenerator.Tests.Helpers;
 
 internal static class GeneratorTestHelper
 {
-    private static readonly Lazy<MetadataReference[]> CachedReferences = new(() =>
-        ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult()
-            .Concat([
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            ])
-            .ToArray());
+    private static readonly Lazy<Task<MetadataReference[]>> CachedReferences = new(ResolveReferencesAsync);
 
-    internal static GeneratorTestContext CreateContext(
+    internal static async Task<GeneratorTestContext> CreateContext(
         string source,
         string baseSourceFileName,
         string snippetFileName,
@@ -36,7 +29,7 @@ internal static class GeneratorTestHelper
             snippetFileName,
             assemblyName,
             languageVersion,
-            CachedReferences.Value);
+            await CachedReferences.Value.ConfigureAwait(false));
     }
 
     internal static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
@@ -81,6 +74,19 @@ internal static class GeneratorTestHelper
                 return $"{diagnostic.Id}: {diagnostic.GetMessage()} ({span.Path}:{span.StartLinePosition.Line + 1},{span.StartLinePosition.Character + 1})";
             }));
     }
+
+    private static async Task<MetadataReference[]> ResolveReferencesAsync()
+    {
+        var references = await ReferenceAssemblies.Net.Net90
+            .ResolveAsync(null, CancellationToken.None)
+            .ConfigureAwait(false);
+
+        return references
+            .Concat([
+                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
+            ])
+            .ToArray();
+    }
 }
 
 internal sealed class GeneratorTestContext
@@ -91,6 +97,7 @@ internal sealed class GeneratorTestContext
     private readonly string _assemblyName;
     private readonly CSharpParseOptions _parseOptions;
     private readonly MetadataReference[] _references;
+    private readonly Lazy<CSharpCompilation> _compilation;
     private readonly Lazy<GeneratorRunResult> _generatorResult;
 
     internal GeneratorTestContext(
@@ -107,6 +114,7 @@ internal sealed class GeneratorTestContext
         _assemblyName = assemblyName;
         _parseOptions = new CSharpParseOptions(languageVersion);
         _references = references;
+        _compilation = new Lazy<CSharpCompilation>(CreateCompilation);
         _generatorResult = new Lazy<GeneratorRunResult>(CreateGeneratorResult);
     }
 
@@ -134,13 +142,11 @@ internal sealed class GeneratorTestContext
 
     internal GeneratorRunResult RunGenerator() => _generatorResult.Value;
 
+    internal CSharpCompilation Compilation => _compilation.Value;
+
     private GeneratorRunResult CreateGeneratorResult()
     {
-        var compilation = CSharpCompilation.Create(
-            assemblyName: _assemblyName,
-            syntaxTrees: [CSharpSyntaxTree.ParseText(_source, _parseOptions, path: _baseSourceFileName)],
-            references: _references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        var compilation = Compilation;
 
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
         var runResult = driver.RunGenerators(compilation).GetRunResult();
@@ -151,4 +157,11 @@ internal sealed class GeneratorTestContext
 
         return generatorResult;
     }
+
+    private CSharpCompilation CreateCompilation() =>
+        CSharpCompilation.Create(
+            assemblyName: _assemblyName,
+            syntaxTrees: [CSharpSyntaxTree.ParseText(_source, _parseOptions, path: _baseSourceFileName)],
+            references: _references,
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 }

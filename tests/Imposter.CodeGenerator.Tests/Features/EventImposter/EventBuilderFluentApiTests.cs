@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 using Xunit;
@@ -26,10 +27,9 @@ public class EventBuilderFluentApiTests
                                                  """;
 
     [Fact]
-    public void GivenInitialBuilder_WhenCallingRaise_ShouldCompile()
+    public async Task GivenInitialBuilder_WhenCallingRaise_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -47,10 +47,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenInitialBuilder_WhenCallingSubscribed_ShouldCompile()
+    public async Task GivenInitialBuilder_WhenCallingSubscribed_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -68,10 +67,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenInitialAsyncBuilder_WhenCallingRaiseAsync_ShouldCompile()
+    public async Task GivenInitialAsyncBuilder_WhenCallingRaiseAsync_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -89,10 +87,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenInitialAsyncBuilder_WhenCallingSubscribed_ShouldCompile()
+    public async Task GivenInitialAsyncBuilder_WhenCallingSubscribed_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -110,10 +107,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenSetupLane_WhenCallingVerification_ShouldFail()
+    public async Task GivenSetupLane_WhenCallingVerification_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -131,10 +127,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenVerificationLane_WhenCallingSetup_ShouldFail()
+    public async Task GivenVerificationLane_WhenCallingSetup_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -152,10 +147,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenSetupLane_WhenStartingWithCallbackAndSwitchingToVerification_ShouldFail()
+    public async Task GivenSetupLane_WhenStartingWithCallbackAndSwitchingToVerification_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -173,10 +167,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
+    public async Task GivenVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -194,10 +187,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncSetupLane_WhenCallingVerification_ShouldFail()
+    public async Task GivenAsyncSetupLane_WhenCallingVerification_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -215,10 +207,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenEventBuilder_WhenAccessingThen_ShouldFail()
+    public async Task GivenEventBuilder_WhenAccessingThen_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -236,10 +227,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenEventBuilder_WhenAccessingCalled_ShouldFail()
+    public async Task GivenEventBuilder_WhenAccessingCalled_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -257,10 +247,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncVerificationLane_WhenCallingSetup_ShouldFail()
+    public async Task GivenAsyncVerificationLane_WhenCallingSetup_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -278,10 +267,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenSetupLane_WhenChainingSetupMethods_ShouldCompile()
+    public async Task GivenSetupLane_WhenChainingSetupMethods_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -303,10 +291,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenSetupLane_WhenContinuingAfterRaise_ShouldCompile()
+    public async Task GivenSetupLane_WhenContinuingAfterRaise_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -330,10 +317,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
+    public async Task GivenSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -353,10 +339,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
+    public async Task GivenVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -378,10 +363,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncSetupLane_WhenAwaitingRaiseAsync_ShouldAllowFurtherSetup()
+    public async Task GivenAsyncSetupLane_WhenAwaitingRaiseAsync_ShouldAllowFurtherSetup()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -406,10 +390,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncSetupLane_WhenSwitchingToVerificationAfterAwait_ShouldFail()
+    public async Task GivenAsyncSetupLane_WhenSwitchingToVerificationAfterAwait_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -428,10 +411,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncSetupLane_WhenStartingWithCallbackAndContinuing_ShouldCompile()
+    public async Task GivenAsyncSetupLane_WhenStartingWithCallbackAndContinuing_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -452,10 +434,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
+    public async Task GivenAsyncSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -475,10 +456,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
+    public async Task GivenAsyncVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -496,10 +476,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncEventBuilder_WhenAccessingThen_ShouldFail()
+    public async Task GivenAsyncEventBuilder_WhenAccessingThen_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -517,10 +496,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncEventBuilder_WhenAccessingCalled_ShouldFail()
+    public async Task GivenAsyncEventBuilder_WhenAccessingCalled_ShouldFail()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -538,10 +516,9 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public void GivenAsyncVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
+    public async Task GivenAsyncVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
     {
-        var diagnostics =
-            CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
                                            {
                                                public static class Scenario
@@ -565,14 +542,18 @@ public class EventBuilderFluentApiTests
     private const string BaseSourceFileName = "GeneratorInput.cs";
     private const string SnippetFileName = "Snippet.cs";
 
-    private static readonly GeneratorTestContext TestContext =
+    private static readonly Task<GeneratorTestContext> TestContextTask =
         GeneratorTestHelper.CreateContext(
             Source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(EventBuilderFluentApiTests));
 
-    private static ImmutableArray<Diagnostic> CompileSnippet(string snippet) => TestContext.CompileSnippet(snippet);
+    private static async Task<ImmutableArray<Diagnostic>> CompileSnippet(string snippet)
+    {
+        var context = await TestContextTask.ConfigureAwait(false);
+        return context.CompileSnippet(snippet);
+    }
 
     private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
         GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
@@ -583,3 +564,5 @@ public class EventBuilderFluentApiTests
         Assert.Equal(expectedId, diagnostic.Id);
     }
 }
+
+

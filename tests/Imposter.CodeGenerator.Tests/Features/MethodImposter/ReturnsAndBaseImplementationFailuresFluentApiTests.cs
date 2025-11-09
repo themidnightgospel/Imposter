@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
@@ -5,9 +6,9 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public void GivenVoidMethod_WhenReturning_ShouldFail()
+    public async Task GivenVoidMethod_WhenReturning_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -25,9 +26,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenClassVoidMethod_WhenReturning_ShouldFail()
+    public async Task GivenClassVoidMethod_WhenReturning_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -45,9 +46,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenNonAsyncMethod_WhenCallingReturnsAsync_ShouldFail()
+    public async Task GivenNonAsyncMethod_WhenCallingReturnsAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -65,9 +66,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenNonAsyncMethod_WhenCallingThrowsAsync_ShouldFail()
+    public async Task GivenNonAsyncMethod_WhenCallingThrowsAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -85,9 +86,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenInterfaceMethod_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenInterfaceMethod_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -105,9 +106,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenNonVirtualClassMethod_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenNonVirtualClassMethod_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -125,9 +126,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenNonVirtualMethod_WhenAccessingFluentApi_ShouldFail()
+    public async Task GivenNonVirtualMethod_WhenAccessingFluentApi_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -145,9 +146,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenSealedOverrideMethod_WhenAccessingFluentApi_ShouldFail()
+    public async Task GivenSealedOverrideMethod_WhenAccessingFluentApi_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -165,9 +166,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenReturningAgain_ShouldFail()
+    public async Task GivenMethodReturns_WhenReturningAgain_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -185,9 +186,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodReturns_WhenReturningAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -205,9 +206,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenThrowing_ShouldFail()
+    public async Task GivenMethodReturns_WhenThrowing_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -225,9 +226,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodReturns_WhenThrowingAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -245,9 +246,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturns_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodReturns_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -265,9 +266,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturnsAsync_WhenReturning_ShouldFail()
+    public async Task GivenMethodReturnsAsync_WhenReturning_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -285,9 +286,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturnsAsync_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodReturnsAsync_WhenReturningAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -305,9 +306,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturnsAsync_WhenThrowing_ShouldFail()
+    public async Task GivenMethodReturnsAsync_WhenThrowing_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -325,9 +326,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturnsAsync_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodReturnsAsync_WhenThrowingAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -345,9 +346,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenMethodReturnsAsync_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodReturnsAsync_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -365,9 +366,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenTaskMethod_WhenCallingReturnsAsync_ShouldFail()
+    public async Task GivenTaskMethod_WhenCallingReturnsAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -385,9 +386,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenUseBaseImplementation_WhenReturning_ShouldFail()
+    public async Task GivenUseBaseImplementation_WhenReturning_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -405,9 +406,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenUseBaseImplementation_WhenReturningAsync_ShouldFail()
+    public async Task GivenUseBaseImplementation_WhenReturningAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -425,9 +426,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenUseBaseImplementation_WhenThrowing_ShouldFail()
+    public async Task GivenUseBaseImplementation_WhenThrowing_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -445,9 +446,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenUseBaseImplementation_WhenThrowingAsync_ShouldFail()
+    public async Task GivenUseBaseImplementation_WhenThrowingAsync_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -465,9 +466,9 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public void GivenUseBaseImplementation_WhenChainingUseBaseImplementation_ShouldFail()
+    public async Task GivenUseBaseImplementation_WhenChainingUseBaseImplementation_ShouldFail()
     {
-        var diagnostics = CompileSnippet( /*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
                                                          {
                                                              public static class Scenario
@@ -484,3 +485,4 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
         AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
     }
 }
+

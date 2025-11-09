@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 using Xunit;
@@ -22,9 +23,9 @@ namespace Sample
 """;
 
     [Fact]
-    public void GivenSetter_WhenCallingCalled_ShouldCompile()
+    public async Task GivenSetter_WhenCallingCalled_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -42,9 +43,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenUsingPredicateArgForCalled_ShouldCompile()
+    public async Task GivenSetter_WhenUsingPredicateArgForCalled_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -62,9 +63,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingCallback_ShouldCompile()
+    public async Task GivenSetter_WhenCallingCallback_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -82,9 +83,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingReturnsValue_ShouldFail()
+    public async Task GivenSetter_WhenCallingReturnsValue_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -102,9 +103,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingReturnsGenerator_ShouldFail()
+    public async Task GivenSetter_WhenCallingReturnsGenerator_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -122,9 +123,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingThrowsInstance_ShouldFail()
+    public async Task GivenSetter_WhenCallingThrowsInstance_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -142,9 +143,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingThrowsGeneric_ShouldFail()
+    public async Task GivenSetter_WhenCallingThrowsGeneric_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -162,9 +163,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenChainingCallback_ShouldCompile()
+    public async Task GivenSetterCallback_WhenChainingCallback_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -182,9 +183,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetter_WhenCallingThen_ShouldFail()
+    public async Task GivenSetter_WhenCallingThen_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -202,9 +203,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenCallingThen_ShouldCompile()
+    public async Task GivenSetterCallback_WhenCallingThen_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -222,9 +223,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenCallingCalled_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -242,9 +243,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenCallingThenCalled_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingThenCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -262,9 +263,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenCallingReturns_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingReturns_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -282,9 +283,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallback_WhenCallingThrows_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingThrows_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -302,9 +303,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterThen_WhenCallingCalled_ShouldFail()
+    public async Task GivenSetterThen_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -322,9 +323,9 @@ namespace Sample
     }
 
     [Fact]
-    public void GivenSetterCallbackChain_WhenCallingThenAndCallback_ShouldCompile()
+    public async Task GivenSetterCallbackChain_WhenCallingThenAndCallback_ShouldCompile()
     {
-        var diagnostics = CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
 {
     public static class Scenario
@@ -349,14 +350,18 @@ namespace Sample
     private const string BaseSourceFileName = "GeneratorInput.cs";
     private const string SnippetFileName = "Snippet.cs";
 
-    private static readonly GeneratorTestContext TestContext =
+    private static readonly Task<GeneratorTestContext> TestContextTask =
         GeneratorTestHelper.CreateContext(
             Source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(PropertySetterFluentApiTests));
 
-    private static ImmutableArray<Diagnostic> CompileSnippet(string snippet) => TestContext.CompileSnippet(snippet);
+    private static async Task<ImmutableArray<Diagnostic>> CompileSnippet(string snippet)
+    {
+        var context = await TestContextTask.ConfigureAwait(false);
+        return context.CompileSnippet(snippet);
+    }
 
     private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
         GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
@@ -364,3 +369,4 @@ namespace Sample
     private static void AssertSingleDiagnostic(ImmutableArray<Diagnostic> diagnostics, string expectedId, int expectedLine) =>
         GeneratorTestHelper.AssertSingleDiagnostic(diagnostics, expectedId, expectedLine, SnippetFileName);
 }
+
