@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Generators;
 
-public class PropertyGetterInterfaceSegregationTests
+public class PropertySetterInterfaceSegregationTests
 {
     private const string Source = """
 using Imposter.Abstractions;
@@ -22,40 +22,27 @@ namespace Sample;
 
 public class SampleService
 {
-    public virtual int Age { get; }
+    public virtual int Age { get; set; }
 }
 """;
 
     [Fact]
-    public void OutcomeInterface_ExposesReturnsAndThrowsOnly()
+    public void FluentInterface_ExposesCallbackAndThenOnly()
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IAgePropertyGetterOutcomeBuilder");
-        source.ShouldContain("IAgePropertyGetterContinuationBuilder Returns(int value);");
-        source.ShouldContain("IAgePropertyGetterContinuationBuilder Returns(System.Func<int> valueGenerator);");
-        source.ShouldContain("IAgePropertyGetterContinuationBuilder Throws(System.Exception exception);");
-        source.ShouldContain("IAgePropertyGetterContinuationBuilder Throws<TException>()");
+        source.ShouldContain("public interface IAgePropertySetterFluentBuilder");
+        source.ShouldContain("IAgePropertySetterFluentBuilder Callback(System.Action<int> callback);");
+        source.ShouldContain("IAgePropertySetterFluentBuilder Then();");
     }
 
     [Fact]
-    public void ContinuationInterface_AllowsOnlyCallbackAndThen()
+    public void BuilderInterface_InheritsFluentAndVerifier()
     {
         var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
 
-        source.ShouldContain("public interface IAgePropertyGetterContinuationBuilder");
-        source.ShouldContain("IAgePropertyGetterContinuationBuilder Callback(System.Action callback);");
-        source.ShouldContain("IAgePropertyGetterFluentBuilder Then();");
-    }
-
-    [Fact]
-    public void BuilderInterface_InheritsVerifierAndSpecializedInterfaces()
-    {
-        var source = GetGeneratedSource(RunGenerator(), "SampleServiceImposter.g.cs");
-
-        source.ShouldContain("public interface IAgePropertyGetterFluentBuilder : IAgePropertyGetterOutcomeBuilder, IAgePropertyGetterContinuationBuilder");
-        source.ShouldContain("public interface IAgePropertyGetterBuilder : IAgePropertyGetterFluentBuilder, IAgePropertyGetterVerifier");
-        source.ShouldContain("public interface IAgePropertyGetterVerifier");
+        source.ShouldContain("public interface IAgePropertySetterBuilder : IAgePropertySetterFluentBuilder, IAgePropertySetterVerifier");
+        source.ShouldContain("public interface IAgePropertySetterVerifier");
         source.ShouldContain("void Called(Imposter.Abstractions.Count count);");
     }
 
@@ -72,7 +59,7 @@ public class SampleService
             });
 
         var compilation = CSharpCompilation.Create(
-            assemblyName: "PropertyGetterInterfaceSegregationTests",
+            assemblyName: "PropertySetterInterfaceSegregationTests",
             syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

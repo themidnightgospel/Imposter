@@ -8,11 +8,14 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
     internal readonly ParameterMetadata CallbackParameter;
 
-    internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax setterBuilderInterfaceTypeSyntax)
+    internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax returnType, NameSyntax interfaceSyntax)
     {
-        ReturnType = setterBuilderInterfaceTypeSyntax;
+        ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
         CallbackParameter = new ParameterMetadata("callback", property.AsSystemActionType);
     }
 }

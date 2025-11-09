@@ -22,15 +22,22 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             BuildOutcomeInterface(property),
             BuildContinuationInterface(property),
             BuildVerificationInterface(property),
-            BuildFullInterface(property)
+            BuildFluentInterface(property),
+            BuildBuilderInterface(property)
         ];
     }
 
-    private static InterfaceDeclarationSyntax BuildFullInterface(in ImposterPropertyMetadata property) =>
+    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterPropertyMetadata property) =>
         new InterfaceDeclarationBuilder(property.GetterImposterBuilderInterface.Name)
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.FluentInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.VerificationInterfaceTypeSyntax))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .Build();
+
+    private static InterfaceDeclarationSyntax BuildFluentInterface(in ImposterPropertyMetadata property) =>
+        new InterfaceDeclarationBuilder(property.GetterImposterBuilderInterface.FluentInterfaceName)
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.OutcomeInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax))
-            .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.VerificationInterfaceTypeSyntax))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
 

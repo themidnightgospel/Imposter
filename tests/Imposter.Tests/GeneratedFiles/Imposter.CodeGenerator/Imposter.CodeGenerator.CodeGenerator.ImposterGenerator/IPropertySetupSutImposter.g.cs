@@ -39,7 +39,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         public interface IAgePropertyGetterContinuationBuilder
         {
             IAgePropertyGetterContinuationBuilder Callback(System.Action callback);
-            IAgePropertyGetterBuilder Then();
+            IAgePropertyGetterFluentBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -49,7 +49,12 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAgePropertyGetterBuilder : IAgePropertyGetterOutcomeBuilder, IAgePropertyGetterContinuationBuilder, IAgePropertyGetterVerifier
+        public interface IAgePropertyGetterFluentBuilder : IAgePropertyGetterOutcomeBuilder, IAgePropertyGetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IAgePropertyGetterBuilder : IAgePropertyGetterFluentBuilder, IAgePropertyGetterVerifier
         {
         }
 
@@ -151,7 +156,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                         throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
-                IAgePropertyGetterBuilder IAgePropertyGetterContinuationBuilder.Then()
+                IAgePropertyGetterFluentBuilder IAgePropertyGetterContinuationBuilder.Then()
                 {
                     return this;
                 }
@@ -290,7 +295,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         public interface INamePropertyGetterContinuationBuilder
         {
             INamePropertyGetterContinuationBuilder Callback(System.Action callback);
-            INamePropertyGetterBuilder Then();
+            INamePropertyGetterFluentBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -300,7 +305,12 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder, INamePropertyGetterVerifier
+        public interface INamePropertyGetterFluentBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterBuilder : INamePropertyGetterFluentBuilder, INamePropertyGetterVerifier
         {
         }
 
@@ -391,7 +401,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                         throw new Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
-                INamePropertyGetterBuilder INamePropertyGetterContinuationBuilder.Then()
+                INamePropertyGetterFluentBuilder INamePropertyGetterContinuationBuilder.Then()
                 {
                     return this;
                 }
