@@ -28,6 +28,6 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         ThrowsMethod = new ThrowsMethodMetadata(TypeSyntax);
         CallbackMethod = new CallbackMethodMetadata(TypeSyntax);
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new ThenMethodMetadata(TypeSyntax);
+        ThenMethod = new ThenMethodMetadata(TypeSyntax, TypeSyntax);
     }
 }

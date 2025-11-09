@@ -21,6 +21,6 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         Syntax = SyntaxFactory.ParseName(Name);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(property, Syntax);
-        ThenMethod = new ThenMethodMetadata(Syntax);
+        ThenMethod = new ThenMethodMetadata(Syntax, Syntax);
     }
 }

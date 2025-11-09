@@ -13,14 +13,24 @@ internal readonly struct ThrowsMethodMetadata
 
     internal readonly ParameterMetadata ExceptionGeneratorParameter;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal readonly string InterfaceExceptionParameterName;
+
+    internal readonly string InterfaceExceptionGeneratorParameterName;
+
     public ThrowsMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
         NameSyntax exceptionGeneratorDelegateSyntax,
-        TypeSyntax interfaceTypeSyntax)
+        NameSyntax interfaceTypeSyntax,
+        NameSyntax continuationInterfaceSyntax)
     {
-        ReturnType = interfaceTypeSyntax;
+        InterfaceSyntax = interfaceTypeSyntax;
+        ReturnType = continuationInterfaceSyntax;
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-        ExceptionParameter = new ParameterMetadata(nameContext.Use("exception"), WellKnownTypes.System.Exception);
-        ExceptionGeneratorParameter = new ParameterMetadata(nameContext.Use("exceptionGenerator"), exceptionGeneratorDelegateSyntax);
+        InterfaceExceptionParameterName = "exception";
+        InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
+        ExceptionParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionParameterName), WellKnownTypes.System.Exception);
+        ExceptionGeneratorParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionGeneratorParameterName), exceptionGeneratorDelegateSyntax);
     }
 }

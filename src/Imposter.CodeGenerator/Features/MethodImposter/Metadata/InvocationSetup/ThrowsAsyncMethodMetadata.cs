@@ -11,12 +11,19 @@ internal readonly struct ThrowsAsyncMethodMetadata
 
     internal readonly ParameterMetadata ExceptionParameter;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal readonly string InterfaceExceptionParameterName;
+
     internal ThrowsAsyncMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
-        NameSyntax interfaceTypeSyntax)
+        NameSyntax interfaceTypeSyntax,
+        NameSyntax continuationInterfaceSyntax)
     {
-        ReturnType = interfaceTypeSyntax;
+        InterfaceSyntax = interfaceTypeSyntax;
+        ReturnType = continuationInterfaceSyntax;
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-        ExceptionParameter = new ParameterMetadata(nameContext.Use("exception"), WellKnownTypes.System.Exception);
+        InterfaceExceptionParameterName = "exception";
+        ExceptionParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionParameterName), WellKnownTypes.System.Exception);
     }
 }

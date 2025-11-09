@@ -10,13 +10,20 @@ internal readonly struct ReturnsAsyncMethodMetadata
 
     internal readonly ParameterMetadata ValueParameter;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal readonly string InterfaceValueParameterName;
+
     internal ReturnsAsyncMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
         NameSyntax interfaceSyntax,
+        NameSyntax continuationInterfaceSyntax,
         TypeSyntax valueParameterType)
     {
-        ReturnType = interfaceSyntax;
+        InterfaceSyntax = interfaceSyntax;
+        ReturnType = continuationInterfaceSyntax;
+        InterfaceValueParameterName = "value";
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
-        ValueParameter = new ParameterMetadata(nameContext.Use("value"), valueParameterType);
+        ValueParameter = new ParameterMetadata(nameContext.Use(InterfaceValueParameterName), valueParameterType);
     }
 }

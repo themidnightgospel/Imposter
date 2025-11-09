@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.MethodImposter;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.ClassImposter
 {
     public class ClassMethodBaseImplementationTests
     {
@@ -29,30 +30,6 @@ namespace Imposter.Tests.Features.MethodImposter
 
             instance.IntSingleParam(2).ShouldBe(4);
             instance.IntSingleParam(7).ShouldBe(42);
-        }
-
-        [Fact]
-        public void GivenBaseImplementationFollowedByReturns_WhenConfigured_ThenLastCallWins()
-        {
-            _classSut.IntSingleParam(Arg<int>.Is(5))
-                .UseBaseImplementation()
-                .Returns(11);
-
-            var instance = _classSut.Instance();
-            
-            instance.IntSingleParam(5).ShouldBe(11);
-        }
-
-        [Fact]
-        public void GivenReturnsFollowedByBaseImplementation_WhenConfigured_ThenLastCallWins()
-        {
-            _classSut.IntSingleParam(Arg<int>.Is(6))
-                .Returns(99)
-                .UseBaseImplementation();
-
-            var instance = _classSut.Instance();
-
-            instance.IntSingleParam(6).ShouldBe(12);
         }
 
         [Fact]

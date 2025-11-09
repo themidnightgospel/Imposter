@@ -10,13 +10,19 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly ParameterMetadata CallbackParameter;
 
+    internal readonly NameSyntax InterfaceSyntax;
+
+    internal readonly string InterfaceCallbackParameterName;
+
     public CallbackMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
         NameSyntax interfaceSyntax,
         TypeSyntax callbackTypeSyntax)
     {
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        InterfaceSyntax = interfaceSyntax;
         ReturnType = interfaceSyntax;
-        CallbackParameter = new ParameterMetadata(nameContext.Use("callback"), callbackTypeSyntax);
+        InterfaceCallbackParameterName = "callback";
+        CallbackParameter = new ParameterMetadata(nameContext.Use(InterfaceCallbackParameterName), callbackTypeSyntax);
     }
 }

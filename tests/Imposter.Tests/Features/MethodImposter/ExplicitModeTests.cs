@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Imposter.Tests.Features.MethodImposter
 {
-    public class ImposterBehaviorTests
+    public class ExplicitModeTests
     {
         [Fact]
         public void GivenExplicitMode_WhenMethodInvokedWithoutSetup_ShouldThrowMissingImposterException()
