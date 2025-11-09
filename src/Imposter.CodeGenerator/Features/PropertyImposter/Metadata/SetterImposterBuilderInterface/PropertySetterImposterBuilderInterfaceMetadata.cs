@@ -14,6 +14,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax FluentInterfaceTypeSyntax;
 
+    internal readonly string CallbackInterfaceName;
+
+    internal readonly NameSyntax CallbackInterfaceTypeSyntax;
+
+    internal readonly string ContinuationInterfaceName;
+
+    internal readonly NameSyntax ContinuationInterfaceTypeSyntax;
+
     internal readonly string VerificationInterfaceName;
 
     internal readonly NameSyntax VerificationInterfaceTypeSyntax;
@@ -30,10 +38,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         Syntax = SyntaxFactory.ParseName(Name);
         FluentInterfaceName = $"I{property.UniqueName}PropertySetterFluentBuilder";
         FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        CallbackInterfaceName = $"I{property.UniqueName}PropertySetterCallbackBuilder";
+        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+        ContinuationInterfaceName = $"I{property.UniqueName}PropertySetterContinuationBuilder";
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
         VerificationInterfaceName = $"I{property.UniqueName}PropertySetterVerifier";
         VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
-        CallbackMethod = new CallbackMethodMetadata(property, FluentInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
-        ThenMethod = new PropertySetterThenMethodMetadata(FluentInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(property, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
+        ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
     }
 }
