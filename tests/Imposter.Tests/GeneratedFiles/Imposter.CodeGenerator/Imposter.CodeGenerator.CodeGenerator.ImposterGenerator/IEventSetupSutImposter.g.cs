@@ -12,12 +12,12 @@ using Imposter.Tests.Features.EventImposter;
 namespace Imposter.Tests.Features.EventImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IEventSetupSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>
+    public class IEventSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>
     {
-        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         public global::Imposter.Tests.Features.EventImposter.IEventSetupSut Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.EventImposter.IEventSetupSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>.Instance()
+        global::Imposter.Tests.Features.EventImposter.IEventSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -30,12 +30,12 @@ namespace Imposter.Tests.Features.EventImposter
         {
             ISomethingHappenedEventImposterBuilder Callback(global::System.EventHandler callback);
             ISomethingHappenedEventImposterBuilder Raise(object sender, global::System.EventArgs e);
-            ISomethingHappenedEventImposterBuilder Subscribed(Imposter.Abstractions.Arg<global::System.EventHandler> criteria, Imposter.Abstractions.Count count);
-            ISomethingHappenedEventImposterBuilder Unsubscribed(Imposter.Abstractions.Arg<global::System.EventHandler> criteria, Imposter.Abstractions.Count count);
+            ISomethingHappenedEventImposterBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
+            ISomethingHappenedEventImposterBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
             ISomethingHappenedEventImposterBuilder OnSubscribe(System.Action<global::System.EventHandler> interceptor);
             ISomethingHappenedEventImposterBuilder OnUnsubscribe(System.Action<global::System.EventHandler> interceptor);
-            ISomethingHappenedEventImposterBuilder Raised(Imposter.Abstractions.Arg<object> senderCriteria, Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, Imposter.Abstractions.Count count);
-            ISomethingHappenedEventImposterBuilder HandlerInvoked(Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, Imposter.Abstractions.Count count);
+            ISomethingHappenedEventImposterBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+            ISomethingHappenedEventImposterBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -98,7 +98,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Subscribed(Imposter.Abstractions.Arg<global::System.EventHandler> criteria, Imposter.Abstractions.Count count)
+            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -107,7 +107,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Unsubscribed(Imposter.Abstractions.Arg<global::System.EventHandler> criteria, Imposter.Abstractions.Count count)
+            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -130,7 +130,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Raised(Imposter.Abstractions.Arg<object> senderCriteria, Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, Imposter.Abstractions.Count count)
+            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(eCriteria);
@@ -140,7 +140,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.HandlerInvoked(Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, Imposter.Abstractions.Count count)
+            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -195,11 +195,11 @@ namespace Imposter.Tests.Features.EventImposter
                 return count;
             }
 
-            private static void EnsureCountMatches(int actual, Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
         }
@@ -212,12 +212,12 @@ namespace Imposter.Tests.Features.EventImposter
         {
             IAsyncSomethingHappenedEventImposterBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> callback);
             System.Threading.Tasks.Task<IAsyncSomethingHappenedEventImposterBuilder> RaiseAsync(object arg1, global::System.EventArgs arg2);
-            IAsyncSomethingHappenedEventImposterBuilder Subscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, Imposter.Abstractions.Count count);
-            IAsyncSomethingHappenedEventImposterBuilder Unsubscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, Imposter.Abstractions.Count count);
+            IAsyncSomethingHappenedEventImposterBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
+            IAsyncSomethingHappenedEventImposterBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
             IAsyncSomethingHappenedEventImposterBuilder OnSubscribe(System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
             IAsyncSomethingHappenedEventImposterBuilder OnUnsubscribe(System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
-            IAsyncSomethingHappenedEventImposterBuilder Raised(Imposter.Abstractions.Arg<object> arg1Criteria, Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, Imposter.Abstractions.Count count);
-            IAsyncSomethingHappenedEventImposterBuilder HandlerInvoked(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, Imposter.Abstractions.Count count);
+            IAsyncSomethingHappenedEventImposterBuilder Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
+            IAsyncSomethingHappenedEventImposterBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -280,7 +280,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Subscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, Imposter.Abstractions.Count count)
+            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -289,7 +289,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Unsubscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, Imposter.Abstractions.Count count)
+            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -312,7 +312,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Raised(Imposter.Abstractions.Arg<object> arg1Criteria, Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, Imposter.Abstractions.Count count)
+            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(arg1Criteria);
                 ArgumentNullException.ThrowIfNull(arg2Criteria);
@@ -322,7 +322,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.HandlerInvoked(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, Imposter.Abstractions.Count count)
+            IAsyncSomethingHappenedEventImposterBuilder IAsyncSomethingHappenedEventImposterBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -391,11 +391,11 @@ namespace Imposter.Tests.Features.EventImposter
                 return count;
             }
 
-            private static void EnsureCountMatches(int actual, Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
         }
@@ -408,12 +408,12 @@ namespace Imposter.Tests.Features.EventImposter
         {
             IValueTaskSomethingHappenedEventImposterBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback);
             System.Threading.Tasks.Task<IValueTaskSomethingHappenedEventImposterBuilder> RaiseAsync(object arg1, global::System.EventArgs arg2);
-            IValueTaskSomethingHappenedEventImposterBuilder Subscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, Imposter.Abstractions.Count count);
-            IValueTaskSomethingHappenedEventImposterBuilder Unsubscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, Imposter.Abstractions.Count count);
+            IValueTaskSomethingHappenedEventImposterBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
+            IValueTaskSomethingHappenedEventImposterBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
             IValueTaskSomethingHappenedEventImposterBuilder OnSubscribe(System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
             IValueTaskSomethingHappenedEventImposterBuilder OnUnsubscribe(System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
-            IValueTaskSomethingHappenedEventImposterBuilder Raised(Imposter.Abstractions.Arg<object> arg1Criteria, Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, Imposter.Abstractions.Count count);
-            IValueTaskSomethingHappenedEventImposterBuilder HandlerInvoked(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, Imposter.Abstractions.Count count);
+            IValueTaskSomethingHappenedEventImposterBuilder Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
+            IValueTaskSomethingHappenedEventImposterBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -476,7 +476,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Subscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, Imposter.Abstractions.Count count)
+            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -485,7 +485,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Unsubscribed(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, Imposter.Abstractions.Count count)
+            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -508,7 +508,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Raised(Imposter.Abstractions.Arg<object> arg1Criteria, Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, Imposter.Abstractions.Count count)
+            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(arg1Criteria);
                 ArgumentNullException.ThrowIfNull(arg2Criteria);
@@ -518,7 +518,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.HandlerInvoked(Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, Imposter.Abstractions.Count count)
+            IValueTaskSomethingHappenedEventImposterBuilder IValueTaskSomethingHappenedEventImposterBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -587,11 +587,11 @@ namespace Imposter.Tests.Features.EventImposter
                 return count;
             }
 
-            private static void EnsureCountMatches(int actual, Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
         }
@@ -604,12 +604,12 @@ namespace Imposter.Tests.Features.EventImposter
         {
             ICustomAsyncSomethingHappenedEventImposterBuilder Callback(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> callback);
             System.Threading.Tasks.Task<ICustomAsyncSomethingHappenedEventImposterBuilder> RaiseAsync(object sender, global::System.EventArgs args);
-            ICustomAsyncSomethingHappenedEventImposterBuilder Subscribed(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, Imposter.Abstractions.Count count);
-            ICustomAsyncSomethingHappenedEventImposterBuilder Unsubscribed(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, Imposter.Abstractions.Count count);
+            ICustomAsyncSomethingHappenedEventImposterBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
+            ICustomAsyncSomethingHappenedEventImposterBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
             ICustomAsyncSomethingHappenedEventImposterBuilder OnSubscribe(System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor);
             ICustomAsyncSomethingHappenedEventImposterBuilder OnUnsubscribe(System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor);
-            ICustomAsyncSomethingHappenedEventImposterBuilder Raised(Imposter.Abstractions.Arg<object> senderCriteria, Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, Imposter.Abstractions.Count count);
-            ICustomAsyncSomethingHappenedEventImposterBuilder HandlerInvoked(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, Imposter.Abstractions.Count count);
+            ICustomAsyncSomethingHappenedEventImposterBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count);
+            ICustomAsyncSomethingHappenedEventImposterBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -672,7 +672,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Subscribed(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, Imposter.Abstractions.Count count)
+            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -681,7 +681,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Unsubscribed(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, Imposter.Abstractions.Count count)
+            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -704,7 +704,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Raised(Imposter.Abstractions.Arg<object> senderCriteria, Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, Imposter.Abstractions.Count count)
+            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(argsCriteria);
@@ -714,7 +714,7 @@ namespace Imposter.Tests.Features.EventImposter
                 return this;
             }
 
-            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.HandlerInvoked(Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, Imposter.Abstractions.Count count)
+            ICustomAsyncSomethingHappenedEventImposterBuilder ICustomAsyncSomethingHappenedEventImposterBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -783,16 +783,16 @@ namespace Imposter.Tests.Features.EventImposter
                 return count;
             }
 
-            private static void EnsureCountMatches(int actual, Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
         }
 
-        public IEventSetupSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IEventSetupSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
             this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();

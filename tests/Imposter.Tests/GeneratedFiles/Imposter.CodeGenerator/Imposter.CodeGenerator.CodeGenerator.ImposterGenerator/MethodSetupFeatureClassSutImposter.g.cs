@@ -12,7 +12,7 @@ using Imposter.Tests.Features.MethodImposter;
 namespace Imposter.Tests.Features.MethodImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class MethodSetupFeatureClassSutImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>
+    public class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>
     {
         private readonly IntSingleParamMethodImposter _intSingleParamMethodImposter;
         private readonly VoidWithSideEffectMethodImposter _voidWithSideEffectMethodImposter;
@@ -24,35 +24,35 @@ namespace Imposter.Tests.Features.MethodImposter
         private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
         private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
         private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
-        public IIntSingleParamMethodImposterBuilder IntSingleParam(Imposter.Abstractions.Arg<int> age)
+        public IIntSingleParamMethodImposterBuilder IntSingleParam(global::Imposter.Abstractions.Arg<int> age)
         {
             return new IntSingleParamMethodImposter.Builder(_intSingleParamMethodImposter, _intSingleParamMethodInvocationHistoryCollection, new IntSingleParamArgumentsCriteria(age));
         }
 
-        public IVoidWithSideEffectMethodImposterBuilder VoidWithSideEffect(Imposter.Abstractions.Arg<int> delta)
+        public IVoidWithSideEffectMethodImposterBuilder VoidWithSideEffect(global::Imposter.Abstractions.Arg<int> delta)
         {
             return new VoidWithSideEffectMethodImposter.Builder(_voidWithSideEffectMethodImposter, _voidWithSideEffectMethodInvocationHistoryCollection, new VoidWithSideEffectArgumentsCriteria(delta));
         }
 
-        public ISumAsyncMethodImposterBuilder SumAsync(Imposter.Abstractions.Arg<int> left, Imposter.Abstractions.Arg<int> right)
+        public ISumAsyncMethodImposterBuilder SumAsync(global::Imposter.Abstractions.Arg<int> left, global::Imposter.Abstractions.Arg<int> right)
         {
             return new SumAsyncMethodImposter.Builder(_sumAsyncMethodImposter, _sumAsyncMethodInvocationHistoryCollection, new SumAsyncArgumentsCriteria(left, right));
         }
 
-        public IBuildLabelAsyncMethodImposterBuilder BuildLabelAsync(Imposter.Abstractions.Arg<string> prefix, Imposter.Abstractions.Arg<string> suffix)
+        public IBuildLabelAsyncMethodImposterBuilder BuildLabelAsync(global::Imposter.Abstractions.Arg<string> prefix, global::Imposter.Abstractions.Arg<string> suffix)
         {
             return new BuildLabelAsyncMethodImposter.Builder(_buildLabelAsyncMethodImposter, _buildLabelAsyncMethodInvocationHistoryCollection, new BuildLabelAsyncArgumentsCriteria(prefix, suffix));
         }
 
-        public IRefOutWithParamsMethodImposterBuilder RefOutWithParams(Imposter.Abstractions.Arg<int> seed, Imposter.Abstractions.OutArg<int> doubled, Imposter.Abstractions.Arg<int[]> adjustments)
+        public IRefOutWithParamsMethodImposterBuilder RefOutWithParams(global::Imposter.Abstractions.Arg<int> seed, global::Imposter.Abstractions.OutArg<int> doubled, global::Imposter.Abstractions.Arg<int[]> adjustments)
         {
             return new RefOutWithParamsMethodImposter.Builder(_refOutWithParamsMethodImposter, _refOutWithParamsMethodInvocationHistoryCollection, new RefOutWithParamsArgumentsCriteria(seed, doubled, adjustments));
         }
 
-        private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         public global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>.Instance()
+        global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -77,9 +77,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class IntSingleParamArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> age { get; }
+            public global::Imposter.Abstractions.Arg<int> age { get; }
 
-            public IntSingleParamArgumentsCriteria(Imposter.Abstractions.Arg<int> age)
+            public IntSingleParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int> age)
             {
                 this.age = age;
             }
@@ -133,7 +133,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class IntSingleParamMethodInvocationImposterGroup
         {
-            internal static IntSingleParamMethodInvocationImposterGroup Default = new IntSingleParamMethodInvocationImposterGroup(new IntSingleParamArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static IntSingleParamMethodInvocationImposterGroup Default = new IntSingleParamMethodInvocationImposterGroup(new IntSingleParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal IntSingleParamArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -164,14 +164,14 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, IntSingleParamDelegate baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, IntSingleParamDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -195,18 +195,18 @@ namespace Imposter.Tests.Features.MethodImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, IntSingleParamDelegate baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, IntSingleParamDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -304,8 +304,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup>();
             private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._intSingleParamMethodInvocationHistoryCollection = _intSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -333,9 +333,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)");
                     }
 
                     matchingInvocationImposterGroup = IntSingleParamMethodInvocationImposterGroup.Default;
@@ -429,12 +429,12 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                void IntSingleParamInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void IntSingleParamInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _intSingleParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
@@ -460,9 +460,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class VoidWithSideEffectArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> delta { get; }
+            public global::Imposter.Abstractions.Arg<int> delta { get; }
 
-            public VoidWithSideEffectArgumentsCriteria(Imposter.Abstractions.Arg<int> delta)
+            public VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int> delta)
             {
                 this.delta = delta;
             }
@@ -514,7 +514,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class VoidWithSideEffectMethodInvocationImposterGroup
         {
-            internal static VoidWithSideEffectMethodInvocationImposterGroup Default = new VoidWithSideEffectMethodInvocationImposterGroup(new VoidWithSideEffectArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any()));
+            internal static VoidWithSideEffectMethodInvocationImposterGroup Default = new VoidWithSideEffectMethodInvocationImposterGroup(new VoidWithSideEffectArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
             internal VoidWithSideEffectArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -545,14 +545,14 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public void Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
+            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -576,18 +576,18 @@ namespace Imposter.Tests.Features.MethodImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public void Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
+                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -665,8 +665,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup>();
             private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public VoidWithSideEffectMethodImposter(VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public VoidWithSideEffectMethodImposter(VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._voidWithSideEffectMethodInvocationHistoryCollection = _voidWithSideEffectMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -694,9 +694,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)");
                     }
 
                     matchingInvocationImposterGroup = VoidWithSideEffectMethodInvocationImposterGroup.Default;
@@ -777,12 +777,12 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                void VoidWithSideEffectInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void VoidWithSideEffectInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _voidWithSideEffectMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
@@ -810,10 +810,10 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class SumAsyncArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> left { get; }
-            public Imposter.Abstractions.Arg<int> right { get; }
+            public global::Imposter.Abstractions.Arg<int> left { get; }
+            public global::Imposter.Abstractions.Arg<int> right { get; }
 
-            public SumAsyncArgumentsCriteria(Imposter.Abstractions.Arg<int> left, Imposter.Abstractions.Arg<int> right)
+            public SumAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<int> left, global::Imposter.Abstractions.Arg<int> right)
             {
                 this.left = left;
                 this.right = right;
@@ -868,7 +868,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class SumAsyncMethodInvocationImposterGroup
         {
-            internal static SumAsyncMethodInvocationImposterGroup Default = new SumAsyncMethodInvocationImposterGroup(new SumAsyncArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<int>.Any()));
+            internal static SumAsyncMethodInvocationImposterGroup Default = new SumAsyncMethodInvocationImposterGroup(new SumAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
             internal SumAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -899,14 +899,14 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Threading.Tasks.Task<int> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int left, int right, SumAsyncDelegate baseImplementation = null)
+            public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int left, int right, SumAsyncDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -930,18 +930,18 @@ namespace Imposter.Tests.Features.MethodImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public global::System.Threading.Tasks.Task<int> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int left, int right, SumAsyncDelegate baseImplementation = null)
+                public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int left, int right, SumAsyncDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -1059,8 +1059,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<SumAsyncMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<SumAsyncMethodInvocationImposterGroup>();
             private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public SumAsyncMethodImposter(SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public SumAsyncMethodImposter(SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._sumAsyncMethodInvocationHistoryCollection = _sumAsyncMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1088,9 +1088,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual Task<int> MethodSetupFeatureClassSut.SumAsync(int left, int right)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual Task<int> MethodSetupFeatureClassSut.SumAsync(int left, int right)");
                     }
 
                     matchingInvocationImposterGroup = SumAsyncMethodInvocationImposterGroup.Default;
@@ -1196,12 +1196,12 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                void SumAsyncInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void SumAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _sumAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
@@ -1229,10 +1229,10 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class BuildLabelAsyncArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<string> prefix { get; }
-            public Imposter.Abstractions.Arg<string> suffix { get; }
+            public global::Imposter.Abstractions.Arg<string> prefix { get; }
+            public global::Imposter.Abstractions.Arg<string> suffix { get; }
 
-            public BuildLabelAsyncArgumentsCriteria(Imposter.Abstractions.Arg<string> prefix, Imposter.Abstractions.Arg<string> suffix)
+            public BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string> prefix, global::Imposter.Abstractions.Arg<string> suffix)
             {
                 this.prefix = prefix;
                 this.suffix = suffix;
@@ -1287,7 +1287,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class BuildLabelAsyncMethodInvocationImposterGroup
         {
-            internal static BuildLabelAsyncMethodInvocationImposterGroup Default = new BuildLabelAsyncMethodInvocationImposterGroup(new BuildLabelAsyncArgumentsCriteria(Imposter.Abstractions.Arg<string>.Any(), Imposter.Abstractions.Arg<string>.Any()));
+            internal static BuildLabelAsyncMethodInvocationImposterGroup Default = new BuildLabelAsyncMethodInvocationImposterGroup(new BuildLabelAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string>.Any()));
             internal BuildLabelAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -1318,14 +1318,14 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Threading.Tasks.ValueTask<string> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+            public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -1349,18 +1349,18 @@ namespace Imposter.Tests.Features.MethodImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public global::System.Threading.Tasks.ValueTask<string> Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
+                public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -1478,8 +1478,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup>();
             private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public BuildLabelAsyncMethodImposter(BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public BuildLabelAsyncMethodImposter(BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._buildLabelAsyncMethodInvocationHistoryCollection = _buildLabelAsyncMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1507,9 +1507,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)");
                     }
 
                     matchingInvocationImposterGroup = BuildLabelAsyncMethodInvocationImposterGroup.Default;
@@ -1615,12 +1615,12 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                void BuildLabelAsyncInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void BuildLabelAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _buildLabelAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
@@ -1648,11 +1648,11 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public class RefOutWithParamsArgumentsCriteria
         {
-            public Imposter.Abstractions.Arg<int> seed { get; }
-            public Imposter.Abstractions.OutArg<int> doubled { get; }
-            public Imposter.Abstractions.Arg<int[]> adjustments { get; }
+            public global::Imposter.Abstractions.Arg<int> seed { get; }
+            public global::Imposter.Abstractions.OutArg<int> doubled { get; }
+            public global::Imposter.Abstractions.Arg<int[]> adjustments { get; }
 
-            public RefOutWithParamsArgumentsCriteria(Imposter.Abstractions.Arg<int> seed, Imposter.Abstractions.OutArg<int> doubled, Imposter.Abstractions.Arg<int[]> adjustments)
+            public RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int> seed, global::Imposter.Abstractions.OutArg<int> doubled, global::Imposter.Abstractions.Arg<int[]> adjustments)
             {
                 this.seed = seed;
                 this.doubled = doubled;
@@ -1708,7 +1708,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class RefOutWithParamsMethodInvocationImposterGroup
         {
-            internal static RefOutWithParamsMethodInvocationImposterGroup Default = new RefOutWithParamsMethodInvocationImposterGroup(new RefOutWithParamsArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.OutArg<int>.Any(), Imposter.Abstractions.Arg<int[]>.Any()));
+            internal static RefOutWithParamsMethodInvocationImposterGroup Default = new RefOutWithParamsMethodInvocationImposterGroup(new RefOutWithParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int[]>.Any()));
             internal RefOutWithParamsArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly Queue<MethodInvocationImposter> _invocationImposters = new Queue<MethodInvocationImposter>();
@@ -1739,14 +1739,14 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     invocationImposter = MethodInvocationImposter.Default;
@@ -1770,18 +1770,18 @@ namespace Imposter.Tests.Features.MethodImposter
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
 
-                public int Invoke(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
-                        _resultGenerator = baseImplementation ?? throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                         {
-                            throw new Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
                         _resultGenerator = DefaultResultGenerator;
@@ -1886,8 +1886,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup>();
             private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
-            private readonly Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public RefOutWithParamsMethodImposter(RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public RefOutWithParamsMethodImposter(RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
             {
                 this._refOutWithParamsMethodInvocationHistoryCollection = _refOutWithParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1920,9 +1920,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
                     {
-                        throw new Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)");
                     }
 
                     matchingInvocationImposterGroup = RefOutWithParamsMethodInvocationImposterGroup.Default;
@@ -2016,18 +2016,18 @@ namespace Imposter.Tests.Features.MethodImposter
                     return this;
                 }
 
-                void RefOutWithParamsInvocationVerifier.Called(Imposter.Abstractions.Count count)
+                void RefOutWithParamsInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _refOutWithParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                     }
                 }
             }
         }
 
-        public MethodSetupFeatureClassSutImposter(Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public MethodSetupFeatureClassSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, invocationBehavior);
             this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, invocationBehavior);
