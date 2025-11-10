@@ -72,10 +72,8 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                                     IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty"))),
                                 Block(
                                     ExpressionStatement(
-                                        AssignmentExpression(
-                                            SyntaxKind.SimpleAssignmentExpression,
-                                            IdentifierName("_lastestInvocationImposter"),
-                                            IdentifierName("invocationImposter")))
+                                        IdentifierName("_lastestInvocationImposter")
+                                            .Assign(IdentifierName("invocationImposter")))
                                 )
                             )
                         )

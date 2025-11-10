@@ -198,14 +198,13 @@ internal static partial class EventImposterBuilder
                                     LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                                 Block(
                                     ExpressionStatement(
-                                        AssignmentExpression(
-                                            SyntaxKind.SimpleAssignmentExpression,
-                                            ElementAccessExpression(IdentifierName("budgets"))
-                                                .WithArgumentList(BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("handler"))))),
-                                            BinaryExpression(
-                                                SyntaxKind.SubtractExpression,
-                                                IdentifierName("remaining"),
-                                                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))))),
+                                        ElementAccessExpression(IdentifierName("budgets"))
+                                            .WithArgumentList(BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("handler")))))
+                                            .Assign(
+                                                BinaryExpression(
+                                                    SyntaxKind.SubtractExpression,
+                                                    IdentifierName("remaining"),
+                                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))))),
                                     YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("handler")))))))));
 
         return blockBuilder.Build();

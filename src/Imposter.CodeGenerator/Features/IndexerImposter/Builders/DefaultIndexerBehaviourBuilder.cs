@@ -110,13 +110,11 @@ internal static class DefaultIndexerBehaviourBuilder
         var argumentsParameter = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
 
         var assignment = ExpressionStatement(
-            AssignmentExpression(
-                SyntaxKind.SimpleAssignmentExpression,
-                ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
-                    .WithArgumentList(
-                        BracketedArgumentList(
-                            SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
-                IdentifierName("value")));
+            ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
+                .WithArgumentList(
+                    BracketedArgumentList(
+                        SingletonSeparatedList(Argument(IdentifierName("arguments")))))
+                .Assign(IdentifierName("value")));
 
         var baseInvocation = IfStatement(
             BinaryExpression(
@@ -140,6 +138,5 @@ internal static class DefaultIndexerBehaviourBuilder
             .Build();
     }
 }
-
 
 

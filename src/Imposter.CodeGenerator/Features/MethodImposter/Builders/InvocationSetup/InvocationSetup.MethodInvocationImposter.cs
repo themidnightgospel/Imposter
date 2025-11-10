@@ -44,9 +44,8 @@ internal static partial class InvocationSetupBuilder
     {
         var body = new BlockBuilder()
             .AddStatement(
-                AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        IdentifierName("Default"),
+                IdentifierName("Default")
+                    .Assign(
                         IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
                             .New(ArgumentList()))
                     .ToStatementSyntax());
@@ -156,10 +155,8 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                                             Argument(IdentifierName("methodDisplayName"))
                                                 .AsSingleArgumentListSyntax())))),
                         ExpressionStatement(
-                            AssignmentExpression(
-                                SyntaxKind.SimpleAssignmentExpression,
-                                IdentifierName("_resultGenerator"),
-                                IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))))));
+                            IdentifierName("_resultGenerator")
+                                .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))))));
 
         if (method.Symbol.ReturnsVoid)
         {
@@ -200,17 +197,16 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                     Argument(IdentifierName("methodDisplayName"))
                         .AsSingleArgumentListSyntax());
 
-            var assignBaseImplementation = IfStatement(
-                IdentifierName("_useBaseImplementation"),
-                Block(
-                    ExpressionStatement(
-                        AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName("_resultGenerator"),
-                            BinaryExpression(
-                                SyntaxKind.CoalesceExpression,
-                                IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName),
-                                ThrowExpression(missingImposterException))))));
+           var assignBaseImplementation = IfStatement(
+               IdentifierName("_useBaseImplementation"),
+               Block(
+                   ExpressionStatement(
+                        IdentifierName("_resultGenerator")
+                            .Assign(
+                                BinaryExpression(
+                                    SyntaxKind.CoalesceExpression,
+                                    IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName),
+                                    ThrowExpression(missingImposterException))))));
 
             body = new BlockBuilder()
                 .AddStatement(assignBaseImplementation)
@@ -346,15 +342,11 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName("_useBaseImplementation"),
-                            LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    IdentifierName("_useBaseImplementation")
+                        .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
                         .ToStatementSyntax(),
-                    AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName("_resultGenerator"),
-                            LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    IdentifierName("_resultGenerator")
+                        .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
                         .ToStatementSyntax()))
             .Build();
 
@@ -424,10 +416,8 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
     }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement() =>
-        AssignmentExpression(
-                SyntaxKind.SimpleAssignmentExpression,
-                IdentifierName("_useBaseImplementation"),
-                LiteralExpression(SyntaxKind.FalseLiteralExpression))
+        IdentifierName("_useBaseImplementation")
+            .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
             .ToStatementSyntax();
 
     private static ExpressionSyntax BuildAsyncReturnExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax valueExpression)

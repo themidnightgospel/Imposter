@@ -39,10 +39,8 @@ internal static partial class InvocationSetupBuilder
             ctorBuilder = ctorBuilder
                 .AddParameter(Parameter(Identifier("argumentsCriteria")).WithType(method.ArgumentsCriteria.Syntax))
                 .WithBody(Block(
-                    AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName("ArgumentsCriteria"),
-                            IdentifierName("argumentsCriteria"))
+                    IdentifierName("ArgumentsCriteria")
+                        .Assign(IdentifierName("argumentsCriteria"))
                         .ToStatementSyntax()));
         }
         else

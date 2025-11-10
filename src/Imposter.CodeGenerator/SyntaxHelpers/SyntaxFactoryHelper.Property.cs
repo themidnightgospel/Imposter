@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -10,12 +10,10 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static PropertyDeclarationSyntax ParameterAsArgProperty(IParameterSymbol parameter)
     {
-        // TODO use builder
-        return PropertyDeclaration(ArgType(parameter), Identifier(parameter.Name))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddAccessorListAccessors(
-                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+        return new PropertyDeclarationBuilder(ArgType(parameter), parameter.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithGetter()
+            .Build();
     }
 
     internal static FieldDeclarationSyntax ParameterAsReadonlyField(IParameterSymbol parameter) =>
@@ -42,35 +40,4 @@ internal static partial class SyntaxFactoryHelper
             semicolonToken: Token(SyntaxKind.SemicolonToken)
         );
 
-    internal static PropertyDeclarationSyntax PropertyDeclarationSyntax(
-        TypeSyntax type,
-        string name,
-        BlockSyntax? getAccessor,
-        BlockSyntax? setAccessor)
-    {
-        return PropertyDeclaration(
-            attributeLists: default,
-            modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
-            type: type,
-            explicitInterfaceSpecifier: null,
-            identifier: Identifier(name),
-            accessorList: AccessorList(List<AccessorDeclarationSyntax>(GetAccessors())),
-            expressionBody: null,
-            initializer: null,
-            semicolonToken: default
-        );
-
-        IEnumerable<AccessorDeclarationSyntax> GetAccessors()
-        {
-            if (getAccessor is not null)
-            {
-                yield return AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, getAccessor);
-            }
-
-            if (setAccessor is not null)
-            {
-                yield return AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, setAccessor);
-            }
-        }
-    }
 }

@@ -73,10 +73,9 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (property.Core.SetterSupportsBaseImplementation)
             {
-                var baseAssignment = AssignmentExpression(
-                    SyntaxKind.SimpleAssignmentExpression,
-                    BaseExpression().Dot(IdentifierName(property.Core.Name)),
-                    IdentifierName("value"));
+                var baseAssignment = BaseExpression()
+                    .Dot(IdentifierName(property.Core.Name))
+                    .Assign(IdentifierName("value"));
 
                 setterArguments.Add(
                     Argument(
@@ -147,10 +146,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         BracketedArgumentList(
                             SeparatedList(indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))));
 
-                var baseAssignment = AssignmentExpression(
-                    SyntaxKind.SimpleAssignmentExpression,
-                    baseIndexerAccess,
-                    IdentifierName("value"));
+                var baseAssignment = baseIndexerAccess.Assign(IdentifierName("value"));
 
                 setterArguments.Add(
                     Argument(
@@ -227,10 +223,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
     private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName)
     {
-        var assignment = AssignmentExpression(
-            SyntaxKind.SimpleAssignmentExpression,
-            IdentifierName(ImposterFieldName),
-            IdentifierName("imposter"));
+        var assignment = IdentifierName(ImposterFieldName).Assign(IdentifierName("imposter"));
 
         return new MethodDeclarationBuilder(
                 PredefinedType(Token(SyntaxKind.VoidKeyword)),

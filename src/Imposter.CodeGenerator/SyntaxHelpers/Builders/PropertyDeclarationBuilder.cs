@@ -38,6 +38,14 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
 
         return this;
     }
+    
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PropertyDeclarationBuilder WithGetter()
+    {
+        _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        return this;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder WithGetterBody(BlockSyntax body)

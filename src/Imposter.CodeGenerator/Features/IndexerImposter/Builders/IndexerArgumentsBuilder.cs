@@ -46,10 +46,9 @@ internal static class IndexerArgumentsBuilder
         {
             constructorBuilder = constructorBuilder.AddParameter(parameter.ParameterSyntax);
             bodyBuilder.AddStatement(
-                AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        ThisExpression().Dot(IdentifierName(parameter.Name)),
-                        IdentifierName(parameter.Name))
+                ThisExpression()
+                    .Dot(IdentifierName(parameter.Name))
+                    .Assign(IdentifierName(parameter.Name))
                     .ToStatementSyntax());
         }
 

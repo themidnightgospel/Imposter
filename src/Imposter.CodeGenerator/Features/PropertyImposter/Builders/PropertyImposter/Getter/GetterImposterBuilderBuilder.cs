@@ -376,12 +376,9 @@ internal static class GetterImposterBuilderBuilder
             );
 
             var seedFromBase = ExpressionStatement(
-                AssignmentExpression(
-                    SyntaxKind.SimpleAssignmentExpression,
-                    IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                        .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)),
-                    baseImplementationIdentifier.Call()
-                )
+                IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+                    .Assign(baseImplementationIdentifier.Call())
             );
 
             return IfStatement(
