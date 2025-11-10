@@ -20,16 +20,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         protected virtual event EventHandler? ProtectedVirtualEvent;
 
-        public int InvokeProtectedMethod(int value) => ProtectedVirtualMethod(value);
+        public virtual int InvokeProtectedMethod(int value) => ProtectedVirtualMethod(value);
 
-        public string ReadProtectedProperty() => ProtectedVirtualProperty;
+        public virtual string ReadProtectedProperty() => ProtectedVirtualProperty;
 
-        public void WriteProtectedProperty(string value) => ProtectedVirtualProperty = value;
+        public virtual void WriteProtectedProperty(string value) => ProtectedVirtualProperty = value;
 
-        public int ReadProtectedValue(int index) => this[index];
+        public virtual int ReadProtectedValue(int index) => this[index];
 
-        public void WriteProtectedValue(int index, int value) => this[index] = value;
+        public virtual void WriteProtectedValue(int index, int value) => this[index] = value;
 
-        public void SubscribeToProtectedEvent(EventHandler handler) => ProtectedVirtualEvent += handler;
+        public virtual void SubscribeToProtectedEvent(EventHandler handler) => ProtectedVirtualEvent += handler;
     }
 }
