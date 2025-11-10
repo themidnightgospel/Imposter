@@ -117,10 +117,9 @@ internal static class MethodImposterAdapterBuilder
                         method.Delegate.Syntax)));
         }
 
-        var invokeExpression = InvocationExpression(
-            IdentifierName("_target").Dot(IdentifierName("Invoke")),
-            ArgumentList(SeparatedList(invokeArguments))
-        );
+        var invokeExpression = IdentifierName("_target")
+            .Dot(IdentifierName("Invoke"))
+            .Call(ArgumentList(SeparatedList(invokeArguments)));
 
         if (method.HasReturnValue)
         {
@@ -166,10 +165,9 @@ internal static class MethodImposterAdapterBuilder
                         .Call(
                             method.Parameters.HasInputParameters
                                 ? Argument(
-                                        InvocationExpression(
-                                            IdentifierName("arguments")
-                                                .Dot(GenericName("As").WithTypeArgumentList(TypeArgumentList(SeparatedList(method.GenericTypeArguments.Cast<TypeSyntax>()))))
-                                        )
+                                        IdentifierName("arguments")
+                                            .Dot(GenericName("As").WithTypeArgumentList(TypeArgumentList(SeparatedList(method.GenericTypeArguments.Cast<TypeSyntax>()))))
+                                            .Call()
                                     )
                                     .ToSingleArgumentList()
                                 : ArgumentList()

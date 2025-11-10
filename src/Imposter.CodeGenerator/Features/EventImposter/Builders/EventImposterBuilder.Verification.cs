@@ -242,8 +242,8 @@ internal static partial class EventImposterBuilder
                         IdentifierName("source"),
                         Block(
                             IfStatement(
-                                InvocationExpression(IdentifierName("predicate"))
-                                    .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("item"))))),
+                                IdentifierName("predicate").Call(
+                                    ArgumentList(SingletonSeparatedList(Argument(IdentifierName("item"))))),
                                 Block(
                                     ExpressionStatement(
                                         PostfixUnaryExpression(

@@ -59,9 +59,9 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                 Block(
                     LocalVariableDeclarationSyntax(invocationImposterType, "invocationImposter"),
                     IfStatement(
-                        InvocationExpression(
-                                IdentifierName("_invocationImposters").Dot(IdentifierName("TryDequeue")))
-                            .WithArgumentList(
+                        IdentifierName("_invocationImposters")
+                            .Dot(IdentifierName("TryDequeue"))
+                            .Call(
                                 ArgumentList(
                                     SingletonSeparatedList(
                                         Argument(IdentifierName("invocationImposter")).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))))),

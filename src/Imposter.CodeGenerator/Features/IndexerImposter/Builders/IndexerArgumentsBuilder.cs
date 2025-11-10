@@ -93,9 +93,8 @@ internal static class IndexerArgumentsBuilder
                             IdentifierName("obj"),
                             DeclarationPattern(indexer.Arguments.TypeSyntax, SingleVariableDesignation(Identifier("other")))
                         ),
-                        InvocationExpression(
-                            IdentifierName("Equals"),
-                            ArgumentList(SingletonSeparatedList(Argument(IdentifierName("other")))))
+                        IdentifierName("Equals")
+                            .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("other")))))
                     ))))
             .Build();
     }
@@ -108,7 +107,7 @@ internal static class IndexerArgumentsBuilder
                 WellKnownTypes.System.HashCode,
                 "hash",
                 ObjectCreationExpression(WellKnownTypes.System.HashCode)
-                    .WithArgumentList(ArgumentList()))
+                    .WithArgumentList(EmptyArgumentListSyntax))
         };
 
         foreach (var parameter in indexer.Core.Parameters)
