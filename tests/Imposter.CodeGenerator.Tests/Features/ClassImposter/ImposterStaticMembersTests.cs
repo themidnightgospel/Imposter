@@ -27,7 +27,7 @@ public class ClassWithStatics
 """;
 
     [Fact]
-    public void Given_StaticMembers_WhenImposterGenerated_ThenStaticsAreNotConfigurableAndBaseBehaviorRemains()
+    public void GivenStaticMembers_WhenImposterGenerated_ThenStaticsAreNotConfigurableAndBaseBehaviorRemains()
     {
         var artifacts = RunGenerator(LanguageVersion.CSharp13, ClassSource);
 

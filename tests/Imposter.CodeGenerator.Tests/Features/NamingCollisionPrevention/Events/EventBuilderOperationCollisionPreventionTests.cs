@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events
 public class EventBuilderOperationCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_EventsMatchingBuilderOperations_ShouldCompile()
+    public async Task GivenEventsMatchingBuilderOperations_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -58,7 +58,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_EventsMatchingBuilderInternalNames_ShouldCompile()
+    public async Task GivenEventsMatchingBuilderInternalNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -91,7 +91,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_EventsMatchingBuilderInterfaceNames_ShouldCompile()
+    public async Task GivenEventsMatchingBuilderInterfaceNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -119,3 +119,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

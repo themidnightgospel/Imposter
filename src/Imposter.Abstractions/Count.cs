@@ -95,7 +95,7 @@ public sealed class Count
     /// <remarks>
     /// Semantically equivalent to having no constraint.
     /// </remarks>
-    public static Count Any = new Count(null, null, null);
+    public static readonly Count Any = new Count(null, null, null);
 
     /// <summary>
     /// Gets a <see cref="Count"/> that represents exactly one occurrence.

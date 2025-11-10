@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Indexe
 public class IndexerMemberCollisionPreventionTests : IndexerNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_IndexerCoexistingWithTypeLevelMembers_ShouldCompile()
+    public async Task GivenIndexerCoexistingWithTypeLevelMembers_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -44,7 +44,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_MultipleIndexersAndCommonMemberNames_ShouldCompile()
+    public async Task GivenMultipleIndexersAndCommonMemberNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -72,7 +72,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ClassIndexerWithInternalImposterField_ShouldCompile()
+    public async Task GivenClassIndexerWithInternalImposterField_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -95,3 +95,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

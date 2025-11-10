@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Proper
 public class PropertyNameCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_PropertyBuilderOperationNames_ShouldCompile()
+    public async Task GivenPropertyBuilderOperationNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -45,7 +45,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ImposterMemberNamedProperties_ShouldCompile()
+    public async Task GivenImposterMemberNamedProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -75,7 +75,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_PropertiesMatchingGeneratedFields_ShouldCompile()
+    public async Task GivenPropertiesMatchingGeneratedFields_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -103,7 +103,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_CommonPropertyNames_ShouldCompile()
+    public async Task GivenCommonPropertyNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -129,7 +129,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ReusedPropertyNamesAcrossAccessors_ShouldCompile()
+    public async Task GivenReusedPropertyNamesAcrossAccessors_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -156,5 +156,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

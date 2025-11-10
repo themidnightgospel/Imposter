@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public async Task Given_MethodCallback_WhenChainingCallback_ShouldCompile()
+    public async Task GivenMethodCallback_WhenChainingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -28,7 +28,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodCallback_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodCallback_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -50,7 +50,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodReturns_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodReturns_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -72,7 +72,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodReturns_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodReturns_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -94,7 +94,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodReturnsAsync_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodReturnsAsync_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -116,7 +116,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodReturnsAsync_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodReturnsAsync_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -138,7 +138,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodThrowsGeneric_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -160,7 +160,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodThrowsGeneric_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -182,7 +182,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodThrowsInstance_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -204,7 +204,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodThrowsInstance_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -226,7 +226,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodThrowsGenerator_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -248,7 +248,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodThrowsGenerator_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -270,7 +270,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenCallingCallback_ShouldCompile()
+    public async Task GivenMethodThrowsAsync_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -292,7 +292,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenCallingThen_ShouldCompile()
+    public async Task GivenMethodThrowsAsync_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -314,7 +314,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_UseBaseImplementation_WhenCallingCallback_ShouldCompile()
+    public async Task GivenUseBaseImplementation_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -336,7 +336,7 @@ public class CallbackAndCalledSuccessFluentApiTests : MethodImposterFluentApiTes
     }
 
     [Fact]
-    public async Task Given_UseBaseImplementation_WhenCallingThen_ShouldCompile()
+    public async Task GivenUseBaseImplementation_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
