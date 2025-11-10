@@ -80,7 +80,7 @@ internal partial class MethodImposterBuilder
             if (method.HasReturnValue)
             {
                 arguments
-                    .Add(threwException ? Argument(Null) : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument());
+                    .Add(threwException ? Argument(Default) : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument());
             }
 
             arguments.Add(threwException
@@ -148,7 +148,7 @@ internal partial class MethodImposterBuilder
         var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(IdentifierName(method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name));
 
         return IfStatement(
-            BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Null),
+            BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Default),
             Block(
                 IfStatement(
                     BinaryExpression(
