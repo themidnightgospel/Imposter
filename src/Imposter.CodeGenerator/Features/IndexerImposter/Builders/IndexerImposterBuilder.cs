@@ -963,37 +963,6 @@ internal static class IndexerImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildFluentNoOpMethod(TypeSyntax returnType, string name, ParameterMetadata parameter)
-    {
-        var method = new MethodDeclarationBuilder(returnType, name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(parameter));
-
-        if (returnType == WellKnownTypes.Void)
-        {
-            return method.WithBody(Block()).Build();
-        }
-
-        return method.WithBody(Block(ReturnStatement(ThisExpression()))).Build();
-    }
-
-    private static MethodDeclarationSyntax BuildCalledMethod(TypeSyntax returnType, string name, ParameterMetadata countParameter)
-        => new MethodDeclarationBuilder(returnType, name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(countParameter))
-            .WithBody(Block())
-            .Build();
-
-    private static MethodDeclarationSyntax BuildThenMethod(TypeSyntax returnType, string name)
-        => new MethodDeclarationBuilder(returnType, name)
-            .WithBody(Block(ReturnStatement(ThisExpression())))
-            .Build();
-
-    private static MethodDeclarationSyntax BuildGenericThrowsMethod(in ImposterIndexerMetadata indexer)
-        => new MethodDeclarationBuilder(indexer.GetterBuilderInterface.ThrowsMethod.ReturnType, indexer.GetterBuilderInterface.ThrowsMethod.Name)
-            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
-            .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
-            .WithBody(Block(ReturnStatement(ThisExpression())))
-            .Build();
-
     private static ArgumentSyntax BuildArgument(IParameterSymbol parameter, ExpressionSyntax expression)
     {
         var modifier = parameter.RefKind switch
@@ -1046,14 +1015,6 @@ internal static class IndexerImposterBuilder
 
         return ArgumentList(arguments);
     }
-
-    private static TupleTypeSyntax BuildSetterCallbackRegistrationType(in ImposterIndexerMetadata indexer)
-        => TupleType(SeparatedList<TupleElementSyntax>(new SyntaxNodeOrToken[]
-            {
-                TupleElement(indexer.ArgumentsCriteria.TypeSyntax, Identifier("Criteria")),
-                Token(SyntaxKind.CommaToken),
-                TupleElement(indexer.Delegates.SetterCallbackDelegateType, Identifier("Callback"))
-            }));
 
     private static BinaryExpressionSyntax BuildMissingImposterMessage(in ImposterIndexerMetadata indexer, string suffix)
         => BinaryExpression(
