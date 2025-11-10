@@ -15,10 +15,52 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     public class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>
     {
         private readonly ProtectedVirtualMethodMethodImposter _protectedVirtualMethodMethodImposter;
+        private readonly InvokeProtectedMethodMethodImposter _invokeProtectedMethodMethodImposter;
+        private readonly ReadProtectedPropertyMethodImposter _readProtectedPropertyMethodImposter;
+        private readonly WriteProtectedPropertyMethodImposter _writeProtectedPropertyMethodImposter;
+        private readonly ReadProtectedValueMethodImposter _readProtectedValueMethodImposter;
+        private readonly WriteProtectedValueMethodImposter _writeProtectedValueMethodImposter;
+        private readonly SubscribeToProtectedEventMethodImposter _subscribeToProtectedEventMethodImposter;
         private readonly ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection = new ProtectedVirtualMethodMethodInvocationHistoryCollection();
+        private readonly InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection = new InvokeProtectedMethodMethodInvocationHistoryCollection();
+        private readonly ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection = new ReadProtectedPropertyMethodInvocationHistoryCollection();
+        private readonly WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection = new WriteProtectedPropertyMethodInvocationHistoryCollection();
+        private readonly ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection = new ReadProtectedValueMethodInvocationHistoryCollection();
+        private readonly WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection = new WriteProtectedValueMethodInvocationHistoryCollection();
+        private readonly SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection = new SubscribeToProtectedEventMethodInvocationHistoryCollection();
         public IProtectedVirtualMethodMethodImposterBuilder ProtectedVirtualMethod(global::Imposter.Abstractions.Arg<int> value)
         {
             return new ProtectedVirtualMethodMethodImposter.Builder(_protectedVirtualMethodMethodImposter, _protectedVirtualMethodMethodInvocationHistoryCollection, new ProtectedVirtualMethodArgumentsCriteria(value));
+        }
+
+        public IInvokeProtectedMethodMethodImposterBuilder InvokeProtectedMethod(global::Imposter.Abstractions.Arg<int> value)
+        {
+            return new InvokeProtectedMethodMethodImposter.Builder(_invokeProtectedMethodMethodImposter, _invokeProtectedMethodMethodInvocationHistoryCollection, new InvokeProtectedMethodArgumentsCriteria(value));
+        }
+
+        public IReadProtectedPropertyMethodImposterBuilder ReadProtectedProperty()
+        {
+            return new ReadProtectedPropertyMethodImposter.Builder(_readProtectedPropertyMethodImposter, _readProtectedPropertyMethodInvocationHistoryCollection);
+        }
+
+        public IWriteProtectedPropertyMethodImposterBuilder WriteProtectedProperty(global::Imposter.Abstractions.Arg<string> value)
+        {
+            return new WriteProtectedPropertyMethodImposter.Builder(_writeProtectedPropertyMethodImposter, _writeProtectedPropertyMethodInvocationHistoryCollection, new WriteProtectedPropertyArgumentsCriteria(value));
+        }
+
+        public IReadProtectedValueMethodImposterBuilder ReadProtectedValue(global::Imposter.Abstractions.Arg<int> index)
+        {
+            return new ReadProtectedValueMethodImposter.Builder(_readProtectedValueMethodImposter, _readProtectedValueMethodInvocationHistoryCollection, new ReadProtectedValueArgumentsCriteria(index));
+        }
+
+        public IWriteProtectedValueMethodImposterBuilder WriteProtectedValue(global::Imposter.Abstractions.Arg<int> index, global::Imposter.Abstractions.Arg<int> value)
+        {
+            return new WriteProtectedValueMethodImposter.Builder(_writeProtectedValueMethodImposter, _writeProtectedValueMethodInvocationHistoryCollection, new WriteProtectedValueArgumentsCriteria(index, value));
+        }
+
+        public ISubscribeToProtectedEventMethodImposterBuilder SubscribeToProtectedEvent(global::Imposter.Abstractions.Arg<global::System.EventHandler> handler)
+        {
+            return new SubscribeToProtectedEventMethodImposter.Builder(_subscribeToProtectedEventMethodImposter, _subscribeToProtectedEventMethodInvocationHistoryCollection, new SubscribeToProtectedEventArgumentsCriteria(handler));
         }
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
@@ -27,6 +69,389 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>.Instance()
         {
             return _imposterInstance;
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        public delegate int InvokeProtectedMethodDelegate(int value);
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        public delegate void InvokeProtectedMethodCallbackDelegate(int value);
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        public delegate System.Exception InvokeProtectedMethodExceptionGeneratorDelegate(int value);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class InvokeProtectedMethodArguments
+        {
+            public int value;
+            internal InvokeProtectedMethodArguments(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class InvokeProtectedMethodArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> value { get; }
+
+            public InvokeProtectedMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value)
+            {
+                this.value = value;
+            }
+
+            public bool Matches(InvokeProtectedMethodArguments arguments)
+            {
+                return value.Matches(arguments.value);
+            }
+        }
+
+        public interface IInvokeProtectedMethodMethodInvocationHistory
+        {
+            bool Matches(InvokeProtectedMethodArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class InvokeProtectedMethodMethodInvocationHistory : IInvokeProtectedMethodMethodInvocationHistory
+        {
+            internal InvokeProtectedMethodArguments Arguments;
+            internal int Result;
+            internal System.Exception Exception;
+            public InvokeProtectedMethodMethodInvocationHistory(InvokeProtectedMethodArguments Arguments, int Result, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(InvokeProtectedMethodArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class InvokeProtectedMethodMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodMethodInvocationHistory>();
+            internal void Add(IInvokeProtectedMethodMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(InvokeProtectedMethodArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class InvokeProtectedMethodMethodInvocationImposterGroup
+        {
+            internal static InvokeProtectedMethodMethodInvocationImposterGroup Default = new InvokeProtectedMethodMethodInvocationImposterGroup(new InvokeProtectedMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal InvokeProtectedMethodArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public InvokeProtectedMethodMethodInvocationImposterGroup(InvokeProtectedMethodArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, InvokeProtectedMethodDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private InvokeProtectedMethodDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedMethodCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, InvokeProtectedMethodDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(value);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(InvokeProtectedMethodCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(InvokeProtectedMethodDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(InvokeProtectedMethodExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static int DefaultResultGenerator(int value)
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IInvokeProtectedMethodMethodInvocationImposterGroupCallback
+        {
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Callback(InvokeProtectedMethodCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IInvokeProtectedMethodMethodInvocationImposterGroupContinuation : IInvokeProtectedMethodMethodInvocationImposterGroupCallback
+        {
+            IInvokeProtectedMethodMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IInvokeProtectedMethodMethodInvocationImposterGroup : IInvokeProtectedMethodMethodInvocationImposterGroupCallback
+        {
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws(InvokeProtectedMethodExceptionGeneratorDelegate exceptionGenerator);
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Returns(InvokeProtectedMethodDelegate resultGenerator);
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Returns(int value);
+            IInvokeProtectedMethodMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface InvokeProtectedMethodInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
+        public interface IInvokeProtectedMethodMethodImposterBuilder : IInvokeProtectedMethodMethodInvocationImposterGroup, IInvokeProtectedMethodMethodInvocationImposterGroupCallback, InvokeProtectedMethodInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class InvokeProtectedMethodMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup>();
+            private readonly InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public InvokeProtectedMethodMethodImposter(InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._invokeProtectedMethodMethodInvocationHistoryCollection = _invokeProtectedMethodMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(InvokeProtectedMethodArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private InvokeProtectedMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InvokeProtectedMethodArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(int value, InvokeProtectedMethodDelegate baseImplementation = null)
+            {
+                var arguments = new InvokeProtectedMethodArguments(value);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)");
+                    }
+
+                    matchingInvocationImposterGroup = InvokeProtectedMethodMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)", value, baseImplementation);
+                    _invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IInvokeProtectedMethodMethodImposterBuilder, IInvokeProtectedMethodMethodInvocationImposterGroupContinuation
+            {
+                private readonly InvokeProtectedMethodMethodImposter _imposter;
+                private readonly InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection;
+                private readonly InvokeProtectedMethodArgumentsCriteria _argumentsCriteria;
+                private readonly InvokeProtectedMethodMethodInvocationImposterGroup _invocationImposterGroup;
+                private InvokeProtectedMethodMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(InvokeProtectedMethodMethodImposter _imposter, InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection, InvokeProtectedMethodArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._invokeProtectedMethodMethodInvocationHistoryCollection = _invokeProtectedMethodMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new InvokeProtectedMethodMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.Throws(InvokeProtectedMethodExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroupCallback.Callback(InvokeProtectedMethodCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.Returns(InvokeProtectedMethodDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.Returns(int value_1)
+                {
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroupContinuation IInvokeProtectedMethodMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IInvokeProtectedMethodMethodInvocationImposterGroup IInvokeProtectedMethodMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void InvokeProtectedMethodInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _invokeProtectedMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
@@ -404,6 +829,1782 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 void ProtectedVirtualMethodInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     var invocationCount = _protectedVirtualMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
+        public delegate string ReadProtectedPropertyDelegate();
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
+        public delegate void ReadProtectedPropertyCallbackDelegate();
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
+        public delegate System.Exception ReadProtectedPropertyExceptionGeneratorDelegate();
+        public interface IReadProtectedPropertyMethodInvocationHistory
+        {
+            bool Matches();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedPropertyMethodInvocationHistory : IReadProtectedPropertyMethodInvocationHistory
+        {
+            internal string Result;
+            internal System.Exception Exception;
+            public ReadProtectedPropertyMethodInvocationHistory(string Result, System.Exception Exception)
+            {
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches()
+            {
+                return true;
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedPropertyMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IReadProtectedPropertyMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IReadProtectedPropertyMethodInvocationHistory>();
+            internal void Add(IReadProtectedPropertyMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count()
+            {
+                return _invocationHistory.Count(it => it.Matches());
+            }
+        }
+
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ReadProtectedPropertyMethodInvocationImposterGroup
+        {
+            internal static ReadProtectedPropertyMethodInvocationImposterGroup Default = new ReadProtectedPropertyMethodInvocationImposterGroup();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public ReadProtectedPropertyMethodInvocationImposterGroup()
+            {
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ReadProtectedPropertyDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private ReadProtectedPropertyDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<ReadProtectedPropertyCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ReadProtectedPropertyCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ReadProtectedPropertyDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    string result = _resultGenerator.Invoke();
+                    foreach (var callback in _callbacks)
+                    {
+                        callback();
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(ReadProtectedPropertyCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(ReadProtectedPropertyDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(string value)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = () =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(ReadProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = () =>
+                    {
+                        throw exceptionGenerator();
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static string DefaultResultGenerator()
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Callback(ReadProtectedPropertyCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedPropertyMethodInvocationImposterGroupContinuation : IReadProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedPropertyMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedPropertyMethodInvocationImposterGroup : IReadProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws(ReadProtectedPropertyExceptionGeneratorDelegate exceptionGenerator);
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Returns(ReadProtectedPropertyDelegate resultGenerator);
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation Returns(string value);
+            IReadProtectedPropertyMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ReadProtectedPropertyInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
+        public interface IReadProtectedPropertyMethodImposterBuilder : IReadProtectedPropertyMethodInvocationImposterGroup, IReadProtectedPropertyMethodInvocationImposterGroupCallback, ReadProtectedPropertyInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedPropertyMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup>();
+            private readonly ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public ReadProtectedPropertyMethodImposter(ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._readProtectedPropertyMethodInvocationHistoryCollection = _readProtectedPropertyMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup()
+            {
+                return FindMatchingInvocationImposterGroup() != null;
+            }
+
+            private ReadProtectedPropertyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
+            {
+                if (_invocationImposters.TryPeek(out var invocationImposterGroup))
+                    return invocationImposterGroup;
+                else
+                    return null;
+            }
+
+            public string Invoke(ReadProtectedPropertyDelegate baseImplementation = null)
+            {
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()");
+                    }
+
+                    matchingInvocationImposterGroup = ReadProtectedPropertyMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()", baseImplementation);
+                    _readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IReadProtectedPropertyMethodImposterBuilder, IReadProtectedPropertyMethodInvocationImposterGroupContinuation
+            {
+                private readonly ReadProtectedPropertyMethodImposter _imposter;
+                private readonly ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection;
+                private readonly ReadProtectedPropertyMethodInvocationImposterGroup _invocationImposterGroup;
+                private ReadProtectedPropertyMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(ReadProtectedPropertyMethodImposter _imposter, ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection)
+                {
+                    this._imposter = _imposter;
+                    this._readProtectedPropertyMethodInvocationHistoryCollection = _readProtectedPropertyMethodInvocationHistoryCollection;
+                    this._invocationImposterGroup = new ReadProtectedPropertyMethodInvocationImposterGroup();
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.Throws(ReadProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws(() =>
+                    {
+                        throw exceptionGenerator.Invoke();
+                    });
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroupCallback.Callback(ReadProtectedPropertyCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.Returns(ReadProtectedPropertyDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.Returns(string value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroupContinuation IReadProtectedPropertyMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IReadProtectedPropertyMethodInvocationImposterGroup IReadProtectedPropertyMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void ReadProtectedPropertyInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _readProtectedPropertyMethodInvocationHistoryCollection.Count();
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        public delegate int ReadProtectedValueDelegate(int index);
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        public delegate void ReadProtectedValueCallbackDelegate(int index);
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        public delegate System.Exception ReadProtectedValueExceptionGeneratorDelegate(int index);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ReadProtectedValueArguments
+        {
+            public int index;
+            internal ReadProtectedValueArguments(int index)
+            {
+                this.index = index;
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ReadProtectedValueArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> index { get; }
+
+            public ReadProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int> index)
+            {
+                this.index = index;
+            }
+
+            public bool Matches(ReadProtectedValueArguments arguments)
+            {
+                return index.Matches(arguments.index);
+            }
+        }
+
+        public interface IReadProtectedValueMethodInvocationHistory
+        {
+            bool Matches(ReadProtectedValueArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedValueMethodInvocationHistory : IReadProtectedValueMethodInvocationHistory
+        {
+            internal ReadProtectedValueArguments Arguments;
+            internal int Result;
+            internal System.Exception Exception;
+            public ReadProtectedValueMethodInvocationHistory(ReadProtectedValueArguments Arguments, int Result, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(ReadProtectedValueArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedValueMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IReadProtectedValueMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IReadProtectedValueMethodInvocationHistory>();
+            internal void Add(IReadProtectedValueMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(ReadProtectedValueArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ReadProtectedValueMethodInvocationImposterGroup
+        {
+            internal static ReadProtectedValueMethodInvocationImposterGroup Default = new ReadProtectedValueMethodInvocationImposterGroup(new ReadProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal ReadProtectedValueArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public ReadProtectedValueMethodInvocationImposterGroup(ReadProtectedValueArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, ReadProtectedValueDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, index, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private ReadProtectedValueDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<ReadProtectedValueCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ReadProtectedValueCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, ReadProtectedValueDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(index);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(index);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(ReadProtectedValueCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(ReadProtectedValueDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int index) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(ReadProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int index) =>
+                    {
+                        throw exceptionGenerator(index);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static int DefaultResultGenerator(int index)
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Callback(ReadProtectedValueCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedValueMethodInvocationImposterGroupContinuation : IReadProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedValueMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReadProtectedValueMethodInvocationImposterGroup : IReadProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Throws(ReadProtectedValueExceptionGeneratorDelegate exceptionGenerator);
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Returns(ReadProtectedValueDelegate resultGenerator);
+            IReadProtectedValueMethodInvocationImposterGroupContinuation Returns(int value);
+            IReadProtectedValueMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ReadProtectedValueInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
+        public interface IReadProtectedValueMethodImposterBuilder : IReadProtectedValueMethodInvocationImposterGroup, IReadProtectedValueMethodInvocationImposterGroupCallback, ReadProtectedValueInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReadProtectedValueMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup>();
+            private readonly ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public ReadProtectedValueMethodImposter(ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._readProtectedValueMethodInvocationHistoryCollection = _readProtectedValueMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(ReadProtectedValueArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private ReadProtectedValueMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReadProtectedValueArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(int index, ReadProtectedValueDelegate baseImplementation = null)
+            {
+                var arguments = new ReadProtectedValueArguments(index);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)");
+                    }
+
+                    matchingInvocationImposterGroup = ReadProtectedValueMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)", index, baseImplementation);
+                    _readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IReadProtectedValueMethodImposterBuilder, IReadProtectedValueMethodInvocationImposterGroupContinuation
+            {
+                private readonly ReadProtectedValueMethodImposter _imposter;
+                private readonly ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection;
+                private readonly ReadProtectedValueArgumentsCriteria _argumentsCriteria;
+                private readonly ReadProtectedValueMethodInvocationImposterGroup _invocationImposterGroup;
+                private ReadProtectedValueMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(ReadProtectedValueMethodImposter _imposter, ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection, ReadProtectedValueArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._readProtectedValueMethodInvocationHistoryCollection = _readProtectedValueMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new ReadProtectedValueMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int index) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int index) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.Throws(ReadProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int index) =>
+                    {
+                        throw exceptionGenerator.Invoke(index);
+                    });
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroupCallback.Callback(ReadProtectedValueCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.Returns(ReadProtectedValueDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.Returns(int value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroupContinuation IReadProtectedValueMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IReadProtectedValueMethodInvocationImposterGroup IReadProtectedValueMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void ReadProtectedValueInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _readProtectedValueMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        public delegate void SubscribeToProtectedEventDelegate(global::System.EventHandler handler);
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        public delegate void SubscribeToProtectedEventCallbackDelegate(global::System.EventHandler handler);
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        public delegate System.Exception SubscribeToProtectedEventExceptionGeneratorDelegate(global::System.EventHandler handler);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class SubscribeToProtectedEventArguments
+        {
+            public global::System.EventHandler handler;
+            internal SubscribeToProtectedEventArguments(global::System.EventHandler handler)
+            {
+                this.handler = handler;
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class SubscribeToProtectedEventArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<global::System.EventHandler> handler { get; }
+
+            public SubscribeToProtectedEventArgumentsCriteria(global::Imposter.Abstractions.Arg<global::System.EventHandler> handler)
+            {
+                this.handler = handler;
+            }
+
+            public bool Matches(SubscribeToProtectedEventArguments arguments)
+            {
+                return handler.Matches(arguments.handler);
+            }
+        }
+
+        public interface ISubscribeToProtectedEventMethodInvocationHistory
+        {
+            bool Matches(SubscribeToProtectedEventArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class SubscribeToProtectedEventMethodInvocationHistory : ISubscribeToProtectedEventMethodInvocationHistory
+        {
+            internal SubscribeToProtectedEventArguments Arguments;
+            internal System.Exception Exception;
+            public SubscribeToProtectedEventMethodInvocationHistory(SubscribeToProtectedEventArguments Arguments, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(SubscribeToProtectedEventArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class SubscribeToProtectedEventMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<ISubscribeToProtectedEventMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<ISubscribeToProtectedEventMethodInvocationHistory>();
+            internal void Add(ISubscribeToProtectedEventMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(SubscribeToProtectedEventArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class SubscribeToProtectedEventMethodInvocationImposterGroup
+        {
+            internal static SubscribeToProtectedEventMethodInvocationImposterGroup Default = new SubscribeToProtectedEventMethodInvocationImposterGroup(new SubscribeToProtectedEventArgumentsCriteria(global::Imposter.Abstractions.Arg<global::System.EventHandler>.Any()));
+            internal SubscribeToProtectedEventArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public SubscribeToProtectedEventMethodInvocationImposterGroup(SubscribeToProtectedEventArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.EventHandler handler, SubscribeToProtectedEventDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                invocationImposter.Invoke(invocationBehavior, methodDisplayName, handler, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private SubscribeToProtectedEventDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<SubscribeToProtectedEventCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SubscribeToProtectedEventCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.EventHandler handler, SubscribeToProtectedEventDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    _resultGenerator.Invoke(handler);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(handler);
+                    }
+                }
+
+                internal void Callback(SubscribeToProtectedEventCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(SubscribeToProtectedEventExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (global::System.EventHandler handler) =>
+                    {
+                        throw exceptionGenerator(handler);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static void DefaultResultGenerator(global::System.EventHandler handler)
+                {
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
+        {
+            ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Callback(SubscribeToProtectedEventCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation : ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
+        {
+            ISubscribeToProtectedEventMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ISubscribeToProtectedEventMethodInvocationImposterGroup : ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
+        {
+            ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws(SubscribeToProtectedEventExceptionGeneratorDelegate exceptionGenerator);
+            ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface SubscribeToProtectedEventInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
+        public interface ISubscribeToProtectedEventMethodImposterBuilder : ISubscribeToProtectedEventMethodInvocationImposterGroup, ISubscribeToProtectedEventMethodInvocationImposterGroupCallback, SubscribeToProtectedEventInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class SubscribeToProtectedEventMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup>();
+            private readonly SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public SubscribeToProtectedEventMethodImposter(SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._subscribeToProtectedEventMethodInvocationHistoryCollection = _subscribeToProtectedEventMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(SubscribeToProtectedEventArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private SubscribeToProtectedEventMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SubscribeToProtectedEventArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public void Invoke(global::System.EventHandler handler, SubscribeToProtectedEventDelegate baseImplementation = null)
+            {
+                var arguments = new SubscribeToProtectedEventArguments(handler);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)");
+                    }
+
+                    matchingInvocationImposterGroup = SubscribeToProtectedEventMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)", handler, baseImplementation);
+                    _subscribeToProtectedEventMethodInvocationHistoryCollection.Add(new SubscribeToProtectedEventMethodInvocationHistory(arguments, default));
+                }
+                catch (System.Exception ex)
+                {
+                    _subscribeToProtectedEventMethodInvocationHistoryCollection.Add(new SubscribeToProtectedEventMethodInvocationHistory(arguments, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : ISubscribeToProtectedEventMethodImposterBuilder, ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation
+            {
+                private readonly SubscribeToProtectedEventMethodImposter _imposter;
+                private readonly SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection;
+                private readonly SubscribeToProtectedEventArgumentsCriteria _argumentsCriteria;
+                private readonly SubscribeToProtectedEventMethodInvocationImposterGroup _invocationImposterGroup;
+                private SubscribeToProtectedEventMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(SubscribeToProtectedEventMethodImposter _imposter, SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection, SubscribeToProtectedEventArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._subscribeToProtectedEventMethodInvocationHistoryCollection = _subscribeToProtectedEventMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new SubscribeToProtectedEventMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation ISubscribeToProtectedEventMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((global::System.EventHandler handler) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation ISubscribeToProtectedEventMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((global::System.EventHandler handler) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation ISubscribeToProtectedEventMethodInvocationImposterGroup.Throws(SubscribeToProtectedEventExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((global::System.EventHandler handler) =>
+                    {
+                        throw exceptionGenerator.Invoke(handler);
+                    });
+                    return this;
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation ISubscribeToProtectedEventMethodInvocationImposterGroupCallback.Callback(SubscribeToProtectedEventCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation ISubscribeToProtectedEventMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                ISubscribeToProtectedEventMethodInvocationImposterGroup ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void SubscribeToProtectedEventInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _subscribeToProtectedEventMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        public delegate void WriteProtectedPropertyDelegate(string value);
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        public delegate void WriteProtectedPropertyCallbackDelegate(string value);
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        public delegate System.Exception WriteProtectedPropertyExceptionGeneratorDelegate(string value);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class WriteProtectedPropertyArguments
+        {
+            public string value;
+            internal WriteProtectedPropertyArguments(string value)
+            {
+                this.value = value;
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class WriteProtectedPropertyArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<string> value { get; }
+
+            public WriteProtectedPropertyArgumentsCriteria(global::Imposter.Abstractions.Arg<string> value)
+            {
+                this.value = value;
+            }
+
+            public bool Matches(WriteProtectedPropertyArguments arguments)
+            {
+                return value.Matches(arguments.value);
+            }
+        }
+
+        public interface IWriteProtectedPropertyMethodInvocationHistory
+        {
+            bool Matches(WriteProtectedPropertyArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedPropertyMethodInvocationHistory : IWriteProtectedPropertyMethodInvocationHistory
+        {
+            internal WriteProtectedPropertyArguments Arguments;
+            internal System.Exception Exception;
+            public WriteProtectedPropertyMethodInvocationHistory(WriteProtectedPropertyArguments Arguments, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(WriteProtectedPropertyArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedPropertyMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IWriteProtectedPropertyMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IWriteProtectedPropertyMethodInvocationHistory>();
+            internal void Add(IWriteProtectedPropertyMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(WriteProtectedPropertyArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class WriteProtectedPropertyMethodInvocationImposterGroup
+        {
+            internal static WriteProtectedPropertyMethodInvocationImposterGroup Default = new WriteProtectedPropertyMethodInvocationImposterGroup(new WriteProtectedPropertyArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
+            internal WriteProtectedPropertyArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public WriteProtectedPropertyMethodInvocationImposterGroup(WriteProtectedPropertyArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string value, WriteProtectedPropertyDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private WriteProtectedPropertyDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<WriteProtectedPropertyCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<WriteProtectedPropertyCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string value, WriteProtectedPropertyDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    _resultGenerator.Invoke(value);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+                }
+
+                internal void Callback(WriteProtectedPropertyCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(WriteProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (string value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static void DefaultResultGenerator(string value)
+                {
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Callback(WriteProtectedPropertyCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedPropertyMethodInvocationImposterGroupContinuation : IWriteProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedPropertyMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedPropertyMethodInvocationImposterGroup : IWriteProtectedPropertyMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws(WriteProtectedPropertyExceptionGeneratorDelegate exceptionGenerator);
+            IWriteProtectedPropertyMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface WriteProtectedPropertyInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
+        public interface IWriteProtectedPropertyMethodImposterBuilder : IWriteProtectedPropertyMethodInvocationImposterGroup, IWriteProtectedPropertyMethodInvocationImposterGroupCallback, WriteProtectedPropertyInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedPropertyMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup>();
+            private readonly WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public WriteProtectedPropertyMethodImposter(WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._writeProtectedPropertyMethodInvocationHistoryCollection = _writeProtectedPropertyMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(WriteProtectedPropertyArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private WriteProtectedPropertyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedPropertyArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public void Invoke(string value, WriteProtectedPropertyDelegate baseImplementation = null)
+            {
+                var arguments = new WriteProtectedPropertyArguments(value);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)");
+                    }
+
+                    matchingInvocationImposterGroup = WriteProtectedPropertyMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)", value, baseImplementation);
+                    _writeProtectedPropertyMethodInvocationHistoryCollection.Add(new WriteProtectedPropertyMethodInvocationHistory(arguments, default));
+                }
+                catch (System.Exception ex)
+                {
+                    _writeProtectedPropertyMethodInvocationHistoryCollection.Add(new WriteProtectedPropertyMethodInvocationHistory(arguments, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IWriteProtectedPropertyMethodImposterBuilder, IWriteProtectedPropertyMethodInvocationImposterGroupContinuation
+            {
+                private readonly WriteProtectedPropertyMethodImposter _imposter;
+                private readonly WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection;
+                private readonly WriteProtectedPropertyArgumentsCriteria _argumentsCriteria;
+                private readonly WriteProtectedPropertyMethodInvocationImposterGroup _invocationImposterGroup;
+                private WriteProtectedPropertyMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(WriteProtectedPropertyMethodImposter _imposter, WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection, WriteProtectedPropertyArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._writeProtectedPropertyMethodInvocationHistoryCollection = _writeProtectedPropertyMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new WriteProtectedPropertyMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroupContinuation IWriteProtectedPropertyMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((string value) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroupContinuation IWriteProtectedPropertyMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((string value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroupContinuation IWriteProtectedPropertyMethodInvocationImposterGroup.Throws(WriteProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((string value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroupContinuation IWriteProtectedPropertyMethodInvocationImposterGroupCallback.Callback(WriteProtectedPropertyCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroupContinuation IWriteProtectedPropertyMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IWriteProtectedPropertyMethodInvocationImposterGroup IWriteProtectedPropertyMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void WriteProtectedPropertyInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _writeProtectedPropertyMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        public delegate void WriteProtectedValueDelegate(int index, int value);
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        public delegate void WriteProtectedValueCallbackDelegate(int index, int value);
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        public delegate System.Exception WriteProtectedValueExceptionGeneratorDelegate(int index, int value);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class WriteProtectedValueArguments
+        {
+            public int index;
+            public int value;
+            internal WriteProtectedValueArguments(int index, int value)
+            {
+                this.index = index;
+                this.value = value;
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class WriteProtectedValueArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> index { get; }
+            public global::Imposter.Abstractions.Arg<int> value { get; }
+
+            public WriteProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int> index, global::Imposter.Abstractions.Arg<int> value)
+            {
+                this.index = index;
+                this.value = value;
+            }
+
+            public bool Matches(WriteProtectedValueArguments arguments)
+            {
+                return index.Matches(arguments.index) && value.Matches(arguments.value);
+            }
+        }
+
+        public interface IWriteProtectedValueMethodInvocationHistory
+        {
+            bool Matches(WriteProtectedValueArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedValueMethodInvocationHistory : IWriteProtectedValueMethodInvocationHistory
+        {
+            internal WriteProtectedValueArguments Arguments;
+            internal System.Exception Exception;
+            public WriteProtectedValueMethodInvocationHistory(WriteProtectedValueArguments Arguments, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(WriteProtectedValueArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedValueMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IWriteProtectedValueMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IWriteProtectedValueMethodInvocationHistory>();
+            internal void Add(IWriteProtectedValueMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(WriteProtectedValueArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class WriteProtectedValueMethodInvocationImposterGroup
+        {
+            internal static WriteProtectedValueMethodInvocationImposterGroup Default = new WriteProtectedValueMethodInvocationImposterGroup(new WriteProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
+            internal WriteProtectedValueArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public WriteProtectedValueMethodInvocationImposterGroup(WriteProtectedValueArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, int value, WriteProtectedValueDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                invocationImposter.Invoke(invocationBehavior, methodDisplayName, index, value, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default._resultGenerator = DefaultResultGenerator;
+                }
+
+                private WriteProtectedValueDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<WriteProtectedValueCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<WriteProtectedValueCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, int value, WriteProtectedValueDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    _resultGenerator.Invoke(index, value);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(index, value);
+                    }
+                }
+
+                internal void Callback(WriteProtectedValueCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Throws(WriteProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int index, int value) =>
+                    {
+                        throw exceptionGenerator(index, value);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static void DefaultResultGenerator(int index, int value)
+                {
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedValueMethodInvocationImposterGroupContinuation Callback(WriteProtectedValueCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedValueMethodInvocationImposterGroupContinuation : IWriteProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedValueMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IWriteProtectedValueMethodInvocationImposterGroup : IWriteProtectedValueMethodInvocationImposterGroupCallback
+        {
+            IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws(WriteProtectedValueExceptionGeneratorDelegate exceptionGenerator);
+            IWriteProtectedValueMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface WriteProtectedValueInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
+        public interface IWriteProtectedValueMethodImposterBuilder : IWriteProtectedValueMethodInvocationImposterGroup, IWriteProtectedValueMethodInvocationImposterGroupCallback, WriteProtectedValueInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class WriteProtectedValueMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup>();
+            private readonly WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public WriteProtectedValueMethodImposter(WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._writeProtectedValueMethodInvocationHistoryCollection = _writeProtectedValueMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(WriteProtectedValueArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private WriteProtectedValueMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedValueArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public void Invoke(int index, int value, WriteProtectedValueDelegate baseImplementation = null)
+            {
+                var arguments = new WriteProtectedValueArguments(index, value);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)");
+                    }
+
+                    matchingInvocationImposterGroup = WriteProtectedValueMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)", index, value, baseImplementation);
+                    _writeProtectedValueMethodInvocationHistoryCollection.Add(new WriteProtectedValueMethodInvocationHistory(arguments, default));
+                }
+                catch (System.Exception ex)
+                {
+                    _writeProtectedValueMethodInvocationHistoryCollection.Add(new WriteProtectedValueMethodInvocationHistory(arguments, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IWriteProtectedValueMethodImposterBuilder, IWriteProtectedValueMethodInvocationImposterGroupContinuation
+            {
+                private readonly WriteProtectedValueMethodImposter _imposter;
+                private readonly WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection;
+                private readonly WriteProtectedValueArgumentsCriteria _argumentsCriteria;
+                private readonly WriteProtectedValueMethodInvocationImposterGroup _invocationImposterGroup;
+                private WriteProtectedValueMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(WriteProtectedValueMethodImposter _imposter, WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection, WriteProtectedValueArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._writeProtectedValueMethodInvocationHistoryCollection = _writeProtectedValueMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new WriteProtectedValueMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroupContinuation IWriteProtectedValueMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int index, int value) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroupContinuation IWriteProtectedValueMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int index, int value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroupContinuation IWriteProtectedValueMethodInvocationImposterGroup.Throws(WriteProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int index, int value) =>
+                    {
+                        throw exceptionGenerator.Invoke(index, value);
+                    });
+                    return this;
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroupContinuation IWriteProtectedValueMethodInvocationImposterGroupCallback.Callback(WriteProtectedValueCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroupContinuation IWriteProtectedValueMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IWriteProtectedValueMethodInvocationImposterGroup IWriteProtectedValueMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void WriteProtectedValueInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _writeProtectedValueMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
@@ -1410,6 +3611,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public ClassWithProtectedOverrideableMembersImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._protectedVirtualMethodMethodImposter = new ProtectedVirtualMethodMethodImposter(_protectedVirtualMethodMethodInvocationHistoryCollection, invocationBehavior);
+            this._invokeProtectedMethodMethodImposter = new InvokeProtectedMethodMethodImposter(_invokeProtectedMethodMethodInvocationHistoryCollection, invocationBehavior);
+            this._readProtectedPropertyMethodImposter = new ReadProtectedPropertyMethodImposter(_readProtectedPropertyMethodInvocationHistoryCollection, invocationBehavior);
+            this._writeProtectedPropertyMethodImposter = new WriteProtectedPropertyMethodImposter(_writeProtectedPropertyMethodInvocationHistoryCollection, invocationBehavior);
+            this._readProtectedValueMethodImposter = new ReadProtectedValueMethodImposter(_readProtectedValueMethodInvocationHistoryCollection, invocationBehavior);
+            this._writeProtectedValueMethodImposter = new WriteProtectedValueMethodImposter(_writeProtectedValueMethodInvocationHistoryCollection, invocationBehavior);
+            this._subscribeToProtectedEventMethodImposter = new SubscribeToProtectedEventMethodImposter(_subscribeToProtectedEventMethodInvocationHistoryCollection, invocationBehavior);
             this._ProtectedVirtualProperty = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ProtectedVirtualEvent = new ProtectedVirtualEventEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.this[int index]");
@@ -1434,6 +3641,36 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             protected override int ProtectedVirtualMethod(int value)
             {
                 return _imposter._protectedVirtualMethodMethodImposter.Invoke(value, base.ProtectedVirtualMethod);
+            }
+
+            public override int InvokeProtectedMethod(int value)
+            {
+                return _imposter._invokeProtectedMethodMethodImposter.Invoke(value, base.InvokeProtectedMethod);
+            }
+
+            public override string ReadProtectedProperty()
+            {
+                return _imposter._readProtectedPropertyMethodImposter.Invoke(base.ReadProtectedProperty);
+            }
+
+            public override void WriteProtectedProperty(string value)
+            {
+                _imposter._writeProtectedPropertyMethodImposter.Invoke(value, base.WriteProtectedProperty);
+            }
+
+            public override int ReadProtectedValue(int index)
+            {
+                return _imposter._readProtectedValueMethodImposter.Invoke(index, base.ReadProtectedValue);
+            }
+
+            public override void WriteProtectedValue(int index, int value)
+            {
+                _imposter._writeProtectedValueMethodImposter.Invoke(index, value, base.WriteProtectedValue);
+            }
+
+            public override void SubscribeToProtectedEvent(global::System.EventHandler handler)
+            {
+                _imposter._subscribeToProtectedEventMethodImposter.Invoke(handler, base.SubscribeToProtectedEvent);
             }
 
             protected override string ProtectedVirtualProperty

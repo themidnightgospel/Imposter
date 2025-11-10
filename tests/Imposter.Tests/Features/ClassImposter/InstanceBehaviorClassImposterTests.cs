@@ -12,7 +12,8 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
-            var builder = imposter.ProtectedVirtualMethod(Arg<int>.Is(3)).Returns(42);
+            imposter.ProtectedVirtualMethod(Arg<int>.Is(3)).Returns(42);
+            imposter.InvokeProtectedMethod(3).UseBaseImplementation();
 
             var first = imposter.Instance();
             var second = imposter.Instance();
