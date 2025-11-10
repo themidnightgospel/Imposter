@@ -14,30 +14,17 @@ internal static partial class InvocationSetupBuilder
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
         var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(invocationImposterType);
 
-        return FieldDeclaration(
-                VariableDeclaration(queueType)
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("_invocationImposters"))
-                                .WithInitializer(
-                                    EqualsValueClause(queueType.New(ArgumentList()))
-                                )
-                        )
-                    )
-            )
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
+        return SinglePrivateReadonlyVariableField(
+            queueType,
+            "_invocationImposters",
+            queueType.New(ArgumentList()));
     }
 
-    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in ImposterTargetMethodMetadata method) =>
-        FieldDeclaration(
-                VariableDeclaration(IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName))
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("_lastestInvocationImposter"))
-                        )
-                    )
-            )
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword));
+internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in ImposterTargetMethodMetadata method) =>
+    SingleVariableField(
+        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName),
+        "_lastestInvocationImposter",
+        SyntaxKind.PrivateKeyword);
 
     internal static MethodDeclarationSyntax AddInvocationImposterMethod(in ImposterTargetMethodMetadata method)
     {

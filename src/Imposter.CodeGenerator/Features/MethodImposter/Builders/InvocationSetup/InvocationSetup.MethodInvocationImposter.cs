@@ -88,17 +88,15 @@ internal static partial class InvocationSetupBuilder
             "_useBaseImplementation",
             TokenList(Token(SyntaxKind.PrivateKeyword)));
 
-    private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMetadata method) =>
-        FieldDeclaration(
-                VariableDeclaration(WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(method.CallbackDelegate.Syntax))
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("_callbacks"))
-                                .WithInitializer(
-                                    EqualsValueClause(
-                                        ObjectCreationExpression(WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(method.CallbackDelegate.Syntax))
-                                            .WithArgumentList(ArgumentList()))))))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
+private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMetadata method)
+{
+    var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(method.CallbackDelegate.Syntax);
+
+    return SinglePrivateReadonlyVariableField(
+        queueType,
+        "_callbacks",
+        queueType.New(ArgumentList()));
+}
 
     private static PropertyDeclarationSyntax IsEmptyProperty(bool supportsBaseImplementation)
     {
