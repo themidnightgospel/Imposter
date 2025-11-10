@@ -9,33 +9,85 @@ namespace Imposter.Tests.Features.ClassImposter
     public class ProtectedOverrideableMembersClassImposterTests
     {
         [Fact]
-        public void GivenProtectedOverrideableMembers_WhenConfigured_ThenOverridesRemainAccessible()
+        public void GivenProtectedMethodOverride_WhenInvokedThroughPublicWrapper_ThenConfiguredResultIsReturned()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
             imposter.ProtectedVirtualMethod(Arg<int>.Is(5)).Returns(42);
+            imposter.InvokeProtectedMethod(Arg<int>.Any()).UseBaseImplementation();
 
-            imposter.ProtectedVirtualProperty.Getter().Returns("overridden");
-            var propertySetter = imposter.ProtectedVirtualProperty.Setter(Arg<string>.Any());
-
-            imposter[Arg<int>.Any()].Getter().Returns(index => index * 10);
-            var indexerSetter = imposter[Arg<int>.Is(7)].Setter();
-
-            var eventRaised = false;
             var instance = imposter.Instance();
-            instance.SubscribeToProtectedEvent((sender, args) => eventRaised = true);
 
             instance.InvokeProtectedMethod(5).ShouldBe(42);
+        }
+
+        [Fact]
+        public void GivenProtectedPropertyGetterOverride_WhenReadThroughPublicAccessor_ThenConfiguredValueIsReturned()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+
+            imposter.ProtectedVirtualProperty.Getter().Returns("overridden");
+            imposter.ReadProtectedProperty().UseBaseImplementation();
+
+            var instance = imposter.Instance();
+
             instance.ReadProtectedProperty().ShouldBe("overridden");
+        }
+
+        [Fact]
+        public void GivenProtectedPropertySetter_WhenWrittenThroughPublicAccessor_ThenSetterInvocationIsTracked()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+
+            var propertySetter = imposter.ProtectedVirtualProperty.Setter(Arg<string>.Any());
+            imposter.WriteProtectedProperty(Arg<string>.Any()).UseBaseImplementation();
+
+            var instance = imposter.Instance();
             instance.WriteProtectedProperty("changed");
 
+            Should.NotThrow(() => propertySetter.Called(Count.Exactly(1)));
+        }
+
+        [Fact]
+        public void GivenProtectedIndexerGetterOverride_WhenReadThroughPublicAccessor_ThenConfiguredValueIsReturned()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+
+            imposter[Arg<int>.Any()].Getter().Returns(index => index * 10);
+            imposter.ReadProtectedValue(Arg<int>.Any()).UseBaseImplementation();
+
+            var instance = imposter.Instance();
+
             instance.ReadProtectedValue(3).ShouldBe(30);
+        }
+
+        [Fact]
+        public void GivenProtectedIndexerSetter_WhenWrittenThroughPublicAccessor_ThenSetterInvocationIsTracked()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+
+            var indexerSetter = imposter[Arg<int>.Is(7)].Setter();
+            imposter.WriteProtectedValue(Arg<int>.Any(), Arg<int>.Any()).UseBaseImplementation();
+
+            var instance = imposter.Instance();
             instance.WriteProtectedValue(7, 123);
 
-            Should.NotThrow(() => propertySetter.Called(Count.Exactly(1)));
             Should.NotThrow(() => indexerSetter.Called(Count.Exactly(1)));
+        }
+
+        [Fact]
+        public void GivenProtectedEvent_WhenRaised_ThenSubscribersAreInvoked()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+
+            var instance = imposter.Instance();
+
+            var eventRaised = false;
+            imposter.SubscribeToProtectedEvent(Arg<EventHandler>.Any()).UseBaseImplementation();
+            instance.SubscribeToProtectedEvent((sender, args) => eventRaised = true);
 
             imposter.ProtectedVirtualEvent.Raise(instance, EventArgs.Empty);
+
             eventRaised.ShouldBeTrue();
         }
 
@@ -64,6 +116,8 @@ namespace Imposter.Tests.Features.ClassImposter
 
             imposter.ReadProtectedProperty().UseBaseImplementation();
             imposter.WriteProtectedProperty(Arg<string>.Any()).UseBaseImplementation();
+            // TODO
+            // imposter.ProtectedVirtualProperty.Getter().UseBaseImplementation();
 
             var instance = imposter.Instance();
 
