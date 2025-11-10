@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -35,14 +36,15 @@ internal static partial class EventImposterBuilder
             .AddMember(BuildEnumerateHandlersMethod(@event))
             .AddMember(BuildCountMatchesMethod(@event.Builder.Methods))
             .AddMember(BuildEnsureCountMatchesMethod(@event.Builder.Methods))
+            .AddMember(BuildUseBaseImplementationMethod(@event))
             .Build();
 
     private static MemberDeclarationSyntax[] BuildFields(in ImposterEventMetadata @event)
     {
         var fields = @event.Builder.Fields;
 
-        return
-        [
+        var members = new List<MemberDeclarationSyntax>
+        {
             SinglePrivateReadonlyVariableField(fields.HandlerOrder, fields.HandlerOrder.Type.New()),
             SinglePrivateReadonlyVariableField(fields.HandlerCounts, fields.HandlerCounts.Type.New()),
             SinglePrivateReadonlyVariableField(fields.Callbacks, fields.Callbacks.Type.New()),
@@ -52,7 +54,23 @@ internal static partial class EventImposterBuilder
             SinglePrivateReadonlyVariableField(fields.SubscribeInterceptors, fields.SubscribeInterceptors.Type.New()),
             SinglePrivateReadonlyVariableField(fields.UnsubscribeInterceptors, fields.UnsubscribeInterceptors.Type.New()),
             SinglePrivateReadonlyVariableField(fields.HandlerInvocations, fields.HandlerInvocations.Type.New())
-        ];
+        };
+
+        if (@event.Core.SupportsBaseImplementation)
+        {
+            members.Add(SingleVariableField(
+                PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                "_useBaseImplementation",
+                SyntaxKind.PrivateKeyword));
+
+            members.Add(SingleVariableField(
+                PredefinedType(Token(SyntaxKind.StringKeyword)),
+                "_eventDisplayName",
+                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(@event.Core.DisplayName))));
+        }
+
+        return members.ToArray();
     }
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterEventMetadata @event) =>
@@ -75,4 +93,22 @@ internal static partial class EventImposterBuilder
 
     private static IdentifierNameSyntax FieldIdentifier(in FieldMetadata field) =>
         IdentifierName(field.Name);
+
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(in ImposterEventMetadata @event)
+    {
+        if (@event.BuilderInterface.UseBaseImplementationMethod is not { } methodMetadata)
+        {
+            return null;
+        }
+
+        return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax))
+            .WithBody(
+                Block(
+                    IdentifierName("_useBaseImplementation")
+                        .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                        .ToStatementSyntax(),
+                    ReturnStatement(ThisExpression())))
+            .Build();
+    }
 }

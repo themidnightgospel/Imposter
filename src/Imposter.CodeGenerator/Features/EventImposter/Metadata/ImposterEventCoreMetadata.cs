@@ -24,6 +24,8 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly ITypeSymbol? DelegateReturnTypeSymbol;
 
+    internal readonly bool SupportsBaseImplementation;
+
     internal ImposterEventCoreMetadata(IEventSymbol eventSymbol, string uniqueName)
     {
         UniqueName = uniqueName;
@@ -49,5 +51,10 @@ internal readonly ref struct ImposterEventCoreMetadata
             DelegateReturnTypeSymbol.IsWellKnownType(
                 WellKnownTypes.System.Threading.Tasks.ValueTask,
                 WellKnownAssemblyNames.SystemAssemblies);
+
+        var containingTypeIsClass = eventSymbol.ContainingType?.TypeKind == TypeKind.Class;
+        var addSupportsBaseImplementation = containingTypeIsClass && eventSymbol.AddMethod is { IsAbstract: false };
+        var removeSupportsBaseImplementation = containingTypeIsClass && eventSymbol.RemoveMethod is { IsAbstract: false };
+        SupportsBaseImplementation = addSupportsBaseImplementation && removeSupportsBaseImplementation;
     }
 }

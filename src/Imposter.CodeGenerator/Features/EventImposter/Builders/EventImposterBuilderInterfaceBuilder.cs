@@ -23,6 +23,7 @@ internal static class EventImposterBuilderInterfaceBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
+            .AddMember(BuildUseBaseImplementationInterfaceMethod(@event))
             .Build();
 
     private static InterfaceDeclarationSyntax BuildSetupInterface(in ImposterEventMetadata @event) =>
@@ -94,6 +95,18 @@ internal static class EventImposterBuilderInterfaceBuilder
             .AddParameter(CountParameter())
             .WithSemicolon()
             .Build();
+
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationInterfaceMethod(in ImposterEventMetadata @event)
+    {
+        if (@event.BuilderInterface.UseBaseImplementationMethod is not { } methodMetadata)
+        {
+            return null;
+        }
+
+        return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
+            .WithSemicolon()
+            .Build();
+    }
 
     private static IEnumerable<ParameterSyntax> ParameterCriteria(in ImposterEventMetadata @event) =>
         @event.Core.Parameters.Select(parameter =>

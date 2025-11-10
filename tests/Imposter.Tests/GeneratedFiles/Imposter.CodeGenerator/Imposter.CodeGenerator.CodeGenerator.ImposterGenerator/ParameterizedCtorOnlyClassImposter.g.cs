@@ -798,6 +798,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISomethingHappenedEventImposterBuilder : ISomethingHappenedEventImposterSetupBuilder, ISomethingHappenedEventImposterVerificationBuilder
         {
+            ISomethingHappenedEventImposterBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -830,11 +831,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.EventHandler>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
+            private bool _useBaseImplementation;
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.SomethingHappened";
             internal SomethingHappenedEventImposterBuilder()
             {
             }
 
-            internal void Subscribe(global::System.EventHandler handler)
+            internal void Subscribe(global::System.EventHandler handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerOrder.Enqueue(handler);
@@ -844,9 +847,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     interceptor(handler);
                 }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
+                }
             }
 
-            internal void Unsubscribe(global::System.EventHandler handler)
+            internal void Unsubscribe(global::System.EventHandler handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
@@ -862,6 +875,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
+                }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
                 }
             }
 
@@ -981,6 +1004,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
+            }
+
+            ISomethingHappenedEventImposterBuilder ISomethingHappenedEventImposterBuilder.UseBaseImplementation()
+            {
+                _useBaseImplementation = true;
+                return this;
             }
         }
 
@@ -1626,13 +1655,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 add
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._SomethingHappened.Subscribe(value);
+                    _imposter._SomethingHappened.Subscribe(value, () =>
+                    {
+                        base.SomethingHappened += value;
+                    });
                 }
 
                 remove
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._SomethingHappened.Unsubscribe(value);
+                    _imposter._SomethingHappened.Unsubscribe(value, () =>
+                    {
+                        base.SomethingHappened -= value;
+                    });
                 }
             }
 

@@ -27,6 +27,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ICustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
         {
+            ICustomAsyncEventEventImposterBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -59,11 +60,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)>();
+            private bool _useBaseImplementation;
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
             internal CustomAsyncEventEventImposterBuilder()
             {
             }
 
-            internal void Subscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler)
+            internal void Subscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerOrder.Enqueue(handler);
@@ -73,9 +76,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     interceptor(handler);
                 }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
+                }
             }
 
-            internal void Unsubscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler)
+            internal void Unsubscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
@@ -91,6 +104,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
+                }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
                 }
             }
 
@@ -225,6 +248,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
+
+            ICustomAsyncEventEventImposterBuilder ICustomAsyncEventEventImposterBuilder.UseBaseImplementation()
+            {
+                _useBaseImplementation = true;
+                return this;
+            }
         }
 
         public ITaskBasedEventEventImposterBuilder TaskBasedEvent => _TaskBasedEvent;
@@ -233,6 +262,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ITaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
         {
+            ITaskBasedEventEventImposterBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -265,11 +295,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)>();
+            private bool _useBaseImplementation;
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.TaskBasedEvent";
             internal TaskBasedEventEventImposterBuilder()
             {
             }
 
-            internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
+            internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerOrder.Enqueue(handler);
@@ -279,9 +311,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     interceptor(handler);
                 }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
+                }
             }
 
-            internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
+            internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
@@ -297,6 +339,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
+                }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
                 }
             }
 
@@ -431,6 +483,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
+
+            ITaskBasedEventEventImposterBuilder ITaskBasedEventEventImposterBuilder.UseBaseImplementation()
+            {
+                _useBaseImplementation = true;
+                return this;
+            }
         }
 
         public IValueTaskBasedEventEventImposterBuilder ValueTaskBasedEvent => _ValueTaskBasedEvent;
@@ -439,6 +497,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
         {
+            IValueTaskBasedEventEventImposterBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -471,11 +530,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)>();
+            private bool _useBaseImplementation;
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
             internal ValueTaskBasedEventEventImposterBuilder()
             {
             }
 
-            internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
+            internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerOrder.Enqueue(handler);
@@ -485,9 +546,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     interceptor(handler);
                 }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
+                }
             }
 
-            internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
+            internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, System.Action baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
@@ -503,6 +574,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 foreach (var interceptor in _unsubscribeInterceptors)
                 {
                     interceptor(handler);
+                }
+
+                if (_useBaseImplementation)
+                {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                    }
+                    else
+                        throw new global::Imposter.Abstractions.MissingImposterException(_eventDisplayName + " (event)");
                 }
             }
 
@@ -637,6 +718,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
                 }
             }
+
+            IValueTaskBasedEventEventImposterBuilder IValueTaskBasedEventEventImposterBuilder.UseBaseImplementation()
+            {
+                _useBaseImplementation = true;
+                return this;
+            }
         }
 
         public ClassWithAsyncEventsImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
@@ -667,13 +754,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 add
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._CustomAsyncEvent.Subscribe(value);
+                    _imposter._CustomAsyncEvent.Subscribe(value, () =>
+                    {
+                        base.CustomAsyncEvent += value;
+                    });
                 }
 
                 remove
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._CustomAsyncEvent.Unsubscribe(value);
+                    _imposter._CustomAsyncEvent.Unsubscribe(value, () =>
+                    {
+                        base.CustomAsyncEvent -= value;
+                    });
                 }
             }
 
@@ -682,13 +775,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 add
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._TaskBasedEvent.Subscribe(value);
+                    _imposter._TaskBasedEvent.Subscribe(value, () =>
+                    {
+                        base.TaskBasedEvent += value;
+                    });
                 }
 
                 remove
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._TaskBasedEvent.Unsubscribe(value);
+                    _imposter._TaskBasedEvent.Unsubscribe(value, () =>
+                    {
+                        base.TaskBasedEvent -= value;
+                    });
                 }
             }
 
@@ -697,13 +796,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 add
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._ValueTaskBasedEvent.Subscribe(value);
+                    _imposter._ValueTaskBasedEvent.Subscribe(value, () =>
+                    {
+                        base.ValueTaskBasedEvent += value;
+                    });
                 }
 
                 remove
                 {
                     ArgumentNullException.ThrowIfNull(value);
-                    _imposter._ValueTaskBasedEvent.Unsubscribe(value);
+                    _imposter._ValueTaskBasedEvent.Unsubscribe(value, () =>
+                    {
+                        base.ValueTaskBasedEvent -= value;
+                    });
                 }
             }
         }
