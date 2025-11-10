@@ -74,17 +74,19 @@ internal static class IndexerArgumentsBuilder
             comparison = BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, equalsExpression);
         }
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)), Identifier("Equals"))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(otherParameter)
-            .WithBody(Block(ReturnStatement(comparison)));
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Equals")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddParameter(otherParameter)
+            .WithBody(Block(ReturnStatement(comparison)))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildObjectEqualsMethod(in ImposterIndexerMetadata indexer)
     {
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)), Identifier("Equals"))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.OverrideKeyword))
-            .AddParameterListParameters(Parameter(Identifier("obj")).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Equals")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.OverrideKeyword))
+            .AddParameter(Parameter(Identifier("obj")).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
             .WithBody(Block(
                 ReturnStatement(
                     BinaryExpression(
@@ -96,7 +98,8 @@ internal static class IndexerArgumentsBuilder
                         InvocationExpression(
                             IdentifierName("Equals"),
                             ArgumentList(SingletonSeparatedList(Argument(IdentifierName("other")))))
-                    ))));
+                    ))))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildGetHashCodeMethod(in ImposterIndexerMetadata indexer)
@@ -125,8 +128,10 @@ internal static class IndexerArgumentsBuilder
 
         statements.Add(ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call()));
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)), Identifier("GetHashCode"))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.OverrideKeyword))
-            .WithBody(Block(statements));
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), "GetHashCode")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.OverrideKeyword))
+            .WithBody(Block(statements))
+            .Build();
     }
 }

@@ -55,16 +55,11 @@ internal static class DefaultIndexerBehaviourBuilder
             )
         );
 
-        return PropertyDeclaration(WellKnownTypes.Bool, Identifier(indexer.DefaultIndexerBehaviour.IsOnPropertyName))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .WithAccessorList(
-                AccessorList(
-                    List<AccessorDeclarationSyntax>([
-                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithBody(getBody),
-                        AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(setBody)
-                    ])
-                )
-            );
+        return new PropertyDeclarationBuilder(WellKnownTypes.Bool, indexer.DefaultIndexerBehaviour.IsOnPropertyName)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithGetterBody(getBody)
+            .WithSetterBody(setBody)
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildGetMethod(in ImposterIndexerMetadata indexer)
@@ -72,9 +67,9 @@ internal static class DefaultIndexerBehaviourBuilder
         var argumentsParam = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
         var valueIdentifier = IdentifierName("value");
 
-        return MethodDeclaration(indexer.Core.TypeSyntax, Identifier("Get"))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(argumentsParam)
+        return new MethodDeclarationBuilder(indexer.Core.TypeSyntax, "Get")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(argumentsParam)
             .WithBody(Block(
                 LocalDeclarationStatement(
                     VariableDeclaration(indexer.Core.TypeSyntax)
@@ -92,16 +87,16 @@ internal static class DefaultIndexerBehaviourBuilder
                                     Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
                             ])),
                     ReturnStatement(valueIdentifier)),
-                ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))));
+                ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildSetMethod(in ImposterIndexerMetadata indexer)
     {
-        return MethodDeclaration(WellKnownTypes.Void, Identifier("Set"))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(
-                Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax),
-                Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax))
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax))
+            .AddParameter(Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax))
             .WithBody(Block(
                 ExpressionStatement(
                     AssignmentExpression(
@@ -110,7 +105,8 @@ internal static class DefaultIndexerBehaviourBuilder
                             .WithArgumentList(
                                 BracketedArgumentList(
                                     SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
-                        IdentifierName("value")))));
+                        IdentifierName("value")))))
+            .Build();
     }
 }
 

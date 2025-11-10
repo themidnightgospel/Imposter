@@ -32,15 +32,15 @@ internal static class ImposterExtensionsBuilder
 #else
             ExtensionDeclaration()
 #endif
-            .WithKeyword(Token(SyntaxKind.ExtensionKeyword))
-            .WithParameterList(
-                ParameterList(
-                    SingletonSeparatedList(
-                        Parameter(Identifier(ExtensionParameterName))
-                            .WithType(targetType))))
-            .WithMembers(List(methods.Cast<MemberDeclarationSyntax>()))
-            .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
-            .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
+                .WithKeyword(Token(SyntaxKind.ExtensionKeyword))
+                .WithParameterList(
+                    ParameterList(
+                        SingletonSeparatedList(
+                            Parameter(Identifier(ExtensionParameterName))
+                                .WithType(targetType))))
+                .WithMembers(List(methods.Cast<MemberDeclarationSyntax>()))
+                .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
+                .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
 
         return new ClassDeclarationBuilder(extensionClassName)
             .AddPublicModifier()
@@ -84,10 +84,7 @@ internal static class ImposterExtensionsBuilder
         => new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    ObjectCreationExpression(imposterType)
-                        .WithArgumentList(ArgumentList())))
+            .WithExpressionBody(ArrowExpressionClause(imposterType.New()))
             .WithSemicolon()
             .Build();
 
@@ -113,8 +110,8 @@ internal static class ImposterExtensionsBuilder
             .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(parameters))
             .WithExpressionBody(
                 ArrowExpressionClause(
-                    ObjectCreationExpression(imposterType)
-                        .WithArgumentList(SyntaxFactoryHelper.ArgumentListSyntax(arguments))))
+                    imposterType.New(SyntaxFactoryHelper.ArgumentListSyntax(arguments)))
+            )
             .WithSemicolon()
             .Build();
     }

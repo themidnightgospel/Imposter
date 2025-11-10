@@ -23,7 +23,6 @@ namespace Imposter.Tests.Features.MethodImposter
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        internal global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> Instance() => _imposterInstance;
         global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>.Instance()
         {
             return _imposterInstance;
@@ -62,6 +61,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IGenericMethodMethodInvocationHistory
         {
             bool Matches(GenericMethodArgumentsCriteria criteria);

@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -20,16 +21,15 @@ internal static partial class MethodImposterCollectionBuilder
             "_invocationBehavior",
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 
-        return ClassDeclaration(method.MethodImposter.Collection.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddMembers(historyCollectionField)
-            .AddMembers(invocationBehaviorField)
-            .AddMembers(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField, invocationBehaviorField]))
-            .AddMembers(
-                BuildImpostersField(method),
-                BuildAddNewMethod(method),
-                BuildGetImposterWithMatchingSetup(method)
-            );
+        return new ClassDeclarationBuilder(method.MethodImposter.Collection.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddMember(historyCollectionField)
+            .AddMember(invocationBehaviorField)
+            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField, invocationBehaviorField]))
+            .AddMember(BuildImpostersField(method))
+            .AddMember(BuildAddNewMethod(method))
+            .AddMember(BuildGetImposterWithMatchingSetup(method))
+            .Build();
     }
 
     private static FieldDeclarationSyntax BuildInvocationHistoryCollectionField(in ImposterTargetMethodMetadata method) =>

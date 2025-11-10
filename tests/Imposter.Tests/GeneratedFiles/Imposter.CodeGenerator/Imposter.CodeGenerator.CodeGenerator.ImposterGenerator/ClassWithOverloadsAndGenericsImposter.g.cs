@@ -44,7 +44,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics Instance() => _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>.Instance()
         {
             return _imposterInstance;
@@ -93,6 +92,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IEchoMethodInvocationHistory
         {
             bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria);
@@ -132,6 +132,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class EchoMethodImposterCollection
         {
             private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
@@ -314,6 +315,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IEchoMethodInvocationImposterGroupContinuation<T> UseBaseImplementation();
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal interface IEchoMethodImposter
         {
             IEchoMethodImposter<TTarget>? As<TTarget>();
@@ -360,6 +362,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return null;
             }
 
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
             private class Adapter<TTarget> : IEchoMethodImposter<TTarget>
             {
                 private readonly EchoMethodImposter<T> _target;
@@ -548,6 +551,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IFormatMethodInvocationHistory
         {
             bool Matches(FormatArgumentsCriteria criteria);
@@ -935,6 +939,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IFormat_1MethodInvocationHistory
         {
             bool Matches(Format_1ArgumentsCriteria criteria);
@@ -1332,6 +1337,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISelectFirstMethodInvocationHistory
         {
             bool Matches<TFirstTarget, TSecondTarget>(SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> criteria);
@@ -1371,6 +1377,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class SelectFirstMethodImposterCollection
         {
             private readonly SelectFirstMethodInvocationHistoryCollection _selectFirstMethodInvocationHistoryCollection;
@@ -1553,6 +1560,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> UseBaseImplementation();
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal interface ISelectFirstMethodImposter
         {
             ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>? As<TFirstTarget, TSecondTarget>();
@@ -1599,6 +1607,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return null;
             }
 
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
             private class Adapter<TFirstTarget, TSecondTarget> : ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>
             {
                 private readonly SelectFirstMethodImposter<TFirst, TSecond> _target;

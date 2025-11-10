@@ -70,9 +70,10 @@ internal static partial class InvocationSetupBuilder
                     .ToStatementSyntax());
         }
 
-        return ConstructorDeclaration(Identifier(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName))
-            .AddModifiers(Token(SyntaxKind.StaticKeyword))
-            .WithBody(body.Build());
+        return new ConstructorBuilder(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
+            .WithModifiers(TokenList(Token(SyntaxKind.StaticKeyword)))
+            .WithBody(body.Build())
+            .Build();
     }
 
     private static FieldDeclarationSyntax ResultGeneratorField(in ImposterTargetMethodMetadata method) =>
@@ -124,8 +125,10 @@ internal static partial class InvocationSetupBuilder
                 condition);
         }
 
-        return PropertyDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)), Identifier("IsEmpty"))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+        return new PropertyDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "IsEmpty")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .Build()
+            .WithAccessorList(null)
             .WithExpressionBody(ArrowExpressionClause(condition))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
@@ -228,10 +231,11 @@ internal static partial class InvocationSetupBuilder
             body = defaultBlock;
         }
 
-        return MethodDeclaration(method.ReturnTypeSyntax, "Invoke")
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+        return new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
-            .WithBody(body);
+            .WithBody(body)
+            .Build();
     }
     
     private static ParameterListSyntax BuildInvocationParameterList(in ImposterTargetMethodMetadata method)
@@ -257,15 +261,16 @@ internal static partial class InvocationSetupBuilder
     }
 
     private static MethodDeclarationSyntax CallbackMethod(in ImposterTargetMethodMetadata method) =>
-        MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.CallbackMethod.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(Parameter(Identifier(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)).WithType(method.CallbackDelegate.Syntax))
+        new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.CallbackMethod.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(Parameter(Identifier(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)).WithType(method.CallbackDelegate.Syntax))
             .WithBody(
                 Block(
                     IdentifierName("_callbacks")
                         .Dot(IdentifierName("Enqueue"))
                         .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)))
-                        .ToStatementSyntax()));
+                        .ToStatementSyntax()))
+            .Build();
 
     private static MethodDeclarationSyntax ReturnsDelegateMethod(in ImposterTargetMethodMetadata method)
     {
@@ -281,10 +286,11 @@ internal static partial class InvocationSetupBuilder
                 .Assign(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name))
                 .ToStatementSyntax());
 
-        return MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(Parameter(Identifier(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name)).WithType(method.Delegate.Syntax))
-            .WithBody(blockBuilder.Build());
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(Parameter(Identifier(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name)).WithType(method.Delegate.Syntax))
+            .WithBody(blockBuilder.Build())
+            .Build();
     }
 
     private static MethodDeclarationSyntax ReturnsValueMethod(in ImposterTargetMethodMetadata method)
@@ -310,10 +316,11 @@ internal static partial class InvocationSetupBuilder
                 .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
                 .ToStatementSyntax());
 
-        return MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(Parameter(Identifier(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name)).WithType(method.ReturnTypeSyntax))
-            .WithBody(blockBuilder.Build());
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(Parameter(Identifier(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name)).WithType(method.ReturnTypeSyntax))
+            .WithBody(blockBuilder.Build())
+            .Build();
     }
 
     private static MethodDeclarationSyntax ThrowsMethod(in ImposterTargetMethodMetadata method)
@@ -338,15 +345,16 @@ internal static partial class InvocationSetupBuilder
                                     .Call(ArgumentListSyntax(method.Symbol.Parameters))))))
                 .ToStatementSyntax());
 
-        return MethodDeclaration(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(Parameter(Identifier(throwsParameter.Name)).WithType(throwsParameter.Type))
-            .WithBody(blockBuilder.Build());
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(Parameter(Identifier(throwsParameter.Name)).WithType(throwsParameter.Type))
+            .WithBody(blockBuilder.Build())
+            .Build();
     }
 
     private static MethodDeclarationSyntax UseBaseImplementationMethod() =>
-        MethodDeclaration(WellKnownTypes.Void, "UseBaseImplementation")
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
                     AssignmentExpression(
@@ -358,7 +366,8 @@ internal static partial class InvocationSetupBuilder
                             SyntaxKind.SimpleAssignmentExpression,
                             IdentifierName("_resultGenerator"),
                             LiteralExpression(SyntaxKind.NullLiteralExpression))
-                        .ToStatementSyntax()));
+                        .ToStatementSyntax()))
+            .Build();
 
     private static MethodDeclarationSyntax ReturnsAsyncMethod(in ImposterTargetMethodMetadata method)
     {
@@ -386,11 +395,12 @@ internal static partial class InvocationSetupBuilder
                 .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
                 .ToStatementSyntax());
 
-        return MethodDeclaration(WellKnownTypes.Void, returnsAsync.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, returnsAsync.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(
                 Parameter(Identifier(returnsAsync.ValueParameter.Name)).WithType(returnsAsync.ValueParameter.Type))
-            .WithBody(blockBuilder.Build());
+            .WithBody(blockBuilder.Build())
+            .Build();
     }
 
     private static MethodDeclarationSyntax ThrowsAsyncMethod(in ImposterTargetMethodMetadata method)
@@ -416,11 +426,12 @@ internal static partial class InvocationSetupBuilder
                                     IdentifierName(throwsAsync.ExceptionParameter.Name))))))
                 .ToStatementSyntax());
 
-        return MethodDeclaration(WellKnownTypes.Void, throwsAsync.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameterListParameters(
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, throwsAsync.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(
                 Parameter(Identifier(throwsAsync.ExceptionParameter.Name)).WithType(throwsAsync.ExceptionParameter.Type))
-            .WithBody(blockBuilder.Build());
+            .WithBody(blockBuilder.Build())
+            .Build();
     }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement() =>

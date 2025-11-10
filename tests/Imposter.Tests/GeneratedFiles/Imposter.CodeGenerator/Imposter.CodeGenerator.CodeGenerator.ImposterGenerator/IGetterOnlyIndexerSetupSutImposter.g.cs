@@ -16,7 +16,6 @@ namespace Imposter.Tests.Features.IndexerImposter
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut Instance() => _imposterInstance;
         global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut>.Instance()
         {
             return _imposterInstance;

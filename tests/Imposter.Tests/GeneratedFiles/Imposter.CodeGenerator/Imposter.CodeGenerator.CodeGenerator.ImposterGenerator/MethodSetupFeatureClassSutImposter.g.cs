@@ -58,7 +58,6 @@ namespace Imposter.Tests.Features.MethodImposter
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut Instance() => _imposterInstance;
         global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>.Instance()
         {
             return _imposterInstance;
@@ -101,6 +100,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IBuildLabelAsyncMethodInvocationHistory
         {
             bool Matches(BuildLabelAsyncArgumentsCriteria criteria);
@@ -516,6 +516,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IIntSingleParamMethodInvocationHistory
         {
             bool Matches(IntSingleParamArgumentsCriteria criteria);
@@ -905,6 +906,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IRefOutWithParamsMethodInvocationHistory
         {
             bool Matches(RefOutWithParamsArgumentsCriteria criteria);
@@ -1304,6 +1306,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISumAsyncMethodInvocationHistory
         {
             bool Matches(SumAsyncArgumentsCriteria criteria);
@@ -1719,6 +1722,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IThrowingCalculationMethodInvocationHistory
         {
             bool Matches(ThrowingCalculationArgumentsCriteria criteria);
@@ -2102,6 +2106,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IVoidWithSideEffectMethodInvocationHistory
         {
             bool Matches(VoidWithSideEffectArgumentsCriteria criteria);

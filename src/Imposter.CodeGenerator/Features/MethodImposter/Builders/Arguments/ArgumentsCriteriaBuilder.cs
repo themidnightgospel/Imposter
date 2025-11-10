@@ -21,7 +21,7 @@ public static class ArgumentsCriteriaBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Symbol.Parameters.Select(SyntaxFactoryHelper.ParameterAsArgProperty))
             .AddMember(
-                ConstructorDeclaration(method.ArgumentsCriteria.Name)
+                new ConstructorBuilder(method.ArgumentsCriteria.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .WithParameterList(
                         ParameterList(
@@ -39,6 +39,7 @@ public static class ArgumentsCriteriaBuilder
                             )
                         )
                     )
+                    .Build()
             )
             .AddMember(MatchesMethod(method));
 
@@ -109,57 +110,55 @@ public static class ArgumentsCriteriaBuilder
                 );
             });
 
-        return MethodDeclaration(returnType, "As")
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithTypeParameterList(TypeParameterList(SeparatedList(asMethodTypeParams)))
+        return new MethodDeclarationBuilder(returnType, "As")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(Block(
                 ReturnStatement(
                     returnType.New(ArgumentList(SeparatedList(constructorArgs)))
                 )
-            ));
+            ))
+            .Build();
     }
 
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        return MethodDeclaration(
-                    PredefinedType(Token(SyntaxKind.BoolKeyword)),
-                    Identifier("Matches")
-                )
-                .WithModifiers(
-                    TokenList(Token(SyntaxKind.PublicKeyword))
-                )
-                .WithParameterList(
-                    ParameterList(
-                        SingletonSeparatedList(
-                            Parameter(Identifier("arguments"))
-                                .WithType(method.Arguments.Syntax)
-                        )
+        return new MethodDeclarationBuilder(
+                PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                "Matches")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithParameterList(
+                ParameterList(
+                    SingletonSeparatedList(
+                        Parameter(Identifier("arguments"))
+                            .WithType(method.Arguments.Syntax)
                     )
                 )
-                .WithBody(
-                    Block(
-                        ReturnStatement(
-                            method.Parameters.InputParameters.Count switch
-                            {
-                                0 => LiteralExpression(SyntaxKind.TrueLiteralExpression),
-                                1 => InvokeMatches(method.Parameters.InputParameters[0]),
-                                _ => method
-                                    .Parameters
-                                    .InputParameters
-                                    .Skip(1)
-                                    .Select(InvokeMatches)
-                                    .Aggregate(
-                                        (ExpressionSyntax)InvokeMatches(method.Parameters.InputParameters[0]),
-                                        (left, right) => BinaryExpression(
-                                            SyntaxKind.LogicalAndExpression,
-                                            left,
-                                            right
-                                        ))
-                            }
-                        )
+            )
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        method.Parameters.InputParameters.Count switch
+                        {
+                            0 => LiteralExpression(SyntaxKind.TrueLiteralExpression),
+                            1 => InvokeMatches(method.Parameters.InputParameters[0]),
+                            _ => method
+                                .Parameters
+                                .InputParameters
+                                .Skip(1)
+                                .Select(InvokeMatches)
+                                .Aggregate(
+                                    (ExpressionSyntax)InvokeMatches(method.Parameters.InputParameters[0]),
+                                    (left, right) => BinaryExpression(
+                                        SyntaxKind.LogicalAndExpression,
+                                        left,
+                                        right
+                                    ))
+                        }
                     )
                 )
-            ;
+            )
+            .Build();
 
         InvocationExpressionSyntax InvokeMatches(IParameterSymbol p) =>
             IdentifierName(p.Name)

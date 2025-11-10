@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -44,8 +45,8 @@ internal static partial class InvocationSetupBuilder
     {
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
 
-        return MethodDeclaration(invocationImposterType, Identifier("AddInvocationImposter"))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+        return new MethodDeclarationBuilder(invocationImposterType, "AddInvocationImposter")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
                     LocalDeclarationStatement(
@@ -71,15 +72,16 @@ internal static partial class InvocationSetupBuilder
                     ),
                     ReturnStatement(IdentifierName("invocationImposter"))
                 )
-            );
+            )
+            .Build();
     }
 
     internal static MethodDeclarationSyntax GetInvocationImposterMethod(in ImposterTargetMethodMetadata method)
     {
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
 
-        return MethodDeclaration(NullableType(invocationImposterType), Identifier("GetInvocationImposter"))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+        return new MethodDeclarationBuilder(NullableType(invocationImposterType), "GetInvocationImposter")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
                     LocalDeclarationStatement(
@@ -120,6 +122,7 @@ internal static partial class InvocationSetupBuilder
                     ),
                     ReturnStatement(IdentifierName("_lastestInvocationImposter"))
                 )
-            );
+            )
+            .Build();
     }
 }

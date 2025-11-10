@@ -238,10 +238,13 @@ internal static class IndexerImposterBuilder
             .AddMember(BuildFindMatchingSetupMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
             .AddMember(BuildGetterCalledMethod(indexer))
-            .AddMember(PropertyDeclaration(PredefinedType(Token(SyntaxKind.StringKeyword)), Identifier("PropertyDisplayName"))
-                .AddModifiers(Token(SyntaxKind.InternalKeyword))
-                .WithExpressionBody(ArrowExpressionClause(IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name)))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
+            .AddMember(
+                new PropertyDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "PropertyDisplayName")
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .Build()
+                    .WithAccessorList(null)
+                    .WithExpressionBody(ArrowExpressionClause(IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name)))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
             .AddMember(BuildMarkReturnConfiguredMethod(indexer))
             .AddMember(BuildEnsureGetterConfiguredMethod(indexer))
             .AddMember(BuildGetterBuilder(indexer))
@@ -287,8 +290,10 @@ internal static class IndexerImposterBuilder
     private static PropertyDeclarationSyntax BuildGetterBuilderInvocationProperty(in ImposterIndexerMetadata indexer)
     {
         var builderMetadata = indexer.GetterImplementation.Builder;
-        return PropertyDeclaration(indexer.GetterImplementation.Invocation.TypeSyntax, Identifier(builderMetadata.InvocationImposterPropertyName))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+        return new PropertyDeclarationBuilder(indexer.GetterImplementation.Invocation.TypeSyntax, builderMetadata.InvocationImposterPropertyName)
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .Build()
+            .WithAccessorList(null)
             .WithExpressionBody(
                 ArrowExpressionClause(
                     InvocationExpression(
@@ -481,24 +486,29 @@ internal static class IndexerImposterBuilder
             .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.LastReturnValueField.Type, invocationMetadata.LastReturnValueField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.InvocationCountField.Type, invocationMetadata.InvocationCountField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.PropertyDisplayNameField.Type, invocationMetadata.PropertyDisplayNameField.Name, SyntaxKind.PrivateKeyword))
-            .AddMember(PropertyDeclaration(indexer.ArgumentsCriteria.TypeSyntax, Identifier(invocationMetadata.CriteriaField.Name))
-                .AddModifiers(Token(SyntaxKind.InternalKeyword))
-                .WithAccessorList(
-                    AccessorList(
-                        List([
-                            AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                            AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                                .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-                                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                        ]))))
-            .AddMember(PropertyDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)), Identifier("InvocationCount"))
-                .AddModifiers(Token(SyntaxKind.InternalKeyword))
-                .WithExpressionBody(
-                    ArrowExpressionClause(
-                        WellKnownTypes.System.Threading.Volatile
-                            .Dot(IdentifierName("Read"))
-                            .Call(Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(invocationMetadata.InvocationCountField.Name)))))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
+            .AddMember(
+                new PropertyDeclarationBuilder(indexer.ArgumentsCriteria.TypeSyntax, invocationMetadata.CriteriaField.Name)
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .Build()
+                    .WithAccessorList(
+                        AccessorList(
+                            List([
+                                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                                    .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                            ]))))
+            .AddMember(
+                new PropertyDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), "InvocationCount")
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .Build()
+                    .WithAccessorList(null)
+                    .WithExpressionBody(
+                        ArrowExpressionClause(
+                            WellKnownTypes.System.Threading.Volatile
+                                .Dot(IdentifierName("Read"))
+                                .Call(Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(invocationMetadata.InvocationCountField.Name)))))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
             .AddMember(BuildGetterInvocationConstructor(indexer))
             .AddMember(BuildGetterInvocationAddReturnValueMethod(indexer))
             .AddMember(BuildGetterInvocationAddCallbackMethod(indexer))

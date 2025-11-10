@@ -230,9 +230,10 @@ internal static partial class EventImposterBuilder
                         PredefinedType(Token(SyntaxKind.BoolKeyword))
                     ]))));
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)), Identifier(methods.CountMatchesName))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword))
-            .WithTypeParameterList(TypeParameterList(SingletonSeparatedList(TypeParameter("T"))))
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), methods.CountMatchesName)
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
+            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("T"))))
             .WithParameterList(
                 ParameterList(
                     SeparatedList([
@@ -260,12 +261,14 @@ internal static partial class EventImposterBuilder
                                         PostfixUnaryExpression(
                                             SyntaxKind.PostIncrementExpression,
                                             IdentifierName("count"))))))),
-                    ReturnStatement(IdentifierName("count"))));
+                    ReturnStatement(IdentifierName("count"))))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods) =>
-        MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier(methods.EnsureCountMatchesName))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword))
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), methods.EnsureCountMatchesName)
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithParameterList(
                 ParameterList(SeparatedList([
                     Parameter(Identifier("actual")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
@@ -287,7 +290,8 @@ internal static partial class EventImposterBuilder
                                         ArgumentList(SeparatedList([
                                             Argument(IdentifierName("expected")),
                                             Argument(IdentifierName("actual"))
-                                        ]))))))));
+                                        ]))))))))
+            .Build();
 
     private static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
         ParameterSyntax(@event.Builder.Methods.CountParameter);

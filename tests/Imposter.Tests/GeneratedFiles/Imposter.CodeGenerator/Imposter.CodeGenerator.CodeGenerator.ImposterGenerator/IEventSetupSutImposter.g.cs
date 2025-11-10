@@ -16,7 +16,6 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.EventImposter.IEventSetupSut Instance() => _imposterInstance;
         global::Imposter.Tests.Features.EventImposter.IEventSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>.Instance()
         {
             return _imposterInstance;

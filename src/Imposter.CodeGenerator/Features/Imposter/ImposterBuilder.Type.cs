@@ -220,7 +220,7 @@ internal readonly ref partial struct ImposterBuilder
         var imposterClassBuilder = imposterBuilder
             .AddMember(invocationBehaviorField)
             .AddMember(ImposterInstanceField(typeMetadata.ImposterTargetInstanceClassName, typeMetadata.ImposterInstanceFieldName))
-            .AddMembers(InstanceMethods(imposterGenerationContext, typeMetadata.ImposterInstanceFieldName))
+            .AddMember(InstanceMethod(imposterGenerationContext, typeMetadata.ImposterInstanceFieldName))
             .AddModifier(Token(SyntaxKind.PublicKeyword));
 
         var imposterInstanceBuilder = ImposterInstanceBuilder.Create(imposterGenerationContext, typeMetadata.ImposterTargetInstanceClassName);

@@ -18,24 +18,23 @@ internal static class MethodImposterAdapterBuilder
             return null;
         }
         
-        var adapterClass = ClassDeclaration("Adapter")
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-            .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterListSyntax(method.TargetGenericTypeArguments))
-            .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(
-                SimpleBaseType(
-                    GenericName(method.MethodImposter.Interface.Name)
-                        .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments)))
-                )
-            )))
-            .AddMembers(
+        var adapterBaseType = SimpleBaseType(
+            GenericName(method.MethodImposter.Interface.Name)
+                .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))));
+
+        var adapterClass = new ClassDeclarationBuilder("Adapter", SyntaxFactoryHelper.TypeParameterListSyntax(method.TargetGenericTypeArguments))
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddBaseType(adapterBaseType)
+            .AddMember(
                 FieldDeclaration(
                         VariableDeclaration(method.MethodImposter.Syntax)
                             .AddVariables(VariableDeclarator("_target"))
                     )
-                    .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-                ConstructorDeclaration("Adapter")
-                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
-                    .AddParameterListParameters(Parameter(Identifier("target")).WithType(method.MethodImposter.Syntax))
+                    .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)))
+            .AddMember(
+                new ConstructorBuilder("Adapter")
+                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                    .AddParameter(Parameter(Identifier("target")).WithType(method.MethodImposter.Syntax))
                     .WithBody(Block(
                         ExpressionStatement(
                             AssignmentExpression(
@@ -44,11 +43,12 @@ internal static class MethodImposterAdapterBuilder
                                 IdentifierName("target")
                             )
                         )
-                    )),
-                BuildAdapterInvokeMethod(method),
-                BuildAdapterHasMatchingSetupMethod(method),
-                BuildAdapterAsMethod(method)
-            );
+                    ))
+                    .Build())
+            .AddMember(BuildAdapterInvokeMethod(method))
+            .AddMember(BuildAdapterHasMatchingSetupMethod(method))
+            .AddMember(BuildAdapterAsMethod(method))
+            .Build();
 
         return adapterClass;
     }
@@ -143,13 +143,13 @@ internal static class MethodImposterAdapterBuilder
             body.AddRange(postInvokeActions);
         }
 
-        return MethodDeclaration(
+        return new MethodDeclarationBuilder(
                 (TypeSyntax)typeParamRenamer.Visit(SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType)),
-                "Invoke"
-            )
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                "Invoke")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
-            .WithBody(Block(body));
+            .WithBody(Block(body))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildAdapterHasMatchingSetupMethod(in ImposterTargetMethodMetadata method)
@@ -190,12 +190,12 @@ internal static class MethodImposterAdapterBuilder
         var genericImposterInterface = GenericName(method.MethodImposter.Interface.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
 
-        return MethodDeclaration(
+        return new MethodDeclarationBuilder(
                 NullableType(genericImposterInterface),
-                "As"
-            )
+                "As")
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax))
-            .WithTypeParameterList(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(Block(ThrowStatement(ObjectCreationExpression(IdentifierName("NotImplementedException")).WithArgumentList(ArgumentList()))));
+            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
+            .WithBody(Block(ThrowStatement(ObjectCreationExpression(IdentifierName("NotImplementedException")).WithArgumentList(ArgumentList()))))
+            .Build();
     }
 }

@@ -16,7 +16,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers Instance() => _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers>.Instance()
         {
             return _imposterInstance;
