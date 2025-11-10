@@ -39,10 +39,8 @@ internal static partial class InvocationSetupBuilder
                                     Argument(IdentifierName("methodDisplayName"))
                                         .AsSingleArgumentListSyntax())))),
                 ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        IdentifierName("invocationImposter"),
-                        invocationImposterType.Dot(IdentifierName("Default"))))));
+                    IdentifierName("invocationImposter")
+                        .Assign(invocationImposterType.Dot(IdentifierName("Default"))))));
 
         var invokeCall = invocationImposterIdentifier
             .Dot(IdentifierName("Invoke"))

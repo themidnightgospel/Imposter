@@ -39,10 +39,9 @@ internal static class IndexerArgumentsCriteriaBuilder
         {
             constructorBuilder = constructorBuilder.AddParameter(SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name));
             bodyBuilder.AddStatement(
-                AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        ThisExpression().Dot(IdentifierName(parameter.Name)),
-                        IdentifierName(parameter.Name))
+                ThisExpression()
+                    .Dot(IdentifierName(parameter.Name))
+                    .Assign(IdentifierName(parameter.Name))
                     .ToStatementSyntax());
         }
 

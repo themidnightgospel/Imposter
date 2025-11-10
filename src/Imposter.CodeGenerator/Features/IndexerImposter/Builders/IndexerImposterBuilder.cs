@@ -827,10 +827,8 @@ internal static class IndexerImposterBuilder
                     .Dot(IdentifierName("Enqueue"))
                     .Call(Argument(handlerLambda))
                     .ToStatementSyntax(),
-                AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        IdentifierName(invocationMetadata.LastReturnValueField.Name),
-                        LiteralExpression(SyntaxKind.NullLiteralExpression))
+                IdentifierName(invocationMetadata.LastReturnValueField.Name)
+                    .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
                     .ToStatementSyntax()))
             .Build();
     }
@@ -993,10 +991,8 @@ internal static class IndexerImposterBuilder
                                     fromArguments: true,
                                     IdentifierName(setter.ValueParameterName)))
                             .ToStatementSyntax(),
-                        AssignmentExpression(
-                                SyntaxKind.SimpleAssignmentExpression,
-                                callbackMatchedIdentifier,
-                                LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                        callbackMatchedIdentifier
+                            .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
                             .ToStatementSyntax()))));
 
         ExpressionSyntax defaultBehaviourCondition = IdentifierName(setter.DefaultBehaviourField.Name)
@@ -1033,10 +1029,8 @@ internal static class IndexerImposterBuilder
                             IdentifierName(setter.BaseImplementationParameterName)
                                 .Call(EmptyArgumentListSyntax)
                                 .ToStatementSyntax(),
-                            AssignmentExpression(
-                                    SyntaxKind.SimpleAssignmentExpression,
-                                    invokedBaseIdentifier,
-                                    LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                            invokedBaseIdentifier
+                                .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
                                 .ToStatementSyntax(),
                             BreakStatement()))));
 

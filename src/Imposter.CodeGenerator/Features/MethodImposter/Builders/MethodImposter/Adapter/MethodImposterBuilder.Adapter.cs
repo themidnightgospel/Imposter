@@ -36,11 +36,8 @@ internal static class MethodImposterAdapterBuilder
                     .AddParameter(Parameter(Identifier("target")).WithType(method.MethodImposter.Syntax))
                     .WithBody(Block(
                         ExpressionStatement(
-                            AssignmentExpression(
-                                SyntaxKind.SimpleAssignmentExpression,
-                                IdentifierName("_target"),
-                                IdentifierName("target")
-                            )
+                            IdentifierName("_target")
+                                .Assign(IdentifierName("target"))
                         )
                     ))
                     .Build())
@@ -77,22 +74,20 @@ internal static class MethodImposterAdapterBuilder
                             TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword)));
                     postInvokeActions.Add(ExpressionStatement(
-                        AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName(p.Name),
-                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
-                        )
+                        IdentifierName(p.Name)
+                            .Assign(
+                                TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                            )
                     ));
                     break;
                 case RefKind.Out:
                     body.Add(LocalVariableDeclarationSyntax(pType, pAdaptedName.Text));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)));
                     postInvokeActions.Add(ExpressionStatement(
-                        AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            IdentifierName(p.Name),
-                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
-                        )
+                        IdentifierName(p.Name)
+                            .Assign(
+                                TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                            )
                     ));
                     break;
                 default:

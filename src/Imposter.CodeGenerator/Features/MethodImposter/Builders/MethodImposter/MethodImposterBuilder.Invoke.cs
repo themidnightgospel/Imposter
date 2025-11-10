@@ -164,9 +164,6 @@ internal partial class MethodImposterBuilder
                                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
                                         .AsSingleArgumentListSyntax())))),
                 ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        matchingIdentifier,
-                        defaultGroup))));
+                    matchingIdentifier.Assign(defaultGroup))));
     }
 }
