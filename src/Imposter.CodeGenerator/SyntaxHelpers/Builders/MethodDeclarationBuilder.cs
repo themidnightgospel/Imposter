@@ -159,7 +159,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     {
         _semicolonToken = Token(SyntaxKind.SemicolonToken);
         _body = null;
-        _expressionBody = null;
         return this;
     }
 
