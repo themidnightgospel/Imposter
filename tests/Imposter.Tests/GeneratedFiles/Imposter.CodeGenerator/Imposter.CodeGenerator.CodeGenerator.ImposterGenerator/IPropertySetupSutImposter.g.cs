@@ -116,6 +116,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
+                internal bool HasValueSet = false;
                 internal int BackingField = default;
             }
 
@@ -205,6 +206,11 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
+                        if (_invocationCount == 1 && baseImplementation != null && !_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet)
+                        {
+                            _defaultPropertyBehaviour.BackingField = baseImplementation();
+                        }
+
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
@@ -272,7 +278,10 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
-                        _defaultPropertyBehaviour.BackingField = value;
+                        {
+                            _defaultPropertyBehaviour.BackingField = value;
+                            _defaultPropertyBehaviour.HasValueSet = true;
+                        }
                     }
                 }
 
@@ -382,6 +391,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
+                internal bool HasValueSet = false;
                 internal int BackingField = default;
             }
 
@@ -437,7 +447,10 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
-                        _defaultPropertyBehaviour.BackingField = value;
+                        {
+                            _defaultPropertyBehaviour.BackingField = value;
+                            _defaultPropertyBehaviour.HasValueSet = true;
+                        }
                     }
                 }
 
@@ -552,6 +565,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
+                internal bool HasValueSet = false;
                 internal int BackingField = default;
             }
 
@@ -639,6 +653,11 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 return baseImplementation();
                             else
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
+                        if (_invocationCount == 1 && baseImplementation != null && !_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet)
+                        {
+                            _defaultPropertyBehaviour.BackingField = baseImplementation();
                         }
 
                         return _defaultPropertyBehaviour.BackingField;

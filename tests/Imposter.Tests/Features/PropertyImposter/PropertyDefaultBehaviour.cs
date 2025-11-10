@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Imposter.Tests.Features.PropertyImposter
 {
-    public class AutoPropertyTests
+    public class PropertyDefaultBehaviour
     {
         private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
 
@@ -15,6 +15,20 @@ namespace Imposter.Tests.Features.PropertyImposter
             // No interactions yet
             Should.NotThrow(() => _sut.Age.Getter().Called(Count.Never()));
             Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Called(Count.Never()));
+        }
+
+        [Fact]
+        public void GivenClassWithInitializer_WhenFirstRead_DefaultBehaviourReturnsInitialValue()
+        {
+            var classSut = new ClassWithInitialValuePropertyImposter();
+            var instance = classSut.Instance();
+
+            // Default behavior should use the initializer value on first read
+            instance.A.ShouldBe(11);
+
+            // And still behave like an auto-property until explicitly configured
+            instance.A = 99;
+            instance.A.ShouldBe(99);
         }
 
         [Fact]

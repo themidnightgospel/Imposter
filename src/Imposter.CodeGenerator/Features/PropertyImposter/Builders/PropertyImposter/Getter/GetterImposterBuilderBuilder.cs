@@ -355,6 +355,35 @@ internal static class GetterImposterBuilderBuilder
                             .AsSingleArgumentListSyntax()
                     ));
 
+            // If default behaviour is on, optionally seed the backing field from base on first read
+            var hasValueSetCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name));
+            var seedFromBaseCondition = BinaryExpression(
+                SyntaxKind.LogicalAndExpression,
+                BinaryExpression(
+                    SyntaxKind.LogicalAndExpression,
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        IdentifierName(builder.InvocationCountField.Name),
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))
+                    ),
+                    baseProvidedCheck
+                ),
+                BinaryExpression(
+                    SyntaxKind.LogicalAndExpression,
+                    PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, useBaseImplementationCheck),
+                    PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, hasValueSetCheck))
+            );
+
+            var seedFromBase = ExpressionStatement(
+                AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                        .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)),
+                    baseImplementationIdentifier.Call()
+                )
+            );
+
             return IfStatement(
                 defaultBehaviourCheck,
                 Block(
@@ -368,6 +397,7 @@ internal static class GetterImposterBuilderBuilder
                             )
                         )
                     ),
+                    IfStatement(seedFromBaseCondition, Block(seedFromBase)),
                     returnBackingField
                 )
             );
