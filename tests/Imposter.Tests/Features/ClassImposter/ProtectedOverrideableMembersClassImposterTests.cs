@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.ClassImposter.Suts;
 using Shouldly;
@@ -89,6 +91,46 @@ namespace Imposter.Tests.Features.ClassImposter
             imposter.ProtectedVirtualEvent.Raise(instance, EventArgs.Empty);
 
             eventRaised.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenProtectedEventUseBaseImplementation_WhenSubscribed_ThenBaseEventReceivesHandler()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+            imposter.ProtectedVirtualEvent.UseBaseImplementation();
+
+            var instance = imposter.Instance();
+            var handler = new EventHandler((sender, arg) => { });
+
+            instance.SubscribeToProtectedEvent(handler);
+
+            var eventField = typeof(ClassWithProtectedOverrideableMembers)
+                .GetField("ProtectedVirtualEvent", BindingFlags.Instance | BindingFlags.NonPublic)
+                .ShouldNotBeNull();
+
+            var backingDelegate = (EventHandler?)eventField.GetValue(instance);
+            backingDelegate.ShouldNotBeNull();
+            backingDelegate.GetInvocationList().ShouldContain(subscription => ReferenceEquals(subscription, handler));
+        }
+
+        [Fact]
+        public void GivenAsyncEventUseBaseImplementation_WhenUnsubscribed_ThenBaseEventIsCleared()
+        {
+            var imposter = new ClassWithAsyncEventsImposter();
+            imposter.TaskBasedEvent.UseBaseImplementation();
+
+            var instance = imposter.Instance();
+            Func<object?, EventArgs, Task> handler = (sender, arg) => Task.CompletedTask;
+
+            instance.SubscribeToTaskEvent(handler);
+            instance.UnsubscribeFromTaskEvent(handler);
+
+            var eventField = typeof(ClassWithAsyncEvents)
+                .GetField("TaskBasedEvent", BindingFlags.Instance | BindingFlags.NonPublic)
+                .ShouldNotBeNull();
+
+            var backingDelegate = (MulticastDelegate?)eventField.GetValue(instance);
+            backingDelegate.ShouldBeNull();
         }
 
         [Fact]

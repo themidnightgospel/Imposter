@@ -336,6 +336,15 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         var builderAccess = IdentifierName(ImposterFieldName)
             .Dot(IdentifierName(@event.BuilderField.Name));
+        var arguments = new List<ArgumentSyntax>
+        {
+            Argument(IdentifierName("value"))
+        };
+
+        if (@event.Core.SupportsBaseImplementation)
+        {
+            arguments.Add(Argument(BuildBaseEventAccessorLambda(@event, isSubscribe)));
+        }
 
         return Block(
             IdentifierName(nameof(ArgumentNullException))
@@ -344,8 +353,24 @@ internal readonly ref struct ImposterInstanceBuilder
                 .ToStatementSyntax(),
             builderAccess
                 .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
-                .Call(Argument(IdentifierName("value")))
+                .Call(arguments)
                 .ToStatementSyntax());
+    }
+
+    private static ParenthesizedLambdaExpressionSyntax BuildBaseEventAccessorLambda(
+        in ImposterEventMetadata @event,
+        bool isSubscribe)
+    {
+        var assignmentExpression = AssignmentExpression(
+            isSubscribe ? SyntaxKind.AddAssignmentExpression : SyntaxKind.SubtractAssignmentExpression,
+            MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                BaseExpression(),
+                IdentifierName(@event.Core.Name)),
+            IdentifierName("value"));
+
+        return ParenthesizedLambdaExpression()
+            .WithBlock(Block(ExpressionStatement(assignmentExpression)));
     }
 }
 

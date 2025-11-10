@@ -1,5 +1,7 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
 
@@ -58,11 +60,18 @@ internal readonly struct EventImposterBuilderMethodsMetadata
     {
         internal readonly string Name;
         internal readonly ParameterMetadata HandlerParameter;
+        internal readonly ParameterMetadata? BaseImplementationParameter;
 
         internal SubscribeMethodMetadata(in ImposterEventCoreMetadata core)
         {
             Name = "Subscribe";
             HandlerParameter = new ParameterMetadata("handler", core.HandlerTypeSyntax);
+            BaseImplementationParameter = core.SupportsBaseImplementation
+                ? new ParameterMetadata(
+                    "baseImplementation",
+                    WellKnownTypes.System.Action,
+                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                : null;
         }
     }
 
@@ -70,11 +79,18 @@ internal readonly struct EventImposterBuilderMethodsMetadata
     {
         internal readonly string Name;
         internal readonly ParameterMetadata HandlerParameter;
+        internal readonly ParameterMetadata? BaseImplementationParameter;
 
         internal UnsubscribeMethodMetadata(in ImposterEventCoreMetadata core)
         {
             Name = "Unsubscribe";
             HandlerParameter = new ParameterMetadata("handler", core.HandlerTypeSyntax);
+            BaseImplementationParameter = core.SupportsBaseImplementation
+                ? new ParameterMetadata(
+                    "baseImplementation",
+                    WellKnownTypes.System.Action,
+                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                : null;
         }
     }
 

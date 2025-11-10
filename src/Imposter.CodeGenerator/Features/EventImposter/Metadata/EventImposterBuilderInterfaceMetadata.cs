@@ -22,6 +22,8 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
 
     internal readonly TypeSyntax RaiseMethodReturnType;
 
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+
     internal EventImposterBuilderInterfaceMetadata(in ImposterEventCoreMetadata core)
     {
         Name = $"I{core.UniqueName}EventImposterBuilder";
@@ -34,5 +36,8 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
         RaiseMethodReturnType = core.IsAsync
             ? WellKnownTypes.System.Threading.Tasks.TaskOfT(SetupInterfaceTypeSyntax)
             : SetupInterfaceTypeSyntax;
+        UseBaseImplementationMethod = core.SupportsBaseImplementation
+            ? new UseBaseImplementationMethodMetadata(TypeSyntax)
+            : null;
     }
 }
