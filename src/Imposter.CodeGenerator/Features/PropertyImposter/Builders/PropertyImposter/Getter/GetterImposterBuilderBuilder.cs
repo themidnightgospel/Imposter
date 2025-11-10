@@ -32,8 +32,8 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(SinglePrivateReadonlyVariableField(property.GetterImposterBuilder.DefaultPropertyBehaviourField))
             .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
-            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_hasConfiguredReturn", SyntaxKind.PrivateKeyword))
-            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_useBaseImplementation", SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(WellKnownTypes.Bool, "_hasConfiguredReturn", SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(WellKnownTypes.Bool, "_useBaseImplementation", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildAddGetterReturnValueMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .AddMembers(BuildReturnsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
@@ -278,7 +278,7 @@ internal static class GetterImposterBuilderBuilder
             .Build();
 
     private static MethodDeclarationSyntax BuildEnableBaseImplementationMethod(in ImposterPropertyMetadata property) =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnableBaseImplementation")
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "EnableBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name)
@@ -434,7 +434,7 @@ internal static class GetterImposterBuilderBuilder
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
             PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredReturn")));
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureGetterConfigured")
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(Block(
                 IfStatement(

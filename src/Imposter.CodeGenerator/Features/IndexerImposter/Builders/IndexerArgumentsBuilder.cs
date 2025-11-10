@@ -71,7 +71,7 @@ internal static class IndexerArgumentsBuilder
             comparison = BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, equalsExpression);
         }
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Equals")
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(otherParameter)
             .WithBody(Block(ReturnStatement(comparison)))
@@ -80,7 +80,7 @@ internal static class IndexerArgumentsBuilder
 
     private static MethodDeclarationSyntax BuildObjectEqualsMethod(in ImposterIndexerMetadata indexer)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Equals")
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .AddParameter(Parameter(Identifier("obj")).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
@@ -120,7 +120,7 @@ internal static class IndexerArgumentsBuilder
 
         statements.Add(ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call()));
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), "GetHashCode")
+        return new MethodDeclarationBuilder(WellKnownTypes.Int, "GetHashCode")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(Block(statements))

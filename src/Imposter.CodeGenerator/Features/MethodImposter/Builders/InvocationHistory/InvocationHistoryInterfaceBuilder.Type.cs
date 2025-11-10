@@ -16,7 +16,7 @@ public static class InvocationHistoryInterfaceBuilder
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), InvocationHistoryMatchesMethodMetadata.Name)
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, InvocationHistoryMatchesMethodMetadata.Name)
             .WithSemicolon()
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))

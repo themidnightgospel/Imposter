@@ -26,8 +26,8 @@ internal static class SetterImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
             .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
-            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_hasConfiguredSetter", SyntaxKind.PrivateKeyword))
-            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_useBaseImplementation", SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(WellKnownTypes.Bool, "_hasConfiguredSetter", SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(WellKnownTypes.Bool, "_useBaseImplementation", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
@@ -69,7 +69,7 @@ internal static class SetterImposterBuilder
 
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationMethod() =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "UseBaseImplementation")
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName("_hasConfiguredSetter")
@@ -261,7 +261,7 @@ internal static class SetterImposterBuilder
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
             PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredSetter")));
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureSetterConfigured")
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(Block(
                 IfStatement(
@@ -283,7 +283,7 @@ internal static class SetterImposterBuilder
     }
 
     private static MethodDeclarationSyntax BuildMarkConfiguredMethod() =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "MarkConfigured")
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkConfigured")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName("_hasConfiguredSetter")

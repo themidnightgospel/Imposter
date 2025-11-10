@@ -35,7 +35,7 @@ internal static class MethodImposterGenericInterfaceBuilder
             .Build();
 
         var hasMatchingSetupMethodBuilder = new MethodDeclarationBuilder(
-            PredefinedType(Token(SyntaxKind.BoolKeyword)),
+            WellKnownTypes.Bool,
             "HasMatchingSetup");
 
         if (method.Parameters.HasInputParameters)

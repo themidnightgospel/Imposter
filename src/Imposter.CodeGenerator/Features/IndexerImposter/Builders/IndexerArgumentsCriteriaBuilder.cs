@@ -69,7 +69,7 @@ internal static class IndexerArgumentsCriteriaBuilder
                 : BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, parameterComparison);
         }
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Matches")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(argumentsParam)
             .WithBody(Block(ReturnStatement(comparison ?? True)))

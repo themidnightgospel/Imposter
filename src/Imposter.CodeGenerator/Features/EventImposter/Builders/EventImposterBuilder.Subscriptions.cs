@@ -25,7 +25,7 @@ internal static partial class EventImposterBuilder
                     Argument(CounterIncrementLambda())
                 ]);
 
-        var methodBuilder = new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), method.Name)
+        var methodBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(method.HandlerParameter));
 
@@ -63,7 +63,7 @@ internal static partial class EventImposterBuilder
         var method = @event.Builder.Methods.Unsubscribe;
         var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
 
-        var unsubscribeBuilder = new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), method.Name)
+        var unsubscribeBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(method.HandlerParameter));
 

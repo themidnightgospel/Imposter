@@ -226,7 +226,7 @@ internal readonly ref struct ImposterInstanceBuilder
         var assignment = IdentifierName(ImposterFieldName).Assign(IdentifierName("imposter"));
 
         return new MethodDeclarationBuilder(
-                PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                WellKnownTypes.Void,
                 "InitializeImposter")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(

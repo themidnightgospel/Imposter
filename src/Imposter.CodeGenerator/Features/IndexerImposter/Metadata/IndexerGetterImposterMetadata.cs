@@ -174,7 +174,7 @@ internal readonly struct IndexerGetterImposterMetadata
                 "_callbacks",
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.Delegates.GetterCallbackDelegateType));
             LastReturnValueField = new FieldMetadata("_lastReturnValue", NullableType(returnHandlerType));
-            InvocationCountField = new FieldMetadata("_invocationCount", PredefinedType(Token(SyntaxKind.IntKeyword)));
+            InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",
                 PredefinedType(Token(SyntaxKind.StringKeyword)));
