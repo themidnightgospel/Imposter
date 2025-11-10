@@ -10,7 +10,6 @@ namespace Imposter.Playground;
 
 public class MoqBehaviour
 {
-
     public class TestClas
     {
         public virtual int VirtualMethod()
@@ -20,6 +19,22 @@ public class MoqBehaviour
         }
     }
 
+    public class MyClass
+    {
+        public virtual string this[int i]
+        {
+            get => $"Value {i}";
+            set { Console.WriteLine($"Set[{i}] = {value}"); }
+        }
+    }
+
+    [Fact]
+    public void IndexerCallbase()
+    {
+        var mock = new Mock<MyClass> { CallBase = true };
+        mock.Object[5].ShouldBe("Value 5");
+    }
+
     [Fact]
     public void Callback()
     {
@@ -27,18 +42,16 @@ public class MoqBehaviour
         {
             CallBase = true
         };
-        
+
         mock1.Object.VirtualMethod().ShouldBe(1);
-        
+
         var mock2 = new Mock<TestClas>()
         {
             CallBase = true
         };
-        
+
         mock2.Setup(s => s.VirtualMethod()).Returns(33);
         mock2.Object.VirtualMethod().ShouldBe(33);
-
-
     }
 
     [Fact]
@@ -56,8 +69,8 @@ public class MoqBehaviour
             service.RemoveOrder(1);
             service.PlaceOrder(1);
         });
-        
-        Should.Throw<CallSequenceNotFoundException>( () => Received.InOrder(() =>
+
+        Should.Throw<CallSequenceNotFoundException>(() => Received.InOrder(() =>
         {
             service.PlaceOrder(1);
             service.RemoveOrder(1);
