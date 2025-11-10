@@ -25,6 +25,8 @@ public abstract class EventNamingCollisionPreventionTestsBase
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventDuplicateChildCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventOperationClusterCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.ICrossMemberEventCollisionTarget))]
+                                                 [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventTypeNameCollisionTarget))]
+                                                 [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventCaseSensitivityCollisionTarget))]
 
                                                  namespace Sample.NamingCollision
                                                  {
@@ -139,6 +141,20 @@ public abstract class EventNamingCollisionPreventionTestsBase
                                                          event EventHandler Count;
                                                          event EventHandler HandlerInvoked;
                                                          event Func<object?, EventArgs, Task> RaiseAsync;
+                                                     }
+
+                                                     public interface IEventTypeNameCollisionTarget
+                                                     {
+                                                         event EventHandler Imposter;
+                                                         event EventHandler CodeGenerator;
+                                                         event EventHandler Sample;
+                                                         event EventHandler NamingCollision;
+                                                     }
+
+                                                     public interface IEventCaseSensitivityCollisionTarget
+                                                     {
+                                                         event EventHandler raise;
+                                                         event EventHandler Raise;
                                                      }
                                                  }
                                                  """;
