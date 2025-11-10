@@ -31,25 +31,62 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (property.Core.HasGetter)
         {
+            var getterInvocation = IdentifierName("_imposter")
+                .Dot(IdentifierName(property.AsField.Name))
+                .Dot(IdentifierName("_getterImposterBuilder"))
+                .Dot(IdentifierName("Get"));
+
+            InvocationExpressionSyntax getterCall;
+
+            if (property.Core.GetterSupportsBaseImplementation)
+            {
+                var baseGetterInvocation = BaseExpression().Dot(IdentifierName(property.Core.Name));
+                getterCall = getterInvocation.Call(
+                    ArgumentList(
+                        SingletonSeparatedList(
+                            Argument(
+                                ParenthesizedLambdaExpression()
+                                    .WithExpressionBody(baseGetterInvocation)))));
+            }
+            else
+            {
+                getterCall = getterInvocation.Call();
+            }
+
             var getterBody = Block(
-                ReturnStatement(
-                    IdentifierName("_imposter")
-                        .Dot(IdentifierName(property.AsField.Name))
-                        .Dot(IdentifierName("_getterImposterBuilder"))
-                        .Dot(IdentifierName("Get"))
-                        .Call()));
+                ReturnStatement(getterCall));
 
             propertyBuilder = propertyBuilder.WithGetterBody(getterBody);
         }
 
         if (property.Core.HasSetter)
         {
+            var setterInvocation = IdentifierName("_imposter")
+                .Dot(IdentifierName(property.AsField.Name))
+                .Dot(IdentifierName("_setterImposter"))
+                .Dot(IdentifierName("Set"));
+
+            var setterArguments = new List<ArgumentSyntax>
+            {
+                Argument(IdentifierName("value"))
+            };
+
+            if (property.Core.SetterSupportsBaseImplementation)
+            {
+                var baseAssignment = AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    BaseExpression().Dot(IdentifierName(property.Core.Name)),
+                    IdentifierName("value"));
+
+                setterArguments.Add(
+                    Argument(
+                        ParenthesizedLambdaExpression()
+                            .WithBlock(Block(ExpressionStatement(baseAssignment)))));
+            }
+
             var setterBody = Block(
-                IdentifierName("_imposter")
-                    .Dot(IdentifierName(property.AsField.Name))
-                    .Dot(IdentifierName("_setterImposter"))
-                    .Dot(IdentifierName("Set"))
-                    .Call(Argument(IdentifierName("value")))
+                setterInvocation
+                    .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments))
                     .ToStatementSyntax());
 
             propertyBuilder = propertyBuilder.WithSetterBody(setterBody);

@@ -185,7 +185,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     return this;
                 }
 
-                internal int Get()
+                internal int Get(System.Func<int> baseImplementation = null)
                 {
                     EnsureGetterConfigured();
                     System.Threading.Interlocked.Increment(ref _invocationCount);
@@ -195,7 +195,12 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                            return baseImplementation();
                         return _defaultPropertyBehaviour.BackingField;
+                    }
+
                     if (_returnValues.TryDequeue(out var returnValue))
                         _lastReturnValue = returnValue;
                     return _lastReturnValue();
@@ -236,7 +241,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
-                internal void Set(int value)
+                internal void Set(int value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
                     _invocationHistory.Add(value);
@@ -247,7 +252,15 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                        {
+                            baseImplementation();
+                            return;
+                        }
+
                         _defaultPropertyBehaviour.BackingField = value;
+                    }
                 }
 
                 private void EnsureSetterConfigured()
@@ -387,7 +400,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
-                internal void Set(int value)
+                internal void Set(int value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
                     _invocationHistory.Add(value);
@@ -398,7 +411,15 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                        {
+                            baseImplementation();
+                            return;
+                        }
+
                         _defaultPropertyBehaviour.BackingField = value;
+                    }
                 }
 
                 private void EnsureSetterConfigured()
@@ -581,7 +602,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     return this;
                 }
 
-                internal int Get()
+                internal int Get(System.Func<int> baseImplementation = null)
                 {
                     EnsureGetterConfigured();
                     System.Threading.Interlocked.Increment(ref _invocationCount);
@@ -591,7 +612,12 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                            return baseImplementation();
                         return _defaultPropertyBehaviour.BackingField;
+                    }
+
                     if (_returnValues.TryDequeue(out var returnValue))
                         _lastReturnValue = returnValue;
                     return _lastReturnValue();

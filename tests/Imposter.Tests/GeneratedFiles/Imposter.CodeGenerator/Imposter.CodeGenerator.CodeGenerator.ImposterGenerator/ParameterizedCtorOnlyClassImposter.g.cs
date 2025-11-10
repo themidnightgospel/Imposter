@@ -576,7 +576,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return this;
                 }
 
-                internal string Get()
+                internal string Get(System.Func<string> baseImplementation = null)
                 {
                     EnsureGetterConfigured();
                     System.Threading.Interlocked.Increment(ref _invocationCount);
@@ -586,7 +586,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                            return baseImplementation();
                         return _defaultPropertyBehaviour.BackingField;
+                    }
+
                     if (_returnValues.TryDequeue(out var returnValue))
                         _lastReturnValue = returnValue;
                     return _lastReturnValue();
@@ -627,7 +632,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
-                internal void Set(string value)
+                internal void Set(string value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
                     _invocationHistory.Add(value);
@@ -638,7 +643,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)
+                    {
+                        if (baseImplementation != null)
+                        {
+                            baseImplementation();
+                            return;
+                        }
+
                         _defaultPropertyBehaviour.BackingField = value;
+                    }
                 }
 
                 private void EnsureSetterConfigured()
@@ -1510,12 +1523,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 get
                 {
-                    return _imposter._Name._getterImposterBuilder.Get();
+                    return _imposter._Name._getterImposterBuilder.Get(() => base.Name);
                 }
 
                 set
                 {
-                    _imposter._Name._setterImposter.Set(value);
+                    _imposter._Name._setterImposter.Set(value, () =>
+                    {
+                        base.Name = value;
+                    });
                 }
             }
 
