@@ -9,9 +9,10 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationHist
 public static class InvocationHistoryInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
-        InterfaceDeclaration(method.InvocationHistory.Interface.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .AddMembers(BuildMatchesMethod(method));
+        new InterfaceDeclarationBuilder(method.InvocationHistory.Interface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(BuildMatchesMethod(method))
+            .Build();
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {

@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using Imposter.Abstractions;
+using Shouldly;
 using Xunit;
 
 namespace Imposter.Tests.Features.PropertyImposter

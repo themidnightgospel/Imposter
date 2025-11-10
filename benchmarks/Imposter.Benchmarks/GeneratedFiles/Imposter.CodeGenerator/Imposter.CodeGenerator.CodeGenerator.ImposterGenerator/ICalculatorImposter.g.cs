@@ -23,7 +23,6 @@ namespace Imposter.Benchmarks
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator Instance() => _imposterInstance;
         global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>.Instance()
         {
             return _imposterInstance;
@@ -62,6 +61,7 @@ namespace Imposter.Benchmarks
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISquareMethodInvocationHistory
         {
             bool Matches(SquareArgumentsCriteria criteria);

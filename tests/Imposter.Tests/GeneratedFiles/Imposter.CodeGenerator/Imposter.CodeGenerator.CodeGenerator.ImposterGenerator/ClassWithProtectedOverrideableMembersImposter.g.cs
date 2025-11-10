@@ -65,7 +65,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers Instance() => _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>.Instance()
         {
             return _imposterInstance;
@@ -104,6 +103,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IInvokeProtectedMethodMethodInvocationHistory
         {
             bool Matches(InvokeProtectedMethodArgumentsCriteria criteria);
@@ -487,6 +487,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualMethodMethodInvocationHistory
         {
             bool Matches(ProtectedVirtualMethodArgumentsCriteria criteria);
@@ -843,6 +844,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void ReadProtectedPropertyCallbackDelegate();
         // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         public delegate System.Exception ReadProtectedPropertyExceptionGeneratorDelegate();
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IReadProtectedPropertyMethodInvocationHistory
         {
             bool Matches();
@@ -1215,6 +1217,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IReadProtectedValueMethodInvocationHistory
         {
             bool Matches(ReadProtectedValueArgumentsCriteria criteria);
@@ -1598,6 +1601,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISubscribeToProtectedEventMethodInvocationHistory
         {
             bool Matches(SubscribeToProtectedEventArgumentsCriteria criteria);
@@ -1946,6 +1950,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IWriteProtectedPropertyMethodInvocationHistory
         {
             bool Matches(WriteProtectedPropertyArgumentsCriteria criteria);
@@ -2298,6 +2303,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IWriteProtectedValueMethodInvocationHistory
         {
             bool Matches(WriteProtectedValueArgumentsCriteria criteria);

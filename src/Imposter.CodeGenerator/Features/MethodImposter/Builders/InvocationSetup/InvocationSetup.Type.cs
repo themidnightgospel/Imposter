@@ -1,5 +1,6 @@
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -30,13 +31,13 @@ internal static partial class InvocationSetupBuilder
 
     private static ConstructorDeclarationSyntax Constructor(in ImposterTargetMethodMetadata method)
     {
-        var ctor = ConstructorDeclaration(method.MethodInvocationImposterGroup.Name)
-            .AddModifiers(Token(SyntaxKind.PublicKeyword));
+        var ctorBuilder = new ConstructorBuilder(method.MethodInvocationImposterGroup.Name)
+            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
 
         if (method.Parameters.HasInputParameters)
         {
-            ctor = ctor
-                .AddParameterListParameters(Parameter(Identifier("argumentsCriteria")).WithType(method.ArgumentsCriteria.Syntax))
+            ctorBuilder = ctorBuilder
+                .AddParameter(Parameter(Identifier("argumentsCriteria")).WithType(method.ArgumentsCriteria.Syntax))
                 .WithBody(Block(
                     AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
@@ -46,9 +47,9 @@ internal static partial class InvocationSetupBuilder
         }
         else
         {
-            ctor = ctor.WithBody(Block());
+            ctorBuilder = ctorBuilder.WithBody(Block());
         }
 
-        return ctor;
+        return ctorBuilder.Build();
     }
 }

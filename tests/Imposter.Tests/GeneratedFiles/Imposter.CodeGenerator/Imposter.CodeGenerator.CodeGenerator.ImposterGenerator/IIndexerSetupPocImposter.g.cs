@@ -23,7 +23,6 @@ namespace Imposter.Tests.Shared
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Shared.IIndexerSetupPoc Instance() => _imposterInstance;
         global::Imposter.Tests.Shared.IIndexerSetupPoc global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>.Instance()
         {
             return _imposterInstance;
@@ -70,6 +69,7 @@ namespace Imposter.Tests.Shared
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IIndexerMethodMethodInvocationHistory
         {
             bool Matches(IndexerMethodArgumentsCriteria criteria);

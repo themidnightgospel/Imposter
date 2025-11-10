@@ -1,5 +1,6 @@
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,9 +13,11 @@ internal static partial class MethodImposterCollectionBuilder
 {
     private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
-        return MethodDeclaration(method.MethodImposter.Syntax, "AddNew")
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddTypeParameterListParameters(TypeParametersSyntax(method.Symbol).ToArray())
+        var typeParameters = TypeParametersSyntax(method.Symbol).ToArray();
+
+        return new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithTypeParameters(typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null)
             .WithBody(
                 Block(
                     LocalDeclarationStatement(
@@ -37,6 +40,7 @@ internal static partial class MethodImposterCollectionBuilder
                         .ToStatementSyntax(),
                     ReturnStatement(IdentifierName("imposter"))
                 )
-            );
+            )
+            .Build();
     }
 }

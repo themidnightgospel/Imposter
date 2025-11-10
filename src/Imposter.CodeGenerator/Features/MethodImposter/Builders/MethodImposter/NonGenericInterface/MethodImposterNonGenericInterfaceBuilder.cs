@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -14,13 +15,15 @@ internal static class MethodImposterNonGenericInterfaceBuilder
             return null;
         }
         
-        return InterfaceDeclaration(method.MethodImposter.Interface.Name)
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddMembers(MethodDeclaration(
-                    NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
-                    "As"
-                )
-                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterListSyntax(method.TargetGenericTypeArguments))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+        return new InterfaceDeclarationBuilder(method.MethodImposter.Interface.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                        NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
+                        "As")
+                    .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.TargetGenericTypeArguments))
+                    .WithSemicolon()
+                    .Build())
+            .Build();
     }
 }

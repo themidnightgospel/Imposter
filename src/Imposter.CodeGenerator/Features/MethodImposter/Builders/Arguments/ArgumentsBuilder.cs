@@ -79,14 +79,15 @@ internal static class ArgumentsBuilder
                 );
             });
 
-        return MethodDeclaration(returnType, "As")
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithTypeParameterList(TypeParameterList(SeparatedList(asMethodTypeParams)))
+        return new MethodDeclarationBuilder(returnType, "As")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(Block(
                 ReturnStatement(
                     ObjectCreationExpression(returnType)
                         .WithArgumentList(ArgumentList(SeparatedList(constructorArgs)))
                 )
-            ));
+            ))
+            .Build();
     }
 }

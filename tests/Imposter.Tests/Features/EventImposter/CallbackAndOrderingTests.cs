@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 

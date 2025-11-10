@@ -200,8 +200,8 @@ internal static class SetterImposterBuilder
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
             PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredSetter")));
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureSetterConfigured")
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureSetterConfigured")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(Block(
                 IfStatement(
                     condition,
@@ -217,15 +217,17 @@ internal static class SetterImposterBuilder
                             )
                     )
                 )
-            ));
+            ))
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildMarkConfiguredMethod() =>
-        MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "MarkConfigured")
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "MarkConfigured")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName("_hasConfiguredSetter")
                     .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
                     .ToStatementSyntax()
-            ));
+            ))
+            .Build();
 }

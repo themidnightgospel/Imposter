@@ -23,7 +23,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService Instance() => _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>.Instance()
         {
             return _imposterInstance;
@@ -62,6 +61,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IComputeMethodInvocationHistory
         {
             bool Matches(ComputeArgumentsCriteria criteria);

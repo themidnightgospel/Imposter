@@ -309,8 +309,8 @@ internal static class GetterImposterBuilderBuilder
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
             PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredReturn")));
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureGetterConfigured")
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "EnsureGetterConfigured")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(Block(
                 IfStatement(
                     condition,
@@ -326,6 +326,7 @@ internal static class GetterImposterBuilderBuilder
                             )
                     )
                 )
-            ));
+            ))
+            .Build();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -26,28 +27,28 @@ internal static class MethodImposterGenericInterfaceBuilder
                     .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
         }
 
-        var invokeMethod = MethodDeclaration(
+        var invokeMethod = new MethodDeclarationBuilder(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
-                "Invoke"
-            )
+                "Invoke")
             .WithParameterList(invokeMethodParameters)
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            .WithSemicolon()
+            .Build();
 
-        var hasMatchingSetupMethod = MethodDeclaration(
+        var hasMatchingSetupMethodBuilder = new MethodDeclarationBuilder(
             PredefinedType(Token(SyntaxKind.BoolKeyword)),
-            "HasMatchingSetup"
-        );
+            "HasMatchingSetup");
 
         if (method.Parameters.HasInputParameters)
         {
-            hasMatchingSetupMethod = hasMatchingSetupMethod
-                .AddParameterListParameters(
+            hasMatchingSetupMethodBuilder = hasMatchingSetupMethodBuilder
+                .AddParameter(
                     Parameter(Identifier("arguments")).WithType(method.Arguments.Syntax)
                 );
         }
 
-        hasMatchingSetupMethod = hasMatchingSetupMethod
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        var hasMatchingSetupMethod = hasMatchingSetupMethodBuilder
+            .WithSemicolon()
+            .Build();
 
         return InterfaceDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, genericInterfaceType.Name)

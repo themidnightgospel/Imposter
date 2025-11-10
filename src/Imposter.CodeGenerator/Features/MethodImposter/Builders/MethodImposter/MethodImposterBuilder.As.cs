@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -73,12 +74,11 @@ internal static partial class MethodImposterBuilder
         var genericImposterInterfaceWithTargets = GenericName(method.MethodImposter.Interface.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments)));
 
-        return MethodDeclaration(
+        return new MethodDeclarationBuilder(
                 NullableType(genericImposterInterfaceWithTargets),
-                "As"
-            )
+                "As")
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax))
-            .WithTypeParameterList(TypeParameterList(SeparatedList(asMethodTypeParams)))
+            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(Block(
                 IfStatement(
                     condition,
@@ -93,7 +93,8 @@ internal static partial class MethodImposterBuilder
                     )
                 ),
                 ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression))
-            ));
+            ))
+            .Build();
     }
 
     private static bool ContainsTypeParameter(ITypeSymbol typeSymbol, ITypeParameterSymbol typeParameter)

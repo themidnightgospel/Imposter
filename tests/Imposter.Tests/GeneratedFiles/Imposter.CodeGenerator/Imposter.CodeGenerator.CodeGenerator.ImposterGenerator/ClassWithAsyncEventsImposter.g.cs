@@ -16,7 +16,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents Instance() => _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>.Instance()
         {
             return _imposterInstance;

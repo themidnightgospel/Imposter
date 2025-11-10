@@ -16,7 +16,6 @@ namespace Imposter.Tests.Features.PropertyImposter
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut Instance() => _imposterInstance;
         global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut>.Instance()
         {
             return _imposterInstance;

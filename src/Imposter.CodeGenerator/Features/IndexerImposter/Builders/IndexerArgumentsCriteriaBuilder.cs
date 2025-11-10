@@ -78,9 +78,10 @@ internal static class IndexerArgumentsCriteriaBuilder
                 : BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, parameterComparison);
         }
 
-        return MethodDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)), Identifier("Matches"))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(argumentsParam)
-            .WithBody(Block(ReturnStatement(comparison ?? LiteralExpression(SyntaxKind.TrueLiteralExpression))));
+        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddParameter(argumentsParam)
+            .WithBody(Block(ReturnStatement(comparison ?? LiteralExpression(SyntaxKind.TrueLiteralExpression))))
+            .Build();
     }
 }

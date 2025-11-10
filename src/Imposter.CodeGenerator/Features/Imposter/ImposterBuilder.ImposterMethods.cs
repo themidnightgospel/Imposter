@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -14,11 +15,10 @@ internal readonly partial struct ImposterBuilder
         return imposterGenerationContext
             .Imposter
             .Methods
-            .Select(method => MethodDeclaration(
+            .Select(method => new MethodDeclarationBuilder(
                     method.MethodImposter.BuilderInterface.Syntax,
-                    Identifier(method.Symbol.Name)
-                )
-                .WithTypeParameterList(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
+                    method.Symbol.Name)
+                .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
                 .WithParameterList(SyntaxFactoryHelper.ArgParameters(method.Symbol.Parameters))
                 .WithBody(Block(ReturnStatement(
                             method
@@ -29,7 +29,8 @@ internal readonly partial struct ImposterBuilder
                         )
                     )
                 )
-                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword))));
+                .AddModifier(Token(SyntaxKind.PublicKeyword))
+                .Build());
 
         IEnumerable<ArgumentSyntax> GetBuilderClassArguments(ImposterTargetMethodMetadata method)
         {

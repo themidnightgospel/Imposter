@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -10,10 +11,10 @@ internal static partial class MethodImposterBuilderBuilder
 {
     private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
-        return MethodDeclaration(
+        return new MethodDeclarationBuilder(
                 PredefinedType(Token(SyntaxKind.VoidKeyword)),
-                Identifier(CalledMethodMetadata.Name))
-            .AddParameterListParameters(
+                CalledMethodMetadata.Name)
+            .AddParameter(
                 ParameterSyntax(method.InvocationVerifierInterface.CalledMethod.CountParameter.Type,
                     method.InvocationVerifierInterface.CalledMethod.CountParameter.Name))
             .WithExplicitInterfaceSpecifier(
@@ -36,7 +37,8 @@ internal static partial class MethodImposterBuilderBuilder
                     ),
                     ThrowIfCountDoesNotMatch()
                 )
-            );
+            )
+            .Build();
 
         IfStatementSyntax ThrowIfCountDoesNotMatch() =>
             IfStatement(Not(
