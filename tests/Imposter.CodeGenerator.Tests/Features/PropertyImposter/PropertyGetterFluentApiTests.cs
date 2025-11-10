@@ -12,12 +12,24 @@ public class PropertyGetterFluentApiTests
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.SampleService))]
+[assembly: GenerateImposter(typeof(Sample.GetterInterfaceTarget))]
+[assembly: GenerateImposter(typeof(Sample.AbstractGetterTarget))]
 
 namespace Sample
 {
     public class SampleService
     {
         public virtual int Age { get; }
+    }
+
+    public interface GetterInterfaceTarget
+    {
+        int Age { get; }
+    }
+
+    public abstract class AbstractGetterTarget
+    {
+        public abstract int Age { get; }
     }
 }
 """;
@@ -580,6 +592,226 @@ namespace Sample
 """);
 
         AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenCallingUseBaseImplementationAfterThen_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenReturningValueThenUsingBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenReturningDelegateThenUsingBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(() => 1).Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenThrowingThenUsingBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Throws(new System.Exception("fail")).Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenChainingAfterUseBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Then().UseBaseImplementation().Then().Returns(2);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenSwitchingToThrowsAfterUseBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).Then().UseBaseImplementation().Then().Throws<System.InvalidOperationException>();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenCallingUseBaseImplementationWithoutThen_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenReturningValueThenUseBaseImplementationWithoutThen_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Returns(1).UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenCallbackThenUseBaseImplementationWithoutThen_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SampleServiceImposter();
+            imposter.Age.Getter().Callback(() => { }).UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenInterfaceGetter_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new GetterInterfaceTargetImposter();
+            imposter.Age.Getter().Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenAbstractGetter_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new AbstractGetterTargetImposter();
+            imposter.Age.Getter().Then().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
     }
 
     private const string BaseSourceFileName = "GeneratorInput.cs";

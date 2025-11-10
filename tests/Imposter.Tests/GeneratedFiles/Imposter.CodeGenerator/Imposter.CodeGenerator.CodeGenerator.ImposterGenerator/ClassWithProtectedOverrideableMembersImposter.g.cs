@@ -2653,11 +2653,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterFluentBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterContinuationBuilder
         {
+            IProtectedVirtualPropertyPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterCallbackBuilder, IProtectedVirtualPropertyPropertyGetterVerifier
         {
+            IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder
+        {
+            IProtectedVirtualPropertyPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2669,7 +2677,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterContinuationBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder
         {
-            IProtectedVirtualPropertyPropertySetterFluentBuilder Then();
+            IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2686,6 +2694,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterVerifier
         {
+            IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder : IProtectedVirtualPropertyPropertySetterFluentBuilder
+        {
+            IProtectedVirtualPropertyPropertySetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2693,6 +2708,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         {
             IProtectedVirtualPropertyPropertyGetterBuilder Getter();
             IProtectedVirtualPropertyPropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<string> criteria);
+            IProtectedVirtualPropertyPropertyBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -2718,7 +2734,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : IProtectedVirtualPropertyPropertyGetterBuilder, IProtectedVirtualPropertyPropertyGetterFluentBuilder
+            internal class GetterImposterBuilder : IProtectedVirtualPropertyPropertyGetterBuilder, IProtectedVirtualPropertyPropertyGetterFluentBuilder, IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<string>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<string>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -2728,6 +2744,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
+                private bool _useBaseImplementation;
                 internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -2783,6 +2800,30 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return this;
                 }
 
+                IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder IProtectedVirtualPropertyPropertyGetterBuilder.Then()
+                {
+                    return this;
+                }
+
+                internal void EnableBaseImplementation()
+                {
+                    _defaultPropertyBehaviour.IsOn = true;
+                    _useBaseImplementation = true;
+                    _hasConfiguredReturn = true;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterFluentBuilder IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
+                {
+                    EnableBaseImplementation();
+                    return this;
+                }
+
+                IProtectedVirtualPropertyPropertyGetterFluentBuilder IProtectedVirtualPropertyPropertyGetterFluentBuilder.UseBaseImplementation()
+                {
+                    EnableBaseImplementation();
+                    return this;
+                }
+
                 internal string Get(System.Func<string> baseImplementation = null)
                 {
                     EnsureGetterConfigured();
@@ -2794,8 +2835,14 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
-                            return baseImplementation();
+                        if (_useBaseImplementation)
+                        {
+                            if (baseImplementation != null)
+                                return baseImplementation();
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
@@ -2820,6 +2867,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
+                private bool _useBaseImplementation;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -2839,6 +2887,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
+                internal void UseBaseImplementation()
+                {
+                    _hasConfiguredSetter = true;
+                    _useBaseImplementation = true;
+                }
+
                 internal void Set(string value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
@@ -2851,10 +2905,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
+                        if (_useBaseImplementation)
                         {
-                            baseImplementation();
-                            return;
+                            if (baseImplementation != null)
+                            {
+                                baseImplementation();
+                                return;
+                            }
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
                         _defaultPropertyBehaviour.BackingField = value;
@@ -2873,7 +2932,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : IProtectedVirtualPropertyPropertySetterBuilder, IProtectedVirtualPropertyPropertySetterFluentBuilder
+                internal class Builder : IProtectedVirtualPropertyPropertySetterBuilder, IProtectedVirtualPropertyPropertySetterFluentBuilder, IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly global::Imposter.Abstractions.Arg<string> _criteria;
@@ -2894,8 +2953,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    IProtectedVirtualPropertyPropertySetterFluentBuilder IProtectedVirtualPropertyPropertySetterContinuationBuilder.Then()
+                    IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder IProtectedVirtualPropertyPropertySetterContinuationBuilder.Then()
                     {
+                        return this;
+                    }
+
+                    IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder IProtectedVirtualPropertyPropertySetterBuilder.Then()
+                    {
+                        return this;
+                    }
+
+                    IProtectedVirtualPropertyPropertySetterFluentBuilder IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
+                    {
+                        _setterImposter.UseBaseImplementation();
                         return this;
                     }
                 }
@@ -2910,6 +2980,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _setterImposter.MarkConfigured();
                 return new SetterImposter.Builder(_setterImposter, criteria);
+            }
+
+            IProtectedVirtualPropertyPropertyBuilder IProtectedVirtualPropertyPropertyBuilder.UseBaseImplementation()
+            {
+                _getterImposterBuilder.EnableBaseImplementation();
+                _setterImposter.UseBaseImplementation();
+                return this;
             }
         }
 

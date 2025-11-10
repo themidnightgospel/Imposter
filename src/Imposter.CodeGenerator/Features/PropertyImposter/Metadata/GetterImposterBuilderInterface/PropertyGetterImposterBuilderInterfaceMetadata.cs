@@ -40,6 +40,16 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly PropertyGetterThenMethodMetadata ThenMethod;
 
+    internal readonly GetterUseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+
+    internal readonly string? UseBaseImplementationEntryInterfaceName;
+
+    internal readonly NameSyntax? UseBaseImplementationEntryInterfaceTypeSyntax;
+
+    internal readonly GetterUseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
+
+    internal readonly PropertyGetterThenMethodMetadata? InitialThenMethod;
+
     internal PropertyGetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
         Name = $"I{property.UniqueName}PropertyGetterBuilder";
@@ -60,5 +70,28 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         CallbackMethod = new CallbackMethodMetadata(ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
         CalledMethod = new CalledMethodMetadata();
         ThenMethod = new PropertyGetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        if (property.GetterSupportsBaseImplementation)
+        {
+            UseBaseImplementationMethod = new GetterUseBaseImplementationMethodMetadata(
+                FluentInterfaceTypeSyntax,
+                FluentInterfaceTypeSyntax);
+
+            UseBaseImplementationEntryInterfaceName = $"I{property.UniqueName}PropertyGetterUseBaseImplementationBuilder";
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(UseBaseImplementationEntryInterfaceName);
+            UseBaseImplementationEntryMethod = new GetterUseBaseImplementationMethodMetadata(
+                UseBaseImplementationEntryInterfaceTypeSyntax,
+                FluentInterfaceTypeSyntax);
+            InitialThenMethod = new PropertyGetterThenMethodMetadata(
+                TypeSyntax,
+                UseBaseImplementationEntryInterfaceTypeSyntax);
+        }
+        else
+        {
+            UseBaseImplementationMethod = null;
+            UseBaseImplementationEntryInterfaceName = null;
+            UseBaseImplementationEntryInterfaceTypeSyntax = null;
+            UseBaseImplementationEntryMethod = null;
+            InitialThenMethod = null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Setter;
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -26,6 +27,7 @@ internal static class PropertyImposterBuilder
             .AddMember(property.Core.HasSetter ? SetterImposterBuilder.Build(property) : null)
             .AddMember(property.Core.HasGetter ? BuildGetterMethod(property) : null)
             .AddMember(property.Core.HasSetter ? BuildSetterMethod(property) : null)
+            .AddMember(BuildUseBaseImplementationMethod(property))
             .Build();
 
     internal static MethodDeclarationSyntax? BuildSetterMethod(in ImposterPropertyMetadata property)
@@ -69,6 +71,41 @@ internal static class PropertyImposterBuilder
                     IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
                 )
             ))
+            .Build();
+    }
+
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(in ImposterPropertyMetadata property)
+    {
+        if (property.ImposterBuilderInterface.UseBaseImplementationMethod is not { } methodMetadata)
+        {
+            return null;
+        }
+
+        var statements = new List<StatementSyntax>();
+
+        if (property.Core.HasGetter && property.Core.GetterSupportsBaseImplementation)
+        {
+            statements.Add(
+                IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
+                    .Dot(IdentifierName("EnableBaseImplementation"))
+                    .Call()
+                    .ToStatementSyntax());
+        }
+
+        if (property.Core.HasSetter && property.Core.SetterSupportsBaseImplementation)
+        {
+            statements.Add(
+                IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
+                    .Dot(IdentifierName("UseBaseImplementation"))
+                    .Call()
+                    .ToStatementSyntax());
+        }
+
+        statements.Add(ReturnStatement(ThisExpression()));
+
+        return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax))
+            .WithBody(Block(statements.ToArray()))
             .Build();
     }
 

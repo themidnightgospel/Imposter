@@ -10,18 +10,29 @@ namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImpo
 
 internal static class SetterImposterBuilderBuilder
 {
-    internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
-        new ClassDeclarationBuilder(property.SetterImposter.Builder.Name)
+    internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
+    {
+        var builder = new ClassDeclarationBuilder(property.SetterImposter.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.Syntax))
-            .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.FluentInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.FluentInterfaceTypeSyntax));
+
+        if (property.SetterImposterBuilderInterface.UseBaseImplementationEntryInterfaceTypeSyntax is not null)
+        {
+            builder = builder.AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.UseBaseImplementationEntryInterfaceTypeSyntax));
+        }
+
+        return builder
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.SetterImposterField))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.CriteriaField))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
             .AddMember(BuildThenMethod(property))
+            .AddMember(BuildInitialThenMethod(property))
+            .AddMember(BuildUseBaseImplementationEntryMethod(property))
             .Build();
+    }
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property) =>
         new ConstructorWithFieldInitializationBuilder(property.SetterImposter.Builder.Name)
@@ -73,4 +84,38 @@ internal static class SetterImposterBuilderBuilder
                 ReturnStatement(ThisExpression())
             ))
             .Build();
+
+    private static MethodDeclarationSyntax? BuildInitialThenMethod(in ImposterPropertyMetadata property)
+    {
+        if (property.SetterImposterBuilderInterface.InitialThenMethod is not { } method)
+        {
+            return null;
+        }
+
+        return new MethodDeclarationBuilder(method.ReturnType, method.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InterfaceSyntax))
+            .WithBody(Block(
+                ReturnStatement(ThisExpression())
+            ))
+            .Build();
+    }
+
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationEntryMethod(in ImposterPropertyMetadata property)
+    {
+        if (property.SetterImposterBuilderInterface.UseBaseImplementationEntryMethod is not { } method)
+        {
+            return null;
+        }
+
+        return new MethodDeclarationBuilder(method.ReturnType, method.Name)
+            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InterfaceSyntax))
+            .WithBody(Block(
+                IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
+                    .Dot(IdentifierName("UseBaseImplementation"))
+                    .Call()
+                    .ToStatementSyntax(),
+                ReturnStatement(ThisExpression())
+            ))
+            .Build();
+    }
 }
