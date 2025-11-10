@@ -343,7 +343,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             .WithBody(
                 Block(
                     IdentifierName("_useBaseImplementation")
-                        .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                        .Assign(True)
                         .ToStatementSyntax(),
                     IdentifierName("_resultGenerator")
                         .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
@@ -417,7 +417,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement() =>
         IdentifierName("_useBaseImplementation")
-            .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
+            .Assign(False)
             .ToStatementSyntax();
 
     private static ExpressionSyntax BuildAsyncReturnExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax valueExpression)

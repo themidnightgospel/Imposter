@@ -73,10 +73,10 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName("_hasConfiguredSetter")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax(),
                 IdentifierName("_useBaseImplementation")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax()
             ))
             .Build();
@@ -129,7 +129,7 @@ internal static class SetterImposterBuilder
                     .ToStatementSyntax(),
                 IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name))
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax()
             );
 
@@ -287,7 +287,7 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
                 IdentifierName("_hasConfiguredSetter")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax()
             ))
             .Build();

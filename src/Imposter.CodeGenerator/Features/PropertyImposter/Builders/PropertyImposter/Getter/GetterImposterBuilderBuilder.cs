@@ -120,14 +120,14 @@ internal static class GetterImposterBuilderBuilder
             .WithBody(Block(
                 IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
-                    .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
+                    .Assign(False)
                     .ToStatementSyntax(),
                 IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(IdentifierName(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter.Name)))
                     .ToStatementSyntax(),
                 IdentifierName("_hasConfiguredReturn")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax()
             ))
             .Build();
@@ -283,13 +283,13 @@ internal static class GetterImposterBuilderBuilder
             .WithBody(Block(
                 IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(property.DefaultPropertyBehaviour.IsOnField.Name))
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax(),
                 IdentifierName("_useBaseImplementation")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax(),
                 IdentifierName("_hasConfiguredReturn")
-                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .Assign(True)
                     .ToStatementSyntax()
             ))
             .Build();

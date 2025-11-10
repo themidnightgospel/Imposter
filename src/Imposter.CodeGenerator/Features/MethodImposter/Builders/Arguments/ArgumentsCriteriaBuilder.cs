@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 
@@ -17,16 +18,16 @@ public static class ArgumentsCriteriaBuilder
             return null;
         }
 
-        var argumentsCriteriaClass = new ClassDeclarationBuilder(method.ArgumentsCriteria.Name, SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments))
+        var argumentsCriteriaClass = new ClassDeclarationBuilder(method.ArgumentsCriteria.Name, TypeParameterListSyntax(method.GenericTypeArguments))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(method.Symbol.Parameters.Select(SyntaxFactoryHelper.ParameterAsArgProperty))
+            .AddMembers(method.Symbol.Parameters.Select(ParameterAsArgProperty))
             .AddMember(
                 new ConstructorBuilder(method.ArgumentsCriteria.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .WithParameterList(
                         ParameterList(
                             SeparatedList(
-                                method.Symbol.Parameters.Select(SyntaxFactoryHelper.ArgParameter)
+                                method.Symbol.Parameters.Select(ArgParameter)
                             )
                         )
                     )
@@ -72,14 +73,14 @@ public static class ArgumentsCriteriaBuilder
             .Select(p =>
             {
                 var renamer = new TypeParameterRenamer(typeParameters, "Target");
-                var targetType = (TypeSyntax)renamer.Visit(SyntaxFactoryHelper.TypeSyntax(p.Type));
+                var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(p.Type));
 
                 if (p.RefKind is RefKind.Out)
                 {
-                    return Argument(SyntaxFactoryHelper.OutArgAny(targetType));
+                    return Argument(OutArgAny(targetType));
                 }
 
-                var sourceType = SyntaxFactoryHelper.TypeSyntax(p.Type);
+                var sourceType = TypeSyntax(p.Type);
 
                 var tryCastVarIdentifier = Identifier(p.Name + "Target");
 
@@ -90,13 +91,13 @@ public static class ArgumentsCriteriaBuilder
                                 SingletonSeparatedList(
                                     Argument(
                                         SimpleLambdaExpression(
-                                            Parameter(SyntaxFactoryHelper.It.Identifier),
+                                            Parameter(It.Identifier),
                                             WellKnownTypes.Imposter.Abstractions.TypeCaster
                                                 .Dot(GenericName("TryCast")
                                                     .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>([targetType, sourceType])))
                                                 )
                                                 .Call(ArgumentList(SeparatedList([
-                                                    Argument(SyntaxFactoryHelper.It),
+                                                    Argument(It),
                                                     Argument(DeclarationExpression(sourceType, SingleVariableDesignation(tryCastVarIdentifier))).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
                                                 ])))
                                                 .And(IdentifierName(p.Name)
@@ -140,7 +141,7 @@ public static class ArgumentsCriteriaBuilder
                     ReturnStatement(
                         method.Parameters.InputParameters.Count switch
                         {
-                            0 => LiteralExpression(SyntaxKind.TrueLiteralExpression),
+                            0 => True,
                             1 => InvokeMatches(method.Parameters.InputParameters[0]),
                             _ => method
                                 .Parameters

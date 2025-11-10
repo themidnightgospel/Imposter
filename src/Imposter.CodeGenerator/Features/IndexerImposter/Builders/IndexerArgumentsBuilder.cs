@@ -22,7 +22,7 @@ internal static class IndexerArgumentsBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             classBuilder = classBuilder.AddMember(
-                SyntaxFactoryHelper.SingleVariableField(
+                SingleVariableField(
                     new FieldMetadata(parameter.Name, parameter.TypeSyntax),
                     SyntaxKind.PublicKeyword));
         }
@@ -60,7 +60,7 @@ internal static class IndexerArgumentsBuilder
         var otherIdentifier = Identifier("other");
         var otherParameter = Parameter(otherIdentifier).WithType(indexer.Arguments.TypeSyntax);
 
-        ExpressionSyntax comparison = LiteralExpression(SyntaxKind.TrueLiteralExpression);
+        ExpressionSyntax comparison = True;
         foreach (var parameter in indexer.Core.Parameters)
         {
             var equalsExpression = BinaryExpression(

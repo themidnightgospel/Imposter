@@ -131,7 +131,7 @@ internal static partial class EventImposterBuilder
         }
         else
         {
-            predicateBody = LiteralExpression(SyntaxKind.TrueLiteralExpression);
+            predicateBody = True;
         }
 
         return SimpleLambdaExpression(Parameter(Identifier("entry")), predicateBody!);
