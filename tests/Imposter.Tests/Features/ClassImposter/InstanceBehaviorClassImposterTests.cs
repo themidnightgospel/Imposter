@@ -31,6 +31,9 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
+            imposter.WriteProtectedProperty(Arg<string>.Any()).UseBaseImplementation();
+            imposter.ReadProtectedProperty().UseBaseImplementation();
+
             var initial = imposter.Instance();
             initial.WriteProtectedProperty("updated");
 
