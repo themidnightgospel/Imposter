@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter;
 
@@ -30,7 +31,7 @@ internal static partial class MethodImposterBuilder
                 continue;
             }
 
-            var sourceTypeSyntax = SyntaxFactoryHelper.TypeSyntax(pType);
+            var sourceTypeSyntax = TypeSyntax(pType);
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
             var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
@@ -55,7 +56,7 @@ internal static partial class MethodImposterBuilder
             var returnType = method.Symbol.ReturnType;
             if (method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(returnType, tp)))
             {
-                var sourceTypeSyntax = SyntaxFactoryHelper.TypeSyntax(returnType);
+                var sourceTypeSyntax = TypeSyntax(returnType);
                 var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
                 var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
@@ -67,7 +68,7 @@ internal static partial class MethodImposterBuilder
 
         var condition = conditions.Count > 0
             ? conditions.Aggregate((current, next) => BinaryExpression(SyntaxKind.LogicalAndExpression, current, next))
-            : LiteralExpression(SyntaxKind.TrueLiteralExpression);
+            : True;
 
         var asMethodTypeParams = method.Symbol.TypeParameters.Select(p => TypeParameter(Identifier(p.Name + "Target"))).ToArray();
 

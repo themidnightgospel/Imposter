@@ -106,7 +106,7 @@ internal static partial class EventImposterBuilder
             .WithBody(
                 Block(
                     IdentifierName("_useBaseImplementation")
-                        .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                        .Assign(True)
                         .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())))
             .Build();

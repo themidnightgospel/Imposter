@@ -15,7 +15,7 @@ internal static partial class MethodImposterBuilderBuilder
         var groupCreation = method.MethodInvocationImposterGroup.Syntax.New(
             method.Parameters.HasInputParameters
                 ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).AsSingleArgumentListSyntax()
-                : SyntaxFactoryHelper.EmptyArgumentListSyntax);
+                : EmptyArgumentListSyntax);
 
         statements.Add(
             ThisExpression()

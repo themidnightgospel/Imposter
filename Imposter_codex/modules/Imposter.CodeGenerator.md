@@ -1,5 +1,16 @@
 # Imposter.CodeGenerator – Property Default Behaviour
 
+## Syntax Construction Guidelines
+
+When authoring or updating Roslyn syntax inside the generator, always prefer the shared helpers in `SyntaxFactoryHelper` for common literals and identifiers. In particular:
+
+- Use `SyntaxFactoryHelper.True` instead of `LiteralExpression(SyntaxKind.TrueLiteralExpression)`.
+- Use `SyntaxFactoryHelper.False` instead of `LiteralExpression(SyntaxKind.FalseLiteralExpression)`.
+- Use `SyntaxFactoryHelper.Null` instead of `LiteralExpression(SyntaxKind.DefaultLiteralExpression)` or other default/null literal expressions.
+- Use `SyntaxFactoryHelper.Var` instead of `IdentifierName("var")`.
+
+Keeping literals and identifier shorthands on the helper surface avoids redundant Roslyn allocations and ensures we emit syntax consistently across features.
+
 This note documents the default behaviour for class property imposters when the target property has an initializer.
 
 ## Class Property Initializers

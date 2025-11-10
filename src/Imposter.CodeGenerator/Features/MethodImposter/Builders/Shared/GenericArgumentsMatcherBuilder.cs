@@ -37,6 +37,6 @@ internal static class GenericArgumentsMatcherBuilder
 
         return conditions.Count > 0
             ? conditions.Aggregate((current, next) => current.And(next))
-            : LiteralExpression(SyntaxKind.TrueLiteralExpression);
+            : True;
     }
 }

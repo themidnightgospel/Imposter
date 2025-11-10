@@ -23,7 +23,7 @@ internal static class MethodImposterAdapterBuilder
             GenericName(method.MethodImposter.Interface.Name)
                 .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))));
 
-        var adapterClass = new ClassDeclarationBuilder("Adapter", SyntaxFactoryHelper.TypeParameterListSyntax(method.TargetGenericTypeArguments))
+        var adapterClass = new ClassDeclarationBuilder("Adapter", TypeParameterListSyntax(method.TargetGenericTypeArguments))
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddBaseType(adapterBaseType)
             .AddMember(
@@ -60,7 +60,7 @@ internal static class MethodImposterAdapterBuilder
 
         foreach (var p in method.Symbol.Parameters)
         {
-            var pType = SyntaxFactoryHelper.TypeSyntax(p.Type);
+            var pType = TypeSyntax(p.Type);
             var pTargetType = typeParamRenamer.Visit(pType);
             var pAdaptedName = Identifier(p.Name + "Adapted");
 
@@ -126,7 +126,7 @@ internal static class MethodImposterAdapterBuilder
             );
             body.AddRange(postInvokeActions);
 
-            var returnType = SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType);
+            var returnType = TypeSyntax(method.Symbol.ReturnType);
             var returnTargetType = typeParamRenamer.Visit(returnType);
             body.Add(ReturnStatement(TypeCasterSyntaxHelper.CastExpression("result", returnType, (TypeSyntax)returnTargetType)));
         }
@@ -137,7 +137,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         return new MethodDeclarationBuilder(
-                (TypeSyntax)typeParamRenamer.Visit(SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType)),
+                (TypeSyntax)typeParamRenamer.Visit(TypeSyntax(method.Symbol.ReturnType)),
                 "Invoke")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)

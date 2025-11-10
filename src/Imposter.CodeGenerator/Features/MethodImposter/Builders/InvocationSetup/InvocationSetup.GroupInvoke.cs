@@ -89,7 +89,7 @@ internal static partial class InvocationSetupBuilder
                 Argument(IdentifierName("methodDisplayName"))
             };
 
-            arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+            arguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
             if (method.SupportsBaseImplementation)
             {
                 arguments.Add(Argument(IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)));

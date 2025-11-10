@@ -25,9 +25,9 @@ internal static class IndexerImposterBuilder
     {
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.DefaultBehaviourField, indexer.DefaultIndexerBehaviour.TypeSyntax.New()))
-            .AddMember(indexer.Core.HasGetter ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.GetterImposterField) : null)
-            .AddMember(indexer.Core.HasSetter ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.SetterImposterField) : null)
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.Builder.DefaultBehaviourField, indexer.DefaultIndexerBehaviour.TypeSyntax.New()))
+            .AddMember(indexer.Core.HasGetter ? SinglePrivateReadonlyVariableField(indexer.Builder.GetterImposterField) : null)
+            .AddMember(indexer.Core.HasSetter ? SinglePrivateReadonlyVariableField(indexer.Builder.SetterImposterField) : null)
             .AddMember(DefaultIndexerBehaviourBuilder.Build(indexer))
             .AddMember(BuildConstructor(indexer))
             .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
@@ -54,7 +54,7 @@ internal static class IndexerImposterBuilder
                 .Assign(
                     IdentifierName("GetterImposter")
                         .New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
+                            ArgumentListSyntax(
                             [
                                 Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                                     Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
@@ -69,7 +69,7 @@ internal static class IndexerImposterBuilder
                 .Assign(
                     IdentifierName("SetterImposter")
                         .New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
+                            ArgumentListSyntax(
                             [
                                 Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                                     Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
@@ -96,7 +96,7 @@ internal static class IndexerImposterBuilder
             ReturnStatement(
                 QualifiedName(IdentifierName("GetterImposter"), IdentifierName("Builder"))
                     .New(
-                        SyntaxFactoryHelper.ArgumentListSyntax(
+                        ArgumentListSyntax(
                         [
                             Argument(IdentifierName(indexer.Builder.GetterImposterField.Name)),
                                 Argument(IdentifierName("criteria"))
@@ -126,7 +126,7 @@ internal static class IndexerImposterBuilder
             ReturnStatement(
                 QualifiedName(IdentifierName("SetterImposter"), IdentifierName("Builder"))
                     .New(
-                        SyntaxFactoryHelper.ArgumentListSyntax(
+                        ArgumentListSyntax(
                         [
                             Argument(IdentifierName(indexer.Builder.SetterImposterField.Name)),
                                 Argument(IdentifierName("criteria"))
@@ -144,8 +144,8 @@ internal static class IndexerImposterBuilder
         var invocationBuilder = new ClassDeclarationBuilder("InvocationBuilder")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.BuilderInterface.TypeSyntax))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, "_builder"))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, "_criteria"))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, "_builder"))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, "_criteria"))
             .AddMember(new ConstructorBuilder("InvocationBuilder")
                 .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                 .AddParameter(Parameter(Identifier("builder")).WithType(indexer.Builder.TypeSyntax))
@@ -213,7 +213,7 @@ internal static class IndexerImposterBuilder
                 ReturnStatement(
                     IdentifierName(indexer.Builder.GetterImposterField.Name)
                         .Dot(IdentifierName("Get"))
-                        .Call(SyntaxFactoryHelper.ArgumentListSyntax(invocationArguments)))))
+                        .Call(ArgumentListSyntax(invocationArguments)))))
             .Build();
     }
 
@@ -248,7 +248,7 @@ internal static class IndexerImposterBuilder
             .WithBody(Block(
                 IdentifierName(indexer.Builder.SetterImposterField.Name)
                     .Dot(IdentifierName("Set"))
-                    .Call(SyntaxFactoryHelper.ArgumentListSyntax(invocationArguments))
+                    .Call(ArgumentListSyntax(invocationArguments))
                     .ToStatementSyntax()))
             .Build();
     }
@@ -259,22 +259,22 @@ internal static class IndexerImposterBuilder
         var getterImposterBuilder = new ClassDeclarationBuilder("GetterImposter")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.DefaultIndexerBehaviour.TypeSyntax, indexer.GetterImplementation.DefaultBehaviourField.Name))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.DefaultIndexerBehaviour.TypeSyntax, indexer.GetterImplementation.DefaultBehaviourField.Name))
+            .AddMember(SinglePrivateReadonlyVariableField(
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(getterInvocationType),
                 indexer.GetterImplementation.SetupsField.Name,
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(getterInvocationType).New()))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            .AddMember(SinglePrivateReadonlyVariableField(
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(indexer.ArgumentsCriteria.TypeSyntax, getterInvocationType),
                 indexer.GetterImplementation.SetupLookupField.Name,
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(indexer.ArgumentsCriteria.TypeSyntax, getterInvocationType).New()))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            .AddMember(SinglePrivateReadonlyVariableField(
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax),
                 indexer.GetterImplementation.InvocationHistoryField.Name,
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax).New()))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, indexer.GetterImplementation.InvocationBehaviorField.Name))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), indexer.GetterImplementation.PropertyDisplayNameField.Name))
-            .AddMember(SyntaxFactoryHelper.SingleVariableField(WellKnownTypes.Bool, indexer.GetterImplementation.HasConfiguredReturnField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, indexer.GetterImplementation.InvocationBehaviorField.Name))
+            .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), indexer.GetterImplementation.PropertyDisplayNameField.Name))
+            .AddMember(SingleVariableField(WellKnownTypes.Bool, indexer.GetterImplementation.HasConfiguredReturnField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(BuildGetterConstructor(indexer))
             .AddMember(BuildGetterGetMethod(indexer))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
@@ -305,8 +305,8 @@ internal static class IndexerImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.GetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.GetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
             .AddMember(new ConstructorBuilder(builderMetadata.Name)
                 .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                 .AddParameter(Parameter(Identifier(builderMetadata.ImposterFieldName)).WithType(indexer.GetterImplementation.TypeSyntax))
@@ -351,7 +351,7 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         GetterReturnsMetadata returnsMetadata)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(returnsMetadata.ValueParameter);
+        var parameter = ParameterSyntax(returnsMetadata.ValueParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             IdentifierName(parameter.Identifier));
@@ -368,7 +368,7 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         GetterReturnsMetadata returnsMetadata)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(returnsMetadata.FuncParameter);
+        var parameter = ParameterSyntax(returnsMetadata.FuncParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             IdentifierName(parameter.Identifier).Call());
@@ -385,7 +385,7 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         GetterReturnsMetadata returnsMetadata)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(returnsMetadata.DelegateParameter);
+        var parameter = ParameterSyntax(returnsMetadata.DelegateParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             IdentifierName(parameter.Identifier)
@@ -407,7 +407,7 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         GetterThrowsMetadata throwsMetadata)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(throwsMetadata.ExceptionParameter);
+        var parameter = ParameterSyntax(throwsMetadata.ExceptionParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             ThrowExpression(IdentifierName(parameter.Identifier)));
@@ -440,7 +440,7 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         GetterThrowsMetadata throwsMetadata)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(throwsMetadata.DelegateParameter);
+        var parameter = ParameterSyntax(throwsMetadata.DelegateParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             ThrowExpression(
@@ -461,7 +461,7 @@ internal static class IndexerImposterBuilder
 
     private static MethodDeclarationSyntax BuildGetterBuilderCallbackMethod(in ImposterIndexerMetadata indexer)
     {
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter);
+        var parameter = ParameterSyntax(indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter);
         return new MethodDeclarationBuilder(indexer.GetterBuilderInterface.CallbackMethod.ReturnType, indexer.GetterBuilderInterface.CallbackMethod.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.GetterBuilderInterface.CallbackMethod.InterfaceSyntax))
             .AddParameter(parameter)
@@ -473,7 +473,7 @@ internal static class IndexerImposterBuilder
     private static MethodDeclarationSyntax BuildGetterBuilderCalledMethod(in ImposterIndexerMetadata indexer)
     {
         var builderMetadata = indexer.GetterImplementation.Builder;
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(indexer.GetterBuilderInterface.CalledMethod.CountParameter);
+        var parameter = ParameterSyntax(indexer.GetterBuilderInterface.CalledMethod.CountParameter);
 
         return new MethodDeclarationBuilder(indexer.GetterBuilderInterface.CalledMethod.ReturnType, indexer.GetterBuilderInterface.CalledMethod.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax))
@@ -540,13 +540,13 @@ internal static class IndexerImposterBuilder
         return new ClassDeclarationBuilder(invocationMetadata.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(invocationMetadata.ParentField))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(invocationMetadata.DefaultBehaviourField))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(invocationMetadata.ReturnValuesField, invocationMetadata.ReturnValuesField.Type.New()))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(invocationMetadata.CallbacksField, invocationMetadata.CallbacksField.Type.New()))
-            .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.LastReturnValueField.Type, invocationMetadata.LastReturnValueField.Name, SyntaxKind.PrivateKeyword))
-            .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.InvocationCountField.Type, invocationMetadata.InvocationCountField.Name, SyntaxKind.PrivateKeyword))
-            .AddMember(SyntaxFactoryHelper.SingleVariableField(invocationMetadata.PropertyDisplayNameField.Type, invocationMetadata.PropertyDisplayNameField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.ParentField))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.DefaultBehaviourField))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.ReturnValuesField, invocationMetadata.ReturnValuesField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.CallbacksField, invocationMetadata.CallbacksField.Type.New()))
+            .AddMember(SingleVariableField(invocationMetadata.LastReturnValueField.Type, invocationMetadata.LastReturnValueField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(invocationMetadata.InvocationCountField.Type, invocationMetadata.InvocationCountField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(invocationMetadata.PropertyDisplayNameField.Type, invocationMetadata.PropertyDisplayNameField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(
                 new PropertyDeclarationBuilder(indexer.ArgumentsCriteria.TypeSyntax, invocationMetadata.CriteriaField.Name)
                     .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -614,7 +614,7 @@ internal static class IndexerImposterBuilder
             .WithExpressionBody(
                 IdentifierName(parameter.Identifier)
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(
+                        ArgumentListSyntax(
                             [
                                 Argument(IdentifierName(indexer.GetterImplementation.ArgumentsVariableName))
                             ])));
@@ -625,7 +625,7 @@ internal static class IndexerImposterBuilder
             .WithBody(Block(
                 IdentifierName(invocationMetadata.DefaultBehaviourField.Name)
                     .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName))
-                    .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
+                    .Assign(False)
                     .ToStatementSyntax(),
                 IdentifierName(invocationMetadata.ReturnValuesField.Name)
                     .Dot(IdentifierName("Enqueue"))
@@ -641,7 +641,7 @@ internal static class IndexerImposterBuilder
     private static MethodDeclarationSyntax BuildGetterInvocationAddCallbackMethod(in ImposterIndexerMetadata indexer)
     {
         var invocationMetadata = indexer.GetterImplementation.Invocation;
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter);
+        var parameter = ParameterSyntax(indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter);
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddCallback")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -686,7 +686,7 @@ internal static class IndexerImposterBuilder
             "generator",
             IdentifierName("ResolveNextGenerator")
                 .Call(
-                    SyntaxFactoryHelper.ArgumentListSyntax(
+                    ArgumentListSyntax(
                         [
                             Argument(IdentifierName(argumentsParameterName))
                         ])));
@@ -733,7 +733,7 @@ internal static class IndexerImposterBuilder
                 IdentifierName(invocationMetadata.DefaultBehaviourField.Name)
                     .Dot(IdentifierName("Get"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(
+                        ArgumentListSyntax(
                             [
                                 Argument(IdentifierName(argumentsParameterName)),
                                 Argument(IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName))
@@ -821,7 +821,7 @@ internal static class IndexerImposterBuilder
                     .ToStatementSyntax(),
                 IdentifierName(invocationMetadata.DefaultBehaviourField.Name)
                     .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName))
-                    .Assign(LiteralExpression(SyntaxKind.FalseLiteralExpression))
+                    .Assign(False)
                     .ToStatementSyntax(),
                 IdentifierName(invocationMetadata.ReturnValuesField.Name)
                     .Dot(IdentifierName("Enqueue"))
@@ -839,17 +839,17 @@ internal static class IndexerImposterBuilder
         return new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(setter.CallbacksField, setter.CallbacksField.Type.New()))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(setter.InvocationHistoryField, setter.InvocationHistoryField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(setter.CallbacksField, setter.CallbacksField.Type.New()))
+            .AddMember(SinglePrivateReadonlyVariableField(setter.InvocationHistoryField, setter.InvocationHistoryField.Type.New()))
             .AddMember(indexer.Core.SetterSupportsBaseImplementation && setter.BaseImplementationCriteriaField.HasValue
-                ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+                ? SinglePrivateReadonlyVariableField(
                     setter.BaseImplementationCriteriaField.Value,
                     setter.BaseImplementationCriteriaField.Value.Type.New())
                 : null)
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(setter.DefaultBehaviourField))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(setter.InvocationBehaviorField))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(setter.PropertyDisplayNameField))
-            .AddMember(SyntaxFactoryHelper.SingleVariableField(setter.HasConfiguredSetterField.Type, setter.HasConfiguredSetterField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(SinglePrivateReadonlyVariableField(setter.DefaultBehaviourField))
+            .AddMember(SinglePrivateReadonlyVariableField(setter.InvocationBehaviorField))
+            .AddMember(SinglePrivateReadonlyVariableField(setter.PropertyDisplayNameField))
+            .AddMember(SingleVariableField(setter.HasConfiguredSetterField.Type, setter.HasConfiguredSetterField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(BuildSetterConstructor(indexer))
             .AddMember(BuildSetterCallbackMethod(indexer))
             .AddMember(BuildSetterCalledMethod(indexer))
@@ -881,7 +881,7 @@ internal static class IndexerImposterBuilder
     private static MethodDeclarationSyntax BuildSetterCallbackMethod(in ImposterIndexerMetadata indexer)
     {
         var setter = indexer.SetterImplementation;
-        var callbackParameter = SyntaxFactoryHelper.ParameterSyntax(indexer.SetterBuilderInterface.CallbackMethod.CallbackParameter);
+        var callbackParameter = ParameterSyntax(indexer.SetterBuilderInterface.CallbackMethod.CallbackParameter);
 
         var tupleExpression = TupleExpression(
             SeparatedList<ArgumentSyntax>(new SyntaxNodeOrToken[]
@@ -906,7 +906,7 @@ internal static class IndexerImposterBuilder
     private static MethodDeclarationSyntax BuildSetterCalledMethod(in ImposterIndexerMetadata indexer)
     {
         var setter = indexer.SetterImplementation;
-        var countParameter = SyntaxFactoryHelper.ParameterSyntax(indexer.SetterBuilderInterface.CalledMethod.CountParameter);
+        var countParameter = ParameterSyntax(indexer.SetterBuilderInterface.CalledMethod.CountParameter);
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             PredefinedType(Token(SyntaxKind.IntKeyword)),
@@ -992,7 +992,7 @@ internal static class IndexerImposterBuilder
                                     IdentifierName(setter.ValueParameterName)))
                             .ToStatementSyntax(),
                         callbackMatchedIdentifier
-                            .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                            .Assign(True)
                             .ToStatementSyntax()))));
 
         ExpressionSyntax defaultBehaviourCondition = IdentifierName(setter.DefaultBehaviourField.Name)
@@ -1030,7 +1030,7 @@ internal static class IndexerImposterBuilder
                                 .Call(EmptyArgumentListSyntax)
                                 .ToStatementSyntax(),
                             invokedBaseIdentifier
-                                .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                                .Assign(True)
                                 .ToStatementSyntax(),
                             BreakStatement()))));
 
@@ -1046,7 +1046,7 @@ internal static class IndexerImposterBuilder
                 IdentifierName(setter.DefaultBehaviourField.Name)
                     .Dot(IdentifierName("Set"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax([
+                        ArgumentListSyntax([
                             Argument(argumentsVariable),
                             Argument(IdentifierName(setter.ValueParameterName)),
                             Argument(LiteralExpression(SyntaxKind.NullLiteralExpression))
@@ -1064,8 +1064,7 @@ internal static class IndexerImposterBuilder
             .AddStatement(
                 LocalVariableDeclarationSyntax(
                     PredefinedType(Token(SyntaxKind.BoolKeyword)),
-                    ((IdentifierNameSyntax)callbackMatchedIdentifier).Identifier.Text,
-                    LiteralExpression(SyntaxKind.FalseLiteralExpression)))
+                    callbackMatchedIdentifier.Identifier.Text, False))
             .AddStatement(foreachStatement);
 
         if (invokedBaseIdentifier is not null && baseCriteriaLoop is not null)
@@ -1074,7 +1073,7 @@ internal static class IndexerImposterBuilder
                 LocalVariableDeclarationSyntax(
                     PredefinedType(Token(SyntaxKind.BoolKeyword)),
                     ((IdentifierNameSyntax)invokedBaseIdentifier).Identifier.Text,
-                    LiteralExpression(SyntaxKind.FalseLiteralExpression)));
+                    False));
             bodyBuilder.AddStatement(baseCriteriaLoop);
         }
 
@@ -1127,7 +1126,7 @@ internal static class IndexerImposterBuilder
                         {
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(setter.HasConfiguredSetterField.Name)),
                             Token(SyntaxKind.CommaToken),
-                            Argument(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                            Argument(True)
                         })))
                         .ToStatementSyntax()))
             .Build();
@@ -1141,8 +1140,8 @@ internal static class IndexerImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.SetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
-            .AddMember(SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.SetterImplementation.TypeSyntax, builderMetadata.ImposterFieldName))
+            .AddMember(SinglePrivateReadonlyVariableField(indexer.ArgumentsCriteria.TypeSyntax, builderMetadata.CriteriaFieldName))
             .AddMember(new ConstructorBuilder(builderMetadata.Name)
                 .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                 .AddParameter(Parameter(Identifier(builderMetadata.ImposterFieldName)).WithType(indexer.SetterImplementation.TypeSyntax))
@@ -1165,7 +1164,7 @@ internal static class IndexerImposterBuilder
     {
         var builderMetadata = indexer.SetterImplementation.Builder;
         var callbackMetadata = indexer.SetterBuilderInterface.CallbackMethod;
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(callbackMetadata.CallbackParameter);
+        var parameter = ParameterSyntax(callbackMetadata.CallbackParameter);
 
         return new MethodDeclarationBuilder(callbackMetadata.ReturnType, callbackMetadata.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.SetterBuilderInterface.CallbackMethod.InterfaceSyntax))
@@ -1186,7 +1185,7 @@ internal static class IndexerImposterBuilder
     {
         var builderMetadata = indexer.SetterImplementation.Builder;
         var calledMetadata = indexer.SetterBuilderInterface.CalledMethod;
-        var parameter = SyntaxFactoryHelper.ParameterSyntax(calledMetadata.CountParameter);
+        var parameter = ParameterSyntax(calledMetadata.CountParameter);
 
         return new MethodDeclarationBuilder(calledMetadata.ReturnType, calledMetadata.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax))
@@ -1242,7 +1241,7 @@ internal static class IndexerImposterBuilder
     }
 
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(in ImposterIndexerMetadata indexer)
-        => ArgumentList(SeparatedList(indexer.Core.Parameters.Select(parameter => SyntaxFactoryHelper.ArgumentSyntax(parameter.Symbol))));
+        => ArgumentList(SeparatedList(indexer.Core.Parameters.Select(parameter => ArgumentSyntax(parameter.Symbol))));
 
     private static LocalDeclarationStatementSyntax CreateArgumentsDeclaration(in ImposterIndexerMetadata indexer)
         => LocalVariableDeclarationSyntax(
@@ -1336,7 +1335,7 @@ internal static class IndexerImposterBuilder
                             IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)
                                 .Dot(IdentifierName("Get"))
                                 .Call(
-                                    SyntaxFactoryHelper.ArgumentListSyntax(
+                                    ArgumentListSyntax(
                                         [
                                             Argument(argumentsIdentifier),
                                             Argument(baseImplementationIdentifier)
@@ -1355,7 +1354,7 @@ internal static class IndexerImposterBuilder
                 IdentifierName(indexer.GetterImplementation.SetupVariableName)
                     .Dot(IdentifierName("Invoke"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax(
+                        ArgumentListSyntax(
                             [
                                 Argument(argumentsIdentifier),
                                 Argument(baseImplementationIdentifier)
@@ -1428,7 +1427,7 @@ internal static class IndexerImposterBuilder
                                     getterInvocationType,
                                     indexer.GetterImplementation.SetupVariableName,
                                     getterInvocationType.New(
-                                        SyntaxFactoryHelper.ArgumentListSyntax([
+                                        ArgumentListSyntax([
                                             Argument(ThisExpression()),
                                             Argument(IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)),
                                             Argument(IdentifierName("key"))
@@ -1487,7 +1486,7 @@ internal static class IndexerImposterBuilder
                         {
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.GetterImplementation.HasConfiguredReturnField.Name)),
                             Token(SyntaxKind.CommaToken),
-                            Argument(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                            Argument(True)
                         })))
                         .ToStatementSyntax()))
             .Build();

@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 
@@ -17,7 +18,7 @@ internal static class IndexerArgumentsCriteriaBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             classBuilder = classBuilder.AddMember(
-                SyntaxFactoryHelper.SingleVariableField(
+                SingleVariableField(
                     new FieldMetadata(parameter.Name, parameter.ArgTypeSyntax),
                     SyntaxKind.PublicKeyword));
         }
@@ -37,7 +38,7 @@ internal static class IndexerArgumentsCriteriaBuilder
 
         foreach (var parameter in indexer.Core.Parameters)
         {
-            constructorBuilder = constructorBuilder.AddParameter(SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name));
+            constructorBuilder = constructorBuilder.AddParameter(ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name));
             bodyBuilder.AddStatement(
                 ThisExpression()
                     .Dot(IdentifierName(parameter.Name))
@@ -71,7 +72,7 @@ internal static class IndexerArgumentsCriteriaBuilder
         return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "Matches")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(argumentsParam)
-            .WithBody(Block(ReturnStatement(comparison ?? LiteralExpression(SyntaxKind.TrueLiteralExpression))))
+            .WithBody(Block(ReturnStatement(comparison ?? True)))
             .Build();
     }
 }

@@ -127,7 +127,7 @@ internal static partial class EventImposterBuilder
                             .Dot(IdentifierName("WhenAll"))
                             .Call(Argument(IdentifierName("pendingTasks")))
                             .Dot(IdentifierName("ConfigureAwait"))
-                            .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))
+                            .Call(Argument(False))
                             .Await()
                     )
                 )
@@ -214,7 +214,7 @@ internal static partial class EventImposterBuilder
     {
         if (@event.Core.Parameters.Length == 0)
         {
-            return LiteralExpression(SyntaxKind.TrueLiteralExpression);
+            return True;
         }
 
         return TupleExpression(

@@ -15,11 +15,11 @@ internal static class DefaultIndexerBehaviourBuilder
         return new ClassDeclarationBuilder(indexer.DefaultIndexerBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
-                SyntaxFactoryHelper.SingleVariableField(indexer.DefaultIndexerBehaviour.IsOnBackingField.Type, indexer.DefaultIndexerBehaviour.IsOnBackingField.Name, TokenList(Token(SyntaxKind.PrivateKeyword)),
-                    LiteralExpression(SyntaxKind.TrueLiteralExpression)))
+                SingleVariableField(indexer.DefaultIndexerBehaviour.IsOnBackingField.Type, indexer.DefaultIndexerBehaviour.IsOnBackingField.Name, TokenList(Token(SyntaxKind.PrivateKeyword)),
+                    True))
             .AddMember(BuildIsOnProperty(indexer))
             .AddMember(
-                SyntaxFactoryHelper.SingleVariableField(
+                SingleVariableField(
                     indexer.DefaultIndexerBehaviour.BackingField,
                     SyntaxKind.InternalKeyword,
                     indexer.DefaultIndexerBehaviour.BackingField.Type.New(EmptyArgumentListSyntax)))
@@ -35,7 +35,7 @@ internal static class DefaultIndexerBehaviourBuilder
                 WellKnownTypes.System.Threading.Volatile
                     .Dot(IdentifierName("Read"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax([
+                        ArgumentListSyntax([
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name))
                         ])
                     )
@@ -47,7 +47,7 @@ internal static class DefaultIndexerBehaviourBuilder
                 WellKnownTypes.System.Threading.Volatile
                     .Dot(IdentifierName("Write"))
                     .Call(
-                        SyntaxFactoryHelper.ArgumentListSyntax([
+                        ArgumentListSyntax([
                             Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)),
                             Argument(IdentifierName("value"))
                         ])
@@ -83,7 +83,7 @@ internal static class DefaultIndexerBehaviourBuilder
                     IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
                         .Dot(IdentifierName("TryGetValue"))
                         .Call(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
+                            ArgumentListSyntax(
                             [
                                 Argument(IdentifierName("arguments")),
                                 Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
