@@ -104,9 +104,6 @@ internal readonly struct ImposterTargetMetadata
         return [];
     }
 
-    internal ImposterTargetMethodMetadata CreateMethodMetadata(IMethodSymbol methodSymbol)
-        => new ImposterTargetMethodMetadata(methodSymbol, _symbolNameNamespace.Use(methodSymbol.Name));
-
     internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol)
         => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name));
 
