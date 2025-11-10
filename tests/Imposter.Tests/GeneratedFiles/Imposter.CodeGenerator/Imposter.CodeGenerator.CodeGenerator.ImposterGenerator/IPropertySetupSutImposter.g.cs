@@ -130,6 +130,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
+                private bool _useBaseImplementation;
                 internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -196,8 +197,14 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
-                            return baseImplementation();
+                        if (_useBaseImplementation)
+                        {
+                            if (baseImplementation != null)
+                                return baseImplementation();
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
@@ -222,6 +229,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
+                private bool _useBaseImplementation;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -253,10 +261,15 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
+                        if (_useBaseImplementation)
                         {
-                            baseImplementation();
-                            return;
+                            if (baseImplementation != null)
+                            {
+                                baseImplementation();
+                                return;
+                            }
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
                         _defaultPropertyBehaviour.BackingField = value;
@@ -381,6 +394,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
+                private bool _useBaseImplementation;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -412,10 +426,15 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
+                        if (_useBaseImplementation)
                         {
-                            baseImplementation();
-                            return;
+                            if (baseImplementation != null)
+                            {
+                                baseImplementation();
+                                return;
+                            }
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
                         _defaultPropertyBehaviour.BackingField = value;
@@ -547,6 +566,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
+                private bool _useBaseImplementation;
                 internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -613,8 +633,14 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
-                            return baseImplementation();
+                        if (_useBaseImplementation)
+                        {
+                            if (baseImplementation != null)
+                                return baseImplementation();
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
                         return _defaultPropertyBehaviour.BackingField;
                     }
 

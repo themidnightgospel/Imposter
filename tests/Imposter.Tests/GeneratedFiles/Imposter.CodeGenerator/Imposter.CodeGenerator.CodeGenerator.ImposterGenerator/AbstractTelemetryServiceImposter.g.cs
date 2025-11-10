@@ -424,11 +424,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertyGetterFluentBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder
         {
+            INamePropertyGetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterCallbackBuilder, INamePropertyGetterVerifier
         {
+            INamePropertyGetterUseBaseImplementationBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertyGetterUseBaseImplementationBuilder
+        {
+            INamePropertyGetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -440,7 +448,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertySetterContinuationBuilder : INamePropertySetterCallbackBuilder
         {
-            INamePropertySetterFluentBuilder Then();
+            INamePropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -457,6 +465,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertySetterBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterVerifier
         {
+            INamePropertySetterUseBaseImplementationBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface INamePropertySetterUseBaseImplementationBuilder : INamePropertySetterFluentBuilder
+        {
+            INamePropertySetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -464,6 +479,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         {
             INamePropertyGetterBuilder Getter();
             INamePropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<string> criteria);
+            INamePropertyBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -489,7 +505,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder
+            internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder, INamePropertyGetterUseBaseImplementationBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<string>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<string>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -499,6 +515,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
+                private bool _useBaseImplementation;
                 internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -554,6 +571,30 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return this;
                 }
 
+                INamePropertyGetterUseBaseImplementationBuilder INamePropertyGetterBuilder.Then()
+                {
+                    return this;
+                }
+
+                internal void EnableBaseImplementation()
+                {
+                    _defaultPropertyBehaviour.IsOn = true;
+                    _useBaseImplementation = true;
+                    _hasConfiguredReturn = true;
+                }
+
+                INamePropertyGetterFluentBuilder INamePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
+                {
+                    EnableBaseImplementation();
+                    return this;
+                }
+
+                INamePropertyGetterFluentBuilder INamePropertyGetterFluentBuilder.UseBaseImplementation()
+                {
+                    EnableBaseImplementation();
+                    return this;
+                }
+
                 internal string Get(System.Func<string> baseImplementation = null)
                 {
                     EnsureGetterConfigured();
@@ -565,8 +606,14 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
-                            return baseImplementation();
+                        if (_useBaseImplementation)
+                        {
+                            if (baseImplementation != null)
+                                return baseImplementation();
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                        }
+
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
@@ -591,6 +638,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
+                private bool _useBaseImplementation;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -610,6 +658,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
+                internal void UseBaseImplementation()
+                {
+                    _hasConfiguredSetter = true;
+                    _useBaseImplementation = true;
+                }
+
                 internal void Set(string value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
@@ -622,10 +676,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                     if (_defaultPropertyBehaviour.IsOn)
                     {
-                        if (baseImplementation != null)
+                        if (_useBaseImplementation)
                         {
-                            baseImplementation();
-                            return;
+                            if (baseImplementation != null)
+                            {
+                                baseImplementation();
+                                return;
+                            }
+                            else
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                         }
 
                         _defaultPropertyBehaviour.BackingField = value;
@@ -644,7 +703,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : INamePropertySetterBuilder, INamePropertySetterFluentBuilder
+                internal class Builder : INamePropertySetterBuilder, INamePropertySetterFluentBuilder, INamePropertySetterUseBaseImplementationBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly global::Imposter.Abstractions.Arg<string> _criteria;
@@ -665,8 +724,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    INamePropertySetterFluentBuilder INamePropertySetterContinuationBuilder.Then()
+                    INamePropertySetterUseBaseImplementationBuilder INamePropertySetterContinuationBuilder.Then()
                     {
+                        return this;
+                    }
+
+                    INamePropertySetterUseBaseImplementationBuilder INamePropertySetterBuilder.Then()
+                    {
+                        return this;
+                    }
+
+                    INamePropertySetterFluentBuilder INamePropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
+                    {
+                        _setterImposter.UseBaseImplementation();
                         return this;
                     }
                 }
@@ -681,6 +751,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _setterImposter.MarkConfigured();
                 return new SetterImposter.Builder(_setterImposter, criteria);
+            }
+
+            INamePropertyBuilder INamePropertyBuilder.UseBaseImplementation()
+            {
+                _getterImposterBuilder.EnableBaseImplementation();
+                _setterImposter.UseBaseImplementation();
+                return this;
             }
         }
 

@@ -27,9 +27,11 @@ internal static class SetterImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
             .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_hasConfiguredSetter", SyntaxKind.PrivateKeyword))
+            .AddMember(SingleVariableField(PredefinedType(Token(SyntaxKind.BoolKeyword)), "_useBaseImplementation", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
+            .AddMember(property.Core.SetterSupportsBaseImplementation ? BuildUseBaseImplementationMethod() : null)
             .AddMember(BuildSetMethod(property.SetterImposter, property.DefaultPropertyBehaviour))
             .AddMember(BuildEnsureSetterConfiguredMethod())
             .AddMember(BuildMarkConfiguredMethod())
@@ -66,6 +68,19 @@ internal static class SetterImposterBuilder
     }
 
 
+    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod() =>
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), "UseBaseImplementation")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithBody(Block(
+                IdentifierName("_hasConfiguredSetter")
+                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .ToStatementSyntax(),
+                IdentifierName("_useBaseImplementation")
+                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .ToStatementSyntax()
+            ))
+            .Build();
+
     internal static MethodDeclarationSyntax BuildSetMethod(in PropertySetterImposterMetadata setterImposter, in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
         var baseImplementationIdentifier = IdentifierName(setterImposter.SetMethod.BaseImplementationParameter.Name);
@@ -95,6 +110,17 @@ internal static class SetterImposterBuilder
                 SyntaxKind.NotEqualsExpression,
                 baseImplementationIdentifier,
                 LiteralExpression(SyntaxKind.NullLiteralExpression));
+            var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
+            var missingBaseImplementation = ThrowStatement(
+                ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                    .WithArgumentList(
+                        Argument(
+                                BinaryExpression(
+                                    SyntaxKind.AddExpression,
+                                    IdentifierName("_propertyDisplayName"),
+                                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (setter)"))))
+                            .AsSingleArgumentListSyntax()
+                    ));
 
             var assignBackingField = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
@@ -105,10 +131,16 @@ internal static class SetterImposterBuilder
                 defaultBehaviourCheck,
                 Block(
                     IfStatement(
-                        baseProvidedCheck,
+                        useBaseImplementationCheck,
                         Block(
-                            baseImplementationIdentifier.Call().ToStatementSyntax(),
-                            ReturnStatement()
+                            IfStatement(
+                                baseProvidedCheck,
+                                Block(
+                                    baseImplementationIdentifier.Call().ToStatementSyntax(),
+                                    ReturnStatement()
+                                ),
+                                ElseClause(missingBaseImplementation)
+                            )
                         )
                     ),
                     assignBackingField

@@ -32,6 +32,14 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly PropertySetterThenMethodMetadata ThenMethod;
 
+    internal readonly string? UseBaseImplementationEntryInterfaceName;
+
+    internal readonly NameSyntax? UseBaseImplementationEntryInterfaceTypeSyntax;
+
+    internal readonly SetterUseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
+
+    internal readonly PropertySetterThenMethodMetadata? InitialThenMethod;
+
     internal PropertySetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
@@ -46,6 +54,23 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(property, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
-        ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        if (property.SetterSupportsBaseImplementation)
+        {
+            UseBaseImplementationEntryInterfaceName = $"I{property.UniqueName}PropertySetterUseBaseImplementationBuilder";
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(UseBaseImplementationEntryInterfaceName);
+            UseBaseImplementationEntryMethod = new SetterUseBaseImplementationMethodMetadata(
+                UseBaseImplementationEntryInterfaceTypeSyntax,
+                FluentInterfaceTypeSyntax);
+            ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, UseBaseImplementationEntryInterfaceTypeSyntax);
+            InitialThenMethod = new PropertySetterThenMethodMetadata(Syntax, UseBaseImplementationEntryInterfaceTypeSyntax);
+        }
+        else
+        {
+            UseBaseImplementationEntryInterfaceName = null;
+            UseBaseImplementationEntryInterfaceTypeSyntax = null;
+            UseBaseImplementationEntryMethod = null;
+            ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+            InitialThenMethod = null;
+        }
     }
 }

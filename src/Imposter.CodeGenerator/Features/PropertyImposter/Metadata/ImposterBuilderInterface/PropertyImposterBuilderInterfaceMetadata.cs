@@ -15,6 +15,8 @@ internal readonly struct PropertyImposterBuilderInterfaceMetadata
 
     internal readonly SetterMethodMetadata SetterMethod;
 
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+
     internal PropertyImposterBuilderInterfaceMetadata(
         in ImposterPropertyCoreMetadata property,
         in PropertySetterImposterBuilderInterfaceMetadata setterInterfaceMetadata,
@@ -24,5 +26,8 @@ internal readonly struct PropertyImposterBuilderInterfaceMetadata
         Syntax = SyntaxFactory.ParseName(Name);
         SetterMethod = new SetterMethodMetadata(property, setterInterfaceMetadata);
         GetterMethod = new GetterMethodMetadata(getterInterfaceMetadata);
+        UseBaseImplementationMethod = property.SupportsBaseImplementation
+            ? new UseBaseImplementationMethodMetadata(Syntax)
+            : null;
     }
 }

@@ -28,6 +28,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly bool SetterSupportsBaseImplementation;
 
+    internal readonly bool SupportsBaseImplementation;
+
     internal ImposterPropertyCoreMetadata(IPropertySymbol property, string uniqueName)
     {
         UniqueName = uniqueName;
@@ -42,6 +44,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
         GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };
         SetterSupportsBaseImplementation = containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        SupportsBaseImplementation = GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
         DisplayName = $"{containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? property.Name}.{Name}";
     }
 }
