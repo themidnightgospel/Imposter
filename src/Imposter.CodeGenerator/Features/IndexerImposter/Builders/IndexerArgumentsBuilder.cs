@@ -48,10 +48,7 @@ internal static class IndexerArgumentsBuilder
             bodyBuilder.AddStatement(
                 AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            ThisExpression(),
-                            IdentifierName(parameter.Name)),
+                        ThisExpression().Dot(IdentifierName(parameter.Name)),
                         IdentifierName(parameter.Name))
                     .ToStatementSyntax());
         }

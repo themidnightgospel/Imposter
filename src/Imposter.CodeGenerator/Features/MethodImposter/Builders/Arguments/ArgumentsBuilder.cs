@@ -66,14 +66,13 @@ internal static class ArgumentsBuilder
 
                 return Argument(
                     InvocationExpression(
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("TypeCaster"),
-                            GenericName("Cast")
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(SeparatedList<TypeSyntax>([sourceType, targetType]))
-                                )
-                        ),
+                        IdentifierName("TypeCaster")
+                            .Dot(
+                                GenericName("Cast")
+                                    .WithTypeArgumentList(
+                                        TypeArgumentList(SeparatedList<TypeSyntax>([sourceType, targetType]))
+                                    )
+                            ),
                         ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name))))
                     )
                 );

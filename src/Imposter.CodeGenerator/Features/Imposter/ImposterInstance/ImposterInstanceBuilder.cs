@@ -280,10 +280,8 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (imposterMethod.SupportsBaseImplementation)
             {
-                var baseMethodExpression = MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    BaseExpression(),
-                    IdentifierName(imposterMethod.Symbol.Name));
+                var baseMethodExpression = BaseExpression()
+                    .Dot(IdentifierName(imposterMethod.Symbol.Name));
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
@@ -363,10 +361,7 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         var assignmentExpression = AssignmentExpression(
             isSubscribe ? SyntaxKind.AddAssignmentExpression : SyntaxKind.SubtractAssignmentExpression,
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                BaseExpression(),
-                IdentifierName(@event.Core.Name)),
+            BaseExpression().Dot(IdentifierName(@event.Core.Name)),
             IdentifierName("value"));
 
         return ParenthesizedLambdaExpression()
