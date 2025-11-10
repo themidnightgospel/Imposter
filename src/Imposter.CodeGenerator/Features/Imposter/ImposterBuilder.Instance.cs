@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.Features.Imposter;
 
 internal readonly partial struct ImposterBuilder
 {
-    private static MemberDeclarationSyntax InstanceMethod(
+    private static MethodDeclarationSyntax InstanceMethod(
         in ImposterGenerationContext imposterGenerationContext,
         string imposterInstanceFieldName) =>
         new MethodDeclarationBuilder(

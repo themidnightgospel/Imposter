@@ -69,11 +69,27 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (indexer.Core.HasGetter)
         {
+            var getterArguments = indexer.Core.Parameters
+                .Select(parameter => Argument(IdentifierName(parameter.Name)))
+                .ToList();
+
+            if (indexer.Core.GetterSupportsBaseImplementation)
+            {
+                var baseInvocation = ElementAccessExpression(BaseExpression())
+                    .WithArgumentList(
+                        BracketedArgumentList(
+                            SeparatedList(indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))));
+
+                getterArguments.Add(
+                    Argument(
+                        ParenthesizedLambdaExpression()
+                            .WithExpressionBody(baseInvocation)));
+            }
+
             var getterCall = IdentifierName(ImposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Get"))
-                .Call(SyntaxFactoryHelper.ArgumentListSyntax(
-                    indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))));
+                .Call(SyntaxFactoryHelper.ArgumentListSyntax(getterArguments));
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
@@ -84,7 +100,28 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var setterArguments = indexer.Core.Parameters
                 .Select(parameter => Argument(IdentifierName(parameter.Name)))
-                .Concat([Argument(IdentifierName("value"))]);
+                .Concat([Argument(IdentifierName("value"))])
+                .ToList();
+
+            if (indexer.Core.SetterSupportsBaseImplementation)
+            {
+                var baseIndexerAccess = ElementAccessExpression(BaseExpression())
+                    .WithArgumentList(
+                        BracketedArgumentList(
+                            SeparatedList(indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))));
+
+                var baseAssignment = AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    baseIndexerAccess,
+                    IdentifierName("value"));
+
+                setterArguments.Add(
+                    Argument(
+                        ParenthesizedLambdaExpression()
+                            .WithBlock(
+                                Block(
+                                    ExpressionStatement(baseAssignment)))));
+            }
 
             var setterCall = IdentifierName(ImposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))

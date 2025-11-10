@@ -44,6 +44,10 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly string GetterSuffix;
 
+    internal readonly string BaseImplementationParameterName;
+
+    internal readonly TypeSyntax ReturnHandlerType;
+
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
         Name = "GetterImposter";
@@ -51,16 +55,19 @@ internal readonly struct IndexerGetterImposterMetadata
         InvocationImposterName = "GetterInvocationImposter";
         InvocationImposterTypeSyntax = IdentifierName(InvocationImposterName);
         ArgumentsVariableName = "arguments";
-        SetupVariableName = "setup";
+        SetupVariableName = "getterInvocationImposter";
         CriteriaParameterName = "criteria";
         CountParameterName = "count";
         GetterSuffix = " (getter)";
+        BaseImplementationParameterName = "baseImplementation";
 
         var returnGeneratorType = BuildReturnGeneratorType(indexer);
+        var returnHandlerType = BuildReturnHandlerType(indexer);
+        ReturnHandlerType = returnHandlerType;
 
         DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
         SetupsField = new FieldMetadata(
-            "_setups",
+            "_getterInvocationImposters",
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(InvocationImposterTypeSyntax));
         SetupLookupField = new FieldMetadata(
             "_setupLookup",
@@ -79,7 +86,7 @@ internal readonly struct IndexerGetterImposterMetadata
         HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
-        Invocation = new GetterInvocationMetadata(indexer, returnGeneratorType);
+        Invocation = new GetterInvocationMetadata(indexer, returnGeneratorType, returnHandlerType);
     }
 
     private static QualifiedNameSyntax BuildReturnGeneratorType(in ImposterIndexerMetadata indexer)
@@ -91,6 +98,21 @@ internal readonly struct IndexerGetterImposterMetadata
                     SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
                     {
                         indexer.Arguments.TypeSyntax,
+                        Token(SyntaxKind.CommaToken),
+                        indexer.Core.TypeSyntax
+                    }))));
+
+    private static QualifiedNameSyntax BuildReturnHandlerType(in ImposterIndexerMetadata indexer)
+        => QualifiedName(
+            WellKnownTypes.System.Namespace,
+            GenericName(
+                Identifier("Func"),
+                TypeArgumentList(
+                    SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
+                    {
+                        indexer.Arguments.TypeSyntax,
+                        Token(SyntaxKind.CommaToken),
+                        indexer.Core.AsSystemFuncType,
                         Token(SyntaxKind.CommaToken),
                         indexer.Core.TypeSyntax
                     }))));
@@ -139,7 +161,7 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly FieldMetadata CriteriaField;
 
-        internal GetterInvocationMetadata(in ImposterIndexerMetadata indexer, TypeSyntax returnGeneratorType)
+        internal GetterInvocationMetadata(in ImposterIndexerMetadata indexer, TypeSyntax returnGeneratorType, TypeSyntax returnHandlerType)
         {
             Name = "GetterInvocationImposter";
             TypeSyntax = IdentifierName(Name);
@@ -147,11 +169,11 @@ internal readonly struct IndexerGetterImposterMetadata
             DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
             ReturnValuesField = new FieldMetadata(
                 "_returnValues",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(returnGeneratorType));
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(returnHandlerType));
             CallbacksField = new FieldMetadata(
                 "_callbacks",
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.Delegates.GetterCallbackDelegateType));
-            LastReturnValueField = new FieldMetadata("_lastReturnValue", NullableType(returnGeneratorType));
+            LastReturnValueField = new FieldMetadata("_lastReturnValue", NullableType(returnHandlerType));
             InvocationCountField = new FieldMetadata("_invocationCount", PredefinedType(Token(SyntaxKind.IntKeyword)));
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",

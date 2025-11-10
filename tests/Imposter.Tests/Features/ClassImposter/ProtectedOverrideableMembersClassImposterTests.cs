@@ -97,7 +97,9 @@ namespace Imposter.Tests.Features.ClassImposter
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
             var callbackCount = 0;
 
-            var methodSetup = imposter.InvokeProtectedMethod(Arg<int>.Any())
+            imposter.ProtectedVirtualMethod(Arg<int>.Any()).UseBaseImplementation();
+
+            imposter.InvokeProtectedMethod(Arg<int>.Any())
                 .UseBaseImplementation()
                 .Callback((int _) => callbackCount++);
 
@@ -116,8 +118,6 @@ namespace Imposter.Tests.Features.ClassImposter
 
             imposter.ReadProtectedProperty().UseBaseImplementation();
             imposter.WriteProtectedProperty(Arg<string>.Any()).UseBaseImplementation();
-            // TODO
-            // imposter.ProtectedVirtualProperty.Getter().UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -142,7 +142,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             instance.ReadProtectedValue(4).ShouldBe(4);
             instance.WriteProtectedValue(2, 99);
-            instance.ReadProtectedValue(2).ShouldBe(2);
+            instance.ReadProtectedValue(2).ShouldBe(99);
 
             Should.NotThrow(() => imposter.ReadProtectedValue(Arg<int>.Any()).Called(Count.Exactly(2)));
             Should.NotThrow(() => imposter.WriteProtectedValue(Arg<int>.Any(), Arg<int>.Any()).Called(Count.Exactly(1)));

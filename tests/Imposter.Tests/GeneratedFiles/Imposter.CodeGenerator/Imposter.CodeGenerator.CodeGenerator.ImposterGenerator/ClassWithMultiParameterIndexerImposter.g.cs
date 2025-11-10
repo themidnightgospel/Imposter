@@ -98,16 +98,24 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
 
                 internal System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
-                internal int Get(IndexerIndexerArguments arguments)
+                internal int Get(IndexerIndexerArguments arguments, System.Func<int> baseImplementation = null)
                 {
                     int value = default(int);
                     if (BackingField.TryGetValue(arguments, out value))
                         return value;
+                    if (baseImplementation != null)
+                        return baseImplementation();
                     return default(int);
                 }
 
-                internal void Set(IndexerIndexerArguments arguments, int value)
+                internal void Set(IndexerIndexerArguments arguments, int value, System.Action baseImplementation = null)
                 {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                        return;
+                    }
+
                     BackingField[arguments] = value;
                 }
             }
@@ -151,21 +159,21 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            internal int Get(int row, string column)
+            internal int Get(int row, string column, System.Func<int> baseImplementation = null)
             {
-                return _getterImposter.Get(row, column);
+                return _getterImposter.Get(row, column, baseImplementation);
             }
 
-            internal void Set(int row, string column, int value)
+            internal void Set(int row, string column, int value, System.Action baseImplementation = null)
             {
-                _setterImposter.Set(row, column, value);
+                _setterImposter.Set(row, column, value, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
             private sealed class GetterImposter
             {
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                private readonly System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _setups = new System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+                private readonly System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
                 private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
@@ -178,21 +186,28 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     this._propertyDisplayName = propertyDisplayName;
                 }
 
-                internal int Get(int row, string column)
+                internal int Get(int row, string column, System.Func<int> baseImplementation = null)
                 {
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(row, column);
                     try
                     {
-                        var setup = FindMatchingSetup(arguments);
-                        if (setup is null)
+                        var getterInvocationImposter = FindGetterInvocationImposter(arguments);
+                        if (getterInvocationImposter is null)
                         {
                             EnsureGetterConfigured();
                             if (_defaultBehaviour.IsOn)
-                                return _defaultBehaviour.Get(arguments);
-                            throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                                return _defaultBehaviour.Get(arguments, baseImplementation);
+                            if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                            {
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                            }
+                            else
+                            {
+                                return default(int);
+                            }
                         }
 
-                        return setup.Invoke(arguments);
+                        return getterInvocationImposter.Invoke(arguments, baseImplementation);
                     }
                     finally
                     {
@@ -200,13 +215,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                private GetterInvocationImposter FindMatchingSetup(IndexerIndexerArguments arguments)
+                private GetterInvocationImposter FindGetterInvocationImposter(IndexerIndexerArguments arguments)
                 {
-                    foreach (var setup in _setups)
+                    foreach (var getterInvocationImposter in _getterInvocationImposters)
                     {
-                        if (setup.Criteria.Matches(arguments))
+                        if (getterInvocationImposter.Criteria.Matches(arguments))
                         {
-                            return setup;
+                            return getterInvocationImposter;
                         }
                     }
 
@@ -218,9 +233,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return _setupLookup.GetOrAdd(criteria, CreateSetup);
                     GetterInvocationImposter CreateSetup(IndexerIndexerArgumentsCriteria key)
                     {
-                        GetterInvocationImposter setup = new GetterInvocationImposter(this, _defaultBehaviour, key);
-                        _setups.Push(setup);
-                        return setup;
+                        GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, key);
+                        _getterInvocationImposters.Push(getterInvocationImposter);
+                        return getterInvocationImposter;
                     }
                 }
 
@@ -312,6 +327,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     {
                         return this;
                     }
+
+                    IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.UseBaseImplementation()
+                    {
+                        InvocationImposter.UseBaseImplementation();
+                        return this;
+                    }
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -319,9 +340,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     private readonly GetterImposter _parent;
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                    private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, int>>();
+                    private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, System.Func<int>, int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<IndexerIndexerArguments, System.Func<int>, int>>();
                     private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private System.Func<IndexerIndexerArguments, int>? _lastReturnValue;
+                    private System.Func<IndexerIndexerArguments, System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -338,7 +359,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     internal void AddReturnValue(System.Func<IndexerIndexerArguments, int> generator)
                     {
                         _defaultBehaviour.IsOn = false;
-                        _returnValues.Enqueue(generator);
+                        _returnValues.Enqueue((arguments, baseImplementation) => generator(arguments));
                         _parent.MarkReturnConfigured();
                     }
 
@@ -347,7 +368,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         _callbacks.Enqueue(callback);
                     }
 
-                    internal int Invoke(IndexerIndexerArguments arguments)
+                    internal int Invoke(IndexerIndexerArguments arguments, System.Func<int> baseImplementation = null)
                     {
                         System.Threading.Interlocked.Increment(ref _invocationCount);
                         foreach (var callback in _callbacks)
@@ -355,18 +376,18 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             callback(arguments.row, arguments.column);
                         }
 
-                        System.Func<IndexerIndexerArguments, int> generator = ResolveNextGenerator(arguments);
-                        return generator(arguments);
+                        System.Func<IndexerIndexerArguments, System.Func<int>, int> generator = ResolveNextGenerator(arguments);
+                        return generator(arguments, baseImplementation);
                     }
 
-                    private System.Func<IndexerIndexerArguments, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
+                    private System.Func<IndexerIndexerArguments, System.Func<int>, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
                     {
                         if (_defaultBehaviour.IsOn)
                         {
-                            return arguments => _defaultBehaviour.Get(arguments);
+                            return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
                         }
 
-                        if (_returnValues.TryDequeue(out System.Func<IndexerIndexerArguments, int> returnValue))
+                        if (_returnValues.TryDequeue(out System.Func<IndexerIndexerArguments, System.Func<int>, int> returnValue))
                         {
                             _lastReturnValue = returnValue;
                         }
@@ -376,7 +397,23 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
-                        return _lastReturnValue;
+                        return _lastReturnValue!;
+                    }
+
+                    internal void UseBaseImplementation()
+                    {
+                        _parent.MarkReturnConfigured();
+                        _defaultBehaviour.IsOn = false;
+                        _returnValues.Enqueue((arguments, baseImplementation) =>
+                        {
+                            if (baseImplementation == null)
+                            {
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+                            }
+
+                            return baseImplementation();
+                        });
+                        _lastReturnValue = null;
                     }
                 }
             }
@@ -386,6 +423,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
                 private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria> _baseCriteria = new System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -411,22 +449,40 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                internal void Set(int row, string column, int value)
+                internal void Set(int row, string column, int value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(row, column);
                     _invocationHistory.Add(arguments);
+                    bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
                         if (registration.Criteria.Matches(arguments))
                         {
                             registration.Callback(arguments.row, arguments.column, value);
+                            matchedCallback = true;
                         }
                     }
 
-                    if (_defaultBehaviour.IsOn)
+                    bool invokedBaseImplementation = false;
+                    foreach (var criteria in _baseCriteria)
                     {
-                        _defaultBehaviour.Set(arguments, value);
+                        if (criteria.Matches(arguments))
+                        {
+                            if (baseImplementation == null)
+                            {
+                                throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+                            }
+
+                            baseImplementation();
+                            invokedBaseImplementation = true;
+                            break;
+                        }
+                    }
+
+                    if (!invokedBaseImplementation && !matchedCallback && _defaultBehaviour.IsOn)
+                    {
+                        _defaultBehaviour.Set(arguments, value, null);
                     }
                 }
 
@@ -441,6 +497,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 internal void MarkConfigured()
                 {
                     System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
+                }
+
+                public void UseBaseImplementation(IndexerIndexerArgumentsCriteria criteria)
+                {
+                    _baseCriteria.Enqueue(criteria);
+                    MarkConfigured();
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -469,6 +531,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     {
                         return this;
                     }
+
+                    IIndexerIndexerSetterFluentBuilder IIndexerIndexerSetterBuilder.UseBaseImplementation()
+                    {
+                        _setterImposter.UseBaseImplementation(_criteria);
+                        return this;
+                    }
                 }
             }
         }
@@ -483,6 +551,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IIndexerIndexerGetterContinuationBuilder Throws<TException>()
                 where TException : Exception, new();
             IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
+            IIndexerIndexerGetterContinuationBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -539,6 +608,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IIndexerIndexerSetterBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
         {
+            IIndexerIndexerSetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -573,12 +643,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 get
                 {
-                    return _imposter._IndexerIndexer.Get(row, column);
+                    return _imposter._IndexerIndexer.Get(row, column, () => base[row, column]);
                 }
 
                 set
                 {
-                    _imposter._IndexerIndexer.Set(row, column, value);
+                    _imposter._IndexerIndexer.Set(row, column, value, () =>
+                    {
+                        base[row, column] = value;
+                    });
                 }
             }
         }

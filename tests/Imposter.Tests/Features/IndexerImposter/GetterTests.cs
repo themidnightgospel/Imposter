@@ -28,18 +28,18 @@ namespace Imposter.Tests.Features.IndexerImposter
             var alphaToken = new object();
             var betaToken = new object();
 
-            _sut[Arg<int>.Is(x => x == 1), Arg<string>.Is(s => s == "alpha"), Arg<object>.Is(o => ReferenceEquals(o, alphaToken))]
+            _sut[1, "alpha", Arg<object>.Is(o => ReferenceEquals(o, alphaToken))]
                 .Getter()
                 .Returns(100);
 
-            _sut[Arg<int>.Is(x => x == 2), Arg<string>.Is(s => s == "beta"), Arg<object>.Is(o => ReferenceEquals(o, betaToken))]
+            _sut[2, "beta", Arg<object>.Is(o => ReferenceEquals(o, betaToken))]
                 .Getter()
                 .Returns(200);
 
             var instance = _sut.Instance();
             instance[1, "alpha", alphaToken].ShouldBe(100);
             instance[2, "beta", betaToken].ShouldBe(200);
-            Should.Throw<MissingImposterException>(() => _ = instance[3, "none", new object()]);
+            instance[3, "none", new object()].ShouldBe(default(int));
         }
 
         [Fact]
@@ -175,10 +175,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new IIndexerSetupSutImposter(ImposterInvocationBehavior.Explicit);
 
-            var ex = Should.Throw<MissingImposterException>(() =>
-            {
-                _ = sut.Instance()[7, "missing", new object()];
-            });
+            var ex = Should.Throw<MissingImposterException>(() => { _ = sut.Instance()[7, "missing", new object()]; });
 
             ex.Message.ShouldContain("(getter)");
         }
@@ -357,9 +354,9 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenImplicitModeGetter_WhenCallUnmatched_ThenThrows()
+        public void GivenImplicitModeGetter_WhenCallUnmatched_ThenReturnsDefault()
         {
-            _sut[Arg<int>.Is(x => x == 5), Arg<string>.Is(s => s == "configured"), Arg<object>.Any()]
+            _sut[5, "configured", Arg<object>.Any()]
                 .Getter()
                 .Returns(500);
 
@@ -367,9 +364,9 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             instance[5, "configured", new object()].ShouldBe(500);
 
-            var ex = Should.Throw<MissingImposterException>(() => _ = instance[1, "missing", new object()]);
-            ex.Message.ShouldContain("(getter)");
+            instance[1, "missing", new object()].ShouldBe(default(int));
         }
+
         [Fact]
         public void GivenGetterExceptionFactory_WhenInvoked_ThenThrowsGeneratedException()
         {

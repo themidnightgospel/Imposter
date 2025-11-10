@@ -65,11 +65,15 @@ internal static class DefaultIndexerBehaviourBuilder
     private static MethodDeclarationSyntax BuildGetMethod(in ImposterIndexerMetadata indexer)
     {
         var argumentsParam = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
+        var baseImplementationParam = Parameter(Identifier("baseImplementation"))
+            .WithType(indexer.Core.AsSystemFuncType)
+            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)));
         var valueIdentifier = IdentifierName("value");
 
         return new MethodDeclarationBuilder(indexer.Core.TypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
+            .AddParameter(baseImplementationParam)
             .WithBody(Block(
                 LocalDeclarationStatement(
                     VariableDeclaration(indexer.Core.TypeSyntax)
@@ -84,28 +88,57 @@ internal static class DefaultIndexerBehaviourBuilder
                             SyntaxFactoryHelper.ArgumentListSyntax(
                             [
                                 Argument(IdentifierName("arguments")),
-                                    Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
+                                Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
                             ])),
                     ReturnStatement(valueIdentifier)),
+                IfStatement(
+                    BinaryExpression(
+                        SyntaxKind.NotEqualsExpression,
+                        IdentifierName(baseImplementationParam.Identifier),
+                        LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                    ReturnStatement(
+                        InvocationExpression(IdentifierName(baseImplementationParam.Identifier))
+                            .WithArgumentList(ArgumentList()))),
                 ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))))
             .Build();
     }
 
     private static MethodDeclarationSyntax BuildSetMethod(in ImposterIndexerMetadata indexer)
     {
+        var baseImplementationParam = Parameter(Identifier("baseImplementation"))
+            .WithType(indexer.Core.AsSystemActionType)
+            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)));
+
+        var argumentsParameter = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
+
+        var assignment = ExpressionStatement(
+            AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
+                    .WithArgumentList(
+                        BracketedArgumentList(
+                            SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
+                IdentifierName("value")));
+
+        var baseInvocation = IfStatement(
+            BinaryExpression(
+                SyntaxKind.NotEqualsExpression,
+                IdentifierName(baseImplementationParam.Identifier),
+                LiteralExpression(SyntaxKind.NullLiteralExpression)),
+            Block(
+                ExpressionStatement(
+                    InvocationExpression(IdentifierName(baseImplementationParam.Identifier))
+                        .WithArgumentList(ArgumentList())),
+                ReturnStatement()));
+
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax))
+            .AddParameter(argumentsParameter)
             .AddParameter(Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax))
+            .AddParameter(baseImplementationParam)
             .WithBody(Block(
-                ExpressionStatement(
-                    AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
-                            .WithArgumentList(
-                                BracketedArgumentList(
-                                    SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
-                        IdentifierName("value")))))
+                baseInvocation,
+                assignment))
             .Build();
     }
 }

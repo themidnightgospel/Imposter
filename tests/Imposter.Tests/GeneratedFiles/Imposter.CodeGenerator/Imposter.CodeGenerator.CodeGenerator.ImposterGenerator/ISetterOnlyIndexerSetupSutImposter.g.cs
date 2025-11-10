@@ -92,16 +92,24 @@ namespace Imposter.Tests.Features.IndexerImposter
                 }
 
                 internal System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
-                internal int Get(IndexerIndexerArguments arguments)
+                internal int Get(IndexerIndexerArguments arguments, System.Func<int> baseImplementation = null)
                 {
                     int value = default(int);
                     if (BackingField.TryGetValue(arguments, out value))
                         return value;
+                    if (baseImplementation != null)
+                        return baseImplementation();
                     return default(int);
                 }
 
-                internal void Set(IndexerIndexerArguments arguments, int value)
+                internal void Set(IndexerIndexerArguments arguments, int value, System.Action baseImplementation = null)
                 {
+                    if (baseImplementation != null)
+                    {
+                        baseImplementation();
+                        return;
+                    }
+
                     BackingField[arguments] = value;
                 }
             }
@@ -136,7 +144,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             internal void Set(int key, int value)
             {
-                _setterImposter.Set(key, value);
+                _setterImposter.Set(key, value, null);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -169,22 +177,24 @@ namespace Imposter.Tests.Features.IndexerImposter
                     }
                 }
 
-                internal void Set(int key, int value)
+                internal void Set(int key, int value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
                     _invocationHistory.Add(arguments);
+                    bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
                         if (registration.Criteria.Matches(arguments))
                         {
                             registration.Callback(arguments.key, value);
+                            matchedCallback = true;
                         }
                     }
 
-                    if (_defaultBehaviour.IsOn)
+                    if (!matchedCallback && _defaultBehaviour.IsOn)
                     {
-                        _defaultBehaviour.Set(arguments, value);
+                        _defaultBehaviour.Set(arguments, value, null);
                     }
                 }
 

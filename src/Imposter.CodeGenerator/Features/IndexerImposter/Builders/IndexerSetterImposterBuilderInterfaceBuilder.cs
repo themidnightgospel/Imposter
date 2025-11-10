@@ -27,12 +27,20 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
         ];
     }
 
-    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterIndexerMetadata indexer) =>
-        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.Name)
+    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterIndexerMetadata indexer)
+    {
+        var builder = new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
-            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax))
-            .Build();
+            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax));
+
+        if (indexer.SetterBuilderInterface.UseBaseImplementationMethod is not null)
+        {
+            builder.AddMember(BuildUseBaseImplementationMethod(indexer.SetterBuilderInterface));
+        }
+
+        return builder.Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildFluentInterface(in ImposterIndexerMetadata indexer) =>
         new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.FluentInterfaceName)
@@ -41,12 +49,14 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.ContinuationInterfaceTypeSyntax))
             .Build();
 
-    private static InterfaceDeclarationSyntax BuildContinuationInterface(in ImposterIndexerMetadata indexer) =>
-        new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.ContinuationInterfaceName)
+    private static InterfaceDeclarationSyntax BuildContinuationInterface(in ImposterIndexerMetadata indexer)
+    {
+        return new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.ContinuationInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddMember(BuildThenMethod(indexer.SetterBuilderInterface))
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildCallbackInterface(in ImposterIndexerMetadata indexer) =>
         new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.CallbackInterfaceName)
@@ -76,4 +86,13 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
         new MethodDeclarationBuilder(setterInterface.ThenMethod.ReturnType, setterInterface.ThenMethod.Name)
             .WithSemicolon()
             .Build();
+
+    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(IndexerSetterImposterBuilderInterfaceMetadata setterInterface)
+    {
+        var metadata = setterInterface.UseBaseImplementationMethod!.Value;
+
+        return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
+            .WithSemicolon()
+            .Build();
+    }
 }
