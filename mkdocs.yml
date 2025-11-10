@@ -1,0 +1,51 @@
+site_name: Imposter
+site_description: Source generator documentation and API reference for the Imposter project.
+site_url: https://themidnightgospel.github.io/Imposter/
+repo_url: https://github.com/themidnightgospel/Imposter
+repo_name: themidnightgospel/Imposter
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - navigation.instant
+    - toc.follow
+    - content.code.copy
+    - search.suggest
+    - search.share
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: indigo
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: indigo
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra:
+  version:
+    provider: mike
+
+nav:
+  - Home: index.md
+
+plugins:
+  - search
