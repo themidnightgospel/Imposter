@@ -7,7 +7,4 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static AwaitExpressionSyntax Await(this ExpressionSyntax expression)
         => AwaitExpression(expression);
-
-    internal static ExpressionSyntax AwaitIf(this ExpressionSyntax expression, bool condition)
-        => condition ? AwaitExpression(expression) : expression;
 }

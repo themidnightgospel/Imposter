@@ -341,9 +341,9 @@ internal static class IndexerImposterBuilder
             .WithAccessorList(null)
             .WithExpressionBody(
                 ArrowExpressionClause(
-                    InvocationExpression(
-                        IdentifierName(builderMetadata.ImposterFieldName).Dot(IdentifierName("GetOrCreate")),
-                        ArgumentList(SingletonSeparatedList(Argument(IdentifierName(builderMetadata.CriteriaFieldName)))))))
+                    IdentifierName(builderMetadata.ImposterFieldName)
+                        .Dot(IdentifierName("GetOrCreate"))
+                        .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(builderMetadata.CriteriaFieldName)))))))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
 
@@ -433,7 +433,7 @@ internal static class IndexerImposterBuilder
                         Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
                         ThrowExpression(
                             ObjectCreationExpression(IdentifierName(throwsMetadata.GenericTypeParameterName))
-                                .WithArgumentList(ArgumentList()))))))
+                                .WithArgumentList(EmptyArgumentListSyntax))))))
             .Build();
 
     private static MethodDeclarationSyntax BuildGetterBuilderThrowsDelegateMethod(
@@ -444,8 +444,8 @@ internal static class IndexerImposterBuilder
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
             ThrowExpression(
-                InvocationExpression(IdentifierName(parameter.Identifier))
-                    .WithArgumentList(
+                IdentifierName(parameter.Identifier)
+                    .Call(
                         BuildDelegateInvocationArguments(
                             IdentifierName(indexer.GetterImplementation.ArgumentsVariableName),
                             indexer,
@@ -516,15 +516,15 @@ internal static class IndexerImposterBuilder
     }
 
     private static ExpressionStatementSyntax InvocationImposterAddReturnValue(IndexerGetterImposterMetadata.GetterBuilderMetadata builderMetadata, ExpressionSyntax lambda)
-        => InvocationExpression(
-                IdentifierName(builderMetadata.InvocationImposterPropertyName).Dot(IdentifierName("AddReturnValue")),
-                ArgumentList(SingletonSeparatedList(Argument(lambda))))
+        => IdentifierName(builderMetadata.InvocationImposterPropertyName)
+            .Dot(IdentifierName("AddReturnValue"))
+            .Call(ArgumentList(SingletonSeparatedList(Argument(lambda))))
             .ToStatementSyntax();
 
     private static ExpressionStatementSyntax InvocationImposterAddCallback(IndexerGetterImposterMetadata.GetterBuilderMetadata builderMetadata, ExpressionSyntax callback)
-        => InvocationExpression(
-                IdentifierName(builderMetadata.InvocationImposterPropertyName).Dot(IdentifierName("AddCallback")),
-                ArgumentList(SingletonSeparatedList(Argument(callback))))
+        => IdentifierName(builderMetadata.InvocationImposterPropertyName)
+            .Dot(IdentifierName("AddCallback"))
+            .Call(ArgumentList(SingletonSeparatedList(Argument(callback))))
             .ToStatementSyntax();
 
     private static ExpressionStatementSyntax InvocationImposterUseBaseImplementation(IndexerGetterImposterMetadata.GetterBuilderMetadata builderMetadata)
@@ -612,8 +612,8 @@ internal static class IndexerImposterBuilder
                         Parameter(Identifier(indexer.GetterImplementation.BaseImplementationParameterName))
                     })))
             .WithExpressionBody(
-                InvocationExpression(IdentifierName(parameter.Identifier))
-                    .WithArgumentList(
+                IdentifierName(parameter.Identifier)
+                    .Call(
                         SyntaxFactoryHelper.ArgumentListSyntax(
                             [
                                 Argument(IdentifierName(indexer.GetterImplementation.ArgumentsVariableName))
@@ -673,8 +673,8 @@ internal static class IndexerImposterBuilder
             Identifier("callback"),
             IdentifierName(invocationMetadata.CallbacksField.Name),
             Block(
-                InvocationExpression(IdentifierName("callback"))
-                    .WithArgumentList(
+                IdentifierName("callback")
+                    .Call(
                         BuildDelegateInvocationArguments(
                             IdentifierName(argumentsParameterName),
                             indexer,
@@ -684,16 +684,16 @@ internal static class IndexerImposterBuilder
         var generatorDeclaration = LocalVariableDeclarationSyntax(
             indexer.GetterImplementation.ReturnHandlerType,
             "generator",
-            InvocationExpression(IdentifierName("ResolveNextGenerator"))
-                .WithArgumentList(
+            IdentifierName("ResolveNextGenerator")
+                .Call(
                     SyntaxFactoryHelper.ArgumentListSyntax(
                         [
                             Argument(IdentifierName(argumentsParameterName))
                         ])));
 
         var returnStatement = ReturnStatement(
-            InvocationExpression(IdentifierName("generator"))
-                .WithArgumentList(
+            IdentifierName("generator")
+                .Call(
                     ArgumentList(
                         SeparatedList<ArgumentSyntax>(new SyntaxNodeOrToken[]
                         {
@@ -809,8 +809,8 @@ internal static class IndexerImposterBuilder
                                 ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
                                     .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(messageExpression))))))),
                     ReturnStatement(
-                        InvocationExpression(IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName))
-                            .WithArgumentList(ArgumentList()))));
+                        IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName)
+                            .Call(EmptyArgumentListSyntax))));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -984,9 +984,9 @@ internal static class IndexerImposterBuilder
                         .Dot(IdentifierName("Matches"))
                         .Call(Argument(argumentsVariable)),
                     Block(
-                        InvocationExpression(
-                                IdentifierName("registration").Dot(IdentifierName("Callback")))
-                            .WithArgumentList(
+                        IdentifierName("registration")
+                            .Dot(IdentifierName("Callback"))
+                            .Call(
                                 BuildDelegateInvocationArgumentsWithValue(
                                     argumentsVariable,
                                     indexer,
@@ -1030,8 +1030,8 @@ internal static class IndexerImposterBuilder
                                     IdentifierName(setter.BaseImplementationParameterName),
                                     LiteralExpression(SyntaxKind.NullLiteralExpression)),
                                 Block(BuildMissingImposterThrow(indexer, setter.SetterSuffix))),
-                            InvocationExpression(IdentifierName(setter.BaseImplementationParameterName))
-                                .WithArgumentList(ArgumentList())
+                            IdentifierName(setter.BaseImplementationParameterName)
+                                .Call(EmptyArgumentListSyntax)
                                 .ToStatementSyntax(),
                             AssignmentExpression(
                                     SyntaxKind.SimpleAssignmentExpression,

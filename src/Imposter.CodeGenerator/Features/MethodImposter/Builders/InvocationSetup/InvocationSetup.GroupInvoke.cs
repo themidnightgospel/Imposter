@@ -17,7 +17,7 @@ internal static partial class InvocationSetupBuilder
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
             invocationImposterType,
             "invocationImposter",
-            InvocationExpression(IdentifierName("GetInvocationImposter")));
+            IdentifierName("GetInvocationImposter").Call());
 
         var guardMissingImposter = IfStatement(
             BinaryExpression(
@@ -44,9 +44,9 @@ internal static partial class InvocationSetupBuilder
                         IdentifierName("invocationImposter"),
                         invocationImposterType.Dot(IdentifierName("Default"))))));
 
-        var invokeCall = InvocationExpression(
-            invocationImposterIdentifier.Dot(IdentifierName("Invoke")),
-            BuildInvokeArgumentList(method));
+        var invokeCall = invocationImposterIdentifier
+            .Dot(IdentifierName("Invoke"))
+            .Call(BuildInvokeArgumentList(method));
 
         var methodDeclaration = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
