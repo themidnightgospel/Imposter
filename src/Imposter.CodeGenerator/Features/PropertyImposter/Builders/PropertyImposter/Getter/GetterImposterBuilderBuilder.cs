@@ -310,7 +310,6 @@ internal static class GetterImposterBuilderBuilder
                     TrackGetterInvocation(builder),
                     InvokeGetterCallbacks(builder),
                     IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour, baseImplementationIdentifier),
-                    DeclareReturnValueLocal(builder, ReturnValueVariableName),
                     DequeNextGetterReturnValue(builder, ReturnValueVariableName),
                     DeclareNextGetterReturnValue(builder, ReturnValueVariableName, NextReturnValueVariableName),
                     UpdateLastGetterReturnValue(builder, NextReturnValueVariableName),
@@ -319,11 +318,6 @@ internal static class GetterImposterBuilderBuilder
             )
             .Build();
 
-        static LocalDeclarationStatementSyntax DeclareReturnValueLocal(
-            in PropertyGetterImposterBuilderMetadata builder,
-            string variableName) =>
-            LocalVariableDeclarationSyntax(builder.LastReturnValueField.TypeSyntax, variableName);
-
         static StatementSyntax DequeNextGetterReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,
             string variableName) =>
@@ -331,7 +325,12 @@ internal static class GetterImposterBuilderBuilder
                 IdentifierName(builder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
                     .Call(
-                        Argument(IdentifierName(variableName)).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))
+                        Argument(
+                            null,
+                            Token(SyntaxKind.OutKeyword),
+                            DeclarationExpression(
+                                Var,
+                                SingleVariableDesignation(Identifier(variableName))))
                     ),
                 IdentifierName(builder.LastReturnValueField.Name)
                     .Assign(IdentifierName(variableName))
@@ -343,13 +342,11 @@ internal static class GetterImposterBuilderBuilder
             string returnValueVariableName,
             string nextVariableName) =>
             LocalVariableDeclarationSyntax(
-                builder.LastReturnValueField.TypeSyntax,
+                Var,
                 nextVariableName,
-                BinaryExpression(
-                    SyntaxKind.CoalesceExpression,
-                    IdentifierName(returnValueVariableName),
-                    IdentifierName(builder.LastReturnValueField.Name)
-                ));
+                IdentifierName(returnValueVariableName)
+                    .Coalesce(IdentifierName(builder.LastReturnValueField.Name))
+            );
 
         static StatementSyntax UpdateLastGetterReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,

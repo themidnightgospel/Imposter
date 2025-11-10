@@ -21,6 +21,6 @@ internal static partial class SyntaxFactoryHelper
     internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax? initializer = null)
         => ObjectCreationExpression(type, arguments ?? EmptyArgumentListSyntax, initializer);
 
-    internal static BinaryExpressionSyntax QuestionMarkQuestionMark(this ExpressionSyntax left, ExpressionSyntax right)
+    internal static BinaryExpressionSyntax Coalesce(this ExpressionSyntax left, ExpressionSyntax right)
         => BinaryExpression(SyntaxKind.CoalesceExpression, left, right);
 }

@@ -1,9 +1,23 @@
 ﻿namespace Imposter.Abstractions;
 
 /// <summary>
-/// Represents a constraint on how many times an event or action should occur.
+/// Represents a constraint on how many times an invocation (method/property/indexer/event)
+/// is expected to occur.
 /// Supports specifying exact, minimum, or maximum counts.
 /// </summary>
+/// <remarks>
+/// Use instances of <see cref="Count"/> with verification helpers such as <c>.Called(Count.Exactly(n))</c>
+/// to assert invocation frequency.
+///
+/// Examples:
+/// <code>
+/// sut.Do().Called(Count.Once());          // exactly 1 time
+/// sut.Do().Called(Count.Never());         // zero times
+/// sut.Do().Called(Count.AtLeast(3));      // three or more times
+/// sut.Do().Called(Count.AtMost(2));       // two or fewer times
+/// sut.Do().Called(Count.Any);             // any number of times
+/// </code>
+/// </remarks>
 public sealed class Count
 {
     /// <summary>
@@ -78,6 +92,9 @@ public sealed class Count
     /// <summary>
     /// Gets a <see cref="Count"/> that allows any number of occurrences.
     /// </summary>
+    /// <remarks>
+    /// Semantically equivalent to having no constraint.
+    /// </remarks>
     public static Count Any = new Count(null, null, null);
 
     /// <summary>
@@ -90,6 +107,13 @@ public sealed class Count
     /// </summary>
     /// <param name="actualCount">The actual number of occurrences.</param>
     /// <returns><see langword="true"/> if the actual count satisfies this constraint; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>
+    /// Matching rules:
+    /// - If <see cref="Exactly(int)"/> was used, the <paramref name="actualCount"/> must equal the exact value.
+    /// - If <see cref="AtLeast(int)"/> is set, <paramref name="actualCount"/> must be greater than or equal to the threshold.
+    /// - If <see cref="AtMost(int)"/> is set, <paramref name="actualCount"/> must be less than or equal to the threshold.
+    /// - If multiple constraints were combined internally, all must be satisfied.
+    /// </remarks>
     public bool Matches(int actualCount)
     {
         if (_exactly.HasValue)

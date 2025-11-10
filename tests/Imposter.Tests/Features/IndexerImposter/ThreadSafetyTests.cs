@@ -1,46 +1,44 @@
-﻿using System.Threading;
+using System.Threading;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.IndexerImposter
 {
     public class ThreadSafetyTests
     {
         private const int ThreadCount = 200;
-        private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
+        private readonly IIndexerSetupSutImposter _sut = new IIndexerSetupSutImposter();
 
         [Fact]
-        public void GivenConcurrentOperations_WhenMixingGettersAndSetters_ShouldNotThrowExceptions()
+        public void GivenConcurrentOperations_WhenMixingGetterAndSetter_ShouldNotThrowExceptions()
         {
+            var getter = _sut[Arg<int>.Any()].Getter();
+            var setter = _sut[Arg<int>.Any()].Setter();
+
+            var instance = _sut.Instance();
             var threads = new Thread[ThreadCount];
             var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(threads.Length);
+            var readySignal = new CountdownEvent(ThreadCount);
 
-            // Mix of getters and setters
             for (int i = 0; i < ThreadCount; i++)
             {
                 var index = i;
-                if (index % 2 == 0)
-                {
-                    threads[i] = new Thread(() =>
+                threads[i] = index % 2 == 0
+                    ? new Thread(() =>
                     {
                         readySignal.Signal();
                         startSignal.Wait();
 
-                        _sut.Instance().Age = index;
-                    });
-                }
-                else
-                {
-                    threads[i] = new Thread(() =>
+                        instance[index] = index;
+                    })
+                    : new Thread(() =>
                     {
                         readySignal.Signal();
                         startSignal.Wait();
 
-                        var _ = _sut.Instance().Age;
+                        var _ = instance[index];
                     });
-                }
             }
 
             foreach (var thread in threads)
@@ -56,24 +54,26 @@ namespace Imposter.Tests.Features.PropertyImposter
                 thread.Join();
             }
 
-            // Should not throw - just testing for thread safety
-            Should.NotThrow(() => _sut.Age.Getter().Called(Count.Exactly(ThreadCount / 2)));
-            Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(ThreadCount / 2)));
+            Should.NotThrow(() => getter.Called(Count.Exactly(ThreadCount / 2)));
+            Should.NotThrow(() => setter.Called(Count.Exactly(ThreadCount / 2)));
         }
 
         [Fact]
-        public void GivenSequentialReturnsSetup_WhenAccessedConcurrently_ShouldWorkCorrectly()
+        public void GivenSequentialGetterReturns_WhenAccessedConcurrently_ShouldProduceUniqueValues()
         {
-            // Setup many sequential returns
-            for (int i = 0; i < ThreadCount; i++)
+            var builder = _sut[Arg<int>.Any()].Getter();
+            var continuation = builder.Returns(0);
+
+            for (int i = 1; i < ThreadCount; i++)
             {
-                _sut.Age.Getter().Returns(i);
+                continuation = continuation.Then().Returns(i);
             }
 
+            var instance = _sut.Instance();
             var results = new int[ThreadCount];
             var threads = new Thread[ThreadCount];
             var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(threads.Length);
+            var readySignal = new CountdownEvent(ThreadCount);
 
             for (int i = 0; i < ThreadCount; i++)
             {
@@ -83,7 +83,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     readySignal.Signal();
                     startSignal.Wait();
 
-                    results[index] = _sut.Instance().Age;
+                    results[index] = instance[index];
                 });
             }
 
@@ -100,7 +100,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                 thread.Join();
             }
 
-            // All results should be unique values from 0-99 (in some order)
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
         }

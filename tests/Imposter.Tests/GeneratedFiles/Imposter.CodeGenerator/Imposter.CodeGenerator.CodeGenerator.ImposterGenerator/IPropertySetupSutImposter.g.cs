@@ -216,7 +216,10 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_returnValues.TryDequeue(out var returnValue))
                         _lastReturnValue = returnValue;
-                    return _lastReturnValue();
+                    var nextReturnValue = returnValue ?? _lastReturnValue;
+                    if (nextReturnValue != null)
+                        _lastReturnValue = nextReturnValue;
+                    return nextReturnValue();
                 }
 
                 private void EnsureGetterConfigured()
@@ -665,7 +668,10 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                     if (_returnValues.TryDequeue(out var returnValue))
                         _lastReturnValue = returnValue;
-                    return _lastReturnValue();
+                    var nextReturnValue = returnValue ?? _lastReturnValue;
+                    if (nextReturnValue != null)
+                        _lastReturnValue = nextReturnValue;
+                    return nextReturnValue();
                 }
 
                 private void EnsureGetterConfigured()
