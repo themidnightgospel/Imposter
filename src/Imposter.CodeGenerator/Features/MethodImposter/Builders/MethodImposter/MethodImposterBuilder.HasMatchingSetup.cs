@@ -10,7 +10,7 @@ internal static partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax BuildHasMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(GetHasMatchingSetupParameter(method))
             .WithBody(Block(

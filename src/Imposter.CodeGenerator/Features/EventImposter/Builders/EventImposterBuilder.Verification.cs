@@ -90,7 +90,7 @@ internal static partial class EventImposterBuilder
 
         blockBuilder.AddStatement(
             LocalVariableDeclarationSyntax(
-                PredefinedType(Token(SyntaxKind.IntKeyword)),
+                WellKnownTypes.Int,
                 "actual",
                 countMatchesIdentifier
                     .Call([
@@ -178,7 +178,7 @@ internal static partial class EventImposterBuilder
 
         blockBuilder.AddStatement(
             LocalVariableDeclarationSyntax(
-                PredefinedType(Token(SyntaxKind.IntKeyword)),
+                WellKnownTypes.Int,
                 "actual",
                 countMatchesIdentifier
                     .Call([
@@ -217,10 +217,10 @@ internal static partial class EventImposterBuilder
                 TypeArgumentList(
                     SeparatedList<TypeSyntax>([
                         IdentifierName("T"),
-                        PredefinedType(Token(SyntaxKind.BoolKeyword))
+                        WellKnownTypes.Bool
                     ]))));
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), methods.CountMatchesName)
+        return new MethodDeclarationBuilder(WellKnownTypes.Int, methods.CountMatchesName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("T"))))
@@ -233,7 +233,7 @@ internal static partial class EventImposterBuilder
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
-                        PredefinedType(Token(SyntaxKind.IntKeyword)),
+                        WellKnownTypes.Int,
                         "count",
                         LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                     ForEachStatement(
@@ -254,12 +254,12 @@ internal static partial class EventImposterBuilder
     }
 
     private static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(in EventImposterBuilderMethodsMetadata methods) =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), methods.EnsureCountMatchesName)
+        new MethodDeclarationBuilder(WellKnownTypes.Void, methods.EnsureCountMatchesName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithParameterList(
                 ParameterList(SeparatedList([
-                    Parameter(Identifier("actual")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
+                    Parameter(Identifier("actual")).WithType(WellKnownTypes.Int),
                     Parameter(Identifier("expected")).WithType(WellKnownTypes.Imposter.Abstractions.Count),
                     Parameter(Identifier("action")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
                 ])))

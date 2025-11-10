@@ -150,7 +150,7 @@ internal static class MethodImposterAdapterBuilder
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, "Target");
         var argumentsTypeWithTarget = (TypeSyntax)typeParamRenamer.Visit(method.Arguments.Syntax);
 
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "HasMatchingSetup")
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "HasMatchingSetup")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameterIf(method.Parameters.HasInputParameters, () => Parameter(Identifier("arguments")).WithType(argumentsTypeWithTarget))
             .WithBody(Block(

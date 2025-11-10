@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -53,7 +52,7 @@ internal readonly struct EventImposterBuilderFieldsMetadata
     {
         if (core.Parameters.Length == 0)
         {
-            return PredefinedType(Token(SyntaxKind.BoolKeyword));
+            return WellKnownTypes.Bool;
         }
 
         var tupleElements = core.Parameters

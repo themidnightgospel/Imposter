@@ -81,7 +81,7 @@ internal static partial class InvocationSetupBuilder
 
     private static FieldDeclarationSyntax UseBaseImplementationField() =>
         SingleVariableField(
-            PredefinedType(Token(SyntaxKind.BoolKeyword)),
+            WellKnownTypes.Bool,
             "_useBaseImplementation",
             TokenList(Token(SyntaxKind.PrivateKeyword)));
 
@@ -117,7 +117,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                 condition);
         }
 
-        return new PropertyDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), "IsEmpty")
+        return new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsEmpty")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .Build()
             .WithAccessorList(null)

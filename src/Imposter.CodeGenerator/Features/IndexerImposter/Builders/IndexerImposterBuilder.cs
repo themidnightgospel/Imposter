@@ -560,7 +560,7 @@ internal static class IndexerImposterBuilder
                                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
                             ]))))
             .AddMember(
-                new PropertyDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), "InvocationCount")
+                new PropertyDeclarationBuilder(WellKnownTypes.Int, "InvocationCount")
                     .AddModifier(Token(SyntaxKind.InternalKeyword))
                     .Build()
                     .WithAccessorList(null)
@@ -909,7 +909,7 @@ internal static class IndexerImposterBuilder
         var countParameter = ParameterSyntax(indexer.SetterBuilderInterface.CalledMethod.CountParameter);
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
-            PredefinedType(Token(SyntaxKind.IntKeyword)),
+            WellKnownTypes.Int,
             "invocationCount",
             IdentifierName(setter.InvocationHistoryField.Name)
                 .Dot(IdentifierName("Count"))
@@ -1063,7 +1063,7 @@ internal static class IndexerImposterBuilder
                     .ToStatementSyntax())
             .AddStatement(
                 LocalVariableDeclarationSyntax(
-                    PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                    WellKnownTypes.Bool,
                     callbackMatchedIdentifier.Identifier.Text, False))
             .AddStatement(foreachStatement);
 
@@ -1071,7 +1071,7 @@ internal static class IndexerImposterBuilder
         {
             bodyBuilder.AddStatement(
                 LocalVariableDeclarationSyntax(
-                    PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                    WellKnownTypes.Bool,
                     ((IdentifierNameSyntax)invokedBaseIdentifier).Identifier.Text,
                     False));
             bodyBuilder.AddStatement(baseCriteriaLoop);
@@ -1442,7 +1442,7 @@ internal static class IndexerImposterBuilder
     private static MethodDeclarationSyntax BuildGetterCalledMethod(in ImposterIndexerMetadata indexer)
     {
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
-            PredefinedType(Token(SyntaxKind.IntKeyword)),
+            WellKnownTypes.Int,
             "invocationCount",
             IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
                 .Dot(IdentifierName("Count"))

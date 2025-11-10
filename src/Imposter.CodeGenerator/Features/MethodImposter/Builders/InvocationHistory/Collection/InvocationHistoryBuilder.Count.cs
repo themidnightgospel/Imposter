@@ -11,7 +11,7 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MethodDeclarationSyntax BuildCountMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.IntKeyword)), InvocationHistoryCollectionCountMethodMetadata.Name)
+        return new MethodDeclarationBuilder(WellKnownTypes.Int, InvocationHistoryCollectionCountMethodMetadata.Name)
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(GetParameter(method))

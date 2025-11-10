@@ -59,7 +59,7 @@ internal static partial class EventImposterBuilder
         if (@event.Core.SupportsBaseImplementation)
         {
             members.Add(SingleVariableField(
-                PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                WellKnownTypes.Bool,
                 "_useBaseImplementation",
                 SyntaxKind.PrivateKeyword));
 

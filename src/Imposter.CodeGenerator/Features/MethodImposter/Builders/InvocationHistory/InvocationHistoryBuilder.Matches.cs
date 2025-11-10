@@ -13,7 +13,7 @@ internal static partial class InvocationHistoryBuilder
 {
     static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.BoolKeyword)), InvocationHistoryMatchesMethodMetadata.Name)
+        return new MethodDeclarationBuilder(WellKnownTypes.Bool, InvocationHistoryMatchesMethodMetadata.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))

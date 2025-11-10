@@ -125,7 +125,7 @@ public static class ArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(
-                PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                WellKnownTypes.Bool,
                 "Matches")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(

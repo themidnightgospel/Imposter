@@ -21,7 +21,7 @@ internal static class MethodDelegateTypeBuilder
         CreateDelegateDeclaration(
             method,
             method.CallbackDelegate.Name,
-            method.IsAsync ? WellKnownTypes.System.Threading.Tasks.Task : PredefinedType(Token(SyntaxKind.VoidKeyword)));
+            method.IsAsync ? WellKnownTypes.System.Threading.Tasks.Task :WellKnownTypes.Void);
 
     private static DelegateDeclarationSyntax GetExceptionGeneratorDelegateDeclaration(in ImposterTargetMethodMetadata method) =>
         CreateDelegateDeclaration(

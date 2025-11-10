@@ -53,7 +53,7 @@ internal static partial class EventImposterBuilder
         );
 
     private static MethodDeclarationSyntax BuildRaiseInternalMethod(in ImposterEventMetadata @event) =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.VoidKeyword)), @event.Builder.Methods.RaiseInternalName)
+        new MethodDeclarationBuilder(WellKnownTypes.Void, @event.Builder.Methods.RaiseInternalName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
             .WithBody(BuildRaiseInternalBody(@event))
@@ -161,7 +161,7 @@ internal static partial class EventImposterBuilder
         var blockBuilder = new BlockBuilder();
         var dictionaryType = WellKnownTypes.System.Collections.Generic.Dictionary(
             @event.Core.HandlerTypeSyntax,
-            PredefinedType(Token(SyntaxKind.IntKeyword)));
+            WellKnownTypes.Int);
         var handlerCounts = FieldIdentifier(@event.Builder.Fields.HandlerCounts);
         var handlerOrder = FieldIdentifier(@event.Builder.Fields.HandlerOrder);
 
@@ -180,7 +180,7 @@ internal static partial class EventImposterBuilder
                 handlerOrder,
                 Block(
                     LocalVariableDeclarationSyntax(
-                        PredefinedType(Token(SyntaxKind.IntKeyword)),
+                        WellKnownTypes.Int,
                         "remaining"),
                     IfStatement(
                         IdentifierName("budgets")

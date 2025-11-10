@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis.CSharp;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -12,7 +11,7 @@ internal static partial class MethodImposterBuilderBuilder
     private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(
-                PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                WellKnownTypes.Void,
                 CalledMethodMetadata.Name)
             .AddParameter(
                 ParameterSyntax(method.InvocationVerifierInterface.CalledMethod.CountParameter.Type,

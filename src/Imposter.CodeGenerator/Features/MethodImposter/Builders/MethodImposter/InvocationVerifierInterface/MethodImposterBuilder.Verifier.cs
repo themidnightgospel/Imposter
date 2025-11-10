@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,7 +15,7 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(
                 new MethodDeclarationBuilder(
-                        PredefinedType(Token(SyntaxKind.VoidKeyword)),
+                        WellKnownTypes.Void,
                         CalledMethodMetadata.Name)
                     .AddParameter(
                         Parameter(Identifier("count"))
