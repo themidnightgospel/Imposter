@@ -1,5 +1,6 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter.Suts;
 using Shouldly;
 using Xunit;
 
@@ -36,6 +37,15 @@ namespace Imposter.Tests.Features.ClassImposter
 
             imposter.StreamAdvanced.Raise(instance, EventArgs.Empty);
             eventRaised.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenAbstractMember_WhenImplicitBehaviorInvokedWithoutSetup_ShouldReturnDefaultValue()
+        {
+            var imposter = new AbstractTelemetryServiceImposter(ImposterInvocationBehavior.Implicit);
+            var instance = imposter.Instance();
+
+            instance.Compute(5).ShouldBe(default);
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿#pragma warning disable nullable
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using global::Imposter.Abstractions;
+using System.Collections.Concurrent;
+using Imposter.Tests.Features.ClassImposter.Suts;
+
+namespace Imposter.Tests.Features.ClassImposter.Suts
+{
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    public class ClassWithStaticMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers>
+    {
+        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private ImposterTargetInstance _imposterInstance;
+        public global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers Instance() => _imposterInstance;
+        global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers>.Instance()
+        {
+            return _imposterInstance;
+        }
+
+        public ClassWithStaticMembersImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        {
+            this._imposterInstance = new ImposterTargetInstance();
+            this._imposterInstance.InitializeImposter(this);
+            this._invocationBehavior = invocationBehavior;
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers
+        {
+            ClassWithStaticMembersImposter _imposter;
+            internal void InitializeImposter(ClassWithStaticMembersImposter imposter)
+            {
+                _imposter = imposter;
+            }
+
+            internal ImposterTargetInstance() : base()
+            {
+            }
+        }
+    }
+}

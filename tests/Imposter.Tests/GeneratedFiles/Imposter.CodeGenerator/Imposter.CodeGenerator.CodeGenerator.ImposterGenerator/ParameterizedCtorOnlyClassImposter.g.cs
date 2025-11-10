@@ -7,12 +7,12 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
-using Imposter.Tests.Features.ClassImposter;
+using Imposter.Tests.Features.ClassImposter.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter
+namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ParameterizedCtorOnlyClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass>
+    public class ParameterizedCtorOnlyClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass>
     {
         private readonly ComputeMethodImposter _computeMethodImposter;
         private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection = new ComputeMethodInvocationHistoryCollection();
@@ -23,8 +23,8 @@ namespace Imposter.Tests.Features.ClassImposter
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass>.Instance()
+        public global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass Instance() => _imposterInstance;
+        global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass>.Instance()
         {
             return _imposterInstance;
         }
@@ -499,8 +499,8 @@ namespace Imposter.Tests.Features.ClassImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass.Name");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass.Name");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.Name");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.Name");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -1412,14 +1412,14 @@ namespace Imposter.Tests.Features.ClassImposter
             this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, invocationBehavior);
             this._Name = new NamePropertyBuilder(invocationBehavior);
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass.this[int index]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.this[int index]");
             this._imposterInstance = new ImposterTargetInstance(seed, name);
             this._imposterInstance.InitializeImposter(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.ParameterizedCtorOnlyClass
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass
         {
             ParameterizedCtorOnlyClassImposter _imposter;
             internal void InitializeImposter(ParameterizedCtorOnlyClassImposter imposter)

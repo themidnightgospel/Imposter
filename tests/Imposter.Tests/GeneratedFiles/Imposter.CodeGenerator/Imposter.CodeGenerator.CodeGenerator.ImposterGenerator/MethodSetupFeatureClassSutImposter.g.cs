@@ -19,11 +19,13 @@ namespace Imposter.Tests.Features.MethodImposter
         private readonly SumAsyncMethodImposter _sumAsyncMethodImposter;
         private readonly BuildLabelAsyncMethodImposter _buildLabelAsyncMethodImposter;
         private readonly RefOutWithParamsMethodImposter _refOutWithParamsMethodImposter;
+        private readonly ThrowingCalculationMethodImposter _throwingCalculationMethodImposter;
         private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
         private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection();
         private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
         private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
         private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
+        private readonly ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection();
         public IIntSingleParamMethodImposterBuilder IntSingleParam(global::Imposter.Abstractions.Arg<int> age)
         {
             return new IntSingleParamMethodImposter.Builder(_intSingleParamMethodImposter, _intSingleParamMethodInvocationHistoryCollection, new IntSingleParamArgumentsCriteria(age));
@@ -47,6 +49,11 @@ namespace Imposter.Tests.Features.MethodImposter
         public IRefOutWithParamsMethodImposterBuilder RefOutWithParams(global::Imposter.Abstractions.Arg<int> seed, global::Imposter.Abstractions.OutArg<int> doubled, global::Imposter.Abstractions.Arg<int[]> adjustments)
         {
             return new RefOutWithParamsMethodImposter.Builder(_refOutWithParamsMethodImposter, _refOutWithParamsMethodInvocationHistoryCollection, new RefOutWithParamsArgumentsCriteria(seed, doubled, adjustments));
+        }
+
+        public IThrowingCalculationMethodImposterBuilder ThrowingCalculation(global::Imposter.Abstractions.Arg<int> value)
+        {
+            return new ThrowingCalculationMethodImposter.Builder(_throwingCalculationMethodImposter, _throwingCalculationMethodInvocationHistoryCollection, new ThrowingCalculationArgumentsCriteria(value));
         }
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
@@ -1679,6 +1686,389 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        public delegate int ThrowingCalculationDelegate(int value);
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        public delegate void ThrowingCalculationCallbackDelegate(int value);
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        public delegate System.Exception ThrowingCalculationExceptionGeneratorDelegate(int value);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ThrowingCalculationArguments
+        {
+            public int value;
+            internal ThrowingCalculationArguments(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public class ThrowingCalculationArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> value { get; }
+
+            public ThrowingCalculationArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value)
+            {
+                this.value = value;
+            }
+
+            public bool Matches(ThrowingCalculationArguments arguments)
+            {
+                return value.Matches(arguments.value);
+            }
+        }
+
+        public interface IThrowingCalculationMethodInvocationHistory
+        {
+            bool Matches(ThrowingCalculationArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ThrowingCalculationMethodInvocationHistory : IThrowingCalculationMethodInvocationHistory
+        {
+            internal ThrowingCalculationArguments Arguments;
+            internal int Result;
+            internal System.Exception Exception;
+            public ThrowingCalculationMethodInvocationHistory(ThrowingCalculationArguments Arguments, int Result, System.Exception Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(ThrowingCalculationArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ThrowingCalculationMethodInvocationHistoryCollection
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<IThrowingCalculationMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IThrowingCalculationMethodInvocationHistory>();
+            internal void Add(IThrowingCalculationMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(ThrowingCalculationArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+        }
+
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        class ThrowingCalculationMethodInvocationImposterGroup
+        {
+            internal static ThrowingCalculationMethodInvocationImposterGroup Default = new ThrowingCalculationMethodInvocationImposterGroup(new ThrowingCalculationArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal ThrowingCalculationArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter _lastestInvocationImposter;
+            public ThrowingCalculationMethodInvocationImposterGroup(ThrowingCalculationArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter;
+                if (_invocationImposters.TryDequeue(out invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ThrowingCalculationDelegate baseImplementation = null)
+            {
+                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private ThrowingCalculationDelegate _resultGenerator;
+                private readonly System.Collections.Concurrent.ConcurrentQueue<ThrowingCalculationCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ThrowingCalculationCallbackDelegate>();
+                private bool _useBaseImplementation;
+                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+
+                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ThrowingCalculationDelegate baseImplementation = null)
+                {
+                    if (_useBaseImplementation)
+                    {
+                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(value);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(ThrowingCalculationCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(ThrowingCalculationDelegate resultGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(ThrowingCalculationExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _useBaseImplementation = false;
+                    _resultGenerator = (int value) =>
+                    {
+                        throw exceptionGenerator(value);
+                    };
+                }
+
+                internal void UseBaseImplementation()
+                {
+                    _useBaseImplementation = true;
+                    _resultGenerator = null;
+                }
+
+                internal static int DefaultResultGenerator(int value)
+                {
+                    return default;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IThrowingCalculationMethodInvocationImposterGroupCallback
+        {
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Callback(ThrowingCalculationCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IThrowingCalculationMethodInvocationImposterGroupContinuation : IThrowingCalculationMethodInvocationImposterGroupCallback
+        {
+            IThrowingCalculationMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IThrowingCalculationMethodInvocationImposterGroup : IThrowingCalculationMethodInvocationImposterGroupCallback
+        {
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : Exception, new();
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Throws(ThrowingCalculationExceptionGeneratorDelegate exceptionGenerator);
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Returns(ThrowingCalculationDelegate resultGenerator);
+            IThrowingCalculationMethodInvocationImposterGroupContinuation Returns(int value);
+            IThrowingCalculationMethodInvocationImposterGroupContinuation UseBaseImplementation();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface ThrowingCalculationInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
+        public interface IThrowingCalculationMethodImposterBuilder : IThrowingCalculationMethodInvocationImposterGroup, IThrowingCalculationMethodInvocationImposterGroupCallback, ThrowingCalculationInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ThrowingCalculationMethodImposter
+        {
+            private readonly System.Collections.Concurrent.ConcurrentStack<ThrowingCalculationMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<ThrowingCalculationMethodInvocationImposterGroup>();
+            private readonly ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            public ThrowingCalculationMethodImposter(ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            {
+                this._throwingCalculationMethodInvocationHistoryCollection = _throwingCalculationMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingSetup(ThrowingCalculationArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private ThrowingCalculationMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ThrowingCalculationArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(int value, ThrowingCalculationDelegate baseImplementation = null)
+            {
+                var arguments = new ThrowingCalculationArguments(value);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)");
+                    }
+
+                    matchingInvocationImposterGroup = ThrowingCalculationMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)", value, baseImplementation);
+                    _throwingCalculationMethodInvocationHistoryCollection.Add(new ThrowingCalculationMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (System.Exception ex)
+                {
+                    _throwingCalculationMethodInvocationHistoryCollection.Add(new ThrowingCalculationMethodInvocationHistory(arguments, default, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            internal class Builder : IThrowingCalculationMethodImposterBuilder, IThrowingCalculationMethodInvocationImposterGroupContinuation
+            {
+                private readonly ThrowingCalculationMethodImposter _imposter;
+                private readonly ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection;
+                private readonly ThrowingCalculationArgumentsCriteria _argumentsCriteria;
+                private readonly ThrowingCalculationMethodInvocationImposterGroup _invocationImposterGroup;
+                private ThrowingCalculationMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(ThrowingCalculationMethodImposter _imposter, ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection, ThrowingCalculationArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._throwingCalculationMethodInvocationHistoryCollection = _throwingCalculationMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new ThrowingCalculationMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.Throws(System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.Throws(ThrowingCalculationExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int value) =>
+                    {
+                        throw exceptionGenerator.Invoke(value);
+                    });
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroupCallback.Callback(ThrowingCalculationCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.Returns(ThrowingCalculationDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.Returns(int value_1)
+                {
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroup.UseBaseImplementation()
+                {
+                    _currentInvocationImposter.UseBaseImplementation();
+                    return this;
+                }
+
+                IThrowingCalculationMethodInvocationImposterGroup IThrowingCalculationMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void ThrowingCalculationInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _throwingCalculationMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    }
+                }
+            }
+        }
+
         // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
         public delegate void VoidWithSideEffectDelegate(int delta);
         // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
@@ -2034,6 +2424,7 @@ namespace Imposter.Tests.Features.MethodImposter
             this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, invocationBehavior);
             this._buildLabelAsyncMethodImposter = new BuildLabelAsyncMethodImposter(_buildLabelAsyncMethodInvocationHistoryCollection, invocationBehavior);
             this._refOutWithParamsMethodImposter = new RefOutWithParamsMethodImposter(_refOutWithParamsMethodInvocationHistoryCollection, invocationBehavior);
+            this._throwingCalculationMethodImposter = new ThrowingCalculationMethodImposter(_throwingCalculationMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance();
             this._imposterInstance.InitializeImposter(this);
             this._invocationBehavior = invocationBehavior;
@@ -2075,6 +2466,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal override int RefOutWithParams(ref int seed, out int doubled, int[] adjustments)
             {
                 return _imposter._refOutWithParamsMethodImposter.Invoke(ref seed, out doubled, adjustments, base.RefOutWithParams);
+            }
+
+            internal override int ThrowingCalculation(int value)
+            {
+                return _imposter._throwingCalculationMethodImposter.Invoke(value, base.ThrowingCalculation);
             }
         }
     }
