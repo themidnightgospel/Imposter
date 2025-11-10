@@ -68,30 +68,53 @@ internal static class SetterImposterBuilder
 
     internal static MethodDeclarationSyntax BuildSetMethod(in PropertySetterImposterMetadata setterImposter, in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
+        var baseImplementationIdentifier = IdentifierName(setterImposter.SetMethod.BaseImplementationParameter.Name);
+
         return new MethodDeclarationBuilder(setterImposter.SetMethod.ReturnType, setterImposter.SetMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
+            .AddParameter(ParameterSyntax(setterImposter.SetMethod.BaseImplementationParameter))
             .WithBody(Block(
                     IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax(),
                     TrackSetterInvocation(setterImposter),
                     InvokeCallbacks(setterImposter),
-                    SetBackingField(setterImposter, defaultPropertyBehaviour)
+                    SetBackingField(setterImposter, defaultPropertyBehaviour, baseImplementationIdentifier)
                 )
             )
             .Build();
 
         static StatementSyntax SetBackingField(
             in PropertySetterImposterMetadata setterImposter,
-            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
-            => IfStatement(
-                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
-                ,
-                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                    .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                    .ToStatementSyntax()
+            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
+            ExpressionSyntax baseImplementationIdentifier)
+        {
+            var defaultBehaviourCheck = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
+                .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
+
+            var baseProvidedCheck = BinaryExpression(
+                SyntaxKind.NotEqualsExpression,
+                baseImplementationIdentifier,
+                LiteralExpression(SyntaxKind.NullLiteralExpression));
+
+            var assignBackingField = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
+                .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+                .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
+                .ToStatementSyntax();
+
+            return IfStatement(
+                defaultBehaviourCheck,
+                Block(
+                    IfStatement(
+                        baseProvidedCheck,
+                        Block(
+                            baseImplementationIdentifier.Call().ToStatementSyntax(),
+                            ReturnStatement()
+                        )
+                    ),
+                    assignBackingField
+                )
             );
+        }
 
         static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)
         {

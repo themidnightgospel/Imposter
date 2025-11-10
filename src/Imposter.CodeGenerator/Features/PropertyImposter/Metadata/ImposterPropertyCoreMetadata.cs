@@ -13,7 +13,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
     internal readonly bool HasSetter;
 
     internal readonly string UniqueName;
-    
+
     internal readonly TypeSyntax TypeSyntax;
 
     internal readonly string DisplayName;
@@ -23,6 +23,10 @@ internal readonly ref struct ImposterPropertyCoreMetadata
     internal readonly TypeSyntax AsSystemFuncType;
 
     internal readonly TypeSyntax AsArgType;
+
+    internal readonly bool GetterSupportsBaseImplementation;
+
+    internal readonly bool SetterSupportsBaseImplementation;
 
     internal ImposterPropertyCoreMetadata(IPropertySymbol property, string uniqueName)
     {
@@ -34,6 +38,10 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(TypeSyntax);
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-        DisplayName = $"{property.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
+        var containingType = property.ContainingType;
+        var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
+        GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };
+        SetterSupportsBaseImplementation = containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        DisplayName = $"{containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? property.Name}.{Name}";
     }
 }

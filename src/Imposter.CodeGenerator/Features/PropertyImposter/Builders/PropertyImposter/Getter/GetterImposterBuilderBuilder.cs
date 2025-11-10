@@ -239,13 +239,16 @@ internal static class GetterImposterBuilderBuilder
         in PropertyGetterImposterBuilderMetadata builder,
         in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
+        var baseImplementationIdentifier = IdentifierName(builder.GetMethod.BaseImplementationParameter.Name);
+
         return new MethodDeclarationBuilder(builder.GetMethod.ReturnType, builder.GetMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(ParameterSyntax(builder.GetMethod.BaseImplementationParameter))
             .WithBody(Block(
                     IdentifierName("EnsureGetterConfigured").Call().ToStatementSyntax(),
                     TrackGetterInvocation(builder),
                     InvokeGetterCallbacks(builder),
-                    IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour),
+                    IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour, baseImplementationIdentifier),
                     DequeNextGetterReturnValue(builder),
                     ReturnStatement(IdentifierName(builder.LastReturnValueField.Name).Call())
                 )
@@ -269,11 +272,30 @@ internal static class GetterImposterBuilderBuilder
 
         static StatementSyntax IfAutoPropertyBehaviourReturnBackingField(
             in PropertyGetterImposterBuilderMetadata builder,
-            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour) =>
-            IfStatement(
-                IdentifierName(builder.DefaultPropertyBehaviourField.Name).Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name)),
-                ReturnStatement(IdentifierName(builder.DefaultPropertyBehaviourField.Name).Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)))
+            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
+            ExpressionSyntax baseImplementationIdentifier)
+        {
+            var defaultBehaviourCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
+            var baseProvidedCheck = BinaryExpression(
+                SyntaxKind.NotEqualsExpression,
+                baseImplementationIdentifier,
+                LiteralExpression(SyntaxKind.NullLiteralExpression));
+            var returnBackingField = ReturnStatement(
+                IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)));
+
+            return IfStatement(
+                defaultBehaviourCheck,
+                Block(
+                    IfStatement(
+                        baseProvidedCheck,
+                        ReturnStatement(baseImplementationIdentifier.Call())
+                    ),
+                    returnBackingField
+                )
             );
+        }
 
         static StatementSyntax InvokeGetterCallbacks(in PropertyGetterImposterBuilderMetadata builder) =>
             ForEachStatement(
