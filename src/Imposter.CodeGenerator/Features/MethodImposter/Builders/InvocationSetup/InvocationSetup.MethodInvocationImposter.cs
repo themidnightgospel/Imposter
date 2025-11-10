@@ -62,10 +62,8 @@ internal static partial class InvocationSetupBuilder
         else
         {
             body.AddStatement(
-                MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        IdentifierName("Default"),
-                        IdentifierName("_resultGenerator"))
+                IdentifierName("Default")
+                    .Dot(IdentifierName("_resultGenerator"))
                     .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))
                     .ToStatementSyntax());
         }
@@ -109,10 +107,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                     LiteralExpression(SyntaxKind.NullLiteralExpression)),
                 BinaryExpression(
                     SyntaxKind.EqualsExpression,
-                    MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        IdentifierName("_callbacks"),
-                        IdentifierName("Count")),
+                    IdentifierName("_callbacks").Dot(IdentifierName("Count")),
                     LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))));
 
         if (supportsBaseImplementation)

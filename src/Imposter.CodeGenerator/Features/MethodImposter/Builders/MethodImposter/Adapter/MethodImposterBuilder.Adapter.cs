@@ -118,7 +118,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         var invokeExpression = InvocationExpression(
-            MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("_target"), IdentifierName("Invoke")),
+            IdentifierName("_target").Dot(IdentifierName("Invoke")),
             ArgumentList(SeparatedList(invokeArguments))
         );
 
@@ -167,11 +167,8 @@ internal static class MethodImposterAdapterBuilder
                             method.Parameters.HasInputParameters
                                 ? Argument(
                                         InvocationExpression(
-                                            MemberAccessExpression(
-                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                IdentifierName("arguments"),
-                                                GenericName("As").WithTypeArgumentList(TypeArgumentList(SeparatedList(method.GenericTypeArguments.Cast<TypeSyntax>())))
-                                            )
+                                            IdentifierName("arguments")
+                                                .Dot(GenericName("As").WithTypeArgumentList(TypeArgumentList(SeparatedList(method.GenericTypeArguments.Cast<TypeSyntax>()))))
                                         )
                                     )
                                     .ToSingleArgumentList()

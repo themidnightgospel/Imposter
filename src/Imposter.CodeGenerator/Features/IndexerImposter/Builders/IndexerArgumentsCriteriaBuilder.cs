@@ -41,10 +41,7 @@ internal static class IndexerArgumentsCriteriaBuilder
             bodyBuilder.AddStatement(
                 AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            ThisExpression(),
-                            IdentifierName(parameter.Name)),
+                        ThisExpression().Dot(IdentifierName(parameter.Name)),
                         IdentifierName(parameter.Name))
                     .ToStatementSyntax());
         }
@@ -60,18 +57,12 @@ internal static class IndexerArgumentsCriteriaBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             var parameterComparison = InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(parameter.Name),
-                    IdentifierName("Matches")))
+                    IdentifierName(parameter.Name).Dot(IdentifierName("Matches")))
                 .WithArgumentList(
                     ArgumentList(
                         SingletonSeparatedList(
                             Argument(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("arguments"),
-                                    IdentifierName(parameter.Name))))));
+                                IdentifierName("arguments").Dot(IdentifierName(parameter.Name))))));
 
             comparison = comparison is null
                 ? parameterComparison

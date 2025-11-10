@@ -60,10 +60,7 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                     LocalVariableDeclarationSyntax(invocationImposterType, "invocationImposter"),
                     IfStatement(
                         InvocationExpression(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("_invocationImposters"),
-                                    IdentifierName("TryDequeue")))
+                                IdentifierName("_invocationImposters").Dot(IdentifierName("TryDequeue")))
                             .WithArgumentList(
                                 ArgumentList(
                                     SingletonSeparatedList(
@@ -72,10 +69,7 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                             IfStatement(
                                 PrefixUnaryExpression(
                                     SyntaxKind.LogicalNotExpression,
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("invocationImposter"),
-                                        IdentifierName("IsEmpty"))),
+                                    IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty"))),
                                 Block(
                                     ExpressionStatement(
                                         AssignmentExpression(

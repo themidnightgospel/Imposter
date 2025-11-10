@@ -42,16 +42,10 @@ internal static partial class InvocationSetupBuilder
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         IdentifierName("invocationImposter"),
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            invocationImposterType,
-                            IdentifierName("Default"))))));
+                        invocationImposterType.Dot(IdentifierName("Default"))))));
 
         var invokeCall = InvocationExpression(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                invocationImposterIdentifier,
-                IdentifierName("Invoke")),
+            invocationImposterIdentifier.Dot(IdentifierName("Invoke")),
             BuildInvokeArgumentList(method));
 
         var methodDeclaration = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")

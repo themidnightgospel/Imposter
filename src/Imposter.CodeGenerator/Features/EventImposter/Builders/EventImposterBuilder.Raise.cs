@@ -118,10 +118,7 @@ internal static partial class EventImposterBuilder
             IfStatement(
                 BinaryExpression(
                     SyntaxKind.GreaterThanExpression,
-                    MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        IdentifierName("pendingTasks"),
-                        IdentifierName("Count")),
+                    IdentifierName("pendingTasks").Dot(IdentifierName("Count")),
                     LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                 Block(
                     ExpressionStatement(

@@ -1314,10 +1314,8 @@ internal static class IndexerImposterBuilder
         var argumentsIdentifier = IdentifierName(indexer.GetterImplementation.ArgumentsVariableName);
         var baseImplementationIdentifier = IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName);
         var invocationBehaviorIdentifier = IdentifierName(indexer.GetterImplementation.InvocationBehaviorField.Name);
-        var explicitInvocationBehavior = MemberAccessExpression(
-            SyntaxKind.SimpleMemberAccessExpression,
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
-            IdentifierName("Explicit"));
+        var explicitInvocationBehavior = WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior
+            .Dot(IdentifierName("Explicit"));
         var parameters = indexer.Core.Parameters
             .Select(parameter => parameter.ParameterSyntax)
             .ToList();
