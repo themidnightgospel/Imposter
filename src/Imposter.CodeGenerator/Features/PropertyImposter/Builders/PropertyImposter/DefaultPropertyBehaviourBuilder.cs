@@ -13,6 +13,7 @@ internal static class DefaultPropertyBehaviourBuilder
         new ClassDeclarationBuilder(defaultPropertyBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(SingleVariableField(defaultPropertyBehaviour.IsOnField, SyntaxKind.InternalKeyword, True))
+            .AddMember(SingleVariableField(defaultPropertyBehaviour.HasValueSetField, SyntaxKind.InternalKeyword, False))
             .AddMember(SingleVariableField(defaultPropertyBehaviour.BackingField, SyntaxKind.InternalKeyword, Default))
             .Build();
 }

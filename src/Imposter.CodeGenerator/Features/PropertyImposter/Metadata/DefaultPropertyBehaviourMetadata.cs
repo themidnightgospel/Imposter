@@ -12,6 +12,8 @@ internal readonly struct DefaultPropertyBehaviourMetadata
 
     internal readonly FieldMetadata IsOnField = new("IsOn", WellKnownTypes.Bool);
 
+    internal readonly FieldMetadata HasValueSetField = new("HasValueSet", WellKnownTypes.Bool);
+
     internal readonly FieldMetadata BackingField;
 
     internal DefaultPropertyBehaviourMetadata(in ImposterPropertyCoreMetadata property)

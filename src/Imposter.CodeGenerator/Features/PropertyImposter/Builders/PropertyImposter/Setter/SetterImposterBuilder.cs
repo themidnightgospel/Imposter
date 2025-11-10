@@ -122,10 +122,16 @@ internal static class SetterImposterBuilder
                             .AsSingleArgumentListSyntax()
                     ));
 
-            var assignBackingField = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                .ToStatementSyntax();
+            var assignBackingField = Block(
+                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
+                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+                    .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
+                    .ToStatementSyntax(),
+                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
+                    .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name))
+                    .Assign(LiteralExpression(SyntaxKind.TrueLiteralExpression))
+                    .ToStatementSyntax()
+            );
 
             return IfStatement(
                 defaultBehaviourCheck,
