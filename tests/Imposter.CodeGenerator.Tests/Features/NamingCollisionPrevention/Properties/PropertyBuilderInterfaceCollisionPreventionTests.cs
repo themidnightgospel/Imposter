@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Proper
 public class PropertyBuilderInterfaceCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_GetterBuilderInterfaceNameCollisions_ShouldCompile()
+    public async Task GivenGetterBuilderInterfaceNameCollisions_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -38,7 +38,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_SetterBuilderInterfaceNameCollisions_ShouldCompile()
+    public async Task GivenSetterBuilderInterfaceNameCollisions_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -68,5 +68,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

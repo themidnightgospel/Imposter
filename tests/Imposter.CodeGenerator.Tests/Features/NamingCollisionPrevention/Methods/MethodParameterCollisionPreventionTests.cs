@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Method
 public class MethodParameterCollisionPreventionTests : NamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_ParametersMatchingImposterLocals_ShouldCompile()
+    public async Task GivenParametersMatchingImposterLocals_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -35,7 +35,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingInvocationSetupNames_ShouldCompile()
+    public async Task GivenParametersMatchingInvocationSetupNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -66,7 +66,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingArgumentsCriteriaNames_ShouldCompile()
+    public async Task GivenParametersMatchingArgumentsCriteriaNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -88,7 +88,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingInvocationHistoryNames_ShouldCompile()
+    public async Task GivenParametersMatchingInvocationHistoryNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -112,7 +112,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingAdapterNames_ShouldCompile()
+    public async Task GivenParametersMatchingAdapterNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -135,7 +135,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingBaseImplementationAdapterName_ShouldCompile()
+    public async Task GivenParametersMatchingBaseImplementationAdapterName_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -157,5 +157,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

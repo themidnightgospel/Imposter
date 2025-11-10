@@ -7,8 +7,7 @@ namespace Imposter.Abstractions;
 /// <typeparam name="T">The type of the argument to match.</typeparam>
 /// <remarks>
 /// Matchers created via <see cref="Arg{T}"/> are consumed by generated imposters to determine
-/// whether a particular invocation matches a configured setup. This mirrors a familiar
-/// pattern from other mocking libraries while remaining allocation-friendly and simple.
+/// whether a particular invocation matches a configured setup.
 ///
 /// Examples:
 /// <code>

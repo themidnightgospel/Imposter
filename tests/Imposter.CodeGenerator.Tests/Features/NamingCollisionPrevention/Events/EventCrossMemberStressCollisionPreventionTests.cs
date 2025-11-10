@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events
 public class EventCrossMemberStressCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_CrossMemberCollisionNames_ShouldCompile()
+    public async Task GivenCrossMemberCollisionNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -54,3 +54,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

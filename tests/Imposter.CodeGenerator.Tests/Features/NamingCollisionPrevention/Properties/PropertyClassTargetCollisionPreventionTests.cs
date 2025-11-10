@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Proper
 public class PropertyClassTargetCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_ClassTargetsWithUseBaseImplementationProperties_ShouldCompile()
+    public async Task GivenClassTargetsWithUseBaseImplementationProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -32,7 +32,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ClassTargetCombiningThenAndUseBaseImplementation_ShouldCompile()
+    public async Task GivenClassTargetCombiningThenAndUseBaseImplementation_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Imposter.Abstractions;
@@ -58,5 +58,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

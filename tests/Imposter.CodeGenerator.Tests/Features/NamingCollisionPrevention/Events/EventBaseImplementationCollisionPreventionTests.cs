@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events
 public class EventBaseImplementationCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_VirtualEventsMatchingBaseImplementationFlow_ShouldCompile()
+    public async Task GivenVirtualEventsMatchingBaseImplementationFlow_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -39,7 +39,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_RaiseAsyncEventsWithConflictingNames_ShouldCompile()
+    public async Task GivenRaiseAsyncEventsWithConflictingNames_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -69,7 +69,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_DuplicateEventsAcrossInheritance_ShouldCompile()
+    public async Task GivenDuplicateEventsAcrossInheritance_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -95,7 +95,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_MultipleOperationNamedEventsOnSameType_ShouldCompile()
+    public async Task GivenMultipleOperationNamedEventsOnSameType_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -125,3 +125,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

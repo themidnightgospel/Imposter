@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Method
 public class MethodGenericParameterCollisionPreventionTests : NamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_GenericMethodWithTargetNamedTypeParameters_ShouldCompile()
+    public async Task GivenGenericMethodWithTargetNamedTypeParameters_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -28,7 +28,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_GenericMethodWithTExceptionParameter_ShouldCompile()
+    public async Task GivenGenericMethodWithTExceptionParameter_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -50,7 +50,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_GenericMethodWithTResultParameter_ShouldCompile()
+    public async Task GivenGenericMethodWithTResultParameter_WhenSnippetIsCompiled_ShouldCompile()
         {
             var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -76,5 +76,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

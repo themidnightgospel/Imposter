@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Proper
 public class PropertyBuilderParameterCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_BuilderParameterNamedProperties_ShouldCompile()
+    public async Task GivenBuilderParameterNamedProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -40,5 +40,7 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
 
 

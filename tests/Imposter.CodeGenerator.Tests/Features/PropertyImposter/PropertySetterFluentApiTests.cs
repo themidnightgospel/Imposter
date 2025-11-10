@@ -35,7 +35,7 @@ namespace Sample
 """;
 
     [Fact]
-    public async Task Given_Setter_WhenCallingCalled_ShouldCompile()
+    public async Task GivenSetter_WhenCallingCalled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -55,7 +55,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenUsingPredicateArgForCalled_ShouldCompile()
+    public async Task GivenSetter_WhenUsingPredicateArgForCalled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -75,7 +75,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingCallback_ShouldCompile()
+    public async Task GivenSetter_WhenCallingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -95,7 +95,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingReturnsValue_ShouldFail()
+    public async Task GivenSetter_WhenCallingReturnsValue_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -115,7 +115,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingReturnsGenerator_ShouldFail()
+    public async Task GivenSetter_WhenCallingReturnsGenerator_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -135,7 +135,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingThrowsInstance_ShouldFail()
+    public async Task GivenSetter_WhenCallingThrowsInstance_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -155,7 +155,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingThrowsGeneric_ShouldFail()
+    public async Task GivenSetter_WhenCallingThrowsGeneric_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -175,7 +175,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenChainingCallback_ShouldCompile()
+    public async Task GivenSetterCallback_WhenChainingCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -195,7 +195,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_Setter_WhenCallingThen_ShouldCompile()
+    public async Task GivenSetter_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -215,7 +215,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenCallingThen_ShouldCompile()
+    public async Task GivenSetterCallback_WhenCallingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -235,7 +235,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenCallingCalled_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -255,7 +255,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenCallingThenCalled_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingThenCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -275,7 +275,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenCallingReturns_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingReturns_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -295,7 +295,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallback_WhenCallingThrows_ShouldFail()
+    public async Task GivenSetterCallback_WhenCallingThrows_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -315,7 +315,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterThen_WhenCallingCalled_ShouldFail()
+    public async Task GivenSetterThen_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -335,7 +335,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_SetterCallbackChain_WhenCallingThenAndCallback_ShouldCompile()
+    public async Task GivenSetterCallbackChain_WhenCallingThenAndCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -360,7 +360,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenCallingUseBaseImplementationAfterThen_ShouldCompile()
+    public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementationAfterThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -380,7 +380,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenCallbackThenUseBaseImplementation_ShouldCompile()
+    public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -404,7 +404,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenChainingAfterUseBaseImplementation_ShouldCompile()
+    public async Task GivenOverrideableSetter_WhenChainingAfterUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -429,7 +429,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenCallbackThenUseBaseImplementationThenCallback_ShouldCompile()
+    public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementationThenCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -455,7 +455,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenCallingUseBaseImplementationWithoutThen_ShouldFail()
+    public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementationWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -475,7 +475,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_OverrideableSetter_WhenCallbackThenUseBaseImplementationWithoutThen_ShouldFail()
+    public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementationWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -495,7 +495,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_InterfaceSetter_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task GivenInterfaceSetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -515,7 +515,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task Given_AbstractSetter_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task GivenAbstractSetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample

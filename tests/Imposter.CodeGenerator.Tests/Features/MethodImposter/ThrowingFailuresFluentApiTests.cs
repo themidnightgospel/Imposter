@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenReturning_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -26,7 +26,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -46,7 +46,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenThrowingAgain_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenThrowingAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -66,7 +66,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -86,7 +86,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -106,7 +106,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenReturning_ShouldFail()
+    public async Task GivenMethodThrowsInstance_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -126,7 +126,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodThrowsInstance_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -146,7 +146,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenThrowingAgain_ShouldFail()
+    public async Task GivenMethodThrowsInstance_WhenThrowingAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -166,7 +166,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodThrowsInstance_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -186,7 +186,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsInstance_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodThrowsInstance_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -206,7 +206,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenReturning_ShouldFail()
+    public async Task GivenMethodThrowsGenerator_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -226,7 +226,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodThrowsGenerator_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -246,7 +246,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenThrowingAgain_ShouldFail()
+    public async Task GivenMethodThrowsGenerator_WhenThrowingAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -266,7 +266,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenThrowingAsync_ShouldFail()
+    public async Task GivenMethodThrowsGenerator_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -286,7 +286,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGenerator_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodThrowsGenerator_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -306,7 +306,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenReturning_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -326,7 +326,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenReturningAsync_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -346,7 +346,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenThrowingAgain_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenThrowingAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -366,7 +366,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenThrowingAsyncAgain_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenThrowingAsyncAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -386,7 +386,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsAsync_WhenUsingBaseImplementation_ShouldFail()
+    public async Task GivenMethodThrowsAsync_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -406,7 +406,7 @@ public class ThrowingFailuresFluentApiTests : MethodImposterFluentApiTestsBase
     }
 
     [Fact]
-    public async Task Given_MethodThrowsGeneric_WhenUsingNonExceptionType_ShouldFail()
+    public async Task GivenMethodThrowsGeneric_WhenUsingNonExceptionType_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample

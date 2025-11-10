@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.Tests.Helpers;
 public class NameSetTests
 {
     [Fact]
-    public void Given_NameSetHasNoConflicts_WhenUseIsCalled_ShouldReturnOriginalName()
+    public void GivenNameSetHasNoConflicts_WhenUseIsCalled_ShouldReturnOriginalName()
     {
         var context = new NameSet([]);
 
@@ -17,7 +17,7 @@ public class NameSetTests
     }
 
     [Fact]
-    public void Given_NameSetKeyUsedTwice_WhenUseIsCalled_ShouldReturnUniqueValues()
+    public void GivenNameSetKeyUsedTwice_WhenUseIsCalled_ShouldReturnUniqueValues()
     {
         var context = new NameSet([]);
 
@@ -29,7 +29,7 @@ public class NameSetTests
     }
 
     [Fact]
-    public void Given_NameSetInitialConflict_WhenUseIsCalled_ShouldReturnSuffixedName()
+    public void GivenNameSetInitialConflict_WhenUseIsCalled_ShouldReturnSuffixedName()
     {
         var context = new NameSet(["name"]);
 
@@ -39,7 +39,7 @@ public class NameSetTests
     }
 
     [Fact]
-    public void Given_NameSetHasMultipleConflicts_WhenUseIsCalled_ShouldIncreaseSuffix()
+    public void GivenNameSetHasMultipleConflicts_WhenUseIsCalled_ShouldIncreaseSuffix()
     {
         var context = new NameSet(["name", "name_1"]);
 
@@ -49,7 +49,7 @@ public class NameSetTests
     }
 
     [Fact]
-    public void Given_NameSet_WhenGeneratingSequentialNames_ShouldProduceUniqueValues()
+    public void GivenNameSet_WhenGeneratingSequentialNames_ShouldProduceUniqueValues()
     {
         var context = new NameSet([]);
 
@@ -63,7 +63,7 @@ public class NameSetTests
     }
 
     [Fact]
-    public void Given_NameSetKeyAlreadySuffixed_WhenUseIsCalled_ShouldIncrementFromExistingSuffix()
+    public void GivenNameSetKeyAlreadySuffixed_WhenUseIsCalled_ShouldIncrementFromExistingSuffix()
     {
         var context = new NameSet(["name", "name_1"]);
         var result = context.Use("name_1");
