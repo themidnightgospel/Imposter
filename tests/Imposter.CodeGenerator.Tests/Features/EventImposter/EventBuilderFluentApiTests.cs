@@ -21,6 +21,8 @@ public class EventBuilderFluentApiTests
                                                      {
                                                          event EventHandler SomethingHappened;
 
+                                                         event Action ActionOnly;
+
                                                          event Func<object?, EventArgs, Task>? AsyncSomethingHappened;
                                                      }
                                                  }
@@ -38,6 +40,26 @@ public class EventBuilderFluentApiTests
                                                    {
                                                        var imposter = new IEventSutImposter();
                                                        imposter.SomethingHappened.Raise(new object(), System.EventArgs.Empty);
+                                                   }
+                                               }
+                                           }
+                                           """);
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenActionEventBuilder_WhenCallingRaise_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
+                                           namespace Sample
+                                           {
+                                               public static class Scenario
+                                               {
+                                                   public static void Execute()
+                                                   {
+                                                       var imposter = new IEventSutImposter();
+                                                       imposter.ActionOnly.Raise();
                                                    }
                                                }
                                            }
