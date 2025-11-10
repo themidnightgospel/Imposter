@@ -27,11 +27,9 @@ internal static class MethodImposterAdapterBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddBaseType(adapterBaseType)
             .AddMember(
-                FieldDeclaration(
-                        VariableDeclaration(method.MethodImposter.Syntax)
-                            .AddVariables(VariableDeclarator("_target"))
-                    )
-                    .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)))
+                SinglePrivateReadonlyVariableField(
+                    method.MethodImposter.Syntax,
+                    "_target"))
             .AddMember(
                 new ConstructorBuilder("Adapter")
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
