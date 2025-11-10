@@ -841,23 +841,23 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public async Task GivenAsyncTaskMethodSetupWithCancellation_WhenMethodIsInvokedWithCancellation_ShouldSupportCancellationToken()
         {
-            // Test that the async method can handle cancellation if the implementation supports it
             using var cts = new CancellationTokenSource();
-            
+            var enteredDelegate = new TaskCompletionSource<object?>();
+
             _sut
                 .AsyncTaskIntNoParams()
                 .Returns(async () =>
                 {
-                    // Simulate work that can be cancelled
-                    await Task.Delay(100, cts.Token);
+                    enteredDelegate.TrySetResult(null);
+                    await Task.Delay(Timeout.Infinite, cts.Token);
                     return 999;
                 });
 
-            cts.CancelAfter(50); // Cancel after 50ms
+            var callTask = _sut.Instance().AsyncTaskIntNoParams();
+            await enteredDelegate.Task; // Ensure delegate is running before cancelling
+            await cts.CancelAsync();
 
-            await Should.ThrowAsync<OperationCanceledException>(
-                async () => await _sut.Instance().AsyncTaskIntNoParams()
-            );
+            await Should.ThrowAsync<OperationCanceledException>(async () => await callTask);
         }
 
         [Fact]

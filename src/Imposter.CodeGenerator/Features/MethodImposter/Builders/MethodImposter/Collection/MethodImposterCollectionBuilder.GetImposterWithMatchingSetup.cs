@@ -49,7 +49,7 @@ internal static partial class MethodImposterCollectionBuilder
                             )
                             .ToSingleArgumentList()
                     )
-                    .QuestionMarkQuestionMark(
+                    .Coalesce(
                         GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
                             .Call()
                     )

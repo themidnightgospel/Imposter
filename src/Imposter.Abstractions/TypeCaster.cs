@@ -3,16 +3,18 @@
 namespace Imposter.Abstractions;
 
 /// <summary>
-/// A utility for safe and flexible type casting and conversion.
+/// Provides safe casting helpers that avoid exceptions for incompatible types.
 /// </summary>
 public static class TypeCaster
 {
     /// <summary>
-    /// Safely casts or converts a value of type <typeparamref name="TIn"/> to <typeparamref name="TOut"/>.
-    /// - Avoids boxing for direct reference or identity conversions.
-    /// - Handles numeric conversions, nullable types, and other convertible types.
-    /// - Returns true if the conversion succeeded, false otherwise.
+    /// Attempts to cast a value of type <typeparamref name="TIn"/> to <typeparamref name="TOut"/> without throwing.
+    /// Returns <see langword="true"/> when a direct cast is possible (including identity, reference, boxing or unboxing
+    /// conversions), otherwise returns <see langword="false"/> and sets <paramref name="result"/> to default.
     /// </summary>
+    /// <param name="input">The input value to cast.</param>
+    /// <param name="result">The resulting value when the cast succeeds; otherwise default.</param>
+    /// <returns><see langword="true"/> if the cast succeeds; otherwise <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryCast<TIn, TOut>(TIn input, out TOut result)
     {
@@ -44,9 +46,12 @@ public static class TypeCaster
     }
 
     /// <summary>
-    /// Force-casts or converts a value of type <typeparamref name="TIn"/> to <typeparamref name="TOut"/>.
-    /// - Throws <see cref="InvalidCastException"/> if the conversion is not possible.
+    /// Performs a cast from <typeparamref name="TIn"/> to <typeparamref name="TOut"/>, throwing
+    /// <see cref="InvalidCastException"/> when the cast is not possible.
     /// </summary>
+    /// <param name="input">The input value to cast.</param>
+    /// <returns>The cast value.</returns>
+    /// <exception cref="InvalidCastException">Thrown when the cast is not possible.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TOut Cast<TIn, TOut>(TIn input)
     {

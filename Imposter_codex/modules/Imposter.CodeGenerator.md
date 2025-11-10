@@ -59,7 +59,9 @@ When emitting the `.As<...>()` helper for a generic method's arguments criteria 
 
 `InvocationSetupBuilder.GetInvocationImposter()` now returns the dequeued invocation object immediately after optionally updating `_lastestInvocationImposter`. Previously the method returned `_lastestInvocationImposter` even when the queue produced a newer entry, which allowed a racing thread to overwrite `_lastestInvocationImposter` before the first caller observed its scheduled result. The revised flow only falls back to `_lastestInvocationImposter` when the queue is empty, preventing lost sequential setups under concurrent access.
 
-Property getter builders mirror this behaviour: each getter now dequeues into a local variable, computes `next = returnValue ?? _lastReturnValue`, persists `next` (when present) back into `_lastReturnValue`, and immediately returns `next()`. This preserves the “repeat last setup” semantics without allowing concurrent getters to clobber one another’s delegates.
+Property getter builders mirror this behaviour: each getter now dequeues into a local variable, computes `next = returnValue ?? _lastReturnValue`, persists `next` (when present) back into `_lastReturnValue`, and immediately returns `next()`. This preserves the "repeat last setup" semantics without allowing concurrent getters to clobber one another's delegates.
+
+Indexer getter builders now use the same `next` pattern, throwing the existing `MissingImposterException` if both the queue and cached delegate are empty, and otherwise updating `_lastReturnValue` only after capturing the thread-local delegate that gets returned to the caller.
 
 ### Tests
 

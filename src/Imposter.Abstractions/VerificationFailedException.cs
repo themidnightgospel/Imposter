@@ -1,8 +1,12 @@
 ﻿namespace Imposter.Abstractions;
 
 /// <summary>
-/// Exception thrown when a mock behaviour verification fails.
+/// Exception thrown when verification of an expected invocation count fails.
 /// </summary>
+/// <remarks>
+/// Typically thrown by verification helpers such as <c>.Called(Count.Exactly(n))</c> when the actual invocation
+/// count does not satisfy the specified <see cref="Count"/> constraint.
+/// </remarks>
 public class VerificationFailedException : Exception
 {
     /// <summary>

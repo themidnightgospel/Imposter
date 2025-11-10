@@ -363,17 +363,15 @@ namespace Imposter.Tests.Features.IndexerImposter
                             return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
                         }
 
-                        if (_returnValues.TryDequeue(out System.Func<IndexerIndexerArguments, System.Func<int>, int> returnValue))
-                        {
-                            _lastReturnValue = returnValue;
-                        }
-
-                        if (_lastReturnValue == null)
+                        _returnValues.TryDequeue(out var returnValue);
+                        var nextReturnValue = returnValue ?? _lastReturnValue;
+                        if (nextReturnValue == null)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
-                        return _lastReturnValue!;
+                        _lastReturnValue = nextReturnValue;
+                        return nextReturnValue!;
                     }
 
                     internal void UseBaseImplementation()

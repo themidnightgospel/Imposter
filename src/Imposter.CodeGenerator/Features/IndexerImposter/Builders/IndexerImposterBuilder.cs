@@ -720,6 +720,8 @@ internal static class IndexerImposterBuilder
         var invocationMetadata = indexer.GetterImplementation.Invocation;
         var argumentsParameterName = indexer.GetterImplementation.ArgumentsVariableName;
         var argumentsParameter = Parameter(Identifier(argumentsParameterName)).WithType(indexer.Arguments.TypeSyntax);
+        const string ReturnValueVariableName = "returnValue";
+        const string NextReturnValueVariableName = "nextReturnValue";
 
         var defaultBehaviourHandler = ParenthesizedLambdaExpression()
             .WithParameterList(
@@ -745,7 +747,7 @@ internal static class IndexerImposterBuilder
                 .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
             Block(ReturnStatement(defaultBehaviourHandler)));
 
-        var tryDequeue = IfStatement(
+        var dequeueNextReturnValue =
             IdentifierName(invocationMetadata.ReturnValuesField.Name)
                 .Dot(IdentifierName("TryDequeue"))
                 .Call(
@@ -753,31 +755,40 @@ internal static class IndexerImposterBuilder
                         null,
                         Token(SyntaxKind.OutKeyword),
                         DeclarationExpression(
-                            indexer.GetterImplementation.ReturnHandlerType,
-                            SingleVariableDesignation(Identifier("returnValue"))))),
-            Block(
-                IdentifierName(invocationMetadata.LastReturnValueField.Name)
-                    .Assign(IdentifierName("returnValue"))
-                    .ToStatementSyntax()));
+                            Var,
+                            SingleVariableDesignation(Identifier(ReturnValueVariableName)))))
+                .ToStatementSyntax();
+
+        var declareNextReturnValue =
+            LocalVariableDeclarationSyntax(
+                Var,
+                NextReturnValueVariableName,
+                IdentifierName(ReturnValueVariableName)
+                    .Coalesce(IdentifierName(invocationMetadata.LastReturnValueField.Name)));
 
         var throwIfMissing = IfStatement(
-            BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName(invocationMetadata.LastReturnValueField.Name),
-                LiteralExpression(SyntaxKind.NullLiteralExpression)),
+            IdentifierName(NextReturnValueVariableName).IsNull(),
             Block(BuildMissingImposterThrow(indexer, indexer.GetterImplementation.GetterSuffix)));
+
+        var updateLastReturnValue = IdentifierName(invocationMetadata.LastReturnValueField.Name)
+            .Assign(IdentifierName(NextReturnValueVariableName))
+            .ToStatementSyntax();
+
+        var returnNext = ReturnStatement(
+            PostfixUnaryExpression(
+                SyntaxKind.SuppressNullableWarningExpression,
+                IdentifierName(NextReturnValueVariableName)));
 
         return new MethodDeclarationBuilder(indexer.GetterImplementation.ReturnHandlerType, "ResolveNextGenerator")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(argumentsParameter)
             .WithBody(Block(
                 defaultBehaviourCheck,
-                tryDequeue,
+                dequeueNextReturnValue,
+                declareNextReturnValue,
                 throwIfMissing,
-                ReturnStatement(
-                    PostfixUnaryExpression(
-                        SyntaxKind.SuppressNullableWarningExpression,
-                        IdentifierName(invocationMetadata.LastReturnValueField.Name)))))
+                updateLastReturnValue,
+                returnNext))
             .Build();
     }
 

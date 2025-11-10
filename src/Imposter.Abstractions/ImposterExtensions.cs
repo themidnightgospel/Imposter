@@ -11,6 +11,10 @@ public static class ImposterExtensions
     /// <typeparam name="TInstance">The type of the imposter instance.</typeparam>
     /// <param name="imposter">The object that contains the imposter instance.</param>
     /// <returns>The underlying imposter instance.</returns>
+    /// <remarks>
+    /// This is a convenience wrapper over <see cref="IHaveImposterInstance{TInstance}.Instance"/> that improves readability
+    /// in tests: <c>sut.Instance().Method()</c>.
+    /// </remarks>
     public static TInstance Instance<TInstance>(this IHaveImposterInstance<TInstance> imposter)
         => imposter.Instance();
 }

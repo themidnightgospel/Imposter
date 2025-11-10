@@ -245,7 +245,7 @@ public abstract class IndexerNamingCollisionPreventionTestsBase
 
                                                      public class IndexerImposterFieldCollisionTarget
                                                      {
-                                                         public int _imposter { get; set; }
+                                                         public virtual int _imposter { get; set; }
 
                                                          public virtual int this[int key]
                                                          {
