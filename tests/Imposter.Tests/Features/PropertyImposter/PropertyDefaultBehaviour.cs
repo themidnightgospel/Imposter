@@ -49,6 +49,38 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [Fact]
+        public void GivenClassWithInitializer_WhenSetBeforeAnyRead_DefaultBehaviourReturnsSetValueNotInitializer()
+        {
+            var classSut = new ClassWithInitialValuePropertyImposter();
+            var instance = classSut.Instance();
+
+            instance.A = 77;
+            instance.A.ShouldBe(77);
+        }
+
+        [Fact]
+        public void GivenClassWithInitializer_WhenMultipleReadsWithoutSet_ShouldRemainInitializerValue()
+        {
+            var classSut = new ClassWithInitialValuePropertyImposter();
+            var instance = classSut.Instance();
+
+            instance.A.ShouldBe(11);
+            instance.A.ShouldBe(11);
+        }
+
+        [Fact]
+        public void GivenClassWithInitializerString_WhenFirstRead_DefaultBehaviourReturnsInitialString()
+        {
+            var classSut = new ClassWithInitialValueStringPropertyImposter();
+            var instance = classSut.Instance();
+
+            instance.S.ShouldBe("hello");
+
+            instance.S = "world";
+            instance.S.ShouldBe("world");
+        }
+
+        [Fact]
         public void GivenExplicitSetup_WhenPropertyIsModified_ShouldNotRevertToAutoProperty()
         {
             var instance = _sut.Instance();
