@@ -21,8 +21,7 @@ internal static class DefaultIndexerBehaviourBuilder
                 SyntaxFactoryHelper.SingleVariableField(
                     indexer.DefaultIndexerBehaviour.BackingField,
                     SyntaxKind.InternalKeyword,
-                    ObjectCreationExpression(indexer.DefaultIndexerBehaviour.BackingField.Type)
-                        .WithArgumentList(ArgumentList())))
+                    indexer.DefaultIndexerBehaviour.BackingField.Type.New(ArgumentList())))
             .AddMember(BuildGetMethod(indexer))
             .AddMember(BuildSetMethod(indexer))
             .Build();
@@ -127,8 +126,8 @@ internal static class DefaultIndexerBehaviourBuilder
                 LiteralExpression(SyntaxKind.NullLiteralExpression)),
             Block(
                 ExpressionStatement(
-                    InvocationExpression(IdentifierName(baseImplementationParam.Identifier))
-                        .WithArgumentList(ArgumentList())),
+                    IdentifierName(baseImplementationParam.Identifier)
+                        .Call()),
                 ReturnStatement()));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")

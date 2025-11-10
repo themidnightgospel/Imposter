@@ -112,8 +112,8 @@ internal static class SetterImposterBuilder
                 LiteralExpression(SyntaxKind.NullLiteralExpression));
             var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
             var missingBaseImplementation = ThrowStatement(
-                ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
-                    .WithArgumentList(
+                WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                    .New(
                         Argument(
                                 BinaryExpression(
                                     SyntaxKind.AddExpression,

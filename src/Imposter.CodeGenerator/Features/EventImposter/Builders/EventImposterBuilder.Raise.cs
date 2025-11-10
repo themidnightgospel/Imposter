@@ -193,10 +193,9 @@ internal static partial class EventImposterBuilder
                                 VariableDeclarator(
                                     Identifier("remaining"))))),
                     IfStatement(
-                        InvocationExpression(
-                            IdentifierName("budgets")
-                                .Dot(IdentifierName("TryGetValue")))
-                            .WithArgumentList(
+                        IdentifierName("budgets")
+                            .Dot(IdentifierName("TryGetValue"))
+                            .Call(
                                 ArgumentList(SeparatedList([
                                     Argument(IdentifierName("handler")),
                                     Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("remaining"))
