@@ -20,20 +20,19 @@ internal static partial class MethodImposterCollectionBuilder
             .WithTypeParameters(typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null)
             .WithBody(
                 Block(
-                    LocalDeclarationStatement(
-                        VariableDeclarationSyntax(Var, "imposter",
-                                method.MethodImposter.Syntax
-                                    .New(
-                                        ArgumentList(
-                                            SeparatedList<ArgumentSyntax>(
-                                                new SyntaxNodeOrToken[]
-                                                {
-                                                    Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                                                    Token(SyntaxKind.CommaToken),
-                                                    Argument(IdentifierName("_invocationBehavior"))
-                                                })))
-                            )
-                    ),
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        "imposter",
+                        method.MethodImposter.Syntax
+                            .New(
+                                ArgumentList(
+                                    SeparatedList<ArgumentSyntax>(
+                                        new SyntaxNodeOrToken[]
+                                        {
+                                            Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                                            Token(SyntaxKind.CommaToken),
+                                            Argument(IdentifierName("_invocationBehavior"))
+                                        })))),
                     IdentifierName("_imposters")
                         .Dot(IdentifierName("Push"))
                         .Call(Argument(IdentifierName("imposter")).AsSingleArgumentListSyntax())
