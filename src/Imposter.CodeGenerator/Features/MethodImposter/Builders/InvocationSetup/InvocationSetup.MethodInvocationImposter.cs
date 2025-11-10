@@ -242,10 +242,8 @@ internal static partial class InvocationSetupBuilder
     {
         var parameters = new List<ParameterSyntax>
         {
-            Parameter(Identifier("invocationBehavior"))
-                .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior),
-            Parameter(Identifier("methodDisplayName"))
-                .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+            ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"),
+            ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName")
         };
 
         parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
@@ -263,7 +261,7 @@ internal static partial class InvocationSetupBuilder
     private static MethodDeclarationSyntax CallbackMethod(in ImposterTargetMethodMetadata method) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.CallbackMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(Parameter(Identifier(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)).WithType(method.CallbackDelegate.Syntax))
+            .AddParameter(ParameterSyntax(method.CallbackDelegate.Syntax, method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name))
             .WithBody(
                 Block(
                     IdentifierName("_callbacks")

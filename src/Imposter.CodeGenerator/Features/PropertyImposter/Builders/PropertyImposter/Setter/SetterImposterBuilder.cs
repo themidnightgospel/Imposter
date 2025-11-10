@@ -44,8 +44,8 @@ internal static class SetterImposterBuilder
         var constructor = new ConstructorBuilder(property.SetterImposter.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(ParameterSyntax(property.SetterImposter.DefaultPropertyBehaviourField.Type, property.SetterImposter.DefaultPropertyBehaviourField.Name))
-            .AddParameter(Parameter(Identifier("invocationBehavior")).WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior))
-            .AddParameter(Parameter(Identifier("propertyDisplayName")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))));
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"))
+            .AddParameter(ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "propertyDisplayName"));
 
         var body = new BlockBuilder()
             .AddStatement(

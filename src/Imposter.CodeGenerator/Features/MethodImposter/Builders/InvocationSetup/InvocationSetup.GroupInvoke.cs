@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationSetup;
@@ -77,18 +78,15 @@ internal static partial class InvocationSetupBuilder
         {
             var parameters = new List<ParameterSyntax>
             {
-                Parameter(Identifier("invocationBehavior"))
-                    .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior),
-                Parameter(Identifier("methodDisplayName"))
-                    .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+                ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"),
+                ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName")
             };
 
             parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
             if (method.SupportsBaseImplementation)
             {
                 parameters.Add(
-                    Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
-                        .WithType(method.Delegate.Syntax)
+                    ParameterSyntax(method.Delegate.Syntax, method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
                         .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
             }
 

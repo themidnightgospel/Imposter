@@ -111,8 +111,7 @@ internal static class PropertyImposterBuilder
 
     internal static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property)
     {
-        var invocationBehaviorParameter = Parameter(Identifier("invocationBehavior"))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior);
+        var invocationBehaviorParameter = ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior");
         var propertyDisplayLiteral = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(property.Core.DisplayName));
 
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
