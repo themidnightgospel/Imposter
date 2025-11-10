@@ -175,12 +175,10 @@ internal static partial class InvocationSetupBuilder
         else
         {
             defaultBlockBuilder.AddStatement(
-                LocalDeclarationStatement(
-                    VariableDeclaration(method.ReturnTypeSyntax)
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(Identifier("result"))
-                                    .WithInitializer(EqualsValueClause(resultInvocation))))));
+                LocalVariableDeclarationSyntax(
+                    method.ReturnTypeSyntax,
+                    "result",
+                    resultInvocation));
         }
 
         var callbackInvocation = ForEachStatement(

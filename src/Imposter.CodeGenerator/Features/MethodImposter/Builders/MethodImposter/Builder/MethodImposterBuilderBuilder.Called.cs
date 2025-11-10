@@ -23,21 +23,15 @@ internal static partial class MethodImposterBuilderBuilder
                 )
             )
             .WithBody(Block(
-                    LocalDeclarationStatement(
-                        VariableDeclarationSyntax(
-                            Var,
-                            "invocationCount",
-                            initializer:
-                            IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-                                .Dot(WithMethodGenericArguments(InvocationHistoryCollectionCountMethodMetadata.Name, method))
-                                .Call(method.Parameters.HasInputParameters
-                                    ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).ToSingleArgumentList()
-                                    : EmptyArgumentListSyntax)
-                        )
-                    ),
-                    ThrowIfCountDoesNotMatch()
-                )
-            )
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        "invocationCount",
+                        IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+                            .Dot(WithMethodGenericArguments(InvocationHistoryCollectionCountMethodMetadata.Name, method))
+                            .Call(method.Parameters.HasInputParameters
+                                ? Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)).ToSingleArgumentList()
+                                : EmptyArgumentListSyntax)),
+                    ThrowIfCountDoesNotMatch()))
             .Build();
 
         IfStatementSyntax ThrowIfCountDoesNotMatch() =>

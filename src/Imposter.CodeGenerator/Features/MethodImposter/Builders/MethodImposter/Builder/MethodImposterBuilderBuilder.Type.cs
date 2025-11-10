@@ -2,6 +2,7 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
 
@@ -31,15 +32,10 @@ internal static partial class MethodImposterBuilderBuilder
                 .Call();
 
             statements.Add(
-                LocalDeclarationStatement(
-                    VariableDeclaration(method.MethodImposter.Syntax)
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(Identifier("methodImposter"))
-                                    .WithInitializer(EqualsValueClause(addNewCall))
-                            )
-                        )
-                ));
+                LocalVariableDeclarationSyntax(
+                    method.MethodImposter.Syntax,
+                    "methodImposter",
+                    addNewCall));
 
             methodImposterAccess = IdentifierName("methodImposter");
         }

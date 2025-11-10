@@ -2,6 +2,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationSetup;
@@ -46,17 +47,10 @@ internal static partial class InvocationSetupBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    LocalDeclarationStatement(
-                        VariableDeclaration(invocationImposterType)
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(Identifier("invocationImposter"))
-                                        .WithInitializer(
-                                            EqualsValueClause(invocationImposterType.New(ArgumentList()))
-                                        )
-                                )
-                            )
-                    ),
+                    LocalVariableDeclarationSyntax(
+                        invocationImposterType,
+                        "invocationImposter",
+                        invocationImposterType.New(ArgumentList())),
                     ExpressionStatement(
                         IdentifierName("_invocationImposters")
                             .Dot(IdentifierName("Enqueue"))
@@ -76,14 +70,7 @@ internal static partial class InvocationSetupBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
-                    LocalDeclarationStatement(
-                        VariableDeclaration(invocationImposterType)
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(Identifier("invocationImposter"))
-                                )
-                            )
-                    ),
+                    LocalVariableDeclarationSyntax(invocationImposterType, "invocationImposter"),
                     IfStatement(
                         InvocationExpression(
                                 MemberAccessExpression(

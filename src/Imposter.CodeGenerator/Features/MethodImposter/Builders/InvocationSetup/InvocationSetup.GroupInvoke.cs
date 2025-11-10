@@ -14,14 +14,10 @@ internal static partial class InvocationSetupBuilder
     {
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
         var invocationImposterIdentifier = IdentifierName("invocationImposter");
-        var invocationImposterAssignment = LocalDeclarationStatement(
-            VariableDeclaration(invocationImposterType)
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier("invocationImposter"))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    InvocationExpression(IdentifierName("GetInvocationImposter")))))));
+        var invocationImposterAssignment = LocalVariableDeclarationSyntax(
+            invocationImposterType,
+            "invocationImposter",
+            InvocationExpression(IdentifierName("GetInvocationImposter")));
 
         var guardMissingImposter = IfStatement(
             BinaryExpression(

@@ -6,6 +6,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 using GetterReturnsMetadata = Imposter.CodeGenerator.Features.IndexerImposter.Metadata.GetterImposterBuilderInterface.ReturnsMethodMetadata;
@@ -680,19 +681,15 @@ internal static class IndexerImposterBuilder
                             fromArguments: true))
                     .ToStatementSyntax()));
 
-        var generatorDeclaration = LocalDeclarationStatement(
-            VariableDeclaration(indexer.GetterImplementation.ReturnHandlerType)
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier("generator"))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    InvocationExpression(IdentifierName("ResolveNextGenerator"))
-                                        .WithArgumentList(
-                                            SyntaxFactoryHelper.ArgumentListSyntax(
-                                                [
-                                                    Argument(IdentifierName(argumentsParameterName))
-                                                ])))))));
+        var generatorDeclaration = LocalVariableDeclarationSyntax(
+            indexer.GetterImplementation.ReturnHandlerType,
+            "generator",
+            InvocationExpression(IdentifierName("ResolveNextGenerator"))
+                .WithArgumentList(
+                    SyntaxFactoryHelper.ArgumentListSyntax(
+                        [
+                            Argument(IdentifierName(argumentsParameterName))
+                        ])));
 
         var returnStatement = ReturnStatement(
             InvocationExpression(IdentifierName("generator"))
@@ -913,16 +910,12 @@ internal static class IndexerImposterBuilder
         var setter = indexer.SetterImplementation;
         var countParameter = SyntaxFactoryHelper.ParameterSyntax(indexer.SetterBuilderInterface.CalledMethod.CountParameter);
 
-        var invocationCountDeclaration = LocalDeclarationStatement(
-            VariableDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)))
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier("invocationCount"))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    IdentifierName(setter.InvocationHistoryField.Name)
-                                        .Dot(IdentifierName("Count"))
-                                        .Call(Argument(IdentifierName(setter.CriteriaParameterName).Dot(IdentifierName("Matches")))))))));
+        var invocationCountDeclaration = LocalVariableDeclarationSyntax(
+            PredefinedType(Token(SyntaxKind.IntKeyword)),
+            "invocationCount",
+            IdentifierName(setter.InvocationHistoryField.Name)
+                .Dot(IdentifierName("Count"))
+                .Call(Argument(IdentifierName(setter.CriteriaParameterName).Dot(IdentifierName("Matches")))));
 
         var condition = PrefixUnaryExpression(
             SyntaxKind.LogicalNotExpression,
@@ -1075,23 +1068,19 @@ internal static class IndexerImposterBuilder
                     .Call(Argument(argumentsVariable))
                     .ToStatementSyntax())
             .AddStatement(
-                LocalDeclarationStatement(
-                    VariableDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)))
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(((IdentifierNameSyntax)callbackMatchedIdentifier).Identifier)
-                                    .WithInitializer(EqualsValueClause(LiteralExpression(SyntaxKind.FalseLiteralExpression)))))))
+                LocalVariableDeclarationSyntax(
+                    PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                    ((IdentifierNameSyntax)callbackMatchedIdentifier).Identifier.Text,
+                    LiteralExpression(SyntaxKind.FalseLiteralExpression)))
             .AddStatement(foreachStatement);
 
         if (invokedBaseIdentifier is not null && baseCriteriaLoop is not null)
         {
             bodyBuilder.AddStatement(
-                LocalDeclarationStatement(
-                    VariableDeclaration(PredefinedType(Token(SyntaxKind.BoolKeyword)))
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(((IdentifierNameSyntax)invokedBaseIdentifier).Identifier)
-                                    .WithInitializer(EqualsValueClause(LiteralExpression(SyntaxKind.FalseLiteralExpression)))))));
+                LocalVariableDeclarationSyntax(
+                    PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                    ((IdentifierNameSyntax)invokedBaseIdentifier).Identifier.Text,
+                    LiteralExpression(SyntaxKind.FalseLiteralExpression)));
             bodyBuilder.AddStatement(baseCriteriaLoop);
         }
 
@@ -1262,14 +1251,10 @@ internal static class IndexerImposterBuilder
         => ArgumentList(SeparatedList(indexer.Core.Parameters.Select(parameter => SyntaxFactoryHelper.ArgumentSyntax(parameter.Symbol))));
 
     private static LocalDeclarationStatementSyntax CreateArgumentsDeclaration(in ImposterIndexerMetadata indexer)
-        => LocalDeclarationStatement(
-            VariableDeclaration(indexer.Arguments.TypeSyntax)
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier(indexer.GetterImplementation.ArgumentsVariableName))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    indexer.Arguments.TypeSyntax.New(BuildIndexerArgumentsArgumentList(indexer)))))));
+        => LocalVariableDeclarationSyntax(
+            indexer.Arguments.TypeSyntax,
+            indexer.GetterImplementation.ArgumentsVariableName,
+            indexer.Arguments.TypeSyntax.New(BuildIndexerArgumentsArgumentList(indexer)));
 
     private static ArgumentListSyntax BuildDelegateInvocationArguments(ExpressionSyntax source, in ImposterIndexerMetadata indexer, bool fromArguments)
     {
@@ -1344,15 +1329,11 @@ internal static class IndexerImposterBuilder
 
         var tryStatements = new List<StatementSyntax>
         {
-            LocalDeclarationStatement(
-                VariableDeclaration(IdentifierName("var"))
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier(indexer.GetterImplementation.SetupVariableName))
-                                .WithInitializer(
-                                    EqualsValueClause(
-                                        IdentifierName("FindGetterInvocationImposter")
-                                            .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))))))),
+            LocalVariableDeclarationSyntax(
+                IdentifierName("var"),
+                indexer.GetterImplementation.SetupVariableName,
+                IdentifierName("FindGetterInvocationImposter")
+                    .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))),
             IfStatement(
                 IsPatternExpression(IdentifierName(indexer.GetterImplementation.SetupVariableName), ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
                 Block(
@@ -1451,19 +1432,15 @@ internal static class IndexerImposterBuilder
                         .AddParameterListParameters(Parameter(Identifier("key")).WithType(indexer.ArgumentsCriteria.TypeSyntax))
                         .WithBody(
                             Block(
-                                LocalDeclarationStatement(
-                                    VariableDeclaration(getterInvocationType)
-                                        .WithVariables(
-                                            SingletonSeparatedList(
-                                                VariableDeclarator(Identifier(indexer.GetterImplementation.SetupVariableName))
-                                                    .WithInitializer(
-                                                        EqualsValueClause(
-                                                            getterInvocationType.New(
-                                                                SyntaxFactoryHelper.ArgumentListSyntax([
-                                                                    Argument(ThisExpression()),
-                                                                    Argument(IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)),
-                                                                    Argument(IdentifierName("key"))
-                                                                ]))))))),
+                                LocalVariableDeclarationSyntax(
+                                    getterInvocationType,
+                                    indexer.GetterImplementation.SetupVariableName,
+                                    getterInvocationType.New(
+                                        SyntaxFactoryHelper.ArgumentListSyntax([
+                                            Argument(ThisExpression()),
+                                            Argument(IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)),
+                                            Argument(IdentifierName("key"))
+                                        ]))),
                                 IdentifierName(indexer.GetterImplementation.SetupsField.Name)
                                     .Dot(IdentifierName("Push"))
                                     .Call(Argument(IdentifierName(indexer.GetterImplementation.SetupVariableName)))
@@ -1473,17 +1450,13 @@ internal static class IndexerImposterBuilder
     }
     private static MethodDeclarationSyntax BuildGetterCalledMethod(in ImposterIndexerMetadata indexer)
     {
-        var invocationCountDeclaration = LocalDeclarationStatement(
-            VariableDeclaration(PredefinedType(Token(SyntaxKind.IntKeyword)))
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier("invocationCount"))
-                            .WithInitializer(
-                                EqualsValueClause(
-                                    IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
-                                        .Dot(IdentifierName("Count"))
-                                        .Call(ArgumentList(SingletonSeparatedList(
-                                            Argument(IdentifierName(indexer.GetterImplementation.CriteriaParameterName).Dot(IdentifierName("Matches")))))))))));
+        var invocationCountDeclaration = LocalVariableDeclarationSyntax(
+            PredefinedType(Token(SyntaxKind.IntKeyword)),
+            "invocationCount",
+            IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
+                .Dot(IdentifierName("Count"))
+                .Call(ArgumentList(SingletonSeparatedList(
+                    Argument(IdentifierName(indexer.GetterImplementation.CriteriaParameterName).Dot(IdentifierName("Matches")))))));
 
         var condition = PrefixUnaryExpression(
             SyntaxKind.LogicalNotExpression,

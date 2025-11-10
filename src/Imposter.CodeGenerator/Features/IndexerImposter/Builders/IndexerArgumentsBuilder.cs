@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
@@ -106,15 +107,11 @@ internal static class IndexerArgumentsBuilder
     {
         var statements = new List<StatementSyntax>
         {
-            LocalDeclarationStatement(
-                VariableDeclaration(WellKnownTypes.System.HashCode)
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier("hash"))
-                                .WithInitializer(
-                                    EqualsValueClause(
-                                        ObjectCreationExpression(WellKnownTypes.System.HashCode)
-                                            .WithArgumentList(ArgumentList()))))))
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.System.HashCode,
+                "hash",
+                ObjectCreationExpression(WellKnownTypes.System.HashCode)
+                    .WithArgumentList(ArgumentList()))
         };
 
         foreach (var parameter in indexer.Core.Parameters)
