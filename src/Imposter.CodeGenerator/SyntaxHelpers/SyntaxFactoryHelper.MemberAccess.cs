@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static MemberAccessExpressionSyntax SimpleMemberAccess(ExpressionSyntax left, SimpleNameSyntax right) =>
+    private static MemberAccessExpressionSyntax SimpleMemberAccess(ExpressionSyntax left, SimpleNameSyntax right) =>
         MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, left, right);
 
     internal static MemberAccessExpressionSyntax Dot(this ExpressionSyntax source, SimpleNameSyntax right)
@@ -19,7 +19,7 @@ internal static partial class SyntaxFactoryHelper
         => AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right);
 
     internal static ObjectCreationExpressionSyntax New(this TypeSyntax type, ArgumentListSyntax? arguments = null, InitializerExpressionSyntax? initializer = null)
-        => ObjectCreationExpression(type, arguments ?? ArgumentList(), initializer);
+        => ObjectCreationExpression(type, arguments ?? EmptyArgumentListSyntax, initializer);
 
     internal static BinaryExpressionSyntax QuestionMarkQuestionMark(this ExpressionSyntax left, ExpressionSyntax right)
         => BinaryExpression(SyntaxKind.CoalesceExpression, left, right);
