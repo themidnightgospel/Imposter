@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImposter.Builders;
@@ -74,12 +75,10 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddParameter(argumentsParam)
             .AddParameter(baseImplementationParam)
             .WithBody(Block(
-                LocalDeclarationStatement(
-                    VariableDeclaration(indexer.Core.TypeSyntax)
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(valueIdentifier.Identifier)
-                                    .WithInitializer(EqualsValueClause(DefaultExpression(indexer.Core.TypeSyntax)))))),
+                LocalVariableDeclarationSyntax(
+                    indexer.Core.TypeSyntax,
+                    valueIdentifier.Identifier.Text,
+                    DefaultExpression(indexer.Core.TypeSyntax)),
                 IfStatement(
                     IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
                         .Dot(IdentifierName("TryGetValue"))

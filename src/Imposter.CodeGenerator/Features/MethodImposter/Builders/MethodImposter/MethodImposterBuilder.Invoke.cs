@@ -130,7 +130,7 @@ internal partial class MethodImposterBuilder
             return ExpressionStatement(invokeExpression);
         }
 
-        return LocalDeclarationStatement(VariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, initializer: invokeExpression));
+        return LocalVariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, invokeExpression);
     }
 
     private static LocalDeclarationStatementSyntax DeclareMatchingInvocationImposterGroupVariable(in ImposterTargetMethodMetadata method) =>

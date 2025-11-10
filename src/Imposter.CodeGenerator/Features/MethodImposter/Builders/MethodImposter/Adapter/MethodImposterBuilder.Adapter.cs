@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Adapter;
@@ -71,10 +72,11 @@ internal static class MethodImposterAdapterBuilder
             switch (p.RefKind)
             {
                 case RefKind.Ref:
-                    body.Add(LocalDeclarationStatement(VariableDeclaration(pType, SingletonSeparatedList(
-                        VariableDeclarator(pAdaptedName)
-                            .WithInitializer(EqualsValueClause(TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)))
-                    ))));
+                    body.Add(
+                        LocalVariableDeclarationSyntax(
+                            pType,
+                            pAdaptedName.Text,
+                            TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword)));
                     postInvokeActions.Add(ExpressionStatement(
                         AssignmentExpression(
@@ -85,9 +87,7 @@ internal static class MethodImposterAdapterBuilder
                     ));
                     break;
                 case RefKind.Out:
-                    body.Add(LocalDeclarationStatement(VariableDeclaration(pType, SingletonSeparatedList(
-                        VariableDeclarator(pAdaptedName)
-                    ))));
+                    body.Add(LocalVariableDeclarationSyntax(pType, pAdaptedName.Text));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)));
                     postInvokeActions.Add(ExpressionStatement(
                         AssignmentExpression(
@@ -127,9 +127,10 @@ internal static class MethodImposterAdapterBuilder
         if (method.HasReturnValue)
         {
             body.Add(
-                LocalDeclarationStatement(VariableDeclaration(IdentifierName("var"), SingletonSeparatedList(
-                    VariableDeclarator("result").WithInitializer(EqualsValueClause(invokeExpression))
-                )))
+                LocalVariableDeclarationSyntax(
+                    IdentifierName("var"),
+                    "result",
+                    invokeExpression)
             );
             body.AddRange(postInvokeActions);
 

@@ -89,19 +89,14 @@ internal static partial class EventImposterBuilder
         var predicate = BuildRaisedPredicate(@event);
 
         blockBuilder.AddStatement(
-            LocalDeclarationStatement(
-                VariableDeclaration(
-                    PredefinedType(Token(SyntaxKind.IntKeyword)),
-                    SingletonSeparatedList(
-                        VariableDeclarator(
-                            Identifier("actual"),
-                            null,
-                            EqualsValueClause(
-                                countMatchesIdentifier
-                                    .Call([
-                                        Argument(FieldIdentifier(@event.Builder.Fields.History)),
-                                        Argument(predicate)
-                                    ])))))));
+            LocalVariableDeclarationSyntax(
+                PredefinedType(Token(SyntaxKind.IntKeyword)),
+                "actual",
+                countMatchesIdentifier
+                    .Call([
+                        Argument(FieldIdentifier(@event.Builder.Fields.History)),
+                        Argument(predicate)
+                    ])));
 
         blockBuilder.AddExpression(
             ensureCountMatchesIdentifier
@@ -182,22 +177,17 @@ internal static partial class EventImposterBuilder
             .AddExpression(ThrowIfNull(countParameterName));
 
         blockBuilder.AddStatement(
-            LocalDeclarationStatement(
-                VariableDeclaration(
-                    PredefinedType(Token(SyntaxKind.IntKeyword)),
-                    SingletonSeparatedList(
-                        VariableDeclarator(
-                            Identifier("actual"),
-                            null,
-                            EqualsValueClause(
-                                countMatchesIdentifier
-                                    .Call([
-                                        Argument(FieldIdentifier(historyField)),
-                                        Argument(
-                                            SimpleLambdaExpression(
-                                                Parameter(Identifier("entry")),
-                                                predicateFactory(IdentifierName("entry"))))
-                                    ])))))));
+            LocalVariableDeclarationSyntax(
+                PredefinedType(Token(SyntaxKind.IntKeyword)),
+                "actual",
+                countMatchesIdentifier
+                    .Call([
+                        Argument(FieldIdentifier(historyField)),
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(Identifier("entry")),
+                                predicateFactory(IdentifierName("entry"))))
+                    ])));
 
         blockBuilder.AddExpression(
             ensureCountMatchesIdentifier
@@ -242,12 +232,10 @@ internal static partial class EventImposterBuilder
                     ])))
             .WithBody(
                 Block(
-                    LocalDeclarationStatement(
-                        VariableDeclaration(
-                            PredefinedType(Token(SyntaxKind.IntKeyword)),
-                            SingletonSeparatedList(
-                                VariableDeclarator(Identifier("count"))
-                                    .WithInitializer(EqualsValueClause(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))))))),
+                    LocalVariableDeclarationSyntax(
+                        PredefinedType(Token(SyntaxKind.IntKeyword)),
+                        "count",
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                     ForEachStatement(
                         Var,
                         Identifier("item"),

@@ -106,14 +106,10 @@ internal static partial class EventImposterBuilder
                 .Call(Argument(BuildHistoryEntryExpression(@event))));
 
         blockBuilder.AddStatement(
-            LocalDeclarationStatement(
-                VariableDeclaration(
-                    taskListType,
-                    SingletonSeparatedList(
-                        VariableDeclarator(
-                            Identifier("pendingTasks"),
-                            null,
-                            EqualsValueClause(taskListType.New()))))));
+            LocalVariableDeclarationSyntax(
+                taskListType,
+                "pendingTasks",
+                taskListType.New()));
 
         blockBuilder.AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask));
         blockBuilder.AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask));
@@ -168,17 +164,12 @@ internal static partial class EventImposterBuilder
         var handlerOrder = FieldIdentifier(@event.Builder.Fields.HandlerOrder);
 
         blockBuilder.AddStatement(
-            LocalDeclarationStatement(
-                VariableDeclaration(
-                    dictionaryType,
-                    SingletonSeparatedList(
-                        VariableDeclarator(
-                            Identifier("budgets"),
-                            null,
-                            EqualsValueClause(
-                                dictionaryType.New(
-                                    ArgumentList(SingletonSeparatedList(
-                                        Argument(handlerCounts))))))))));
+            LocalVariableDeclarationSyntax(
+                dictionaryType,
+                "budgets",
+                dictionaryType.New(
+                    ArgumentList(SingletonSeparatedList(
+                        Argument(handlerCounts))))));
 
         blockBuilder.AddStatement(
             ForEachStatement(
@@ -186,12 +177,9 @@ internal static partial class EventImposterBuilder
                 Identifier("handler"),
                 handlerOrder,
                 Block(
-                    LocalDeclarationStatement(
-                        VariableDeclaration(
-                            PredefinedType(Token(SyntaxKind.IntKeyword)),
-                            SingletonSeparatedList(
-                                VariableDeclarator(
-                                    Identifier("remaining"))))),
+                    LocalVariableDeclarationSyntax(
+                        PredefinedType(Token(SyntaxKind.IntKeyword)),
+                        "remaining"),
                     IfStatement(
                         IdentifierName("budgets")
                             .Dot(IdentifierName("TryGetValue"))
@@ -275,16 +263,11 @@ internal static partial class EventImposterBuilder
             Identifier("callback"),
             FieldIdentifier(field),
             Block(
-                LocalDeclarationStatement(
-                    VariableDeclaration(
-                        asyncResultType,
-                        SingletonSeparatedList(
-                            VariableDeclarator(
-                                Identifier("task"),
-                                null,
-                                EqualsValueClause(
-                                    IdentifierName("callback")
-                                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))))))),
+                LocalVariableDeclarationSyntax(
+                    asyncResultType,
+                    "task",
+                    IdentifierName("callback")
+                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                 IfStatement(
                     BinaryExpression(
                         SyntaxKind.NotEqualsExpression,
@@ -313,16 +296,11 @@ internal static partial class EventImposterBuilder
                     FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
                         .Dot(IdentifierName("Enqueue"))
                         .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))),
-                LocalDeclarationStatement(
-                    VariableDeclaration(
-                        asyncResultType,
-                        SingletonSeparatedList(
-                            VariableDeclarator(
-                                Identifier("task"),
-                                null,
-                                EqualsValueClause(
-                                    IdentifierName("handler")
-                                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))))))),
+                LocalVariableDeclarationSyntax(
+                    asyncResultType,
+                    "task",
+                    IdentifierName("handler")
+                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                 IfStatement(
                     BinaryExpression(
                         SyntaxKind.NotEqualsExpression,
