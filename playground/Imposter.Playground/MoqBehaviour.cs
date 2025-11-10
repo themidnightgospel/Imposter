@@ -10,6 +10,20 @@ namespace Imposter.Playground;
 
 public class MoqBehaviour
 {
+    public interface IConfig
+    {
+        int Setting { get; set; }
+
+        // backing field (per implementation, not per type)
+        private static int _defaultSetting = 42;
+
+        int DefaultSetting
+        {
+            get => _defaultSetting;
+            set => _defaultSetting = value;
+        }
+    }
+    
     public class TestClas
     {
         public virtual int VirtualMethod()

@@ -32,6 +32,10 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string SetterSuffix;
 
+    internal readonly FieldMetadata? BaseImplementationCriteriaField;
+
+    internal readonly string BaseImplementationParameterName;
+
     internal IndexerSetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
         Name = "SetterImposter";
@@ -53,6 +57,12 @@ internal readonly struct IndexerSetterImposterMetadata
             "_propertyDisplayName",
             PredefinedType(Token(SyntaxKind.StringKeyword)));
         HasConfiguredSetterField = new FieldMetadata("_hasConfiguredSetter", WellKnownTypes.Bool);
+        BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
+            ? new FieldMetadata(
+                "_baseCriteria",
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.ArgumentsCriteria.TypeSyntax))
+            : null;
+        BaseImplementationParameterName = "baseImplementation";
 
         Builder = new SetterBuilderMetadata();
     }
@@ -82,4 +92,3 @@ internal readonly struct IndexerSetterImposterMetadata
         }
     }
 }
-

@@ -40,6 +40,8 @@ FEATURES:
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
       - Add a sample project.
+      - add test that with Property  with default behaviour uses initial value assigned to that property (for class imposters).
+      - UseBaseImplementation for interface members
 
   MEDIUM:
     - NOT Started:
@@ -49,6 +51,7 @@ FEATURES:
         - Add support for open generic imposters. Example, `[GenerateImposter(typeof(IGenericSut<,>))]`
         - Proper diagnostics
         - NOTE / To avoid namign collision, rename parameters in Invoke/Set methods instead of internal fields/methods
+        - UseBaseImplementation at the property/indexer level (not only Getter/Setter level).
 
   LOW:
     - NOT Started:

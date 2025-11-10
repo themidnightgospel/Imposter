@@ -13,6 +13,12 @@ public sealed class IndexerFluentApiTests
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.IndexerService))]
+[assembly: GenerateImposter(typeof(Sample.ReadonlyIndexerService))]
+[assembly: GenerateImposter(typeof(Sample.GetterOnlyIndexerService))]
+[assembly: GenerateImposter(typeof(Sample.SetterOnlyIndexerService))]
+[assembly: GenerateImposter(typeof(Sample.AbstractGetterIndexerService))]
+[assembly: GenerateImposter(typeof(Sample.AbstractSetterIndexerService))]
+[assembly: GenerateImposter(typeof(Sample.IIndexerContract))]
 
 namespace Sample
 {
@@ -23,6 +29,46 @@ namespace Sample
             get => default;
             set { }
         }
+    }
+
+    public class ReadonlyIndexerService
+    {
+        public int this[int key]
+        {
+            get => default;
+            set { }
+        }
+    }
+
+    public class GetterOnlyIndexerService
+    {
+        public virtual int this[int key]
+        {
+            get => key;
+        }
+    }
+
+    public class SetterOnlyIndexerService
+    {
+        public virtual int this[int key]
+        {
+            set { }
+        }
+    }
+
+    public abstract class AbstractGetterIndexerService
+    {
+        public abstract int this[int key] { get; }
+    }
+
+    public abstract class AbstractSetterIndexerService
+    {
+        public abstract int this[int key] { set; }
+    }
+
+    public interface IIndexerContract
+    {
+        int this[int key] { get; set; }
     }
 }
 """;
@@ -39,6 +85,27 @@ namespace Sample
         {
             var imposter = new IndexerServiceImposter();
             imposter[Imposter.Abstractions.Arg<int>.Is(v => v > 0)].Getter().Returns(10);
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableIndexer_WhenCallingUseBaseImplementation_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().UseBaseImplementation();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().UseBaseImplementation();
         }
     }
 }
@@ -278,6 +345,166 @@ namespace Sample
 """);
 
         AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenGetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnGetter_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new GetterOnlyIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenSetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnSetter_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SetterOnlyIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenGetterOnlyIndexer_WhenCallingSetter_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new GetterOnlyIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenSetterOnlyIndexer_WhenCallingGetter_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new SetterOnlyIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenNonOverrideableIndexerGetter_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IIndexerContractImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenAbstractGetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new AbstractGetterIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Getter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenAbstractSetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new AbstractSetterIndexerServiceImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+    }
+
+    [Fact]
+    public async Task GivenNonOverrideableIndexerSetter_WhenCallingUseBaseImplementation_ShouldFail()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+namespace Sample
+{
+    public static class Scenario
+    {
+        public static void Execute()
+        {
+            var imposter = new IIndexerContractImposter();
+            imposter[Imposter.Abstractions.Arg<int>.Any()].Setter().UseBaseImplementation();
+        }
+    }
+}
+""");
+
+        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
     }
 
     [Fact]

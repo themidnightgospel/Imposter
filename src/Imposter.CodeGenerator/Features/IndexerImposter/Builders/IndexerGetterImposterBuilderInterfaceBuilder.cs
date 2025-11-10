@@ -56,12 +56,20 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
             .AddMember(BuildCallbackMethod(indexer.GetterBuilderInterface))
             .Build();
 
-    private static InterfaceDeclarationSyntax BuildOutcomeInterface(in ImposterIndexerMetadata indexer) =>
-        new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.OutcomeInterfaceName)
+    private static InterfaceDeclarationSyntax BuildOutcomeInterface(in ImposterIndexerMetadata indexer)
+    {
+        var builder = new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.OutcomeInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(BuildReturnsMethods(indexer.GetterBuilderInterface))
-            .AddMembers(BuildThrowsMethods(indexer.GetterBuilderInterface))
-            .Build();
+            .AddMembers(BuildThrowsMethods(indexer.GetterBuilderInterface));
+
+        if (indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null)
+        {
+            builder.AddMember(BuildUseBaseImplementationMethod(indexer.GetterBuilderInterface));
+        }
+
+        return builder.Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildVerificationInterface(in ImposterIndexerMetadata indexer) =>
         new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.VerificationInterfaceName)
@@ -127,4 +135,13 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
         new MethodDeclarationBuilder(getterInterface.ThenMethod.ReturnType, getterInterface.ThenMethod.Name)
             .WithSemicolon()
             .Build();
+
+    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(IndexerGetterImposterBuilderInterfaceMetadata getterInterface)
+    {
+        var metadata = getterInterface.UseBaseImplementationMethod!.Value;
+
+        return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
+            .WithSemicolon()
+            .Build();
+    }
 }

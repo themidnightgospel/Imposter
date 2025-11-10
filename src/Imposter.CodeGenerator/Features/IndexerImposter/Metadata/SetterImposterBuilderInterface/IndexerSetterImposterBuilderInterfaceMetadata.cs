@@ -31,6 +31,8 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
 
     internal readonly ThenMethodMetadata ThenMethod;
 
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+
     internal IndexerSetterImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
         in IndexerDelegateMetadata delegatesMetadata)
@@ -52,5 +54,8 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
         CallbackMethod = new CallbackMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
         CalledMethod = new CalledMethodMetadata();
         ThenMethod = new ThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        UseBaseImplementationMethod = core.SetterSupportsBaseImplementation
+            ? new UseBaseImplementationMethodMetadata(TypeSyntax, FluentInterfaceTypeSyntax)
+            : null;
     }
 }

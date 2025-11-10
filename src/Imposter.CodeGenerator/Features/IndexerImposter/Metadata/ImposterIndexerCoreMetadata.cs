@@ -21,6 +21,12 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly TypeSyntax AsSystemFuncType;
 
+    internal readonly TypeSyntax AsSystemActionType;
+
+    internal readonly bool GetterSupportsBaseImplementation;
+
+    internal readonly bool SetterSupportsBaseImplementation;
+
     internal ImposterIndexerCoreMetadata(IPropertySymbol property, string uniqueName)
     {
         UniqueName = uniqueName;
@@ -28,9 +34,17 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         HasSetter = property.SetMethod is not null;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
+        AsSystemActionType = WellKnownTypes.System.Action;
         Parameters = property.Parameters.Select(parameter => new IndexerParameterMetadata(parameter)).ToArray();
+        var containingType = property.ContainingType;
+        var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
+        GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };
+        SetterSupportsBaseImplementation = containingTypeIsClass && property.SetMethod is { IsAbstract: false };
 
         var parametersDisplay = string.Join(", ", Parameters.Select(p => p.Symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)));
-        DisplayName = $"{property.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.this[{parametersDisplay}]";
+        var containingTypeDisplay = containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+            ?? property.ContainingSymbol?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+            ?? property.Name;
+        DisplayName = $"{containingTypeDisplay}.this[{parametersDisplay}]";
     }
 }

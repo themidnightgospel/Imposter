@@ -4,6 +4,12 @@
 - This enables scenarios such as `VirtualCompute(Arg<int>.Is(...)).Returns(123).Then().Callback((int value) => { })` and `VirtualAction().Callback(() => { }).Then().UseBaseImplementation()` to compile.
 - Parameter callbacks can now consume method arguments in class imposters (e.g., `(int value) => { }`), aligning generator output with fluent API expectations.
 
+## Indexer Base Implementation Hooks
+
+- Indexer getter and setter builders (`imposter[...].Getter()/Setter()`) now expose `.UseBaseImplementation()` when the target indexer belongs to a class with a virtual (non-abstract) accessor.
+- The generated override passes `Func<TResult>` / `Action` delegates that close over the current indices and forward to `base[...]`, so matching setups run the real implementation while still allowing callbacks/verification.
+- Default backing-store behaviour remains available for other criteria; opting into base implementation is scoped to the specific builder invocation.
+
 ## Event Fluent API Guardrails
 
 - Event imposter entry interfaces (`I<EventName>EventImposterBuilder`) now inherit both setup and verification lane interfaces so callers see the full surface initially, but the first method call constrains the chain to either setup or verification.
