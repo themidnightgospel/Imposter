@@ -81,13 +81,15 @@ internal static class ImposterExtensionsBuilder
     }
 
     private static MethodDeclarationSyntax BuildParameterlessMethod(TypeSyntax imposterType)
-        => MethodDeclaration(imposterType, Identifier(MethodName))
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+        => new MethodDeclarationBuilder(imposterType, MethodName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithExpressionBody(
                 ArrowExpressionClause(
                     ObjectCreationExpression(imposterType)
                         .WithArgumentList(ArgumentList())))
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            .WithSemicolon()
+            .Build();
 
     private static MethodDeclarationSyntax BuildConstructorOverload(
         TypeSyntax imposterType,
@@ -105,14 +107,16 @@ internal static class ImposterExtensionsBuilder
 
         arguments.Add(Argument(IdentifierName(InvocationBehaviorParameterName)));
 
-        return MethodDeclaration(imposterType, Identifier(MethodName))
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+        return new MethodDeclarationBuilder(imposterType, MethodName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(parameters))
             .WithExpressionBody(
                 ArrowExpressionClause(
                     ObjectCreationExpression(imposterType)
                         .WithArgumentList(SyntaxFactoryHelper.ArgumentListSyntax(arguments))))
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            .WithSemicolon()
+            .Build();
     }
 
     private static ParameterSyntax CreateInvocationBehaviorParameter() =>
