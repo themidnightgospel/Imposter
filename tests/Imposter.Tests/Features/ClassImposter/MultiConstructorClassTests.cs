@@ -1,5 +1,6 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter.Suts;
 using Shouldly;
 using Xunit;
 
@@ -71,6 +72,38 @@ namespace Imposter.Tests.Features.ClassImposter
             MultiConstructorClass instance = imposter.Instance();
 
             instance.Calculate(9).ShouldBe(88);
+        }
+
+        [Fact]
+        public void GivenProtectedConstructor_WhenGeneratingImposter_ThenConstructorIsExposed()
+        {
+            var constructor = typeof(MultiConstructorClassImposter)
+                .GetConstructor(new[] { typeof(bool), typeof(ImposterInvocationBehavior) });
+
+            constructor.ShouldNotBeNull();
+
+            var imposter = (MultiConstructorClassImposter)constructor!.Invoke(new object[] { true, ImposterInvocationBehavior.Implicit });
+
+            imposter.Instance().CtorSignature.ShouldBe("flag:True");
+        }
+
+        [Fact]
+        public void GivenExplicitBehaviorOnAllConstructors_WhenInvokedWithoutSetup_ShouldThrow()
+        {
+            var correlationId = Guid.NewGuid();
+
+            var imposters = new[]
+            {
+                new MultiConstructorClassImposter(ImposterInvocationBehavior.Explicit),
+                new MultiConstructorClassImposter(3, "explicit", ImposterInvocationBehavior.Explicit),
+                new MultiConstructorClassImposter(correlationId, ImposterInvocationBehavior.Explicit),
+                new MultiConstructorClassImposter(false, ImposterInvocationBehavior.Explicit)
+            };
+
+            foreach (var imposter in imposters)
+            {
+                Should.Throw<MissingImposterException>(() => imposter.Instance().Calculate(1));
+            }
         }
     }
 }

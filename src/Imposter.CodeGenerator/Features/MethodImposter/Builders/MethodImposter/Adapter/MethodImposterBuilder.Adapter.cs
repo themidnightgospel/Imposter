@@ -60,6 +60,7 @@ internal static class MethodImposterAdapterBuilder
         var postInvokeActions = new List<StatementSyntax>();
 
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, "Target");
+        var parameterList = method.Symbol.Parameters.ToParameterListSyntax(true);
 
         foreach (var p in method.Symbol.Parameters)
         {
@@ -102,6 +103,22 @@ internal static class MethodImposterAdapterBuilder
             }
         }
 
+        if (method.SupportsBaseImplementation)
+        {
+            var baseImplementationParameterType = (TypeSyntax)typeParamRenamer.Visit(method.Delegate.Syntax);
+            parameterList = parameterList.AddParameters(
+                Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                    .WithType(baseImplementationParameterType)
+                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+
+            invokeArguments.Add(
+                Argument(
+                    TypeCasterSyntaxHelper.CastExpression(
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName,
+                        baseImplementationParameterType,
+                        method.Delegate.Syntax)));
+        }
+
         var invokeExpression = InvocationExpression(
             MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("_target"), IdentifierName("Invoke")),
             ArgumentList(SeparatedList(invokeArguments))
@@ -131,7 +148,7 @@ internal static class MethodImposterAdapterBuilder
                 "Invoke"
             )
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(method.Symbol.Parameters.ToParameterListSyntax(true))
+            .WithParameterList(parameterList)
             .WithBody(Block(body));
     }
 

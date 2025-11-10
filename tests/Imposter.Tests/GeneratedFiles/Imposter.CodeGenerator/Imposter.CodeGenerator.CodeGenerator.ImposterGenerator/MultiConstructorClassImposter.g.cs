@@ -7,12 +7,12 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
-using Imposter.Tests.Features.ClassImposter;
+using Imposter.Tests.Features.ClassImposter.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter
+namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class MultiConstructorClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>
+    public class MultiConstructorClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass>
     {
         private readonly CalculateMethodImposter _calculateMethodImposter;
         private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
@@ -23,8 +23,8 @@ namespace Imposter.Tests.Features.ClassImposter
 
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        public global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass Instance() => _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass>.Instance()
+        public global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass Instance() => _imposterInstance;
+        global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass>.Instance()
         {
             return _imposterInstance;
         }
@@ -445,7 +445,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.MultiConstructorClass
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass
         {
             MultiConstructorClassImposter _imposter;
             internal void InitializeImposter(MultiConstructorClassImposter imposter)

@@ -1,10 +1,10 @@
 using System;
 using Imposter.Abstractions;
-using Imposter.Tests.Features.ClassImposter;
+using Imposter.Tests.Features.ClassImposter.Suts;
 
 [assembly: GenerateImposter(typeof(ParameterizedCtorOnlyClass))]
 
-namespace Imposter.Tests.Features.ClassImposter
+namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     public class ParameterizedCtorOnlyClass
     {

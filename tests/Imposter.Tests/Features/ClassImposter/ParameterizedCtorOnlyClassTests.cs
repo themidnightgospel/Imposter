@@ -1,5 +1,6 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.ClassImposter.Suts;
 using Shouldly;
 using Xunit;
 

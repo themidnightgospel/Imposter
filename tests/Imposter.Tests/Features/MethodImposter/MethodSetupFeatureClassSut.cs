@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.MethodImposter;
@@ -50,6 +51,11 @@ namespace Imposter.Tests.Features.MethodImposter
             seed += applied;
             doubled = seed * 2;
             return seed + doubled;
+        }
+
+        internal virtual int ThrowingCalculation(int value)
+        {
+            throw new InvalidOperationException($"boom:{value}");
         }
     }
 }

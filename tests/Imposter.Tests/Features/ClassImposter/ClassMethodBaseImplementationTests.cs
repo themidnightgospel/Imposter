@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.MethodImposter;
@@ -82,6 +83,43 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
+        public async Task GivenValueTaskUseBaseImplementation_WhenInvoked_ThenReturnsBaseValueAndVerifiesCalls()
+        {
+            var callbackCount = 0;
+
+            var builder = _classSut
+                .BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
+                .UseBaseImplementation()
+                .Callback((string prefix, string suffix) =>
+                {
+                    callbackCount++;
+                    return Task.CompletedTask;
+                });
+
+            var instance = _classSut.Instance();
+
+            var first = await instance.BuildLabelAsync("alpha", "beta");
+            var second = await instance.BuildLabelAsync("gamma", "delta");
+
+            first.ShouldBe("alpha-beta");
+            second.ShouldBe("gamma-delta");
+            callbackCount.ShouldBe(2);
+
+            Should.NotThrow(() => _classSut.BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any()).Called(Count.Exactly(2)));
+        }
+
+        [Fact]
+        public void GivenUseBaseImplementation_WhenBaseThrows_ShouldPropagateException()
+        {
+            _classSut.ThrowingCalculation(Arg<int>.Any()).UseBaseImplementation();
+
+            var instance = _classSut.Instance();
+
+            var ex = Should.Throw<InvalidOperationException>(() => instance.ThrowingCalculation(9));
+            ex.Message.ShouldBe("boom:9");
+        }
+
+        [Fact]
         public void GivenRefOutMethodUseBaseImplementation_WhenInvoked_ThenPassesThroughAssignments()
         {
             _classSut.RefOutWithParams(
@@ -109,6 +147,19 @@ namespace Imposter.Tests.Features.ClassImposter
             var instance = _classSut.Instance();
 
             Should.NotThrow(() => instance.IntSingleParam(9));
+        }
+
+        [Fact]
+        public void GivenClassMethodInvocations_WhenVerifyingCalled_ShouldRespectCounts()
+        {
+            var callVerifier = _classSut.IntSingleParam(Arg<int>.Any());
+            var instance = _classSut.Instance();
+
+            instance.IntSingleParam(1);
+            instance.IntSingleParam(2);
+
+            Should.NotThrow(() => callVerifier.Called(Count.Exactly(2)));
+            Should.Throw<VerificationFailedException>(() => callVerifier.Called(Count.AtLeast(3)));
         }
     }
 }

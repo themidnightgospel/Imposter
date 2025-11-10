@@ -16,11 +16,21 @@ internal static class MethodImposterGenericInterfaceBuilder
         }
 
         var genericInterfaceType = method.MethodImposter.Interface;
+        var invokeMethodParameters = SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters);
+
+        if (method.SupportsBaseImplementation)
+        {
+            invokeMethodParameters = invokeMethodParameters.AddParameters(
+                Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                    .WithType(method.Delegate.Syntax)
+                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+        }
+
         var invokeMethod = MethodDeclaration(
                 SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
                 "Invoke"
             )
-            .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters))
+            .WithParameterList(invokeMethodParameters)
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
         var hasMatchingSetupMethod = MethodDeclaration(
