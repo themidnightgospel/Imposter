@@ -19,10 +19,7 @@ internal static partial class InvocationSetupBuilder
                         SingletonSeparatedList(
                             VariableDeclarator(Identifier("_invocationImposters"))
                                 .WithInitializer(
-                                    EqualsValueClause(
-                                        ObjectCreationExpression(queueType)
-                                            .WithArgumentList(ArgumentList())
-                                    )
+                                    EqualsValueClause(queueType.New(ArgumentList()))
                                 )
                         )
                     )
@@ -55,20 +52,15 @@ internal static partial class InvocationSetupBuilder
                                 SingletonSeparatedList(
                                     VariableDeclarator(Identifier("invocationImposter"))
                                         .WithInitializer(
-                                            EqualsValueClause(
-                                                ObjectCreationExpression(invocationImposterType).WithArgumentList(ArgumentList())
-                                            )
+                                            EqualsValueClause(invocationImposterType.New(ArgumentList()))
                                         )
                                 )
                             )
                     ),
                     ExpressionStatement(
-                        InvocationExpression(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("_invocationImposters"),
-                                    IdentifierName("Enqueue")))
-                            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))))
+                        IdentifierName("_invocationImposters")
+                            .Dot(IdentifierName("Enqueue"))
+                            .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))))
                     ),
                     ReturnStatement(IdentifierName("invocationImposter"))
                 )

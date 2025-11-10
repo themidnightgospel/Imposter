@@ -47,8 +47,8 @@ internal static partial class InvocationSetupBuilder
                 AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         IdentifierName("Default"),
-                        ObjectCreationExpression(IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName))
-                            .WithArgumentList(ArgumentList()))
+                        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
+                            .New(ArgumentList()))
                     .ToStatementSyntax());
 
         if (method.HasReturnValue)

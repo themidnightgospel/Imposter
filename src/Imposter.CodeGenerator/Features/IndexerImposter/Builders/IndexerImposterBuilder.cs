@@ -370,7 +370,7 @@ internal static class IndexerImposterBuilder
         var parameter = SyntaxFactoryHelper.ParameterSyntax(returnsMetadata.FuncParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
-            InvocationExpression(IdentifierName(parameter.Identifier)));
+            IdentifierName(parameter.Identifier).Call());
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax))
@@ -387,8 +387,8 @@ internal static class IndexerImposterBuilder
         var parameter = SyntaxFactoryHelper.ParameterSyntax(returnsMetadata.DelegateParameter);
         var lambda = SimpleLambdaExpression(
             Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName)),
-            InvocationExpression(IdentifierName(parameter.Identifier))
-                .WithArgumentList(
+            IdentifierName(parameter.Identifier)
+                .Call(
                     BuildDelegateInvocationArguments(
                         IdentifierName(indexer.GetterImplementation.ArgumentsVariableName),
                         indexer,

@@ -345,8 +345,8 @@ internal static class GetterImposterBuilderBuilder
                 IdentifierName(builder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)));
             var missingBaseImplementation = ThrowStatement(
-                ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
-                    .WithArgumentList(
+                WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                    .New(
                         Argument(
                                 BinaryExpression(
                                     SyntaxKind.AddExpression,
