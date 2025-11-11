@@ -167,18 +167,12 @@ internal static partial class EventImposterBuilder
             .Build();
     }
 
-    private static IfStatementSyntax BuildBaseImplementationInvocation(IdentifierNameSyntax baseImplementationIdentifier)
-    {
-        var baseProvidedCheck = BinaryExpression(
-            SyntaxKind.NotEqualsExpression,
-            baseImplementationIdentifier,
-            LiteralExpression(SyntaxKind.NullLiteralExpression));
-
-        return IfStatement(
+    private static IfStatementSyntax BuildBaseImplementationInvocation(IdentifierNameSyntax baseImplementationIdentifier) =>
+        IfStatement(
             IdentifierName("_useBaseImplementation"),
             Block(
                 IfStatement(
-                    baseProvidedCheck,
+                    baseImplementationIdentifier.IsNotNull(),
                     Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
                     ElseClause(
                         ThrowStatement(
@@ -190,5 +184,4 @@ internal static partial class EventImposterBuilder
                                                 IdentifierName("_eventDisplayName"),
                                                 LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (event)"))))
                                         .AsSingleArgumentListSyntax()))))));
-    }
 }

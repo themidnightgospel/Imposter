@@ -21,7 +21,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                     .Call(Parameter(Identifier("it"))
                         .Lambda(It
                             .Dot(method.Symbol.IsGenericMethod
-                                ? GenericName(Identifier(InvocationHistoryMatchesMethodMetadata.Name), method.GenericTypeArguments.AsTypeArguments())
+                                ? GenericName(Identifier(InvocationHistoryMatchesMethodMetadata.Name), method.GenericTypeArguments.ToTypeArguments())
                                 : IdentifierName(InvocationHistoryMatchesMethodMetadata.Name)
                             )
                             .Call(GetMatchesMethodArguments(method)?.ToSingleArgumentList()))

@@ -28,7 +28,7 @@ internal static partial class MethodImposterBuilderBuilder
         if (method.Symbol.IsGenericMethod)
         {
             var addNewCall = IdentifierName(method.MethodImposter.Builder.ImposterCollectionField.Name)
-                .Dot(GenericName(Identifier("AddNew"), method.GenericTypeArguments.AsTypeArguments()))
+                .Dot(GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments()))
                 .Call();
 
             statements.Add(

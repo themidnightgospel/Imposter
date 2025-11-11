@@ -300,7 +300,7 @@ internal readonly ref struct ImposterInstanceBuilder
             {
                 return IdentifierName("_imposter")
                     .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
-                    .Dot(GenericName(Identifier("GetImposterWithMatchingSetup"), method.GenericTypeArguments.AsTypeArguments()))
+                    .Dot(GenericName(Identifier("GetImposterWithMatchingSetup"), method.GenericTypeArguments.ToTypeArguments()))
                     .Call(GetGetImposterWithMatchingSetupArguments(method));
             }
 

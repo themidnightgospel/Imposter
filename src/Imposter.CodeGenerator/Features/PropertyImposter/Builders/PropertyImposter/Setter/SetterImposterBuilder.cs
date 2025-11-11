@@ -106,10 +106,6 @@ internal static class SetterImposterBuilder
             var defaultBehaviourCheck = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
 
-            var baseProvidedCheck = BinaryExpression(
-                SyntaxKind.NotEqualsExpression,
-                baseImplementationIdentifier,
-                LiteralExpression(SyntaxKind.NullLiteralExpression));
             var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
             var missingBaseImplementation = ThrowStatement(
                 WellKnownTypes.Imposter.Abstractions.MissingImposterException
@@ -140,7 +136,7 @@ internal static class SetterImposterBuilder
                         useBaseImplementationCheck,
                         Block(
                             IfStatement(
-                                baseProvidedCheck,
+                                baseImplementationIdentifier.IsNotNull(),
                                 Block(
                                     baseImplementationIdentifier.Call().ToStatementSyntax(),
                                     ReturnStatement()

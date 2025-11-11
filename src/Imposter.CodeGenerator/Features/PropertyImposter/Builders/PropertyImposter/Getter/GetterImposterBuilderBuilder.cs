@@ -204,7 +204,7 @@ internal static class GetterImposterBuilderBuilder
             )
             .Build()
     ];
-    
+
     internal static MethodDeclarationSyntax BuildGetterCallbackMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface) =>
@@ -219,7 +219,7 @@ internal static class GetterImposterBuilderBuilder
                 ReturnStatement(ThisExpression())
             ))
             .Build();
-    
+
     internal static MethodDeclarationSyntax BuildGetterCalledMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface) =>
@@ -293,7 +293,7 @@ internal static class GetterImposterBuilderBuilder
                     .ToStatementSyntax()
             ))
             .Build();
-    
+
     internal static MethodDeclarationSyntax BuildGetMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
@@ -336,14 +336,12 @@ internal static class GetterImposterBuilderBuilder
         {
             var defaultBehaviourCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
-            var baseProvidedCheck = BinaryExpression(
-                SyntaxKind.NotEqualsExpression,
-                baseImplementationIdentifier,
-                LiteralExpression(SyntaxKind.NullLiteralExpression));
+            var baseImplementationIsNotNull = baseImplementationIdentifier.IsNotNull();
             var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
             var returnBackingField = ReturnStatement(
                 IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name)));
+                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+            );
             var missingBaseImplementation = ThrowStatement(
                 WellKnownTypes.Imposter.Abstractions.MissingImposterException
                     .New(
@@ -367,7 +365,7 @@ internal static class GetterImposterBuilderBuilder
                         IdentifierName(builder.InvocationCountField.Name),
                         LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))
                     ),
-                    baseProvidedCheck
+                    baseImplementationIsNotNull
                 ),
                 BinaryExpression(
                     SyntaxKind.LogicalAndExpression,
@@ -388,7 +386,7 @@ internal static class GetterImposterBuilderBuilder
                         useBaseImplementationCheck,
                         Block(
                             IfStatement(
-                                baseProvidedCheck,
+                                baseImplementationIsNotNull,
                                 ReturnStatement(baseImplementationIdentifier.Call()),
                                 ElseClause(missingBaseImplementation)
                             )

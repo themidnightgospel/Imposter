@@ -90,10 +90,7 @@ internal static class DefaultIndexerBehaviourBuilder
                             ])),
                     ReturnStatement(valueIdentifier)),
                 IfStatement(
-                    BinaryExpression(
-                        SyntaxKind.NotEqualsExpression,
-                        IdentifierName(baseImplementationParam.Identifier),
-                        LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                    IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
                     ReturnStatement(
                         IdentifierName(baseImplementationParam.Identifier)
                             .Call(EmptyArgumentListSyntax))),
@@ -117,10 +114,7 @@ internal static class DefaultIndexerBehaviourBuilder
                 .Assign(IdentifierName("value")));
 
         var baseInvocation = IfStatement(
-            BinaryExpression(
-                SyntaxKind.NotEqualsExpression,
-                IdentifierName(baseImplementationParam.Identifier),
-                LiteralExpression(SyntaxKind.NullLiteralExpression)),
+            IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
             Block(
                 ExpressionStatement(
                     IdentifierName(baseImplementationParam.Identifier)
@@ -138,5 +132,3 @@ internal static class DefaultIndexerBehaviourBuilder
             .Build();
     }
 }
-
-
