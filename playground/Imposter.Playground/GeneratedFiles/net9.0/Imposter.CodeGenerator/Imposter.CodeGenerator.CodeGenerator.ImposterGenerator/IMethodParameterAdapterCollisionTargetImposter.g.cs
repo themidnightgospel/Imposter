@@ -67,9 +67,9 @@ namespace Imposter.Playground
                 this._target = _target;
             }
 
-            public bool Matches(AdapterNamesArguments arguments)
+            public bool Matches(AdapterNamesArguments arguments_1)
             {
-                return ((result.Matches(arguments.result) && arguments.Matches(arguments.arguments)) && target.Matches(arguments.target)) && _target.Matches(arguments._target);
+                return ((result.Matches(arguments_1.result) && arguments.Matches(arguments_1.arguments)) && target.Matches(arguments_1.target)) && _target.Matches(arguments_1._target);
             }
         }
 
@@ -248,7 +248,7 @@ namespace Imposter.Playground
         public interface IAdapterNamesMethodInvocationImposterGroup : IAdapterNamesMethodInvocationImposterGroupCallback
         {
             IAdapterNamesMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAdapterNamesMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAdapterNamesMethodInvocationImposterGroupContinuation Throws(AdapterNamesExceptionGeneratorDelegate exceptionGenerator);
             IAdapterNamesMethodInvocationImposterGroupContinuation Returns(AdapterNamesDelegate resultGenerator);

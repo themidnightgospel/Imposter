@@ -293,7 +293,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IInvokeProtectedMethodMethodInvocationImposterGroup : IInvokeProtectedMethodMethodInvocationImposterGroupCallback
         {
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws(InvokeProtectedMethodExceptionGeneratorDelegate exceptionGenerator);
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Returns(InvokeProtectedMethodDelegate resultGenerator);
@@ -677,7 +677,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IProtectedVirtualMethodMethodInvocationImposterGroup : IProtectedVirtualMethodMethodInvocationImposterGroupCallback
         {
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws(ProtectedVirtualMethodExceptionGeneratorDelegate exceptionGenerator);
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Returns(ProtectedVirtualMethodDelegate resultGenerator);
@@ -1029,7 +1029,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IReadProtectedPropertyMethodInvocationImposterGroup : IReadProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws(ReadProtectedPropertyExceptionGeneratorDelegate exceptionGenerator);
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Returns(ReadProtectedPropertyDelegate resultGenerator);
@@ -1407,7 +1407,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IReadProtectedValueMethodInvocationImposterGroup : IReadProtectedValueMethodInvocationImposterGroupCallback
         {
             IReadProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReadProtectedValueMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IReadProtectedValueMethodInvocationImposterGroupContinuation Throws(ReadProtectedValueExceptionGeneratorDelegate exceptionGenerator);
             IReadProtectedValueMethodInvocationImposterGroupContinuation Returns(ReadProtectedValueDelegate resultGenerator);
@@ -1771,7 +1771,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface ISubscribeToProtectedEventMethodInvocationImposterGroup : ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
         {
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws(SubscribeToProtectedEventExceptionGeneratorDelegate exceptionGenerator);
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation UseBaseImplementation();
@@ -2120,7 +2120,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IWriteProtectedPropertyMethodInvocationImposterGroup : IWriteProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws(WriteProtectedPropertyExceptionGeneratorDelegate exceptionGenerator);
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation UseBaseImplementation();
@@ -2473,7 +2473,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IWriteProtectedValueMethodInvocationImposterGroup : IWriteProtectedValueMethodInvocationImposterGroupCallback
         {
             IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws(WriteProtectedValueExceptionGeneratorDelegate exceptionGenerator);
             IWriteProtectedValueMethodInvocationImposterGroupContinuation UseBaseImplementation();

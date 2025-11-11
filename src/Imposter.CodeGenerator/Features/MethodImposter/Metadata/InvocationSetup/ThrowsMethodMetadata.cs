@@ -1,5 +1,6 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
 
@@ -19,6 +20,10 @@ internal readonly struct ThrowsMethodMetadata
 
     internal readonly string InterfaceExceptionGeneratorParameterName;
 
+    internal readonly TypeParameterListSyntax TypeParameterList;
+
+    internal readonly TypeParameterConstraintClauseSyntax TypeParameterConstraintClause;
+
     public ThrowsMethodMetadata(
         IParameterNameContextProvider parameterNameContextProvider,
         NameSyntax exceptionGeneratorDelegateSyntax,
@@ -32,5 +37,14 @@ internal readonly struct ThrowsMethodMetadata
         InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
         ExceptionParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionParameterName), WellKnownTypes.System.Exception);
         ExceptionGeneratorParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionGeneratorParameterName), exceptionGeneratorDelegateSyntax);
+
+        TypeParameterList = TypeParameterList(
+            SingletonSeparatedList(
+                TypeParameter("TException")));
+
+        TypeParameterConstraintClause = TypeParameterConstraintClause("TException")
+            .AddConstraints(
+                TypeConstraint(WellKnownTypes.System.Exception),
+                ConstructorConstraint());
     }
 }

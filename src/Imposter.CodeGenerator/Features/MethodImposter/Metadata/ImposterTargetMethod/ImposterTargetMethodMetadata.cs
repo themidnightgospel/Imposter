@@ -58,6 +58,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 
+    internal readonly SyntaxList<TypeParameterConstraintClauseSyntax> GenericTypeConstraintClauses;
+
     internal readonly string Namespace;
 
     internal bool IsAsync { get; }
@@ -80,6 +82,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
+        GenericTypeConstraintClauses = SyntaxFactory.List(SyntaxFactoryHelper.TypeParameterConstraintClauses(Symbol));
 
         var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         TargetGenericTypeArguments = Symbol.TypeParameters

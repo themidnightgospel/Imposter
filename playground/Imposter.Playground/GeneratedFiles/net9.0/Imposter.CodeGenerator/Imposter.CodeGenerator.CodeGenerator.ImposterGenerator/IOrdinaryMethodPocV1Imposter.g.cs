@@ -240,7 +240,7 @@ namespace Imposter.Playground
         public interface IAddMethodInvocationImposterGroup : IAddMethodInvocationImposterGroupCallback
         {
             IAddMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAddMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAddMethodInvocationImposterGroupContinuation Throws(AddExceptionGeneratorDelegate exceptionGenerator);
             IAddMethodInvocationImposterGroupContinuation Returns(AddDelegate resultGenerator);

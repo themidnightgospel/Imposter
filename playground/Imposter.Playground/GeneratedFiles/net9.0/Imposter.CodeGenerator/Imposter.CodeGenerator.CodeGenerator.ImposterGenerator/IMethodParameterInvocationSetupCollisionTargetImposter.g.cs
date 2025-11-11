@@ -252,7 +252,7 @@ namespace Imposter.Playground
         public interface ISetupNamesMethodInvocationImposterGroup : ISetupNamesMethodInvocationImposterGroupCallback
         {
             ISetupNamesMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ISetupNamesMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ISetupNamesMethodInvocationImposterGroupContinuation Throws(SetupNamesExceptionGeneratorDelegate exceptionGenerator);
             ISetupNamesMethodInvocationImposterGroupContinuation Returns(SetupNamesDelegate resultGenerator);

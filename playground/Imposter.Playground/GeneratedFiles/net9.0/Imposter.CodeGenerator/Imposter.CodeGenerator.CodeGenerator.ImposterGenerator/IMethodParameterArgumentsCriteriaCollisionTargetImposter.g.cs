@@ -222,7 +222,7 @@ namespace Imposter.Playground
         public interface ICriteriaNamesMethodInvocationImposterGroup : ICriteriaNamesMethodInvocationImposterGroupCallback
         {
             ICriteriaNamesMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ICriteriaNamesMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ICriteriaNamesMethodInvocationImposterGroupContinuation Throws(CriteriaNamesExceptionGeneratorDelegate exceptionGenerator);
         }

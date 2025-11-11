@@ -236,7 +236,7 @@ namespace Imposter.Benchmarks
         public interface ISquareMethodInvocationImposterGroup : ISquareMethodInvocationImposterGroupCallback
         {
             ISquareMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ISquareMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ISquareMethodInvocationImposterGroupContinuation Throws(SquareExceptionGeneratorDelegate exceptionGenerator);
             ISquareMethodInvocationImposterGroupContinuation Returns(SquareDelegate resultGenerator);

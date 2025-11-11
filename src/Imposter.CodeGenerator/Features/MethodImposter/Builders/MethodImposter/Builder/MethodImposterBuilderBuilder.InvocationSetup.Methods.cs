@@ -13,18 +13,18 @@ internal static partial class MethodImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildThrowsGenericImplementation(in ImposterTargetMethodMetadata method)
     {
-        var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
-            .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
-            .Build();
+        var throwsMethod = method.MethodInvocationImposterGroup.ThrowsMethod;
+        var templateBuilder = new MethodDeclarationBuilder(throwsMethod.ReturnType, throwsMethod.Name)
+            .WithTypeParameters(throwsMethod.TypeParameterList)
+            .AddConstraintClause(throwsMethod.TypeParameterConstraintClause);
+
+        var template = templateBuilder.Build();
 
         var lambda = Lambda(
             method.Symbol.Parameters,
             Block(
-                ThrowStatement(
-                    ObjectCreationExpression(IdentifierName("TException"))
-                        .WithArgumentList(ArgumentList())
-                )));
+                ThrowStatement(IdentifierName("TException").New())
+            ));
 
         var invocation = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))

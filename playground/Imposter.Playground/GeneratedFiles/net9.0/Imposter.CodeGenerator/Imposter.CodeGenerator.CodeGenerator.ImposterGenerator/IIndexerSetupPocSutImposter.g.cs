@@ -244,7 +244,7 @@ namespace Imposter.Playground
         public interface IIndexerMethodInvocationImposterGroup : IIndexerMethodInvocationImposterGroupCallback
         {
             IIndexerMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIndexerMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIndexerMethodInvocationImposterGroupContinuation Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
             IIndexerMethodInvocationImposterGroupContinuation Returns(IndexerDelegate resultGenerator);

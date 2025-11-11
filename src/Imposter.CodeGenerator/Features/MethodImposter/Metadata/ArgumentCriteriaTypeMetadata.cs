@@ -45,12 +45,15 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
     internal readonly struct MatchesMethodMetadata
     {
         private const string BaseName = "Matches";
+        private const string ParameterBaseName = "arguments";
 
         internal readonly string Name;
+        internal readonly string ParameterName;
 
         internal MatchesMethodMetadata(NameSet nameSet)
         {
             Name = nameSet.Use(BaseName);
+            ParameterName = nameSet.Use(ParameterBaseName);
         }
     }
 }

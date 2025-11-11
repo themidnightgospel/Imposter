@@ -274,7 +274,7 @@ namespace Imposter.Playground
         public interface IArgumentsMethodInvocationImposterGroup : IArgumentsMethodInvocationImposterGroupCallback
         {
             IArgumentsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IArgumentsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IArgumentsMethodInvocationImposterGroupContinuation Throws(ArgumentsExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -607,7 +607,7 @@ namespace Imposter.Playground
         public interface IArgumentsCriteriaMethodInvocationImposterGroup : IArgumentsCriteriaMethodInvocationImposterGroupCallback
         {
             IArgumentsCriteriaMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IArgumentsCriteriaMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IArgumentsCriteriaMethodInvocationImposterGroupContinuation Throws(ArgumentsCriteriaExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -940,7 +940,7 @@ namespace Imposter.Playground
         public interface ICallbackDelegateMethodInvocationImposterGroup : ICallbackDelegateMethodInvocationImposterGroupCallback
         {
             ICallbackDelegateMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ICallbackDelegateMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ICallbackDelegateMethodInvocationImposterGroupContinuation Throws(CallbackDelegateExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -1269,7 +1269,7 @@ namespace Imposter.Playground
         public interface ICollectionMethodInvocationImposterGroup : ICollectionMethodInvocationImposterGroupCallback
         {
             ICollectionMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ICollectionMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ICollectionMethodInvocationImposterGroupContinuation Throws(CollectionExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -1598,7 +1598,7 @@ namespace Imposter.Playground
         public interface IDelegateMethodInvocationImposterGroup : IDelegateMethodInvocationImposterGroupCallback
         {
             IDelegateMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDelegateMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDelegateMethodInvocationImposterGroupContinuation Throws(DelegateExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -1927,7 +1927,7 @@ namespace Imposter.Playground
         public interface IExceptionGeneratorDelegateMethodInvocationImposterGroup : IExceptionGeneratorDelegateMethodInvocationImposterGroupCallback
         {
             IExceptionGeneratorDelegateMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IExceptionGeneratorDelegateMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IExceptionGeneratorDelegateMethodInvocationImposterGroupContinuation Throws(ExceptionGeneratorDelegateExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -2256,7 +2256,7 @@ namespace Imposter.Playground
         public interface IMethodImposterMethodInvocationImposterGroup : IMethodImposterMethodInvocationImposterGroupCallback
         {
             IMethodImposterMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IMethodImposterMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IMethodImposterMethodInvocationImposterGroupContinuation Throws(MethodImposterExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -2553,7 +2553,7 @@ namespace Imposter.Playground
         public interface IMethodInvocationHistoryMethodInvocationImposterGroup : IMethodInvocationHistoryMethodInvocationImposterGroupCallback
         {
             IMethodInvocationHistoryMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IMethodInvocationHistoryMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IMethodInvocationHistoryMethodInvocationImposterGroupContinuation Throws(MethodInvocationHistoryExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -2876,7 +2876,7 @@ namespace Imposter.Playground
         public interface IMethodInvocationImposterGroupMethodInvocationImposterGroup : IMethodInvocationImposterGroupMethodInvocationImposterGroupCallback
         {
             IMethodInvocationImposterGroupMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IMethodInvocationImposterGroupMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IMethodInvocationImposterGroupMethodInvocationImposterGroupContinuation Throws(MethodInvocationImposterGroupExceptionGeneratorDelegate exceptionGenerator);
         }

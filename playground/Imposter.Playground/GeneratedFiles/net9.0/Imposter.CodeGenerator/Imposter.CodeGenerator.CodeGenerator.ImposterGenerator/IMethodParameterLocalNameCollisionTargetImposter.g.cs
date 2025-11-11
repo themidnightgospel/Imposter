@@ -71,9 +71,9 @@ namespace Imposter.Playground
                 this.baseImplementation = baseImplementation;
             }
 
-            public bool Matches(InvokeWithLocalsArguments arguments)
+            public bool Matches(InvokeWithLocalsArguments arguments_1)
             {
-                return (((ex.Matches(arguments.ex) && result.Matches(arguments.result)) && matchingInvocationImposterGroup.Matches(arguments.matchingInvocationImposterGroup)) && arguments.Matches(arguments.arguments)) && baseImplementation.Matches(arguments.baseImplementation);
+                return (((ex.Matches(arguments_1.ex) && result.Matches(arguments_1.result)) && matchingInvocationImposterGroup.Matches(arguments_1.matchingInvocationImposterGroup)) && arguments.Matches(arguments_1.arguments)) && baseImplementation.Matches(arguments_1.baseImplementation);
             }
         }
 
@@ -252,7 +252,7 @@ namespace Imposter.Playground
         public interface IInvokeWithLocalsMethodInvocationImposterGroup : IInvokeWithLocalsMethodInvocationImposterGroupCallback
         {
             IInvokeWithLocalsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IInvokeWithLocalsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IInvokeWithLocalsMethodInvocationImposterGroupContinuation Throws(InvokeWithLocalsExceptionGeneratorDelegate exceptionGenerator);
             IInvokeWithLocalsMethodInvocationImposterGroupContinuation Returns(InvokeWithLocalsDelegate resultGenerator);
