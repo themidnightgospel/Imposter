@@ -1,4 +1,5 @@
-﻿using Imposter.Abstractions;
+﻿using System;
+using Imposter.Abstractions;
 using Imposter.Playground;
 
 [assembly: GenerateImposter(typeof(IMethodGroupedTypeCollisionTarget))]
@@ -122,5 +123,19 @@ namespace Imposter.Playground
     {
         TResult ReturnsGeneric<TResult>(TResult value);
         TResult ReturnsWithGenerator<TResult>(System.Func<TResult> defaultResultGenerator);
+    }
+
+    public class test
+    {
+        static void A()
+        {
+            var imposter = new IMethodGenericResultTypeParameterCollisionTargetImposter();
+            Func<int> defaultResultGenerator = () => 10;
+            var valueSetup = imposter.ReturnsGeneric<int>(5);
+            var otherSetup = imposter.ReturnsWithGenerator<int>(defaultResultGenerator);
+            valueSetup.Returns(5);
+            otherSetup.Returns(10);
+
+        }
     }
 }
