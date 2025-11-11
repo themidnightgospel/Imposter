@@ -36,4 +36,12 @@ internal static partial class SyntaxFactoryHelper
 
     internal static LocalDeclarationStatementSyntax LocalVariableDeclarationSyntax(TypeSyntax typeSyntax, string name, ExpressionSyntax? initializer = null)
         => LocalDeclarationStatement(VariableDeclarationSyntax(typeSyntax: typeSyntax, name: name, initializer: initializer));
+
+    internal static FieldDeclarationSyntax ParameterAsReadonlyField(IParameterSymbol parameter) =>
+        SingleVariableField(
+            TypeSyntax(parameter.Type),
+            parameter.Name,
+            TokenList(Token(SyntaxKind.PublicKeyword)
+            )
+        );
 }

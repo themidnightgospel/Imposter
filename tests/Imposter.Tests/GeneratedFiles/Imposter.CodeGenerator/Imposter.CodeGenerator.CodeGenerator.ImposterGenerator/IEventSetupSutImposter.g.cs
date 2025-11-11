@@ -912,3 +912,4 @@ namespace Imposter.Tests.Features.EventImposter
         }
     }
 }
+#pragma warning restore nullable

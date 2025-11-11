@@ -139,9 +139,8 @@ internal static partial class EventImposterBuilder
             Identifier("interceptor"),
             FieldIdentifier(interceptorsField),
             Block(
-                ExpressionStatement(
                     IdentifierName("interceptor")
-                        .Call(Argument(IdentifierName(handlerIdentifier))))));
+                        .Call(Argument(IdentifierName(handlerIdentifier))).ToStatementSyntax()));
 
     private static MethodDeclarationSyntax BuildInterceptorRegistrationMethod(
         in ImposterEventMetadata @event,

@@ -413,3 +413,4 @@ namespace Imposter.Tests.Features.MethodImposter
         }
     }
 }
+#pragma warning restore nullable

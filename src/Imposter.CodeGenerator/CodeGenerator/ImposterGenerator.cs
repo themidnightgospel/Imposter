@@ -113,7 +113,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     imposterNamespace
                 ]
             )
-        ).WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()));
+        ).WithLeadingTrivia(Trivia(SyntaxFactoryHelper.EnableNullableTrivia()))
+        .WithTrailingTrivia(Trivia(SyntaxFactoryHelper.RestoreNullableTrivia()));
     }
 
     private static void BuildMethodImposter(

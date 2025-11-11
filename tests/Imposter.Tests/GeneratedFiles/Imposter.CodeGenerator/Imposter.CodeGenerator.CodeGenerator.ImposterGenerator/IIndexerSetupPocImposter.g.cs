@@ -421,3 +421,4 @@ namespace Imposter.Tests.Shared
         }
     }
 }
+#pragma warning restore nullable

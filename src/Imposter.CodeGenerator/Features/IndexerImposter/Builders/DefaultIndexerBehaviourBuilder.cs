@@ -43,16 +43,15 @@ internal static class DefaultIndexerBehaviourBuilder
         );
 
         var setBody = Block(
-            ExpressionStatement(
-                WellKnownTypes.System.Threading.Volatile
-                    .Dot(IdentifierName("Write"))
-                    .Call(
-                        ArgumentListSyntax([
-                            Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)),
-                            Argument(IdentifierName("value"))
-                        ])
-                    )
-            )
+            WellKnownTypes.System.Threading.Volatile
+                .Dot(IdentifierName("Write"))
+                .Call(
+                    ArgumentListSyntax([
+                        Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)),
+                        Argument(IdentifierName("value"))
+                    ])
+                )
+                .ToStatementSyntax()
         );
 
         return new PropertyDeclarationBuilder(WellKnownTypes.Bool, indexer.DefaultIndexerBehaviour.IsOnPropertyName)
@@ -106,19 +105,18 @@ internal static class DefaultIndexerBehaviourBuilder
 
         var argumentsParameter = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
 
-        var assignment = ExpressionStatement(
+        var assignment = 
             ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
                 .WithArgumentList(
                     BracketedArgumentList(
                         SingletonSeparatedList(Argument(IdentifierName("arguments")))))
-                .Assign(IdentifierName("value")));
+                .Assign(IdentifierName("value")).ToStatementSyntax();
 
         var baseInvocation = IfStatement(
             IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
             Block(
-                ExpressionStatement(
                     IdentifierName(baseImplementationParam.Identifier)
-                        .Call()),
+                        .Call().ToStatementSyntax(),
                 ReturnStatement()));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")

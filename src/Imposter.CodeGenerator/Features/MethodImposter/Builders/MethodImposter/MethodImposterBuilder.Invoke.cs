@@ -57,16 +57,16 @@ internal partial class MethodImposterBuilder
 
     private static ExpressionStatementSyntax AddToInvocationHistoryCollection(in ImposterTargetMethodMetadata method, bool threwException)
     {
-        return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-            .Dot(IdentifierName("Add"))
-            .Call(
-                method
-                    .InvocationHistory
-                    .Syntax
-                    .New(ArgumentListSyntax(GetArguments(method, threwException)))
-                    .ToSingleArgumentList()
-            )
-            .ToStatementSyntax();
+    return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+        .Dot(IdentifierName("Add"))
+        .Call(
+            method
+                .InvocationHistory
+                .Syntax
+                .New(ArgumentListSyntax(GetArguments(method, threwException)))
+                .ToSingleArgumentList()
+        )
+        .ToStatementSyntax();
 
         static IReadOnlyList<ArgumentSyntax> GetArguments(in ImposterTargetMethodMetadata method, bool threwException)
         {
@@ -127,7 +127,7 @@ internal partial class MethodImposterBuilder
 
         if (method.Symbol.ReturnsVoid)
         {
-            return ExpressionStatement(invokeExpression);
+            return invokeExpression.ToStatementSyntax();
         }
 
         return LocalVariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, invokeExpression);
@@ -163,7 +163,6 @@ internal partial class MethodImposterBuilder
                                 .WithArgumentList(
                                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
                                         .AsSingleArgumentListSyntax())))),
-                ExpressionStatement(
-                    matchingIdentifier.Assign(defaultGroup))));
+                    matchingIdentifier.Assign(defaultGroup).ToStatementSyntax()));
     }
 }

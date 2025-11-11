@@ -35,14 +35,13 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
-                        invocationImposterType,
-                        "invocationImposter",
-                        invocationImposterType.New(ArgumentList())),
-                    ExpressionStatement(
-                        IdentifierName("_invocationImposters")
-                            .Dot(IdentifierName("Enqueue"))
-                            .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))))
-                    ),
+                    invocationImposterType,
+                    "invocationImposter",
+                    invocationImposterType.New(ArgumentList())),
+                    IdentifierName("_invocationImposters")
+                        .Dot(IdentifierName("Enqueue"))
+                        .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))))
+                        .ToStatementSyntax(),
                     ReturnStatement(IdentifierName("invocationImposter"))
                 )
             )
@@ -70,9 +69,8 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                                 Not(
                                     IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty"))),
                                 Block(
-                                    ExpressionStatement(
                                         IdentifierName("_lastestInvocationImposter")
-                                            .Assign(IdentifierName("invocationImposter")))
+                                            .Assign(IdentifierName("invocationImposter")).ToStatementSyntax()
                                 )
                             )
                         )
