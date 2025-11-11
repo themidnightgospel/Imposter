@@ -23,6 +23,8 @@ public class EventBuilderFluentApiTests
 
                                                          event Action ActionOnly;
 
+                                                         event Action<object?> ActionWithArgument;
+
                                                          event Func<object?, EventArgs, Task>? AsyncSomethingHappened;
                                                      }
                                                  }
@@ -60,6 +62,49 @@ public class EventBuilderFluentApiTests
                                                    {
                                                        var imposter = new IEventSutImposter();
                                                        imposter.ActionOnly.Raise();
+                                                   }
+                                               }
+                                           }
+                                           """);
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenActionEventBuilder_WhenVerifyingRaisedAndHandlerInvoked_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
+                                           namespace Sample
+                                           {
+                                               public static class Scenario
+                                               {
+                                                   public static void Execute()
+                                                   {
+                                                       var imposter = new IEventSutImposter();
+                                                       imposter.ActionOnly
+                                                           .Raised(global::Imposter.Abstractions.Count.Once())
+                                                           .HandlerInvoked(global::Imposter.Abstractions.Arg<System.Action>.Any(), global::Imposter.Abstractions.Count.Once());
+                                                   }
+                                               }
+                                           }
+                                           """);
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenSingleArgumentActionEventBuilder_WhenVerifyingRaised_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
+                                           namespace Sample
+                                           {
+                                               public static class Scenario
+                                               {
+                                                   public static void Execute()
+                                                   {
+                                                       var imposter = new IEventSutImposter();
+                                                       imposter.ActionWithArgument
+                                                           .Raised(global::Imposter.Abstractions.Arg<object?>.Any(), global::Imposter.Abstractions.Count.Exactly(1));
                                                    }
                                                }
                                            }
@@ -376,6 +421,27 @@ public class EventBuilderFluentApiTests
                                                            .Unsubscribed(global::Imposter.Abstractions.Arg<System.EventHandler>.Any(), global::Imposter.Abstractions.Count.AtLeast(0))
                                                            .Raised(global::Imposter.Abstractions.Arg<object?>.Any(), global::Imposter.Abstractions.Arg<System.EventArgs>.Any(), global::Imposter.Abstractions.Count.AtMost(2))
                                                            .HandlerInvoked(global::Imposter.Abstractions.Arg<System.EventHandler>.Any(), global::Imposter.Abstractions.Count.Exactly(1));
+                                                   }
+                                               }
+                                           }
+                                           """);
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenEventHandlerBuilder_WhenVerifyingRaised_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet( /*lang=csharp*/"""
+                                           namespace Sample
+                                           {
+                                               public static class Scenario
+                                               {
+                                                   public static void Execute()
+                                                   {
+                                                       var imposter = new IEventSutImposter();
+                                                       imposter.SomethingHappened
+                                                           .Raised(global::Imposter.Abstractions.Arg<object?>.Any(), global::Imposter.Abstractions.Arg<System.EventArgs>.Any(), global::Imposter.Abstractions.Count.Exactly(1));
                                                    }
                                                }
                                            }

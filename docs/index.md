@@ -1,81 +1,254 @@
-# Imposter Documentation
+# Getting Started
 
-Welcome to the official documentation for **Imposter**, the Roslyn incremental source generator that creates lightweight imposters (mocks/stubs) for interfaces annotated with `GenerateImposterAttribute`. Use this site to learn how the generator works, how to consume the abstractions package, and how to extend the project for your own needs.
+Imposter is a Roslyn incremental source generator that creates lightweight imposters (mocks/stubs) for your interfaces and classes. 
 
-## Project at a Glance
+## Installation
 
-- **Core packages**
-  - `Imposter.Abstractions`: runtime helpers and source-generator attributes consumed by client applications.
-  - `Imposter.CodeGenerator`: the incremental generator that emits imposter implementations during compilation.
-- **Supporting areas**
-  - `tests/`: feature and regression coverage for both abstractions and generator behaviors.
-  - `benchmarks/Imposter.Benchmarks`: BenchmarkDotNet suite comparing Imposter to other mocking frameworks.
-  - `playground/`: scratchpad for rapid prototyping and scenario exploration.
-
-Refer to the in-repo architecture notes (`Imposter_codex/ARCHITECTURE.md`) for a deeper structural overview.
-
-## Getting Started
-
-1. **Install the tooling**
-   ```bash
-   dotnet tool restore
-   ```
-   or install the packages directly:
-   ```bash
-   dotnet add package Imposter.Abstractions
-   ```
-
-2. **Mark target interfaces**
-   ```csharp
-   [GenerateImposter]
-   public interface IWeatherService { ... }
-   ```
-
-3. **Build**
-   ```bash
-   dotnet build Imposter.sln
-   ```
-
-4. **Use the generated imposter** – the generator emits an implementation during compilation that can be configured in tests or runtime scenarios.
-
-### Helpful Links
-
-- [Usage guide](../Imposter_codex/USAGE.md)
-- [Local development workflow](../Imposter_codex/LOCAL_DEVELOPMENT.md)
-- [Coding standards](../Imposter_codex/CODING_STANDARDS.md)
-
-## Documentation Workflow
-
-This site is powered by **MkDocs**, the **Material for MkDocs** theme, and **mike** for version management.
-
-### Local Preview
+Add Imposter to your test or application project:
 
 ```bash
-pip install -r docs/requirements.txt
-mkdocs serve
+dotnet add package Imposter.CodeGenerator
 ```
 
-Open `http://127.0.0.1:8000/` to preview live edits.
+## Generate an Imposter
 
-### Versioned Releases with mike
+Annotate the target type at the assembly level and build. The generator produces a `<TypeName>Imposter` you can new up in code.
 
-```bash
-mike deploy 1.0 latest
-mike set-default latest
+```csharp
+using Imposter.Abstractions;
+
+[assembly: GenerateImposter(typeof(IMyService))]
+
+public interface IMyService
+{
+    int GetNumber();
+    int Increment(int value);
+    event EventHandler SomethingHappened;
+    int this[int key] { get; set; }
+}
 ```
 
-Each `deploy` call builds the docs for the current checkout and pushes static files to the `gh-pages` branch under the given label.
+After a build, use the generated type:
 
-### Publishing to GitHub Pages
+=== "C# 14"
 
-After running mike commands locally (or inside CI), push the generated `gh-pages` branch:
+    ```csharp
+    var imposter = IMyService.Imposter();
+    var service = imposter.Instance();
 
-```bash
-git push origin gh-pages
+    // You can also specify behavior explicitly
+    var strictImposter = IMyService.Imposter(ImposterInvocationBehavior.Explicit);
+    ```
+
+=== "Older C# versions"
+
+    Use the generated imposter type directly:
+
+    ```csharp
+    var imposter = new IMyServiceImposter(); // default: Implicit behavior
+    var service = imposter.Instance();       // user-facing instance
+    ```
+
+Optionally, you can choose the invocation behavior:
+
+```csharp
+// Implicit: missing setups return defaults
+var loose = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
+
+// Explicit: missing setups throw MissingImposterException
+var strict = new IMyServiceImposter(ImposterInvocationBehavior.Explicit);
 ```
 
-Then configure GitHub Pages to serve from the `gh-pages` branch (root). A GitHub Actions workflow can automate these steps; add it once CI/CD requirements are defined.
+Tip: `Instance()` is also available via the `ImposterExtensions.Instance` extension method for concise call sites.
 
----
+## Method Mocking
 
-Future sections will cover API references, generator internals, and feature cookbooks. Contributions are welcome—open a PR with updates under `docs/` and link to relevant feature files in `Imposter_codex/`.
+Return values:
+
+```csharp
+imposter.GetNumber().Returns(42);
+service.GetNumber(); // 42
+
+// Parameterized with a delegate
+imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
+// Match a specific value directly (implicit Arg<int> conversion)
+imposter.Increment(20).Returns(200);
+service.Increment(5); // 7
+```
+
+Argument matchers (Arg<T>):
+
+```csharp
+imposter.Increment(Arg<int>.Is(x => x > 10)).Returns(100);
+imposter.Increment(Arg<int>.IsIn(new[] { 1, 2, 3 })).Returns(1);
+imposter.Increment(5).Returns(50);            // implicit conversion to Arg<int>
+imposter.Increment(Arg<int>.Any()).Returns(0);
+```
+
+Sequencing with Then():
+
+```csharp
+imposter.GetNumber()
+    .Returns(1)
+    .Then().Returns(2)
+    .Then().Throws<InvalidOperationException>();
+
+service.GetNumber(); // 1
+service.GetNumber(); // 2
+service.GetNumber(); // throws InvalidOperationException
+```
+
+Callbacks and ordering:
+
+```csharp
+var stages = new List<string>();
+
+imposter.GetNumber()
+    .Returns(() => { stages.Add("return"); return 42; })
+    .Callback(() => stages.Add("first"))
+    .Callback(() => stages.Add("second"));
+
+service.GetNumber();
+// stages: ["return", "first", "second"]
+```
+
+Ref/out/in parameters:
+
+```csharp
+// Setup for a method with (out int o, ref string r, in double d, bool[] args)
+imposter.GenericAllRefKind<int, string, double, bool, int>(
+        OutArg<int>.Any(),   // out
+        Arg<string>.Any(),   // ref
+        Arg<double>.Any(),   // in
+        Arg<bool[]>.Any())
+    .Returns((out int o, ref string r, in double d, bool[] args) => { o = 5; return 99; })
+    .Callback((out int o, ref string r, in double d, bool[] args) => { o = 5; /* side effects */ });
+
+string refValue = "seed";
+var result = service.GenericAllRefKind<int, string, double, bool, int>(out var outValue, ref refValue, in 5.0, new[] { true });
+// result = 99, outValue = 5
+```
+
+Async methods:
+
+```csharp
+imposter.GetNumberAsync().ReturnsAsync(42);
+await service.GetNumberAsync(); // 42
+
+// Task-returning (no result)
+imposter.DoWorkAsync().Returns(Task.CompletedTask);
+await service.DoWorkAsync();
+```
+
+Exceptions:
+
+```csharp
+imposter.GetNumber().Throws(new Exception("boom"));
+imposter.GetNumber().Throws<InvalidOperationException>();
+imposter.GetNumber().Throws(() => new Exception("deferred"));
+```
+
+Verification with Count:
+
+```csharp
+service.Increment(1);
+service.Increment(2);
+
+imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
+imposter.Increment(2).Called(Count.Once());
+```
+
+## Property Mocking
+
+Getter and sequencing:
+
+```csharp
+imposter.Age.Getter().Returns(33);
+service.Age; // 33
+
+imposter.Age.Getter().Returns(10).Then().Returns(20);
+```
+
+Setter callbacks and verification:
+
+```csharp
+imposter.Age.Setter(Arg<int>.Any()).Callback(v => { /* observe/set side-effects */ });
+imposter.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(1));
+``;
+
+Base implementation forwarding:
+
+```csharp
+imposter.Age.Getter().UseBaseImplementation();
+imposter.Age.Setter(Arg<int>.Any()).UseBaseImplementation();
+```
+
+Default behavior and initializers:
+
+- In Implicit mode, missing getter setups return defaults. For class targets with property initializers, the first read mirrors the initialized base value.
+
+## Indexer Mocking
+
+```csharp
+// Getter
+imposter[Arg<int>.Is(k => k > 0)].Getter().Returns(10);
+var value = service[123]; // 10
+
+// Setter
+imposter[Arg<int>.Any()].Setter().Callback((index, v) => { /* track writes */ });
+
+// Base
+imposter[Arg<int>.Any()].Getter().UseBaseImplementation();
+imposter[Arg<int>.Any()].Setter().UseBaseImplementation();
+```
+
+## Event Mocking
+
+Subscribe/unsubscribe verification, raising, and interceptors:
+
+```csharp
+EventHandler h = (s, e) => { };
+
+service.SomethingHappened += h;
+service.SomethingHappened -= h;
+
+imposter.SomethingHappened.Subscribed(Arg<EventHandler>.Is(h), Count.Once());
+imposter.SomethingHappened.Unsubscribed(Arg<EventHandler>.Is(h), Count.Once());
+
+// Raise in-order for current subscribers
+imposter.SomethingHappened.Raise(this, EventArgs.Empty);
+
+// Observe subscriptions/unsubscriptions
+imposter.SomethingHappened.OnSubscribe(handler => { /* inspect */ });
+imposter.SomethingHappened.OnUnsubscribe(handler => { /* inspect */ });
+
+// Verify handler invocation count
+imposter.SomethingHappened.HandlerInvoked(Arg<EventHandler>.Is(h), Count.Exactly(2));
+```
+
+## Base Implementations (UseBaseImplementation)
+
+For overridable class members, you may forward to the base implementation:
+
+```csharp
+imposter.DoWork(Arg<int>.Any()).UseBaseImplementation();
+imposter.Age.Getter().UseBaseImplementation();
+imposter[Arg<int>.Any()].Getter().UseBaseImplementation();
+imposter.SomethingHappened.UseBaseImplementation(); // when supported on the target member
+```
+
+If base is unavailable and Explicit mode is enabled, a `MissingImposterException` is thrown when no setup applies.
+
+## Tips and Notes
+
+- Implicit vs Explicit modes control behavior for missing setups.
+- `Arg<T>` provides rich matching: `Any`, `Is`, `IsNot`, `IsIn`, `IsNotIn`, `IsDefault`, plus implicit value conversion.
+- Use `OutArg<T>.Any()` for `out` parameters (they always match).
+- `Count` helpers: `Exactly`, `AtLeast`, `AtMost`, `Once`, `Never`, `Any`.
+- Thread-safety: imposters are stress-tested under concurrency; sequencing preserves ordering per the tests.
+
+## Next Steps
+
+- Explore advanced usage and patterns in the repository tests under `tests/Imposter.Tests/Features/*`.
+- Check the generator-focused examples under `tests/Imposter.CodeGenerator.Tests/Features/*`.
+- API and design notes will be expanded in dedicated pages (Architecture, Usage, Fluent API, and Troubleshooting).

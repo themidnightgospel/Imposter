@@ -59,7 +59,7 @@ namespace Imposter.Playground.Sample
             private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _unsubscribeHistory = new System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Action>> _subscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Action>>();
             private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Action>> _unsubscribeInterceptors = new System.Collections.Concurrent.ConcurrentQueue<System.Action<global::System.Action>>();
-            private readonly System.Collections.Concurrent.ConcurrentQueue<(global::System.Action Handler)> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<(global::System.Action Handler)>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _handlerInvocations = new System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
             internal ActionOnlyEventImposterBuilder()
             {
             }
@@ -152,7 +152,7 @@ namespace Imposter.Playground.Sample
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry.Handler));
+                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry));
                 EnsureCountMatches(actual, count, "invoked");
                 return this;
             }
@@ -167,7 +167,7 @@ namespace Imposter.Playground.Sample
 
                 foreach (var handler in EnumerateActiveHandlers())
                 {
-                    _handlerInvocations.Enqueue((handler));
+                    _handlerInvocations.Enqueue(handler);
                     handler();
                 }
             }
