@@ -15,7 +15,7 @@ internal static partial class MethodImposterCollectionBuilder
     {
         var typeParameters = TypeParametersSyntax(method.Symbol).ToArray();
 
-        return new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
+        var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithTypeParameters(typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null)
             .WithBody(
@@ -39,7 +39,8 @@ internal static partial class MethodImposterCollectionBuilder
                         .ToStatementSyntax(),
                     ReturnStatement(IdentifierName("imposter"))
                 )
-            )
-            .Build();
+            );
+
+        return methodBuilder.Build();
     }
 }

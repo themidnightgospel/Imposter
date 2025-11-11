@@ -48,3 +48,7 @@ This keeps event behaviour aligned with properties/methods: opting into base exe
 
 - `tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs` (`GivenProtectedEventUseBaseImplementation_WhenSubscribed_ThenBaseEventReceivesHandler`) covers protected event subscriptions.
 - `tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs` (`GivenAsyncEventUseBaseImplementation_WhenUnsubscribed_ThenBaseEventIsCleared`) covers async task-based events and unsubscriptions.
+
+## Method Arguments Criteria Extensions
+
+Method imposters emit helper extensions for arguments criteria (e.g., `.Matches(...)` and `.As<T>()`) via `ArgumentsCriteriaBuilder.BuildExtensions`. These helper classes now live inside the generated imposter type rather than as additional namespace-level declarations. Nesting keeps the generated surface area smaller, avoids polluting the namespace with per-method helpers, and makes it easier for consuming code to locate the helpers next to the related method metadata. No behavioural changes were made—only the containment of the generated extension classes.

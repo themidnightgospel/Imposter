@@ -281,7 +281,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("Invoke"))
                 .Call(ArgumentList(SeparatedList(invokeArguments)));
 
-            return new MethodDeclarationBuilder(TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
+            var methodBuilder = new MethodDeclarationBuilder(TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
                 .AddParameters(ParameterSyntaxes(imposterMethod.Symbol.Parameters))
                 .WithBody(Block(
@@ -289,8 +289,14 @@ internal readonly ref struct ImposterInstanceBuilder
                         ? ReturnStatement(invokeMethodInvocationExpression)
                         : invokeMethodInvocationExpression.ToStatementSyntax())
                 )
-                .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
-                .Build();
+                .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers);
+
+            foreach (var constraintClause in SyntaxFactoryHelper.TypeParameterConstraintClauses(imposterMethod.Symbol))
+            {
+                methodBuilder.AddConstraintClause(constraintClause);
+            }
+
+            return methodBuilder.Build();
         });
 
         ExpressionSyntax GetImposterWithMatchingSetupExpression(in ImposterTargetMethodMetadata method)

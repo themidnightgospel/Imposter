@@ -78,7 +78,11 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
-        TargetGenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName($"{p.Name}Target")).ToArray();
+
+        var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
+        TargetGenericTypeArguments = Symbol.TypeParameters
+            .Select(p => SyntaxFactory.IdentifierName(targetGenericNameContext.Use($"{p.Name}Target")))
+            .ToArray();
         TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TargetGenericTypeArguments);
 
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);

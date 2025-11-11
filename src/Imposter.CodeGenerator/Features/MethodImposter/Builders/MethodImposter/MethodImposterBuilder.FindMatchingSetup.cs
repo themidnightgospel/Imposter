@@ -30,7 +30,7 @@ internal partial class MethodImposterBuilder
                             IfStatement(
                                 setupIdentifierName
                                     .Dot(IdentifierName("ArgumentsCriteria"))
-                                    .Dot(IdentifierName("Matches"))
+                                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
                                     .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
                                 ReturnStatement(setupIdentifierName)
                             )
