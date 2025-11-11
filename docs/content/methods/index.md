@@ -178,3 +178,4 @@ Sequenced outcomes are consumed in order under concurrency; the implementation a
 - In `Explicit` mode, missing setups throw `MissingImposterException`.
 - Ensure `OutArg<T>.Any()` is used for `out` parameters; use `Arg<T>` for `ref`/`in`.
 
+

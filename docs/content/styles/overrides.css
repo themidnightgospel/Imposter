@@ -1,0 +1,65 @@
+/* Reduce overall typography size */
+:root {
+  /* Scales body text across content */
+  --md-typeset-font-size: 0.88rem;
+}
+
+/* Base nav/sidebar font size (overridden below per depth) */
+.md-nav { font-size: 0.90rem; }
+
+/* Top header color override (both light and dark schemes) */
+.md-header {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+/* Ensure header links/icons are visible on the new background */
+.md-header a, .md-header .md-header__button, .md-header .md-icon {
+  color: #ffffff !important;
+}
+
+/* Optional: slightly reduce h1/h2 to match smaller body text */
+.md-typeset h1 { font-size: 1.6em; }
+.md-typeset h2 { font-size: 1.35em; }
+
+/* Primary sidebar (left) navigation visual tweaks */
+.md-nav--primary .md-nav__item > .md-nav__link {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.md-nav--primary .md-nav__item--section > .md-nav__link {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.md-nav--primary .md-nav__link--active,
+.md-nav--primary .md-nav__item--active > .md-nav__link {
+  background-color: rgba(76, 175, 80, 0.08); /* subtle green tint */
+}
+
+.md-nav--primary .md-nav { line-height: 1.25; }
+
+.md-sidebar--primary { border-right: 1px solid var(--md-default-fg-color--lightest); }
+
+/* Nav hierarchy sizing: top-level same size; sub-pages smaller */
+/* Top-level items */
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link {
+  font-size: 0.96rem;
+}
+
+/* Second level and deeper */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__link {
+  font-size: 0.86rem;
+}
+
+/* Third level (and deeper) slightly smaller */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__list .md-nav__link {
+  font-size: 0.84rem;
+}

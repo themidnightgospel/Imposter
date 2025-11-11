@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -75,17 +76,17 @@ public static class InterfaceSymbolExtensions
 
     internal static IReadOnlyCollection<IEventSymbol> GetAllInterfaceEvents(this INamedTypeSymbol interfaceSymbol)
     {
-        var events = new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
+        var events = new List<IEventSymbol>();
         var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
         CollectInterfaceEventsRecursive(interfaceSymbol, events, visitedInterfaces);
 
-        return events;
+        return Deduplicate(events);
     }
 
     private static void CollectInterfaceEventsRecursive(
         INamedTypeSymbol interfaceSymbol,
-        HashSet<IEventSymbol> events,
+        ICollection<IEventSymbol> events,
         HashSet<INamedTypeSymbol> visitedInterfaces)
     {
         if (!visitedInterfaces.Add(interfaceSymbol))
@@ -104,6 +105,25 @@ public static class InterfaceSymbolExtensions
         {
             CollectInterfaceEventsRecursive(implementedInterface, events, visitedInterfaces);
         }
+    }
+
+    private static List<IEventSymbol> Deduplicate(IEnumerable<IEventSymbol> events)
+    {
+        var result = new List<IEventSymbol>();
+
+        foreach (var eventSymbol in events)
+        {
+            var alreadyAdded = result.Any(existing =>
+                string.Equals(existing.Name, eventSymbol.Name, StringComparison.Ordinal)
+                && SymbolEqualityComparer.Default.Equals(existing.Type, eventSymbol.Type));
+
+            if (!alreadyAdded)
+            {
+                result.Add(eventSymbol);
+            }
+        }
+
+        return result;
     }
 
 }
