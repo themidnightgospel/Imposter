@@ -47,7 +47,7 @@ public interface IGeneric<TFirst, TSecond>
         var imposterSource = result.GeneratedSources.Single(source => source.HintName == "IGenericImposter.g.cs");
         var namespaceLine = imposterSource.SourceText
             .ToString()
-            .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
             .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
             .Trim();
 
@@ -69,7 +69,7 @@ public interface IGeneric<TFirst, TSecond>
         const string globalPrefix = "global::";
         if (display.StartsWith(globalPrefix, StringComparison.Ordinal))
         {
-            display = display[globalPrefix.Length..];
+            display = display.Substring(globalPrefix.Length);
         }
 
         var builder = new StringBuilder(display.Length);
