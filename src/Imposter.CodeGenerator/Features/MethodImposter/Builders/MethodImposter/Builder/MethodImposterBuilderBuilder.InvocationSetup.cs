@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
 
@@ -43,19 +41,4 @@ internal static partial class MethodImposterBuilderBuilder
         return implementations;
     }
 
-    private static MethodDeclarationSyntax BuildExplicitInterfaceImplementation(
-        in ImposterTargetMethodMetadata method,
-        MethodDeclarationSyntax template,
-        NameSyntax interfaceSyntax,
-        params StatementSyntax[] statements)
-    {
-        var bodyStatements = statements.Concat([ReturnStatement(ThisExpression())]);
-
-        return template
-            .WithModifiers(TokenList())
-            .WithSemicolonToken(default)
-            .WithConstraintClauses(default)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(interfaceSyntax))
-            .WithBody(Block(bodyStatements));
-    }
 }
