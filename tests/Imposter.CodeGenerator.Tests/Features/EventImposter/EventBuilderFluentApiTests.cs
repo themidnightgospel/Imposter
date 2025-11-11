@@ -27,7 +27,7 @@ public class EventBuilderFluentApiTests
                                                  """;
 
     [Fact]
-    public async Task GivenInitialBuilder_WhenCallingRaise_ShouldCompile()
+    public async Task Given_InitialBuilder_WhenCallingRaise_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -47,7 +47,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenInitialBuilder_WhenCallingSubscribed_ShouldCompile()
+    public async Task Given_InitialBuilder_WhenCallingSubscribed_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -67,7 +67,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenInitialAsyncBuilder_WhenCallingRaiseAsync_ShouldCompile()
+    public async Task Given_InitialAsyncBuilder_WhenCallingRaiseAsync_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -87,7 +87,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenInitialAsyncBuilder_WhenCallingSubscribed_ShouldCompile()
+    public async Task Given_InitialAsyncBuilder_WhenCallingSubscribed_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -107,7 +107,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenSetupLane_WhenCallingVerification_ShouldFail()
+    public async Task Given_SetupLane_WhenCallingVerification_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -127,7 +127,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenVerificationLane_WhenCallingSetup_ShouldFail()
+    public async Task Given_VerificationLane_WhenCallingSetup_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -147,7 +147,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenSetupLane_WhenStartingWithCallbackAndSwitchingToVerification_ShouldFail()
+    public async Task Given_SetupLane_WhenStartingWithCallbackAndSwitchingToVerification_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -167,7 +167,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
+    public async Task Given_VerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -187,7 +187,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncSetupLane_WhenCallingVerification_ShouldFail()
+    public async Task Given_AsyncSetupLane_WhenCallingVerification_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -207,7 +207,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenEventBuilder_WhenAccessingThen_ShouldFail()
+    public async Task Given_EventBuilder_WhenAccessingThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -227,7 +227,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenEventBuilder_WhenAccessingCalled_ShouldFail()
+    public async Task Given_EventBuilder_WhenAccessingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -247,7 +247,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncVerificationLane_WhenCallingSetup_ShouldFail()
+    public async Task Given_AsyncVerificationLane_WhenCallingSetup_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -267,7 +267,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenSetupLane_WhenChainingSetupMethods_ShouldCompile()
+    public async Task Given_SetupLane_WhenChainingSetupMethods_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -291,7 +291,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenSetupLane_WhenContinuingAfterRaise_ShouldCompile()
+    public async Task Given_SetupLane_WhenContinuingAfterRaise_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -317,7 +317,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
+    public async Task Given_SetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -339,7 +339,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
+    public async Task Given_VerificationLane_WhenChainingVerificationMethods_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -363,7 +363,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncSetupLane_WhenAwaitingRaiseAsync_ShouldAllowFurtherSetup()
+    public async Task Given_AsyncSetupLane_WhenAwaitingRaiseAsync_ShouldAllowFurtherSetup()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -390,7 +390,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncSetupLane_WhenSwitchingToVerificationAfterAwait_ShouldFail()
+    public async Task Given_AsyncSetupLane_WhenSwitchingToVerificationAfterAwait_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -411,7 +411,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncSetupLane_WhenStartingWithCallbackAndContinuing_ShouldCompile()
+    public async Task Given_AsyncSetupLane_WhenStartingWithCallbackAndContinuing_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -434,7 +434,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
+    public async Task Given_AsyncSetupLane_WhenChainingMultipleCallbacks_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -456,7 +456,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
+    public async Task Given_AsyncVerificationLane_WhenStartingWithRaisedAndSwitchingToSetup_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -476,7 +476,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncEventBuilder_WhenAccessingThen_ShouldFail()
+    public async Task Given_AsyncEventBuilder_WhenAccessingThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -496,7 +496,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncEventBuilder_WhenAccessingCalled_ShouldFail()
+    public async Task Given_AsyncEventBuilder_WhenAccessingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample
@@ -516,7 +516,7 @@ public class EventBuilderFluentApiTests
     }
 
     [Fact]
-    public async Task GivenAsyncVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
+    public async Task Given_AsyncVerificationLane_WhenChainingVerificationMethods_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                            namespace Sample

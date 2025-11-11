@@ -57,7 +57,7 @@ namespace Sample
 """;
 
     [Fact]
-    public async Task GivenOverrideableProperty_WhenCallingUseBaseImplementation_ShouldCompile()
+    public async Task Given_OverrideableProperty_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -77,7 +77,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableGetterOnlyProperty_WhenCallingUseBaseImplementation_ShouldCompile()
+    public async Task Given_OverrideableGetterOnlyProperty_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -97,7 +97,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableSetterOnlyProperty_WhenCallingUseBaseImplementation_ShouldCompile()
+    public async Task Given_OverrideableSetterOnlyProperty_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -117,7 +117,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenInterfaceProperty_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_InterfaceProperty_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -137,7 +137,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenAbstractProperty_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_AbstractProperty_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -157,7 +157,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenNonVirtualProperty_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_NonVirtualProperty_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -177,7 +177,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableProperty_WhenChainingUseBaseImplementationOnGetter_ShouldCompile()
+    public async Task Given_OverrideableProperty_WhenChainingUseBaseImplementationOnGetter_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -197,7 +197,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenInterfaceProperty_WhenUsingPropertyLevelThenGetter_ShouldFail()
+    public async Task Given_InterfaceProperty_WhenUsingPropertyLevelThenGetter_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -217,7 +217,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenInterfaceProperty_WhenUsingPropertyLevelThenSetter_ShouldFail()
+    public async Task Given_InterfaceProperty_WhenUsingPropertyLevelThenSetter_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -237,7 +237,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableProperty_WhenChainingUseBaseImplementationOnSetter_ShouldCompile()
+    public async Task Given_OverrideableProperty_WhenChainingUseBaseImplementationOnSetter_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -257,7 +257,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableProperty_WhenChainingGetterUseBaseImplementationAndReturning_ShouldCompile()
+    public async Task Given_OverrideableProperty_WhenChainingGetterUseBaseImplementationAndReturning_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -277,7 +277,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableProperty_WhenChainingSetterUseBaseImplementationAndCallback_ShouldCompile()
+    public async Task Given_OverrideableProperty_WhenChainingSetterUseBaseImplementationAndCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -296,7 +296,7 @@ namespace Sample
         AssertNoDiagnostics(diagnostics);
     }
     [Fact]
-    public async Task GivenGetterOnlyProperty_WhenChainingGetterUseBaseImplementation_ShouldCompile()
+    public async Task Given_GetterOnlyProperty_WhenChainingGetterUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -316,7 +316,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenGetterOnlyProperty_WhenChainingSetterUseBaseImplementation_ShouldFail()
+    public async Task Given_GetterOnlyProperty_WhenChainingSetterUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -336,7 +336,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenSetterOnlyProperty_WhenChainingSetterUseBaseImplementation_ShouldCompile()
+    public async Task Given_SetterOnlyProperty_WhenChainingSetterUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -356,7 +356,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenSetterOnlyProperty_WhenChainingGetterUseBaseImplementation_ShouldFail()
+    public async Task Given_SetterOnlyProperty_WhenChainingGetterUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample

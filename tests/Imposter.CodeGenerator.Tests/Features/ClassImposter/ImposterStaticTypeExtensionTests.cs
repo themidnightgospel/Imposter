@@ -47,7 +47,7 @@ public class ImposterStaticTypeExtensionTests
     private sealed record GeneratorArtifacts(GeneratorRunResult Result, CSharpCompilation Compilation);
 
     [Fact]
-    public void Generator_EmitsExtension_WhenLanguageVersionSupportsTypeExtensions()
+    public void Given_PreviewLanguageVersion_WhenGeneratorRuns_ShouldEmitStaticTypeExtension()
     {
         var artifacts = RunGenerator(LanguageVersion.Preview);
 
@@ -67,7 +67,7 @@ public class ImposterStaticTypeExtensionTests
     }
 
     [Fact]
-    public void Generator_DoesNotEmitExtension_WhenLanguageVersionIsThirteen()
+    public void Given_CSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
     {
         var artifacts = RunGenerator(LanguageVersion.CSharp13);
         var generatedSource = string.Join(Environment.NewLine, artifacts.Result.GeneratedSources.Select(static source => source.SourceText.ToString()));
@@ -90,7 +90,7 @@ public static class InterfaceUsage
     }
 
     [Fact]
-    public void ClassTargets_Expose_Constructor_Overloads_In_Extension_Methods()
+    public void Given_ClassWithMultipleConstructors_WhenUsingImposterExtension_ShouldExposeAllOverloads()
     {
         var artifacts = RunGenerator(LanguageVersion.Preview, ClassSource);
 

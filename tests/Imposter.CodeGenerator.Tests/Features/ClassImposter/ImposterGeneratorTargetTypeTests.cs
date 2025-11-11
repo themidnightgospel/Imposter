@@ -23,7 +23,7 @@ public sealed class SealedClass { }
 ";
 
     [Fact]
-    public void Sealed_Class_Target_Reports_IMP002()
+    public void Given_SealedClassTarget_WhenGeneratorRuns_ShouldReportIMP002()
     {
         var compilation = CreateCompilation(LanguageVersion.CSharp13);
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());

@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public async Task GivenVoidMethod_WhenReturning_ShouldFail()
+    public async Task Given_VoidMethod_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -26,7 +26,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenClassVoidMethod_WhenReturning_ShouldFail()
+    public async Task Given_ClassVoidMethod_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -46,7 +46,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenNonAsyncMethod_WhenCallingReturnsAsync_ShouldFail()
+    public async Task Given_NonAsyncMethod_WhenCallingReturnsAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -66,7 +66,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenNonAsyncMethod_WhenCallingThrowsAsync_ShouldFail()
+    public async Task Given_NonAsyncMethod_WhenCallingThrowsAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -86,7 +86,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenInterfaceMethod_WhenUsingBaseImplementation_ShouldFail()
+    public async Task Given_InterfaceMethod_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -106,7 +106,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenNonVirtualClassMethod_WhenUsingBaseImplementation_ShouldFail()
+    public async Task Given_NonVirtualClassMethod_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -126,7 +126,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenNonVirtualMethod_WhenAccessingFluentApi_ShouldFail()
+    public async Task Given_NonVirtualMethod_WhenAccessingFluentApi_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -146,7 +146,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenSealedOverrideMethod_WhenAccessingFluentApi_ShouldFail()
+    public async Task Given_SealedOverrideMethod_WhenAccessingFluentApi_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -166,7 +166,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenReturningAgain_ShouldFail()
+    public async Task Given_MethodReturns_WhenReturningAgain_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -186,7 +186,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenReturningAsync_ShouldFail()
+    public async Task Given_MethodReturns_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -206,7 +206,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenThrowing_ShouldFail()
+    public async Task Given_MethodReturns_WhenThrowing_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -226,7 +226,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenThrowingAsync_ShouldFail()
+    public async Task Given_MethodReturns_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -246,7 +246,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenUsingBaseImplementation_ShouldFail()
+    public async Task Given_MethodReturns_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -266,7 +266,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturnsAsync_WhenReturning_ShouldFail()
+    public async Task Given_MethodReturnsAsync_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -286,7 +286,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturnsAsync_WhenReturningAsync_ShouldFail()
+    public async Task Given_MethodReturnsAsync_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -306,7 +306,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturnsAsync_WhenThrowing_ShouldFail()
+    public async Task Given_MethodReturnsAsync_WhenThrowing_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -326,7 +326,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturnsAsync_WhenThrowingAsync_ShouldFail()
+    public async Task Given_MethodReturnsAsync_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -346,7 +346,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenMethodReturnsAsync_WhenUsingBaseImplementation_ShouldFail()
+    public async Task Given_MethodReturnsAsync_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -366,7 +366,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenTaskMethod_WhenCallingReturnsAsync_ShouldFail()
+    public async Task Given_TaskMethod_WhenCallingReturnsAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -386,7 +386,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenUseBaseImplementation_WhenReturning_ShouldFail()
+    public async Task Given_UseBaseImplementation_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -406,7 +406,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenUseBaseImplementation_WhenReturningAsync_ShouldFail()
+    public async Task Given_UseBaseImplementation_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -426,7 +426,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenUseBaseImplementation_WhenThrowing_ShouldFail()
+    public async Task Given_UseBaseImplementation_WhenThrowing_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -446,7 +446,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenUseBaseImplementation_WhenThrowingAsync_ShouldFail()
+    public async Task Given_UseBaseImplementation_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
@@ -466,7 +466,7 @@ public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposter
     }
 
     [Fact]
-    public async Task GivenUseBaseImplementation_WhenChainingUseBaseImplementation_ShouldFail()
+    public async Task Given_UseBaseImplementation_WhenChainingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/"""
                                                          namespace Sample
