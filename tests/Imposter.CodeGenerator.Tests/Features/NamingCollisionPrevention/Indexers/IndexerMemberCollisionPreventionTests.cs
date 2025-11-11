@@ -85,7 +85,6 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IndexerImposterFieldCollisionTargetImposter();
-            _ = imposter._imposter;
             imposter[Arg<int>.Any()].Getter().Returns(42);
             imposter[Arg<int>.Any()].Setter().Callback((index, value) => { });
         }

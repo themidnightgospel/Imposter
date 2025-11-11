@@ -131,6 +131,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     {
                         _lastestInvocationImposter = invocationImposter;
                     }
+
+                    return invocationImposter;
                 }
 
                 return _lastestInvocationImposter;

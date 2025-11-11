@@ -72,7 +72,8 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                                         IdentifierName("_lastestInvocationImposter")
                                             .Assign(IdentifierName("invocationImposter")).ToStatementSyntax()
                                 )
-                            )
+                            ),
+                            ReturnStatement(IdentifierName("invocationImposter"))
                         )
                     ),
                     ReturnStatement(IdentifierName("_lastestInvocationImposter"))

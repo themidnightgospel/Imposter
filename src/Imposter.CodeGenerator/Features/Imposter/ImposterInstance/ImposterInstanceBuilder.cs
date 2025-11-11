@@ -4,6 +4,7 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -15,14 +16,13 @@ namespace Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 
 internal readonly ref struct ImposterInstanceBuilder
 {
-    // TODO this might collide. Move it to Metadata
-    private const string ImposterFieldName = "_imposter";
-
     private readonly ClassDeclarationBuilder _imposterInstanceBuilder;
+    private readonly string _imposterFieldName;
 
-    private ImposterInstanceBuilder(ClassDeclarationBuilder imposterInstanceBuilder)
+    private ImposterInstanceBuilder(ClassDeclarationBuilder imposterInstanceBuilder, string imposterFieldName)
     {
         _imposterInstanceBuilder = imposterInstanceBuilder;
+        _imposterFieldName = imposterFieldName;
     }
 
     internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
@@ -32,7 +32,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (property.Core.HasGetter)
         {
-            var getterInvocation = IdentifierName("_imposter")
+            var getterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.AsField.Name))
                 .Dot(IdentifierName("_getterImposterBuilder"))
                 .Dot(IdentifierName("Get"));
@@ -62,7 +62,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (property.Core.HasSetter)
         {
-            var setterInvocation = IdentifierName("_imposter")
+            var setterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.AsField.Name))
                 .Dot(IdentifierName("_setterImposter"))
                 .Dot(IdentifierName("Set"));
@@ -122,7 +122,7 @@ internal readonly ref struct ImposterInstanceBuilder
                             .WithExpressionBody(baseInvocation)));
             }
 
-            var getterCall = IdentifierName(ImposterFieldName)
+            var getterCall = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Get"))
                 .Call(ArgumentListSyntax(getterArguments));
@@ -156,7 +156,7 @@ internal readonly ref struct ImposterInstanceBuilder
                                     baseAssignment.ToStatementSyntax()))));
             }
 
-            var setterCall = IdentifierName(ImposterFieldName)
+            var setterCall = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Set"))
                 .Call(ArgumentListSyntax(setterArguments));
@@ -184,9 +184,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 AccessorList(
                     List([
                         AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
-                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: true)),
+                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: true, _imposterFieldName)),
                         AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
-                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: false))
+                            .WithBody(BuildEventAccessorBody(@event, isSubscribe: false, _imposterFieldName))
                     ])));
 
         _imposterInstanceBuilder.AddMember(eventDeclaration);
@@ -197,7 +197,8 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal static ImposterInstanceBuilder Create(in ImposterGenerationContext imposterGenerationContext, string name)
     {
-        var fields = GetFields(imposterGenerationContext);
+        var imposterFieldName = CreateImposterFieldName(imposterGenerationContext);
+        var fields = GetFields(imposterGenerationContext, imposterFieldName);
 
         var imposterClassBuilder = new ClassDeclarationBuilder(name)
             .AddBaseType(SimpleBaseType(TypeSyntax(imposterGenerationContext.TargetSymbol)))
@@ -205,24 +206,37 @@ internal readonly ref struct ImposterInstanceBuilder
 
         imposterClassBuilder = imposterGenerationContext.Imposter.IsClass
             ? imposterClassBuilder
-                .AddMember(BuildInitializeImposterMethod(imposterGenerationContext.Imposter.Name))
+                .AddMember(BuildInitializeImposterMethod(imposterGenerationContext.Imposter.Name, imposterFieldName))
                 .AddMembers(BuildConstructorsForClassTarget(imposterGenerationContext, name))
             : imposterClassBuilder.AddMember(BuildConstructorAndInitializeMembers(name, fields));
 
         imposterClassBuilder = imposterClassBuilder
-            .AddMembers(ImposterMethods(imposterGenerationContext));
+            .AddMembers(ImposterMethods(imposterGenerationContext, imposterFieldName));
 
-        return new ImposterInstanceBuilder(imposterClassBuilder);
+        return new ImposterInstanceBuilder(imposterClassBuilder, imposterFieldName);
     }
 
-    private static IReadOnlyList<FieldDeclarationSyntax> GetFields(ImposterGenerationContext imposterGenerationContext) =>
+    private static IReadOnlyList<FieldDeclarationSyntax> GetFields(
+        ImposterGenerationContext imposterGenerationContext,
+        string imposterFieldName) =>
     [
-        SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
+        SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), imposterFieldName)
     ];
 
-    private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName)
+    private static string CreateImposterFieldName(in ImposterGenerationContext imposterGenerationContext)
     {
-        var assignment = IdentifierName(ImposterFieldName).Assign(IdentifierName("imposter"));
+        var targetMemberNames = imposterGenerationContext.TargetSymbol
+            .GetMembers()
+            .Select(member => member.Name)
+            .Where(name => !string.IsNullOrWhiteSpace(name));
+
+        var nameSet = new NameSet(targetMemberNames);
+        return nameSet.Use("_imposter");
+    }
+
+    private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName, string imposterFieldName)
+    {
+        var assignment = IdentifierName(imposterFieldName).Assign(IdentifierName("imposter"));
 
         return new MethodDeclarationBuilder(
                 WellKnownTypes.Void,
@@ -264,7 +278,9 @@ internal readonly ref struct ImposterInstanceBuilder
             }).ToList();
     }
 
-    private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(in ImposterGenerationContext imposterGenerationContext)
+    private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(
+        in ImposterGenerationContext imposterGenerationContext,
+        string imposterFieldName)
     {
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
@@ -303,13 +319,13 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             if (method.Symbol.IsGenericMethod)
             {
-                return IdentifierName("_imposter")
+                return IdentifierName(imposterFieldName)
                     .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
                     .Dot(GenericName(Identifier("GetImposterWithMatchingSetup"), method.GenericTypeArguments.ToTypeArguments()))
                     .Call(GetGetImposterWithMatchingSetupArguments(method));
             }
 
-            return IdentifierName("_imposter")
+            return IdentifierName(imposterFieldName)
                 .Dot(IdentifierName(method.MethodImposter.AsField.Name));
 
             static ArgumentListSyntax? GetGetImposterWithMatchingSetupArguments(in ImposterTargetMethodMetadata method)
@@ -328,9 +344,9 @@ internal readonly ref struct ImposterInstanceBuilder
         }
     }
 
-    private static BlockSyntax BuildEventAccessorBody(in ImposterEventMetadata @event, bool isSubscribe)
+    private static BlockSyntax BuildEventAccessorBody(in ImposterEventMetadata @event, bool isSubscribe, string imposterFieldName)
     {
-        var builderAccess = IdentifierName(ImposterFieldName)
+        var builderAccess = IdentifierName(imposterFieldName)
             .Dot(IdentifierName(@event.BuilderField.Name));
         var arguments = new List<ArgumentSyntax>
         {

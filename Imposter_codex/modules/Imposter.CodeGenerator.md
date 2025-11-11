@@ -51,6 +51,17 @@ This keeps event behaviour aligned with properties/methods: opting into base exe
 
 ## Method Arguments Criteria Extensions
 
-Method imposters emit helper extensions for arguments criteria (e.g., `.Matches(...)` and `.As<T>()`) via `ArgumentsCriteriaBuilder.BuildExtensions`. These helper classes now live inside the generated imposter type rather than as additional namespace-level declarations. Nesting keeps the generated surface area smaller, avoids polluting the namespace with per-method helpers, and makes it easier for consuming code to locate the helpers next to the related method metadata. No behavioural changes were made—only the containment of the generated extension classes.
+Method imposters emit helper extensions for arguments criteria (e.g., `.Matches(...)` and `.As<T>()`) via `ArgumentsCriteriaBuilder.BuildExtensions`. These helper classes now live inside the generated imposter type rather than as additional namespace-level declarations. Nesting keeps the generated surface area smaller, avoids polluting the namespace with per-method helpers, and makes it easier for consuming code to locate the helpers next to the related method metadata. No behavioural changes were made-only the containment of the generated extension classes.
 
-When emitting the `.As<...>()` helper for a generic method’s arguments criteria we now request target type parameter names from the `GenericTypeParameterNameSet` (the same allocator used by invocation setup metadata). This prevents generator-authored names such as `TTarget`/`UTarget` from shadowing identically named user-provided type parameters, eliminating compiler errors like the `CS1503` mismatch observed in `IMethodGenericTypeParameterCollisionTargetImposter`. The generated helper always operates with unique synthetic type parameter identifiers even when the consumer uses the same suffixes.
+When emitting the `.As<...>()` helper for a generic method's arguments criteria we now request target type parameter names from the `GenericTypeParameterNameSet` (the same allocator used by invocation setup metadata). This prevents generator-authored names such as `TTarget`/`UTarget` from shadowing identically named user-provided type parameters, eliminating compiler errors like the `CS1503` mismatch observed in `IMethodGenericTypeParameterCollisionTargetImposter`. The generated helper always operates with unique synthetic type parameter identifiers even when the consumer uses the same suffixes.
+
+## Invocation Queue Thread Safety
+
+`InvocationSetupBuilder.GetInvocationImposter()` now returns the dequeued invocation object immediately after optionally updating `_lastestInvocationImposter`. Previously the method returned `_lastestInvocationImposter` even when the queue produced a newer entry, which allowed a racing thread to overwrite `_lastestInvocationImposter` before the first caller observed its scheduled result. The revised flow only falls back to `_lastestInvocationImposter` when the queue is empty, preventing lost sequential setups under concurrent access.
+
+Property getter builders mirror this behaviour: each getter now dequeues into a local variable, computes `next = returnValue ?? _lastReturnValue`, persists `next` (when present) back into `_lastReturnValue`, and immediately returns `next()`. This preserves the “repeat last setup” semantics without allowing concurrent getters to clobber one another’s delegates.
+
+### Tests
+
+- `tests/Imposter.Tests/Features/MethodImposter/ThreadSafetyTests.cs` (`GivenSequentialReturnsSetup_WhenMethodsInvokedConcurrently_ShouldConsumeUniqueValues`) exercises the interlocked start barrier that exposed the race.
+- `tests/Imposter.Tests/Features/PropertyImposter/ThreadSafetyTests.cs` (`GivenSequentialReturnsSetup_WhenAccessedConcurrently_ShouldWorkCorrectly`) stresses sequential getter setups under contention.
