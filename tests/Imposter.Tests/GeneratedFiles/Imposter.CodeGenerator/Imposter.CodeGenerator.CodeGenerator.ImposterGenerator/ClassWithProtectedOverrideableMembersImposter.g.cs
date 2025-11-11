@@ -207,7 +207,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private InvokeProtectedMethodDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedMethodCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, InvokeProtectedMethodDelegate baseImplementation = null)
                 {
@@ -591,7 +591,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private ProtectedVirtualMethodDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<ProtectedVirtualMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ProtectedVirtualMethodCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ProtectedVirtualMethodDelegate baseImplementation = null)
                 {
@@ -943,7 +943,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private ReadProtectedPropertyDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<ReadProtectedPropertyCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ReadProtectedPropertyCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ReadProtectedPropertyDelegate baseImplementation = null)
                 {
@@ -1321,7 +1321,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private ReadProtectedValueDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<ReadProtectedValueCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ReadProtectedValueCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, ReadProtectedValueDelegate baseImplementation = null)
                 {
@@ -1703,7 +1703,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private SubscribeToProtectedEventDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<SubscribeToProtectedEventCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SubscribeToProtectedEventCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.EventHandler handler, SubscribeToProtectedEventDelegate baseImplementation = null)
                 {
@@ -2052,7 +2052,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private WriteProtectedPropertyDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<WriteProtectedPropertyCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<WriteProtectedPropertyCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string value, WriteProtectedPropertyDelegate baseImplementation = null)
                 {
@@ -2405,7 +2405,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private WriteProtectedValueDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<WriteProtectedValueCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<WriteProtectedValueCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int index, int value, WriteProtectedValueDelegate baseImplementation = null)
                 {
@@ -2844,7 +2844,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
-                        if (_invocationCount == 1 && baseImplementation != null && !_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet)
+                        if (((_invocationCount == 1) && (baseImplementation != null)) && (!_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet))
                         {
                             _defaultPropertyBehaviour.BackingField = baseImplementation();
                         }
@@ -2859,7 +2859,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredReturn)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredReturn)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                 }
             }
@@ -2931,7 +2931,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredSetter)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredSetter)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                 }
 
@@ -3237,7 +3237,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
             public bool Equals(IndexerIndexerArguments other)
             {
-                return true && index == other.index;
+                return true && (index == other.index);
             }
 
             public override bool Equals(object obj)
@@ -3451,7 +3451,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }
@@ -3674,7 +3674,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         }
                     }
 
-                    if (!invokedBaseImplementation && !matchedCallback && _defaultBehaviour.IsOn)
+                    if (!invokedBaseImplementation && (!matchedCallback && _defaultBehaviour.IsOn))
                     {
                         _defaultBehaviour.Set(arguments, value, null);
                     }
@@ -3682,7 +3682,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }

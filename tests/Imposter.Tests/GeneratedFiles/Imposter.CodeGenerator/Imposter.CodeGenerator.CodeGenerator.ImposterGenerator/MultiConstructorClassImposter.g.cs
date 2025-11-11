@@ -165,7 +165,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private CalculateDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int input, CalculateDelegate baseImplementation = null)
                 {

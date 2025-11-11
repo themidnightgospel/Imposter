@@ -42,7 +42,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public bool Equals(IndexerIndexerArguments other)
             {
-                return true && key1 == other.key1 && key2 == other.key2 && key3 == other.key3;
+                return ((true && (key1 == other.key1)) && (key2 == other.key2)) && (key3 == other.key3);
             }
 
             public override bool Equals(object obj)
@@ -75,7 +75,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public bool Matches(IndexerIndexerArguments arguments)
             {
-                return key1.Matches(arguments.key1) && key2.Matches(arguments.key2) && key3.Matches(arguments.key3);
+                return (key1.Matches(arguments.key1) && key2.Matches(arguments.key2)) && key3.Matches(arguments.key3);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }
@@ -470,7 +470,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }
@@ -603,7 +603,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public bool Equals(Indexer_1IndexerArguments other)
             {
-                return true && key1 == other.key1;
+                return true && (key1 == other.key1);
             }
 
             public override bool Equals(object obj)
@@ -817,7 +817,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }
@@ -1025,7 +1025,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }

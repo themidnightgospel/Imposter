@@ -204,7 +204,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private BuildLabelAsyncDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<BuildLabelAsyncCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public global::System.Threading.Tasks.ValueTask<string> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string prefix, string suffix, BuildLabelAsyncDelegate baseImplementation = null)
                 {
@@ -620,7 +620,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private IntSingleParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, IntSingleParamDelegate baseImplementation = null)
                 {
@@ -1010,7 +1010,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private RefOutWithParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<RefOutWithParamsCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate baseImplementation = null)
                 {
@@ -1410,7 +1410,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private SumAsyncDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<SumAsyncCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SumAsyncCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int left, int right, SumAsyncDelegate baseImplementation = null)
                 {
@@ -1826,7 +1826,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private ThrowingCalculationDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<ThrowingCalculationCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<ThrowingCalculationCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ThrowingCalculationDelegate baseImplementation = null)
                 {
@@ -2208,7 +2208,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 private VoidWithSideEffectDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<VoidWithSideEffectCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int delta, VoidWithSideEffectDelegate baseImplementation = null)
                 {

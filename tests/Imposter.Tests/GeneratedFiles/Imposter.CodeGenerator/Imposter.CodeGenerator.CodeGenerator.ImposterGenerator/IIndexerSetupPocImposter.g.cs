@@ -65,7 +65,7 @@ namespace Imposter.Tests.Shared
 
             public bool Matches(IndexerMethodArguments arguments)
             {
-                return name.Matches(arguments.name) && lastname.Matches(arguments.lastname) && dog.Matches(arguments.dog);
+                return (name.Matches(arguments.name) && lastname.Matches(arguments.lastname)) && dog.Matches(arguments.dog);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Imposter.Tests.Shared
 
                 private IndexerMethodDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
                 {

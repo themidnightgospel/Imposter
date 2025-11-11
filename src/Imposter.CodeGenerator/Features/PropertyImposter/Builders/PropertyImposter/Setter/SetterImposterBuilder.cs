@@ -250,12 +250,11 @@ internal static class SetterImposterBuilder
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod()
     {
         var condition = BinaryExpression(
-            SyntaxKind.LogicalAndExpression,
-            BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName("_invocationBehavior"),
-                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
-            Not(IdentifierName("_hasConfiguredSetter")));
+                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit")))
+            .And(Not(IdentifierName("_hasConfiguredSetter"))
+            );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

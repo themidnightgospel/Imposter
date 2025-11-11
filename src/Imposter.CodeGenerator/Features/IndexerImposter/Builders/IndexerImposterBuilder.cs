@@ -997,10 +997,7 @@ internal static class IndexerImposterBuilder
         ExpressionSyntax defaultBehaviourCondition = IdentifierName(setter.DefaultBehaviourField.Name)
             .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName));
 
-        defaultBehaviourCondition = BinaryExpression(
-            SyntaxKind.LogicalAndExpression,
-            Not(callbackMatchedIdentifier),
-            defaultBehaviourCondition);
+        defaultBehaviourCondition = Not(callbackMatchedIdentifier).And(defaultBehaviourCondition);
 
         ExpressionSyntax? invokedBaseIdentifier = null;
         StatementSyntax? baseCriteriaLoop = null;
@@ -1033,10 +1030,7 @@ internal static class IndexerImposterBuilder
                                 .ToStatementSyntax(),
                             BreakStatement()))));
 
-            defaultBehaviourCondition = BinaryExpression(
-                SyntaxKind.LogicalAndExpression,
-                Not(invokedBaseIdentifier),
-                defaultBehaviourCondition);
+            defaultBehaviourCondition = Not(invokedBaseIdentifier).And(defaultBehaviourCondition);
         }
 
         var defaultBehaviourBlock = IfStatement(
@@ -1098,10 +1092,7 @@ internal static class IndexerImposterBuilder
             .Dot(IdentifierName("Read"))
             .Call(Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(setter.HasConfiguredSetterField.Name)));
 
-        var condition = BinaryExpression(
-            SyntaxKind.LogicalAndExpression,
-            explicitCheck,
-            Not(configuredCheck));
+        var condition = explicitCheck.And(Not(configuredCheck));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
@@ -1501,7 +1492,7 @@ internal static class IndexerImposterBuilder
                 .Dot(IdentifierName("Read"))
                 .Call(ArgumentList(SingletonSeparatedList(Argument(null, Token(SyntaxKind.RefKeyword), hasReturnConfigured)))));
 
-        var condition = BinaryExpression(SyntaxKind.LogicalAndExpression, explicitCheck, missingReturnCheck);
+        var condition = explicitCheck.And(missingReturnCheck);
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

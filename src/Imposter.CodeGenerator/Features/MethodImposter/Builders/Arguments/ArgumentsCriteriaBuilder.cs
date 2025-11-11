@@ -150,11 +150,7 @@ public static class ArgumentsCriteriaBuilder
                                 .Select(InvokeMatches)
                                 .Aggregate(
                                     (ExpressionSyntax)InvokeMatches(method.Parameters.InputParameters[0]),
-                                    (left, right) => BinaryExpression(
-                                        SyntaxKind.LogicalAndExpression,
-                                        left,
-                                        right
-                                    ))
+                                    (left, right) => left.And(right))
                         }
                     )
                 )

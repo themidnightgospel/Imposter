@@ -221,7 +221,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private EchoDelegate<T> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<EchoCallbackDelegate<T>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<EchoCallbackDelegate<T>>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public T Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, T item, EchoDelegate<T> baseImplementation = null)
                 {
@@ -655,7 +655,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private FormatDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<FormatCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<FormatCallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, FormatDelegate baseImplementation = null)
                 {
@@ -1043,7 +1043,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private Format_1Delegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<Format_1CallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<Format_1CallbackDelegate>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string value, int padding, Format_1Delegate baseImplementation = null)
                 {
@@ -1466,7 +1466,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private SelectFirstDelegate<TFirst, TSecond> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<SelectFirstCallbackDelegate<TFirst, TSecond>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<SelectFirstCallbackDelegate<TFirst, TSecond>>();
                 private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
                 public TFirst Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond> baseImplementation = null)
                 {
@@ -1599,7 +1599,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
             ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>? ISelectFirstMethodImposter.As<TFirstTarget, TSecondTarget>()
             {
-                if (typeof(TFirstTarget).IsAssignableTo(typeof(TFirst)) && typeof(TSecondTarget).IsAssignableTo(typeof(TSecond)) && typeof(TFirst).IsAssignableTo(typeof(TFirstTarget)))
+                if ((typeof(TFirstTarget).IsAssignableTo(typeof(TFirst)) && typeof(TSecondTarget).IsAssignableTo(typeof(TSecond))) && typeof(TFirst).IsAssignableTo(typeof(TFirstTarget)))
                 {
                     return new Adapter<TFirstTarget, TSecondTarget>(this);
                 }

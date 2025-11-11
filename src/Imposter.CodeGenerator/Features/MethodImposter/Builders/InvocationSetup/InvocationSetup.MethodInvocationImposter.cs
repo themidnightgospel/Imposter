@@ -99,22 +99,18 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
     {
         ExpressionSyntax condition =
             BinaryExpression(
-                SyntaxKind.LogicalAndExpression,
-                BinaryExpression(
                     SyntaxKind.EqualsExpression,
                     IdentifierName("_resultGenerator"),
-                    LiteralExpression(SyntaxKind.NullLiteralExpression)),
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    IdentifierName("_callbacks").Dot(IdentifierName("Count")),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))));
+                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                .And(
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        IdentifierName("_callbacks").Dot(IdentifierName("Count")),
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))));
 
         if (supportsBaseImplementation)
         {
-            condition = BinaryExpression(
-                SyntaxKind.LogicalAndExpression,
-                Not(IdentifierName("_useBaseImplementation")),
-                condition);
+            condition = Not(IdentifierName("_useBaseImplementation")).And(condition);
         }
 
         return new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsEmpty")
