@@ -915,8 +915,7 @@ internal static class IndexerImposterBuilder
                 .Dot(IdentifierName("Count"))
                 .Call(Argument(IdentifierName(setter.CriteriaParameterName).Dot(IdentifierName("Matches")))));
 
-        var condition = PrefixUnaryExpression(
-            SyntaxKind.LogicalNotExpression,
+        var condition = Not(
             IdentifierName(countParameter.Identifier)
                 .Dot(IdentifierName("Matches"))
                 .Call(Argument(IdentifierName("invocationCount"))));
@@ -1000,7 +999,7 @@ internal static class IndexerImposterBuilder
 
         defaultBehaviourCondition = BinaryExpression(
             SyntaxKind.LogicalAndExpression,
-            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, callbackMatchedIdentifier),
+            Not(callbackMatchedIdentifier),
             defaultBehaviourCondition);
 
         ExpressionSyntax? invokedBaseIdentifier = null;
@@ -1036,7 +1035,7 @@ internal static class IndexerImposterBuilder
 
             defaultBehaviourCondition = BinaryExpression(
                 SyntaxKind.LogicalAndExpression,
-                PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, invokedBaseIdentifier),
+                Not(invokedBaseIdentifier),
                 defaultBehaviourCondition);
         }
 
@@ -1102,7 +1101,7 @@ internal static class IndexerImposterBuilder
         var condition = BinaryExpression(
             SyntaxKind.LogicalAndExpression,
             explicitCheck,
-            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, configuredCheck));
+            Not(configuredCheck));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
@@ -1449,8 +1448,7 @@ internal static class IndexerImposterBuilder
                 .Call(ArgumentList(SingletonSeparatedList(
                     Argument(IdentifierName(indexer.GetterImplementation.CriteriaParameterName).Dot(IdentifierName("Matches")))))));
 
-        var condition = PrefixUnaryExpression(
-            SyntaxKind.LogicalNotExpression,
+        var condition = Not(
             IdentifierName(indexer.GetterImplementation.CountParameterName)
                 .Dot(IdentifierName("Matches"))
                 .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationCount"))))));
@@ -1498,8 +1496,7 @@ internal static class IndexerImposterBuilder
             WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior.Dot(IdentifierName("Explicit")));
 
         var hasReturnConfigured = IdentifierName(indexer.GetterImplementation.HasConfiguredReturnField.Name);
-        var missingReturnCheck = PrefixUnaryExpression(
-            SyntaxKind.LogicalNotExpression,
+        var missingReturnCheck = Not(
             WellKnownTypes.System.Threading.Volatile
                 .Dot(IdentifierName("Read"))
                 .Call(ArgumentList(SingletonSeparatedList(Argument(null, Token(SyntaxKind.RefKeyword), hasReturnConfigured)))));

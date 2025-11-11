@@ -113,7 +113,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
         {
             condition = BinaryExpression(
                 SyntaxKind.LogicalAndExpression,
-                PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_useBaseImplementation")),
+                Not(IdentifierName("_useBaseImplementation")),
                 condition);
         }
 

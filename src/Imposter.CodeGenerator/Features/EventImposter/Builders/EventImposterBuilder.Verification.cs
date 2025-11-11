@@ -266,8 +266,7 @@ internal static partial class EventImposterBuilder
             .WithBody(
                 Block(
                     IfStatement(
-                        PrefixUnaryExpression(
-                            SyntaxKind.LogicalNotExpression,
+                        Not(
                             IdentifierName("expected")
                                 .Dot(IdentifierName("Matches"))
                                 .Call(Argument(IdentifierName("actual")))),

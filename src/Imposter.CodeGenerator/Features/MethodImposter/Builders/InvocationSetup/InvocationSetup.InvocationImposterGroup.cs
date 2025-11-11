@@ -67,8 +67,7 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                                         Argument(IdentifierName("invocationImposter")).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))))),
                         Block(
                             IfStatement(
-                                PrefixUnaryExpression(
-                                    SyntaxKind.LogicalNotExpression,
+                                Not(
                                     IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty"))),
                                 Block(
                                     ExpressionStatement(
