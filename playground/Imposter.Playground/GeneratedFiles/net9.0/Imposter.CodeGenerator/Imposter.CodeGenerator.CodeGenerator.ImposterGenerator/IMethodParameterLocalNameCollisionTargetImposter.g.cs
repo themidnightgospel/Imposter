@@ -194,13 +194,13 @@ namespace Imposter.Playground
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    int result = _resultGenerator.Invoke(ex, result, matchingInvocationImposterGroup, arguments, baseImplementation);
+                    int result_1 = _resultGenerator.Invoke(ex, result, matchingInvocationImposterGroup, arguments, baseImplementation);
                     foreach (var callback in _callbacks)
                     {
                         callback(ex, result, matchingInvocationImposterGroup, arguments, baseImplementation);
                     }
 
-                    return result;
+                    return result_1;
                 }
 
                 internal void Callback(InvokeWithLocalsCallbackDelegate callback)
