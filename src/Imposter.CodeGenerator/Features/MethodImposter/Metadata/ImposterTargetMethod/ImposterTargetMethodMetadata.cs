@@ -26,6 +26,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly ArgumentCriteriaTypeMetadata ArgumentsCriteria;
 
+    internal readonly AsMethodMetadata ArgumentsCriteriaAsMethod;
+
     internal readonly TypeMetadata Arguments;
 
     internal readonly InvocationHistoryTypeMetadata InvocationHistory;
@@ -100,6 +102,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         var argumentsTypeName = $"{uniqueName}Arguments";
         Arguments = new TypeMetadata(argumentsTypeName, SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName));
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
+        ArgumentsCriteriaAsMethod = new AsMethodMetadata(Symbol.TypeParameters, GenericTypeParameterNameSet);
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         MethodInvocationImposter = new MethodInvocationImposterMetadata(this);
@@ -129,4 +132,24 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
                (namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.Task<TResult>" ||
                 namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.ValueTask<TResult>"))));
 
+    internal readonly struct AsMethodMetadata
+    {
+        internal readonly NameSyntax[] TargetTypeArguments;
+        internal readonly TypeParameterSyntax[] TypeParameters;
+
+        internal AsMethodMetadata(IReadOnlyList<ITypeParameterSymbol> typeParameters, NameSet nameSet)
+        {
+            var allocatedNames = typeParameters
+                .Select(p => nameSet.Use($"{p.Name}Target"))
+                .ToArray();
+
+            TargetTypeArguments = allocatedNames
+                .Select(name => (NameSyntax)SyntaxFactory.IdentifierName(name))
+                .ToArray();
+
+            TypeParameters = allocatedNames
+                .Select(SyntaxFactory.TypeParameter)
+                .ToArray();
+        }
+    }
 }

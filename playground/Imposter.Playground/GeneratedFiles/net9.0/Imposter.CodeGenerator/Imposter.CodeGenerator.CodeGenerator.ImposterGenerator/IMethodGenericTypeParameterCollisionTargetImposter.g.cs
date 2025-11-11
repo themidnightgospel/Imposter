@@ -77,9 +77,9 @@ namespace Imposter.Playground
                 return ((value.Matches(arguments.value) && other.Matches(arguments.other)) && target.Matches(arguments.target)) && otherTarget.Matches(arguments.otherTarget);
             }
 
-            public GenericMethodArgumentsCriteria<TTarget, UTarget, TTargetTarget, UTargetTarget> As<TTarget, UTarget, TTargetTarget, UTargetTarget>()
+            public GenericMethodArgumentsCriteria<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget> As<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget>()
             {
-                return new GenericMethodArgumentsCriteria<TTarget, UTarget, TTargetTarget, UTargetTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)), global::Imposter.Abstractions.Arg<UTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<UTarget, U>(it, out U otherTarget) && other.Matches(otherTarget)), global::Imposter.Abstractions.Arg<TTargetTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTargetTarget, TTarget>(it, out TTarget targetTarget) && target.Matches(targetTarget)), global::Imposter.Abstractions.Arg<UTargetTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<UTargetTarget, UTarget>(it, out UTarget otherTargetTarget) && otherTarget.Matches(otherTargetTarget)));
+                return new GenericMethodArgumentsCriteria<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget>(global::Imposter.Abstractions.Arg<TTarget_1>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget_1, T>(it, out T valueTarget) && value.Matches(valueTarget)), global::Imposter.Abstractions.Arg<UTarget_1>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<UTarget_1, U>(it, out U otherTarget) && other.Matches(otherTarget)), global::Imposter.Abstractions.Arg<TTargetTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTargetTarget, TTarget>(it, out TTarget targetTarget) && target.Matches(targetTarget)), global::Imposter.Abstractions.Arg<UTargetTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<UTargetTarget, UTarget>(it, out UTarget otherTargetTarget) && otherTarget.Matches(otherTargetTarget)));
             }
         }
 

@@ -60,20 +60,19 @@ public static class ArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
         var typeParameters = method.Symbol.TypeParameters;
-        var asMethodTypeParams = typeParameters.Select(p => TypeParameter(p.Name + "Target")).ToArray();
-        var targetTypeArgs = typeParameters
-            .Select(p => (TypeSyntax)IdentifierName(p.Name + "Target"))
-            .ToArray();
+        var targetTypeArgs = method.ArgumentsCriteriaAsMethod.TargetTypeArguments;
+        var asMethodTypeParams = method.ArgumentsCriteriaAsMethod.TypeParameters;
         var returnType = GenericName(method.ArgumentsCriteria.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs)));
+            .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs.Cast<TypeSyntax>())));
+
+        var typeParameterRenamer = new TypeParameterRenamer(typeParameters, targetTypeArgs);
 
         var constructorArgs = method
             .Symbol
             .Parameters
             .Select(p =>
             {
-                var renamer = new TypeParameterRenamer(typeParameters, "Target");
-                var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(p.Type));
+                var targetType = (TypeSyntax)typeParameterRenamer.Visit(TypeSyntax(p.Type));
 
                 if (p.RefKind is RefKind.Out)
                 {
