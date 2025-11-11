@@ -44,13 +44,12 @@ internal static partial class EventImposterBuilder
     }
 
     private static ExpressionStatementSyntax BuildAwaitRaiseAsyncStatement(in ImposterEventMetadata @event) =>
-        ExpressionStatement(
-            IdentifierName(@event.Builder.Methods.RaiseCoreAsyncName)
-                .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))
-                .Dot(IdentifierName("ConfigureAwait"))
-                .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))
-                .Await()
-        );
+        IdentifierName(@event.Builder.Methods.RaiseCoreAsyncName)
+            .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))
+            .Dot(IdentifierName("ConfigureAwait"))
+            .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))
+            .Await()
+            .ToStatementSyntax();
 
     private static MethodDeclarationSyntax BuildRaiseInternalMethod(in ImposterEventMetadata @event) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, @event.Builder.Methods.RaiseInternalName)
@@ -122,14 +121,13 @@ internal static partial class EventImposterBuilder
                     IdentifierName("pendingTasks").Dot(IdentifierName("Count")),
                     LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                 Block(
-                    ExpressionStatement(
-                        WellKnownTypes.System.Threading.Tasks.Task
-                            .Dot(IdentifierName("WhenAll"))
-                            .Call(Argument(IdentifierName("pendingTasks")))
-                            .Dot(IdentifierName("ConfigureAwait"))
-                            .Call(Argument(False))
-                            .Await()
-                    )
+                    WellKnownTypes.System.Threading.Tasks.Task
+                        .Dot(IdentifierName("WhenAll"))
+                        .Call(Argument(IdentifierName("pendingTasks")))
+                        .Dot(IdentifierName("ConfigureAwait"))
+                        .Call(Argument(False))
+                        .Await()
+                        .ToStatementSyntax()
                 )
             )
         );
@@ -197,14 +195,13 @@ internal static partial class EventImposterBuilder
                                     IdentifierName("remaining"),
                                     LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
                                 Block(
-                                    ExpressionStatement(
                                         ElementAccessExpression(IdentifierName("budgets"))
                                             .WithArgumentList(BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("handler")))))
                                             .Assign(
                                                 BinaryExpression(
                                                     SyntaxKind.SubtractExpression,
                                                     IdentifierName("remaining"),
-                                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))))),
+                                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))).ToStatementSyntax(),
                                     YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("handler")))))))));
 
         return blockBuilder.Build();
@@ -234,9 +231,8 @@ internal static partial class EventImposterBuilder
             Identifier("callback"),
             FieldIdentifier(field),
             Block(
-                ExpressionStatement(
                     IdentifierName("callback")
-                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))))));
+                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))).ToStatementSyntax()));
 
     private static ForEachStatementSyntax ForEachHandlerInvocation(in ImposterEventMetadata @event) =>
         ForEachStatement(
@@ -244,13 +240,11 @@ internal static partial class EventImposterBuilder
             Identifier("handler"),
             IdentifierName("EnumerateActiveHandlers").Call(),
             Block(
-                ExpressionStatement(
                     FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
                         .Dot(IdentifierName("Enqueue"))
-                        .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))),
-                ExpressionStatement(
+                        .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event))).ToStatementSyntax(),
                     IdentifierName("handler")
-                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))))));
+                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))).ToStatementSyntax()));
 
     private static ForEachStatementSyntax ForEachAsyncInvocation(in FieldMetadata field, in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
     {
@@ -272,10 +266,9 @@ internal static partial class EventImposterBuilder
                     IfStatement(
                         IdentifierName("task").IsNotNull(),
                         Block(
-                            ExpressionStatement(
                                 IdentifierName("pendingTasks")
                                     .Dot(IdentifierName("Add"))
-                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))))))));
+                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))).ToStatementSyntax()))));
     }
 
     private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
@@ -290,10 +283,9 @@ internal static partial class EventImposterBuilder
                 Identifier("handler"),
                 IdentifierName("EnumerateActiveHandlers").Call(),
                 Block(
-                    ExpressionStatement(
                         FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
                             .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))),
+                            .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event))).ToStatementSyntax(),
                     LocalVariableDeclarationSyntax(
                         asyncResultType,
                         "task",
@@ -302,9 +294,8 @@ internal static partial class EventImposterBuilder
                     IfStatement(
                         IdentifierName("task").IsNotNull(),
                         Block(
-                            ExpressionStatement(
                                 IdentifierName("pendingTasks")
                                     .Dot(IdentifierName("Add"))
-                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))))))));
+                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))).ToStatementSyntax()))));
     }
 }

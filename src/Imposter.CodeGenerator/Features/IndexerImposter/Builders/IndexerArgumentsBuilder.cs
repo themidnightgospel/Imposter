@@ -46,10 +46,10 @@ internal static class IndexerArgumentsBuilder
         {
             constructorBuilder = constructorBuilder.AddParameter(parameter.ParameterSyntax);
             bodyBuilder.AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(parameter.Name))
-                    .Assign(IdentifierName(parameter.Name))
-                    .ToStatementSyntax());
+            ThisExpression()
+                .Dot(IdentifierName(parameter.Name))
+                .Assign(IdentifierName(parameter.Name))
+                .ToStatementSyntax());
         }
 
         return constructorBuilder.WithBody(bodyBuilder.Build()).Build();
@@ -110,10 +110,9 @@ internal static class IndexerArgumentsBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             statements.Add(
-                ExpressionStatement(
                     IdentifierName("hash")
                         .Dot(IdentifierName("Add"))
-                        .Call(Argument(IdentifierName(parameter.Name)))));
+                        .Call(Argument(IdentifierName(parameter.Name))).ToStatementSyntax());
         }
 
         statements.Add(ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call()));

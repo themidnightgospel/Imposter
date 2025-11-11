@@ -67,20 +67,20 @@ internal static class GetterImposterBuilderBuilder
 
         var body = new BlockBuilder()
             .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
-                    .Assign(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
-                    .ToStatementSyntax())
+            ThisExpression()
+                .Dot(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
+                .Assign(IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
+                .ToStatementSyntax())
             .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName("_invocationBehavior"))
-                    .Assign(IdentifierName("invocationBehavior"))
-                    .ToStatementSyntax())
+            ThisExpression()
+                .Dot(IdentifierName("_invocationBehavior"))
+                .Assign(IdentifierName("invocationBehavior"))
+                .ToStatementSyntax())
             .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName("_propertyDisplayName"))
-                    .Assign(IdentifierName("propertyDisplayName"))
-                    .ToStatementSyntax());
+            ThisExpression()
+                .Dot(IdentifierName("_propertyDisplayName"))
+                .Assign(IdentifierName("propertyDisplayName"))
+                .ToStatementSyntax());
 
         return constructor.WithBody(body.Build()).Build();
     }
@@ -118,17 +118,17 @@ internal static class GetterImposterBuilderBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(ParameterSyntax(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter))
             .WithBody(Block(
-                IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
-                    .Assign(False)
-                    .ToStatementSyntax(),
-                IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(IdentifierName(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter.Name)))
-                    .ToStatementSyntax(),
-                IdentifierName("_hasConfiguredReturn")
-                    .Assign(True)
-                    .ToStatementSyntax()
+            IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
+            .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name))
+            .Assign(False)
+            .ToStatementSyntax(),
+            IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
+            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+            .Call(Argument(IdentifierName(getterImposterBuilder.AddReturnValueMethod.ValueGeneratorParameter.Name)))
+            .ToStatementSyntax(),
+            IdentifierName("_hasConfiguredReturn")
+                .Assign(True)
+                .ToStatementSyntax()
             ))
             .Build();
 
@@ -140,12 +140,12 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ReturnsMethod.ValueParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddReturnValueMethod.Name)
-                        .Call(
-                            Argument(
-                                EmptyParametersGoesTo(IdentifierName(builderInterface.ReturnsMethod.ValueParameter.Name)))
-                        )
-                        .ToStatementSyntax(),
+                IdentifierName(builder.AddReturnValueMethod.Name)
+                    .Call(
+                        Argument(
+                            EmptyParametersGoesTo(IdentifierName(builderInterface.ReturnsMethod.ValueParameter.Name)))
+                    )
+                    .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
                 )
             )
@@ -155,9 +155,9 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ReturnsMethod.ValueGeneratorParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddReturnValueMethod.Name)
-                        .Call(Argument(IdentifierName(builderInterface.ReturnsMethod.ValueGeneratorParameter.Name)))
-                        .ToStatementSyntax(),
+                IdentifierName(builder.AddReturnValueMethod.Name)
+                    .Call(Argument(IdentifierName(builderInterface.ReturnsMethod.ValueGeneratorParameter.Name)))
+                    .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
                 )
             )
@@ -172,15 +172,15 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.ThrowsMethod.ExceptionParameter))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddReturnValueMethod.Name)
-                        .Call(
-                            Argument(
-                                EmptyParametersGoesTo(
-                                    ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.ExceptionParameter.Name))
-                                )
+                IdentifierName(builder.AddReturnValueMethod.Name)
+                    .Call(
+                        Argument(
+                            EmptyParametersGoesTo(
+                                ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.ExceptionParameter.Name))
                             )
                         )
-                        .ToStatementSyntax(),
+                    )
+                    .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
                 )
             )
@@ -190,15 +190,15 @@ internal static class GetterImposterBuilderBuilder
             .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter(builderInterface.ThrowsMethod.GenericTypeParameterName))))
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax))
             .WithBody(Block(
-                    IdentifierName(builder.AddReturnValueMethod.Name)
-                        .Call(
-                            Argument(
-                                EmptyParametersGoesTo(
-                                    ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.GenericTypeParameterName).New())
-                                )
+                IdentifierName(builder.AddReturnValueMethod.Name)
+                    .Call(
+                        Argument(
+                            EmptyParametersGoesTo(
+                                ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.GenericTypeParameterName).New())
                             )
                         )
-                        .ToStatementSyntax(),
+                    )
+                    .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
                 )
             )
@@ -212,10 +212,10 @@ internal static class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.CallbackMethod.InterfaceSyntax))
             .AddParameter(ParameterSyntax(builderInterface.CallbackMethod.CallbackParameter))
             .WithBody(Block(
-                IdentifierName(builder.CallbacksField.Name)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(IdentifierName(builderInterface.CallbackMethod.CallbackParameter.Name)))
-                    .ToStatementSyntax(),
+            IdentifierName(builder.CallbacksField.Name)
+                .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                .Call(Argument(IdentifierName(builderInterface.CallbackMethod.CallbackParameter.Name)))
+                .ToStatementSyntax(),
                 ReturnStatement(ThisExpression())
             ))
             .Build();
@@ -281,16 +281,16 @@ internal static class GetterImposterBuilderBuilder
         new MethodDeclarationBuilder(WellKnownTypes.Void, "EnableBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
-                IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(property.DefaultPropertyBehaviour.IsOnField.Name))
-                    .Assign(True)
-                    .ToStatementSyntax(),
-                IdentifierName("_useBaseImplementation")
-                    .Assign(True)
-                    .ToStatementSyntax(),
-                IdentifierName("_hasConfiguredReturn")
-                    .Assign(True)
-                    .ToStatementSyntax()
+            IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name)
+            .Dot(IdentifierName(property.DefaultPropertyBehaviour.IsOnField.Name))
+            .Assign(True)
+            .ToStatementSyntax(),
+            IdentifierName("_useBaseImplementation")
+            .Assign(True)
+            .ToStatementSyntax(),
+            IdentifierName("_hasConfiguredReturn")
+                .Assign(True)
+                .ToStatementSyntax()
             ))
             .Build();
 
@@ -364,11 +364,11 @@ internal static class GetterImposterBuilderBuilder
                     .And(baseImplementationIsNotNull)
                     .And(Not(useBaseImplementationCheck).And(Not(hasValueSetCheck)));
 
-            var seedFromBase = ExpressionStatement(
-                IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                    .Assign(baseImplementationIdentifier.Call())
-            );
+            var seedFromBase = 
+            IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+                .Assign(baseImplementationIdentifier.Call())
+                .ToStatementSyntax();
 
             return IfStatement(
                 defaultBehaviourCheck,
@@ -395,22 +395,22 @@ internal static class GetterImposterBuilderBuilder
                 identifier: Identifier("getterCallback"),
                 expression: IdentifierName(builder.CallbacksField.Name),
                 statement: Block(
-                    IdentifierName("getterCallback")
-                        .Call()
-                        .ToStatementSyntax()
+                IdentifierName("getterCallback")
+                    .Call()
+                    .ToStatementSyntax()
                 )
             );
 
         static StatementSyntax TrackGetterInvocation(in PropertyGetterImposterBuilderMetadata builder) =>
-            WellKnownTypes.System.Threading.Interlocked
-                .Dot(IdentifierName("Increment"))
-                .Call(Argument(
-                        null,
-                        Token(SyntaxKind.RefKeyword),
-                        IdentifierName(builder.InvocationCountField.Name)
-                    )
+        WellKnownTypes.System.Threading.Interlocked
+            .Dot(IdentifierName("Increment"))
+            .Call(Argument(
+                    null,
+                    Token(SyntaxKind.RefKeyword),
+                    IdentifierName(builder.InvocationCountField.Name)
                 )
-                .ToStatementSyntax();
+            )
+            .ToStatementSyntax();
     }
 
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod()

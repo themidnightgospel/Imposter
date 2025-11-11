@@ -18,7 +18,6 @@ internal static class MethodImposterAdapterBuilder
         {
             return null;
         }
-        
         var adapterBaseType = SimpleBaseType(
             GenericName(method.MethodImposter.Interface.Name)
                 .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))));
@@ -35,10 +34,9 @@ internal static class MethodImposterAdapterBuilder
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .AddParameter(Parameter(Identifier("target")).WithType(method.MethodImposter.Syntax))
                     .WithBody(Block(
-                        ExpressionStatement(
-                            IdentifierName("_target")
-                                .Assign(IdentifierName("target"))
-                        )
+                        IdentifierName("_target")
+                            .Assign(IdentifierName("target"))
+                            .ToStatementSyntax()
                     ))
                     .Build())
             .AddMember(BuildAdapterInvokeMethod(method))
@@ -73,22 +71,22 @@ internal static class MethodImposterAdapterBuilder
                             pAdaptedName.Text,
                             TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword)));
-                    postInvokeActions.Add(ExpressionStatement(
-                        IdentifierName(p.Name)
-                            .Assign(
-                                TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
-                            )
-                    ));
+                    postInvokeActions.Add(
+                    IdentifierName(p.Name)
+                        .Assign(
+                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                        )
+                        .ToStatementSyntax());
                     break;
                 case RefKind.Out:
                     body.Add(LocalVariableDeclarationSyntax(pType, pAdaptedName.Text));
                     invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)));
-                    postInvokeActions.Add(ExpressionStatement(
-                        IdentifierName(p.Name)
-                            .Assign(
-                                TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
-                            )
-                    ));
+                    postInvokeActions.Add(
+                    IdentifierName(p.Name)
+                        .Assign(
+                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                        )
+                        .ToStatementSyntax());
                     break;
                 default:
                     invokeArguments.Add(Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
@@ -132,7 +130,7 @@ internal static class MethodImposterAdapterBuilder
         }
         else
         {
-            body.Add(ExpressionStatement(invokeExpression));
+            body.Add(invokeExpression.ToStatementSyntax());
             body.AddRange(postInvokeActions);
         }
 

@@ -16,14 +16,6 @@ internal static partial class SyntaxFactoryHelper
             .Build();
     }
 
-    internal static FieldDeclarationSyntax ParameterAsReadonlyField(IParameterSymbol parameter) =>
-        SingleVariableField(
-            TypeSyntax(parameter.Type),
-            parameter.Name,
-            TokenList(Token(SyntaxKind.PublicKeyword)
-            )
-        );
-
     internal static PropertyDeclarationSyntax ReadOnlyPropertyDeclarationSyntax(
         TypeSyntax type,
         string name,

@@ -38,9 +38,8 @@ internal static partial class InvocationSetupBuilder
                                 .WithArgumentList(
                                     Argument(IdentifierName("methodDisplayName"))
                                         .AsSingleArgumentListSyntax())))),
-                ExpressionStatement(
                     IdentifierName("invocationImposter")
-                        .Assign(invocationImposterType.Dot(IdentifierName("Default"))))));
+                        .Assign(invocationImposterType.Dot(IdentifierName("Default"))).ToStatementSyntax()));
 
         var invokeCall = invocationImposterIdentifier
             .Dot(IdentifierName("Invoke"))
@@ -54,7 +53,7 @@ internal static partial class InvocationSetupBuilder
                     invocationImposterAssignment,
                     guardMissingImposter,
                     method.Symbol.ReturnsVoid
-                        ? ExpressionStatement(invokeCall)
+                        ? invokeCall.ToStatementSyntax()
                         : ReturnStatement(invokeCall)
                 )
             )

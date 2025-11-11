@@ -1,6 +1,7 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
@@ -17,7 +18,7 @@ internal static partial class MethodImposterBuilderBuilder
             .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
             .Build();
 
-        var lambda = SyntaxFactoryHelper.Lambda(
+        var lambda = Lambda(
             method.Symbol.Parameters,
             Block(
                 ThrowStatement(
@@ -33,18 +34,18 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildThrowsExceptionInstanceImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter))
+            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter))
             .Build();
 
         var parameterName = method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter.Name;
 
-        var lambda = SyntaxFactoryHelper.Lambda(
+        var lambda = Lambda(
             method.Symbol.Parameters,
             Block(ThrowStatement(IdentifierName(parameterName))));
 
@@ -56,24 +57,24 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildThrowsExceptionGeneratorImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter))
+            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter))
             .Build();
 
         var parameterName = method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter.Name;
 
-        var lambda = SyntaxFactoryHelper.Lambda(
+        var lambda = Lambda(
             method.Symbol.Parameters,
             Block(
                 ThrowStatement(
                     IdentifierName(parameterName)
                         .Dot(IdentifierName("Invoke"))
-                        .Call(SyntaxFactoryHelper.ArgumentListSyntax(method.Symbol.Parameters))
+                        .Call(ArgumentListSyntax(method.Symbol.Parameters))
                 )));
 
         var invocation = CurrentInvocationImposterAccess(method)
@@ -84,14 +85,14 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildThrowsAsyncImplementation(in ImposterTargetMethodMetadata method)
     {
         var throwsAsyncMethod = method.MethodInvocationImposterGroup.ThrowsAsyncMethod!.Value;
         var template = new MethodDeclarationBuilder(throwsAsyncMethod.ReturnType, throwsAsyncMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(throwsAsyncMethod.ExceptionParameter))
+            .AddParameter(ParameterSyntax(throwsAsyncMethod.ExceptionParameter))
             .Build();
 
         var parameterName = throwsAsyncMethod.ExceptionParameter.Name;
@@ -104,13 +105,13 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             throwsAsyncMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildCallbackImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.CallbackMethod.ReturnType, method.MethodInvocationImposterGroup.CallbackMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter))
+            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter))
             .Build();
 
         var parameterName = method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name;
@@ -123,13 +124,13 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildReturnsDelegateImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter))
+            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter))
             .Build();
 
         var parameterName = method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name;
@@ -142,13 +143,13 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildReturnsValueImplementation(in ImposterTargetMethodMetadata method)
     {
         var template = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter))
+            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter))
             .Build();
 
         var parameterName = method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name;
@@ -161,14 +162,14 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildReturnsAsyncImplementation(in ImposterTargetMethodMetadata method)
     {
         var returnsAsyncMethod = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
         var template = new MethodDeclarationBuilder(returnsAsyncMethod.ReturnType, returnsAsyncMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(returnsAsyncMethod.ValueParameter))
+            .AddParameter(ParameterSyntax(returnsAsyncMethod.ValueParameter))
             .Build();
 
         var parameterName = returnsAsyncMethod.ValueParameter.Name;
@@ -181,7 +182,7 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             returnsAsyncMethod.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationImplementation(in ImposterTargetMethodMetadata method)
@@ -198,7 +199,7 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             metadata.InterfaceSyntax,
-            ExpressionStatement(invocation));
+            invocation.ToStatementSyntax());
     }
 
     private static MethodDeclarationSyntax BuildThenImplementation(in ImposterTargetMethodMetadata method)
@@ -217,6 +218,6 @@ internal static partial class MethodImposterBuilderBuilder
             method,
             template,
             method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax,
-            ExpressionStatement(assignment));
+            assignment.ToStatementSyntax());
     }
 }

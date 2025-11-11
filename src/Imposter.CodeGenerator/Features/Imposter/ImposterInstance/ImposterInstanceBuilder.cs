@@ -9,6 +9,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 
@@ -80,19 +81,18 @@ internal readonly ref struct ImposterInstanceBuilder
                 setterArguments.Add(
                     Argument(
                         ParenthesizedLambdaExpression()
-                            .WithBlock(Block(ExpressionStatement(baseAssignment)))));
+                            .WithBlock(Block(baseAssignment.ToStatementSyntax()))));
             }
 
             var setterBody = Block(
-                setterInvocation
-                    .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments))
-                    .ToStatementSyntax());
+            setterInvocation
+                .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments))
+                .ToStatementSyntax());
 
             propertyBuilder = propertyBuilder.WithSetterBody(setterBody);
         }
 
         _imposterInstanceBuilder.AddMember(propertyBuilder.Build());
-        
         return this;
     }
 
@@ -153,7 +153,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         ParenthesizedLambdaExpression()
                             .WithBlock(
                                 Block(
-                                    ExpressionStatement(baseAssignment)))));
+                                    baseAssignment.ToStatementSyntax()))));
             }
 
             var setterCall = IdentifierName(ImposterFieldName)
@@ -163,7 +163,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithBody(Block(ExpressionStatement(setterCall))));
+                    .WithBody(Block(setterCall.ToStatementSyntax())));
         }
 
         var indexerDeclaration = IndexerDeclaration(indexer.Core.TypeSyntax)
@@ -193,7 +193,6 @@ internal readonly ref struct ImposterInstanceBuilder
 
         return this;
     }
-    
     internal ClassDeclarationSyntax Build() => _imposterInstanceBuilder.Build();
 
     internal static ImposterInstanceBuilder Create(in ImposterGenerationContext imposterGenerationContext, string name)
@@ -232,7 +231,7 @@ internal readonly ref struct ImposterInstanceBuilder
             .AddParameter(
                 Parameter(Identifier("imposter"))
                     .WithType(IdentifierName(imposterName)))
-            .WithBody(Block(ExpressionStatement(assignment)))
+            .WithBody(Block(assignment.ToStatementSyntax()))
             .Build();
     }
 
@@ -288,7 +287,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 .WithBody(Block(
                     imposterMethod.HasReturnValue
                         ? ReturnStatement(invokeMethodInvocationExpression)
-                        : ExpressionStatement(invokeMethodInvocationExpression))
+                        : invokeMethodInvocationExpression.ToStatementSyntax())
                 )
                 .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
                 .Build();
@@ -338,14 +337,14 @@ internal readonly ref struct ImposterInstanceBuilder
         }
 
         return Block(
-            IdentifierName(nameof(ArgumentNullException))
-                .Dot(IdentifierName("ThrowIfNull"))
-                .Call(Argument(IdentifierName("value")))
-                .ToStatementSyntax(),
-            builderAccess
-                .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
-                .Call(arguments)
-                .ToStatementSyntax());
+        IdentifierName(nameof(ArgumentNullException))
+        .Dot(IdentifierName("ThrowIfNull"))
+        .Call(Argument(IdentifierName("value")))
+        .ToStatementSyntax(),
+        builderAccess
+            .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
+            .Call(arguments)
+            .ToStatementSyntax());
     }
 
     private static ParenthesizedLambdaExpressionSyntax BuildBaseEventAccessorLambda(
@@ -358,7 +357,7 @@ internal readonly ref struct ImposterInstanceBuilder
             IdentifierName("value"));
 
         return ParenthesizedLambdaExpression()
-            .WithBlock(Block(ExpressionStatement(assignmentExpression)));
+            .WithBlock(Block(assignmentExpression.ToStatementSyntax()));
     }
 }
 

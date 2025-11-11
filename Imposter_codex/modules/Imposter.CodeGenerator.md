@@ -8,6 +8,9 @@ When authoring or updating Roslyn syntax inside the generator, always prefer the
 - Use `SyntaxFactoryHelper.False` instead of `LiteralExpression(SyntaxKind.FalseLiteralExpression)`.
 - Use `SyntaxFactoryHelper.Null` instead of `LiteralExpression(SyntaxKind.DefaultLiteralExpression)` or other default/null literal expressions.
 - Use `SyntaxFactoryHelper.Var` instead of `IdentifierName("var")`.
+- Use `SyntaxFactoryHelper.And`/`SyntaxFactoryHelper.Or` instead of `BinaryExpression(SyntaxKind.LogicalAndExpression)` or `BinaryExpression(SyntaxKind.LogicalOrExpression)`.
+- Use `SyntaxFactoryHelper.Not` instead of `PrefixUnaryExpression(SyntaxKind.LogicalNotExpression)`.
+- Use `SyntaxFactoryHelper.ToStatementSyntax` instead of manually creating `ExpressionStatement` nodes when wrapping expressions as statements.
 
 Keeping literals and identifier shorthands on the helper surface avoids redundant Roslyn allocations and ensures we emit syntax consistently across features.
 

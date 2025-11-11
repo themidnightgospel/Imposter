@@ -46,25 +46,25 @@ internal static partial class InvocationSetupBuilder
             .AddStatement(
                 IdentifierName("Default")
                     .Assign(
-                        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
-                            .New(ArgumentList()))
-                    .ToStatementSyntax());
+                    IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
+                        .New(ArgumentList()))
+                        .ToStatementSyntax());
 
         if (method.HasReturnValue)
         {
             body.AddStatement(
-                IdentifierName("Default")
-                    .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
-                    .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)))
-                    .ToStatementSyntax());
+            IdentifierName("Default")
+                .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
+                .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)))
+                .ToStatementSyntax());
         }
         else
         {
             body.AddStatement(
-                IdentifierName("Default")
-                    .Dot(IdentifierName("_resultGenerator"))
-                    .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))
-                    .ToStatementSyntax());
+            IdentifierName("Default")
+                .Dot(IdentifierName("_resultGenerator"))
+                .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))
+                .ToStatementSyntax());
         }
 
         return new ConstructorBuilder(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
@@ -150,13 +150,12 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                                         .WithArgumentList(
                                             Argument(IdentifierName("methodDisplayName"))
                                                 .AsSingleArgumentListSyntax())))),
-                        ExpressionStatement(
                             IdentifierName("_resultGenerator")
-                                .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))))));
+                                .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)).ToStatementSyntax())));
 
         if (method.Symbol.ReturnsVoid)
         {
-            defaultBlockBuilder.AddStatement(ExpressionStatement(resultInvocation));
+            defaultBlockBuilder.AddStatement(resultInvocation.ToStatementSyntax());
         }
         else
         {
@@ -172,9 +171,8 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             Identifier("callback"),
             IdentifierName("_callbacks"),
             Block(
-                ExpressionStatement(
                     IdentifierName("callback")
-                        .Call(arguments))));
+                        .Call(arguments).ToStatementSyntax()));
 
         defaultBlockBuilder.AddStatement(callbackInvocation);
 
@@ -196,13 +194,12 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
            var assignBaseImplementation = IfStatement(
                IdentifierName("_useBaseImplementation"),
                Block(
-                   ExpressionStatement(
                         IdentifierName("_resultGenerator")
                             .Assign(
                                 BinaryExpression(
                                     SyntaxKind.CoalesceExpression,
                                     IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName),
-                                    ThrowExpression(missingImposterException))))));
+                                    ThrowExpression(missingImposterException))).ToStatementSyntax()));
 
             body = new BlockBuilder()
                 .AddStatement(assignBaseImplementation)
@@ -220,7 +217,6 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             .WithBody(body)
             .Build();
     }
-    
     private static ParameterListSyntax BuildInvocationParameterList(in ImposterTargetMethodMetadata method)
     {
         var parameters = new List<ParameterSyntax>
@@ -247,10 +243,10 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             .AddParameter(ParameterSyntax(method.CallbackDelegate.Syntax, method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name))
             .WithBody(
                 Block(
-                    IdentifierName("_callbacks")
-                        .Dot(IdentifierName("Enqueue"))
-                        .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)))
-                        .ToStatementSyntax()))
+                IdentifierName("_callbacks")
+                    .Dot(IdentifierName("Enqueue"))
+                    .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name)))
+                    .ToStatementSyntax()))
             .Build();
 
     private static MethodDeclarationSyntax ReturnsDelegateMethod(in ImposterTargetMethodMetadata method)
@@ -263,9 +259,9 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
         }
 
         blockBuilder.AddStatement(
-            IdentifierName("_resultGenerator")
-                .Assign(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name))
-                .ToStatementSyntax());
+        IdentifierName("_resultGenerator")
+            .Assign(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name))
+            .ToStatementSyntax());
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -293,9 +289,9 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
         }
 
         blockBuilder.AddStatement(
-            IdentifierName("_resultGenerator")
-                .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
-                .ToStatementSyntax());
+        IdentifierName("_resultGenerator")
+            .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
+            .ToStatementSyntax());
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -322,9 +318,9 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                         method.Symbol.Parameters,
                         Block(
                             ThrowStatement(
-                                IdentifierName(throwsParameter.Name)
-                                    .Call(ArgumentListSyntax(method.Symbol.Parameters))))))
-                .ToStatementSyntax());
+                            IdentifierName(throwsParameter.Name)
+                                .Call(ArgumentListSyntax(method.Symbol.Parameters))))))
+                                .ToStatementSyntax());
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -338,12 +334,12 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    IdentifierName("_useBaseImplementation")
-                        .Assign(True)
-                        .ToStatementSyntax(),
-                    IdentifierName("_resultGenerator")
-                        .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
-                        .ToStatementSyntax()))
+                IdentifierName("_useBaseImplementation")
+                .Assign(True)
+                .ToStatementSyntax(),
+                IdentifierName("_resultGenerator")
+                    .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    .ToStatementSyntax()))
             .Build();
 
     private static MethodDeclarationSyntax ReturnsAsyncMethod(in ImposterTargetMethodMetadata method)
@@ -368,9 +364,9 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
         }
 
         blockBuilder.AddStatement(
-            IdentifierName("_resultGenerator")
-                .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
-                .ToStatementSyntax());
+        IdentifierName("_resultGenerator")
+            .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
+            .ToStatementSyntax());
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, returnsAsync.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -398,10 +394,10 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                         method.Symbol.Parameters,
                         Block(
                             ReturnStatement(
-                                BuildFaultedAsyncReturnExpression(
-                                    method,
-                                    IdentifierName(throwsAsync.ExceptionParameter.Name))))))
-                .ToStatementSyntax());
+                            BuildFaultedAsyncReturnExpression(
+                                method,
+                                IdentifierName(throwsAsync.ExceptionParameter.Name))))))
+                                .ToStatementSyntax());
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, throwsAsync.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -412,9 +408,9 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
     }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement() =>
-        IdentifierName("_useBaseImplementation")
-            .Assign(False)
-            .ToStatementSyntax();
+    IdentifierName("_useBaseImplementation")
+        .Assign(False)
+        .ToStatementSyntax();
 
     private static ExpressionSyntax BuildAsyncReturnExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax valueExpression)
     {

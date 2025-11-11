@@ -476,3 +476,4 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
     }
 }
+#pragma warning restore nullable

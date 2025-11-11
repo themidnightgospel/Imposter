@@ -245,10 +245,9 @@ internal static partial class EventImposterBuilder
                                 IdentifierName("predicate").Call(
                                     ArgumentList(SingletonSeparatedList(Argument(IdentifierName("item"))))),
                                 Block(
-                                    ExpressionStatement(
                                         PostfixUnaryExpression(
                                             SyntaxKind.PostIncrementExpression,
-                                            IdentifierName("count"))))))),
+                                            IdentifierName("count")).ToStatementSyntax())))),
                     ReturnStatement(IdentifierName("count"))))
             .Build();
     }

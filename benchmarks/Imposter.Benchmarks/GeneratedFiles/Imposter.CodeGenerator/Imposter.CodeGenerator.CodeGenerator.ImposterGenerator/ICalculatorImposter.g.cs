@@ -413,3 +413,4 @@ namespace Imposter.Benchmarks
         }
     }
 }
+#pragma warning restore nullable

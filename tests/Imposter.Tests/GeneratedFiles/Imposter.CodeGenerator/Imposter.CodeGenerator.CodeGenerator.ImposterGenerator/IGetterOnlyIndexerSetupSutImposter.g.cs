@@ -467,3 +467,4 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
     }
 }
+#pragma warning restore nullable
