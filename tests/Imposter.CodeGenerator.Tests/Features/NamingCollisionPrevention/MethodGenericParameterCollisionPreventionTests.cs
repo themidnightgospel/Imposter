@@ -51,8 +51,8 @@ namespace Sample.NamingCollisionUsage
 
     [Fact]
     public async Task Given_GenericMethodWithTResultParameter_ShouldCompileWithoutDiagnostics()
-    {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        {
+            var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
 using Sample.NamingCollision;
 
@@ -63,9 +63,11 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IMethodGenericResultTypeParameterCollisionTargetImposter();
-            var value = imposter.ReturnsGeneric<int>(5);
-            var other = imposter.ReturnsWithGenerator<int>(() => 10);
-            _ = value + other;
+            Func<int> defaultResultGenerator = () => 10;
+            var valueSetup = imposter.ReturnsGeneric<int>(5);
+            var otherSetup = imposter.ReturnsWithGenerator<int>(defaultResultGenerator);
+            valueSetup.Returns(5);
+            otherSetup.Returns(10);
         }
     }
 }
