@@ -131,6 +131,8 @@ namespace Imposter.Benchmarks
                     {
                         _lastestInvocationImposter = invocationImposter;
                     }
+
+                    return invocationImposter;
                 }
 
                 return _lastestInvocationImposter;

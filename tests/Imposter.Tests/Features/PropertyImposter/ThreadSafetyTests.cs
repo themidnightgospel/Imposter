@@ -14,6 +14,8 @@ namespace Imposter.Tests.Features.PropertyImposter
         public void GivenConcurrentOperations_WhenMixingGettersAndSetters_ShouldNotThrowExceptions()
         {
             var threads = new Thread[100];
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(threads.Length);
 
             // Mix of getters and setters
             for (int i = 0; i < 100; i++)
@@ -21,12 +23,21 @@ namespace Imposter.Tests.Features.PropertyImposter
                 var index = i;
                 if (index % 2 == 0)
                 {
-                    threads[i] = new Thread(() => _sut.Instance().Age = index);
+                    threads[i] = new Thread(() =>
+                    {
+                        readySignal.Signal();
+                        startSignal.Wait();
+
+                        _sut.Instance().Age = index;
+                    });
                 }
                 else
                 {
                     threads[i] = new Thread(() =>
                     {
+                        readySignal.Signal();
+                        startSignal.Wait();
+
                         var _ = _sut.Instance().Age;
                     });
                 }
@@ -36,6 +47,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 thread.Start();
             }
+
+            readySignal.Wait();
+            startSignal.Set();
 
             foreach (var thread in threads)
             {
@@ -58,17 +72,28 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             var results = new int[100];
             var threads = new Thread[100];
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(threads.Length);
 
             for (int i = 0; i < 100; i++)
             {
                 var index = i;
-                threads[i] = new Thread(() => results[index] = _sut.Instance().Age);
+                threads[i] = new Thread(() =>
+                {
+                    readySignal.Signal();
+                    startSignal.Wait();
+
+                    results[index] = _sut.Instance().Age;
+                });
             }
 
             foreach (var thread in threads)
             {
                 thread.Start();
             }
+
+            readySignal.Wait();
+            startSignal.Set();
 
             foreach (var thread in threads)
             {

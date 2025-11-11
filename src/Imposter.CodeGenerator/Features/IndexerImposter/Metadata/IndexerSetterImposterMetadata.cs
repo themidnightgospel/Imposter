@@ -1,3 +1,5 @@
+using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
@@ -40,8 +42,9 @@ internal readonly struct IndexerSetterImposterMetadata
     {
         Name = "SetterImposter";
         TypeSyntax = IdentifierName(Name);
-        ValueParameterName = "value";
-        CriteriaParameterName = "criteria";
+
+        ValueParameterName = indexer.Core.ParameterNameSet.Use("value");
+        CriteriaParameterName = indexer.Core.ParameterNameSet.Use("criteria");
         SetterSuffix = " (setter)";
         CallbacksField = new FieldMetadata(
             "_callbacks",
@@ -62,7 +65,7 @@ internal readonly struct IndexerSetterImposterMetadata
                 "_baseCriteria",
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.ArgumentsCriteria.TypeSyntax))
             : null;
-        BaseImplementationParameterName = "baseImplementation";
+        BaseImplementationParameterName = indexer.Core.ParameterNameSet.Use("baseImplementation");
 
         Builder = new SetterBuilderMetadata();
     }

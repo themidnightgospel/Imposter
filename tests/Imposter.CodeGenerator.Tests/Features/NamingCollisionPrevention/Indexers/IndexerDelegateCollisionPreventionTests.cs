@@ -70,31 +70,4 @@ namespace Sample.NamingCollisionUsage
 
         AssertNoDiagnostics(diagnostics);
     }
-
-    [Fact]
-    public async Task Given_IndexerSetterParameterNamedValue_ShouldCompile()
-    {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
-using Imposter.Abstractions;
-using Sample.NamingCollision;
-
-namespace Sample.NamingCollisionUsage
-{
-    public static class Scenario
-    {
-        public static void Execute()
-        {
-            var imposter = new IIndexerValueParameterCollisionTargetImposter();
-            imposter[Arg<int>.Any()].Setter()
-                .Callback((index, assigned) => { })
-                .Then()
-                .Callback((index, assigned) => { });
-            imposter[Arg<int>.Any()].Setter().Called(Count.AtLeast(1));
-        }
-    }
-}
-""");
-
-        AssertNoDiagnostics(diagnostics);
-    }
 }

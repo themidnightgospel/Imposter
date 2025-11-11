@@ -139,6 +139,8 @@ namespace Imposter.Tests.Shared
                     {
                         _lastestInvocationImposter = invocationImposter;
                     }
+
+                    return invocationImposter;
                 }
 
                 return _lastestInvocationImposter;

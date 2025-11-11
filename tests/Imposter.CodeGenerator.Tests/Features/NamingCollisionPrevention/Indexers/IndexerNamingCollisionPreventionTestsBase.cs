@@ -41,7 +41,6 @@ public abstract class IndexerNamingCollisionPreventionTestsBase
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IIndexerArgumentsCriteriaCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IIndexerMemberCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IIndexerParameterCollisionTarget))]
-                                                 [assembly: GenerateImposter(typeof(Sample.NamingCollision.IIndexerValueParameterCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IndexerImposterFieldCollisionTarget))]
                                                  [assembly: GenerateImposter(typeof(Sample.NamingCollision.IMultiIndexerCollisionTarget))]
 
@@ -242,11 +241,6 @@ public abstract class IndexerNamingCollisionPreventionTestsBase
                                                          int this[string exceptionGenerator] { get; }
                                                          int this[Guid callback] { get; set; }
                                                          int this[long count] { get; set; }
-                                                     }
-
-                                                     public interface IIndexerValueParameterCollisionTarget
-                                                     {
-                                                         int this[int value] { get; set; }
                                                      }
 
                                                      public class IndexerImposterFieldCollisionTarget

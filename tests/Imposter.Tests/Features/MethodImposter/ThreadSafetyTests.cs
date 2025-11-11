@@ -7,7 +7,7 @@ namespace Imposter.Tests.Features.MethodImposter
 {
     public class ThreadSafetyTests
     {
-        private const int ThreadCount = 100;
+        private const int ThreadCount = 200;
         private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
 
         [Fact]
@@ -49,17 +49,29 @@ namespace Imposter.Tests.Features.MethodImposter
 
             var results = new int[ThreadCount];
             var threads = new Thread[ThreadCount];
+            
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(ThreadCount);
 
             for (int i = 0; i < ThreadCount; i++)
             {
                 var index = i;
-                threads[i] = new Thread(() => results[index] = _sut.Instance().IntNoParams());
+                threads[i] = new Thread(() =>
+                {
+                    readySignal.Signal();
+                    startSignal.Wait();
+                    
+                    results[index] = _sut.Instance().IntNoParams();
+                });
             }
 
             foreach (var thread in threads)
             {
                 thread.Start();
             }
+            
+            readySignal.Wait();
+            startSignal.Set();
 
             foreach (var thread in threads)
             {

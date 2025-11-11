@@ -223,12 +223,13 @@ internal static class IndexerImposterBuilder
             .Select(parameter => parameter.ParameterSyntax)
             .ToList();
 
-        parameters.Add(Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax));
+        var setterValueParameterName = indexer.SetterImplementation.ValueParameterName;
+        parameters.Add(Parameter(Identifier(setterValueParameterName)).WithType(indexer.Core.TypeSyntax));
 
         if (indexer.Core.SetterSupportsBaseImplementation)
         {
             parameters.Add(
-                Parameter(Identifier(BaseImplementationParameterName))
+                Parameter(Identifier(indexer.SetterImplementation.BaseImplementationParameterName))
                     .WithType(WellKnownTypes.System.Action)
                     .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
         }
@@ -237,9 +238,9 @@ internal static class IndexerImposterBuilder
             .Select(parameter => Argument(IdentifierName(parameter.Name)))
             .ToList();
 
-        invocationArguments.Add(Argument(IdentifierName("value")));
+        invocationArguments.Add(Argument(IdentifierName(setterValueParameterName)));
         invocationArguments.Add(indexer.Core.SetterSupportsBaseImplementation
-            ? Argument(IdentifierName(BaseImplementationParameterName))
+            ? Argument(IdentifierName(indexer.SetterImplementation.BaseImplementationParameterName))
             : Argument(LiteralExpression(SyntaxKind.NullLiteralExpression)));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")

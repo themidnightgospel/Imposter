@@ -299,6 +299,8 @@ internal static class GetterImposterBuilderBuilder
         in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
         var baseImplementationIdentifier = IdentifierName(builder.GetMethod.BaseImplementationParameter.Name);
+        const string ReturnValueVariableName = "returnValue";
+        const string NextReturnValueVariableName = "nextReturnValue";
 
         return new MethodDeclarationBuilder(builder.GetMethod.ReturnType, builder.GetMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -308,25 +310,59 @@ internal static class GetterImposterBuilderBuilder
                     TrackGetterInvocation(builder),
                     InvokeGetterCallbacks(builder),
                     IfAutoPropertyBehaviourReturnBackingField(builder, defaultPropertyBehaviour, baseImplementationIdentifier),
-                    DequeNextGetterReturnValue(builder),
-                    ReturnStatement(IdentifierName(builder.LastReturnValueField.Name).Call())
+                    DeclareReturnValueLocal(builder, ReturnValueVariableName),
+                    DequeNextGetterReturnValue(builder, ReturnValueVariableName),
+                    DeclareNextGetterReturnValue(builder, ReturnValueVariableName, NextReturnValueVariableName),
+                    UpdateLastGetterReturnValue(builder, NextReturnValueVariableName),
+                    ReturnNextGetterReturnValue(NextReturnValueVariableName)
                 )
             )
             .Build();
 
-        static StatementSyntax DequeNextGetterReturnValue(in PropertyGetterImposterBuilderMetadata builder) =>
+        static LocalDeclarationStatementSyntax DeclareReturnValueLocal(
+            in PropertyGetterImposterBuilderMetadata builder,
+            string variableName) =>
+            LocalVariableDeclarationSyntax(builder.LastReturnValueField.TypeSyntax, variableName);
+
+        static StatementSyntax DequeNextGetterReturnValue(
+            in PropertyGetterImposterBuilderMetadata builder,
+            string variableName) =>
             IfStatement(
                 IdentifierName(builder.ReturnValuesField.Name)
                     .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                    .Call(Argument(
-                        null,
-                        Token(SyntaxKind.OutKeyword),
-                        DeclarationExpression(
-                            Var,
-                            SingleVariableDesignation(Identifier("returnValue"))
-                        ))),
-                IdentifierName(builder.LastReturnValueField.Name).Assign(IdentifierName("returnValue")).ToStatementSyntax()
+                    .Call(
+                        Argument(IdentifierName(variableName)).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))
+                    ),
+                IdentifierName(builder.LastReturnValueField.Name)
+                    .Assign(IdentifierName(variableName))
+                    .ToStatementSyntax()
             );
+
+        static LocalDeclarationStatementSyntax DeclareNextGetterReturnValue(
+            in PropertyGetterImposterBuilderMetadata builder,
+            string returnValueVariableName,
+            string nextVariableName) =>
+            LocalVariableDeclarationSyntax(
+                builder.LastReturnValueField.TypeSyntax,
+                nextVariableName,
+                BinaryExpression(
+                    SyntaxKind.CoalesceExpression,
+                    IdentifierName(returnValueVariableName),
+                    IdentifierName(builder.LastReturnValueField.Name)
+                ));
+
+        static StatementSyntax UpdateLastGetterReturnValue(
+            in PropertyGetterImposterBuilderMetadata builder,
+            string nextVariableName) =>
+            IfStatement(
+                IdentifierName(nextVariableName).IsNotNull(),
+                IdentifierName(builder.LastReturnValueField.Name)
+                    .Assign(IdentifierName(nextVariableName))
+                    .ToStatementSyntax()
+            );
+
+        static StatementSyntax ReturnNextGetterReturnValue(string nextVariableName) =>
+            ReturnStatement(IdentifierName(nextVariableName).Call());
 
 
         static StatementSyntax IfAutoPropertyBehaviourReturnBackingField(

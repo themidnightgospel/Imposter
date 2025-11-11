@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,6 +17,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
     internal readonly string DisplayName;
 
     internal readonly IndexerParameterMetadata[] Parameters;
+
+    internal readonly NameSet ParameterNameSet;
 
     internal readonly TypeSyntax TypeSyntax;
 
@@ -36,6 +39,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
         Parameters = property.Parameters.Select(parameter => new IndexerParameterMetadata(parameter)).ToArray();
+        ParameterNameSet = new NameSet(Parameters.Select(parameter => parameter.Name));
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
         GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };

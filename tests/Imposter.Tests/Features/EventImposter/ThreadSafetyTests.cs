@@ -16,9 +16,21 @@ namespace Imposter.Tests.Features.EventImposter
         public void GivenConcurrentRaises_ShouldRecordAll()
         {
             const int raises = 50;
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(raises);
+
             var tasks = Enumerable.Range(0, raises)
-                .Select(_ => Task.Run(() => _sut.SomethingHappened.Raise(this, EventArgs.Empty)))
+                .Select(_ => Task.Run(() =>
+                {
+                    readySignal.Signal();
+                    startSignal.Wait();
+
+                    _sut.SomethingHappened.Raise(this, EventArgs.Empty);
+                }))
                 .ToArray();
+
+            readySignal.Wait();
+            startSignal.Set();
 
             Task.WaitAll(tasks);
 
@@ -31,10 +43,21 @@ namespace Imposter.Tests.Features.EventImposter
             const int subs = 20;
             int invoked = 0;
             EventHandler h = (s, e) => Interlocked.Increment(ref invoked);
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(subs);
 
             var tasks = Enumerable.Range(0, subs)
-                .Select(_ => Task.Run(() => _sut.Instance().SomethingHappened += h))
+                .Select(_ => Task.Run(() =>
+                {
+                    readySignal.Signal();
+                    startSignal.Wait();
+
+                    _sut.Instance().SomethingHappened += h;
+                }))
                 .ToArray();
+
+            readySignal.Wait();
+            startSignal.Set();
             Task.WaitAll(tasks);
 
             _sut.SomethingHappened.Raise(this, EventArgs.Empty);
@@ -48,17 +71,27 @@ namespace Imposter.Tests.Features.EventImposter
         {
             const int iterations = 100;
             EventHandler h = (s, e) => { };
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(2);
 
             var subs = Task.Run(() =>
             {
+                readySignal.Signal();
+                startSignal.Wait();
+
                 for (int i = 0; i < iterations; i++) _sut.Instance().SomethingHappened += h;
             });
 
             var unsubs = Task.Run(() =>
             {
+                readySignal.Signal();
+                startSignal.Wait();
+
                 for (int i = 0; i < iterations; i++) _sut.Instance().SomethingHappened -= h;
             });
 
+            readySignal.Wait();
+            startSignal.Set();
             Task.WaitAll(subs, unsubs);
 
             // We may end up anywhere between 0 and iterations subscriptions based on interleaving,
@@ -71,9 +104,21 @@ namespace Imposter.Tests.Features.EventImposter
         public async Task GivenConcurrentRaiseAsync_ShouldRecordAll()
         {
             const int raises = 30;
+            var startSignal = new ManualResetEventSlim(false);
+            var readySignal = new CountdownEvent(raises);
+
             var tasks = Enumerable.Range(0, raises)
-                .Select(_ => _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty))
+                .Select(_ => Task.Run(async () =>
+                {
+                    readySignal.Signal();
+                    startSignal.Wait();
+
+                    await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
+                }))
                 .ToArray();
+
+            readySignal.Wait();
+            startSignal.Set();
 
             await Task.WhenAll(tasks);
 
@@ -81,4 +126,3 @@ namespace Imposter.Tests.Features.EventImposter
         }
     }
 }
-
