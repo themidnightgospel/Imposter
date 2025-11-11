@@ -369,8 +369,8 @@ internal static class GetterImposterBuilderBuilder
                 ),
                 BinaryExpression(
                     SyntaxKind.LogicalAndExpression,
-                    PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, useBaseImplementationCheck),
-                    PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, hasValueSetCheck))
+                    Not(useBaseImplementationCheck),
+                    Not(hasValueSetCheck))
             );
 
             var seedFromBase = ExpressionStatement(
@@ -430,7 +430,7 @@ internal static class GetterImposterBuilderBuilder
                 SyntaxKind.EqualsExpression,
                 IdentifierName("_invocationBehavior"),
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
-            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredReturn")));
+            Not(IdentifierName("_hasConfiguredReturn")));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

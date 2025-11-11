@@ -255,7 +255,7 @@ internal static class SetterImposterBuilder
                 SyntaxKind.EqualsExpression,
                 IdentifierName("_invocationBehavior"),
                 QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
-            PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, IdentifierName("_hasConfiguredSetter")));
+            Not(IdentifierName("_hasConfiguredSetter")));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
