@@ -74,7 +74,7 @@ namespace Sample
 """;
 
     [Fact]
-    public async Task GivenIndexerGetterSetup_WhenReturningValue_ShouldCompile()
+    public async Task Given_IndexerGetterSetup_WhenReturningValue_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -94,7 +94,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableIndexer_WhenCallingUseBaseImplementation_ShouldCompile()
+    public async Task Given_OverrideableIndexer_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -115,7 +115,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterSetup_WhenReturningDelegate_ShouldCompile()
+    public async Task Given_IndexerGetterSetup_WhenReturningDelegate_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -135,7 +135,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterReturns_WhenChainingReturns_ShouldCompile()
+    public async Task Given_IndexerGetterReturns_WhenChainingReturns_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -155,7 +155,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterReturns_WhenChainingDelegate_ShouldCompile()
+    public async Task Given_IndexerGetterReturns_WhenChainingDelegate_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -175,7 +175,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterThrows_WhenSwitchingToReturns_ShouldCompile()
+    public async Task Given_IndexerGetterThrows_WhenSwitchingToReturns_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -195,7 +195,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterReturns_WhenMixingCallbacks_ShouldCompile()
+    public async Task Given_IndexerGetterReturns_WhenMixingCallbacks_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -220,7 +220,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenCallingCalled_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenCallingCalled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -240,7 +240,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenRegisteringCallback_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenRegisteringCallback_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -260,7 +260,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenChainingCallbacks_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenChainingCallbacks_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -282,7 +282,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenUsingThen_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenUsingThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -304,7 +304,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenMixingCallbacksAndThen_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenMixingCallbacksAndThen_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -328,7 +328,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenUsingPredicateMatcher_ShouldCompile()
+    public async Task Given_IndexerSetter_WhenUsingPredicateMatcher_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -348,7 +348,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenGetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnGetter_ShouldCompile()
+    public async Task Given_GetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnGetter_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -368,7 +368,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenSetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnSetter_ShouldCompile()
+    public async Task Given_SetterOnlyOverrideableIndexer_WhenCallingUseBaseImplementationOnSetter_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -388,7 +388,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenGetterOnlyIndexer_WhenCallingSetter_ShouldFail()
+    public async Task Given_GetterOnlyIndexer_WhenCallingSetter_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -408,7 +408,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenSetterOnlyIndexer_WhenCallingGetter_ShouldFail()
+    public async Task Given_SetterOnlyIndexer_WhenCallingGetter_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -428,7 +428,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenNonOverrideableIndexerGetter_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_NonOverrideableIndexerGetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -448,7 +448,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenAbstractGetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_AbstractGetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -468,7 +468,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenAbstractSetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_AbstractSetterIndexer_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -488,7 +488,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenNonOverrideableIndexerSetter_WhenCallingUseBaseImplementation_ShouldFail()
+    public async Task Given_NonOverrideableIndexerSetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -508,7 +508,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterSetup_WhenCallingThenWithoutOutcome_ShouldFail()
+    public async Task Given_IndexerGetterSetup_WhenCallingThenWithoutOutcome_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -528,7 +528,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterSetup_WhenRepeatingReturnsWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterSetup_WhenRepeatingReturnsWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -548,7 +548,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterThrows_WhenRepeatingThrowsWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterThrows_WhenRepeatingThrowsWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -568,7 +568,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterReturns_WhenThrowingGenericWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterReturns_WhenThrowingGenericWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -588,7 +588,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterThrowsGeneric_WhenReturningWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterThrowsGeneric_WhenReturningWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -608,7 +608,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterCallback_WhenReturningWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterCallback_WhenReturningWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -628,7 +628,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterCallback_WhenCallingCalled_ShouldFail()
+    public async Task Given_IndexerGetterCallback_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -648,7 +648,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenReturningValue_ShouldFail()
+    public async Task Given_IndexerSetter_WhenReturningValue_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -668,7 +668,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenReturningDelegate_ShouldFail()
+    public async Task Given_IndexerSetter_WhenReturningDelegate_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -688,7 +688,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenThrowingInstance_ShouldFail()
+    public async Task Given_IndexerSetter_WhenThrowingInstance_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -708,7 +708,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenThrowingGeneric_ShouldFail()
+    public async Task Given_IndexerSetter_WhenThrowingGeneric_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -728,7 +728,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetterCallback_WhenThrowingWithoutThen_ShouldFail()
+    public async Task Given_IndexerSetterCallback_WhenThrowingWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -748,7 +748,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterCallback_WhenThrowingWithoutThen_ShouldFail()
+    public async Task Given_IndexerGetterCallback_WhenThrowingWithoutThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -768,7 +768,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterOutcome_WhenCallingCalled_ShouldFail()
+    public async Task Given_IndexerGetterOutcome_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -788,7 +788,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerGetterFluent_WhenCallingCalled_ShouldFail()
+    public async Task Given_IndexerGetterFluent_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -808,7 +808,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetter_WhenCallingThenWithoutCallback_ShouldFail()
+    public async Task Given_IndexerSetter_WhenCallingThenWithoutCallback_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -828,7 +828,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetterCallback_WhenCallingCalled_ShouldFail()
+    public async Task Given_IndexerSetterCallback_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -848,7 +848,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenIndexerSetterCallback_WhenCallingThenCalled_ShouldFail()
+    public async Task Given_IndexerSetterCallback_WhenCallingThenCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample

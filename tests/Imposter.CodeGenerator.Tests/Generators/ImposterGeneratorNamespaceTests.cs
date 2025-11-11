@@ -38,7 +38,7 @@ public interface IGeneric<TFirst, TSecond>
             languageVersion: LanguageVersion.CSharp13);
 
     [Fact]
-    public async Task Generator_Uses_Sanitized_Components_Namespace_For_Generic_Targets()
+    public async Task Given_GenericTarget_WhenGeneratorRuns_ShouldUseSanitizedNamespaceComponents()
     {
         var testContext = await TestContextTask.ConfigureAwait(false);
         var result = testContext.RunGenerator();

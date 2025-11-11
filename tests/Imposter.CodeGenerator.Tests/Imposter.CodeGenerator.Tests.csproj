@@ -27,4 +27,8 @@
         <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\NamingCollisionPrevention\" />
+    </ItemGroup>
+
 </Project>

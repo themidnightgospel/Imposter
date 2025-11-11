@@ -27,7 +27,7 @@ public class PrivateOnlyClass
 ";
 
     [Fact]
-    public void Class_With_Only_Private_Constructors_Reports_IMP004()
+    public void Given_ClassWithOnlyPrivateConstructors_WhenGeneratorRuns_ShouldReportIMP004()
     {
         var compilation = CreateCompilation(LanguageVersion.CSharp13);
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());

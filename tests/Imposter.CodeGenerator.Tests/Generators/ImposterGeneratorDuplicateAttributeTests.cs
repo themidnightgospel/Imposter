@@ -39,7 +39,7 @@ public interface IDuplicate
             languageVersion: LanguageVersion.CSharp13);
 
     [Fact]
-    public async Task Generator_Deduplicates_Duplicate_Assembly_Attributes()
+    public async Task Given_DuplicateAssemblyAttributes_WhenGeneratorRuns_ShouldDeduplicateSources()
     {
         var testContext = await TestContextTask.ConfigureAwait(false);
         var result = testContext.RunGenerator();

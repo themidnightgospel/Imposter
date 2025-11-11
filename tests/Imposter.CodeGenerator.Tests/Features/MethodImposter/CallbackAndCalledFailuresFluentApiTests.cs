@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Tests.Features.MethodImposter;
 public class CallbackAndCalledFailuresFluentApiTests : MethodImposterFluentApiTestsBase
 {
     [Fact]
-    public async Task GivenMethod_WhenCallingThen_ShouldFail()
+    public async Task Given_Method_WhenCallingThen_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -26,7 +26,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenCallingCalled_ShouldFail()
+    public async Task Given_MethodReturns_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -46,7 +46,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodReturns_WhenCallingThenCalled_ShouldFail()
+    public async Task Given_MethodReturns_WhenCallingThenCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -66,7 +66,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenCallingCalled_ShouldFail()
+    public async Task Given_MethodCallback_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -88,7 +88,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenThenCallingCalled_ShouldFail()
+    public async Task Given_MethodCallback_WhenThenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -111,7 +111,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodThrows_WhenCallingCalled_ShouldFail()
+    public async Task Given_MethodThrows_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -131,7 +131,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodThrowsAsync_WhenCallingCalled_ShouldFail()
+    public async Task Given_MethodThrowsAsync_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -151,7 +151,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodUseBaseImplementation_WhenCallingCalled_ShouldFail()
+    public async Task Given_MethodUseBaseImplementation_WhenCallingCalled_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -171,7 +171,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenReturning_ShouldFail()
+    public async Task Given_MethodCallback_WhenReturning_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -193,7 +193,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenReturningAsync_ShouldFail()
+    public async Task Given_MethodCallback_WhenReturningAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -215,7 +215,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenThrowing_ShouldFail()
+    public async Task Given_MethodCallback_WhenThrowing_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -237,7 +237,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenThrowingAsync_ShouldFail()
+    public async Task Given_MethodCallback_WhenThrowingAsync_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -259,7 +259,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenMethodCallback_WhenUsingBaseImplementation_ShouldFail()
+    public async Task Given_MethodCallback_WhenUsingBaseImplementation_ShouldFail()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
