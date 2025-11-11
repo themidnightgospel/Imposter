@@ -86,7 +86,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             var setterBody = Block(
             setterInvocation
-                .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments))
+                .Call(ArgumentListSyntax(setterArguments))
                 .ToStatementSyntax());
 
             propertyBuilder = propertyBuilder.WithSetterBody(setterBody);
@@ -125,7 +125,7 @@ internal readonly ref struct ImposterInstanceBuilder
             var getterCall = IdentifierName(ImposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Get"))
-                .Call(SyntaxFactoryHelper.ArgumentListSyntax(getterArguments));
+                .Call(ArgumentListSyntax(getterArguments));
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
@@ -159,7 +159,7 @@ internal readonly ref struct ImposterInstanceBuilder
             var setterCall = IdentifierName(ImposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Set"))
-                .Call(SyntaxFactoryHelper.ArgumentListSyntax(setterArguments));
+                .Call(ArgumentListSyntax(setterArguments));
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
@@ -200,14 +200,14 @@ internal readonly ref struct ImposterInstanceBuilder
         var fields = GetFields(imposterGenerationContext);
 
         var imposterClassBuilder = new ClassDeclarationBuilder(name)
-            .AddBaseType(SimpleBaseType(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)))
+            .AddBaseType(SimpleBaseType(TypeSyntax(imposterGenerationContext.TargetSymbol)))
             .AddMembers(fields);
 
         imposterClassBuilder = imposterGenerationContext.Imposter.IsClass
             ? imposterClassBuilder
                 .AddMember(BuildInitializeImposterMethod(imposterGenerationContext.Imposter.Name))
                 .AddMembers(BuildConstructorsForClassTarget(imposterGenerationContext, name))
-            : imposterClassBuilder.AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(name, fields));
+            : imposterClassBuilder.AddMember(BuildConstructorAndInitializeMembers(name, fields));
 
         imposterClassBuilder = imposterClassBuilder
             .AddMembers(ImposterMethods(imposterGenerationContext));
@@ -217,7 +217,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
     private static IReadOnlyList<FieldDeclarationSyntax> GetFields(ImposterGenerationContext imposterGenerationContext) =>
     [
-        SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
+        SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), ImposterFieldName)
     ];
 
     private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName)
@@ -249,8 +249,8 @@ internal readonly ref struct ImposterInstanceBuilder
             .AccessibleConstructors
             .Select(constructorMetadata =>
             {
-                var parameterList = SyntaxFactoryHelper.ParameterListSyntax(constructorMetadata.Parameters, includeRefKind: true);
-                var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+                var parameterList = ParameterListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+                var argumentList = ArgumentListSyntax(constructorMetadata.Parameters, includeRefKind: true);
 
                 return new ConstructorBuilder(name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
@@ -268,7 +268,7 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
-            var invokeArguments = new List<ArgumentSyntax>(SyntaxFactoryHelper.ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true).Arguments);
+            var invokeArguments = new List<ArgumentSyntax>(ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true).Arguments);
 
             if (imposterMethod.SupportsBaseImplementation)
             {
@@ -281,9 +281,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("Invoke"))
                 .Call(ArgumentList(SeparatedList(invokeArguments)));
 
-            return new MethodDeclarationBuilder(SyntaxFactoryHelper.TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
-                .AddTypeParameters(SyntaxFactoryHelper.TypeParametersSyntax(imposterMethod.Symbol))
-                .AddParameters(SyntaxFactoryHelper.ParameterSyntaxes(imposterMethod.Symbol.Parameters))
+            return new MethodDeclarationBuilder(TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
+                .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
+                .AddParameters(ParameterSyntaxes(imposterMethod.Symbol.Parameters))
                 .WithBody(Block(
                     imposterMethod.HasReturnValue
                         ? ReturnStatement(invokeMethodInvocationExpression)
@@ -312,7 +312,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 {
                     return Argument(
                             method.Arguments.Syntax
-                                .New(SyntaxFactoryHelper.ArgumentListSyntax(method.Parameters.InputParameters, includeRefKind: false))
+                                .New(ArgumentListSyntax(method.Parameters.InputParameters, includeRefKind: false))
                         )
                         .AsSingleArgumentListSyntax();
                 }

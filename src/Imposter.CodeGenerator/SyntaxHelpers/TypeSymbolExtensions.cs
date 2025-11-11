@@ -6,6 +6,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static class TypeSymbolExtensions
 {
+    // TODO this check might be fragile.
     internal static bool IsWellKnownType(this ITypeSymbol? symbol, TypeSyntax typeSyntax, params string[] assemblyNames)
     {
         if (symbol is not INamedTypeSymbol named)
