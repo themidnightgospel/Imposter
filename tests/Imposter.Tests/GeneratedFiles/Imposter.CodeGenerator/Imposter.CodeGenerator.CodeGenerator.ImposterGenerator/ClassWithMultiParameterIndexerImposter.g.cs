@@ -40,7 +40,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
             public bool Equals(IndexerIndexerArguments other)
             {
-                return true && row == other.row && column == other.column;
+                return (true && (row == other.row)) && (column == other.column);
             }
 
             public override bool Equals(object obj)
@@ -257,7 +257,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }
@@ -480,7 +480,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         }
                     }
 
-                    if (!invokedBaseImplementation && !matchedCallback && _defaultBehaviour.IsOn)
+                    if (!invokedBaseImplementation && (!matchedCallback && _defaultBehaviour.IsOn))
                     {
                         _defaultBehaviour.Set(arguments, value, null);
                     }
@@ -488,7 +488,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }

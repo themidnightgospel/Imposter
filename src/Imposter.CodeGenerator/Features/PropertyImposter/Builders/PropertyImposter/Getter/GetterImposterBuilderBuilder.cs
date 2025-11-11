@@ -356,22 +356,13 @@ internal static class GetterImposterBuilderBuilder
             // If default behaviour is on, optionally seed the backing field from base on first read
             var hasValueSetCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name));
-            var seedFromBaseCondition = BinaryExpression(
-                SyntaxKind.LogicalAndExpression,
+            var seedFromBaseCondition =
                 BinaryExpression(
-                    SyntaxKind.LogicalAndExpression,
-                    BinaryExpression(
                         SyntaxKind.EqualsExpression,
                         IdentifierName(builder.InvocationCountField.Name),
-                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))
-                    ),
-                    baseImplementationIsNotNull
-                ),
-                BinaryExpression(
-                    SyntaxKind.LogicalAndExpression,
-                    Not(useBaseImplementationCheck),
-                    Not(hasValueSetCheck))
-            );
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))
+                    .And(baseImplementationIsNotNull)
+                    .And(Not(useBaseImplementationCheck).And(Not(hasValueSetCheck)));
 
             var seedFromBase = ExpressionStatement(
                 IdentifierName(builder.DefaultPropertyBehaviourField.Name)
@@ -424,13 +415,12 @@ internal static class GetterImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod()
     {
-        var condition = BinaryExpression(
-            SyntaxKind.LogicalAndExpression,
+        var condition =
             BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName("_invocationBehavior"),
-                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit"))),
-            Not(IdentifierName("_hasConfiguredReturn")));
+                    SyntaxKind.EqualsExpression,
+                    IdentifierName("_invocationBehavior"),
+                    QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit")))
+                .And(Not(IdentifierName("_hasConfiguredReturn")));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

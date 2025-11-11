@@ -67,7 +67,7 @@ internal static partial class MethodImposterBuilder
         }
 
         var condition = conditions.Count > 0
-            ? conditions.Aggregate((current, next) => BinaryExpression(SyntaxKind.LogicalAndExpression, current, next))
+            ? conditions.Aggregate((current, next) => current.And(next))
             : True;
 
         var asMethodTypeParams = method.Symbol.TypeParameters.Select(p => TypeParameter(Identifier(p.Name + "Target"))).ToArray();

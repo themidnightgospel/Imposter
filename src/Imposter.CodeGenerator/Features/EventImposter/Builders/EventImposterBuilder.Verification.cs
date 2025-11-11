@@ -126,7 +126,7 @@ internal static partial class EventImposterBuilder
 
                 predicateBody = predicateBody is null
                     ? matchCall
-                    : BinaryExpression(SyntaxKind.LogicalAndExpression, predicateBody, matchCall);
+                    : predicateBody.And(matchCall);
             }
         }
         else

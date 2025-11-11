@@ -38,7 +38,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public bool Equals(IndexerIndexerArguments other)
             {
-                return true && key == other.key;
+                return true && (key == other.key);
             }
 
             public override bool Equals(object obj)
@@ -200,7 +200,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }

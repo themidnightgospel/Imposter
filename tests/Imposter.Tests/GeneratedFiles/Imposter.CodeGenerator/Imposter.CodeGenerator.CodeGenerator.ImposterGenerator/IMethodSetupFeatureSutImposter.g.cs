@@ -265,7 +265,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private AsyncTaskIntNoParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<AsyncTaskIntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AsyncTaskIntNoParamsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
                 {
@@ -619,7 +619,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private AsyncValueTaskIntNoParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public global::System.Threading.Tasks.ValueTask<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
                 {
@@ -913,7 +913,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public bool Matches(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
             {
-                return refValue.Matches(arguments.refValue) && inValue.Matches(arguments.inValue) && paramsValues.Matches(arguments.paramsValues);
+                return (refValue.Matches(arguments.refValue) && inValue.Matches(arguments.inValue)) && paramsValues.Matches(arguments.paramsValues);
             }
 
             public GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
@@ -1050,7 +1050,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
                 {
@@ -1175,7 +1175,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>? IGenericAllRefKindMethodImposter.As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
             {
-                if (typeof(TOut).IsAssignableTo(typeof(TOutTarget)) && typeof(TRefTarget) == typeof(TRef) && typeof(TInTarget).IsAssignableTo(typeof(TIn)) && typeof(TParamsTarget[]).IsAssignableTo(typeof(TParams[])) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+                if ((((typeof(TOut).IsAssignableTo(typeof(TOutTarget)) && (typeof(TRefTarget) == typeof(TRef))) && typeof(TInTarget).IsAssignableTo(typeof(TIn))) && typeof(TParamsTarget[]).IsAssignableTo(typeof(TParams[]))) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
                 {
                     return new Adapter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(this);
                 }
@@ -1471,7 +1471,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericInnerOutParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerOutParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerOutParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out global::System.Collections.Generic.List<TValue> value)
                 {
@@ -1926,7 +1926,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericInnerParamsParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerParamsParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerParamsParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue>[] value)
                 {
@@ -2373,7 +2373,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericInnerRefParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerRefParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerRefParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref global::System.Collections.Generic.List<TValue> value)
                 {
@@ -2491,7 +2491,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerRefParamMethodImposter.As<TValueTarget, TResultTarget>()
             {
-                if (typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>) && typeof(global::System.Collections.Generic.Stack<TResult>).IsAssignableTo(typeof(global::System.Collections.Generic.Stack<TResultTarget>)))
+                if ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResult>).IsAssignableTo(typeof(global::System.Collections.Generic.Stack<TResultTarget>)))
                 {
                     return new Adapter<TValueTarget, TResultTarget>(this);
                 }
@@ -2820,7 +2820,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericInnerSingleParamDelegate<TValue> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerSingleParamCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerSingleParamCallbackDelegate<TValue>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue> value)
                 {
@@ -3193,7 +3193,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericOutParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericOutParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericOutParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TValue value)
                 {
@@ -3648,7 +3648,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericParamsParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericParamsParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericParamsParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue[] value)
                 {
@@ -4095,7 +4095,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericRefParamDelegate<TValue, TResult> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericRefParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericRefParamCallbackDelegate<TValue, TResult>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref TValue value)
                 {
@@ -4213,7 +4213,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             IGenericRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericRefParamMethodImposter.As<TValueTarget, TResultTarget>()
             {
-                if (typeof(TValueTarget) == typeof(TValue) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+                if ((typeof(TValueTarget) == typeof(TValue)) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
                 {
                     return new Adapter<TValueTarget, TResultTarget>(this);
                 }
@@ -4542,7 +4542,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericSingleParamDelegate<TValue> _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericSingleParamCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericSingleParamCallbackDelegate<TValue>>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue value)
                 {
@@ -4829,7 +4829,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public bool Matches(IntAllRefKindsArguments arguments)
             {
-                return refValue.Matches(arguments.refValue) && inValue.Matches(arguments.inValue) && valueAsString.Matches(arguments.valueAsString) && paramsStrings.Matches(arguments.paramsStrings);
+                return ((refValue.Matches(arguments.refValue) && inValue.Matches(arguments.inValue)) && valueAsString.Matches(arguments.valueAsString)) && paramsStrings.Matches(arguments.paramsStrings);
             }
         }
 
@@ -4936,7 +4936,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntAllRefKindsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntAllRefKindsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntAllRefKindsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
                 {
@@ -5310,7 +5310,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntInParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntInParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntInParamCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, in string inStringValue)
                 {
@@ -5640,7 +5640,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntNoParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntNoParamsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
                 {
@@ -5964,7 +5964,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntOutParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntOutParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntOutParamCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int outValue)
                 {
@@ -6233,7 +6233,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public bool Matches(IntParamsArguments arguments)
             {
-                return age.Matches(arguments.age) && name.Matches(arguments.name) && regex.Matches(arguments.regex);
+                return (age.Matches(arguments.age) && name.Matches(arguments.name)) && regex.Matches(arguments.regex);
             }
         }
 
@@ -6340,7 +6340,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntParamsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, string name, global::System.Text.RegularExpressions.Regex regex)
                 {
@@ -6702,7 +6702,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntParamsParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntParamsParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntParamsParamCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string[] paramsStrings)
                 {
@@ -7064,7 +7064,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntRefParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntRefParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntRefParamCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int refValue)
                 {
@@ -7426,7 +7426,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private IntSingleParamDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
                 {
@@ -7754,7 +7754,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private VoidNoParamsDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<VoidNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<VoidNoParamsCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
                 {

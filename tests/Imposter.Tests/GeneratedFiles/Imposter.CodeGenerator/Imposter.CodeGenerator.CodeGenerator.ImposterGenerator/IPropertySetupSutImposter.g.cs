@@ -206,7 +206,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
-                        if (_invocationCount == 1 && baseImplementation != null && !_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet)
+                        if (((_invocationCount == 1) && (baseImplementation != null)) && (!_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet))
                         {
                             _defaultPropertyBehaviour.BackingField = baseImplementation();
                         }
@@ -221,7 +221,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredReturn)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredReturn)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                 }
             }
@@ -287,7 +287,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredSetter)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredSetter)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                 }
 
@@ -456,7 +456,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                 private void EnsureSetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredSetter)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredSetter)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                 }
 
@@ -655,7 +655,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                         }
 
-                        if (_invocationCount == 1 && baseImplementation != null && !_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet)
+                        if (((_invocationCount == 1) && (baseImplementation != null)) && (!_useBaseImplementation && !_defaultPropertyBehaviour.HasValueSet))
                         {
                             _defaultPropertyBehaviour.BackingField = baseImplementation();
                         }
@@ -670,7 +670,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !_hasConfiguredReturn)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredReturn)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                 }
             }

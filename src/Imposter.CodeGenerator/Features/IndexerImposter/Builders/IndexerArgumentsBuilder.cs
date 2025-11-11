@@ -68,7 +68,7 @@ internal static class IndexerArgumentsBuilder
                 IdentifierName(parameter.Name),
                 IdentifierName(otherIdentifier.Text).Dot(IdentifierName(parameter.Name)));
 
-            comparison = BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, equalsExpression);
+            comparison = comparison.And(equalsExpression);
         }
 
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
@@ -86,12 +86,10 @@ internal static class IndexerArgumentsBuilder
             .AddParameter(Parameter(Identifier("obj")).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
             .WithBody(Block(
                 ReturnStatement(
-                    BinaryExpression(
-                        SyntaxKind.LogicalAndExpression,
-                        IsPatternExpression(
-                            IdentifierName("obj"),
-                            DeclarationPattern(indexer.Arguments.TypeSyntax, SingleVariableDesignation(Identifier("other")))
-                        ),
+                    IsPatternExpression(
+                        IdentifierName("obj"),
+                        DeclarationPattern(indexer.Arguments.TypeSyntax, SingleVariableDesignation(Identifier("other")))
+                    ).And(
                         IdentifierName("Equals")
                             .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("other")))))
                     ))))

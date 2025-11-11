@@ -164,7 +164,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private GenericMethodDelegate _resultGenerator;
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate>();
-                internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
                 public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
                 {

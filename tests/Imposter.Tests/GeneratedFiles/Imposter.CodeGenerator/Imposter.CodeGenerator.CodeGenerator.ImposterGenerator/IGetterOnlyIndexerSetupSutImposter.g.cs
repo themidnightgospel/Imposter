@@ -40,7 +40,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             public bool Equals(IndexerIndexerArguments other)
             {
-                return true && key == other.key && name == other.name;
+                return (true && (key == other.key)) && (name == other.name);
             }
 
             public override bool Equals(object obj)
@@ -239,7 +239,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
                 private void EnsureGetterConfigured()
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }

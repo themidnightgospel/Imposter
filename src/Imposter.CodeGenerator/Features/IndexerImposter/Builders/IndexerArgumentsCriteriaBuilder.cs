@@ -66,7 +66,7 @@ internal static class IndexerArgumentsCriteriaBuilder
 
             comparison = comparison is null
                 ? parameterComparison
-                : BinaryExpression(SyntaxKind.LogicalAndExpression, comparison, parameterComparison);
+                : comparison.And(parameterComparison);
         }
 
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Matches")
