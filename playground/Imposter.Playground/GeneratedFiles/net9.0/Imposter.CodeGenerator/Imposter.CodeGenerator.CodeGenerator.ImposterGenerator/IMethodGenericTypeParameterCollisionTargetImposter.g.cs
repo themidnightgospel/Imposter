@@ -307,7 +307,7 @@ namespace Imposter.Playground
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            IGenericMethodMethodImposter<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget>? IGenericMethodMethodImposter.As<TTarget, UTarget, TTargetTarget, UTargetTarget>()
+            IGenericMethodMethodImposter<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget>? IGenericMethodMethodImposter.As<TTarget_1, UTarget_1, TTargetTarget, UTargetTarget>()
             {
                 if (((typeof(TTarget_1).IsAssignableTo(typeof(T)) && typeof(UTarget_1).IsAssignableTo(typeof(U))) && typeof(TTargetTarget).IsAssignableTo(typeof(TTarget))) && typeof(UTargetTarget).IsAssignableTo(typeof(UTarget)))
                 {
@@ -326,7 +326,7 @@ namespace Imposter.Playground
                     _target = target_1;
                 }
 
-                public void Invoke(TTarget value, UTarget other, TTargetTarget target, UTargetTarget otherTarget)
+                public void Invoke(TTarget_1 value, UTarget_1 other, TTargetTarget target, UTargetTarget otherTarget)
                 {
                     _target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TTarget_1, T>(value), global::Imposter.Abstractions.TypeCaster.Cast<UTarget_1, U>(other), global::Imposter.Abstractions.TypeCaster.Cast<TTargetTarget, TTarget>(target), global::Imposter.Abstractions.TypeCaster.Cast<UTargetTarget, UTarget>(otherTarget));
                 }
