@@ -21,9 +21,9 @@ namespace Imposter.Playground
             return _imposterInstance;
         }
 
-        public IAgePropertyBuilder Age => _Age;
+        public IAgePropertyBuilder Age => _AgePropertyBuilderField;
 
-        private readonly AgePropertyBuilder _Age;
+        private readonly AgePropertyBuilder _AgePropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IAgePropertyGetterOutcomeBuilder
         {
@@ -337,9 +337,9 @@ namespace Imposter.Playground
             }
         }
 
-        public ILastNamePropertyBuilder LastName => _LastName;
+        public ILastNamePropertyBuilder LastName => _LastNamePropertyBuilderField;
 
-        private readonly LastNamePropertyBuilder _LastName;
+        private readonly LastNamePropertyBuilder _LastNamePropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ILastNamePropertySetterCallbackBuilder
         {
@@ -501,9 +501,9 @@ namespace Imposter.Playground
             }
         }
 
-        public INamePropertyBuilder Name => _Name;
+        public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-        private readonly NamePropertyBuilder _Name;
+        private readonly NamePropertyBuilder _NamePropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertyGetterOutcomeBuilder
         {
@@ -683,9 +683,9 @@ namespace Imposter.Playground
 
         public IPropertySetupSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._Age = new AgePropertyBuilder(invocationBehavior);
-            this._LastName = new LastNamePropertyBuilder(invocationBehavior);
-            this._Name = new NamePropertyBuilder(invocationBehavior);
+            this._AgePropertyBuilderField = new AgePropertyBuilder(invocationBehavior);
+            this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(invocationBehavior);
+            this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
@@ -703,12 +703,12 @@ namespace Imposter.Playground
             {
                 get
                 {
-                    return _imposter._Age._getterImposterBuilder.Get();
+                    return _imposter._AgePropertyBuilderField._getterImposterBuilder.Get();
                 }
 
                 set
                 {
-                    _imposter._Age._setterImposter.Set(value);
+                    _imposter._AgePropertyBuilderField._setterImposter.Set(value);
                 }
             }
 
@@ -716,7 +716,7 @@ namespace Imposter.Playground
             {
                 set
                 {
-                    _imposter._LastName._setterImposter.Set(value);
+                    _imposter._LastNamePropertyBuilderField._setterImposter.Set(value);
                 }
             }
 
@@ -724,7 +724,7 @@ namespace Imposter.Playground
             {
                 get
                 {
-                    return _imposter._Name._getterImposterBuilder.Get();
+                    return _imposter._NamePropertyBuilderField._getterImposterBuilder.Get();
                 }
             }
         }

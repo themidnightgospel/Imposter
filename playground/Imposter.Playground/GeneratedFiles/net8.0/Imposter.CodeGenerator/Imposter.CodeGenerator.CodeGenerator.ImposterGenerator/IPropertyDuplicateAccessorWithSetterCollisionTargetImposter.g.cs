@@ -7,125 +7,109 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using System.Collections.Concurrent;
-using Imposter.Tests.Features.PropertyImposter;
+using Sample.NamingCollision;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Sample.NamingCollision
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ClassWithInitialValuePropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty>
+    public class IPropertyDuplicateAccessorWithSetterCollisionTargetImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget>
     {
         private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty>.Instance()
+        global::Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget>.Instance()
         {
             return _imposterInstance;
         }
 
-        public IAPropertyBuilder A => _APropertyBuilderField;
+        public IReusedPropertyBuilder Reused => _ReusedPropertyBuilderField;
 
-        private readonly APropertyBuilder _APropertyBuilderField;
+        private readonly ReusedPropertyBuilder _ReusedPropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterOutcomeBuilder
+        public interface IReusedPropertyGetterOutcomeBuilder
         {
-            IAPropertyGetterContinuationBuilder Returns(int value);
-            IAPropertyGetterContinuationBuilder Returns(System.Func<int> valueGenerator);
-            IAPropertyGetterContinuationBuilder Throws(System.Exception exception);
-            IAPropertyGetterContinuationBuilder Throws<TException>()
+            IReusedPropertyGetterContinuationBuilder Returns(int value);
+            IReusedPropertyGetterContinuationBuilder Returns(System.Func<int> valueGenerator);
+            IReusedPropertyGetterContinuationBuilder Throws(System.Exception exception);
+            IReusedPropertyGetterContinuationBuilder Throws<TException>()
                 where TException : Exception, new();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterCallbackBuilder
+        public interface IReusedPropertyGetterCallbackBuilder
         {
-            IAPropertyGetterContinuationBuilder Callback(System.Action callback);
+            IReusedPropertyGetterContinuationBuilder Callback(System.Action callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterContinuationBuilder : IAPropertyGetterCallbackBuilder
+        public interface IReusedPropertyGetterContinuationBuilder : IReusedPropertyGetterCallbackBuilder
         {
-            IAPropertyGetterFluentBuilder Then();
+            IReusedPropertyGetterFluentBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterVerifier
-        {
-            void Called(global::Imposter.Abstractions.Count count);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterFluentBuilder : IAPropertyGetterOutcomeBuilder, IAPropertyGetterContinuationBuilder
-        {
-            IAPropertyGetterFluentBuilder UseBaseImplementation();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterBuilder : IAPropertyGetterOutcomeBuilder, IAPropertyGetterCallbackBuilder, IAPropertyGetterVerifier
-        {
-            IAPropertyGetterUseBaseImplementationBuilder Then();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyGetterUseBaseImplementationBuilder
-        {
-            IAPropertyGetterFluentBuilder UseBaseImplementation();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterCallbackBuilder
-        {
-            IAPropertySetterContinuationBuilder Callback(System.Action<int> callback);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterContinuationBuilder : IAPropertySetterCallbackBuilder
-        {
-            IAPropertySetterUseBaseImplementationBuilder Then();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterFluentBuilder : IAPropertySetterCallbackBuilder, IAPropertySetterContinuationBuilder
-        {
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterVerifier
+        public interface IReusedPropertyGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterBuilder : IAPropertySetterCallbackBuilder, IAPropertySetterVerifier
+        public interface IReusedPropertyGetterFluentBuilder : IReusedPropertyGetterOutcomeBuilder, IReusedPropertyGetterContinuationBuilder
         {
-            IAPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertySetterUseBaseImplementationBuilder : IAPropertySetterFluentBuilder
+        public interface IReusedPropertyGetterBuilder : IReusedPropertyGetterOutcomeBuilder, IReusedPropertyGetterCallbackBuilder, IReusedPropertyGetterVerifier
         {
-            IAPropertySetterFluentBuilder UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        public interface IAPropertyBuilder
+        public interface IReusedPropertySetterCallbackBuilder
         {
-            IAPropertyGetterBuilder Getter();
-            IAPropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<int> criteria);
-            IAPropertyBuilder UseBaseImplementation();
+            IReusedPropertySetterContinuationBuilder Callback(System.Action<int> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        internal class APropertyBuilder : IAPropertyBuilder
+        public interface IReusedPropertySetterContinuationBuilder : IReusedPropertySetterCallbackBuilder
+        {
+            IReusedPropertySetterFluentBuilder Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReusedPropertySetterFluentBuilder : IReusedPropertySetterCallbackBuilder, IReusedPropertySetterContinuationBuilder
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReusedPropertySetterVerifier
+        {
+            void Called(global::Imposter.Abstractions.Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReusedPropertySetterBuilder : IReusedPropertySetterCallbackBuilder, IReusedPropertySetterVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        public interface IReusedPropertyBuilder
+        {
+            IReusedPropertyGetterBuilder Getter();
+            IReusedPropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<int> criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        internal class ReusedPropertyBuilder : IReusedPropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
             private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
             internal SetterImposter _setterImposter;
             internal GetterImposterBuilder _getterImposterBuilder;
-            internal APropertyBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior)
+            internal ReusedPropertyBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior)
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty.A");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty.A");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget.Reused");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget.Reused");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -137,7 +121,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-            internal class GetterImposterBuilder : IAPropertyGetterBuilder, IAPropertyGetterFluentBuilder, IAPropertyGetterUseBaseImplementationBuilder
+            internal class GetterImposterBuilder : IReusedPropertyGetterBuilder, IReusedPropertyGetterFluentBuilder
             {
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Func<int>> _returnValues = new System.Collections.Concurrent.ConcurrentQueue<System.Func<int>>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Action> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Action>();
@@ -162,68 +146,44 @@ namespace Imposter.Tests.Features.PropertyImposter
                     _hasConfiguredReturn = true;
                 }
 
-                IAPropertyGetterContinuationBuilder IAPropertyGetterOutcomeBuilder.Returns(int value)
+                IReusedPropertyGetterContinuationBuilder IReusedPropertyGetterOutcomeBuilder.Returns(int value)
                 {
                     AddReturnValue(() => value);
                     return this;
                 }
 
-                IAPropertyGetterContinuationBuilder IAPropertyGetterOutcomeBuilder.Returns(System.Func<int> valueGenerator)
+                IReusedPropertyGetterContinuationBuilder IReusedPropertyGetterOutcomeBuilder.Returns(System.Func<int> valueGenerator)
                 {
                     AddReturnValue(valueGenerator);
                     return this;
                 }
 
-                IAPropertyGetterContinuationBuilder IAPropertyGetterOutcomeBuilder.Throws(System.Exception exception)
+                IReusedPropertyGetterContinuationBuilder IReusedPropertyGetterOutcomeBuilder.Throws(System.Exception exception)
                 {
                     AddReturnValue(() => throw exception);
                     return this;
                 }
 
-                IAPropertyGetterContinuationBuilder IAPropertyGetterOutcomeBuilder.Throws<TException>()
+                IReusedPropertyGetterContinuationBuilder IReusedPropertyGetterOutcomeBuilder.Throws<TException>()
                 {
                     AddReturnValue(() => throw new TException());
                     return this;
                 }
 
-                IAPropertyGetterContinuationBuilder IAPropertyGetterCallbackBuilder.Callback(System.Action callback)
+                IReusedPropertyGetterContinuationBuilder IReusedPropertyGetterCallbackBuilder.Callback(System.Action callback)
                 {
                     _callbacks.Enqueue(callback);
                     return this;
                 }
 
-                void IAPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                void IReusedPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
                     if (!count.Matches(_invocationCount))
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
                 }
 
-                IAPropertyGetterFluentBuilder IAPropertyGetterContinuationBuilder.Then()
+                IReusedPropertyGetterFluentBuilder IReusedPropertyGetterContinuationBuilder.Then()
                 {
-                    return this;
-                }
-
-                IAPropertyGetterUseBaseImplementationBuilder IAPropertyGetterBuilder.Then()
-                {
-                    return this;
-                }
-
-                internal void EnableBaseImplementation()
-                {
-                    _defaultPropertyBehaviour.IsOn = true;
-                    _useBaseImplementation = true;
-                    _hasConfiguredReturn = true;
-                }
-
-                IAPropertyGetterFluentBuilder IAPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
-                {
-                    EnableBaseImplementation();
-                    return this;
-                }
-
-                IAPropertyGetterFluentBuilder IAPropertyGetterFluentBuilder.UseBaseImplementation()
-                {
-                    EnableBaseImplementation();
                     return this;
                 }
 
@@ -295,12 +255,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
                 }
 
-                internal void UseBaseImplementation()
-                {
-                    _hasConfiguredSetter = true;
-                    _useBaseImplementation = true;
-                }
-
                 internal void Set(int value, System.Action baseImplementation = null)
                 {
                     EnsureSetterConfigured();
@@ -343,7 +297,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-                internal class Builder : IAPropertySetterBuilder, IAPropertySetterFluentBuilder, IAPropertySetterUseBaseImplementationBuilder
+                internal class Builder : IReusedPropertySetterBuilder, IReusedPropertySetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
                     private readonly global::Imposter.Abstractions.Arg<int> _criteria;
@@ -353,88 +307,62 @@ namespace Imposter.Tests.Features.PropertyImposter
                         this._criteria = _criteria;
                     }
 
-                    IAPropertySetterContinuationBuilder IAPropertySetterCallbackBuilder.Callback(System.Action<int> callback)
+                    IReusedPropertySetterContinuationBuilder IReusedPropertySetterCallbackBuilder.Callback(System.Action<int> callback)
                     {
                         _setterImposter.Callback(_criteria, callback);
                         return this;
                     }
 
-                    void IAPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
+                    void IReusedPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
                     {
                         _setterImposter.Called(_criteria, count);
                     }
 
-                    IAPropertySetterUseBaseImplementationBuilder IAPropertySetterContinuationBuilder.Then()
+                    IReusedPropertySetterFluentBuilder IReusedPropertySetterContinuationBuilder.Then()
                     {
-                        return this;
-                    }
-
-                    IAPropertySetterUseBaseImplementationBuilder IAPropertySetterBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    IAPropertySetterFluentBuilder IAPropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
-                    {
-                        _setterImposter.UseBaseImplementation();
                         return this;
                     }
                 }
             }
 
-            IAPropertyGetterBuilder IAPropertyBuilder.Getter()
+            IReusedPropertyGetterBuilder IReusedPropertyBuilder.Getter()
             {
                 return _getterImposterBuilder;
             }
 
-            IAPropertySetterBuilder IAPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
+            IReusedPropertySetterBuilder IReusedPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
             {
                 _setterImposter.MarkConfigured();
                 return new SetterImposter.Builder(_setterImposter, criteria);
             }
-
-            IAPropertyBuilder IAPropertyBuilder.UseBaseImplementation()
-            {
-                _getterImposterBuilder.EnableBaseImplementation();
-                _setterImposter.UseBaseImplementation();
-                return this;
-            }
         }
 
-        public ClassWithInitialValuePropertyImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IPropertyDuplicateAccessorWithSetterCollisionTargetImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._APropertyBuilderField = new APropertyBuilder(invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._ReusedPropertyBuilderField = new ReusedPropertyBuilder(invocationBehavior);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty
+        class ImposterTargetInstance : global::Sample.NamingCollision.IPropertyDuplicateAccessorWithSetterCollisionTarget
         {
-            ClassWithInitialValuePropertyImposter _imposter;
-            internal void InitializeImposter(ClassWithInitialValuePropertyImposter imposter)
+            IPropertyDuplicateAccessorWithSetterCollisionTargetImposter _imposter;
+            public ImposterTargetInstance(IPropertyDuplicateAccessorWithSetterCollisionTargetImposter _imposter)
             {
-                _imposter = imposter;
+                this._imposter = _imposter;
             }
 
-            internal ImposterTargetInstance() : base()
-            {
-            }
-
-            public override int A
+            public int Reused
             {
                 get
                 {
-                    return _imposter._APropertyBuilderField._getterImposterBuilder.Get(() => base.A);
+                    return _imposter._ReusedPropertyBuilderField._getterImposterBuilder.Get();
                 }
 
                 set
                 {
-                    _imposter._APropertyBuilderField._setterImposter.Set(value, () =>
-                    {
-                        base.A = value;
-                    });
+                    _imposter._ReusedPropertyBuilderField._setterImposter.Set(value);
                 }
             }
         }

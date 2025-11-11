@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
+namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Methods;
 
 public class MethodNameCollisionPreventionTests : NamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_MethodsMatchingGroupedTypeBaseNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_MethodsMatchingGroupedTypeBaseNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -36,7 +36,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_OverloadedMethodNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_OverloadedMethodNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -60,7 +60,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_MethodsMatchingBuilderOperationNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_MethodsMatchingBuilderOperationNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -90,7 +90,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_MethodsMatchingHelperNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_MethodsMatchingHelperNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -115,10 +115,11 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_MethodsMatchingImposterMembers_ShouldCompileWithoutDiagnostics()
+    public async Task Given_MethodsMatchingImposterMembers_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
+using Imposter.Abstractions;
 
 namespace Sample.NamingCollisionUsage
 {
@@ -133,8 +134,7 @@ namespace Sample.NamingCollisionUsage
             _ = imposter._invocationBehavior();
 
             var seed = 0;
-            int doubled;
-            _ = imposter.InitializeOutParametersWithDefaultValues(ref seed, out doubled);
+            _ = imposter.InitializeOutParametersWithDefaultValues(Arg<int>.Any(), OutArg<int>.Any());
         }
     }
 }
@@ -143,3 +143,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

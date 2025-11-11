@@ -104,8 +104,8 @@ internal readonly struct ImposterTargetMetadata
         return [];
     }
 
-    internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol)
-        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name));
+    internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol, NameSet memberNameSet)
+        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name), memberNameSet);
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol)
         => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name));

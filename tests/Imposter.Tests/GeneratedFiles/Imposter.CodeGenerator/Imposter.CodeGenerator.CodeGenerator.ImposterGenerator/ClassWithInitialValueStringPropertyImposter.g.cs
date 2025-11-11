@@ -21,9 +21,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             return _imposterInstance;
         }
 
-        public ISPropertyBuilder S => _S;
+        public ISPropertyBuilder S => _SPropertyBuilderField;
 
-        private readonly SPropertyBuilder _S;
+        private readonly SPropertyBuilder _SPropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface ISPropertyGetterOutcomeBuilder
         {
@@ -403,7 +403,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
         public ClassWithInitialValueStringPropertyImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
-            this._S = new SPropertyBuilder(invocationBehavior);
+            this._SPropertyBuilderField = new SPropertyBuilder(invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance();
             this._imposterInstance.InitializeImposter(this);
             this._invocationBehavior = invocationBehavior;
@@ -426,12 +426,12 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 get
                 {
-                    return _imposter._S._getterImposterBuilder.Get(() => base.S);
+                    return _imposter._SPropertyBuilderField._getterImposterBuilder.Get(() => base.S);
                 }
 
                 set
                 {
-                    _imposter._S._setterImposter.Set(value, () =>
+                    _imposter._SPropertyBuilderField._setterImposter.Set(value, () =>
                     {
                         base.S = value;
                     });

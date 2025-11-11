@@ -26,6 +26,7 @@ internal readonly ref partial struct ImposterBuilder
     private readonly string _invocationBehaviorParameterName;
     private readonly bool _isClassTarget;
     private readonly ImposterTargetConstructorMetadata[] _accessibleConstructors;
+    private readonly NameSet _memberNameSet;
 
     private ImposterBuilder(
         ClassDeclarationBuilder imposterBuilder,
@@ -36,7 +37,8 @@ internal readonly ref partial struct ImposterBuilder
         BlockBuilder constructorBodyBuilder,
         string invocationBehaviorParameterName,
         bool isClassTarget,
-        ImposterTargetConstructorMetadata[] accessibleConstructors)
+        ImposterTargetConstructorMetadata[] accessibleConstructors,
+        NameSet memberNameSet)
     {
         _imposterBuilder = imposterBuilder;
         _imposterInstanceBuilder = imposterInstanceBuilder;
@@ -47,6 +49,7 @@ internal readonly ref partial struct ImposterBuilder
         _invocationBehaviorParameterName = invocationBehaviorParameterName;
         _isClassTarget = isClassTarget;
         _accessibleConstructors = accessibleConstructors;
+        _memberNameSet = memberNameSet;
     }
 
     internal ImposterBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
@@ -190,7 +193,16 @@ internal readonly ref partial struct ImposterBuilder
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
             .AddMembers(BuildImposterMethods(imposterGenerationContext));
 
-        var typeMetadata = new TypeMetadata(new NameSet(MemberNamesHelper.GetNames(imposterBuilder.Members)));
+        var futureMemberNames = imposterGenerationContext.Imposter.PropertySymbols
+            .Select(property => property.Name);
+
+        var memberNameSeeds = MemberNamesHelper
+            .GetNames(imposterBuilder.Members)
+            .Concat(futureMemberNames);
+
+        var memberNameSet = new NameSet(memberNameSeeds);
+
+        var typeMetadata = new TypeMetadata(memberNameSet);
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
             typeMetadata.InvocationBehaviorFieldName,
@@ -234,8 +246,11 @@ internal readonly ref partial struct ImposterBuilder
             constructorBodyBuilder,
             constructorParameterName,
             isClassTarget,
-            accessibleConstructors);
+            accessibleConstructors,
+            memberNameSet);
     }
+
+    internal NameSet MemberNameSet => _memberNameSet;
 
     private static (ConstructorBuilder constructorBuilder, BlockBuilder bodyBuilder) CreateConstructorBuilder(
         in ImposterGenerationContext imposterGenerationContext,

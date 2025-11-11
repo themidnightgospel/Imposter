@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
+namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Methods;
 
 public class MethodParameterCollisionPreventionTests : NamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_ParametersMatchingImposterLocals_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingImposterLocals_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -35,11 +35,12 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingInvocationSetupNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingInvocationSetupNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
 using Sample.NamingCollision;
+using Imposter.Abstractions;
 
 namespace Sample.NamingCollisionUsage
 {
@@ -50,10 +51,10 @@ namespace Sample.NamingCollisionUsage
             var imposter = new IMethodParameterInvocationSetupCollisionTargetImposter();
             var value = imposter.SetupNames(
                 value: 1,
-                resultGenerator: () => 10,
+                resultGenerator: Arg<Func<int>>.Any(), 
                 exception: new InvalidOperationException(),
-                exceptionGenerator: () => new ApplicationException(),
-                callback: () => { });
+                exceptionGenerator: Arg<Func<Exception>>.Any(), 
+                callback: Arg<Action>.Any());
 
             _ = value;
         }
@@ -65,7 +66,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingArgumentsCriteriaNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingArgumentsCriteriaNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -87,11 +88,12 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingInvocationHistoryNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingInvocationHistoryNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
 using Sample.NamingCollision;
+using Imposter.Abstractions;
 
 namespace Sample.NamingCollisionUsage
 {
@@ -100,11 +102,7 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IMethodParameterHistoryCollisionTargetImposter();
-            var arguments = 0;
-            int result;
-            Exception exception;
-
-            imposter.HistoryNames(ref arguments, out result, out exception);
+            imposter.HistoryNames(Arg<int>.Any(), OutArg<int>.Any(), OutArg<Exception>.Any());
         }
     }
 }
@@ -114,7 +112,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingAdapterNames_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingAdapterNames_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -137,7 +135,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_ParametersMatchingBaseImplementationAdapterName_ShouldCompileWithoutDiagnostics()
+    public async Task Given_ParametersMatchingBaseImplementationAdapterName_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -159,3 +157,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+
