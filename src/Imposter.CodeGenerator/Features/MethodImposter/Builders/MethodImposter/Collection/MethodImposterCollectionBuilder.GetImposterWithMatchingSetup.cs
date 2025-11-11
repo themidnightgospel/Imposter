@@ -21,7 +21,7 @@ internal static partial class MethodImposterCollectionBuilder
                     .Dot(IdentifierName("Select"))
                     .Call(Identifier("it")
                         .Lambda(IdentifierName("it")
-                            .Dot(GenericName(Identifier("As"), method.GenericTypeArguments.AsTypeArguments()))
+                            .Dot(GenericName(Identifier("As"), method.GenericTypeArguments.ToTypeArguments()))
                             .Call())
                         .ToSingleArgumentList()
                     )
@@ -50,7 +50,7 @@ internal static partial class MethodImposterCollectionBuilder
                             .ToSingleArgumentList()
                     )
                     .QuestionMarkQuestionMark(
-                        GenericName(Identifier("AddNew"), method.GenericTypeArguments.AsTypeArguments())
+                        GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
                             .Call()
                     )
             )))

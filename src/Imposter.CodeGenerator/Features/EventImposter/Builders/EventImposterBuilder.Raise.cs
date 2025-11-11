@@ -270,10 +270,7 @@ internal static partial class EventImposterBuilder
                         IdentifierName("callback")
                             .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                     IfStatement(
-                        BinaryExpression(
-                            SyntaxKind.NotEqualsExpression,
-                            IdentifierName("task"),
-                            LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                        IdentifierName("task").IsNotNull(),
                         Block(
                             ExpressionStatement(
                                 IdentifierName("pendingTasks")
@@ -303,10 +300,7 @@ internal static partial class EventImposterBuilder
                         IdentifierName("handler")
                             .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                     IfStatement(
-                        BinaryExpression(
-                            SyntaxKind.NotEqualsExpression,
-                            IdentifierName("task"),
-                            LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                        IdentifierName("task").IsNotNull(),
                         Block(
                             ExpressionStatement(
                                 IdentifierName("pendingTasks")
