@@ -36,6 +36,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly ReturnTypeMetadata ReturnType;
 
+    internal readonly NameSet GenericTypeParameterNameSet;
+
     internal readonly bool HasReturnValue;
 
     internal readonly bool SupportsBaseImplementation;
@@ -79,6 +81,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         IsAsync = IsMethodAsync(symbol);
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
+        GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);

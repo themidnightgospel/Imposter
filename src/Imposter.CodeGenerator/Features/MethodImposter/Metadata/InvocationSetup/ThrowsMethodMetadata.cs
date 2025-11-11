@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -7,6 +8,8 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetu
 internal readonly struct ThrowsMethodMetadata
 {
     internal readonly string Name = "Throws";
+
+    internal readonly string GenericTypeParameterName;
 
     internal readonly TypeSyntax ReturnType;
 
@@ -28,10 +31,12 @@ internal readonly struct ThrowsMethodMetadata
         IParameterNameContextProvider parameterNameContextProvider,
         NameSyntax exceptionGeneratorDelegateSyntax,
         NameSyntax interfaceTypeSyntax,
-        NameSyntax continuationInterfaceSyntax)
+        NameSyntax continuationInterfaceSyntax,
+        NameSet genericTypeParameterNameSet)
     {
         InterfaceSyntax = interfaceTypeSyntax;
         ReturnType = continuationInterfaceSyntax;
+        GenericTypeParameterName = genericTypeParameterNameSet.Use("TException");
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
         InterfaceExceptionParameterName = "exception";
         InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
@@ -40,9 +45,9 @@ internal readonly struct ThrowsMethodMetadata
 
         TypeParameterList = TypeParameterList(
             SingletonSeparatedList(
-                TypeParameter("TException")));
+                TypeParameter(GenericTypeParameterName)));
 
-        TypeParameterConstraintClause = TypeParameterConstraintClause("TException")
+        TypeParameterConstraintClause = TypeParameterConstraintClause(GenericTypeParameterName)
             .AddConstraints(
                 TypeConstraint(WellKnownTypes.System.Exception),
                 ConstructorConstraint());
