@@ -55,7 +55,8 @@ internal static class MethodImposterAdapterBuilder
         var postInvokeActions = new List<StatementSyntax>();
 
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
-        var parameterList = method.Symbol.Parameters.ToParameterListSyntax(true);
+        var parameterList = method.Symbol.Parameters.ToParameterListSyntax();
+        parameterList = (ParameterListSyntax)typeParamRenamer.Visit(parameterList);
 
         foreach (var p in method.Symbol.Parameters)
         {

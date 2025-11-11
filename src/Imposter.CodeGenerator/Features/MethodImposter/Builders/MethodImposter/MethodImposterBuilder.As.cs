@@ -23,21 +23,21 @@ internal static partial class MethodImposterBuilder
 
         var conditions = new List<ExpressionSyntax>();
 
-        foreach (var p in method.Symbol.Parameters)
+        foreach (var parameterSymbol in method.Symbol.Parameters)
         {
-            var pType = p.Type;
-            if (!method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(pType, tp)))
+            var parameterSymbolType = parameterSymbol.Type;
+            if (!method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(parameterSymbolType, tp)))
             {
                 continue;
             }
 
-            var sourceTypeSyntax = TypeSyntax(pType);
+            var sourceTypeSyntax = TypeSyntax(parameterSymbolType);
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
             var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
             var targetTypeOf = TypeOfExpression(targetTypeSyntax);
 
-            switch (p.RefKind)
+            switch (parameterSymbol.RefKind)
             {
                 case RefKind.Ref:
                     conditions.Add(BinaryExpression(SyntaxKind.EqualsExpression, targetTypeOf, sourceTypeOf));
@@ -70,7 +70,11 @@ internal static partial class MethodImposterBuilder
             ? conditions.Aggregate((current, next) => current.And(next))
             : True;
 
-        var asMethodTypeParams = method.Symbol.TypeParameters.Select(p => TypeParameter(Identifier(p.Name + "Target"))).ToArray();
+        var asMethodTypeParams = method.TargetGenericTypeParameterListSyntax
+            ?? TypeParameterList(
+                SeparatedList(
+                    method.Symbol.TypeParameters.Select(p => TypeParameter(Identifier(p.Name + "Target")))
+                ));
 
         var genericImposterInterfaceWithTargets = GenericName(method.MethodImposter.Interface.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments)));
@@ -79,7 +83,7 @@ internal static partial class MethodImposterBuilder
                 NullableType(genericImposterInterfaceWithTargets),
                 "As")
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax))
-            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
+            .WithTypeParameters(asMethodTypeParams)
             .WithBody(Block(
                 IfStatement(
                     condition,
