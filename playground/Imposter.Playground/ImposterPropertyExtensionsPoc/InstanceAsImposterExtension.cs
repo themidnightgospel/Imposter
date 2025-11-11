@@ -1,29 +1,33 @@
-﻿namespace Imposter.Playground.ImposterPropertyExtensionsPoc;
-
-public class Usage
+﻿/*namespace Imposter.Playground.ImposterPropertyExtensionsPoc
 {
-    static void Test()
+
+
+
+    public class Usage
     {
-        var imposter = IOrderService.Imposter();
+        static void Test()
+        {
+            var imposter = IOrderService.Imposter();
+        }
     }
-}
 
-public static class IOrderServiceImposterExtensions
-{
-    extension(IOrderService imposter)
+    public static class IOrderServiceImposterExtensions
     {
-        public static OrderServiceImposter Imposter()
-            => new OrderServiceImposter();
+        extension(IOrderService imposter)
+        {
+            public static OrderServiceImposter Imposter()
+                => new OrderServiceImposter();
+        }
     }
-}
 
-public class OrderServiceImposter
-{
-    public class OrderServiceImposterInstance : IOrderService
+    public class OrderServiceImposter
+    {
+        public class OrderServiceImposterInstance : IOrderService
+        {
+        }
+    }
+
+    public interface IOrderService
     {
     }
-}
-
-public interface IOrderService
-{
-}
+}*/

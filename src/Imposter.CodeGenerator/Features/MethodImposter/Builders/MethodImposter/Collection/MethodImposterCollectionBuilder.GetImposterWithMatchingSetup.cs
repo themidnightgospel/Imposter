@@ -12,7 +12,7 @@ internal static partial class MethodImposterCollectionBuilder
 {
     private static MethodDeclarationSyntax BuildGetImposterWithMatchingSetup(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingSetup")
+        var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingSetup")
             .AddParameter(GetParameter(method))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddTypeParameters(TypeParametersSyntax(method.Symbol).ToArray())
@@ -53,8 +53,9 @@ internal static partial class MethodImposterCollectionBuilder
                         GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
                             .Call()
                     )
-            )))
-            .Build();
+            )));
+
+        return methodBuilder.Build();
         
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasInputParameters

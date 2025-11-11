@@ -1798,6 +1798,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
 
             public override T Echo<T>(T item)
+                where T : class
             {
                 return _imposter._echoMethodImposterCollection.GetImposterWithMatchingSetup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo);
             }

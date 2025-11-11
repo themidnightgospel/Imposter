@@ -27,8 +27,9 @@ FEATURES:
       - add test that checks that multiple [GenerateImposter] attribute for the same type still works and does not generate 2 imposters but 1.
     IN Progress:
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
+      - make imposter sealed
+      - make sure imposter builds properly for all the major Microsoft.CodeAnalysis.CSharp versions, ideally using automated tests. (Use conditinals for the target framework and language version, and CSharp package and run tests for all the combination)
     NOT Started:
-      - make sure imposter builds properly for all the major Microsoft.CodeAnalysis.CSharp versions, ideally using automated tests.
       - Make imposter thread safe
       - Use fully qualified name wherever possible
       - Make sure metadata structs are passed as readonly

@@ -166,12 +166,13 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
                     resultInvocation));
         }
 
+        var callbackIdentifier = Identifier(method.MethodImposter.InvokeMethod.CallbackIterationVariableName);
         var callbackInvocation = ForEachStatement(
             IdentifierName("var"),
-            Identifier("callback"),
+            callbackIdentifier,
             IdentifierName("_callbacks"),
             Block(
-                    IdentifierName("callback")
+                    IdentifierName(method.MethodImposter.InvokeMethod.CallbackIterationVariableName)
                         .Call(arguments).ToStatementSyntax()));
 
         defaultBlockBuilder.AddStatement(callbackInvocation);

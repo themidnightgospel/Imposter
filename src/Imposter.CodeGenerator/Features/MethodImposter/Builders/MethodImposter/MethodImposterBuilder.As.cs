@@ -19,7 +19,7 @@ internal static partial class MethodImposterBuilder
             return null;
         }
         
-        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, "Target");
+        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
 
         var conditions = new List<ExpressionSyntax>();
 

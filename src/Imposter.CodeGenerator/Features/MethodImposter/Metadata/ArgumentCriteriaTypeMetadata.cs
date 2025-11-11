@@ -1,4 +1,6 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using System.Linq;
+using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
@@ -10,21 +12,45 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
     internal readonly NameSyntax Syntax;
 
     internal readonly NameSyntax SyntaxWithTargetGenericTypeArguments;
-    
+
+    internal readonly AsMethodMetadata AsMethod;
+
+    internal readonly MatchesMethodMetadata MatchesMethod;
+
     public ArgumentCriteriaTypeMetadata(ImposterTargetMethodMetadata method)
     {
-        Name = $"{method.UniqueName}ArgumentsCriteria";
-        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, $"{method.UniqueName}ArgumentsCriteria");
-        SyntaxWithTargetGenericTypeArguments = SyntaxFactoryHelper.WithMethodGenericArguments(method.TargetGenericTypeArguments, $"{method.UniqueName}ArgumentsCriteria");
+        var argumentsCriteriaName = $"{method.UniqueName}ArgumentsCriteria";
+        Name = argumentsCriteriaName;
+        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, argumentsCriteriaName);
+        SyntaxWithTargetGenericTypeArguments =
+            SyntaxFactoryHelper.WithMethodGenericArguments(method.TargetGenericTypeArguments, argumentsCriteriaName);
+
+        var nameContext = new NameSet(method.Symbol.Parameters.Select(p => p.Name));
+        MatchesMethod = new MatchesMethodMetadata(nameContext);
+        AsMethod = new AsMethodMetadata(nameContext);
     }
-    
+
     internal readonly struct AsMethodMetadata
     {
-        internal const string Name = "As";
+        private const string BaseName = "As";
+
+        internal readonly string Name;
+
+        internal AsMethodMetadata(NameSet nameSet)
+        {
+            Name = nameSet.Use(BaseName);
+        }
     }
 
     internal readonly struct MatchesMethodMetadata
     {
-        internal const string Name = "Matches";
+        private const string BaseName = "Matches";
+
+        internal readonly string Name;
+
+        internal MatchesMethodMetadata(NameSet nameSet)
+        {
+            Name = nameSet.Use(BaseName);
+        }
     }
 }

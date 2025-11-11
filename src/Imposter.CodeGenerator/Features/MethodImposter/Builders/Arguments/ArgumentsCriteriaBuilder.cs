@@ -111,7 +111,7 @@ public static class ArgumentsCriteriaBuilder
                 );
             });
 
-        return new MethodDeclarationBuilder(returnType, "As")
+        return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(Block(
@@ -126,7 +126,7 @@ public static class ArgumentsCriteriaBuilder
     {
         return new MethodDeclarationBuilder(
                 WellKnownTypes.Bool,
-                "Matches")
+                method.ArgumentsCriteria.MatchesMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(
                 ParameterList(

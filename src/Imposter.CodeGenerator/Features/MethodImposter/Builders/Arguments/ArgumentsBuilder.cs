@@ -48,20 +48,26 @@ internal static class ArgumentsBuilder
     private static MethodDeclarationSyntax BuildArgumentsAsMethod(in ImposterTargetMethodMetadata method)
     {
         var typeParameters = method.Symbol.TypeParameters;
-        var asMethodTypeParams = typeParameters.Select(p => TypeParameter(p.Name + "Target")).ToArray();
-        var targetTypeArgs = typeParameters
-            .Select(p => (TypeSyntax)IdentifierName(p.Name + "Target"))
+        var targetGenericTypeArguments = method.TargetGenericTypeArguments;
+        var targetTypeArgumentSimpleNames = targetGenericTypeArguments
+            .Select(SyntaxFactoryHelper.AsSimpleName)
+            .ToArray();
+        var asMethodTypeParams = targetTypeArgumentSimpleNames
+            .Select(simpleName => TypeParameter(simpleName.Identifier.Text))
+            .ToArray();
+        var targetTypeArgs = targetTypeArgumentSimpleNames
+            .Cast<TypeSyntax>()
             .ToArray();
 
         var returnType = GenericName(method.Arguments.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs)));
 
+        var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
         var constructorArgs = method
             .Parameters
             .InputParameters.Select(p =>
             {
                 var sourceType = SyntaxFactoryHelper.TypeSyntax(p.Type);
-                var renamer = new TypeParameterRenamer(typeParameters, "Target");
                 var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
                 return Argument(
