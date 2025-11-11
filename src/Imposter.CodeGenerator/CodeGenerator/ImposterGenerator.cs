@@ -161,7 +161,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(propertySymbol);
+            var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(propertySymbol, imposterBuilder.MemberNameSet);
 
             imposterBuilder
                 .AddPropertyImposter(property)

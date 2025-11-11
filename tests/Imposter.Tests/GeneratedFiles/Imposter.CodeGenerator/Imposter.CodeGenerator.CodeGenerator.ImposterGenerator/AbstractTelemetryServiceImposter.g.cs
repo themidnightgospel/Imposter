@@ -390,9 +390,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        public INamePropertyBuilder Name => _Name;
+        public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-        private readonly NamePropertyBuilder _Name;
+        private readonly NamePropertyBuilder _NamePropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface INamePropertyGetterOutcomeBuilder
         {
@@ -1520,7 +1520,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public AbstractTelemetryServiceImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
         {
             this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, invocationBehavior);
-            this._Name = new NamePropertyBuilder(invocationBehavior);
+            this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._StreamAdvanced = new StreamAdvancedEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.this[int index]");
             this._imposterInstance = new ImposterTargetInstance();
@@ -1550,12 +1550,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 get
                 {
-                    return _imposter._Name._getterImposterBuilder.Get(() => base.Name);
+                    return _imposter._NamePropertyBuilderField._getterImposterBuilder.Get(() => base.Name);
                 }
 
                 set
                 {
-                    _imposter._Name._setterImposter.Set(value, () =>
+                    _imposter._NamePropertyBuilderField._setterImposter.Set(value, () =>
                     {
                         base.Name = value;
                     });

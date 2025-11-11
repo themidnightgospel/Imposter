@@ -2619,9 +2619,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        public IProtectedVirtualPropertyPropertyBuilder ProtectedVirtualProperty => _ProtectedVirtualProperty;
+        public IProtectedVirtualPropertyPropertyBuilder ProtectedVirtualProperty => _ProtectedVirtualPropertyPropertyBuilderField;
 
-        private readonly ProtectedVirtualPropertyPropertyBuilder _ProtectedVirtualProperty;
+        private readonly ProtectedVirtualPropertyPropertyBuilder _ProtectedVirtualPropertyPropertyBuilderField;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterOutcomeBuilder
         {
@@ -3821,7 +3821,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._readProtectedValueMethodImposter = new ReadProtectedValueMethodImposter(_readProtectedValueMethodInvocationHistoryCollection, invocationBehavior);
             this._writeProtectedValueMethodImposter = new WriteProtectedValueMethodImposter(_writeProtectedValueMethodInvocationHistoryCollection, invocationBehavior);
             this._subscribeToProtectedEventMethodImposter = new SubscribeToProtectedEventMethodImposter(_subscribeToProtectedEventMethodInvocationHistoryCollection, invocationBehavior);
-            this._ProtectedVirtualProperty = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
+            this._ProtectedVirtualPropertyPropertyBuilderField = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ProtectedVirtualEvent = new ProtectedVirtualEventEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.this[int index]");
             this._imposterInstance = new ImposterTargetInstance();
@@ -3881,12 +3881,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 get
                 {
-                    return _imposter._ProtectedVirtualProperty._getterImposterBuilder.Get(() => base.ProtectedVirtualProperty);
+                    return _imposter._ProtectedVirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.ProtectedVirtualProperty);
                 }
 
                 set
                 {
-                    _imposter._ProtectedVirtualProperty._setterImposter.Set(value, () =>
+                    _imposter._ProtectedVirtualPropertyPropertyBuilderField._setterImposter.Set(value, () =>
                     {
                         base.ProtectedVirtualProperty = value;
                     });

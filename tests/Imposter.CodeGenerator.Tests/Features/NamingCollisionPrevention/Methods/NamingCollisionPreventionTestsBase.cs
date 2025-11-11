@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 
-namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
+namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Methods;
 
 public abstract class NamingCollisionPreventionTestsBase
 {
@@ -155,3 +155,4 @@ public abstract class NamingCollisionPreventionTestsBase
     protected static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
         GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
 }
+

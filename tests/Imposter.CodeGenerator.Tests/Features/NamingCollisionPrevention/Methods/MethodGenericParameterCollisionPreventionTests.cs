@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
+namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Methods;
 
 public class MethodGenericParameterCollisionPreventionTests : NamingCollisionPreventionTestsBase
 {
     [Fact]
-    public async Task Given_GenericMethodWithTargetNamedTypeParameters_ShouldCompileWithoutDiagnostics()
+    public async Task Given_GenericMethodWithTargetNamedTypeParameters_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -28,7 +28,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_GenericMethodWithTExceptionParameter_ShouldCompileWithoutDiagnostics()
+    public async Task Given_GenericMethodWithTExceptionParameter_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using Sample.NamingCollision;
@@ -50,7 +50,7 @@ namespace Sample.NamingCollisionUsage
     }
 
     [Fact]
-    public async Task Given_GenericMethodWithTResultParameter_ShouldCompileWithoutDiagnostics()
+    public async Task Given_GenericMethodWithTResultParameter_ShouldCompile()
         {
             var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 using System;
@@ -76,3 +76,5 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
+
+

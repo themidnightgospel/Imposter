@@ -33,13 +33,14 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
-    public ImposterPropertyMetadata(IPropertySymbol property, string uniqueName)
+    public ImposterPropertyMetadata(IPropertySymbol property, string uniqueName, NameSet memberNameSet)
     {
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
         DefaultPropertyBehaviourField = new FieldMetadata("_defaultPropertyBehaviour", DefaultPropertyBehaviour.TypeSyntax);
-        AsField = new FieldMetadata($"_{Core.UniqueName}", Core.TypeSyntax);
+        var propertyFieldBaseName = $"_{Core.UniqueName}PropertyBuilderField";
+        AsField = new FieldMetadata(memberNameSet.Use(propertyFieldBaseName), Core.TypeSyntax);
 
         GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
         GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(Core, DefaultPropertyBehaviourField);
