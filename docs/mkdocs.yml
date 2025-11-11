@@ -1,0 +1,94 @@
+site_name: Imposter
+site_description: Source generator documentation and API reference for the Imposter project.
+site_url: https://themidnightgospel.github.io/Imposter/
+repo_url: https://github.com/themidnightgospel/Imposter
+repo_name: themidnightgospel/Imposter
+
+# Because this config lives inside the docs folder
+docs_dir: content
+
+theme:
+  name: material
+  font:
+    text: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
+  language: en
+  features:
+    - navigation.sections
+    - navigation.prune
+    - navigation.indexes
+    - navigation.instant
+    - toc.follow
+    - toc.integrate
+    - content.code.copy
+    - search.suggest
+    - search.share
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: light green
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: light green
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra:
+  version:
+    provider: mike
+
+extra_css:
+  - styles/overrides.css
+
+nav:
+  - Getting Started: index.md
+  - Features:
+      - Overview: features/index.md
+      - Methods:
+          - Overview: methods/index.md
+          - Callbacks: methods/callbacks.md
+          - Sequential Returns: methods/sequential-returns.md
+          - Throwing Exceptions: methods/throwing.md
+          - Verification: methods/verification.md
+      - Properties:
+          - Overview: properties/index.md
+          - Callbacks: properties/callbacks.md
+          - Sequential Returns: properties/sequential-returns.md
+          - Throwing Exceptions: properties/throwing.md
+          - Verification: properties/verification.md
+          - Base Implementation: properties/base-implementation.md
+      - Indexers:
+          - Overview: indexers/index.md
+          - Getter: indexers/getter.md
+          - Setter: indexers/setter.md
+          - Base Implementation: indexers/base-implementation.md
+          - Verification: indexers/verification.md
+      - Events:
+          - Overview: events/index.md
+          - Subscriptions: events/subscriptions.md
+          - Raising: events/raising.md
+          - Callbacks & Ordering: events/callbacks-ordering.md
+          - Verification: events/verification.md
+          - Exceptions: events/exceptions.md
+  - Reference:
+      - Cheat Sheet: cheat-sheet.md
+      - Language Features: language-features.md
+      - Troubleshooting: troubleshooting.md
+      - Why Imposter?: why-imposter.md
+
+plugins:
+  - search

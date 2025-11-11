@@ -1,13 +1,39 @@
 # Getting Started
 
-Imposter is a Roslyn incremental source generator that creates lightweight imposters (mocks/stubs) for your interfaces and classes. 
+Imposter is a Roslyn incremental source generator that creates lightweight, source-generated imposters (mocks/stubs) for interfaces and classes.
+
+> Do not edit generated `.g.cs` files. Make changes in your code or via the generator inputs and rebuild.
+
+## Prerequisites
+
+- C# 13 or later. Static type extensions (the `IMyService.Imposter()` form) require the Preview language version.
+- Reference the generator at compile-time and the abstractions at runtime (see Installation).
 
 ## Installation
 
-Add Imposter to your test or application project:
+Add the packages to your test or application project:
 
 ```bash
+# Runtime + fluent API surface
+dotnet add package Imposter.Abstractions
+
+# Source generator (compile-time only)
 dotnet add package Imposter.CodeGenerator
+```
+
+Recommended csproj configuration (keeps the generator out of your runtime):
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Imposter.Abstractions" Version="x.y.z" />
+  <PackageReference Include="Imposter.CodeGenerator" Version="x.y.z">
+    <PrivateAssets>all</PrivateAssets>
+    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  </PackageReference>
+  <!-- Optional: enable preview to use static type extensions -->
+  <!-- <LangVersion>preview</LangVersion> -->
+  <!-- Or per-Project PropertyGroup -->
+</ItemGroup>
 ```
 
 ## Generate an Imposter
@@ -30,7 +56,7 @@ public interface IMyService
 
 After a build, use the generated type:
 
-=== "C# 14"
+=== "C# Preview"
 
     ```csharp
     var imposter = IMyService.Imposter();
@@ -40,7 +66,7 @@ After a build, use the generated type:
     var strictImposter = IMyService.Imposter(ImposterInvocationBehavior.Explicit);
     ```
 
-=== "Older C# versions"
+=== "C# 13 and earlier (or without Preview)"
 
     Use the generated imposter type directly:
 
@@ -49,7 +75,7 @@ After a build, use the generated type:
     var service = imposter.Instance();       // user-facing instance
     ```
 
-Optionally, you can choose the invocation behavior:
+Optionally, choose the invocation behavior:
 
 ```csharp
 // Implicit: missing setups return defaults
@@ -174,7 +200,7 @@ Setter callbacks and verification:
 ```csharp
 imposter.Age.Setter(Arg<int>.Any()).Callback(v => { /* observe/set side-effects */ });
 imposter.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(1));
-``;
+```
 
 Base implementation forwarding:
 
@@ -245,10 +271,16 @@ If base is unavailable and Explicit mode is enabled, a `MissingImposterException
 - `Arg<T>` provides rich matching: `Any`, `Is`, `IsNot`, `IsIn`, `IsNotIn`, `IsDefault`, plus implicit value conversion.
 - Use `OutArg<T>.Any()` for `out` parameters (they always match).
 - `Count` helpers: `Exactly`, `AtLeast`, `AtMost`, `Once`, `Never`, `Any`.
-- Thread-safety: imposters are stress-tested under concurrency; sequencing preserves ordering per the tests.
+- Thread-safety: imposters are stress-tested under concurrency; sequencing preserves ordering (see thread-safety tests).
+- Static type extensions (e.g., `IMyService.Imposter()`) are emitted only when the project compiles with `LangVersion` set to `preview`.
 
 ## Next Steps
 
-- Explore advanced usage and patterns in the repository tests under `tests/Imposter.Tests/Features/*`.
-- Check the generator-focused examples under `tests/Imposter.CodeGenerator.Tests/Features/*`.
-- API and design notes will be expanded in dedicated pages (Architecture, Usage, Fluent API, and Troubleshooting).
+- Explore advanced usage:
+  - Methods: see Methods overview and subpages.
+  - Properties: property-specific behaviors and verification.
+  - Indexers and Events: dedicated pages and examples.
+- Browse repository tests for real-world scenarios:
+  - `tests/Imposter.Tests/Features/*`
+  - `tests/Imposter.CodeGenerator.Tests/Features/*`
+- Architecture and design notes: see site navigation for Architecture, Usage, Fluent API, and Troubleshooting.

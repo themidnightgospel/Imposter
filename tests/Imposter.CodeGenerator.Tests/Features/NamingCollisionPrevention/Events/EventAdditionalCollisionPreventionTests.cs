@@ -13,20 +13,21 @@ using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
-namespace Sample.NamingCollisionUsage;
-
-public static class Scenario
+namespace Sample.NamingCollisionUsage
 {
-    public static void Execute()
+    public static class Scenario
     {
-        var imposter = new IEventTypeNameCollisionTargetImposter();
-        var handler = new EventHandler((_, _) => { });
-        var sender = new object();
+        public static void Execute()
+        {
+            var imposter = new IEventTypeNameCollisionTargetImposter();
+            var handler = new EventHandler((sender, args) => { });
+            var sender = new object();
 
-        imposter.Imposter.Subscribe(handler);
-        imposter.CodeGenerator.Subscribe(handler);
-        imposter.Sample.Raise(sender, EventArgs.Empty);
-        imposter.NamingCollision.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.AtLeast(1));
+            imposter.Imposter.Subscribe(handler);
+            imposter.CodeGenerator.Subscribe(handler);
+            imposter.Sample.Raise(sender, EventArgs.Empty);
+            imposter.NamingCollision.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.AtLeast(1));
+        }
     }
 }
 """);
@@ -42,22 +43,23 @@ using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
-namespace Sample.NamingCollisionUsage;
-
-public static class Scenario
+namespace Sample.NamingCollisionUsage
 {
-    public static void Execute()
+    public static class Scenario
     {
-        var imposter = new IEventCaseSensitivityCollisionTargetImposter();
-        var sender = new object();
+        public static void Execute()
+        {
+            var imposter = new IEventCaseSensitivityCollisionTargetImposter();
+            var sender = new object();
 
-        var lower = imposter.raise;
-        lower.Raise(sender, EventArgs.Empty);
-        lower.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
+            var lower = imposter.raise;
+            lower.Raise(sender, EventArgs.Empty);
+            lower.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
 
-        var upper = imposter.Raise;
-        upper.Raise(sender, EventArgs.Empty);
-        upper.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
+            var upper = imposter.Raise;
+            upper.Raise(sender, EventArgs.Empty);
+            upper.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
+        }
     }
 }
 """);

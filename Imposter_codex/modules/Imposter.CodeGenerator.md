@@ -57,6 +57,10 @@ Method imposters emit helper extensions for arguments criteria (e.g., `.Matches(
 
 When emitting the `.As<...>()` helper for a generic method's arguments criteria we now request target type parameter names from the `GenericTypeParameterNameSet` (the same allocator used by invocation setup metadata). This prevents generator-authored names such as `TTarget`/`UTarget` from shadowing identically named user-provided type parameters, eliminating compiler errors like the `CS1503` mismatch observed in `IMethodGenericTypeParameterCollisionTargetImposter`. The generated helper always operates with unique synthetic type parameter identifiers even when the consumer uses the same suffixes.
 
+## Event Deduplication
+
+Interface targets can inherit the same event signature from multiple base interfaces. We now collapse those duplicates during metadata collection using the event name plus its delegate type (compared via `SymbolEqualityComparer`). Case-sensitive collisions (e.g., `raise` vs `Raise`) are still emitted independently so consumers can configure both builders. This prevents the generator from emitting duplicate event members such as multiple `Raise` builders on `IEventDuplicateChildCollisionTargetImposter` while preserving legitimate case-differing events.
+
 ## Invocation Queue Thread Safety
 
 `InvocationSetupBuilder.GetInvocationImposter()` now returns the dequeued invocation object immediately after optionally updating `_lastestInvocationImposter`. Previously the method returned `_lastestInvocationImposter` even when the queue produced a newer entry, which allowed a racing thread to overwrite `_lastestInvocationImposter` before the first caller observed its scheduled result. The revised flow only falls back to `_lastestInvocationImposter` when the queue is empty, preventing lost sequential setups under concurrent access.
