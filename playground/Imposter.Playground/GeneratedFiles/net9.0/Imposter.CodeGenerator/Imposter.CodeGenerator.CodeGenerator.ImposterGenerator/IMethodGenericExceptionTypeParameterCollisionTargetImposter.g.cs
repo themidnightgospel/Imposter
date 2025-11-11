@@ -210,8 +210,8 @@ namespace Imposter.Playground
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface IThrowsGenericMethodInvocationImposterGroup<TException> : IThrowsGenericMethodInvocationImposterGroupCallback<TException>
         {
-            IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws<TException>()
-                where TException : System.Exception, new();
+            IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws<TException_1>()
+                where TException_1 : System.Exception, new();
             IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws(System.Exception exception);
             IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws(ThrowsGenericExceptionGeneratorDelegate<TException> exceptionGenerator);
         }
@@ -343,11 +343,11 @@ namespace Imposter.Playground
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IThrowsGenericMethodInvocationImposterGroupContinuation<TException> IThrowsGenericMethodInvocationImposterGroup<TException>.Throws<TException>()
+                IThrowsGenericMethodInvocationImposterGroupContinuation<TException> IThrowsGenericMethodInvocationImposterGroup<TException>.Throws<TException_1>()
                 {
                     _currentInvocationImposter.Throws(() =>
                     {
-                        throw new TException();
+                        throw new TException_1();
                     });
                     return this;
                 }

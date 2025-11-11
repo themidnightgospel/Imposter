@@ -20,7 +20,7 @@ internal static partial class MethodImposterBuilderBuilder
         var throwGenericExceptionLambda = Lambda(
             method.Symbol.Parameters,
             Block(
-                ThrowStatement(IdentifierName("TException").New())
+                ThrowStatement(IdentifierName(throwsMethod.GenericTypeParameterName).New())
             ));
 
         var configureThrowsGenericCall = CurrentInvocationImposterAccess(method)

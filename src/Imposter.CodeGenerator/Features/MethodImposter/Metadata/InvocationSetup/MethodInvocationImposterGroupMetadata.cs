@@ -56,12 +56,12 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ReturnsAsyncMethod = method.ReturnType.SupportsAsyncValueResult
             ? new ReturnsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax, method.ReturnType.AsyncValueTypeSyntax!)
             : null;
-        
         ThrowsMethod = new ThrowsMethodMetadata(
             method,
             method.ExceptionGeneratorDelegate.Syntax,
             Interface.Syntax,
-            ContinuationInterface.Syntax);
+            ContinuationInterface.Syntax,
+            method.GenericTypeParameterNameSet);
         
         ThrowsAsyncMethod = method.IsAsync
             ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax)
