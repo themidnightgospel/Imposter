@@ -242,7 +242,7 @@ namespace Imposter.Playground
         public interface ICallbackMethodInvocationImposterGroup : ICallbackMethodInvocationImposterGroupCallback
         {
             ICallbackMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ICallbackMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ICallbackMethodInvocationImposterGroupContinuation Throws(CallbackExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -551,7 +551,7 @@ namespace Imposter.Playground
         public interface IDefaultMethodInvocationImposterGroup : IDefaultMethodInvocationImposterGroupCallback
         {
             IDefaultMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDefaultMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDefaultMethodInvocationImposterGroupContinuation Throws(DefaultExceptionGeneratorDelegate exceptionGenerator);
             IDefaultMethodInvocationImposterGroupContinuation Returns(DefaultDelegate resultGenerator);
@@ -875,7 +875,7 @@ namespace Imposter.Playground
         public interface IDefaultResultGeneratorMethodInvocationImposterGroup : IDefaultResultGeneratorMethodInvocationImposterGroupCallback
         {
             IDefaultResultGeneratorMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDefaultResultGeneratorMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDefaultResultGeneratorMethodInvocationImposterGroupContinuation Throws(DefaultResultGeneratorExceptionGeneratorDelegate exceptionGenerator);
             IDefaultResultGeneratorMethodInvocationImposterGroupContinuation Returns(DefaultResultGeneratorDelegate resultGenerator);
@@ -1199,7 +1199,7 @@ namespace Imposter.Playground
         public interface IReturnsMethodInvocationImposterGroup : IReturnsMethodInvocationImposterGroupCallback
         {
             IReturnsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReturnsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IReturnsMethodInvocationImposterGroupContinuation Throws(ReturnsExceptionGeneratorDelegate exceptionGenerator);
             IReturnsMethodInvocationImposterGroupContinuation Returns(ReturnsDelegate resultGenerator);
@@ -1539,7 +1539,7 @@ namespace Imposter.Playground
         public interface IReturnsAsyncMethodInvocationImposterGroup : IReturnsAsyncMethodInvocationImposterGroupCallback
         {
             IReturnsAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReturnsAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IReturnsAsyncMethodInvocationImposterGroupContinuation Throws(ReturnsAsyncExceptionGeneratorDelegate exceptionGenerator);
             IReturnsAsyncMethodInvocationImposterGroupContinuation Returns(ReturnsAsyncDelegate resultGenerator);
@@ -1859,7 +1859,7 @@ namespace Imposter.Playground
         public interface IThenMethodInvocationImposterGroup : IThenMethodInvocationImposterGroupCallback
         {
             IThenMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IThenMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IThenMethodInvocationImposterGroupContinuation Throws(ThenExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -2150,7 +2150,7 @@ namespace Imposter.Playground
         public interface IThrowsMethodInvocationImposterGroup : IThrowsMethodInvocationImposterGroupCallback
         {
             IThrowsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IThrowsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IThrowsMethodInvocationImposterGroupContinuation Throws(ThrowsExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -2467,7 +2467,7 @@ namespace Imposter.Playground
         public interface IThrowsAsyncMethodInvocationImposterGroup : IThrowsAsyncMethodInvocationImposterGroupCallback
         {
             IThrowsAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IThrowsAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IThrowsAsyncMethodInvocationImposterGroupContinuation Throws(ThrowsAsyncExceptionGeneratorDelegate exceptionGenerator);
             IThrowsAsyncMethodInvocationImposterGroupContinuation Returns(ThrowsAsyncDelegate resultGenerator);
@@ -2780,7 +2780,7 @@ namespace Imposter.Playground
         public interface IUseBaseImplementationMethodInvocationImposterGroup : IUseBaseImplementationMethodInvocationImposterGroupCallback
         {
             IUseBaseImplementationMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IUseBaseImplementationMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IUseBaseImplementationMethodInvocationImposterGroupContinuation Throws(UseBaseImplementationExceptionGeneratorDelegate exceptionGenerator);
         }

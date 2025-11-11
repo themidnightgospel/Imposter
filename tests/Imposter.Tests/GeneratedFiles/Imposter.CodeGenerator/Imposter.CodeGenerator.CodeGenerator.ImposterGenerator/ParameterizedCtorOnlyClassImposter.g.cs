@@ -251,7 +251,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IComputeMethodInvocationImposterGroup : IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IComputeMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IComputeMethodInvocationImposterGroupContinuation Throws(ComputeExceptionGeneratorDelegate exceptionGenerator);
             IComputeMethodInvocationImposterGroupContinuation Returns(ComputeDelegate resultGenerator);

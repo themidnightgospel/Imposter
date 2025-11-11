@@ -229,7 +229,7 @@ namespace Imposter.Playground
         public interface IHistoryNamesMethodInvocationImposterGroup : IHistoryNamesMethodInvocationImposterGroupCallback
         {
             IHistoryNamesMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IHistoryNamesMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IHistoryNamesMethodInvocationImposterGroupContinuation Throws(HistoryNamesExceptionGeneratorDelegate exceptionGenerator);
         }

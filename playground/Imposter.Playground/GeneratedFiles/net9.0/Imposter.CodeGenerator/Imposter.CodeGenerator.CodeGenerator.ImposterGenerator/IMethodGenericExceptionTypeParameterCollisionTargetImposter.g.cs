@@ -211,7 +211,7 @@ namespace Imposter.Playground
         public interface IThrowsGenericMethodInvocationImposterGroup<TException> : IThrowsGenericMethodInvocationImposterGroupCallback<TException>
         {
             IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws(System.Exception exception);
             IThrowsGenericMethodInvocationImposterGroupContinuation<TException> Throws(ThrowsGenericExceptionGeneratorDelegate<TException> exceptionGenerator);
         }

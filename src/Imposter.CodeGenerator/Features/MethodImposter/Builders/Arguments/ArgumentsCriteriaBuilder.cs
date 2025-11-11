@@ -124,6 +124,10 @@ public static class ArgumentsCriteriaBuilder
 
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
     {
+        var matchesParameterName = method.ArgumentsCriteria.MatchesMethod.ParameterName;
+        var matchesParameterIdentifier = Identifier(matchesParameterName);
+        var matchesParameterExpression = IdentifierName(matchesParameterName);
+
         return new MethodDeclarationBuilder(
                 WellKnownTypes.Bool,
                 method.ArgumentsCriteria.MatchesMethod.Name)
@@ -131,7 +135,7 @@ public static class ArgumentsCriteriaBuilder
             .WithParameterList(
                 ParameterList(
                     SingletonSeparatedList(
-                        Parameter(Identifier("arguments"))
+                        Parameter(matchesParameterIdentifier)
                             .WithType(method.Arguments.Syntax)
                     )
                 )
@@ -163,7 +167,7 @@ public static class ArgumentsCriteriaBuilder
                 .Call(ArgumentList(
                         SingletonSeparatedList(
                             Argument(
-                                IdentifierName("arguments")
+                                matchesParameterExpression
                                     .Dot(IdentifierName(p.Name))
                             )
                         )

@@ -244,7 +244,7 @@ namespace Imposter.Tests.Shared
         public interface IIndexerMethodMethodInvocationImposterGroup : IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIndexerMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIndexerMethodMethodInvocationImposterGroupContinuation Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator);
             IIndexerMethodMethodInvocationImposterGroupContinuation Returns(IndexerMethodDelegate resultGenerator);

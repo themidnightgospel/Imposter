@@ -353,7 +353,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IAsyncTaskIntNoParamsMethodInvocationImposterGroup : IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator);
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Returns(AsyncTaskIntNoParamsDelegate resultGenerator);
@@ -707,7 +707,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws(AsyncValueTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator);
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Returns(AsyncValueTaskIntNoParamsDelegate resultGenerator);
@@ -1129,7 +1129,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>
         {
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Throws(System.Exception exception);
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator);
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Returns(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator);
@@ -1550,7 +1550,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator);
@@ -1998,7 +1998,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator);
@@ -2445,7 +2445,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator);
@@ -2876,7 +2876,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(System.Exception exception);
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
         }
@@ -3272,7 +3272,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericOutParamDelegate<TValue, TResult> resultGenerator);
@@ -3720,7 +3720,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericParamsParamDelegate<TValue, TResult> resultGenerator);
@@ -4167,7 +4167,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(System.Exception exception);
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator);
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(GenericRefParamDelegate<TValue, TResult> resultGenerator);
@@ -4598,7 +4598,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericSingleParamMethodInvocationImposterGroup<TValue> : IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(System.Exception exception);
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
         }
@@ -5015,7 +5015,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntAllRefKindsMethodInvocationImposterGroup : IIntAllRefKindsMethodInvocationImposterGroupCallback
         {
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator);
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Returns(IntAllRefKindsDelegate resultGenerator);
@@ -5382,7 +5382,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntInParamMethodInvocationImposterGroup : IIntInParamMethodInvocationImposterGroupCallback
         {
             IIntInParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntInParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntInParamMethodInvocationImposterGroupContinuation Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator);
             IIntInParamMethodInvocationImposterGroupContinuation Returns(IntInParamDelegate resultGenerator);
@@ -5712,7 +5712,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntNoParamsMethodInvocationImposterGroup : IIntNoParamsMethodInvocationImposterGroupCallback
         {
             IIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntNoParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntNoParamsMethodInvocationImposterGroupContinuation Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator);
             IIntNoParamsMethodInvocationImposterGroupContinuation Returns(IntNoParamsDelegate resultGenerator);
@@ -6043,7 +6043,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntOutParamMethodInvocationImposterGroup : IIntOutParamMethodInvocationImposterGroupCallback
         {
             IIntOutParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntOutParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntOutParamMethodInvocationImposterGroupContinuation Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator);
             IIntOutParamMethodInvocationImposterGroupContinuation Returns(IntOutParamDelegate resultGenerator);
@@ -6412,7 +6412,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntParamsMethodInvocationImposterGroup : IIntParamsMethodInvocationImposterGroupCallback
         {
             IIntParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntParamsMethodInvocationImposterGroupContinuation Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator);
             IIntParamsMethodInvocationImposterGroupContinuation Returns(IntParamsDelegate resultGenerator);
@@ -6774,7 +6774,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntParamsParamMethodInvocationImposterGroup : IIntParamsParamMethodInvocationImposterGroupCallback
         {
             IIntParamsParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntParamsParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntParamsParamMethodInvocationImposterGroupContinuation Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator);
             IIntParamsParamMethodInvocationImposterGroupContinuation Returns(IntParamsParamDelegate resultGenerator);
@@ -7136,7 +7136,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntRefParamMethodInvocationImposterGroup : IIntRefParamMethodInvocationImposterGroupCallback
         {
             IIntRefParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntRefParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntRefParamMethodInvocationImposterGroupContinuation Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator);
             IIntRefParamMethodInvocationImposterGroupContinuation Returns(IntRefParamDelegate resultGenerator);
@@ -7498,7 +7498,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntSingleParamMethodInvocationImposterGroup : IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator);
             IIntSingleParamMethodInvocationImposterGroupContinuation Returns(IntSingleParamDelegate resultGenerator);
@@ -7810,7 +7810,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IVoidNoParamsMethodInvocationImposterGroup : IVoidNoParamsMethodInvocationImposterGroupCallback
         {
             IVoidNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IVoidNoParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IVoidNoParamsMethodInvocationImposterGroupContinuation Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator);
         }

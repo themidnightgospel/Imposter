@@ -278,7 +278,7 @@ namespace Imposter.Playground
         public interface IReturnsGenericMethodInvocationImposterGroup<TResult> : IReturnsGenericMethodInvocationImposterGroupCallback<TResult>
         {
             IReturnsGenericMethodInvocationImposterGroupContinuation<TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReturnsGenericMethodInvocationImposterGroupContinuation<TResult> Throws(System.Exception exception);
             IReturnsGenericMethodInvocationImposterGroupContinuation<TResult> Throws(ReturnsGenericExceptionGeneratorDelegate<TResult> exceptionGenerator);
             IReturnsGenericMethodInvocationImposterGroupContinuation<TResult> Returns(ReturnsGenericDelegate<TResult> resultGenerator);
@@ -725,7 +725,7 @@ namespace Imposter.Playground
         public interface IReturnsWithGeneratorMethodInvocationImposterGroup<TResult> : IReturnsWithGeneratorMethodInvocationImposterGroupCallback<TResult>
         {
             IReturnsWithGeneratorMethodInvocationImposterGroupContinuation<TResult> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IReturnsWithGeneratorMethodInvocationImposterGroupContinuation<TResult> Throws(System.Exception exception);
             IReturnsWithGeneratorMethodInvocationImposterGroupContinuation<TResult> Throws(ReturnsWithGeneratorExceptionGeneratorDelegate<TResult> exceptionGenerator);
             IReturnsWithGeneratorMethodInvocationImposterGroupContinuation<TResult> Returns(ReturnsWithGeneratorDelegate<TResult> resultGenerator);

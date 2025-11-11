@@ -236,7 +236,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IGenericMethodMethodInvocationImposterGroup : IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericMethodMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IGenericMethodMethodInvocationImposterGroupContinuation Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
             IGenericMethodMethodInvocationImposterGroupContinuation Returns(GenericMethodDelegate resultGenerator);

@@ -265,7 +265,7 @@ namespace Imposter.Playground
         public interface IGenericMethodMethodInvocationImposterGroup<T, U, TTarget, UTarget> : IGenericMethodMethodInvocationImposterGroupCallback<T, U, TTarget, UTarget>
         {
             IGenericMethodMethodInvocationImposterGroupContinuation<T, U, TTarget, UTarget> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IGenericMethodMethodInvocationImposterGroupContinuation<T, U, TTarget, UTarget> Throws(System.Exception exception);
             IGenericMethodMethodInvocationImposterGroupContinuation<T, U, TTarget, UTarget> Throws(GenericMethodExceptionGeneratorDelegate<T, U, TTarget, UTarget> exceptionGenerator);
         }

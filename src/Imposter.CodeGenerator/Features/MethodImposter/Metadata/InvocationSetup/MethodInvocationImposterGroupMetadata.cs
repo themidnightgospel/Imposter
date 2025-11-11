@@ -1,3 +1,4 @@
+using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -55,7 +56,13 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ReturnsAsyncMethod = method.ReturnType.SupportsAsyncValueResult
             ? new ReturnsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax, method.ReturnType.AsyncValueTypeSyntax!)
             : null;
-        ThrowsMethod = new ThrowsMethodMetadata(method, method.ExceptionGeneratorDelegate.Syntax, Interface.Syntax, ContinuationInterface.Syntax);
+        
+        ThrowsMethod = new ThrowsMethodMetadata(
+            method,
+            method.ExceptionGeneratorDelegate.Syntax,
+            Interface.Syntax,
+            ContinuationInterface.Syntax);
+        
         ThrowsAsyncMethod = method.IsAsync
             ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax)
             : null;

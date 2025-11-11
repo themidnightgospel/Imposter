@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -62,13 +62,19 @@ internal static partial class InvocationSetupBuilder
 
     private static List<MemberDeclarationSyntax> GetOutcomeMethods(in ImposterTargetMethodMetadata method)
     {
-        var methods = new List<MemberDeclarationSyntax>
-        {
-            new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-                .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("TException"))))
-                .AddConstraintClause(TypeParameterConstraintClause("TException").AddConstraints(TypeConstraint(IdentifierName("Exception")), ConstructorConstraint()))
+        var methods = new List<MemberDeclarationSyntax>();
+
+        var throwsMetadata = method.MethodInvocationImposterGroup.ThrowsMethod;
+        var throwsMethodBuilder = new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
+            .WithTypeParameters(throwsMetadata.TypeParameterList)
+            .AddConstraintClause(throwsMetadata.TypeParameterConstraintClause);
+
+        methods.Add(
+            throwsMethodBuilder
                 .WithSemicolon()
-                .Build(),
+                .Build());
+
+        methods.AddRange([
             new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
                 .WithParameterList(
                     SyntaxFactoryHelper.ParameterSyntax(
@@ -85,8 +91,8 @@ internal static partial class InvocationSetupBuilder
                             method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter,
                             method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceExceptionGeneratorParameterName)))
                 .WithSemicolon()
-                .Build(),
-        };
+                .Build()
+        ]);
 
         if (method.HasReturnValue)
         {
@@ -148,4 +154,11 @@ internal static partial class InvocationSetupBuilder
 
     private static ParameterMetadata InterfaceParameter(ParameterMetadata metadata, string interfaceName) =>
         new(interfaceName, metadata.Type, metadata.DefaultValue);
+
+    /*
+    private static SyntaxList<TypeParameterConstraintClauseSyntax> GetTypeParameterConstraintClauses(in ImposterTargetMethodMetadata method) =>
+        SyntaxFactoryHelper.AddOrReplaceConstraintClause(
+            method.GenericTypeConstraintClauses,
+            method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceTypeParameterConstraintClause);
+*/
 }

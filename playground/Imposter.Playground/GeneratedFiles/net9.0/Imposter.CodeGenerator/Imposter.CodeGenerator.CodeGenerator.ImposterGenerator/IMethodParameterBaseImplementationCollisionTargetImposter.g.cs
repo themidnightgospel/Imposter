@@ -236,7 +236,7 @@ namespace Imposter.Playground
         public interface IBaseImplementationNameMethodInvocationImposterGroup : IBaseImplementationNameMethodInvocationImposterGroupCallback
         {
             IBaseImplementationNameMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IBaseImplementationNameMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IBaseImplementationNameMethodInvocationImposterGroupContinuation Throws(BaseImplementationNameExceptionGeneratorDelegate exceptionGenerator);
             IBaseImplementationNameMethodInvocationImposterGroupContinuation Returns(BaseImplementationNameDelegate resultGenerator);

@@ -65,8 +65,7 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public InterfaceDeclarationSyntax Build(
-        SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
+    public InterfaceDeclarationSyntax Build()
     {
         return InterfaceDeclaration(
             List(DefaultAttributes.DefaultTypeAttributes.Concat(_attributes)),
@@ -74,7 +73,7 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
-            constraintClauses,
+            default,
             List(_members));
     }
 }

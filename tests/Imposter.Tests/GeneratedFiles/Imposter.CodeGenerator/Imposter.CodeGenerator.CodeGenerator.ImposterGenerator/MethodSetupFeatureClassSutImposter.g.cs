@@ -308,7 +308,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IBuildLabelAsyncMethodInvocationImposterGroup : IBuildLabelAsyncMethodInvocationImposterGroupCallback
         {
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Throws(BuildLabelAsyncExceptionGeneratorDelegate exceptionGenerator);
             IBuildLabelAsyncMethodInvocationImposterGroupContinuation Returns(BuildLabelAsyncDelegate resultGenerator);
@@ -706,7 +706,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IIntSingleParamMethodInvocationImposterGroup : IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator);
             IIntSingleParamMethodInvocationImposterGroupContinuation Returns(IntSingleParamDelegate resultGenerator);
@@ -1103,7 +1103,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IRefOutWithParamsMethodInvocationImposterGroup : IRefOutWithParamsMethodInvocationImposterGroupCallback
         {
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Throws(RefOutWithParamsExceptionGeneratorDelegate exceptionGenerator);
             IRefOutWithParamsMethodInvocationImposterGroupContinuation Returns(RefOutWithParamsDelegate resultGenerator);
@@ -1514,7 +1514,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface ISumAsyncMethodInvocationImposterGroup : ISumAsyncMethodInvocationImposterGroupCallback
         {
             ISumAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ISumAsyncMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             ISumAsyncMethodInvocationImposterGroupContinuation Throws(SumAsyncExceptionGeneratorDelegate exceptionGenerator);
             ISumAsyncMethodInvocationImposterGroupContinuation Returns(SumAsyncDelegate resultGenerator);
@@ -1912,7 +1912,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IThrowingCalculationMethodInvocationImposterGroup : IThrowingCalculationMethodInvocationImposterGroupCallback
         {
             IThrowingCalculationMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IThrowingCalculationMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IThrowingCalculationMethodInvocationImposterGroupContinuation Throws(ThrowingCalculationExceptionGeneratorDelegate exceptionGenerator);
             IThrowingCalculationMethodInvocationImposterGroupContinuation Returns(ThrowingCalculationDelegate resultGenerator);
@@ -2276,7 +2276,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public interface IVoidWithSideEffectMethodInvocationImposterGroup : IVoidWithSideEffectMethodInvocationImposterGroupCallback
         {
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation Throws(VoidWithSideEffectExceptionGeneratorDelegate exceptionGenerator);
             IVoidWithSideEffectMethodInvocationImposterGroupContinuation UseBaseImplementation();

@@ -218,7 +218,7 @@ namespace Imposter.Playground
         public interface IDuplicateMethodInvocationImposterGroup : IDuplicateMethodInvocationImposterGroupCallback
         {
             IDuplicateMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDuplicateMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDuplicateMethodInvocationImposterGroupContinuation Throws(DuplicateExceptionGeneratorDelegate exceptionGenerator);
             IDuplicateMethodInvocationImposterGroupContinuation Returns(DuplicateDelegate resultGenerator);
@@ -574,7 +574,7 @@ namespace Imposter.Playground
         public interface IDuplicate_1MethodInvocationImposterGroup : IDuplicate_1MethodInvocationImposterGroupCallback
         {
             IDuplicate_1MethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDuplicate_1MethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDuplicate_1MethodInvocationImposterGroupContinuation Throws(Duplicate_1ExceptionGeneratorDelegate exceptionGenerator);
             IDuplicate_1MethodInvocationImposterGroupContinuation Returns(Duplicate_1Delegate resultGenerator);
@@ -940,7 +940,7 @@ namespace Imposter.Playground
         public interface IDuplicate_2MethodInvocationImposterGroup : IDuplicate_2MethodInvocationImposterGroupCallback
         {
             IDuplicate_2MethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IDuplicate_2MethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IDuplicate_2MethodInvocationImposterGroupContinuation Throws(Duplicate_2ExceptionGeneratorDelegate exceptionGenerator);
             IDuplicate_2MethodInvocationImposterGroupContinuation Returns(Duplicate_2Delegate resultGenerator);

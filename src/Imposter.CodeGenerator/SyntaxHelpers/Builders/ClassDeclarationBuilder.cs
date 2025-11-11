@@ -68,8 +68,7 @@ internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterL
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClassDeclarationSyntax Build(
-        SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = default)
+    public ClassDeclarationSyntax Build()
     {
         return ClassDeclaration(
             List(DefaultAttributes.DefaultTypeAttributes.Concat(_attribute)),
@@ -77,7 +76,7 @@ internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterL
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
-            constraintClauses,
+            default,
             new SyntaxList<MemberDeclarationSyntax>(_members));
     }
 }

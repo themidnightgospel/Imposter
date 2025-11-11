@@ -307,7 +307,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IEchoMethodInvocationImposterGroup<T> : IEchoMethodInvocationImposterGroupCallback<T>
         {
             IEchoMethodInvocationImposterGroupContinuation<T> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IEchoMethodInvocationImposterGroupContinuation<T> Throws(System.Exception exception);
             IEchoMethodInvocationImposterGroupContinuation<T> Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator);
             IEchoMethodInvocationImposterGroupContinuation<T> Returns(EchoDelegate<T> resultGenerator);
@@ -741,7 +741,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IFormatMethodInvocationImposterGroup : IFormatMethodInvocationImposterGroupCallback
         {
             IFormatMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IFormatMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IFormatMethodInvocationImposterGroupContinuation Throws(FormatExceptionGeneratorDelegate exceptionGenerator);
             IFormatMethodInvocationImposterGroupContinuation Returns(FormatDelegate resultGenerator);
@@ -1129,7 +1129,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface IFormat_1MethodInvocationImposterGroup : IFormat_1MethodInvocationImposterGroupCallback
         {
             IFormat_1MethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IFormat_1MethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IFormat_1MethodInvocationImposterGroupContinuation Throws(Format_1ExceptionGeneratorDelegate exceptionGenerator);
             IFormat_1MethodInvocationImposterGroupContinuation Returns(Format_1Delegate resultGenerator);
@@ -1552,7 +1552,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>
         {
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Throws(System.Exception exception);
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Throws(SelectFirstExceptionGeneratorDelegate<TFirst, TSecond> exceptionGenerator);
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Returns(SelectFirstDelegate<TFirst, TSecond> resultGenerator);

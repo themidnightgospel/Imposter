@@ -207,7 +207,7 @@ namespace Imposter.Playground
         public interface IAdapterMethodInvocationImposterGroup : IAdapterMethodInvocationImposterGroupCallback
         {
             IAdapterMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAdapterMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAdapterMethodInvocationImposterGroupContinuation Throws(AdapterExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -530,7 +530,7 @@ namespace Imposter.Playground
         public interface IAsMethodInvocationImposterGroup : IAsMethodInvocationImposterGroupCallback
         {
             IAsMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IAsMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IAsMethodInvocationImposterGroupContinuation Throws(AsExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -827,7 +827,7 @@ namespace Imposter.Playground
         public interface IHasMatchingSetupMethodInvocationImposterGroup : IHasMatchingSetupMethodInvocationImposterGroupCallback
         {
             IHasMatchingSetupMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IHasMatchingSetupMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IHasMatchingSetupMethodInvocationImposterGroupContinuation Throws(HasMatchingSetupExceptionGeneratorDelegate exceptionGenerator);
         }
@@ -1150,7 +1150,7 @@ namespace Imposter.Playground
         public interface IInvokeMethodInvocationImposterGroup : IInvokeMethodInvocationImposterGroupCallback
         {
             IInvokeMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : Exception, new();
+                where TException : System.Exception, new();
             IInvokeMethodInvocationImposterGroupContinuation Throws(System.Exception exception);
             IInvokeMethodInvocationImposterGroupContinuation Throws(InvokeExceptionGeneratorDelegate exceptionGenerator);
         }
