@@ -16,6 +16,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly MethodInvocationImposterGroupMetadata MethodInvocationImposterGroup;
 
+    internal readonly MethodInvocationImposterMetadata MethodInvocationImposter;
+
     internal readonly TypeMetadata Delegate;
 
     internal readonly TypeMetadata CallbackDelegate;
@@ -94,6 +96,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
+        MethodInvocationImposter = new MethodInvocationImposterMetadata(this);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(symbol);

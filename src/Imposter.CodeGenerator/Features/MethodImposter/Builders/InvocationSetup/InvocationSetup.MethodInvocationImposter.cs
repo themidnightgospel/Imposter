@@ -128,6 +128,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
         var resultInvocation = IdentifierName("_resultGenerator")
             .Dot(IdentifierName("Invoke"))
             .Call(arguments);
+        var resultVariableIdentifier = IdentifierName(method.MethodInvocationImposter.ResultVariableName);
 
         var defaultBlockBuilder = new BlockBuilder()
             .AddStatement(
@@ -162,7 +163,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
             defaultBlockBuilder.AddStatement(
                 LocalVariableDeclarationSyntax(
                     method.ReturnTypeSyntax,
-                    "result",
+                    method.MethodInvocationImposter.ResultVariableName,
                     resultInvocation));
         }
 
@@ -179,7 +180,7 @@ private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMeta
 
         if (!method.Symbol.ReturnsVoid)
         {
-            defaultBlockBuilder.AddStatement(ReturnStatement(IdentifierName("result")));
+            defaultBlockBuilder.AddStatement(ReturnStatement(resultVariableIdentifier));
         }
 
         var defaultBlock = defaultBlockBuilder.Build();

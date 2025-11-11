@@ -190,13 +190,13 @@ namespace Imposter.Playground
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    int result = _resultGenerator.Invoke(result, arguments, target, _target);
+                    int result_1 = _resultGenerator.Invoke(result, arguments, target, _target);
                     foreach (var callback in _callbacks)
                     {
                         callback(result, arguments, target, _target);
                     }
 
-                    return result;
+                    return result_1;
                 }
 
                 internal void Callback(AdapterNamesCallbackDelegate callback)
