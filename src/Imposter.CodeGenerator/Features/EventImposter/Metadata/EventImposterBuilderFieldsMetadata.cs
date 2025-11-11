@@ -55,14 +55,24 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             return WellKnownTypes.Bool;
         }
 
+        if (core.Parameters.Length == 1)
+        {
+            return core.Parameters[0].TypeSyntax;
+        }
+
         var tupleElements = core.Parameters
             .Select(parameter => TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name)));
 
         return TupleType(SeparatedList(tupleElements));
     }
 
-    private static TupleTypeSyntax BuildHandlerInvocationEntryType(in ImposterEventCoreMetadata core)
+    private static TypeSyntax BuildHandlerInvocationEntryType(in ImposterEventCoreMetadata core)
     {
+        if (core.Parameters.Length == 0)
+        {
+            return core.HandlerTypeSyntax;
+        }
+
         var elements = new List<TupleElementSyntax>
         {
             TupleElement(core.HandlerTypeSyntax).WithIdentifier(Identifier("Handler"))

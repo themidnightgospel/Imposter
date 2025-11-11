@@ -214,12 +214,22 @@ internal static partial class EventImposterBuilder
             return True;
         }
 
+        if (@event.Core.Parameters.Length == 1)
+        {
+            return IdentifierName(@event.Core.Parameters[0].Name);
+        }
+
         return TupleExpression(
             SeparatedList(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))));
     }
 
-    private static TupleExpressionSyntax BuildHandlerInvocationTuple(ExpressionSyntax handlerExpression, in ImposterEventMetadata @event)
+    private static ExpressionSyntax BuildHandlerInvocationTuple(ExpressionSyntax handlerExpression, in ImposterEventMetadata @event)
     {
+        if (@event.Core.Parameters.Length == 0)
+        {
+            return handlerExpression;
+        }
+
         var arguments = new List<ArgumentSyntax> { Argument(handlerExpression) };
         arguments.AddRange(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))));
         return TupleExpression(SeparatedList(arguments));

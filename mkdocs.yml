@@ -6,10 +6,12 @@ repo_name: themidnightgospel/Imposter
 
 theme:
   name: material
+  font:
+    text: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
   language: en
   features:
     - navigation.sections
-    - navigation.tabs
+    - navigation.expand
     - navigation.instant
     - toc.follow
     - content.code.copy
@@ -18,12 +20,12 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: blue
-      accent: indigo
+      primary: green
+      accent: light green
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: blue
-      accent: indigo
+      primary: green
+      accent: light green
 
 markdown_extensions:
   - admonition
@@ -46,6 +48,7 @@ extra:
 
 nav:
   - Home: index.md
+  - Method Mocking: methods.md
 
 plugins:
   - search

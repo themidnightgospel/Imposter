@@ -116,7 +116,18 @@ internal static partial class EventImposterBuilder
         var entryIdentifier = IdentifierName("entry");
         ExpressionSyntax? predicateBody = null;
 
-        if (@event.Core.Parameters.Length > 0)
+        if (@event.Core.Parameters.Length == 0)
+        {
+            predicateBody = True;
+        }
+        else if (@event.Core.Parameters.Length == 1)
+        {
+            var parameter = @event.Core.Parameters[0];
+            predicateBody = IdentifierName($"{parameter.Name}Criteria")
+                .Dot(IdentifierName("Matches"))
+                .Call(Argument(entryIdentifier));
+        }
+        else
         {
             foreach (var parameter in @event.Core.Parameters)
             {
@@ -129,10 +140,6 @@ internal static partial class EventImposterBuilder
                     : predicateBody.And(matchCall);
             }
         }
-        else
-        {
-            predicateBody = True;
-        }
 
         return SimpleLambdaExpression(Parameter(Identifier("entry")), predicateBody!);
     }
@@ -141,6 +148,14 @@ internal static partial class EventImposterBuilder
     {
         var method = @event.Builder.Methods.HandlerInvoked;
         var criteriaName = method.HandlerCriteriaParameter.Name;
+
+        Func<ExpressionSyntax, ExpressionSyntax> predicateFactory = @event.Core.Parameters.Length == 0
+            ? entry => IdentifierName(criteriaName)
+                .Dot(IdentifierName("Matches"))
+                .Call(Argument(entry))
+            : entry => IdentifierName(criteriaName)
+                .Dot(IdentifierName("Matches"))
+                .Call(Argument(entry.Dot(IdentifierName("Handler"))));
 
         return ExplicitInterfaceMethod(
                 @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -153,9 +168,7 @@ internal static partial class EventImposterBuilder
                     @event,
                     historyField: @event.Builder.Fields.HandlerInvocations,
                     criteriaParameterName: criteriaName,
-                    predicateFactory: entry => IdentifierName(criteriaName)
-                        .Dot(IdentifierName("Matches"))
-                        .Call(Argument(entry.Dot(IdentifierName("Handler")))),
+                    predicateFactory: predicateFactory,
                     action: "invoked"))
             .Build();
     }

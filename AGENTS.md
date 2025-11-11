@@ -51,6 +51,7 @@ Start here for a high-level map: `Imposter_codex/ARCHITECTURE.md`
  
 ## Important
 - Use serena as much as possible
+- For the test outputs, like .log files you create during work, use TEMP directory.
 
 ## review
 - when i ask you to review the code, use this as a base guideline: Evaluate its architecture and design quality, focusing on whether it follows SOLID principles, Clean Code practices, KISS, YAGNI, DRY. ssess the code’s readability, maintainability, extensibility, and testability. Check for proper naming conventions, cohesion, coupling, and separation of concerns. Identify potential code smells, violations of design principles, or anti-patterns. Suggest specific and actionable improvements to make the code cleaner, more robust, and easier to evolve. Finally, summarize your evaluation with an overall design quality rating (e.g., Excellent / Good / Needs Improvement / Poor) and key recommendations for refactoring or redesign. During review, do not write any code.
