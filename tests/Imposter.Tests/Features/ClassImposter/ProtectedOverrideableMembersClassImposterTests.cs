@@ -98,6 +98,7 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
             imposter.ProtectedVirtualEvent.UseBaseImplementation();
+            imposter.SubscribeToProtectedEvent(Arg<EventHandler>.Any()).UseBaseImplementation();
 
             var instance = imposter.Instance();
             var handler = new EventHandler((sender, arg) => { });
