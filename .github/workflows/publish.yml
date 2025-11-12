@@ -4,12 +4,6 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Package version (SemVer)'
-        required: true
-        default: '0.1.0'
 
 jobs:
   build-pack-publish:
@@ -33,18 +27,15 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Determine version
+      - name: Determine version from tag
         id: ver
         shell: bash
         run: |
-          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            # Strip leading 'v' if tag starts with it
-            tag="${GITHUB_REF_NAME}"
-            tag="${tag#v}"
-            echo "version=$tag" >> $GITHUB_OUTPUT
-          else
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          fi
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          # Strip leading 'v' if present (expect tags like v0.1.0)
+          version="${tag#v}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Restore
         run: dotnet restore Imposter.sln
@@ -69,7 +60,7 @@ jobs:
           path: artifacts/packages
 
       - name: Push to NuGet.org
-        if: secrets.NUGET_API_KEY != ''
+        if: ${{ secrets.NUGET_API_KEY != '' }}
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
@@ -77,4 +68,3 @@ jobs:
             --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
-
