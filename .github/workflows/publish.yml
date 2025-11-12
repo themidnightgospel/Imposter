@@ -64,9 +64,14 @@ jobs:
       - name: Push to NuGet.org
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        if: env.NUGET_API_KEY != ''
         run: |
-          dotnet nuget push artifacts/packages/*.nupkg \
-            --api-key "$NUGET_API_KEY" \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
+            if [ -z "$NUGET_API_KEY" ]; then
+              echo "NUGET_API_KEY is not set. Skipping NuGet publish."
+              exit 0
+            fi
+            
+            echo "Publishing to NuGet.org..."
+            dotnet nuget push artifacts/packages/*.nupkg \
+              --api-key "$NUGET_API_KEY" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
