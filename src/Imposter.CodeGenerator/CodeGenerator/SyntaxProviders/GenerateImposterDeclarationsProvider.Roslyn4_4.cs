@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if ROSLYN4_4_OR_GREATER
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
@@ -13,7 +14,7 @@ internal static class GenerateImposterDeclarationsProvider
 {
     private static readonly string GenerateImposterAttribute = typeof(GenerateImposterAttribute).FullName!;
 
-internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this in IncrementalGeneratorInitializationContext context)
     {
         return context
             .SyntaxProvider
@@ -26,7 +27,8 @@ internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenera
             .SelectMany((targetSymbols, _) => targetSymbols.Distinct())
             .WithTrackingName("GenerateImposterDeclarations");
     }
-private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(in GeneratorAttributeSyntaxContext context, in CancellationToken token)
+
+    private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(in GeneratorAttributeSyntaxContext context, in CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
@@ -55,3 +57,4 @@ private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSym
     private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
         attributeData.ConstructorArguments.Length != 2 || (bool)attributeData.ConstructorArguments[1].Value!;
 }
+#endif

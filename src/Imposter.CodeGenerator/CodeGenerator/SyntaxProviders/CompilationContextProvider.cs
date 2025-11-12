@@ -12,7 +12,7 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class CompilationContextProvider
 {
-internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this in IncrementalGeneratorInitializationContext context)
     {
         return context
             .CompilationProvider
@@ -21,15 +21,22 @@ internal static IncrementalValueProvider<CompilationContext> GetCompilationConte
                     new NameSet([])
                 )
             )
-            .WithTrackingName("CompilationContext");
+#if ROSLYN4_4_OR_GREATER
+            .WithTrackingName("CompilationContext")
+#endif
+        ;
     }
 
-internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this in IncrementalGeneratorInitializationContext context)
     {
         return context
-            .CompilationProvider
-            .SelectMany(static (compilation, _) => ValidateCSharpCompilation(compilation))
-            .WithTrackingName("CompilationDiagnostics");
+                .CompilationProvider
+                .SelectMany(static (compilation, _) => ValidateCSharpCompilation(compilation))
+
+#if ROSLYN4_4_OR_GREATER
+                .WithTrackingName("CompilationDiagnostics")
+#endif
+            ;
     }
 
     private static IEnumerable<Diagnostic> ValidateCSharpCompilation(Compilation compilation)

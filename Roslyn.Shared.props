@@ -1,0 +1,17 @@
+<Project>
+    <PropertyGroup>
+        <ROSLYN_VERSION Condition="'$(ROSLYN_VERSION)' == ''">4.14</ROSLYN_VERSION>
+
+        <_RoslynVersionNormalized>$([System.String]::Copy('$(ROSLYN_VERSION)').Split('-')[0])</_RoslynVersionNormalized>
+
+        <DefineConstants Condition="'$(_RoslynVersionNormalized)' >= '4.4'">$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants>
+        <DefineConstants Condition="'$(_RoslynVersionNormalized)' >= '4.14'">$(DefineConstants);ROSLYN4_14_OR_GREATER</DefineConstants>
+        <DefineConstants Condition="'$(_RoslynVersionNormalized)' >= '5.0'">$(DefineConstants);ROSLYN_5_OR_GREATER</DefineConstants>
+
+    </PropertyGroup>
+    <Target Name="ShowRoslynVersion" BeforeTargets="Build">
+        <Message Text="Roslyn raw: $(ROSLYN_VERSION)" Importance="High"/>
+        <Message Text="Roslyn normalized: $(_RoslynVersionTrimmed)" Importance="High"/>
+    </Target>
+
+</Project>

@@ -6,7 +6,9 @@ using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
+#if ROSLYN4_14_OR_GREATER
 using Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
+#endif
 using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Delegates;
@@ -35,7 +37,6 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 [Generator]
 public sealed class ImposterGenerator : IIncrementalGenerator
 {
-
     public void Initialize(IncrementalGeneratorInitializationContext context) => InitializeCore(in context);
 
     private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
@@ -97,15 +98,17 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
 
+#if ROSLYN4_14_OR_GREATER
         if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
         {
             imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
                 imposterGenerationContext,
                 imposterGenerationContext.ImposterNamespaceName));
         }
+#endif
 
         var imposterNamespace = imposterNamespaceBuilder
-             .Build();
+            .Build();
 
         var compilationUnit = CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
@@ -229,5 +232,4 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer));
         }
     }
-
 }
