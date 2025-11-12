@@ -10,19 +10,19 @@ Docs: https://themidnightgospel.github.io/Imposter/
 
 ## Quick Start
 
-1) Add the NuGet package `Imposter` to your project:
+1) Add the NuGet package `Imposter.CodeGenerator` to your project:
 
 Using CLI:
 
 ```bash
-dotnet add package Imposter
+dotnet add package Imposter.CodeGenerator
 ```
 
 Or via `csproj`:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Imposter" Version="0.1.0" />
+  <PackageReference Include="Imposter.CodeGenerator" Version="0.1.0" />
 </ItemGroup>
 ```
 
