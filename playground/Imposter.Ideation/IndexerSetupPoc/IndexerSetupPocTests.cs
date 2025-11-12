@@ -140,7 +140,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
         [Fact]
         public void Getter_ExplicitInvocationWithoutSetup_Throws()
         {
-            var imposter = new IndexerSetupPocImposter(ImposterInvocationBehavior.Explicit);
+            var imposter = new IndexerSetupPocImposter(ImposterMode.Explicit);
             var instance = imposter.Instance();
 
             Should.Throw<MissingImposterException>(() => instance[1, "missing", new object()]);
@@ -216,7 +216,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
         [Fact]
         public void Setter_ExplicitInvocationWithoutSetup_Throws()
         {
-            var imposter = new IndexerSetupPocImposter(ImposterInvocationBehavior.Explicit);
+            var imposter = new IndexerSetupPocImposter(ImposterMode.Explicit);
             var instance = imposter.Instance();
 
             Should.Throw<MissingImposterException>(() => instance[1, "missing", new object()] = 10);

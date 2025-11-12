@@ -143,7 +143,7 @@ internal static partial class InvocationSetupBuilder
                                 SyntaxKind.EqualsExpression,
                                 IdentifierName("invocationBehavior"),
                                 QualifiedName(
-                                    WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
                                     IdentifierName("Explicit"))),
                             Block(
                                 ThrowStatement(
@@ -223,7 +223,7 @@ internal static partial class InvocationSetupBuilder
     {
         var parameters = new List<ParameterSyntax>
         {
-            ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"),
+            ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, "invocationBehavior"),
             ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName")
         };
 

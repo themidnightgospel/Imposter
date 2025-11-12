@@ -24,10 +24,10 @@ namespace Imposter.Ideation.NonInterfaceTargets
         [Fact]
         public void Missing_setups_follow_invocation_behavior()
         {
-            var strict = new WarehouseAllocationImposter(ImposterInvocationBehavior.Explicit);
+            var strict = new WarehouseAllocationImposter(ImposterMode.Explicit);
             Should.Throw<MissingImposterException>(() => strict.Instance().Reserve("missing", 1));
     
-            var loose = new WarehouseAllocationImposter(ImposterInvocationBehavior.Implicit);
+            var loose = new WarehouseAllocationImposter(ImposterMode.Implicit);
             loose.Instance().Reserve("missing", 1).ShouldBe(default);
         }
     

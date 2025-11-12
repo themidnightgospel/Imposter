@@ -7,7 +7,7 @@ namespace Imposter.Abstractions;
 /// Use <see cref="Implicit"/> to have missing setups return default values (loose mode).
 /// Use <see cref="Explicit"/> to throw when a missing setup is encountered (strict mode).
 /// </remarks>
-public enum ImposterInvocationBehavior
+public enum ImposterMode
 {
     /// <summary>
     /// Implicit (loose) mode — missing setups fall back to default return values.

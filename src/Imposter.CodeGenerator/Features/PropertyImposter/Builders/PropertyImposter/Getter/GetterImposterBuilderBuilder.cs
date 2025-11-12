@@ -30,7 +30,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(BuildLastGetterReturnValueField(property.GetterImposterBuilder))
             .AddMember(BuildGetterInvocationCountField(property.GetterImposterBuilder))
             .AddMember(SinglePrivateReadonlyVariableField(property.GetterImposterBuilder.DefaultPropertyBehaviourField))
-            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterMode, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, "_hasConfiguredReturn", SyntaxKind.PrivateKeyword))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, "_useBaseImplementation", SyntaxKind.PrivateKeyword))
@@ -62,7 +62,7 @@ internal static class GetterImposterBuilderBuilder
         var constructor = new ConstructorBuilder(property.GetterImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(ParameterSyntax(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Type, property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name))
-            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"))
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, "invocationBehavior"))
             .AddParameter(ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "propertyDisplayName"));
 
         var body = new BlockBuilder()
@@ -452,7 +452,7 @@ internal static class GetterImposterBuilderBuilder
             BinaryExpression(
                     SyntaxKind.EqualsExpression,
                     IdentifierName("_invocationBehavior"),
-                    QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit")))
+                    QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterMode, IdentifierName("Explicit")))
                 .And(Not(IdentifierName("_hasConfiguredReturn")));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")

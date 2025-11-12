@@ -22,7 +22,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             return new ComputeMethodImposter.Builder(_computeMethodImposter, _computeMethodInvocationHistoryCollection, new ComputeArgumentsCriteria(value));
         }
 
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass>.Instance()
         {
@@ -139,12 +139,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -170,7 +170,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ComputeDelegate baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
@@ -179,7 +179,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -279,8 +279,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<ComputeMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<ComputeMethodInvocationImposterGroup>();
             private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public ComputeMethodImposter(ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public ComputeMethodImposter(ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._computeMethodInvocationHistoryCollection = _computeMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -308,7 +308,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("virtual int ParameterizedCtorOnlyClass.Compute(int value)");
                     }
@@ -511,10 +511,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class NamePropertyBuilder : INamePropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
             internal SetterImposter _setterImposter;
             internal GetterImposterBuilder _getterImposterBuilder;
-            internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior)
+            internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
@@ -538,11 +538,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private System.Func<string> _lastReturnValue = () => default;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
                 private bool _useBaseImplementation;
-                internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
                     this._invocationBehavior = invocationBehavior;
@@ -658,7 +658,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureGetterConfigured()
                 {
-                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredReturn)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                 }
             }
@@ -669,11 +669,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<global::Imposter.Abstractions.Arg<string>, System.Action<string>>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<global::Imposter.Abstractions.Arg<string>, System.Action<string>>>();
                 private readonly System.Collections.Concurrent.ConcurrentBag<string> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<string>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
                 private bool _useBaseImplementation;
-                internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
                     this._invocationBehavior = invocationBehavior;
@@ -730,7 +730,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureSetterConfigured()
                 {
-                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !_hasConfiguredSetter)
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredSetter)
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                 }
 
@@ -1113,7 +1113,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
             {
                 this._getterImposter = new GetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
                 this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
@@ -1169,10 +1169,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
                 private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
-                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
-                internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultBehaviour = defaultBehaviour;
                     this._invocationBehavior = invocationBehavior;
@@ -1190,7 +1190,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             EnsureGetterConfigured();
                             if (_defaultBehaviour.IsOn)
                                 return _defaultBehaviour.Get(arguments, baseImplementation);
-                            if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                            if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                             {
                                 throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                             }
@@ -1250,7 +1250,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureGetterConfigured()
                 {
-                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredReturn))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
                     }
@@ -1416,10 +1416,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 private readonly System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria> _baseCriteria = new System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+                private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
-                internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+                internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultBehaviour = defaultBehaviour;
                     this._invocationBehavior = invocationBehavior;
@@ -1479,7 +1479,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 private void EnsureSetterConfigured()
                 {
-                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
+                    if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !System.Threading.Volatile.Read(ref _hasConfiguredSetter))
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }
@@ -1609,7 +1609,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IIndexerIndexerSetterBuilder Setter();
         }
 
-        public ParameterizedCtorOnlyClassImposter(int seed, string name, global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public ParameterizedCtorOnlyClassImposter(int seed, string name, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, invocationBehavior);
             this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);

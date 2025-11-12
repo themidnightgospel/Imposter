@@ -22,7 +22,7 @@ namespace Imposter.Tests.Features.MethodImposter
             return new GenericMethodMethodImposter.Builder(_genericMethodMethodImposter, _genericMethodMethodInvocationHistoryCollection, new GenericMethodArgumentsCriteria(age));
         }
 
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>.Instance()
         {
@@ -139,12 +139,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
+            public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -169,11 +169,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
+                public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -263,8 +263,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup>();
             private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericMethodMethodImposter(GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericMethodMethodImposter(GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericMethodMethodInvocationHistoryCollection = _genericMethodMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -292,7 +292,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("string IClosedGenericSut<int, string>.GenericMethod(int age)");
                     }
@@ -393,7 +393,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        public IClosedGenericSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IClosedGenericSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);

@@ -24,7 +24,7 @@ internal static class SetterImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.CallbacksField.Type, CallbacksFieldMetadata.Name, property.SetterImposter.CallbacksField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationHistoryField, property.SetterImposter.InvocationHistoryField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(property.SetterImposter.DefaultPropertyBehaviourField))
-            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterMode, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, "_hasConfiguredSetter", SyntaxKind.PrivateKeyword))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, "_useBaseImplementation", SyntaxKind.PrivateKeyword))
@@ -44,7 +44,7 @@ internal static class SetterImposterBuilder
         var constructor = new ConstructorBuilder(property.SetterImposter.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(ParameterSyntax(property.SetterImposter.DefaultPropertyBehaviourField.Type, property.SetterImposter.DefaultPropertyBehaviourField.Name))
-            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior"))
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, "invocationBehavior"))
             .AddParameter(ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "propertyDisplayName"));
 
         var body = new BlockBuilder()
@@ -252,7 +252,7 @@ internal static class SetterImposterBuilder
         var condition = BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName("_invocationBehavior"),
-                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, IdentifierName("Explicit")))
+                QualifiedName(WellKnownTypes.Imposter.Abstractions.ImposterMode, IdentifierName("Explicit")))
             .And(Not(IdentifierName("_hasConfiguredSetter"))
             );
 

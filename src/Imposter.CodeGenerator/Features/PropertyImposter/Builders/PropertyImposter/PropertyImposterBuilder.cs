@@ -18,7 +18,7 @@ internal static class PropertyImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
             .AddMember(SinglePrivateReadonlyVariableField(property.ImposterBuilder.DefaultPropertyBehaviourField))
-            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "_invocationBehavior"))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterMode, "_invocationBehavior"))
             .AddMember(property.Core.HasSetter ? SingleVariableField(property.ImposterBuilder.SetterImposterField, SyntaxKind.InternalKeyword) : null)
             .AddMember(property.Core.HasGetter ? SingleVariableField(property.ImposterBuilder.GetterImposterBuilderField, SyntaxKind.InternalKeyword) : null)
             .AddMember(BuildConstructor(property))
@@ -111,7 +111,7 @@ internal static class PropertyImposterBuilder
 
     internal static ConstructorDeclarationSyntax BuildConstructor(in ImposterPropertyMetadata property)
     {
-        var invocationBehaviorParameter = ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, "invocationBehavior");
+        var invocationBehaviorParameter = ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, "invocationBehavior");
         var propertyDisplayLiteral = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(property.Core.DisplayName));
 
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)

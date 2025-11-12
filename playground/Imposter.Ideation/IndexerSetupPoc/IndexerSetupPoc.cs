@@ -60,9 +60,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
         private readonly IndexerImposterBuilder _indexer;
         private readonly IIndexerSetupPocV2Sut _instance;
 
-        public IndexerSetupPocImposter(ImposterInvocationBehavior invocationBehavior = ImposterInvocationBehavior.Implicit)
+        public IndexerSetupPocImposter(ImposterMode mode = ImposterMode.Implicit)
         {
-            _indexer = new IndexerImposterBuilder(invocationBehavior, IndexerSignature);
+            _indexer = new IndexerImposterBuilder(mode, IndexerSignature);
             _instance = new ImposterTargetInstance(this);
         }
 
@@ -111,10 +111,10 @@ namespace Imposter.Ideation.IndexerSetupPoc
             private readonly GetterImposter _getter;
             private readonly SetterImposter _setter;
 
-            public IndexerImposterBuilder(ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            public IndexerImposterBuilder(ImposterMode mode, string propertyDisplayName)
             {
-                _getter = new GetterImposter(_defaultBehaviour, invocationBehavior, propertyDisplayName);
-                _setter = new SetterImposter(_defaultBehaviour, invocationBehavior, propertyDisplayName);
+                _getter = new GetterImposter(_defaultBehaviour, mode, propertyDisplayName);
+                _setter = new SetterImposter(_defaultBehaviour, mode, propertyDisplayName);
             }
 
             public IIndexerGetterImposterBuilder CreateGetter(IndexerArgumentsCriteria criteria) =>
@@ -202,14 +202,14 @@ namespace Imposter.Ideation.IndexerSetupPoc
             private readonly ConcurrentStack<GetterInvocationImposter> _setups = new ConcurrentStack<GetterInvocationImposter>();
             private readonly ConcurrentDictionary<IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new ConcurrentDictionary<IndexerArgumentsCriteria, GetterInvocationImposter>();
             private readonly ConcurrentBag<IndexerArguments> _invocationHistory = new ConcurrentBag<IndexerArguments>();
-            private readonly ImposterInvocationBehavior _invocationBehavior;
+            private readonly ImposterMode _mode;
             private readonly string _propertyDisplayName;
             private bool _hasConfiguredReturn;
 
-            public GetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            public GetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterMode mode, string propertyDisplayName)
             {
                 _defaultBehaviour = defaultBehaviour;
-                _invocationBehavior = invocationBehavior;
+                _mode = mode;
                 _propertyDisplayName = propertyDisplayName;
             }
 
@@ -280,7 +280,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
             private void EnsureGetterConfigured()
             {
-                if (_invocationBehavior == ImposterInvocationBehavior.Explicit && !Volatile.Read(ref _hasConfiguredReturn))
+                if (_mode == ImposterMode.Explicit && !Volatile.Read(ref _hasConfiguredReturn))
                 {
                     throw new MissingImposterException(_propertyDisplayName + " (getter)");
                 }
@@ -420,14 +420,14 @@ namespace Imposter.Ideation.IndexerSetupPoc
             private readonly ConcurrentQueue<(IndexerArgumentsCriteria Criteria, IndexerSetterCallbackDelegate Callback)> _callbacks = new ConcurrentQueue<(IndexerArgumentsCriteria, IndexerSetterCallbackDelegate)>();
             private readonly ConcurrentBag<IndexerArguments> _invocationHistory = new ConcurrentBag<IndexerArguments>();
             private readonly DefaultIndexerBehaviour _defaultBehaviour;
-            private readonly ImposterInvocationBehavior _invocationBehavior;
+            private readonly ImposterMode _mode;
             private readonly string _propertyDisplayName;
             private bool _hasConfiguredSetter;
 
-            public SetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterInvocationBehavior invocationBehavior, string propertyDisplayName)
+            public SetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterMode mode, string propertyDisplayName)
             {
                 _defaultBehaviour = defaultBehaviour;
-                _invocationBehavior = invocationBehavior;
+                _mode = mode;
                 _propertyDisplayName = propertyDisplayName;
             }
 
@@ -468,7 +468,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
             private void EnsureSetterConfigured()
             {
-                if (_invocationBehavior == ImposterInvocationBehavior.Explicit && !Volatile.Read(ref _hasConfiguredSetter))
+                if (_mode == ImposterMode.Explicit && !Volatile.Read(ref _hasConfiguredSetter))
                 {
                     throw new MissingImposterException(_propertyDisplayName + " (setter)");
                 }

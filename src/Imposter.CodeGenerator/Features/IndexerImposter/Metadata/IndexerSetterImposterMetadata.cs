@@ -55,7 +55,7 @@ internal readonly struct IndexerSetterImposterMetadata
         DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior);
+            WellKnownTypes.Imposter.Abstractions.ImposterMode);
         PropertyDisplayNameField = new FieldMetadata(
             "_propertyDisplayName",
             PredefinedType(Token(SyntaxKind.StringKeyword)));

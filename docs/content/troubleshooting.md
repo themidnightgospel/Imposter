@@ -2,18 +2,15 @@
 
 Common issues and quick fixes.
 
-## “Type does not contain definition ‘Imposter’”
+## "Type does not contain definition `Imposter'"
 
-- Cause: static type extensions are generated only when compiling with C# Preview language version.
-- Fix: set `<LangVersion>preview</LangVersion>` in your project file, or use the generated imposter type directly (e.g., `new IMyServiceImposter()`).
+- Cause: static type extensions are generated only when compiling with C# 14 or later.
+- Fix: set `<LangVersion>latest</LangVersion>` (or `14.0`) in your project file, or use the generated imposter type directly (e.g., `new IMyServiceImposter()`).
 
 ```xml
 <PropertyGroup>
-  <LangVersion>preview</LangVersion>
-  <!-- Preview is required only for static type extensions; core functionality works without it. -->
-  <!-- Alternatively target C# 13 and use the generated imposter classes. -->
-  <!-- Avoid enabling preview for production projects unless necessary. -->
-  
+  <LangVersion>latest</LangVersion>
+  <!-- C# 14+ enables static type extensions; core functionality works on C# 8–13. -->
 </PropertyGroup>
 ```
 
@@ -46,7 +43,7 @@ var imposter = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
 
 ## Ref/Out/In signatures do not match
 
-- Cause: delegate signature must match the target method’s ref/out/in modifiers exactly.
+- Cause: delegate signature must match the target method's ref/out/in modifiers exactly.
 - Fix: ensure the types and modifiers align; use `OutArg<T>.Any()` for out parameters in setups.
 
 ## Ambiguous argument matching

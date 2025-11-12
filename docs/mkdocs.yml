@@ -60,6 +60,7 @@ nav:
       - Overview: features/index.md
       - Methods:
           - Overview: methods/index.md
+          - Behavior Modes: methods/explicit-vs-implicit.md
           - Callbacks: methods/callbacks.md
           - Sequential Returns: methods/sequential-returns.md
           - Throwing Exceptions: methods/throwing.md

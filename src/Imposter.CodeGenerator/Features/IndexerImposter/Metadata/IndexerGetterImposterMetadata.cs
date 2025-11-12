@@ -79,7 +79,7 @@ internal readonly struct IndexerGetterImposterMetadata
             WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax));
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior);
+            WellKnownTypes.Imposter.Abstractions.ImposterMode);
         PropertyDisplayNameField = new FieldMetadata(
             "_propertyDisplayName",
             PredefinedType(Token(SyntaxKind.StringKeyword)));

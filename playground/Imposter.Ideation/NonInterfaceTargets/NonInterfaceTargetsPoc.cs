@@ -47,15 +47,15 @@ namespace Imposter.Ideation.NonInterfaceTargets
         private readonly VirtualPropertyStore<string> _region;
         private readonly VirtualPropertyStore<int> _activeReservations;
 
-        public WarehouseAllocationImposter(ImposterInvocationBehavior invocationBehavior = ImposterInvocationBehavior.Explicit)
+        public WarehouseAllocationImposter(ImposterMode mode = ImposterMode.Explicit)
         {
-            _reserve = new ReserveMethodImposter(invocationBehavior, Member(nameof(Reserve)));
-            _formatAudit = new FormatAuditMethodImposter(invocationBehavior, Member(nameof(FormatAudit)));
+            _reserve = new ReserveMethodImposter(mode, Member(nameof(Reserve)));
+            _formatAudit = new FormatAuditMethodImposter(mode, Member(nameof(FormatAudit)));
 
-            _region = new VirtualPropertyStore<string>(Member(nameof(Region)), invocationBehavior);
+            _region = new VirtualPropertyStore<string>(Member(nameof(Region)), mode);
             _region.SetGetter(() => "global");
 
-            _activeReservations = new VirtualPropertyStore<int>(Member(nameof(ActiveReservations)), invocationBehavior);
+            _activeReservations = new VirtualPropertyStore<int>(Member(nameof(ActiveReservations)), mode);
             _activeReservations.SetAutoProperty(0);
         }
 
@@ -152,7 +152,7 @@ namespace Imposter.Ideation.NonInterfaceTargets
         {
             private readonly VirtualMethodImposter<AllocationArguments, int> _method;
 
-            internal ReserveMethodImposter(ImposterInvocationBehavior behavior, string memberName)
+            internal ReserveMethodImposter(ImposterMode behavior, string memberName)
             {
                 _method = new VirtualMethodImposter<AllocationArguments, int>(behavior, memberName);
             }
@@ -232,7 +232,7 @@ namespace Imposter.Ideation.NonInterfaceTargets
         {
             private readonly VirtualMethodImposter<AllocationArguments, string> _method;
 
-            internal FormatAuditMethodImposter(ImposterInvocationBehavior behavior, string memberName)
+            internal FormatAuditMethodImposter(ImposterMode behavior, string memberName)
             {
                 _method = new VirtualMethodImposter<AllocationArguments, string>(behavior, memberName);
             }
@@ -312,10 +312,10 @@ namespace Imposter.Ideation.NonInterfaceTargets
         {
             private readonly List<ConfiguredInvocation> _setups = new List<ConfiguredInvocation>();
             private readonly List<TArguments> _invocations = new List<TArguments>();
-            private readonly ImposterInvocationBehavior _behavior;
+            private readonly ImposterMode _behavior;
             private readonly string _memberName;
 
-            internal VirtualMethodImposter(ImposterInvocationBehavior behavior, string memberName)
+            internal VirtualMethodImposter(ImposterMode behavior, string memberName)
             {
                 _behavior = behavior;
                 _memberName = memberName;
@@ -341,7 +341,7 @@ namespace Imposter.Ideation.NonInterfaceTargets
                     }
                 }
 
-                if (_behavior == ImposterInvocationBehavior.Explicit)
+                if (_behavior == ImposterMode.Explicit)
                 {
                     throw new MissingImposterException(_memberName);
                 }
@@ -438,12 +438,12 @@ namespace Imposter.Ideation.NonInterfaceTargets
         private sealed class VirtualPropertyStore<T>
         {
             private readonly string _memberName;
-            private readonly ImposterInvocationBehavior _behavior;
+            private readonly ImposterMode _behavior;
             private Func<T>? _getter;
             private Action<T>? _setter;
             private Action<T>? _setterCallback;
 
-            internal VirtualPropertyStore(string memberName, ImposterInvocationBehavior behavior)
+            internal VirtualPropertyStore(string memberName, ImposterMode behavior)
             {
                 _memberName = memberName;
                 _behavior = behavior;
@@ -476,7 +476,7 @@ namespace Imposter.Ideation.NonInterfaceTargets
             {
                 if (_getter is null)
                 {
-                    if (_behavior == ImposterInvocationBehavior.Explicit)
+                    if (_behavior == ImposterMode.Explicit)
                     {
                         throw new MissingImposterException(_memberName);
                     }
@@ -491,7 +491,7 @@ namespace Imposter.Ideation.NonInterfaceTargets
             {
                 if (_setter is null)
                 {
-                    if (_behavior == ImposterInvocationBehavior.Explicit)
+                    if (_behavior == ImposterMode.Explicit)
                     {
                         throw new MissingImposterException(_memberName);
                     }
