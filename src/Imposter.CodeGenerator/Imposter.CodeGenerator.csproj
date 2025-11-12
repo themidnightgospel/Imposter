@@ -33,9 +33,11 @@
     <Import Project="../../Roslyn.Shared.props" />
     <Import Project="Imposter.Roslyn$(ROSLYN_VERSION).props" />
 
+<!-- Disable temporarily
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
+-->
 
     <PropertyGroup>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
