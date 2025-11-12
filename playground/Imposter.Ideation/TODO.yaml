@@ -56,6 +56,7 @@ FEATURES:
         - Go thru all the SyntaxFactory builder classes, like ClassDeclaration and replace with custom builders.
         - Add support for open generic imposters. Example, `[GenerateImposter(typeof(IGenericSut<,>))]`
         - Proper diagnostics
+        - Remove InitializeImposter method from ImposterTargetInstance and instead add imposter as the first parameter.
 
   LOW:
     - NOT Started:

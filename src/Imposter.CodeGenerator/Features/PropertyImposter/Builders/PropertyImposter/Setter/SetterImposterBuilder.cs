@@ -103,6 +103,10 @@ internal static class SetterImposterBuilder
             in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
             ExpressionSyntax baseImplementationIdentifier)
         {
+            var baseImplementationCall = baseImplementationIdentifier.Call(
+                ArgumentList(
+                    SingletonSeparatedList(
+                        Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name)))));
             var defaultBehaviourCheck = IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
 
@@ -138,7 +142,7 @@ internal static class SetterImposterBuilder
                             IfStatement(
                                 baseImplementationIdentifier.IsNotNull(),
                                 Block(
-                                    baseImplementationIdentifier.Call().ToStatementSyntax(),
+                                    baseImplementationCall.ToStatementSyntax(),
                                     ReturnStatement()
                                 ),
                                 ElseClause(missingBaseImplementation)

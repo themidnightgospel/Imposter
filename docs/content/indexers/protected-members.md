@@ -1,4 +1,4 @@
-# Protected Members (Indexers)
+# Protected Indexers
 
 Configure protected virtual indexers on class targets and access them through public wrappers.
 

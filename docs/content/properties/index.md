@@ -36,9 +36,11 @@ imposter.Age.Setter(Arg<int>.Any()).UseBaseImplementation();
 - Implicit mode: missing getter setups return defaults.
 - For class targets with property initializers, the first read mirrors the initialized base value.
 
+!!! tip "Pro tip"
+    When porting existing code, prefer `UseBaseImplementation()` on getters/setters to preserve current domain behavior while you incrementally add setups.
+
 ## Tips
 
 - Combine `Called(Count.*)` with your setter setups to validate write frequency.
 - In Explicit mode, missing setups throw `MissingImposterException`.
 - See tests under `tests/Imposter.Tests/Features/PropertyImposter/*` for edge cases and thread-safety.
-

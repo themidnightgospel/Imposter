@@ -1,0 +1,63 @@
+name: Roslyn Compatibility
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  roslyn-matrix:
+    name: Roslyn ${{ matrix.roslynVersion }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        roslynVersion:
+          - '4.0'
+          - '4.4'
+          - '4.5'
+          - '4.7'
+          - '4.11'
+          - '4.14'
+          - '5.0.0-2.final'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore solution (Roslyn ${{ matrix.roslynVersion }})
+        run: dotnet restore Imposter.sln -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        
+      - name: Build Imposter.CodeGenerator (Roslyn ${{ matrix.roslynVersion }})
+        run: dotnet build src/Imposter.CodeGenerator/Imposter.CodeGenerator.csproj -c Release --no-restore -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        
+      - name: Build Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
+        run: dotnet build tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-restore -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        
+      - name: Test Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-build -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+
+  baseline-tests:
+    name: Baseline Test Suites
+    needs: roslyn-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+         
+      - name: Restore solution
+        run: dotnet restore Imposter.sln
+
+      - name: Test Imposter.Abstractions.Tests
+        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c Release
+
+      - name: Test Imposter.CodeGenerator.Tests
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c Release

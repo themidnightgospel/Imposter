@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
 
@@ -17,7 +17,7 @@ internal readonly struct GetMethodMetadata
         ReturnType = property.TypeSyntax;
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
-            property.AsSystemFuncType,
-            LiteralExpression(SyntaxKind.NullLiteralExpression));
+            property.AsSystemFuncType.ToNullableType(),
+            Null);
     }
 }

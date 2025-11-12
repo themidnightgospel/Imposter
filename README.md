@@ -1,35 +1,29 @@
 # Imposter
 
-A C# incremental source generator that creates lightweight imposters (mocks/stubs) for your interfaces and overridable class members using a simple attribute: `GenerateImposterAttribute`.
+Imposter — Source-generated test doubles, zero runtime overhead.
 
-- Fast, allocation‑aware Roslyn generator
-- Fluent API for arranging returns, throws, callbacks, and verification
-- Supports async, ref/out/in parameters, sequencing, and base forwarding for class targets
+[![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
+[![Nuget](https://img.shields.io/nuget/v/Imposter.svg)](https://www.nuget.org/packages/Imposter)
 
 Docs: https://themidnightgospel.github.io/Imposter/
 
 ## Quick Start
 
-1) Add the NuGet package `Imposter.CodeGenerator` to your project:
-
-Using CLI:
+Add nuget package reference:
 
 ```bash
-dotnet add package Imposter.CodeGenerator
+dotnet add package Imposter
 ```
 
-Or via `csproj`:
+Includes the source generator (analyzer) and runtime abstractions in a single package.
 
-```xml
-<ItemGroup>
-  <PackageReference Include="Imposter.CodeGenerator" Version="0.1.0" />
-</ItemGroup>
-```
-
-2) Mark your target type and use the generated imposter:
+Use `[GenerateImposter]` attribute to generate an imposter
 
 ```csharp
+using System.Threading.Tasks;
 using Imposter.Abstractions;
+
+[assembly: GenerateImposter(typeof(IMyService))]
 
 public interface IMyService
 {
@@ -37,35 +31,55 @@ public interface IMyService
     Task<int> GetNumberAsync();
 }
 
-[assembly: GenerateImposter(typeof(IMyService))]
 
-// Arrange + use
 var imposter = new IMyServiceImposter();
-var service = imposter.Instance();
 
 imposter.GetNumber().Returns(42);
-service.GetNumber(); // 42
+imposter.Instance().GetNumber(); // 42
 
 imposter.GetNumberAsync().ReturnsAsync(7);
-await service.GetNumberAsync(); // 7
+await imposter.Instance().GetNumberAsync(); // 7
 ```
 
-More examples are available in the docs and in tests under `tests/Imposter.Tests/Features/MethodImposter` and siblings for properties, indexers, and events.
+Example: classes (virtual/abstract members)
 
-## Building & Testing
+```csharp
+using System.Threading.Tasks;
+using Imposter.Abstractions;
 
-- Build solution: `dotnet build Imposter.sln`
-- Run tests: `dotnet test Imposter.sln`
-- Run benchmarks: `dotnet run -c Release -p benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj`
+[assembly: GenerateImposter(typeof(BaseService))]
 
-## Learn More
+public abstract class BaseService
+{
+    public virtual int GetNumber() => 0;
+    public virtual Task<int> GetNumberAsync() => Task.FromResult(0);
+}
 
-- Docs site: https://themidnightgospel.github.io/Imposter/
-- Repository overview: REPOSITORY_OVERVIEW.md
-- Architecture notes: ARCHITECTURE.md
-- Local development: LOCAL_DEVELOPMENT.md
-- Coding standards: CODING_STANDARDS.md
+var classImposter = new BaseServiceImposter();
+classImposter.GetNumber().Returns(42);
+classImposter.Instance().GetNumber(); // 42
+```
+
+Note: For classes, only virtual/abstract members can be intercepted.
+
+## Accessing the generated imposter
+
+If you're using C# 14 or later then accessing the imposter is more simpler and refactoring-friendly
+
+```csharp
+var imposter = IMyService.Imposter();
+```
+
+## Behavior modes
+
+- Implicit (loose, default): Missing setups return default values; calls succeed.
+- Explicit (strict): Missing setups throw `MissingImposterException`.
+
+Learn more: https://themidnightgospel.github.io/Imposter/methods/explicit-vs-implicit/
+
+## Docs
+Docs: https://themidnightgospel.github.io/Imposter/
 
 ## License
 
-See LICENSE.txt.
+Licensed under the MIT License. See LICENSE.txt for details.

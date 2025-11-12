@@ -1,4 +1,4 @@
-# Protected Members (Properties)
+# Protected Properties
 
 Configure protected virtual properties on class targets and read/write them through public wrappers.
 

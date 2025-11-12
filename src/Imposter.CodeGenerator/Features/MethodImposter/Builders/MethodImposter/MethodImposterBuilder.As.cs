@@ -97,7 +97,7 @@ internal static partial class MethodImposterBuilder
                         )
                     )
                 ),
-                ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression))
+                ReturnStatement(Null)
             ))
             .Build();
     }

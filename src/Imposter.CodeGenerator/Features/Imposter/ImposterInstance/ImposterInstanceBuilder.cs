@@ -74,13 +74,19 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (property.Core.SetterSupportsBaseImplementation)
             {
+                const string BaseSetterValueParameterName = "baseSetterValue";
+                var baseSetterValueIdentifier = IdentifierName(BaseSetterValueParameterName);
                 var baseAssignment = BaseExpression()
                     .Dot(IdentifierName(property.Core.Name))
-                    .Assign(IdentifierName("value"));
+                    .Assign(baseSetterValueIdentifier);
 
                 setterArguments.Add(
                     Argument(
                         ParenthesizedLambdaExpression()
+                            .WithParameterList(
+                                ParameterList(
+                                    SingletonSeparatedList(
+                                        Parameter(Identifier(BaseSetterValueParameterName)))))
                             .WithBlock(Block(baseAssignment.ToStatementSyntax()))));
             }
 

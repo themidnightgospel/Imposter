@@ -22,7 +22,7 @@ internal static class ImposterExtensionsBuilder
     {
         var extensionClassName = $"{imposterGenerationContext.TargetSymbol.Name}{MethodName}Extensions";
         var targetType = SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol);
-        var imposterType = ParseTypeName(GetImposterTypeName(imposterNamespaceName, imposterGenerationContext.Imposter.Name));
+        var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(imposterNamespaceName, imposterGenerationContext.Imposter.Name);
 
         var methods = imposterGenerationContext.Imposter.IsClass
             ? BuildClassMethods(imposterType, imposterGenerationContext)
@@ -49,17 +49,6 @@ internal static class ImposterExtensionsBuilder
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddMember(extensionDeclaration)
             .Build();
-    }
-
-    // TODO move to metadata
-    private static string GetImposterTypeName(string namespaceName, string imposterName)
-    {
-        if (string.IsNullOrWhiteSpace(namespaceName))
-        {
-            return $"global::{imposterName}";
-        }
-
-        return $"global::{namespaceName}.{imposterName}";
     }
 
     private static List<MethodDeclarationSyntax> BuildClassMethods(

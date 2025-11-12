@@ -99,16 +99,17 @@ internal static class MethodImposterAdapterBuilder
         if (method.SupportsBaseImplementation)
         {
             var baseImplementationParameterType = (TypeSyntax)typeParamRenamer.Visit(method.Delegate.Syntax);
+            var baseImplementationParameterTypeNullable = baseImplementationParameterType.ToNullableType();
             parameterList = parameterList.AddParameters(
                 Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
-                    .WithType(baseImplementationParameterType)
-                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+                    .WithType(baseImplementationParameterTypeNullable)
+                    .WithDefault(EqualsValueClause(Null)));
 
             invokeArguments.Add(
                 Argument(
                     TypeCasterSyntaxHelper.CastExpression(
                         method.MethodImposter.InvokeMethod.BaseInvocationParameterName,
-                        baseImplementationParameterType,
+                        baseImplementationParameterTypeNullable,
                         method.Delegate.Syntax)));
         }
 

@@ -28,7 +28,7 @@ public class ArgTests
         // Act & Assert
         arg.Matches("hello").ShouldBeTrue();
         arg.Matches("").ShouldBeTrue();
-        arg.Matches(null).ShouldBeTrue();
+        arg.Matches(null!).ShouldBeTrue();
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class ArgTests
 
         // Act & Assert
         arg.Matches("value").ShouldBeTrue();
-        arg.Matches(null).ShouldBeFalse();
+        arg.Matches(null!).ShouldBeFalse();
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class ArgTests
         var arg = Arg<string>.Is((string?)null);
             
         // Act & Assert
-        arg.Matches(null).ShouldBeTrue();
+        arg.Matches(null!).ShouldBeTrue();
         arg.Matches("not null").ShouldBeFalse();
     }
 
@@ -195,7 +195,7 @@ public class ArgTests
         var arg = Arg<string>.IsDefault();
             
         // Act & Assert
-        arg.Matches(null).ShouldBeTrue();
+        arg.Matches(null!).ShouldBeTrue();
         arg.Matches("").ShouldBeFalse();
     }
 
@@ -230,7 +230,7 @@ public class ArgTests
         var arg = OutArg<string>.Any();
             
         // Act & Assert
-        arg.Matches(null).ShouldBeTrue();
+        arg.Matches(null!).ShouldBeTrue();
 
         // The value of an 'out' variable is not defined before entering the method,
         // so this just confirms the matcher always returns true.

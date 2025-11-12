@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.GenericInterface;
 
@@ -23,8 +24,8 @@ internal static class MethodImposterGenericInterfaceBuilder
         {
             invokeMethodParameters = invokeMethodParameters.AddParameters(
                 Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
-                    .WithType(method.Delegate.Syntax)
-                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+                    .WithType(method.Delegate.Syntax.ToNullableType())
+                    .WithDefault(EqualsValueClause(Null)));
         }
 
         var invokeMethod = new MethodDeclarationBuilder(

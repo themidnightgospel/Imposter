@@ -1,18 +1,23 @@
 # Method Mocking
 
-Deep dive into arranging and verifying method behavior with Imposter. This covers returns, async, exceptions, callbacks, sequencing, argument matching, ref/out/in parameters, base forwarding, verification, and concurrency notes.
+Here we'll cover returns, async, exceptions, callbacks, sequencing, argument matching, ref/out/in parameters, base forwarding, verification, and concurrency notes.
 
 ## Overview
 
 Generated imposters expose fluent method builders you can use to:
+
 - Arrange outcomes: `Returns`, `ReturnsAsync`, `Throws`
 - Add side effects: `Callback`
 - Sequence behaviors: `Then`
 - Verify invocations: `Called(Count.*)`
 
 Invocation modes:
+
 - `Implicit` (default): missing setups return default values and do nothing for void methods.
 - `Explicit`: missing setups throw `MissingImposterException`.
+
+!!! tip "Pro tip"
+    Use `Explicit` mode for strict unit tests to fail fast on unintended calls. Keep `Implicit` for exploratory tests where defaults are acceptable.
 
 ## Quick Start
 
@@ -46,9 +51,8 @@ imposter.Increment(5).Returns(50);          // exact match (implicit Arg<int>)
       .Then().Returns(3);
   ```
 
-Chaining rules:
-- Use `Then()` between distinct outcomes. Repeating `Returns` without `Then()` is invalid.
-- You may mix `Returns` and `Throws` across sequence steps; separate with `Then()`.
+!!! note
+    - Use `Then()` to set up sequence.
 
 ## Async Methods
 
@@ -67,6 +71,9 @@ Chaining rules:
       .ReturnsAsync(1)
       .Then().Returns(() => Task.FromResult(2));
   ```
+
+!!! tip "Pro tip"
+    Prefer `ReturnsAsync` for Task/ValueTask methods. It reads cleaner and avoids accidental sync-over-async in factories.
 
 ## Exceptions
 
@@ -129,6 +136,9 @@ imposter.Combine(
   .Returns(42);
 ```
 
+!!! tip "Pro tip"
+    Start with precise matchers (e.g., `Is(...)`) before adding broad `Any()` fallbacks. This reduces ambiguity between overlapping setups.
+
 ## Ref/Out/In Parameters
 
 Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref` and `in`.
@@ -167,6 +177,9 @@ See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/tree
 - `Exactly(n)`, `AtLeast(n)`, `AtMost(n)`, `Once()`, `Never()`, `Any`
 
 If verification fails, a `VerificationFailedException` is thrown with a clear message.
+
+!!! tip "Pro tip"
+    Place verification at the end of the test. Verify the broad call first (e.g., `Any()`), then the specific one to keep failure messages focused.
 
 ## Concurrency Notes
 

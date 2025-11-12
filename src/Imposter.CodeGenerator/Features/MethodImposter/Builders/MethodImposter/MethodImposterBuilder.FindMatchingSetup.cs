@@ -36,7 +36,7 @@ internal partial class MethodImposterBuilder
                             )
                         )
                     ),
-                    ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    ReturnStatement(Null)
                 ))
                 .Build();
         }
@@ -49,7 +49,7 @@ internal partial class MethodImposterBuilder
                         .Call(ArgumentListSyntax(OutVarArgument(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName))
                         ),
                     ReturnStatement(setupIdentifierName),
-                    ElseClause(ReturnStatement(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+                    ElseClause(ReturnStatement(Null))
                 )
             ))
             .Build();

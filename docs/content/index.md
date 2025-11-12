@@ -1,22 +1,40 @@
 # Getting Started
 
-Imposter is a Roslyn incremental source generator that creates lightweight, source-generated imposters (mocks/stubs) for interfaces and classes.
+Imposter — Source-generated test doubles, zero runtime overhead.
 
-## Prerequisites
-
-- C# 8.0 or later
+!!! note
+    Minimum supported C# version is 8.0
 
 ## Installation
 
 Add the packages to your test or application project:
 
 ```bash
-dotnet add package Imposter.CodeGenerator
+dotnet add package Imposter
 ```
+
+This package includes both the source generator (analyzer) and the runtime abstractions.
+
+!!! tip "Pro tip"
+    To inspect generated sources locally, set `EmitCompilerGeneratedFiles` and `CompilerGeneratedFilesOutputPath` in your project. Remove these before committing.
+    ```xml
+    <!-- Source code generation settings-->
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <!-- Include but don't compile generated code. The system will already compile the code, but this will make it visible for reference.-->
+    <ItemGroup>
+        <Compile Remove="GeneratedFiles\**"/>
+        <None Include="GeneratedFiles\**"/>
+    </ItemGroup>
+
+    ```
 
 ## Generate an Imposter
 
-Annotate the target type at the assembly level and build. The generator produces a `<TypeName>Imposter` you can new up in code.
+Annotate the target type with the assembly level attribute and build. The generator produces a `<TypeName>Imposter` you can new up in code.
 
 ```csharp
 using Imposter.Abstractions;
@@ -34,14 +52,14 @@ public interface IMyService
 
 After a build, use the generated type:
 
-=== "C# 14+"
+=== "C# 14"
 
     ```csharp
     var imposter = IMyService.Imposter();
     var service = imposter.Instance();
     ```
 
-=== "C# 8–13"
+=== "C# 8-13"
 
     Use the generated imposter type directly:
 
@@ -50,23 +68,42 @@ After a build, use the generated type:
     var service = imposter.Instance();       // user-facing instance
     ```
 
-Optionally, choose the mode:
+!!! tip "Pro tip"
+    C# 14+ enables static type extensions like `IMyService.Imposter()`. On C# 8–13, use the generated `IMyServiceImposter` type instead.
+
+Example: Classes
 
 ```csharp
-// Implicit: missing setups return defaults
-var implicitImposter = new IMyServiceImposter(ImposterMode.Implicit);
+using Imposter.Abstractions;
 
-// Explicit: missing setups throw MissingImposterException
-var explicitImposter = new IMyServiceImposter(ImposterMode.Explicit);
+[assembly: GenerateImposter(typeof(BaseService))]
+
+public abstract class BaseService
+{
+    public virtual int GetNumber() => 0;
+}
 ```
 
-See a side‑by‑side walkthrough under [Behavior Modes](methods/explicit-vs-implicit.md).
+After a build, use the generated type:
 
-Tip: `Instance()` is also available via the `ImposterExtensions.Instance` extension method for concise call sites.
+=== "C# 14"
 
-## Method Mocking
+    ```csharp
+    var imposter = BaseService.Imposter();
+    var service = imposter.Instance();
+    ```
 
-Return values:
+=== "C# 8-13"
+
+    ```csharp
+    var imposter = new BaseServiceImposter();
+    var service = imposter.Instance();
+    ```
+
+!!! note
+    For classes, only virtual or abstract members can be intercepted.
+
+Mock a method
 
 ```csharp
 imposter.GetNumber().Returns(42);
@@ -74,189 +111,25 @@ service.GetNumber(); // 42
 
 // Parameterized with a delegate
 imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
+
 // Match a specific value directly (implicit Arg<int> conversion)
 imposter.Increment(20).Returns(200);
 service.Increment(5); // 7
 ```
 
-Argument matchers (Arg<T>):
-
-```csharp
-imposter.Increment(Arg<int>.Is(x => x > 10)).Returns(100);
-imposter.Increment(Arg<int>.IsIn(new[] { 1, 2, 3 })).Returns(1);
-imposter.Increment(5).Returns(50);            // implicit conversion to Arg<int>
-imposter.Increment(Arg<int>.Any()).Returns(0);
-```
-
-Sequencing with Then():
-
-```csharp
-imposter.GetNumber()
-    .Returns(1)
-    .Then().Returns(2)
-    .Then().Throws<InvalidOperationException>();
-
-service.GetNumber(); // 1
-service.GetNumber(); // 2
-service.GetNumber(); // throws InvalidOperationException
-```
-
-Callbacks and ordering:
-
-```csharp
-var stages = new List<string>();
-
-imposter.GetNumber()
-    .Returns(() => { stages.Add("return"); return 42; })
-    .Callback(() => stages.Add("first"))
-    .Callback(() => stages.Add("second"));
-
-service.GetNumber();
-// stages: ["return", "first", "second"]
-```
-
-Ref/out/in parameters:
-
-```csharp
-// Setup for a method with (out int o, ref string r, in double d, bool[] args)
-imposter.GenericAllRefKind<int, string, double, bool, int>(
-        OutArg<int>.Any(),   // out
-        Arg<string>.Any(),   // ref
-        Arg<double>.Any(),   // in
-        Arg<bool[]>.Any())
-    .Returns((out int o, ref string r, in double d, bool[] args) => { o = 5; return 99; })
-    .Callback((out int o, ref string r, in double d, bool[] args) => { o = 5; /* side effects */ });
-
-string refValue = "seed";
-var result = service.GenericAllRefKind<int, string, double, bool, int>(out var outValue, ref refValue, in 5.0, new[] { true });
-// result = 99, outValue = 5
-```
-
-Async methods:
-
-```csharp
-imposter.GetNumberAsync().ReturnsAsync(42);
-await service.GetNumberAsync(); // 42
-
-// Task-returning (no result)
-imposter.DoWorkAsync().Returns(Task.CompletedTask);
-await service.DoWorkAsync();
-```
-
-Exceptions:
-
-```csharp
-imposter.GetNumber().Throws(new Exception("boom"));
-imposter.GetNumber().Throws<InvalidOperationException>();
-imposter.GetNumber().Throws(() => new Exception("deferred"));
-```
-
-Verification with Count:
-
-```csharp
-service.Increment(1);
-service.Increment(2);
-
-imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
-imposter.Increment(2).Called(Count.Once());
-```
-
-## Property Mocking
-
-Getter and sequencing:
-
-```csharp
-imposter.Age.Getter().Returns(33);
-service.Age; // 33
-
-imposter.Age.Getter().Returns(10).Then().Returns(20);
-```
-
-Setter callbacks and verification:
-
-```csharp
-imposter.Age.Setter(Arg<int>.Any()).Callback(v => { /* observe/set side-effects */ });
-imposter.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(1));
-```
-
-Base implementation forwarding:
-
-```csharp
-imposter.Age.Getter().UseBaseImplementation();
-imposter.Age.Setter(Arg<int>.Any()).UseBaseImplementation();
-```
-
-Default behavior and initializers:
-
-- In Implicit mode, missing getter setups return defaults. For class targets with property initializers, the first read mirrors the initialized base value.
-
-## Indexer Mocking
-
-```csharp
-// Getter
-imposter[Arg<int>.Is(k => k > 0)].Getter().Returns(10);
-var value = service[123]; // 10
-
-// Setter
-imposter[Arg<int>.Any()].Setter().Callback((index, v) => { /* track writes */ });
-
-// Base
-imposter[Arg<int>.Any()].Getter().UseBaseImplementation();
-imposter[Arg<int>.Any()].Setter().UseBaseImplementation();
-```
-
-## Event Mocking
-
-Subscribe/unsubscribe verification, raising, and interceptors:
-
-```csharp
-EventHandler h = (s, e) => { };
-
-service.SomethingHappened += h;
-service.SomethingHappened -= h;
-
-imposter.SomethingHappened.Subscribed(Arg<EventHandler>.Is(h), Count.Once());
-imposter.SomethingHappened.Unsubscribed(Arg<EventHandler>.Is(h), Count.Once());
-
-// Raise in-order for current subscribers
-imposter.SomethingHappened.Raise(this, EventArgs.Empty);
-
-// Observe subscriptions/unsubscriptions
-imposter.SomethingHappened.OnSubscribe(handler => { /* inspect */ });
-imposter.SomethingHappened.OnUnsubscribe(handler => { /* inspect */ });
-
-// Verify handler invocation count
-imposter.SomethingHappened.HandlerInvoked(Arg<EventHandler>.Is(h), Count.Exactly(2));
-```
-
-## Base Implementations (UseBaseImplementation)
-
-For overridable class members, you may forward to the base implementation:
-
-```csharp
-imposter.DoWork(Arg<int>.Any()).UseBaseImplementation();
-imposter.Age.Getter().UseBaseImplementation();
-imposter[Arg<int>.Any()].Getter().UseBaseImplementation();
-imposter.SomethingHappened.UseBaseImplementation(); // when supported on the target member
-```
-
-If base is unavailable and Explicit mode is enabled, a `MissingImposterException` is thrown when no setup applies.
-
-## Tips and Notes
-
-- Implicit vs Explicit modes control behavior for missing setups.
-- `Arg<T>` provides rich matching: `Any`, `Is`, `IsNot`, `IsIn`, `IsNotIn`, `IsDefault`, plus implicit value conversion.
-- Use `OutArg<T>.Any()` for `out` parameters (they always match).
-- `Count` helpers: `Exactly`, `AtLeast`, `AtMost`, `Once`, `Never`, `Any`.
-- Thread-safety: imposters are stress-tested under concurrency; sequencing preserves ordering (see thread-safety tests).
-- Static type extensions (e.g., `IMyService.Imposter()`) are emitted when targeting C# 14 or later.
+!!! tip "Pro tip"
+    Exact values implicitly convert to `Arg<T>`
 
 ## Next Steps
 
-- Explore advanced usage:
-  - Methods: see Methods overview and subpages.
-  - Properties: property-specific behaviors and verification.
-  - Indexers and Events: dedicated pages and examples.
+- Explore Advanced Features:
+  - Methods: [methods](methods/index.md)
+  - Properties: [properties](properties/index.md)
+  - Indexers: [indexers](indexers/index.md)
+  - Events: [events](events/index.md)
+- Quick lookup: [Key API Reference](key-api-reference.md)
+- Check platform support: [Compatibility](compatibility.md)
+- Understand the scope: [Limitations](limitations.md)
 - Browse repository tests for real-world scenarios:
   - `tests/Imposter.Tests/Features/*`
   - `tests/Imposter.CodeGenerator.Tests/Features/*`

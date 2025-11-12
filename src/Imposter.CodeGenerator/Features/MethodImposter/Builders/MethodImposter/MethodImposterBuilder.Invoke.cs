@@ -100,8 +100,8 @@ internal partial class MethodImposterBuilder
         {
             parameterList = parameterList.AddParameters(
                 Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
-                    .WithType(method.Delegate.Syntax)
-                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+                    .WithType(method.Delegate.Syntax.ToNullableType())
+                    .WithDefault(EqualsValueClause(Null)));
         }
 
         return parameterList;

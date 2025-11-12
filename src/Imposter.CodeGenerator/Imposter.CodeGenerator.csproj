@@ -14,7 +14,7 @@
         <!-- Single NuGet package that contains analyzer + runtime -->
         <PackageId>Imposter</PackageId>
         <Version>0.1.0</Version>
-        <Description>Imposter is a high-performance Roslyn incremental source generator that produces imposters (mocks/stubs) for interfaces marked with GenerateImposterAttribute. Ships analyzer + runtime in a single package.</Description>
+        <Description>Imposter — Source-generated test doubles, zero runtime overhead. A high-performance Roslyn incremental source generator that produces imposters (mocks/stubs) for interfaces and overridable class members via GenerateImposterAttribute. Ships analyzer + runtime in a single package.</Description>
         <PackageTags>source generator;mock;stub;imposter;roslyn;testing</PackageTags>
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -83,4 +83,3 @@
 
 
 </Project>
-
