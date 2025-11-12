@@ -40,3 +40,4 @@ jobs:
         run: |
           mike deploy --push --remote origin --branch gh-pages ${DOCS_VERSION} latest
           mike set-default --push --remote origin --branch gh-pages latest
+
