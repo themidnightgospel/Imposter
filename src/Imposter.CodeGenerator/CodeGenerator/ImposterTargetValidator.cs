@@ -6,8 +6,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    public static bool Validate(
-        SourceProductionContext sourceProductionContext,
+public static bool Validate(
+        in SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration generateImposterDeclaration)
     {
         var target = generateImposterDeclaration.ImposterTarget;
@@ -27,8 +27,8 @@ internal static class ImposterTargetValidator
         return true;
     }
 
-    private static void ReportImposterTargetMustBeInterface(
-        SourceProductionContext sourceProductionContext,
+private static void ReportImposterTargetMustBeInterface(
+        in SourceProductionContext sourceProductionContext,
         INamedTypeSymbol target)
     {
         var targetLocation = GetPreferredLocation(target);
@@ -42,8 +42,8 @@ internal static class ImposterTargetValidator
                 target.TypeKind));
     }
 
-    private static void ReportImposterTargetMustHaveAccessibleConstructor(
-        SourceProductionContext sourceProductionContext,
+private static void ReportImposterTargetMustHaveAccessibleConstructor(
+        in SourceProductionContext sourceProductionContext,
         INamedTypeSymbol target)
     {
         var targetLocation = GetPreferredLocation(target);

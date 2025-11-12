@@ -361,7 +361,7 @@ internal readonly ref partial struct ImposterBuilder
             .Assign(IdentifierName(_typeMetadata.ImposterTargetInstanceClassName).New(ThisExpression().ToSingleArgumentList()))
             .ToStatementSyntax();
 
-    private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(ImmutableArray<IParameterSymbol> parameters)
+    private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(in ImmutableArray<IParameterSymbol> parameters)
     {
         var argumentList = parameters.Length > 0
             ? SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true)

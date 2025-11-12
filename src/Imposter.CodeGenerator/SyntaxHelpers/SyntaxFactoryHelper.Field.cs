@@ -19,7 +19,7 @@ internal static partial class SyntaxFactoryHelper
     internal static FieldDeclarationSyntax SingleVariableField(TypeSyntax typeSyntax, string name, SyntaxKind modifier) =>
         SingleVariableField(typeSyntax, name, TokenList(Token(modifier)));
 
-    internal static FieldDeclarationSyntax SingleVariableField(TypeSyntax typeSyntax, string name, SyntaxTokenList? modifiers = null, ExpressionSyntax? initializer = null) =>
+internal static FieldDeclarationSyntax SingleVariableField(TypeSyntax typeSyntax, string name, in SyntaxTokenList? modifiers = null, ExpressionSyntax? initializer = null) =>
         FieldDeclaration(
             default,
             modifiers ?? TokenList(),

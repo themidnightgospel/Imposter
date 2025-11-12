@@ -8,7 +8,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     public static SyntaxToken WithLeadingTriviaComment(
-        this SyntaxToken node,
+        this in SyntaxToken node,
         string comment)
         => node
             .WithLeadingTrivia(CommentSyntaxTrivias(comment));

@@ -36,7 +36,9 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 public sealed class ImposterGenerator : IIncrementalGenerator
 {
 
-    public void Initialize(IncrementalGeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context) => InitializeCore(in context);
+
+    private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
         context.RegisterSourceOutput(context
@@ -46,7 +48,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     }
 
     private static void GenerateImposter(
-        SourceProductionContext sourceProductionContext,
+        in SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration generateImposterDeclaration,
         in CompilationContext compilationContext)
     {
@@ -82,7 +84,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static CompilationUnitSyntax BuildImposter(
         in ImposterGenerationContext imposterGenerationContext,
-        CancellationToken cancellationToken)
+        in CancellationToken cancellationToken)
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
 
@@ -127,7 +129,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildMethodImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        CancellationToken cancellationToken)
+        in CancellationToken cancellationToken)
     {
         foreach (var method in imposterGenerationContext
                      .Imposter
@@ -158,7 +160,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildPropertyImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        CancellationToken cancellationToken)
+        in CancellationToken cancellationToken)
     {
         foreach (var propertySymbol in imposterGenerationContext
                      .Imposter
@@ -182,7 +184,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildEventImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        CancellationToken cancellationToken)
+        in CancellationToken cancellationToken)
     {
         foreach (var eventSymbol in imposterGenerationContext
                      .Imposter
@@ -204,7 +206,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildIndexerImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        CancellationToken cancellationToken)
+        in CancellationToken cancellationToken)
     {
         foreach (var indexerSymbol in imposterGenerationContext
                      .Imposter

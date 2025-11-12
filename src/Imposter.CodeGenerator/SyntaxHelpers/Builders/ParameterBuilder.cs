@@ -23,7 +23,7 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
 
     /// <summary>Adds a modifier (e.g., 'ref', 'in', 'out') to the parameter.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ParameterBuilder AddModifier(SyntaxToken modifier)
+    public ParameterBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;

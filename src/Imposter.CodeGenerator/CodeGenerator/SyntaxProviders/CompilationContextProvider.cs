@@ -12,7 +12,7 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class CompilationContextProvider
 {
-    internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this IncrementalGeneratorInitializationContext context)
+internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this in IncrementalGeneratorInitializationContext context)
     {
         return context
             .CompilationProvider
@@ -24,7 +24,7 @@ internal static class CompilationContextProvider
             .WithTrackingName("CompilationContext");
     }
 
-    internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this IncrementalGeneratorInitializationContext context)
+internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this in IncrementalGeneratorInitializationContext context)
     {
         return context
             .CompilationProvider

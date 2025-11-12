@@ -13,7 +13,7 @@ internal static class GenerateImposterDeclarationsProvider
 {
     private static readonly string GenerateImposterAttribute = typeof(GenerateImposterAttribute).FullName!;
 
-    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this IncrementalGeneratorInitializationContext context)
+internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this in IncrementalGeneratorInitializationContext context)
     {
         return context
             .SyntaxProvider
@@ -26,7 +26,7 @@ internal static class GenerateImposterDeclarationsProvider
             .SelectMany((targetSymbols, _) => targetSymbols.Distinct())
             .WithTrackingName("GenerateImposterDeclarations");
     }
-    private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(GeneratorAttributeSyntaxContext context, CancellationToken token)
+private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(in GeneratorAttributeSyntaxContext context, in CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 

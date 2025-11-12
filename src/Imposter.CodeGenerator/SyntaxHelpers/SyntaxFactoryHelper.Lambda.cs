@@ -20,7 +20,7 @@ internal static partial class SyntaxFactoryHelper
     public static SimpleLambdaExpressionSyntax Lambda(this ParameterSyntax lambdaParameter, CSharpSyntaxNode body)
         => SimpleLambdaExpression(lambdaParameter, body);
 
-    public static SimpleLambdaExpressionSyntax Lambda(this SyntaxToken lambdaParameter, CSharpSyntaxNode body)
+    public static SimpleLambdaExpressionSyntax Lambda(this in SyntaxToken lambdaParameter, CSharpSyntaxNode body)
         => SimpleLambdaExpression(Parameter(lambdaParameter), body);
 
     public static ParenthesizedLambdaExpressionSyntax CounterIncrementLambda(
