@@ -34,10 +34,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Deploy docs with mike
+      - name: Deploy docs with mike (mkdocs at docs/mkdocs.yml)
         env:
           DOCS_VERSION: dev
         run: |
-          mike deploy --push --remote origin --branch gh-pages ${DOCS_VERSION} latest
-          mike set-default --push --remote origin --branch gh-pages latest
-
+          mike deploy -F docs/mkdocs.yml --push --remote origin --branch gh-pages ${DOCS_VERSION} latest
+          mike set-default -F docs/mkdocs.yml --push --remote origin --branch gh-pages latest
