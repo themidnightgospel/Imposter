@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ 
+# Ignore C# generated source files emitted by generators
+**/*.g.cs
