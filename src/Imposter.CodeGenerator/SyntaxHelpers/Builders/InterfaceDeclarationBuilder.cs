@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -15,28 +14,24 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
     private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddBaseType(BaseTypeSyntax baseType)
     {
         _baseTypes.Add(baseType);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
     {
         _attributes.Add(attribute);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddMember(MemberDeclarationSyntax? member)
     {
         if (member is not null)
@@ -47,7 +42,6 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
     {
         if (members is not null)
@@ -58,13 +52,11 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal InterfaceDeclarationBuilder AddMemberIf(bool condition, Func<MemberDeclarationSyntax> memberGenerator)
     {
         return condition ? AddMember(memberGenerator()) : this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public InterfaceDeclarationSyntax Build()
     {
         return InterfaceDeclaration(

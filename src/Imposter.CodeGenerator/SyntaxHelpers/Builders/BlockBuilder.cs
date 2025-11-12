@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -10,14 +9,12 @@ internal class BlockBuilder
 {
     private readonly List<StatementSyntax> _statements = [];
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockBuilder AddStatements(IEnumerable<StatementSyntax> statementSyntaxes)
     {
         _statements.AddRange(statementSyntaxes);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockBuilder AddStatement(StatementSyntax? statementSyntax)
     {
         if (statementSyntax is not null)
@@ -28,7 +25,6 @@ internal class BlockBuilder
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockBuilder AddExpression(ExpressionSyntax? statementSyntax)
     {
         if (statementSyntax is not null)
@@ -38,13 +34,11 @@ internal class BlockBuilder
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockBuilder AddStatementsIf(bool condition, Func<StatementSyntax> statementGenerator)
     {
         return condition ? AddStatement(statementGenerator()) : this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal BlockSyntax Build()
     {
         return SyntaxFactory.Block(_statements);
