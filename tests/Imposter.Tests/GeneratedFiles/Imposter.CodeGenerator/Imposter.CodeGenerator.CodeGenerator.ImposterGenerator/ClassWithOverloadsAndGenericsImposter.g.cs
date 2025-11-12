@@ -13,7 +13,7 @@ using Imposter.Tests.Features.ClassImposter.Suts;
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>
+    public sealed class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>
     {
         private readonly FormatMethodImposter _formatMethodImposter;
         private readonly Format_1MethodImposter _format_1MethodImposter;
@@ -152,9 +152,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return imposter;
             }
 
-            internal IEchoMethodImposter<T> GetImposterWithMatchingSetup<T>(EchoArguments<T> arguments)
+            internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
             {
-                return _imposters.Select(it => it.As<T>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingSetup(arguments)) ?? AddNew<T>();
+                return _imposters.Select(it => it.As<T>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<T>();
             }
         }
 
@@ -328,7 +328,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal interface IEchoMethodImposter<T> : IEchoMethodImposter
         {
             T Invoke(T item, EchoDelegate<T> baseImplementation = null);
-            bool HasMatchingSetup(EchoArguments<T> arguments);
+            bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -380,9 +380,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
                 }
 
-                public bool HasMatchingSetup(EchoArguments<TTarget> arguments)
+                public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments)
                 {
-                    return _target.HasMatchingSetup(arguments.As<T>());
+                    return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
                 }
 
                 IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
@@ -391,7 +391,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            public bool HasMatchingSetup(EchoArguments<T> arguments)
+            public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -778,7 +778,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(FormatArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(FormatArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1168,7 +1168,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(Format_1Arguments arguments)
+            public bool HasMatchingInvocationImposterGroup(Format_1Arguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1403,9 +1403,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return imposter;
             }
 
-            internal ISelectFirstMethodImposter<TFirst, TSecond> GetImposterWithMatchingSetup<TFirst, TSecond>(SelectFirstArguments<TFirst, TSecond> arguments)
+            internal ISelectFirstMethodImposter<TFirst, TSecond> GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(SelectFirstArguments<TFirst, TSecond> arguments)
             {
-                return _imposters.Select(it => it.As<TFirst, TSecond>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingSetup(arguments)) ?? AddNew<TFirst, TSecond>();
+                return _imposters.Select(it => it.As<TFirst, TSecond>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<TFirst, TSecond>();
             }
         }
 
@@ -1579,7 +1579,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal interface ISelectFirstMethodImposter<TFirst, TSecond> : ISelectFirstMethodImposter
         {
             TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond> baseImplementation = null);
-            bool HasMatchingSetup(SelectFirstArguments<TFirst, TSecond> arguments);
+            bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
@@ -1631,9 +1631,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return global::Imposter.Abstractions.TypeCaster.Cast<TFirst, TFirstTarget>(result);
                 }
 
-                public bool HasMatchingSetup(SelectFirstArguments<TFirstTarget, TSecondTarget> arguments)
+                public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirstTarget, TSecondTarget> arguments)
                 {
-                    return _target.HasMatchingSetup(arguments.As<TFirst, TSecond>());
+                    return _target.HasMatchingInvocationImposterGroup(arguments.As<TFirst, TSecond>());
                 }
 
                 ISelectFirstMethodImposter<TFirstTarget1, TSecondTarget1>? ISelectFirstMethodImposter.As<TFirstTarget1, TSecondTarget1>()
@@ -1642,7 +1642,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            public bool HasMatchingSetup(SelectFirstArguments<TFirst, TSecond> arguments)
+            public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1809,12 +1809,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             public override T Echo<T>(T item)
                 where T : class
             {
-                return _imposter._echoMethodImposterCollection.GetImposterWithMatchingSetup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo);
+                return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo);
             }
 
             public override TFirst SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
             {
-                return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingSetup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst);
+                return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst);
             }
         }
     }

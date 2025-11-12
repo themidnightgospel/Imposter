@@ -13,7 +13,7 @@ using Imposter.Tests.Features.ClassImposter.Suts;
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>
+    public sealed class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>
     {
         private readonly ComputeMethodImposter _computeMethodImposter;
         private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection = new ComputeMethodInvocationHistoryCollection();
@@ -270,7 +270,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(ComputeArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ComputeArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

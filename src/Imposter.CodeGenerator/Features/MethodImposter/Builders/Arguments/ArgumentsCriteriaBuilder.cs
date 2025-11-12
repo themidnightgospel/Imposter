@@ -51,7 +51,6 @@ public static class ArgumentsCriteriaBuilder
 
         return argumentsCriteriaClass
             .Build()
-            // TODO Not optimal
             .WithLeadingTriviaComment(method.DisplayName)
             .WithTrailingTrivia(CarriageReturnLineFeed);
     }

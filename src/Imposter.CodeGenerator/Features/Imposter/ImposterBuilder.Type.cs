@@ -85,9 +85,9 @@ internal readonly ref partial struct ImposterBuilder
                     property.ImposterBuilder.Syntax
                         .New(
                             SyntaxFactoryHelper.ArgumentListSyntax(
-                                [
-                                    Argument(IdentifierName(_invocationBehaviorParameterName))
-                                ])))
+                            [
+                                Argument(IdentifierName(_invocationBehaviorParameterName))
+                            ])))
                 .ToStatementSyntax());
 
         _imposterInstanceBuilder.AddImposterProperty(property);
@@ -193,14 +193,7 @@ internal readonly ref partial struct ImposterBuilder
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
             .AddMembers(BuildImposterMethods(imposterGenerationContext));
 
-        var futureMemberNames = GetFutureMemberNames(imposterGenerationContext);
-
-        var memberNameSeeds = MemberNamesHelper
-            .GetNames(imposterBuilder.Members)
-            .Concat(futureMemberNames);
-
-        var memberNameSet = new NameSet(memberNameSeeds);
-
+        var memberNameSet = GetImposterNameSet(imposterGenerationContext, imposterBuilder.Members);
         var typeMetadata = new TypeMetadata(memberNameSet);
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
@@ -232,7 +225,8 @@ internal readonly ref partial struct ImposterBuilder
             .AddMember(invocationBehaviorField)
             .AddMember(ImposterInstanceField(typeMetadata.ImposterTargetInstanceClassName, typeMetadata.ImposterInstanceFieldName))
             .AddMember(InstanceMethod(imposterGenerationContext, typeMetadata.ImposterInstanceFieldName))
-            .AddModifier(Token(SyntaxKind.PublicKeyword));
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.SealedKeyword));
 
         var imposterInstanceBuilder = ImposterInstanceBuilder.Create(imposterGenerationContext, typeMetadata.ImposterTargetInstanceClassName);
 
@@ -251,27 +245,33 @@ internal readonly ref partial struct ImposterBuilder
 
     internal NameSet MemberNameSet => _memberNameSet;
 
-    private static IEnumerable<string> GetFutureMemberNames(ImposterGenerationContext imposterGenerationContext)
+    private static NameSet GetImposterNameSet(
+        in ImposterGenerationContext imposterGenerationContext,
+        IReadOnlyList<MemberDeclarationSyntax> imposterBuilderMembers)
     {
-        foreach (var propertySymbol in imposterGenerationContext.Imposter.PropertySymbols)
-        {
-            yield return propertySymbol.Name;
-        }
+        var futureMemberNames = GetMemberNames(imposterGenerationContext);
 
-        foreach (var indexerSymbol in imposterGenerationContext.Imposter.IndexerSymbols)
-        {
-            yield return indexerSymbol.IsIndexer ? "Indexer" : indexerSymbol.Name;
-        }
+        var memberNameSeeds = MemberNamesHelper
+            .GetNames(imposterBuilderMembers)
+            .Concat(futureMemberNames);
 
-        foreach (var method in imposterGenerationContext.Imposter.Methods)
-        {
-            yield return method.Symbol.Name;
-        }
+        return new NameSet(memberNameSeeds);
+    }
 
-        foreach (var eventSymbol in imposterGenerationContext.Imposter.EventSymbols)
-        {
-            yield return eventSymbol.Name;
-        }
+    private static List<string> GetMemberNames(in ImposterGenerationContext imposterGenerationContext)
+    {
+        var memberNames = new List<string>();
+
+        memberNames
+            .AddRange(imposterGenerationContext.Imposter.PropertySymbols.Select(it => it.Name));
+        memberNames
+            .AddRange(imposterGenerationContext.Imposter.IndexerSymbols.Select(it => it.IsIndexer ? "Indexer" : it.Name));
+        memberNames
+            .AddRange(imposterGenerationContext.Imposter.Methods.Select(it => it.Symbol.Name));
+        memberNames
+            .AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
+
+        return memberNames;
     }
 
     private static (ConstructorBuilder constructorBuilder, BlockBuilder bodyBuilder) CreateConstructorBuilder(
@@ -406,5 +406,3 @@ internal readonly ref partial struct ImposterBuilder
         }
     }
 }
-
-

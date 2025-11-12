@@ -28,7 +28,7 @@ internal static partial class MethodImposterCollectionBuilder
             .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Collection.Name, [historyCollectionField, invocationBehaviorField]))
             .AddMember(BuildImpostersField(method))
             .AddMember(BuildAddNewMethod(method))
-            .AddMember(BuildGetImposterWithMatchingSetup(method))
+            .AddMember(BuildGetImposterWithMatchingInvocationImposterGroup(method))
             .Build();
     }
 

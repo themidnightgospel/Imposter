@@ -293,7 +293,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
-            var invokeMethodInvocationExpression = GetImposterWithMatchingSetupExpression(imposterMethod)
+            var invokeMethodInvocationExpression = GetImposterWithMatchingInvocationImposterGroupExpression(imposterMethod)
                 .Dot(IdentifierName("Invoke"))
                 .Call(ArgumentList(SeparatedList(invokeArguments)));
 
@@ -315,20 +315,20 @@ internal readonly ref struct ImposterInstanceBuilder
             return methodBuilder.Build();
         });
 
-        ExpressionSyntax GetImposterWithMatchingSetupExpression(in ImposterTargetMethodMetadata method)
+        ExpressionSyntax GetImposterWithMatchingInvocationImposterGroupExpression(in ImposterTargetMethodMetadata method)
         {
             if (method.Symbol.IsGenericMethod)
             {
                 return IdentifierName(imposterFieldName)
                     .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
-                    .Dot(GenericName(Identifier("GetImposterWithMatchingSetup"), method.GenericTypeArguments.ToTypeArguments()))
-                    .Call(GetGetImposterWithMatchingSetupArguments(method));
+                    .Dot(GenericName(Identifier("GetImposterWithMatchingInvocationImposterGroup"), method.GenericTypeArguments.ToTypeArguments()))
+                    .Call(GetGetImposterWithMatchingInvocationImposterGroupArguments(method));
             }
 
             return IdentifierName(imposterFieldName)
                 .Dot(IdentifierName(method.MethodImposter.AsField.Name));
 
-            static ArgumentListSyntax? GetGetImposterWithMatchingSetupArguments(in ImposterTargetMethodMetadata method)
+            static ArgumentListSyntax? GetGetImposterWithMatchingInvocationImposterGroupArguments(in ImposterTargetMethodMetadata method)
             {
                 if (method.Parameters.HasInputParameters)
                 {

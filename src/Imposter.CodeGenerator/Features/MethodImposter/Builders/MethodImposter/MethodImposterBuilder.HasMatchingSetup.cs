@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.Features.MethodImposter.Metadata.MethodImposter;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -10,29 +11,35 @@ internal static partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax BuildHasMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "HasMatchingSetup")
+        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
+
+        return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameter(GetHasMatchingSetupParameter(method))
+            .AddParameter(GetHasMatchingInvocationImposterGroupParameter(method, hasMatchingMethod))
             .WithBody(Block(
                     ReturnStatement(
                         IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
-                            .Call(SyntaxFactoryHelper.ArgumentListSyntax(GetFindMatchingSetupArguments(method)))
+                            .Call(SyntaxFactoryHelper.ArgumentListSyntax(GetFindMatchingInvocationImposterGroupArguments(method, hasMatchingMethod)))
                             .IsNotNull()
                     )
                 )
             )
             .Build();
 
-        static ParameterSyntax? GetHasMatchingSetupParameter(in ImposterTargetMethodMetadata method)
+        static ParameterSyntax? GetHasMatchingInvocationImposterGroupParameter(
+            in ImposterTargetMethodMetadata method,
+            in HasMatchingInvocationImposterGroupMethodMetadata hasMatchingMethod)
         {
             return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(method.Arguments.Syntax, "arguments")
+                ? SyntaxFactoryHelper.ParameterSyntax(method.Arguments.Syntax, hasMatchingMethod.ArgumentsParameterName)
                 : null;
         }
 
-        static ArgumentSyntax? GetFindMatchingSetupArguments(in ImposterTargetMethodMetadata method)
+        static ArgumentSyntax? GetFindMatchingInvocationImposterGroupArguments(
+            in ImposterTargetMethodMetadata method,
+            in HasMatchingInvocationImposterGroupMethodMetadata hasMatchingMethod)
         {
-            return method.Parameters.HasInputParameters ? Argument(IdentifierName("arguments")) : null;
+            return method.Parameters.HasInputParameters ? Argument(IdentifierName(hasMatchingMethod.ArgumentsParameterName)) : null;
         }
     }
 }

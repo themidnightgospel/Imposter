@@ -25,23 +25,23 @@ FEATURES:
       - cleanup SyntaxFactoryHelper
       - TODO Use cancellation token during code generation
       - add test that checks that multiple [GenerateImposter] attribute for the same type still works and does not generate 2 imposters but 1.
-    IN Progress:
       - In ImposterTargetInstance, custom members like _imposter might collide with interface member names - DONE
-      - make imposter sealed
-      - make sure imposter builds properly for all the major Microsoft.CodeAnalysis.CSharp versions, ideally using automated tests. (Use conditinals for the target framework and language version, and CSharp package and run tests for all the combination)
-    NOT Started:
       - Add docstrings to types defined in Abstractions
-      - Rename HasMatchingSetup methods to HasMatchingInvocationImposterGroup
       - Make imposter thread safe
+      - Rename HasMatchingSetup methods to HasMatchingInvocationImposterGroup
+    IN Progress:
+      - make imposter sealed
       - Use fully qualified name wherever possible
+      - Add Docs page
+    NOT Started:
       - Make sure metadata structs are passed as readonly
       - fix TODOs in code
       - Setup github action to build, test and publish nuget packages
-      - Add Docs page
       - Publish as a nuget package from github actions
       - Test nuget package for different versions of the Roslyn
       - Analyze if [MethodImpl(MethodImplOptions.AggressiveInlining)] is productive or counter-productive 
       - Make sure all the metadata structs are passed as readonly using in modifier
+      - make sure imposter builds properly for all the major Microsoft.CodeAnalysis.CSharp versions, ideally using automated tests. (Use conditinals for the target framework and language version, and CSharp package and run tests for all the combination)
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
       - Add a sample project.

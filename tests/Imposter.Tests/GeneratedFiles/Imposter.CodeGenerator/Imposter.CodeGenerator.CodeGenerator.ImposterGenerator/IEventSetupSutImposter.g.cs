@@ -13,7 +13,7 @@ using Imposter.Tests.Features.EventImposter;
 namespace Imposter.Tests.Features.EventImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IEventSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>
+    public sealed class IEventSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;

@@ -13,7 +13,7 @@ using Imposter.Tests.Shared;
 namespace Imposter.Tests.Shared
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IIndexerSetupPocImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>
+    public sealed class IIndexerSetupPocImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>
     {
         private readonly IndexerMethodMethodImposter _indexerMethodMethodImposter;
         private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection = new IndexerMethodMethodInvocationHistoryCollection();
@@ -278,7 +278,7 @@ namespace Imposter.Tests.Shared
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(IndexerMethodArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(IndexerMethodArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

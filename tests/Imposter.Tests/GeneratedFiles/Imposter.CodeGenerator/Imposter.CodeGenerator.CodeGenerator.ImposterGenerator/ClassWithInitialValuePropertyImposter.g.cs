@@ -13,7 +13,7 @@ using Imposter.Tests.Features.PropertyImposter;
 namespace Imposter.Tests.Features.PropertyImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ClassWithInitialValuePropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty>
+    public sealed class ClassWithInitialValuePropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;

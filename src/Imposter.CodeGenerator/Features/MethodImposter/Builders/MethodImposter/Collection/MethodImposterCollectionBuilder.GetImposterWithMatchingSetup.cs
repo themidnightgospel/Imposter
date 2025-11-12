@@ -10,10 +10,13 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterCollectionBuilder
 {
-    private static MethodDeclarationSyntax BuildGetImposterWithMatchingSetup(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildGetImposterWithMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
     {
-        var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingSetup")
-            .AddParameter(GetParameter(method))
+        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
+        var parameterName = hasMatchingMethod.ArgumentsParameterName;
+
+        var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.GenericInterface.Syntax, "GetImposterWithMatchingInvocationImposterGroup")
+            .AddParameter(GetParameter(method, parameterName))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddTypeParameters(TypeParametersSyntax(method.Symbol).ToArray())
             .WithBody(Block(ReturnStatement(
@@ -44,8 +47,8 @@ internal static partial class MethodImposterCollectionBuilder
                         Identifier("it")
                             .Lambda(
                                 It
-                                    .Dot(IdentifierName("HasMatchingSetup"))
-                                    .Call(method.Parameters.HasInputParameters ? Argument(IdentifierName("arguments")).AsSingleArgumentListSyntax() : EmptyArgumentListSyntax)
+                                    .Dot(IdentifierName(hasMatchingMethod.Name))
+                                    .Call(method.Parameters.HasInputParameters ? Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax() : EmptyArgumentListSyntax)
                             )
                             .ToSingleArgumentList()
                     )
@@ -57,9 +60,9 @@ internal static partial class MethodImposterCollectionBuilder
 
         return methodBuilder.Build();
         
-        static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method) =>
+        static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method, string parameterName) =>
             method.Parameters.HasInputParameters
-                ? Parameter(Identifier("arguments")).WithType(method.Arguments.Syntax)
+                ? Parameter(Identifier(parameterName)).WithType(method.Arguments.Syntax)
                 : null;
     }
 }

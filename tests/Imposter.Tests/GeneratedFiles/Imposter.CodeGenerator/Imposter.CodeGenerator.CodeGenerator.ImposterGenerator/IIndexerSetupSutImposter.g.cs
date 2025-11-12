@@ -13,7 +13,7 @@ using Imposter.Tests.Features.IndexerImposter;
 namespace Imposter.Tests.Features.IndexerImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut>
+    public sealed class IIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;

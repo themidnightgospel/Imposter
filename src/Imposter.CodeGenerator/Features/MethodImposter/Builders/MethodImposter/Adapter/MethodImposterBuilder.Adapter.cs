@@ -41,7 +41,7 @@ internal static class MethodImposterAdapterBuilder
                     ))
                     .Build())
             .AddMember(BuildAdapterInvokeMethod(method, adapterNames))
-            .AddMember(BuildAdapterHasMatchingSetupMethod(method, adapterNames))
+            .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
             .Build();
 
@@ -150,13 +150,14 @@ internal static class MethodImposterAdapterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildAdapterHasMatchingSetupMethod(in ImposterTargetMethodMetadata method, in AdapterNames adapterNames)
+    private static MethodDeclarationSyntax BuildAdapterHasMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method, in AdapterNames adapterNames)
     {
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
+        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var argumentsTypeWithTarget = (TypeSyntax)typeParamRenamer.Visit(method.Arguments.Syntax);
-        var argumentsParameterName = adapterNames.HasMatchingSetupArgumentsParameterName;
+        var argumentsParameterName = adapterNames.HasMatchingInvocationImposterGroupArgumentsParameterName;
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "HasMatchingSetup")
+        return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameterIf(
                 method.Parameters.HasInputParameters,
@@ -164,7 +165,7 @@ internal static class MethodImposterAdapterBuilder
             .WithBody(Block(
                 ReturnStatement(
                     IdentifierName(adapterNames.TargetFieldName)
-                        .Dot(IdentifierName("HasMatchingSetup"))
+                        .Dot(IdentifierName(hasMatchingMethod.Name))
                         .Call(
                             method.Parameters.HasInputParameters
                                 ? Argument(
@@ -200,7 +201,7 @@ internal static class MethodImposterAdapterBuilder
         internal readonly string TargetFieldName;
         internal readonly string TargetConstructorParameterName;
         internal readonly string InvokeResultVariableName;
-        internal readonly string HasMatchingSetupArgumentsParameterName;
+        internal readonly string HasMatchingInvocationImposterGroupArgumentsParameterName;
 
         internal AdapterNames(in ImposterTargetMethodMetadata method)
         {
@@ -208,7 +209,7 @@ internal static class MethodImposterAdapterBuilder
             TargetFieldName = nameContext.Use("_target");
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");
-            HasMatchingSetupArgumentsParameterName = nameContext.Use("arguments");
+            HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
         }
     }
 }
