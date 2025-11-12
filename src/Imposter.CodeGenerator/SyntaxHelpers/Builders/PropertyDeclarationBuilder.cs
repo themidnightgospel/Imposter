@@ -22,14 +22,14 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PropertyDeclarationBuilder AddModifier(SyntaxToken modifier)
+    public PropertyDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PropertyDeclarationBuilder AddModifiers(SyntaxTokenList modifiers)
+    public PropertyDeclarationBuilder AddModifiers(in SyntaxTokenList modifiers)
     {
         foreach (var modifier in modifiers)
         {

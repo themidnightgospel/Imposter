@@ -8,7 +8,7 @@ internal static class CrashDiagnosticsReporter
 {
     private const int MaxCrashDiagnosticLength = 2_000;
 
-    internal static void Report(SourceProductionContext sourceProductionContext, Exception exception)
+internal static void Report(in SourceProductionContext sourceProductionContext, Exception exception)
     {
         sourceProductionContext.ReportDiagnostic(
             Diagnostic.Create(

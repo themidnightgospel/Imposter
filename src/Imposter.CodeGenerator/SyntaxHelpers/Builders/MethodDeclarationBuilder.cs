@@ -41,14 +41,14 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MethodDeclarationBuilder AddModifier(SyntaxToken modifier)
+    public MethodDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MethodDeclarationBuilder AddModifiers(SyntaxTokenList modifiers)
+    public MethodDeclarationBuilder AddModifiers(in SyntaxTokenList modifiers)
     {
         if (modifiers.Count == 0)
         {

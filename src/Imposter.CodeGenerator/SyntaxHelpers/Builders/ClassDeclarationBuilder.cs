@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
+internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
     private readonly List<AttributeListSyntax> _attribute = [];
@@ -61,7 +61,7 @@ internal readonly ref struct ClassDeclarationBuilder(string name, TypeParameterL
     internal ClassDeclarationBuilder AddPublicModifier() => AddModifier(Token(SyntaxKind.PublicKeyword));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal ClassDeclarationBuilder AddModifier(SyntaxToken modifier)
+    internal ClassDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;

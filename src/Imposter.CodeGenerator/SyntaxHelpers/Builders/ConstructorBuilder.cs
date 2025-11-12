@@ -59,7 +59,7 @@ internal struct ConstructorBuilder(string name)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal ConstructorBuilder WithModifiers(SyntaxTokenList modifiers)
+    internal ConstructorBuilder WithModifiers(in SyntaxTokenList modifiers)
     {
         _modifiers = modifiers;
         return this;

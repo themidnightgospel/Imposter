@@ -4,8 +4,8 @@ namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 
 public static class DiagnosticReporter
 {
-    public static void ReportDiagnostics(
-        this IncrementalGeneratorInitializationContext context,
+public static void ReportDiagnostics(
+        this in IncrementalGeneratorInitializationContext context,
         IncrementalValuesProvider<Diagnostic> diagnostic
     )
     {

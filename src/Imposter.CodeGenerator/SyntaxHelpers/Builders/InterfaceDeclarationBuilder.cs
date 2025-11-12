@@ -23,7 +23,7 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal InterfaceDeclarationBuilder AddModifier(SyntaxToken modifier)
+    internal InterfaceDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;

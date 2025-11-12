@@ -27,7 +27,7 @@ internal class ConstructorWithFieldInitializationBuilder
         return this;
     }
 
-    internal ConstructorWithFieldInitializationBuilder WithModifiers(SyntaxToken modifier)
+internal ConstructorWithFieldInitializationBuilder WithModifiers(in SyntaxToken modifier)
     {
         _constructorBuilder.WithModifiers(TokenList(modifier));
         return this;

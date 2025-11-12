@@ -31,7 +31,7 @@ internal readonly struct NamespaceDeclarationSyntaxBuilder(string @namespace)
         return this;
     }
 
-    internal NamespaceDeclarationSyntax Build(SyntaxTrivia leadingTrivia = default) =>
+    internal NamespaceDeclarationSyntax Build(in SyntaxTrivia leadingTrivia = default) =>
         NamespaceDeclaration(
             IdentifierName(@namespace),
             externs: List<ExternAliasDirectiveSyntax>(),
