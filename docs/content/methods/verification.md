@@ -4,7 +4,7 @@ Verify that methods were invoked the expected number of times with specific argu
 
 ## Basic counts
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L23"}
 service.Increment(1);
 service.Increment(2);
 
@@ -25,7 +25,9 @@ imposter.Increment(2).Called(Count.Once());
 
 Verification respects the same argument matching rules used for arrangements:
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L40"}
+
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/MethodImposter/InvocationVerificationTests.cs).
 imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3));
 imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count.Once());
 ```

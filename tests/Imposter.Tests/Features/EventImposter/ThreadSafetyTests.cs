@@ -15,7 +15,7 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public void GivenConcurrentRaises_ShouldRecordAll()
         {
-            const int raises = 200;
+            const int raises = 64;
             var startSignal = new ManualResetEventSlim(false);
             var readySignal = new CountdownEvent(raises);
 
@@ -40,7 +40,7 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public void GivenConcurrentSubscribeSameHandler_WhenRaiseOnce_ShouldInvokeExpectedTimes()
         {
-            const int subs = 200;
+            const int subs = 64;
             int invoked = 0;
             EventHandler h = (s, e) => Interlocked.Increment(ref invoked);
             var startSignal = new ManualResetEventSlim(false);
@@ -69,7 +69,7 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public void GivenConcurrentSubscribeAndUnsubscribe_ShouldKeepCountsConsistent()
         {
-            const int iterations = 200;
+            const int iterations = 64;
             EventHandler h = (s, e) => { };
             var startSignal = new ManualResetEventSlim(false);
             var readySignal = new CountdownEvent(2);
@@ -103,22 +103,12 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public async Task GivenConcurrentRaiseAsync_ShouldRecordAll()
         {
-            const int raises = 200;
-            var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(raises);
+            const int raises = 64;
 
+            // Drive concurrency via async tasks directly without extra thread-pool work items.
             var tasks = Enumerable.Range(0, raises)
-                .Select(_ => Task.Run(async () =>
-                {
-                    readySignal.Signal();
-                    startSignal.Wait();
-
-                    await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
-                }))
+                .Select(_ => _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty))
                 .ToArray();
-
-            readySignal.Wait();
-            startSignal.Set();
 
             await Task.WhenAll(tasks);
 

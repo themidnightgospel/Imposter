@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.PropertyImposter;
 
 namespace Imposter.Tests.Features.PropertyImposter
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class ClassWithInitialValueStringPropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         public ISPropertyBuilder S => _SPropertyBuilderField;
 
         private readonly SPropertyBuilder _SPropertyBuilderField;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterOutcomeBuilder
         {
             ISPropertyGetterContinuationBuilder Returns(string value);
@@ -35,78 +35,78 @@ namespace Imposter.Tests.Features.PropertyImposter
                 where TException : Exception, new();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterCallbackBuilder
         {
             ISPropertyGetterContinuationBuilder Callback(global::System.Action callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterContinuationBuilder : ISPropertyGetterCallbackBuilder
         {
             ISPropertyGetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterFluentBuilder : ISPropertyGetterOutcomeBuilder, ISPropertyGetterContinuationBuilder
         {
             ISPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterBuilder : ISPropertyGetterOutcomeBuilder, ISPropertyGetterCallbackBuilder, ISPropertyGetterVerifier
         {
             ISPropertyGetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyGetterUseBaseImplementationBuilder
         {
             ISPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterCallbackBuilder
         {
             ISPropertySetterContinuationBuilder Callback(global::System.Action<string> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterContinuationBuilder : ISPropertySetterCallbackBuilder
         {
             ISPropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterFluentBuilder : ISPropertySetterCallbackBuilder, ISPropertySetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterBuilder : ISPropertySetterCallbackBuilder, ISPropertySetterVerifier
         {
             ISPropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterUseBaseImplementationBuilder : ISPropertySetterFluentBuilder
         {
             ISPropertySetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertyBuilder
         {
             ISPropertyGetterBuilder Getter();
@@ -114,7 +114,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             ISPropertyBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SPropertyBuilder : ISPropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -129,7 +129,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty.S");
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal string BackingField = default;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class GetterImposterBuilder : ISPropertyGetterBuilder, ISPropertyGetterFluentBuilder, ISPropertyGetterUseBaseImplementationBuilder
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>>();
@@ -270,7 +270,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>();
@@ -346,7 +346,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                     _hasConfiguredSetter = true;
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : ISPropertySetterBuilder, ISPropertySetterFluentBuilder, ISPropertySetterUseBaseImplementationBuilder
                 {
                     private readonly SetterImposter _setterImposter;
@@ -413,7 +413,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty
         {
             ClassWithInitialValueStringPropertyImposter _imposter;

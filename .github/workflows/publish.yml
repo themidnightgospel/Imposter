@@ -1,0 +1,80 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (SemVer)'
+        required: true
+        default: '0.1.0'
+
+jobs:
+  build-pack-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Determine version
+        id: ver
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            # Strip leading 'v' if tag starts with it
+            tag="${GITHUB_REF_NAME}"
+            tag="${tag#v}"
+            echo "version=$tag" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Restore
+        run: dotnet restore Imposter.sln
+
+      - name: Build (Release)
+        run: dotnet build Imposter.sln -c Release --no-restore
+
+      - name: Test (Release)
+        run: dotnet test Imposter.sln -c Release --no-build --verbosity normal
+
+      - name: Pack (Imposter)
+        run: |
+          dotnet pack src/Imposter.CodeGenerator/Imposter.CodeGenerator.csproj \
+            -c Release \
+            -p:Version=${{ steps.ver.outputs.version }} \
+            -o artifacts/packages
+
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/packages
+
+      - name: Push to NuGet.org
+        if: secrets.NUGET_API_KEY != ''
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push artifacts/packages/*.nupkg \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+

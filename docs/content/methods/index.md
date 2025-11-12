@@ -16,30 +16,30 @@ Invocation modes:
 
 ## Quick Start
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L28"}
 var imposter = new IMyServiceImposter();
 var service = imposter.Instance();
 
 imposter.GetNumber().Returns(42);
 service.GetNumber(); // 42
 
+imposter.Increment(Arg<int>.Any()).Returns(0);
 imposter.Increment(Arg<int>.Is(x => x > 0)).Returns(v => v + 2);
 imposter.Increment(5).Returns(50);          // exact match (implicit Arg<int>)
-imposter.Increment(Arg<int>.Any()).Returns(0);
 ```
 
 ## Arranging Returns
 
 - Return a constant value:
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L43"}
   imposter.GetNumber().Returns(1);
   ```
 - Return via a delegate (captures inputs):
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L34"}
   imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
   ```
 - Sequence multiple outcomes with `Then()`:
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L42"}
   imposter.GetNumber()
       .Returns(1)
       .Then().Returns(() => 2)
@@ -53,16 +53,16 @@ Chaining rules:
 ## Async Methods
 
 - Task<T> and ValueTask<T> methods:
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L51"}
   imposter.GetNumberAsync().ReturnsAsync(42);
   imposter.GetNumberAsync().Returns(() => Task.FromResult(1));
   ```
 - Task-returning (no result):
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L54"}
   imposter.DoWorkAsync().Returns(Task.CompletedTask);
   ```
 - Sequencing remains the same:
-  ```csharp
+  ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L56"}
   imposter.GetNumberAsync()
       .ReturnsAsync(1)
       .Then().Returns(() => Task.FromResult(2));
@@ -71,14 +71,14 @@ Chaining rules:
 ## Exceptions
 
 Arrange exceptions instead of return values:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L64"}
 imposter.GetNumber().Throws<InvalidOperationException>();
 imposter.GetNumber().Throws(new Exception("boom"));
 imposter.GetNumber().Throws(() => new Exception("deferred"));
 ```
 
 Mix with returns using `Then()`:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L75"}
 imposter.GetNumber()
     .Returns(1)
     .Then().Throws<InvalidOperationException>()
@@ -88,7 +88,7 @@ imposter.GetNumber()
 ## Callbacks
 
 Callbacks run after an outcome is produced (or after the default result for missing returns in Implicit mode):
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L85"}
 var stages = new List<string>();
 
 imposter.GetNumber()
@@ -98,12 +98,12 @@ imposter.GetNumber()
 ```
 
 Parameterized callbacks capture inputs:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L91"}
 imposter.Increment(Arg<int>.Any()).Callback(v => /* observe v */);
 ```
 
 Sequence-local callbacks:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L93"}
 imposter.Increment(Arg<int>.Any())
     .Returns(_ => 10)
     .Callback(_ => Log("first"))
@@ -122,7 +122,7 @@ Use precise values or matchers per parameter:
 - Default: `Arg<T>.IsDefault()`
 
 Combine for multi-parameter methods:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_IndexCodeSnippetsTests.cs#L103"}
 imposter.Combine(
     Arg<int>.Is(x => x > 0),
     Arg<int>.Is(y => y < 10))
@@ -134,7 +134,7 @@ imposter.Combine(
 Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref` and `in`.
 
 Returns and callbacks can specify `out/ref/in` in the delegate signature:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L56"}
 imposter.GenericAllRefKind<int, string, double, bool, int>(
         OutArg<int>.Any(),
         Arg<string>.Any(),
@@ -147,7 +147,7 @@ imposter.GenericAllRefKind<int, string, double, bool, int>(
 ## Base Implementation (Class Targets)
 
 Forward to the base (virtual/override) method implementation when available:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_BaseImplementationCodeSnippetsTests.cs#L54"}
 imposter.VirtualCompute(Arg<int>.Any()).UseBaseImplementation();
 ```
 
@@ -157,12 +157,12 @@ If base is unavailable and no setup applies, `MissingImposterException` is throw
 ## Verification
 
 Use `Called(Count.*)` on the method to assert invocation counts:
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L26"}
 // After calling service methods
 imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
 imposter.Increment(2).Called(Count.Once());
 ```
-
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/tree/main/tests/Imposter.Tests/Features/MethodImposter).
 `Count` options:
 - `Exactly(n)`, `AtLeast(n)`, `AtMost(n)`, `Once()`, `Never()`, `Any`
 

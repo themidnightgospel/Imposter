@@ -4,7 +4,7 @@ Callbacks run after the arranged result (or after the default result in Implicit
 
 ## Ordering relative to results
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L28"}
 var stages = new List<string>();
 
 imposter.GetNumber()
@@ -20,7 +20,7 @@ service.GetNumber();
 
 Capture input arguments in a callback:
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L44"}
 imposter.Increment(Arg<int>.Any()).Callback(v => Logger.Log($"value: {v}"));
 ```
 
@@ -28,7 +28,7 @@ imposter.Increment(Arg<int>.Any()).Callback(v => Logger.Log($"value: {v}"));
 
 Callbacks can work with `out`, `ref`, and `in` parameters. Use `OutArg<T>.Any()` to match `out` parameters in the setup signature.
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L56"}
 imposter.GenericAllRefKind<int, string, double, bool, int>(
         OutArg<int>.Any(),
         Arg<string>.Any(),
@@ -42,7 +42,7 @@ imposter.GenericAllRefKind<int, string, double, bool, int>(
 
 Callbacks are scoped to the sequence step they’re defined on. Use `Then()` to create a new step with independent callbacks.
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L80"}
 var seen = new List<string>();
 
 imposter.Increment(Arg<int>.Any())
@@ -60,7 +60,9 @@ service.Increment(2); // adds "second"
 
 If a callback throws, the exception is propagated to the caller after the result has been produced.
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_CallbacksCodeSnippetsTests.cs#L98"}
+
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/MethodImposter/MethodCallbackTests.cs).
 imposter.GetNumber()
     .Returns(1)
     .Callback(() => throw new InvalidOperationException("boom"));
