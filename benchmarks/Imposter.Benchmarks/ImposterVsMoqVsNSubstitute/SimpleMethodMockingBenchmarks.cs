@@ -1,15 +1,15 @@
-﻿using Imposter.Abstractions;
-using Imposter.Benchmarks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
+using Imposter.Abstractions;
+using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 using Moq;
 using NSubstitute;
 
-[assembly: GenerateImposter(typeof(ImposterVsMoqVsNSub.ICalculator))]
+[assembly: GenerateImposter(typeof(SimpleMethodMockingBenchmarks.ICalculator))]
 
-namespace Imposter.Benchmarks;
+namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 
 [MemoryDiagnoser]
-public class ImposterVsMoqVsNSub
+public class SimpleMethodMockingBenchmarks
 {
     [Params(1, 10, 100, 1000)]
     public int Iteration;

@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
-using Imposter.Benchmarks;
+using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 
-// BenchmarkRunner.Run<ImposterVsMoqVsNSub>();
-BenchmarkRunner.Run<ReadonlyStructBenchmarks>();
+BenchmarkRunner.Run<SimpleMethodMockingBenchmarks>();
+//BenchmarkRunner.Run<ReadonlyStructBenchmarks>();

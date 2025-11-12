@@ -101,7 +101,7 @@ internal static partial class InvocationSetupBuilder
             BinaryExpression(
                     SyntaxKind.EqualsExpression,
                     IdentifierName("_resultGenerator"),
-                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    Null)
                 .And(
                     BinaryExpression(
                         SyntaxKind.EqualsExpression,
@@ -136,7 +136,7 @@ internal static partial class InvocationSetupBuilder
                     BinaryExpression(
                         SyntaxKind.EqualsExpression,
                         IdentifierName("_resultGenerator"),
-                        LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                        Null),
                     Block(
                         IfStatement(
                             BinaryExpression(
@@ -232,8 +232,8 @@ internal static partial class InvocationSetupBuilder
         {
             parameters.Add(
                 Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
-                    .WithType(method.Delegate.Syntax)
-                    .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+                    .WithType(method.Delegate.Syntax.ToNullableType())
+                    .WithDefault(EqualsValueClause(Null)));
         }
 
         return ParameterList(SeparatedList(parameters));
@@ -340,7 +340,7 @@ internal static partial class InvocationSetupBuilder
                         .Assign(True)
                         .ToStatementSyntax(),
                     IdentifierName("_resultGenerator")
-                        .Assign(LiteralExpression(SyntaxKind.NullLiteralExpression))
+                        .Assign(Null)
                         .ToStatementSyntax()))
             .Build();
 

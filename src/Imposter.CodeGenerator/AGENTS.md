@@ -43,6 +43,7 @@ This guide applies to the code generation project under `src/Imposter.CodeGenera
 - Use specific helpers: `TypeSyntax`, `ParameterSyntax`, `Property`, `Method`, `Constructor`, `Field`, `Invocation`, `Lambda`, `Trivia`, `Generic`, `Async`, etc.
 - Use collection helpers like `ConcurrentQueueSyntaxHelper` / `ConcurrentStackSyntaxHelper` when building concurrent types.
 - Use C# collection expressions where appropriate (LangVersion ≥ 12): prefer `[]`, `[item1, item2]`, and spread `[..enumerable]` over `new[] { ... }` or manual materialization when APIs accept arrays or `IEnumerable<T>` (e.g., argument arrays, member arrays, separated lists construction helpers).
+- Emit null literals via `SyntaxFactoryHelper.Null` rather than `SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)` to ensure consistent helper usage and avoid redundant literal nodes.
 - Use `WellKnownTypes` and `MemberNamesHelper` to avoid hardcoding type and member names.
 - Do not hand‑roll text for namespaces, using directives, attributes, or modifiers — compose them as syntax nodes.
 - Names and types for variables, fields, properties, methods, and types must be derived from metadata or helpers, never hardcoded.

@@ -23,7 +23,7 @@ internal static partial class InvocationSetupBuilder
             BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName("invocationImposter"),
-                LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                Null),
             Block(
                 IfStatement(
                     BinaryExpression(
@@ -73,8 +73,8 @@ internal static partial class InvocationSetupBuilder
             if (method.SupportsBaseImplementation)
             {
                 parameters.Add(
-                    ParameterSyntax(method.Delegate.Syntax, method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
-                        .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))));
+                    ParameterSyntax(method.Delegate.Syntax.ToNullableType(), method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                        .WithDefault(EqualsValueClause(Null)));
             }
 
             return ParameterList(SeparatedList(parameters));

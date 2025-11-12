@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -55,69 +55,127 @@ public static class ArgumentsCriteriaBuilder
             .WithTrailingTrivia(CarriageReturnLineFeed);
     }
 
-    // TODO refactor
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
-        var typeParameters = method.Symbol.TypeParameters;
-        var targetTypeArgs = method.ArgumentsCriteriaAsMethod.TargetTypeArguments;
-        var asMethodTypeParams = method.ArgumentsCriteriaAsMethod.TypeParameters;
-        var returnType = GenericName(method.ArgumentsCriteria.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs.Cast<TypeSyntax>())));
-
-        var typeParameterRenamer = new TypeParameterRenamer(typeParameters, targetTypeArgs);
-
-        var constructorArgs = method
-            .Symbol
-            .Parameters
-            .Select(p =>
-            {
-                var targetType = (TypeSyntax)typeParameterRenamer.Visit(TypeSyntax(p.Type));
-
-                if (p.RefKind is RefKind.Out)
-                {
-                    return Argument(OutArgAny(targetType));
-                }
-
-                var sourceType = TypeSyntax(p.Type);
-
-                var tryCastVarIdentifier = Identifier(p.Name + "Target");
-
-                return Argument(
-                    WellKnownTypes.Imposter.Abstractions.Arg(targetType)
-                        .Dot(IdentifierName("Is"))
-                        .Call(ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(
-                                        SimpleLambdaExpression(
-                                            Parameter(It.Identifier),
-                                            WellKnownTypes.Imposter.Abstractions.TypeCaster
-                                                .Dot(GenericName("TryCast")
-                                                    .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>([targetType, sourceType])))
-                                                )
-                                                .Call(ArgumentList(SeparatedList([
-                                                    Argument(It),
-                                                    Argument(DeclarationExpression(sourceType, SingleVariableDesignation(tryCastVarIdentifier))).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
-                                                ])))
-                                                .And(IdentifierName(p.Name)
-                                                    .Dot(IdentifierName("Matches"))
-                                                    .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(tryCastVarIdentifier))))))
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                );
-            });
+        var returnType = BuildReturnType(method);
+        var typeParameterRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.ArgumentsCriteriaAsMethod.TargetTypeArguments);
+        var constructorArgs = BuildConstructorArgs(method, typeParameterRenamer);
 
         return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(Block(
-                ReturnStatement(
-                    returnType.New(ArgumentList(SeparatedList(constructorArgs)))
+            .WithTypeParameters(TypeParameterList(SeparatedList(method.ArgumentsCriteriaAsMethod.TypeParameters)))
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        returnType.New(ArgumentList(constructorArgs))
+                    )
                 )
-            ))
+            )
             .Build();
+
+        static TypeSyntax BuildReturnType(in ImposterTargetMethodMetadata metadata) =>
+            GenericName(metadata.ArgumentsCriteria.Name)
+                .WithTypeArgumentList(
+                    TypeArgumentList(
+                        SeparatedList<TypeSyntax>(
+                            metadata.ArgumentsCriteriaAsMethod.TargetTypeArguments
+                        )
+                    )
+                );
+
+        static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(
+            in ImposterTargetMethodMetadata metadata,
+            TypeParameterRenamer renamer) =>
+            SeparatedList(
+                metadata.Symbol.Parameters.Select(parameter => BuildArgForParameter(parameter, renamer))
+            );
+
+        static ArgumentSyntax BuildArgForParameter(IParameterSymbol parameter, TypeParameterRenamer renamer)
+        {
+            var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(parameter.Type));
+
+            if (parameter.RefKind is RefKind.Out)
+            {
+                return BuildOutArgument(parameter, targetType);
+            }
+
+            var sourceType = TypeSyntax(parameter.Type);
+            return BuildIsPredicateArg(parameter, targetType, sourceType);
+        }
+
+        static ArgumentSyntax BuildOutArgument(IParameterSymbol parameter, TypeSyntax targetType)
+        {
+            _ = parameter;
+            return Argument(OutArgAny(targetType));
+        }
+
+        static ArgumentSyntax BuildIsPredicateArg(IParameterSymbol parameter, TypeSyntax targetType, TypeSyntax sourceType)
+        {
+            var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
+
+            return Argument(
+                WellKnownTypes.Imposter.Abstractions.Arg(targetType)
+                    .Dot(IdentifierName("Is"))
+                    .Call(
+                        ArgumentList(
+                            SingletonSeparatedList(
+                                Argument(
+                                    BuildTryCastAndMatchLambda(parameter, targetType, sourceType, tryCastVarIdentifier)
+                                )
+                            )
+                        )
+                    )
+            );
+        }
+
+        static SimpleLambdaExpressionSyntax BuildTryCastAndMatchLambda(
+            IParameterSymbol parameter,
+            TypeSyntax targetType,
+            TypeSyntax sourceType,
+            SyntaxToken tryCastVarIdentifier)
+        {
+            var tryCastInvocation =
+                WellKnownTypes.Imposter.Abstractions.TypeCaster
+                    .Dot(
+                        GenericName("TryCast")
+                            .WithTypeArgumentList(
+                                TypeArgumentList(
+                                    SeparatedList<TypeSyntax>([targetType, sourceType])
+                                )
+                            )
+                    )
+                    .Call(
+                        ArgumentList(
+                            SeparatedList(
+                                [
+                                    Argument(It),
+                                    Argument(
+                                            DeclarationExpression(
+                                                sourceType,
+                                                SingleVariableDesignation(tryCastVarIdentifier)
+                                            )
+                                        )
+                                        .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
+                                ]
+                            )
+                        )
+                    );
+
+            var matchesCall = IdentifierName(parameter.Name)
+                .Dot(IdentifierName("Matches"))
+                .Call(
+                    ArgumentList(
+                        SingletonSeparatedList(
+                            Argument(IdentifierName(tryCastVarIdentifier))
+                        )
+                    )
+                );
+
+            return SimpleLambdaExpression(
+                Parameter(It.Identifier),
+                tryCastInvocation.And(matchesCall)
+            );
+        }
     }
 
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
@@ -173,3 +231,4 @@ public static class ArgumentsCriteriaBuilder
                 );
     }
 }
+

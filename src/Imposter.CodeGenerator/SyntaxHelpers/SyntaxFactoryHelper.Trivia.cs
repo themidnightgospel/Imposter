@@ -4,7 +4,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers;
 
-// TODO review those
 internal static partial class SyntaxFactoryHelper
 {
     public static SyntaxToken WithLeadingTriviaComment(

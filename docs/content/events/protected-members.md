@@ -1,4 +1,4 @@
-# Protected Members (Events)
+# Protected Events
 
 Configure protected virtual events on class targets and interact through public wrappers.
 
@@ -33,3 +33,4 @@ Notes
 - Class targets only; event accessors must be overridable.
 - Wrapper methods must be `virtual` to be configurable on the imposter.
 - Verify via `Subscribed`, `Unsubscribed`, and `HandlerInvoked` on the event builder.
+- Consider exposing a protected virtual `OnXxx(EventArgs e)` method in your design. Your SUT can call it directly; tests can verify `HandlerInvoked` without relying on wrapper indirection.

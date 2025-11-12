@@ -65,8 +65,8 @@ internal static class DefaultIndexerBehaviourBuilder
     {
         var argumentsParam = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
         var baseImplementationParam = Parameter(Identifier("baseImplementation"))
-            .WithType(indexer.Core.AsSystemFuncType)
-            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)));
+            .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
+            .WithDefault(EqualsValueClause(Null));
         var valueIdentifier = IdentifierName("value");
 
         return new MethodDeclarationBuilder(indexer.Core.TypeSyntax, "Get")
@@ -100,8 +100,8 @@ internal static class DefaultIndexerBehaviourBuilder
     private static MethodDeclarationSyntax BuildSetMethod(in ImposterIndexerMetadata indexer)
     {
         var baseImplementationParam = Parameter(Identifier("baseImplementation"))
-            .WithType(indexer.Core.AsSystemActionType)
-            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)));
+            .WithType(indexer.Core.AsSystemActionType.ToNullableType())
+            .WithDefault(EqualsValueClause(Null));
 
         var argumentsParameter = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
 

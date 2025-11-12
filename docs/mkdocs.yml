@@ -1,5 +1,5 @@
 site_name: Imposter
-site_description: Source generator documentation and API reference for the Imposter project.
+site_description: Imposter — Source-generated test doubles, zero runtime overhead.
 site_url: https://themidnightgospel.github.io/Imposter/
 repo_url: https://github.com/themidnightgospel/Imposter
 repo_name: themidnightgospel/Imposter
@@ -15,7 +15,6 @@ theme:
     text: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
   language: en
   features:
-    - navigation.sections
     - navigation.prune
     - navigation.indexes
     - navigation.instant
@@ -61,47 +60,48 @@ extra_javascript:
 
 nav:
   - Getting Started: index.md
-  - Features:
-      - Overview: features/index.md
-      - Methods:
-          - Overview: methods/index.md
-          - Behavior Modes: methods/explicit-vs-implicit.md
-          - Base Implementation: methods/base-implementation.md
-          - Protected Members: methods/protected-members.md
-          - Callbacks: methods/callbacks.md
-          - Sequential Returns: methods/sequential-returns.md
-          - Throwing Exceptions: methods/throwing.md
-          - Verification: methods/verification.md
-      - Properties:
-          - Overview: properties/index.md
-          - Imposter Modes: properties/imposter-modes.md
-          - Protected Members: properties/protected-members.md
-          - Callbacks: properties/callbacks.md
-          - Sequential Returns: properties/sequential-returns.md
-          - Throwing Exceptions: properties/throwing.md
-          - Verification: properties/verification.md
-          - Base Implementation: properties/base-implementation.md
-      - Indexers:
-          - Overview: indexers/index.md
-          - Imposter Modes: indexers/imposter-modes.md
-          - Protected Members: indexers/protected-members.md
-          - Getter: indexers/getter.md
-          - Setter: indexers/setter.md
-          - Base Implementation: indexers/base-implementation.md
-          - Verification: indexers/verification.md
-      - Events:
-          - Overview: events/index.md
-          - Imposter Modes: events/imposter-modes.md
-          - Base Implementation: events/base-implementation.md
-          - Protected Members: events/protected-members.md
-          - Subscriptions: events/subscriptions.md
-          - Raising: events/raising.md
-          - Callbacks & Ordering: events/callbacks-ordering.md
-          - Verification: events/verification.md
-          - Exceptions: events/exceptions.md
+  - Methods:
+      - Overview: methods/index.md
+      - Sequential Returns: methods/sequential-returns.md
+      - Throwing Exceptions: methods/throwing.md
+      - Verification: methods/verification.md
+      - Callbacks: methods/callbacks.md
+      - Protected Methods: methods/protected-members.md
+      - Imposter Modes: methods/explicit-vs-implicit.md
+      - Base Implementation: methods/base-implementation.md
+  - Properties:
+      - Overview: properties/index.md
+      - Sequential Returns: properties/sequential-returns.md
+      - Callbacks: properties/callbacks.md
+      - Throwing Exceptions: properties/throwing.md
+      - Verification: properties/verification.md
+      - Base Implementation: properties/base-implementation.md
+      - Protected Properties: properties/protected-members.md
+      - Imposter Modes: properties/imposter-modes.md
+  - Indexers:
+      - Overview: indexers/index.md
+      - Imposter Modes: indexers/imposter-modes.md
+      - Protected Indexers: indexers/protected-members.md
+      - Getter: indexers/getter.md
+      - Setter: indexers/setter.md
+      - Base Implementation: indexers/base-implementation.md
+      - Verification: indexers/verification.md
+  - Events:
+      - Overview: events/index.md
+      - Subscriptions: events/subscriptions.md
+      - Raising: events/raising.md
+      - Callbacks & Ordering: events/callbacks-ordering.md
+      - Verification: events/verification.md
+      - Exceptions: events/exceptions.md
+      - Protected Events: events/protected-members.md
+      - Base Implementation: events/base-implementation.md
+      - Imposter Modes: events/imposter-modes.md
   - Reference:
+      - Benchmarks: benchmarks.md
       - Cheat Sheet: cheat-sheet.md
-      - Language Features: language-features.md
+      - Key API Reference: key-api-reference.md
+      - Compatibility: compatibility.md
+      - Limitations: limitations.md
       - Troubleshooting: troubleshooting.md
       - Why Imposter?: why-imposter.md
 

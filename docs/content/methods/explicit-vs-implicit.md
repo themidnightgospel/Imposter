@@ -1,6 +1,9 @@
-# Behavior Modes (Methods)
+# Imposter Modes (Methods)
 
 Two Imposter modes determine what happens when a method without a setup is invoked.
+
+!!! tip "Pro tip"
+    Default to `Explicit` in unit tests to catch missing setups early. Use `Implicit` in spike/prototyping code where default results are acceptable.
 
 ## Implicit mode
 

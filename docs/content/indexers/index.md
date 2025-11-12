@@ -17,6 +17,9 @@ var value = service[123]; // 10
 imposter[Arg<int>.Any()].Setter().Callback((index, v) => { /* side-effects */ });
 ```
 
+!!! tip "Pro tip"
+    Prefer precise key matchers (e.g., `Is(k => k == 123)`) before adding broad `Any()` setups. This helps avoid ambiguity between overlapping indexer setups.
+
 ## Base Implementation
 
 ```csharp
@@ -28,4 +31,3 @@ imposter[Arg<int>.Any()].Setter().UseBaseImplementation();
 
 - Use `Arg<T>` matchers for index keys, including `Any`, `Is`, and collections.
 - See tests under `tests/Imposter.Tests/Features/IndexerImposter/*` for thread-safety and multi-parameter scenarios.
-

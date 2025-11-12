@@ -6,15 +6,15 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static PragmaWarningDirectiveTriviaSyntax EnableNullableTrivia() =>
-        PragmaWarningDirectiveTrivia(
-            Token(SyntaxKind.DisableKeyword),
-            SingletonSeparatedList(ParseExpression("nullable")),
-            true);
+    internal static NullableDirectiveTriviaSyntax EnableNullableTrivia() =>
+        NullableDirectiveTrivia(
+            Token(SyntaxKind.EnableKeyword),
+            isActive: true);
 
-    internal static PragmaWarningDirectiveTriviaSyntax RestoreNullableTrivia() =>
-        PragmaWarningDirectiveTrivia(
+    internal static NullableDirectiveTriviaSyntax RestoreNullableTrivia() =>
+        NullableDirectiveTrivia(
             Token(SyntaxKind.RestoreKeyword),
-            SeparatedList<ExpressionSyntax>().Add(ParseExpression("nullable")),
-            true);
+            isActive: true);
+
+    internal static TypeSyntax ToNullableType(this TypeSyntax typeSyntax) => NullableType(typeSyntax);
 }

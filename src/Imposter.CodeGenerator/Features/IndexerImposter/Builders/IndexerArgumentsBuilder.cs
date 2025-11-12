@@ -58,7 +58,9 @@ internal static class IndexerArgumentsBuilder
     private static MethodDeclarationSyntax BuildEqualsMethod(in ImposterIndexerMetadata indexer)
     {
         var otherIdentifier = Identifier("other");
-        var otherParameter = Parameter(otherIdentifier).WithType(indexer.Arguments.TypeSyntax);
+        var otherIdentifierName = IdentifierName(otherIdentifier);
+        var otherParameter = Parameter(otherIdentifier)
+            .WithType(NullableType(indexer.Arguments.TypeSyntax));
 
         ExpressionSyntax comparison = True;
         foreach (var parameter in indexer.Core.Parameters)
@@ -66,7 +68,7 @@ internal static class IndexerArgumentsBuilder
             var equalsExpression = BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName(parameter.Name),
-                IdentifierName(otherIdentifier.Text).Dot(IdentifierName(parameter.Name)));
+                otherIdentifierName.Dot(IdentifierName(parameter.Name)));
 
             comparison = comparison.And(equalsExpression);
         }
@@ -74,7 +76,12 @@ internal static class IndexerArgumentsBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(otherParameter)
-            .WithBody(Block(ReturnStatement(comparison)))
+            .WithBody(
+                Block(
+                    IfStatement(
+                        BinaryExpression(SyntaxKind.EqualsExpression, otherIdentifierName, Null),
+                        Block(ReturnStatement(False))),
+                    ReturnStatement(comparison)))
             .Build();
     }
 
@@ -83,7 +90,9 @@ internal static class IndexerArgumentsBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
-            .AddParameter(Parameter(Identifier("obj")).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+            .AddParameter(
+                Parameter(Identifier("obj"))
+                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword)))))
             .WithBody(Block(
                 ReturnStatement(
                     IsPatternExpression(

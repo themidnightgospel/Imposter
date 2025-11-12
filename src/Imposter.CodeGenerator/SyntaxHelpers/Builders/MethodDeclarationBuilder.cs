@@ -7,7 +7,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-// TODO Add consttructor that accepts IMethodMetadata
 internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
 {
     private readonly List<AttributeListSyntax> _attributes = [];

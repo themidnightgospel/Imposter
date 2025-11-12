@@ -2,6 +2,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
 namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
 
@@ -69,7 +70,7 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             BaseImplementationParameter = core.SupportsBaseImplementation
                 ? new ParameterMetadata(
                     "baseImplementation",
-                    WellKnownTypes.System.Action,
+                    WellKnownTypes.System.Action.ToNullableType(),
                     LiteralExpression(SyntaxKind.NullLiteralExpression))
                 : null;
         }
@@ -88,8 +89,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             BaseImplementationParameter = core.SupportsBaseImplementation
                 ? new ParameterMetadata(
                     "baseImplementation",
-                    WellKnownTypes.System.Action,
-                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    WellKnownTypes.System.Action.ToNullableType(),
+                    Null)
                 : null;
         }
     }

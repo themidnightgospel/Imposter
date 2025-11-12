@@ -2,6 +2,16 @@
 
 Verify that methods were invoked the expected number of times with specific arguments. Use `Called(Count.*)` on the method builder.
 
+## Semantics
+
+- `Called(Count)` counts only invocations that match the builder’s argument matchers.
+- `Count.Once()` is an alias for `Count.Exactly(1)`.
+- `Count.Exactly(n)` requires the matching call count to equal `n`.
+- `Count.AtLeast(n)` requires the count to be `>= n`.
+- `Count.AtMost(n)` requires the count to be `<= n`.
+- `Count.Never()` requires zero matching calls.
+- `Count.Any` imposes no constraint and always succeeds.
+
 ## Basic counts
 
 ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L23"}
@@ -34,7 +44,28 @@ imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count
 
 ## Failures
 
-When verification fails, `VerificationFailedException` is thrown with a descriptive message including expected vs actual counts.
+When verification fails, `VerificationFailedException` is thrown. Message format:
+
+```
+Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
+```
+
+Examples:
+
+```csharp
+// Expected at least 2, only 1 occurred
+service.Increment(1);
+imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
+// throws VerificationFailedException with:
+// "Invocation was expected to be performed at least 2 time(s) but instead was performed 1 times."
+
+// Expected exactly 3, got 2
+service.Increment(10);
+service.Increment(11);
+imposter.Increment(Arg<int>.Is(x => x > 5)).Called(Count.Exactly(3));
+// throws VerificationFailedException with:
+// "Invocation was expected to be performed exactly 3 time(s) but instead was performed 2 times."
+```
 
 ## Tips
 

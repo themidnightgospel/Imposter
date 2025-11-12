@@ -12,7 +12,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         [Fact]
         public void GivenNullFunction_WhenPropertyIsAccessed_ShouldThrowNullReferenceException()
         {
-            _sut.Age.Getter().Returns((Func<int>)null);
+            _sut.Age.Getter().Returns((Func<int>)null!);
 
             Should.Throw<NullReferenceException>(() => _sut.Instance().Age);
         }
@@ -21,7 +21,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         public void GivenNullCallback_WhenPropertyIsSet_ShouldThrowOnInvocation()
         {
             // This should not throw when setting up
-            Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Callback(null));
+            Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Callback(null!));
 
             // But will throw when callback is invoked
             Should.Throw<NullReferenceException>(() => _sut.Instance().Age = 42);

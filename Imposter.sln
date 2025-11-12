@@ -27,11 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "tests\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{1C311BB1-125A-40D4-925E-6C3C7E9F523A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{902AD387-30DA-475A-ABCB-10294721C5E7}"
-	ProjectSection(SolutionItems) = preProject
-		Roslyn.Shared.props = Roslyn.Shared.props
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -44,13 +44,13 @@ public class TypeCasterTests
     [Fact]
     public void Cast_NullToReferenceType_ShouldReturnNull()
     {
-        TypeCaster.Cast<string, object>(null).ShouldBeNull();
+        TypeCaster.Cast<string, object>(null!).ShouldBeNull();
     }
 
     [Fact]
     public void Cast_NullToNullableValueType_ShouldReturnNull()
     {
-        TypeCaster.Cast<object, int?>(null).ShouldBeNull();
+        TypeCaster.Cast<object, int?>(null!).ShouldBeNull();
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class TypeCasterTests
     [Fact]
     public void Cast_NullToNonNullableValueType_ShouldThrow()
     {
-        Should.Throw<InvalidCastException>(() => TypeCaster.Cast<object, int>(null));
+        Should.Throw<InvalidCastException>(() => TypeCaster.Cast<object, int>(null!));
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class TypeCasterTests
     [Fact]
     public void TryCast_NullToNullableValueType_ShouldReturnTrue()
     {
-        TypeCaster.TryCast<object, int?>(null, out var result).ShouldBeTrue();
+        TypeCaster.TryCast<object, int?>(null!, out var result).ShouldBeTrue();
         result.ShouldBeNull();
     }
 
@@ -155,7 +155,7 @@ public class TypeCasterTests
     [Fact]
     public void TryCast_NullToNonNullableValueType_ShouldReturnFalse()
     {
-        TypeCaster.TryCast<object, int>(null, out var result).ShouldBeFalse();
+        TypeCaster.TryCast<object, int>(null!, out var result).ShouldBeFalse();
         result.ShouldBe(default);
     }
 

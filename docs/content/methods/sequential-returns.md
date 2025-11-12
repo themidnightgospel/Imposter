@@ -44,11 +44,11 @@ imposter.GetNumber()
     .Then().Returns(2);
 ```
 
-## Rules and pitfalls
+!!! tip "Pro tip"
 
-- Always use `Then()` between distinct outcomes.
-- Repeating `Returns` (or `Throws`) without `Then()` is invalid.
-- You can mix `Returns`, `ReturnsAsync`, `Throws`, and `UseBaseImplementation()` across steps for class targets.
+    - Always use `Then()` between distinct outcomes.
+    - Repeating `Returns` (or `Throws`) without `Then()` is invalid.
+    - You can mix `Returns`, `ReturnsAsync`, `Throws`, and `UseBaseImplementation()` across steps for class targets.
 
 ## Concurrency note
 
