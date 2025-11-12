@@ -364,3 +364,6 @@ FodyWeavers.xsd
  
 # Ignore C# generated source files emitted by generators
 **/*.g.cs
+
+# JetBrains IDE project settings (do not track)
+.idea/
