@@ -14,11 +14,11 @@ var imp2 = new IMyServiceImposter();
 var svc2 = imp2.Instance();
 ```
 
-## Invocation Behavior
+## Mode
 
 ```csharp
-var loose = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
-var strict = new IMyServiceImposter(ImposterInvocationBehavior.Explicit);
+var implicitImposter = new IMyServiceImposter(ImposterMode.Implicit);
+var explicitImposter = new IMyServiceImposter(ImposterMode.Explicit);
 ```
 
 ## Methods

@@ -20,15 +20,16 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IEventImposterMemberCollisionTargetImposter();
-            var handler = new EventHandler((_, _) => { });
+            var sender = new object();
+            var args = EventArgs.Empty;
 
             var instance = ((IHaveImposterInstance<IEventImposterMemberCollisionTarget>)imposter).Instance();
             _ = instance;
 
-            imposter.Instance.Subscribe(handler);
-            imposter.ImposterTargetInstance.Subscribe(handler);
-            imposter._imposterInstance.Subscribe(handler);
-            imposter._invocationBehavior.Subscribe(handler);
+            imposter.Instance.Raise(sender, args);
+            imposter.ImposterTargetInstance.Raise(sender, args);
+            imposter._imposterInstance.Raise(sender, args);
+            imposter._invocationBehavior.Raise(sender, args);
             imposter.Default.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.AtLeast(1));
             imposter.Count.HandlerInvoked(Arg<EventHandler>.Any(), Count.AtLeast(1));
         }
@@ -57,8 +58,7 @@ namespace Sample.NamingCollisionUsage
             var sender = new object();
 
             imposter._MyEvent.Raise(sender, EventArgs.Empty);
-            imposter._handlerOrder.Subscribe(new EventHandler((_, _) => { }));
-            imposter._handlerCounts.CountMatches(Arg<EventHandler>.Any());
+            imposter._handlerOrder.OnSubscribe(it => { });
             imposter._handlerInvocations.HandlerInvoked(Arg<EventHandler>.Any(), Count.AtLeast(1));
         }
     }
@@ -83,21 +83,22 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new EventBuilderParameterCollisionTargetImposter();
-            var handler = new EventHandler((_, _) => { });
+            var handler = new EventHandler((sender, arg) => { });
+            var sender = new object();
+            var args = EventArgs.Empty;
             var criteria = Arg<EventHandler>.Any();
             var count = Count.AtLeast(1);
 
-            imposter.handler.Subscribe(handler);
-            imposter.handler.Subscribe(handler, () => { });
+            imposter.handler.Raise(sender, args);
+            imposter.handler.Callback((eventSender, eventArgs) => handler(eventSender, eventArgs));
 
-            imposter.interceptor.OnSubscribe(_ => { });
+            imposter.interceptor.OnSubscribe(it => { });
             imposter.criteria.Subscribed(criteria, count);
             imposter.handlerCriteria.HandlerInvoked(criteria, count);
-            imposter.count.CountMatches(criteria);
-            imposter.count.EnsureCountMatches(criteria, count);
-            imposter.callback.Callback(handler);
-            imposter.baseImplementation.Subscribe(handler, () => { });
-            imposter.baseImplementation.Unsubscribe(handler, () => { });
+            imposter.callback.Callback(handler.Invoke);
+            imposter.baseImplementation.UseBaseImplementation();
+            imposter.baseImplementation.OnSubscribe(it => { });
+            imposter.baseImplementation.OnUnsubscribe(it => { });
         }
     }
 }

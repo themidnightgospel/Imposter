@@ -63,3 +63,37 @@
 .md-nav--primary .md-nav__list .md-nav__list .md-nav__list .md-nav__link {
   font-size: 0.84rem;
 }
+
+/* Hide site title/brand in the left sidebar above nav */
+.md-sidebar--primary .md-sidebar__brand { display: none; }
+/* Also hide the primary nav title row (logo + site name) */
+.md-nav--primary > .md-nav__title { display: none !important; }
+
+/* Move top search to the right on wide screens */
+@media screen and (min-width: 60rem) {
+  .md-header [data-md-component="search"],
+  .md-header .md-search {
+    margin-left: auto !important;
+    margin-inline-start: auto !important;
+  }
+}
+
+/* Code block GitHub link next to copy button */
+.md-typeset .highlight, .md-typeset .md-typeset__highlight {
+  position: relative;
+}
+.md-code-gh-link {
+  position: absolute;
+  top: .4rem;
+  right: 2.6rem; /* leave space for copy icon */
+  font-size: .72rem;
+  line-height: 1.6;
+  padding: 0 .4rem;
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--md-default-fg-color);
+  background: transparent;
+  border: 1px solid transparent;
+  z-index: 2;
+}
+.md-code-gh-link:hover{ text-decoration: underline; }

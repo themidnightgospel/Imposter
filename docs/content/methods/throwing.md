@@ -1,6 +1,6 @@
 # Throwing Exceptions
 
-Arrange methods to throw exceptions instead of returning values. This is useful for testing error paths and retry logic.
+Arrange methods to throw exceptions instead of returning values. This is useful for testing exception paths and retry logic.
 
 ## Ways to throw
 
@@ -39,7 +39,7 @@ await Assert.ThrowsAsync<TimeoutException>(() => service.GetNumberAsync());
 
 ## Interactions with Explicit mode
 
-In `ImposterInvocationBehavior.Explicit`, a missing setup already throws `MissingImposterException`. Prefer arranging `Throws` when you need a specific exception type or message rather than a generic missing-setup error.
+In `ImposterMode.Explicit`, a missing setup already throws `MissingImposterException`. Prefer arranging `Throws` when you need a specific exception type or message rather than a generic missing-setup exception.
 
 ## Troubleshooting
 
