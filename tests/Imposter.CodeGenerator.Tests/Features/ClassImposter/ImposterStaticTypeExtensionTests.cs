@@ -69,7 +69,7 @@ public class ImposterStaticTypeExtensionTests
     [Fact]
     public void GivenCSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
     {
-        var artifacts = RunGenerator(LanguageVersion.CSharp8);
+        var artifacts = RunGenerator(LanguageVersion.CSharp10);
         var generatedSource = string.Join(Environment.NewLine, artifacts.Result.GeneratedSources.Select(static source => source.SourceText.ToString()));
 
         generatedSource.ShouldNotContain("IOrderServiceImposterExtensions");

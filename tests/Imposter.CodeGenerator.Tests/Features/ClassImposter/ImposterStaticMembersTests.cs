@@ -44,7 +44,7 @@ public static class UseImposterStatics
     }
 }
 """;
-        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp8, artifacts, failSnippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
+        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp10, artifacts, failSnippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
 
         // Calling the original type's static member should compile fine (base behavior remains).
         const string okSnippet = /*lang=csharp*/"""
@@ -58,7 +58,7 @@ public static class UseOriginalStatics
     }
 }
 """;
-        AssertSnippetCompiles(LanguageVersion.CSharp8, artifacts, okSnippet);
+        AssertSnippetCompiles(LanguageVersion.CSharp10, artifacts, okSnippet);
     }
 
     private sealed record GeneratorArtifacts(GeneratorRunResult Result, CSharpCompilation Compilation);
