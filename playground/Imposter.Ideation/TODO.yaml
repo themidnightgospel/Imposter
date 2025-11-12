@@ -50,6 +50,7 @@ FEATURES:
       - "VerifyNoOtherCalls" verifier
       - Add a sample project.
       - UseBaseImplementation for interface members
+      - enable TreatWarningsAsErrors in generator project.
 
   MEDIUM:
     - NOT Started:
