@@ -13,7 +13,7 @@ using Imposter.Tests.Features.ClassImposter.Suts;
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>
+    public sealed class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>
     {
         private readonly ProtectedVirtualMethodMethodImposter _protectedVirtualMethodMethodImposter;
         private readonly InvokeProtectedMethodMethodImposter _invokeProtectedMethodMethodImposter;
@@ -328,7 +328,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(InvokeProtectedMethodArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(InvokeProtectedMethodArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -714,7 +714,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(ProtectedVirtualMethodArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ProtectedVirtualMethodArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1068,7 +1068,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup()
+            public bool HasMatchingInvocationImposterGroup()
             {
                 return FindMatchingInvocationImposterGroup() != null;
             }
@@ -1448,7 +1448,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(ReadProtectedValueArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ReadProtectedValueArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1812,7 +1812,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(SubscribeToProtectedEventArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(SubscribeToProtectedEventArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -2163,7 +2163,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(WriteProtectedPropertyArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(WriteProtectedPropertyArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -2518,7 +2518,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(WriteProtectedValueArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(WriteProtectedValueArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

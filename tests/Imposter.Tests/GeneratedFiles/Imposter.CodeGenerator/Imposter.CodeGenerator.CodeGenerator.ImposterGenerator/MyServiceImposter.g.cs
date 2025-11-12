@@ -13,7 +13,7 @@ using Imposter.Tests.Docs;
 namespace Imposter.Tests.Docs
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class MyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.MyService>
+    public sealed class MyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.MyService>
     {
         private readonly ProtectedAddMethodImposter _protectedAddMethodImposter;
         private readonly InvokeProtectedMethodImposter _invokeProtectedMethodImposter;
@@ -293,7 +293,7 @@ namespace Imposter.Tests.Docs
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(InvokeProtectedArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(InvokeProtectedArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -679,7 +679,7 @@ namespace Imposter.Tests.Docs
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(ProtectedAddArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ProtectedAddArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

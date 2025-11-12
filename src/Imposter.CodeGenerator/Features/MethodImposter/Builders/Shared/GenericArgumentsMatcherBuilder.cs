@@ -10,7 +10,6 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.Shared;
 
 internal static class GenericArgumentsMatcherBuilder
 {
-    // TODO duplicate of above
     internal static ExpressionSyntax GenerateExactMatchCriteria(in ImposterTargetMethodMetadata method)
     {
         var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);

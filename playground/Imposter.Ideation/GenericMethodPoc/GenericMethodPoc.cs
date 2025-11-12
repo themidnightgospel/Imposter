@@ -347,7 +347,6 @@ namespace Imposter.Ideation.GenericMethodPoc
 
             public TResultTarget Invoke(TOrdinaryParamTarget ordinaryParam, out TOutParamTarget outParam, in TInParamTarget inParam, ref TRefParamTarget refParam, TParamsParamTarget[] paramsParam)
             {
-                // TODO Adapted might not be unique
                 var refParamAdapted = TypeCaster.Cast<TRefParamTarget, TRefParam>(refParam);
                 var inParamAdapted = TypeCaster.Cast<TInParamTarget, TInParam>(inParam);
                 var result = _target.Invoke(
@@ -540,7 +539,6 @@ namespace Imposter.Ideation.GenericMethodPoc
             <TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>(
                 PrintArguments<TOrdinaryParam, TOutParam, TInParam, TRefParam, TParamsParam> arguments)
         {
-            // TODO Not thread safe
             return _imposters
                        .Select(it => it.As<TOrdinaryParam, TOutParam, TInParam, TRefParam, TResult, TParamsParam>())
                        .Where(it => it != null)

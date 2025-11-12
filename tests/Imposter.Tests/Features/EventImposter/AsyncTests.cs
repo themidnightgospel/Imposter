@@ -40,12 +40,11 @@ namespace Imposter.Tests.Features.EventImposter
         {
             _sut.Instance().AsyncSomethingHappened += async (s, e) =>
             {
-                await Task.Yield();
                 throw new InvalidOperationException("boom");
             };
 
             await Should.ThrowAsync<InvalidOperationException>(async () =>
-                await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty));
+                await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty).WaitAsync(TimeSpan.FromSeconds(1)));
         }
     }
 }

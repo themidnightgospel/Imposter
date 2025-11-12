@@ -13,7 +13,7 @@ using Imposter.Tests.Features.MethodImposter;
 namespace Imposter.Tests.Features.MethodImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IClosedGenericSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>
+    public sealed class IClosedGenericSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>
     {
         private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
         private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
@@ -270,7 +270,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(GenericMethodArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(GenericMethodArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

@@ -44,7 +44,6 @@ internal static class ArgumentsBuilder
         return argumentsClassBuilder.Build();
     }
 
-    // TODO refactor
     private static MethodDeclarationSyntax BuildArgumentsAsMethod(in ImposterTargetMethodMetadata method)
     {
         var typeParameters = method.Symbol.TypeParameters;
@@ -60,7 +59,7 @@ internal static class ArgumentsBuilder
             .ToArray();
 
         var returnType = GenericName(method.Arguments.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(targetTypeArgs)));
+            .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
 
         var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
         var constructorArgs = method

@@ -34,15 +34,17 @@ internal static class MethodImposterGenericInterfaceBuilder
             .WithSemicolon()
             .Build();
 
+        var hasMatchingMethodMetadata = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
+
         var hasMatchingSetupMethodBuilder = new MethodDeclarationBuilder(
-            WellKnownTypes.Bool,
-            "HasMatchingSetup");
+            hasMatchingMethodMetadata.ReturnType,
+            hasMatchingMethodMetadata.Name);
 
         if (method.Parameters.HasInputParameters)
         {
             hasMatchingSetupMethodBuilder = hasMatchingSetupMethodBuilder
                 .AddParameter(
-                    Parameter(Identifier("arguments")).WithType(method.Arguments.Syntax)
+                    Parameter(Identifier(hasMatchingMethodMetadata.ArgumentsParameterName)).WithType(method.Arguments.Syntax)
                 );
         }
 

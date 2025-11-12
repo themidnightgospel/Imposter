@@ -103,7 +103,7 @@ namespace Sample.NamingCollisionUsage
         {
             var imposter = new IMethodHelperNameCollisionTargetImposter();
             _ = imposter.Adapter();
-            _ = imposter.HasMatchingSetup();
+            _ = imposter.HasMatchingInvocationImposterGroup();
             _ = imposter.As("");
             _ = imposter.Invoke(0);
         }

@@ -13,7 +13,7 @@ using Imposter.Tests.Features.MethodImposter;
 namespace Imposter.Tests.Features.MethodImposter
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>
+    public sealed class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>
     {
         private readonly IntSingleParamMethodImposter _intSingleParamMethodImposter;
         private readonly VoidWithSideEffectMethodImposter _voidWithSideEffectMethodImposter;
@@ -345,7 +345,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(BuildLabelAsyncArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(BuildLabelAsyncArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -743,7 +743,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(IntSingleParamArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(IntSingleParamArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1147,7 +1147,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 doubled = default(int);
             }
 
-            public bool HasMatchingSetup(RefOutWithParamsArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(RefOutWithParamsArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1557,7 +1557,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(SumAsyncArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(SumAsyncArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -1955,7 +1955,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(ThrowingCalculationArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ThrowingCalculationArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
@@ -2319,7 +2319,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(VoidWithSideEffectArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(VoidWithSideEffectArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }

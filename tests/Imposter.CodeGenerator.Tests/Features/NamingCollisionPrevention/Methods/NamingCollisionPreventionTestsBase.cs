@@ -64,7 +64,7 @@ public abstract class NamingCollisionPreventionTestsBase
                                                      public interface IMethodHelperNameCollisionTarget
                                                      {
                                                          void Adapter();
-                                                         void HasMatchingSetup();
+                                                         void HasMatchingInvocationImposterGroup();
                                                          void As(string hint);
                                                          void Invoke(int value);
                                                      }

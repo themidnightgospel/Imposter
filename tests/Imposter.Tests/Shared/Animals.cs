@@ -68,7 +68,6 @@ namespace Imposter.Tests.Shared
         }
     }
 
-    // TODO
     public interface IIndexerSetupPoc
     {
         string IndexerMethod(int name, string lastname, in Regex dog);

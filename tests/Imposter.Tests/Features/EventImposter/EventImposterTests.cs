@@ -27,11 +27,10 @@ namespace Imposter.Tests.Features.EventImposter
             var invoked = false;
             _sut.Instance().AsyncSomethingHappened += async (sender, args) =>
             {
-                await Task.Delay(10);
                 invoked = true;
             };
 
-            await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
+            await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty).WaitAsync(TimeSpan.FromSeconds(1));
 
             invoked.ShouldBeTrue();
         }

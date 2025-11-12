@@ -65,6 +65,14 @@ Interface targets can inherit the same event signature from multiple base interf
 
 The `NameSet` that chooses nested type names (`ImposterTargetInstance`) and private fields (e.g., `_imposterInstance`, `_invocationBehavior`) is now pre-seeded with every public member name the generated imposter will expose: all target properties, indexers, methods, and events (case-sensitive). By reserving those identifiers before we allocate internal names, collisions like an event named `_imposterInstance` will force the internal field to be suffixed (`_imposterInstance_1`) instead of redefining the event member.
 
+## Imposter Type Modifiers
+
+Generated imposter types now emit the `sealed` modifier alongside `public`. We do not support end-users inheriting from these Roslyn-generated types, and sealing them prevents consumers from subclassing a type that was never designed for extension (the internal fields/constructors assume a closed hierarchy). This change also keeps analyzer output consistent with other imposter helper types, which were already emitted as sealed builders.
+
+## Method Imposter Helper Renames
+
+Method imposters (and their generic adapters/collections) now expose `HasMatchingInvocationImposterGroup` instead of `HasMatchingSetup`. The updated name reflects that the helper searches for an existing invocation imposter group rather than setup metadata, and keeps terminology aligned with the rest of the API that refers to “invocation imposters.” Update any docs or samples that referenced the old helper name.
+
 ## Invocation Queue Thread Safety
 
 `InvocationSetupBuilder.GetInvocationImposter()` now returns the dequeued invocation object immediately after optionally updating `_lastestInvocationImposter`. Previously the method returned `_lastestInvocationImposter` even when the queue produced a newer entry, which allowed a racing thread to overwrite `_lastestInvocationImposter` before the first caller observed its scheduled result. The revised flow only falls back to `_lastestInvocationImposter` when the queue is empty, preventing lost sequential setups under concurrent access.

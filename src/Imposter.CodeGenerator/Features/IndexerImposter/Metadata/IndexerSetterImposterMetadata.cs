@@ -1,5 +1,3 @@
-using System.Linq;
-using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;

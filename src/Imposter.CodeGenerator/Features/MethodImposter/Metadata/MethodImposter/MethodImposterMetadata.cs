@@ -25,6 +25,8 @@ internal readonly struct MethodImposterMetadata
 
     internal readonly FindMatchingInvocationImposterGroupMethodMetadata FindMatchingInvocationImposterGroupMethod;
 
+    internal readonly HasMatchingInvocationImposterGroupMethodMetadata HasMatchingInvocationImposterGroupMethod;
+
     internal readonly InvocationImpostersFieldMetadata InvocationImpostersField;
 
     internal MethodImposterMetadata(in ImposterTargetMethodMetadata method)
@@ -43,6 +45,7 @@ internal readonly struct MethodImposterMetadata
         AsField = new FieldDeclarationMetadata(Name);
         InvokeMethod = new MethodImposterInvokeMethodMetadata(method);
         FindMatchingInvocationImposterGroupMethod = new FindMatchingInvocationImposterGroupMethodMetadata(method);
+        HasMatchingInvocationImposterGroupMethod = new HasMatchingInvocationImposterGroupMethodMetadata(method);
         InvocationImpostersField = new InvocationImpostersFieldMetadata(method);
         Builder = new MethodImposterBuilderMetadata(
             Syntax,

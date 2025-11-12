@@ -13,7 +13,7 @@ using Imposter.Benchmarks;
 namespace Imposter.Benchmarks
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class ICalculatorImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>
+    public sealed class ICalculatorImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsMoqVsNSub.ICalculator>
     {
         private readonly SquareMethodImposter _squareMethodImposter;
         private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
@@ -270,7 +270,7 @@ namespace Imposter.Benchmarks
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingSetup(SquareArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(SquareArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
