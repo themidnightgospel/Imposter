@@ -44,12 +44,13 @@ jobs:
         run: dotnet build Imposter.sln -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
         
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-build -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-build
 
   baseline-tests:
     name: Baseline Test Suites
     needs: roslyn-matrix
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET 8 SDK
