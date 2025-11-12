@@ -121,7 +121,7 @@ internal static partial class SyntaxFactoryHelper
 
         ParameterSyntax ToParameterSyntax(IParameterSymbol symbol)
         {
-            var typeSyntax = ParseTypeName(symbol.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+            var typeSyntax = TypeSyntax(symbol.Type);
 
             if (appendTargetSuffix)
                 typeSyntax = AddTargetSuffixToType(typeSyntax);

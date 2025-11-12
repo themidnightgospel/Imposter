@@ -29,8 +29,8 @@ FEATURES:
       - Add docstrings to types defined in Abstractions
       - Make imposter thread safe
       - Rename HasMatchingSetup methods to HasMatchingInvocationImposterGroup
-    IN Progress:
       - make imposter sealed
+    IN Progress:
       - Use fully qualified name wherever possible
       - Add Docs page
     NOT Started:

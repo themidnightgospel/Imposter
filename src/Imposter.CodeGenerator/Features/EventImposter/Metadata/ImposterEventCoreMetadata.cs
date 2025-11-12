@@ -44,13 +44,7 @@ internal readonly ref struct ImposterEventCoreMetadata
             .ToArray();
 
         DelegateReturnTypeSymbol = delegateSymbol.DelegateInvokeMethod.ReturnType;
-        IsAsync =
-            DelegateReturnTypeSymbol.IsWellKnownType(
-                WellKnownTypes.System.Threading.Tasks.Task,
-                WellKnownAssemblyNames.SystemAssemblies) ||
-            DelegateReturnTypeSymbol.IsWellKnownType(
-                WellKnownTypes.System.Threading.Tasks.ValueTask,
-                WellKnownAssemblyNames.SystemAssemblies);
+        IsAsync = DelegateReturnTypeSymbol.IsTaskLike();
 
         var containingTypeIsClass = eventSymbol.ContainingType?.TypeKind == TypeKind.Class;
         var addSupportsBaseImplementation = containingTypeIsClass && eventSymbol.AddMethod is { IsAbstract: false };
