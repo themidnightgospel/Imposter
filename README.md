@@ -1,5 +1,9 @@
 # Imposter
 
+<p align="center">
+  <img src="docs/imposter_logo.png" alt="Imposter logo" width="140" />
+</p>
+
 Imposter — Source-generated test doubles, zero runtime overhead.
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
