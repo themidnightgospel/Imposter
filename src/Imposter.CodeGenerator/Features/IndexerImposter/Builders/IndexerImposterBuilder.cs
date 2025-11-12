@@ -44,7 +44,7 @@ internal static class IndexerImposterBuilder
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterIndexerMetadata indexer)
     {
         var invocationBehaviorParameter = Parameter(Identifier("invocationBehavior"))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior);
+            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode);
         var propertyDisplayNameParameter = Parameter(Identifier("propertyDisplayName"))
             .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)));
 
@@ -273,7 +273,7 @@ internal static class IndexerImposterBuilder
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax),
                 indexer.GetterImplementation.InvocationHistoryField.Name,
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax).New()))
-            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior, indexer.GetterImplementation.InvocationBehaviorField.Name))
+            .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterMode, indexer.GetterImplementation.InvocationBehaviorField.Name))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), indexer.GetterImplementation.PropertyDisplayNameField.Name))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, indexer.GetterImplementation.HasConfiguredReturnField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(BuildGetterConstructor(indexer))
@@ -880,7 +880,7 @@ internal static class IndexerImposterBuilder
         return new ConstructorBuilder(setter.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(Parameter(Identifier(DefaultBehaviourParameterName)).WithType(indexer.DefaultIndexerBehaviour.TypeSyntax))
-            .AddParameter(Parameter(Identifier(InvocationBehaviorParameterName)).WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior))
+            .AddParameter(Parameter(Identifier(InvocationBehaviorParameterName)).WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode))
             .AddParameter(Parameter(Identifier(PropertyDisplayNameParameterName)).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))))
             .WithBody(new BlockBuilder()
                 .AddStatement(ThisExpression().Dot(IdentifierName(setter.DefaultBehaviourField.Name)).Assign(IdentifierName(DefaultBehaviourParameterName)).ToStatementSyntax())
@@ -1098,7 +1098,7 @@ internal static class IndexerImposterBuilder
         var explicitCheck = BinaryExpression(
             SyntaxKind.EqualsExpression,
             IdentifierName(setter.InvocationBehaviorField.Name),
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior.Dot(IdentifierName("Explicit")));
+            WellKnownTypes.Imposter.Abstractions.ImposterMode.Dot(IdentifierName("Explicit")));
 
         var configuredCheck = WellKnownTypes.System.Threading.Volatile
             .Dot(IdentifierName("Read"))
@@ -1296,7 +1296,7 @@ internal static class IndexerImposterBuilder
         => new ConstructorBuilder("GetterImposter")
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(Parameter(Identifier(DefaultBehaviourParameterName)).WithType(indexer.DefaultIndexerBehaviour.TypeSyntax))
-            .AddParameter(Parameter(Identifier(InvocationBehaviorParameterName)).WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior))
+            .AddParameter(Parameter(Identifier(InvocationBehaviorParameterName)).WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode))
             .AddParameter(Parameter(Identifier(PropertyDisplayNameParameterName)).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))))
             .WithBody(new BlockBuilder()
                 .AddStatement(ThisExpression().Dot(IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)).Assign(IdentifierName(DefaultBehaviourParameterName)).ToStatementSyntax())
@@ -1309,7 +1309,7 @@ internal static class IndexerImposterBuilder
         var argumentsIdentifier = IdentifierName(indexer.GetterImplementation.ArgumentsVariableName);
         var baseImplementationIdentifier = IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName);
         var invocationBehaviorIdentifier = IdentifierName(indexer.GetterImplementation.InvocationBehaviorField.Name);
-        var explicitInvocationBehavior = WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior
+        var explicitInvocationBehavior = WellKnownTypes.Imposter.Abstractions.ImposterMode
             .Dot(IdentifierName("Explicit"));
         var parameters = indexer.Core.Parameters
             .Select(parameter => parameter.ParameterSyntax)
@@ -1496,7 +1496,7 @@ internal static class IndexerImposterBuilder
         var explicitCheck = BinaryExpression(
             SyntaxKind.EqualsExpression,
             IdentifierName(indexer.GetterImplementation.InvocationBehaviorField.Name),
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior.Dot(IdentifierName("Explicit")));
+            WellKnownTypes.Imposter.Abstractions.ImposterMode.Dot(IdentifierName("Explicit")));
 
         var hasReturnConfigured = IdentifierName(indexer.GetterImplementation.HasConfiguredReturnField.Name);
         var missingReturnCheck = Not(

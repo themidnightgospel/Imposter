@@ -15,7 +15,7 @@ namespace Imposter.Tests.Features.EventImposter
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
     public class IEventSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>
     {
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.EventImposter.IEventSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImposter.IEventSetupSut>.Instance()
         {
@@ -832,7 +832,7 @@ namespace Imposter.Tests.Features.EventImposter
             }
         }
 
-        public IEventSetupSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IEventSetupSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();
             this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder();

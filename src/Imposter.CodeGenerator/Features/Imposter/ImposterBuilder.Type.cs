@@ -193,8 +193,7 @@ internal readonly ref partial struct ImposterBuilder
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
             .AddMembers(BuildImposterMethods(imposterGenerationContext));
 
-        var futureMemberNames = imposterGenerationContext.Imposter.PropertySymbols
-            .Select(property => property.Name);
+        var futureMemberNames = GetFutureMemberNames(imposterGenerationContext);
 
         var memberNameSeeds = MemberNamesHelper
             .GetNames(imposterBuilder.Members)
@@ -204,7 +203,7 @@ internal readonly ref partial struct ImposterBuilder
 
         var typeMetadata = new TypeMetadata(memberNameSet);
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+            WellKnownTypes.Imposter.Abstractions.ImposterMode,
             typeMetadata.InvocationBehaviorFieldName,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 
@@ -252,6 +251,29 @@ internal readonly ref partial struct ImposterBuilder
 
     internal NameSet MemberNameSet => _memberNameSet;
 
+    private static IEnumerable<string> GetFutureMemberNames(ImposterGenerationContext imposterGenerationContext)
+    {
+        foreach (var propertySymbol in imposterGenerationContext.Imposter.PropertySymbols)
+        {
+            yield return propertySymbol.Name;
+        }
+
+        foreach (var indexerSymbol in imposterGenerationContext.Imposter.IndexerSymbols)
+        {
+            yield return indexerSymbol.IsIndexer ? "Indexer" : indexerSymbol.Name;
+        }
+
+        foreach (var method in imposterGenerationContext.Imposter.Methods)
+        {
+            yield return method.Symbol.Name;
+        }
+
+        foreach (var eventSymbol in imposterGenerationContext.Imposter.EventSymbols)
+        {
+            yield return eventSymbol.Name;
+        }
+    }
+
     private static (ConstructorBuilder constructorBuilder, BlockBuilder bodyBuilder) CreateConstructorBuilder(
         in ImposterGenerationContext imposterGenerationContext,
         string invocationBehaviorParameterName)
@@ -298,10 +320,10 @@ internal readonly ref partial struct ImposterBuilder
 
     private static ParameterSyntax CreateInvocationBehaviorParameter(string parameterName)
         => Parameter(Identifier(parameterName))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior)
+            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
             .WithDefault(EqualsValueClause(
                 QualifiedName(
-                    WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
                     IdentifierName("Implicit"))));
 
     private BlockSyntax BuildInterfaceConstructorBody() =>

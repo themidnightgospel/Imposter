@@ -15,7 +15,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
     public class ClassWithAsyncEventsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>
     {
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>.Instance()
         {
@@ -727,7 +727,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        public ClassWithAsyncEventsImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public ClassWithAsyncEventsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._CustomAsyncEvent = new CustomAsyncEventEventImposterBuilder();
             this._TaskBasedEvent = new TaskBasedEventEventImposterBuilder();

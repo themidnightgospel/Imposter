@@ -72,7 +72,7 @@ namespace Imposter.Ideation.EventImposterPoc
         [Fact]
         public void Raising_without_handlers_is_allowed_even_in_explicit_mode()
         {
-            var poc = new EventImposterPoc(ImposterInvocationBehavior.Explicit);
+            var poc = new EventImposterPoc(ImposterMode.Explicit);
 
             Should.NotThrow(() => poc.SomethingHappened.Raise(null, EventArgs.Empty));
         }

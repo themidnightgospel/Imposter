@@ -5,11 +5,11 @@ Quick reference for common operations.
 ## Create Imposter
 
 ```csharp
-// Preview language version
+// C# 14+
 var imp = IMyService.Imposter();
 var svc = imp.Instance();
 
-// C# 13 and earlier
+// C# 8–13
 var imp2 = new IMyServiceImposter();
 var svc2 = imp2.Instance();
 ```
@@ -83,4 +83,3 @@ imp.SomethingHappened.Raise(this, EventArgs.Empty);
 imp.DoWork(Arg<int>.Any()).UseBaseImplementation();
 imp.Age.Getter().UseBaseImplementation();
 ```
-

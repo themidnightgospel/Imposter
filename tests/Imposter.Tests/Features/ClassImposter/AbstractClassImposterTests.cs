@@ -42,7 +42,7 @@ namespace Imposter.Tests.Features.ClassImposter
         [Fact]
         public void GivenAbstractMember_WhenImplicitBehaviorInvokedWithoutSetup_ShouldReturnDefaultValue()
         {
-            var imposter = new AbstractTelemetryServiceImposter(ImposterInvocationBehavior.Implicit);
+            var imposter = new AbstractTelemetryServiceImposter(ImposterMode.Implicit);
             var instance = imposter.Instance();
 
             instance.Compute(5).ShouldBe(default);

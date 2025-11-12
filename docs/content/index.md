@@ -6,34 +6,14 @@ Imposter is a Roslyn incremental source generator that creates lightweight, sour
 
 ## Prerequisites
 
-- C# 13 or later. Static type extensions (the `IMyService.Imposter()` form) require the Preview language version.
-- Reference the generator at compile-time and the abstractions at runtime (see Installation).
+- C# 8.0 or later
 
 ## Installation
 
 Add the packages to your test or application project:
 
 ```bash
-# Runtime + fluent API surface
-dotnet add package Imposter.Abstractions
-
-# Source generator (compile-time only)
 dotnet add package Imposter.CodeGenerator
-```
-
-Recommended csproj configuration (keeps the generator out of your runtime):
-
-```xml
-<ItemGroup>
-  <PackageReference Include="Imposter.Abstractions" Version="x.y.z" />
-  <PackageReference Include="Imposter.CodeGenerator" Version="x.y.z">
-    <PrivateAssets>all</PrivateAssets>
-    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-  </PackageReference>
-  <!-- Optional: enable preview to use static type extensions -->
-  <!-- <LangVersion>preview</LangVersion> -->
-  <!-- Or per-Project PropertyGroup -->
-</ItemGroup>
 ```
 
 ## Generate an Imposter
@@ -56,17 +36,14 @@ public interface IMyService
 
 After a build, use the generated type:
 
-=== "C# Preview"
+=== "C# 14+"
 
     ```csharp
     var imposter = IMyService.Imposter();
     var service = imposter.Instance();
-
-    // You can also specify behavior explicitly
-    var strictImposter = IMyService.Imposter(ImposterInvocationBehavior.Explicit);
     ```
 
-=== "C# 13 and earlier (or without Preview)"
+=== "C# 8–13"
 
     Use the generated imposter type directly:
 
@@ -84,6 +61,8 @@ var loose = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
 // Explicit: missing setups throw MissingImposterException
 var strict = new IMyServiceImposter(ImposterInvocationBehavior.Explicit);
 ```
+
+See a side‑by‑side walkthrough under [Behavior Modes](methods/explicit-vs-implicit.md).
 
 Tip: `Instance()` is also available via the `ImposterExtensions.Instance` extension method for concise call sites.
 
@@ -272,7 +251,7 @@ If base is unavailable and Explicit mode is enabled, a `MissingImposterException
 - Use `OutArg<T>.Any()` for `out` parameters (they always match).
 - `Count` helpers: `Exactly`, `AtLeast`, `AtMost`, `Once`, `Never`, `Any`.
 - Thread-safety: imposters are stress-tested under concurrency; sequencing preserves ordering (see thread-safety tests).
-- Static type extensions (e.g., `IMyService.Imposter()`) are emitted only when the project compiles with `LangVersion` set to `preview`.
+- Static type extensions (e.g., `IMyService.Imposter()`) are emitted when targeting C# 14 or later.
 
 ## Next Steps
 

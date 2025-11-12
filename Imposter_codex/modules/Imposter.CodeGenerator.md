@@ -61,6 +61,10 @@ When emitting the `.As<...>()` helper for a generic method's arguments criteria 
 
 Interface targets can inherit the same event signature from multiple base interfaces. We now collapse those duplicates during metadata collection using the event name plus its delegate type (compared via `SymbolEqualityComparer`). Case-sensitive collisions (e.g., `raise` vs `Raise`) are still emitted independently so consumers can configure both builders. This prevents the generator from emitting duplicate event members such as multiple `Raise` builders on `IEventDuplicateChildCollisionTargetImposter` while preserving legitimate case-differing events.
 
+## Internal Name Reservation
+
+The `NameSet` that chooses nested type names (`ImposterTargetInstance`) and private fields (e.g., `_imposterInstance`, `_invocationBehavior`) is now pre-seeded with every public member name the generated imposter will expose: all target properties, indexers, methods, and events (case-sensitive). By reserving those identifiers before we allocate internal names, collisions like an event named `_imposterInstance` will force the internal field to be suffixed (`_imposterInstance_1`) instead of redefining the event member.
+
 ## Invocation Queue Thread Safety
 
 `InvocationSetupBuilder.GetInvocationImposter()` now returns the dequeued invocation object immediately after optionally updating `_lastestInvocationImposter`. Previously the method returned `_lastestInvocationImposter` even when the queue produced a newer entry, which allowed a racing thread to overwrite `_lastestInvocationImposter` before the first caller observed its scheduled result. The revised flow only falls back to `_lastestInvocationImposter` when the queue is empty, preventing lost sequential setups under concurrent access.

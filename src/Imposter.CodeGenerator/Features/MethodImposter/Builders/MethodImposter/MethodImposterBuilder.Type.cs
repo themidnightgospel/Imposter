@@ -29,7 +29,7 @@ internal static partial class MethodImposterBuilder
                 TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
-            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+            WellKnownTypes.Imposter.Abstractions.ImposterMode,
             "_invocationBehavior",
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
 

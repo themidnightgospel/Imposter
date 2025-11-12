@@ -1,16 +1,16 @@
 # Language Features
 
-Some niceties depend on compiler features. Core functionality works across supported C# versions; static type extensions require Preview.
+Some niceties depend on compiler features. Core functionality works across supported C# versions; static type extensions are available on C# 14+.
 
-## Static Type Extensions (Preview)
+## Static Type Extensions (C# 14+)
 
 - Feature: call `IMyService.Imposter()` on the type itself.
-- Availability: emitted when the project compiles with `<LangVersion>preview</LangVersion>`.
-- Class targets: overloads mirror the target’s constructors.
+- Availability: emitted when the project compiles with C# 14 or later.
+- Class targets: overloads mirror the target's constructors.
 
 ```xml
 <PropertyGroup>
-  <LangVersion>preview</LangVersion>
+  <LangVersion>latest</LangVersion>
 </PropertyGroup>
 ```
 
@@ -23,7 +23,7 @@ var c0 = MultiCtorClass.Imposter();
 var c1 = MultiCtorClass.Imposter(42, "label");
 ```
 
-## C# 13 and Earlier
+## C# 8–13
 
 - Use the generated imposter types directly:
 
@@ -33,4 +33,3 @@ var service = imposter.Instance();
 ```
 
 For details, see tests under `tests/Imposter.CodeGenerator.Tests/Features/ClassImposter/ImposterStaticTypeExtensionTests.cs`.
-

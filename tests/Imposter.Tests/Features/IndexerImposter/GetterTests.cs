@@ -173,7 +173,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenExplicitModeGetter_WhenNotConfigured_ThenThrows()
         {
-            var sut = new IIndexerSetupSutImposter(ImposterInvocationBehavior.Explicit);
+            var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
 
             var ex = Should.Throw<MissingImposterException>(() => { _ = sut.Instance()[7, "missing", new object()]; });
 
@@ -406,7 +406,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenGetterOnlyIndexerInExplicitMode_WhenNotConfigured_ThenThrows()
         {
-            var sut = new IGetterOnlyIndexerSetupSutImposter(ImposterInvocationBehavior.Explicit);
+            var sut = new IGetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
 
             Should.Throw<MissingImposterException>(() =>
                 _ = sut.Instance()[1, "missing"]);

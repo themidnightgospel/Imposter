@@ -155,7 +155,7 @@ internal partial class MethodImposterBuilder
                         SyntaxKind.EqualsExpression,
                         IdentifierName("_invocationBehavior"),
                         QualifiedName(
-                            WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                            WellKnownTypes.Imposter.Abstractions.ImposterMode,
                             IdentifierName("Explicit"))),
                     Block(
                         ThrowStatement(

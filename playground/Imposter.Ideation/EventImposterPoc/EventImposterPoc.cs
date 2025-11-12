@@ -58,7 +58,7 @@ public sealed class EventImposterPoc : IHaveImposterInstance<IEventImposterPocSu
     private readonly AsyncSomethingHappenedEventImposterBuilder _asyncSomethingHappened;
     private readonly IEventImposterPocSut _instance;
 
-    public EventImposterPoc(ImposterInvocationBehavior invocationBehavior = ImposterInvocationBehavior.Implicit)
+    public EventImposterPoc(ImposterMode mode = ImposterMode.Implicit)
     {
         _somethingHappened = new SomethingHappenedEventImposterBuilder();
         _asyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();

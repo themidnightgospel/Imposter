@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Imposter.Abstractions;
 
 /// <summary>
-/// Exception thrown when an imposter running in <see cref="ImposterInvocationBehavior.Explicit"/> mode
+/// Exception thrown when an imposter running in <see cref="ImposterMode.Explicit"/> mode
 /// receives an invocation that has not been configured.
 /// </summary>
 /// <remarks>

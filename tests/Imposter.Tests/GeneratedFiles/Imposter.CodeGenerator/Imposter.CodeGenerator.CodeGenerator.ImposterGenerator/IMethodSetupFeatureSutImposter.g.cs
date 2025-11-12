@@ -155,7 +155,7 @@ namespace Imposter.Tests.Features.MethodImposter
             return new AsyncValueTaskIntNoParamsMethodImposter.Builder(_asyncValueTaskIntNoParamsMethodImposter, _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection);
         }
 
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut>.Instance()
         {
@@ -240,12 +240,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+            public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -270,11 +270,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<AsyncTaskIntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AsyncTaskIntNoParamsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+                public global::System.Threading.Tasks.Task<int> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -382,8 +382,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup>();
             private readonly AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public AsyncTaskIntNoParamsMethodImposter(AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public AsyncTaskIntNoParamsMethodImposter(AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._asyncTaskIntNoParamsMethodInvocationHistoryCollection = _asyncTaskIntNoParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -407,7 +407,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()");
                     }
@@ -596,12 +596,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Threading.Tasks.ValueTask<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+            public global::System.Threading.Tasks.ValueTask<int> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -626,11 +626,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<AsyncValueTaskIntNoParamsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public global::System.Threading.Tasks.ValueTask<int> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+                public global::System.Threading.Tasks.ValueTask<int> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -738,8 +738,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup>();
             private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public AsyncValueTaskIntNoParamsMethodImposter(AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public AsyncValueTaskIntNoParamsMethodImposter(AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -763,7 +763,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()");
                     }
@@ -971,8 +971,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericAllRefKindMethodImposterCollection
         {
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericAllRefKindMethodImposterCollection(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericAllRefKindMethodImposterCollection(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1029,12 +1029,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+            public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -1059,11 +1059,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
+                public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -1173,8 +1173,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1247,7 +1247,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)");
                     }
@@ -1397,8 +1397,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerOutParamMethodImposterCollection
         {
             private readonly GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerOutParamMethodImposterCollection(GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerOutParamMethodImposterCollection(GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerOutParamMethodInvocationHistoryCollection = _genericInnerOutParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1452,12 +1452,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out global::System.Collections.Generic.List<TValue> value)
+            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out global::System.Collections.Generic.List<TValue> value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -1482,11 +1482,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerOutParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerOutParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out global::System.Collections.Generic.List<TValue> value)
+                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out global::System.Collections.Generic.List<TValue> value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -1596,8 +1596,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerOutParamMethodImposter(GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerOutParamMethodImposter(GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerOutParamMethodInvocationHistoryCollection = _genericInnerOutParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1664,7 +1664,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)");
                     }
@@ -1851,8 +1851,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerParamsParamMethodImposterCollection
         {
             private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerParamsParamMethodImposterCollection(GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerParamsParamMethodImposterCollection(GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerParamsParamMethodInvocationHistoryCollection = _genericInnerParamsParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -1909,12 +1909,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue>[] value)
+            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue>[] value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -1939,11 +1939,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerParamsParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerParamsParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue>[] value)
+                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue>[] value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -2046,8 +2046,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerParamsParamMethodImposter(GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerParamsParamMethodImposter(GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerParamsParamMethodInvocationHistoryCollection = _genericInnerParamsParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -2111,7 +2111,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)");
                     }
@@ -2300,8 +2300,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerRefParamMethodImposterCollection
         {
             private readonly GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerRefParamMethodImposterCollection(GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerRefParamMethodImposterCollection(GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerRefParamMethodInvocationHistoryCollection = _genericInnerRefParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -2358,12 +2358,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref global::System.Collections.Generic.List<TValue> value)
+            public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref global::System.Collections.Generic.List<TValue> value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -2388,11 +2388,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerRefParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerRefParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref global::System.Collections.Generic.List<TValue> value)
+                public global::System.Collections.Generic.Stack<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref global::System.Collections.Generic.List<TValue> value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -2495,8 +2495,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerRefParamMethodImposter(GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerRefParamMethodImposter(GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerRefParamMethodInvocationHistoryCollection = _genericInnerRefParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -2562,7 +2562,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)");
                     }
@@ -2749,8 +2749,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerSingleParamMethodImposterCollection
         {
             private readonly GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerSingleParamMethodImposterCollection(GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerSingleParamMethodImposterCollection(GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerSingleParamMethodInvocationHistoryCollection = _genericInnerSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -2807,12 +2807,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue> value)
+            public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue> value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -2837,11 +2837,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericInnerSingleParamCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericInnerSingleParamCallbackDelegate<TValue>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue> value)
+                public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.List<TValue> value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -2926,8 +2926,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>>();
             private readonly GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericInnerSingleParamMethodImposter(GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericInnerSingleParamMethodImposter(GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericInnerSingleParamMethodInvocationHistoryCollection = _genericInnerSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -2990,7 +2990,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)");
                     }
@@ -3127,8 +3127,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericOutParamMethodImposterCollection
         {
             private readonly GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericOutParamMethodImposterCollection(GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericOutParamMethodImposterCollection(GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericOutParamMethodInvocationHistoryCollection = _genericOutParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -3182,12 +3182,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TValue value)
+            public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out TValue value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -3212,11 +3212,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericOutParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericOutParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out TValue value)
+                public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out TValue value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -3326,8 +3326,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericOutParamMethodImposter(GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericOutParamMethodImposter(GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericOutParamMethodInvocationHistoryCollection = _genericOutParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -3394,7 +3394,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)");
                     }
@@ -3581,8 +3581,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericParamsParamMethodImposterCollection
         {
             private readonly GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericParamsParamMethodImposterCollection(GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericParamsParamMethodImposterCollection(GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericParamsParamMethodInvocationHistoryCollection = _genericParamsParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -3639,12 +3639,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue[] value)
+            public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TValue[] value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -3669,11 +3669,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericParamsParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericParamsParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue[] value)
+                public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TValue[] value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -3776,8 +3776,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericParamsParamMethodImposter(GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericParamsParamMethodImposter(GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericParamsParamMethodInvocationHistoryCollection = _genericParamsParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -3841,7 +3841,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)");
                     }
@@ -4030,8 +4030,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericRefParamMethodImposterCollection
         {
             private readonly GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericRefParamMethodImposterCollection(GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericRefParamMethodImposterCollection(GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericRefParamMethodInvocationHistoryCollection = _genericRefParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -4088,12 +4088,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref TValue value)
+            public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref TValue value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -4118,11 +4118,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericRefParamCallbackDelegate<TValue, TResult>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericRefParamCallbackDelegate<TValue, TResult>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public TResult Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref TValue value)
+                public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref TValue value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -4225,8 +4225,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>>();
             private readonly GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericRefParamMethodImposter(GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericRefParamMethodImposter(GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericRefParamMethodInvocationHistoryCollection = _genericRefParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -4292,7 +4292,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)");
                     }
@@ -4479,8 +4479,8 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericSingleParamMethodImposterCollection
         {
             private readonly GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericSingleParamMethodImposterCollection(GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericSingleParamMethodImposterCollection(GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericSingleParamMethodInvocationHistoryCollection = _genericSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -4537,12 +4537,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue value)
+            public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TValue value)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -4567,11 +4567,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<GenericSingleParamCallbackDelegate<TValue>> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<GenericSingleParamCallbackDelegate<TValue>>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, TValue value)
+                public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TValue value)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -4656,8 +4656,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>>();
             private readonly GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public GenericSingleParamMethodImposter(GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public GenericSingleParamMethodImposter(GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._genericSingleParamMethodInvocationHistoryCollection = _genericSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -4720,7 +4720,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)");
                     }
@@ -4933,12 +4933,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -4963,11 +4963,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntAllRefKindsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntAllRefKindsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -5064,8 +5064,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup>();
             private readonly IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntAllRefKindsMethodImposter(IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntAllRefKindsMethodImposter(IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intAllRefKindsMethodInvocationHistoryCollection = _intAllRefKindsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -5098,7 +5098,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)");
                     }
@@ -5309,12 +5309,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, in string inStringValue)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, in string inStringValue)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -5339,11 +5339,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntInParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntInParamCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, in string inStringValue)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, in string inStringValue)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -5433,8 +5433,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup>();
             private readonly IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntInParamMethodImposter(IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntInParamMethodImposter(IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intInParamMethodInvocationHistoryCollection = _intInParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -5462,7 +5462,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntInParam(in string inStringValue)");
                     }
@@ -5641,12 +5641,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -5671,11 +5671,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntNoParamsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -5765,8 +5765,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup>();
             private readonly IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntNoParamsMethodImposter(IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntNoParamsMethodImposter(IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intNoParamsMethodInvocationHistoryCollection = _intNoParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -5790,7 +5790,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntNoParams()");
                     }
@@ -5967,12 +5967,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int outValue)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out int outValue)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -5997,11 +5997,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntOutParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntOutParamCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, out int outValue)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out int outValue)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -6098,8 +6098,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup>();
             private readonly IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntOutParamMethodImposter(IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntOutParamMethodImposter(IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intOutParamMethodInvocationHistoryCollection = _intOutParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -6128,7 +6128,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntOutParam(out int outValue)");
                     }
@@ -6345,12 +6345,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, string name, global::System.Text.RegularExpressions.Regex regex)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age, string name, global::System.Text.RegularExpressions.Regex regex)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -6375,11 +6375,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntParamsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age, string name, global::System.Text.RegularExpressions.Regex regex)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age, string name, global::System.Text.RegularExpressions.Regex regex)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -6469,8 +6469,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup>();
             private readonly IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntParamsMethodImposter(IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntParamsMethodImposter(IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intParamsMethodInvocationHistoryCollection = _intParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -6498,7 +6498,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)");
                     }
@@ -6709,12 +6709,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string[] paramsStrings)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string[] paramsStrings)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -6739,11 +6739,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntParamsParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntParamsParamCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, string[] paramsStrings)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string[] paramsStrings)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -6833,8 +6833,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup>();
             private readonly IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntParamsParamMethodImposter(IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntParamsParamMethodImposter(IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intParamsParamMethodInvocationHistoryCollection = _intParamsParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -6862,7 +6862,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)");
                     }
@@ -7073,12 +7073,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int refValue)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref int refValue)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -7103,11 +7103,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntRefParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntRefParamCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, ref int refValue)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref int refValue)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -7197,8 +7197,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup>();
             private readonly IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntRefParamMethodImposter(IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntRefParamMethodImposter(IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intRefParamMethodInvocationHistoryCollection = _intRefParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -7226,7 +7226,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntRefParam(ref int refValue)");
                     }
@@ -7437,12 +7437,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -7467,11 +7467,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IntSingleParamCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int age)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -7561,8 +7561,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup>();
             private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._intSingleParamMethodInvocationHistoryCollection = _intSingleParamMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -7590,7 +7590,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("int IMethodSetupFeatureSut.IntSingleParam(int age)");
                     }
@@ -7767,12 +7767,12 @@ namespace Imposter.Tests.Features.MethodImposter
                 return _lastestInvocationImposter;
             }
 
-            public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+            public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -7797,11 +7797,11 @@ namespace Imposter.Tests.Features.MethodImposter
                 private readonly System.Collections.Concurrent.ConcurrentQueue<VoidNoParamsCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<VoidNoParamsCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public void Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName)
+                public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -7873,8 +7873,8 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup>();
             private readonly VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public VoidNoParamsMethodImposter(VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public VoidNoParamsMethodImposter(VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._voidNoParamsMethodInvocationHistoryCollection = _voidNoParamsMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -7898,7 +7898,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("void IMethodSetupFeatureSut.VoidNoParams()");
                     }
@@ -7984,7 +7984,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        public IMethodSetupFeatureSutImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IMethodSetupFeatureSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._voidNoParamsMethodImposter = new VoidNoParamsMethodImposter(_voidNoParamsMethodInvocationHistoryCollection, invocationBehavior);
             this._intNoParamsMethodImposter = new IntNoParamsMethodImposter(_intNoParamsMethodInvocationHistoryCollection, invocationBehavior);

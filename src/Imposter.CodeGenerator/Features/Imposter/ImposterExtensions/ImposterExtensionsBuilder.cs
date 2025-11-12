@@ -118,10 +118,10 @@ internal static class ImposterExtensionsBuilder
 
     private static ParameterSyntax CreateInvocationBehaviorParameter() =>
         Parameter(Identifier(InvocationBehaviorParameterName))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior)
+            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
             .WithDefault(
                 EqualsValueClause(
                     QualifiedName(
-                        WellKnownTypes.Imposter.Abstractions.ImposterInvocationBehavior,
+                        WellKnownTypes.Imposter.Abstractions.ImposterMode,
                         IdentifierName("Implicit"))));
 }

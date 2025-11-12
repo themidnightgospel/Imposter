@@ -22,7 +22,7 @@ namespace Imposter.Tests.Shared
             return new IndexerMethodMethodImposter.Builder(_indexerMethodMethodImposter, _indexerMethodMethodInvocationHistoryCollection, new IndexerMethodArgumentsCriteria(name, lastname, dog));
         }
 
-        private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
+        private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Shared.IIndexerSetupPoc global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>.Instance()
         {
@@ -147,12 +147,12 @@ namespace Imposter.Tests.Shared
                 return _lastestInvocationImposter;
             }
 
-            public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
+            public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
             {
                 MethodInvocationImposter invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                     }
@@ -177,11 +177,11 @@ namespace Imposter.Tests.Shared
                 private readonly System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate> _callbacks = new System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public string Invoke(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
+                public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
                 {
                     if (_resultGenerator == null)
                     {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                         {
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
@@ -271,8 +271,8 @@ namespace Imposter.Tests.Shared
         {
             private readonly System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup> _invocationImposters = new System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup>();
             private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior;
-            public IndexerMethodMethodImposter(IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterInvocationBehavior _invocationBehavior)
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public IndexerMethodMethodImposter(IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
                 this._indexerMethodMethodInvocationHistoryCollection = _indexerMethodMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
@@ -300,7 +300,7 @@ namespace Imposter.Tests.Shared
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterInvocationBehavior.Explicit)
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
                         throw new global::Imposter.Abstractions.MissingImposterException("string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)");
                     }
@@ -401,7 +401,7 @@ namespace Imposter.Tests.Shared
             }
         }
 
-        public IIndexerSetupPocImposter(global::Imposter.Abstractions.ImposterInvocationBehavior invocationBehavior = global::Imposter.Abstractions.ImposterInvocationBehavior.Implicit)
+        public IIndexerSetupPocImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._indexerMethodMethodImposter = new IndexerMethodMethodImposter(_indexerMethodMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
