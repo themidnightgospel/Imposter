@@ -2,8 +2,6 @@
 
 Imposter is a Roslyn incremental source generator that creates lightweight, source-generated imposters (mocks/stubs) for interfaces and classes.
 
-> Do not edit generated `.g.cs` files. Make changes in your code or via the generator inputs and rebuild.
-
 ## Prerequisites
 
 - C# 8.0 or later
@@ -52,14 +50,14 @@ After a build, use the generated type:
     var service = imposter.Instance();       // user-facing instance
     ```
 
-Optionally, choose the invocation behavior:
+Optionally, choose the mode:
 
 ```csharp
 // Implicit: missing setups return defaults
-var loose = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
+var implicitImposter = new IMyServiceImposter(ImposterMode.Implicit);
 
 // Explicit: missing setups throw MissingImposterException
-var strict = new IMyServiceImposter(ImposterInvocationBehavior.Explicit);
+var explicitImposter = new IMyServiceImposter(ImposterMode.Explicit);
 ```
 
 See a side‑by‑side walkthrough under [Behavior Modes](methods/explicit-vs-implicit.md).

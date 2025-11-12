@@ -24,7 +24,7 @@ Common issues and quick fixes.
 imposter.DoWork(Arg<int>.Any()).Returns(0);
 
 // Or choose Implicit behavior
-var imposter = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
+var imposter = new IMyServiceImposter(ImposterMode.Implicit);
 ```
 
 ## Generator not running / no generated files
@@ -56,4 +56,3 @@ var imposter = new IMyServiceImposter(ImposterInvocationBehavior.Implicit);
 - Imposters are designed and tested for thread-safety. If you observe contention, review setup patterns and prefer precomputed delegates over heavy per-call work.
 
 If issues persist, consult the tests under `tests/Imposter.Tests/Features/*` for working patterns.
-

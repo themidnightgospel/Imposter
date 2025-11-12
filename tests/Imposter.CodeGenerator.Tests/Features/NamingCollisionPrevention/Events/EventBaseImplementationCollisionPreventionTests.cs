@@ -20,15 +20,16 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new EventBaseImplementationCollisionTargetImposter();
-            var handler = new EventHandler((_, _) => { });
+            var sender = new object();
+            var args = EventArgs.Empty;
             var count = Count.AtLeast(1);
 
             imposter.UseBaseImplementation.UseBaseImplementation();
-            imposter.UseBaseImplementation.Subscribe(handler, () => { });
-            imposter.UseBaseImplementation.Unsubscribe(handler, () => { });
+            imposter.UseBaseImplementation.OnSubscribe(_ => { });
+            imposter.UseBaseImplementation.OnUnsubscribe(_ => { });
 
-            imposter.Subscribe.Subscribe(handler, () => { });
-            imposter.Unsubscribe.Unsubscribe(handler, () => { });
+            imposter.Subscribe.Raise(sender, args);
+            imposter.Unsubscribe.Raise(sender, args);
             imposter.Then.HandlerInvoked(Arg<EventHandler>.Any(), count);
         }
     }
@@ -55,7 +56,6 @@ namespace Sample.NamingCollisionUsage
             var asyncImposter = new IAsyncRaiseAsyncEventCollisionTargetImposter();
             var sender = new object();
 
-            asyncImposter.RaiseAsync.Raise(sender, EventArgs.Empty);
             await asyncImposter.RaiseAsync.RaiseAsync(sender, EventArgs.Empty);
 
             var syncImposter = new INonAsyncRaiseAsyncEventCollisionTargetImposter();
@@ -81,11 +81,14 @@ namespace Sample.NamingCollisionUsage
     {
         public static void Execute()
         {
+            var sender = new object();
+            var args = EventArgs.Empty;
+
             var child = new IEventDuplicateChildCollisionTargetImposter();
-            child.Raise.Subscribe(new EventHandler((_, _) => { }));
+            child.Raise.Raise(sender, args);
 
             var parent = new IEventDuplicateBaseCollisionTargetImposter();
-            parent.Raise.Subscribe(new EventHandler((_, _) => { }));
+            parent.Raise.Raise(sender, args);
         }
     }
 }
@@ -110,12 +113,12 @@ namespace Sample.NamingCollisionUsage
         {
             var imposter = new IEventOperationClusterCollisionTargetImposter();
             var sender = new object();
-            var handler = new EventHandler((_, _) => { });
+            var handler = new EventHandler((sender, args) => { });
             var count = Count.AtLeast(1);
 
             imposter.Raise.Raise(sender, EventArgs.Empty);
-            imposter.Subscribe.Subscribe(handler);
-            imposter.Callback.Callback(handler);
+            imposter.Subscribe.Subscribed(Arg<EventHandler>.Any(), count);
+            imposter.Callback.Callback(handler.Invoke);
             imposter.Raised.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), count);
         }
     }
@@ -125,5 +128,3 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-

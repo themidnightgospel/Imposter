@@ -23,21 +23,21 @@ namespace Sample.NamingCollisionUsage
             var imposter = new IEventBuilderOperationCollisionTargetImposter();
             var sender = new object();
             var args = EventArgs.Empty;
-            var handler = new EventHandler((_, _) => { });
+            var handler = new EventHandler((sender, args) => { });
 
             imposter.Raise.Raise(sender, args);
 
             var asyncBuilder = imposter.RaiseAsync;
-            asyncBuilder.Raise(sender, args);
+            await asyncBuilder.RaiseAsync(sender, args);
             await asyncBuilder.RaiseAsync(sender, args);
 
-            imposter.Subscribe.Subscribe(handler);
-            imposter.Unsubscribe.Unsubscribe(handler);
+            imposter.Subscribe.Raise(sender, args);
+            imposter.Unsubscribe.Raise(sender, args);
 
-            imposter.Callback.Callback(handler);
+            imposter.Callback.Callback(handler.Invoke);
 
-            imposter.OnSubscribe.OnSubscribe(_ => { });
-            imposter.OnUnsubscribe.OnUnsubscribe(_ => { });
+            imposter.OnSubscribe.OnSubscribe(interceptor => { });
+            imposter.OnUnsubscribe.OnUnsubscribe(interceptor => { });
 
             var criteria = Arg<EventHandler>.Any();
             var count = Count.AtLeast(1);
@@ -46,8 +46,6 @@ namespace Sample.NamingCollisionUsage
             imposter.Unsubscribed.Unsubscribed(criteria, count);
             imposter.HandlerInvoked.HandlerInvoked(criteria, count);
 
-            imposter.CountMatches.CountMatches(criteria);
-            imposter.EnsureCountMatches.EnsureCountMatches(criteria, count);
             imposter.Raised.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), count);
         }
     }
@@ -78,10 +76,7 @@ namespace Sample.NamingCollisionUsage
             imposter.RaiseInternal.Raise(sender, EventArgs.Empty);
 
             var asyncBuilder = imposter.RaiseCoreAsync;
-            asyncBuilder.Raise(sender, EventArgs.Empty);
             await asyncBuilder.RaiseAsync(sender, EventArgs.Empty);
-
-            imposter.EnumerateActiveHandlers.CountMatches(Arg<EventHandler>.Any());
         }
     }
 }
@@ -105,10 +100,9 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IEventBuilderInterfaceCollisionTargetImposter();
-            var handler = new EventHandler((_, _) => { });
             var count = Count.AtLeast(1);
 
-            imposter.IUniqueEventImposterBuilder.Subscribe(handler);
+            imposter.IUniqueEventImposterBuilder.Subscribed(Arg<EventHandler>.Any(), count);
             imposter.IUniqueEventImposterSetupBuilder.Raise(new object(), EventArgs.Empty);
             imposter.IUniqueEventImposterVerificationBuilder.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), count);
         }

@@ -1,6 +1,6 @@
 # Method Callbacks
 
-This page covers how to add side effects after a method outcome using `Callback`. Callbacks are executed after the arranged result (or after the default result in Implicit mode when no `Returns` is provided).
+Callbacks run after the arranged result (or after the default result in Implicit mode when no `Returns` is provided).
 
 ## Ordering relative to results
 

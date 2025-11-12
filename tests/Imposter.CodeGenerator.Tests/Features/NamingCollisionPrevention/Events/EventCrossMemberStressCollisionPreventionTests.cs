@@ -21,7 +21,6 @@ namespace Sample.NamingCollisionUsage
         public static async Task ExecuteAsync()
         {
             var imposter = new ICrossMemberEventCollisionTargetImposter();
-            var handler = new EventHandler((_, _) => { });
             var sender = new object();
             var args = EventArgs.Empty;
             var count = Count.AtLeast(1);
@@ -29,23 +28,20 @@ namespace Sample.NamingCollisionUsage
             var instance = ((IHaveImposterInstance<ICrossMemberEventCollisionTarget>)imposter).Instance();
             _ = instance;
 
-            imposter.Instance.Subscribe(handler);
-            imposter.IChaosEventImposterBuilder.Subscribe(handler);
+            imposter.Instance.Raise(sender, args);
+            imposter.IChaosEventImposterBuilder.Raise(sender, args);
             imposter.IChaosEventImposterSetupBuilder.Raise(sender, args);
             imposter.IChaosEventImposterVerificationBuilder.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), count);
 
             imposter.Raise.Raise(sender, args);
-            imposter.Subscribe.Subscribe(handler);
-            imposter._imposterInstance.Subscribe(handler);
-            imposter._invocationBehavior.Subscribe(handler);
-            imposter._handlerOrder.CountMatches(Arg<EventHandler>.Any());
+            imposter.Subscribe.Subscribed(Arg<EventHandler>.Any(), count);
+            imposter._imposterInstance.Raise(sender, args);
+            imposter._invocationBehavior.Raise(sender, args);
             imposter.Default.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), count);
             imposter.Count.HandlerInvoked(Arg<EventHandler>.Any(), count);
             imposter.HandlerInvoked.HandlerInvoked(Arg<EventHandler>.Any(), count);
 
-            var asyncBuilder = imposter.RaiseAsync;
-            asyncBuilder.Raise(sender, args);
-            await asyncBuilder.RaiseAsync(sender, args);
+            await imposter.RaiseAsync.RaiseAsync(sender, args);
         }
     }
 }

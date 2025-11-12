@@ -54,6 +54,9 @@ extra:
 extra_css:
   - styles/overrides.css
 
+extra_javascript:
+  - scripts/code-links.js
+
 nav:
   - Getting Started: index.md
   - Features:
@@ -61,12 +64,16 @@ nav:
       - Methods:
           - Overview: methods/index.md
           - Behavior Modes: methods/explicit-vs-implicit.md
+          - Base Implementation: methods/base-implementation.md
+          - Protected Members: methods/protected-members.md
           - Callbacks: methods/callbacks.md
           - Sequential Returns: methods/sequential-returns.md
           - Throwing Exceptions: methods/throwing.md
           - Verification: methods/verification.md
       - Properties:
           - Overview: properties/index.md
+          - Imposter Modes: properties/imposter-modes.md
+          - Protected Members: properties/protected-members.md
           - Callbacks: properties/callbacks.md
           - Sequential Returns: properties/sequential-returns.md
           - Throwing Exceptions: properties/throwing.md
@@ -74,12 +81,17 @@ nav:
           - Base Implementation: properties/base-implementation.md
       - Indexers:
           - Overview: indexers/index.md
+          - Imposter Modes: indexers/imposter-modes.md
+          - Protected Members: indexers/protected-members.md
           - Getter: indexers/getter.md
           - Setter: indexers/setter.md
           - Base Implementation: indexers/base-implementation.md
           - Verification: indexers/verification.md
       - Events:
           - Overview: events/index.md
+          - Imposter Modes: events/imposter-modes.md
+          - Base Implementation: events/base-implementation.md
+          - Protected Members: events/protected-members.md
           - Subscriptions: events/subscriptions.md
           - Raising: events/raising.md
           - Callbacks & Ordering: events/callbacks-ordering.md

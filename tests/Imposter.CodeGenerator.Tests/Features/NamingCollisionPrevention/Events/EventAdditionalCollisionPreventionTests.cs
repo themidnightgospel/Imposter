@@ -20,11 +20,10 @@ namespace Sample.NamingCollisionUsage
         public static void Execute()
         {
             var imposter = new IEventTypeNameCollisionTargetImposter();
-            var handler = new EventHandler((sender, args) => { });
             var sender = new object();
 
-            imposter.Imposter.Subscribe(handler);
-            imposter.CodeGenerator.Subscribe(handler);
+            imposter.Imposter.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
+            imposter.CodeGenerator.Subscribed(Arg<EventHandler>.Any(), Count.AtLeast(1));
             imposter.Sample.Raise(sender, EventArgs.Empty);
             imposter.NamingCollision.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.AtLeast(1));
         }
