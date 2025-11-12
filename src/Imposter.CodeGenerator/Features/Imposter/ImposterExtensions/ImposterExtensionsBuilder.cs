@@ -1,3 +1,5 @@
+#if ROSLYN4_14_OR_GREATER
+
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -27,7 +29,7 @@ internal static class ImposterExtensionsBuilder
             : [BuildParameterlessMethod(imposterType)];
 
         var extensionDeclaration =
-#if ROSLYN5
+#if ROSLYN_5_OR_GREATER
             ExtensionBlockDeclaration()
 #else
             ExtensionDeclaration()
@@ -125,3 +127,5 @@ internal static class ImposterExtensionsBuilder
                         WellKnownTypes.Imposter.Abstractions.ImposterMode,
                         IdentifierName("Implicit"))));
 }
+
+#endif

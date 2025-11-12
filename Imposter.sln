@@ -27,6 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "tests\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{1C311BB1-125A-40D4-925E-6C3C7E9F523A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{902AD387-30DA-475A-ABCB-10294721C5E7}"
+	ProjectSection(SolutionItems) = preProject
+		Roslyn.Shared.props = Roslyn.Shared.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,7 +65,7 @@ Global
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.Build.0 = Release|Any CPU		
+		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +81,6 @@ Global
 		{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89} = {2E4F8B6F-8C60-4E96-9EA5-39D6992A6B8E}
 		{33085C7F-CA21-48BF-A093-F95BC50225FB} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 		{E843F42C-80F8-427D-84DD-8FC0CF7AF995} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
-		{1C311BB1-125A-40D4-925E-6C3C7E9F523A} = {BA79763F-FA88-41A9-B516-70413B85D2AC}		
+		{1C311BB1-125A-40D4-925E-6C3C7E9F523A} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 	EndGlobalSection
 EndGlobal

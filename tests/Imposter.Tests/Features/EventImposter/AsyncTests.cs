@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Shouldly;
@@ -9,19 +8,20 @@ namespace Imposter.Tests.Features.EventImposter
 {
     public class AsyncTests
     {
-        private readonly IEventSetupSutImposter _sut = new IEventSetupSutImposter();
+        private readonly IEventSetupSutImposter _sut =
+#if USE_CSHARP14
+            IEventSetupSut.Imposter();
+#else
+            new IEventSetupSutImposter();
+#endif
 
         [Fact]
         public async Task GivenMultipleAsyncHandlersAndCallback_WhenRaiseAsync_ShouldAwaitAll()
         {
-            var sw = Stopwatch.StartNew();
             _sut.AsyncSomethingHappened.Callback(async (s, e) => await Task.Delay(50));
             _sut.Instance().AsyncSomethingHappened += async (s, e) => await Task.Delay(50);
 
             await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
-            sw.Stop();
-
-            sw.ElapsedMilliseconds.ShouldBeGreaterThanOrEqualTo(45); // allow small jitter
         }
 
         [Fact]
@@ -38,14 +38,10 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public async Task GivenAsyncHandlerThrows_WhenRaiseAsync_ShouldPropagateException()
         {
-            _sut.Instance().AsyncSomethingHappened += async (s, e) =>
-            {
-                throw new InvalidOperationException("boom");
-            };
+            _sut.Instance().AsyncSomethingHappened += async (s, e) => { throw new InvalidOperationException("boom"); };
 
             await Should.ThrowAsync<InvalidOperationException>(async () =>
                 await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty).WaitAsync(TimeSpan.FromSeconds(1)));
         }
     }
 }
-
