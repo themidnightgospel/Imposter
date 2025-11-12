@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,14 +22,12 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     private SyntaxToken _semicolonToken;
     private ExplicitInterfaceSpecifierSyntax? _explicitInterfaceSpecifier;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
     {
         _attributes.Add(attribute);
         return this;
     }
     
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddModifierIf(bool condition, Func<SyntaxToken> modifierFactory)
     {
         if (condition)
@@ -40,14 +37,12 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddModifiers(in SyntaxTokenList modifiers)
     {
         if (modifiers.Count == 0)
@@ -63,14 +58,12 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithParameterList(ParameterListSyntax parameterListSyntax)
     {
         _parameterListSyntax = parameterListSyntax;
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddParameter(ParameterSyntax? parameter)
     {
         if (parameter is not null)
@@ -81,7 +74,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddParameterIf(bool condition, Func<ParameterSyntax> parameter)
     {
         if (condition)
@@ -93,7 +85,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     }
 
     // Those "if" fit better as extension methods
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddParametersIf(bool condition, Func<IEnumerable<ParameterSyntax>> parameters)
     {
         if (condition)
@@ -104,21 +95,18 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddParameters(IEnumerable<ParameterSyntax> parameters)
     {
         _parameters.AddRange(parameters);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithTypeParameters(TypeParameterListSyntax? typeParameterList)
     {
         _typeParameterList = typeParameterList;
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddTypeParameters(IEnumerable<TypeParameterSyntax>? typeParameters)
     {
         if (typeParameters is not null)
@@ -129,14 +117,12 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder AddConstraintClause(TypeParameterConstraintClauseSyntax clause)
     {
         _constraintClauses.Add(clause);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithBody(BlockSyntax body)
     {
         _body = body;
@@ -145,7 +131,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithExpressionBody(ArrowExpressionClauseSyntax expressionBody)
     {
         _expressionBody = expressionBody;
@@ -154,7 +139,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithSemicolon()
     {
         _semicolonToken = Token(SyntaxKind.SemicolonToken);
@@ -162,7 +146,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MethodDeclarationBuilder WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifierSyntax? specifier)
     {
         _explicitInterfaceSpecifier = specifier;

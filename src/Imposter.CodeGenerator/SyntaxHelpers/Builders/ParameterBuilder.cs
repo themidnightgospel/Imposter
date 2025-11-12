@@ -1,7 +1,6 @@
 ﻿namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,7 +13,6 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
     private EqualsValueClauseSyntax? _defaultValueClause;
 
     /// <summary>Adds an attribute list to the parameter.</summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ParameterBuilder AddAttribute(AttributeListSyntax attribute)
     {
         _attributes.Add(attribute);
@@ -22,7 +20,6 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
     }
 
     /// <summary>Adds a modifier (e.g., 'ref', 'in', 'out') to the parameter.</summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ParameterBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
@@ -30,7 +27,6 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
     }
 
     /// <summary>Sets the default value expression for the parameter.</summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ParameterBuilder WithDefaultValue(ExpressionSyntax? defaultValue)
     {
         if (defaultValue is not null)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,7 +17,6 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
 
     internal IReadOnlyList<MemberDeclarationSyntax> Members => _members;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddBaseType(BaseTypeSyntax baseType)
     {
         _baseTypes.Add(baseType);
@@ -31,7 +29,6 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddMember(MemberDeclarationSyntax? member)
     {
         if (member is not null)
@@ -41,7 +38,6 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
     {
         if (members is not null)
@@ -51,23 +47,19 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddMemberIf(bool condition, Func<MemberDeclarationSyntax> memberGenerator)
     {
         return condition ? AddMember(memberGenerator()) : this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddPublicModifier() => AddModifier(Token(SyntaxKind.PublicKeyword));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ClassDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClassDeclarationSyntax Build()
     {
         return ClassDeclaration(

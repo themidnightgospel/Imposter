@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,21 +13,18 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
     private AccessorDeclarationSyntax? _getter;
     private AccessorDeclarationSyntax? _setter;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
     {
         _attributes.Add(attribute);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder AddModifiers(in SyntaxTokenList modifiers)
     {
         foreach (var modifier in modifiers)
@@ -40,21 +36,18 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
     }
     
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder WithGetter()
     {
         _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder WithGetterBody(BlockSyntax body)
     {
         _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithBody(body);
         return this;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PropertyDeclarationBuilder WithSetterBody(BlockSyntax body)
     {
         _setter = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(body);
