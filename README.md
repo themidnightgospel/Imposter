@@ -10,15 +10,19 @@ Docs: https://themidnightgospel.github.io/Imposter/
 
 ## Quick Start
 
-1) Reference the generator and abstractions (local development via project references):
+1) Add the NuGet package `Imposter` to your project:
+
+Using CLI:
+
+```bash
+dotnet add package Imposter
+```
+
+Or via `csproj`:
 
 ```xml
 <ItemGroup>
-  <ProjectReference Include="src/Imposter.CodeGenerator/Imposter.CodeGenerator.csproj"
-                    OutputItemType="Analyzer"
-                    ReferenceOutputAssembly="false" />
-  <ProjectReference Include="src/Imposter.Abstractions/Imposter.Abstractions.csproj" />
-  
+  <PackageReference Include="Imposter" Version="0.1.0" />
 </ItemGroup>
 ```
 
