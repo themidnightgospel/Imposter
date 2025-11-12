@@ -35,7 +35,7 @@ public interface IGeneric<TFirst, TSecond>
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorNamespaceTests),
-            languageVersion: LanguageVersion.CSharp13);
+            languageVersion: LanguageVersion.CSharp8);
 
     [Fact]
     public async Task GivenGenericTarget_WhenGeneratorRuns_ShouldUseSanitizedNamespaceComponents()

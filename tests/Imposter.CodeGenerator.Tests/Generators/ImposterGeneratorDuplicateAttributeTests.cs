@@ -36,7 +36,7 @@ public interface IDuplicate
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorDuplicateAttributeTests),
-            languageVersion: LanguageVersion.CSharp13);
+            languageVersion: LanguageVersion.CSharp8);
 
     [Fact]
     public async Task GivenDuplicateAssemblyAttributes_WhenGeneratorRuns_ShouldDeduplicateSources()

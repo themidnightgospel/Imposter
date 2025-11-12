@@ -69,7 +69,7 @@ public class ImposterStaticTypeExtensionTests
     [Fact]
     public void GivenCSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
     {
-        var artifacts = RunGenerator(LanguageVersion.CSharp13);
+        var artifacts = RunGenerator(LanguageVersion.CSharp8);
         var generatedSource = string.Join(Environment.NewLine, artifacts.Result.GeneratedSources.Select(static source => source.SourceText.ToString()));
 
         generatedSource.ShouldNotContain("IOrderServiceImposterExtensions");
@@ -86,7 +86,7 @@ public static class InterfaceUsage
 }
 """;
 
-        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp13, artifacts, snippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
+        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp8, artifacts, snippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
     }
 
     [Fact]
