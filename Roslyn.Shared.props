@@ -10,8 +10,9 @@
 
     </PropertyGroup>
     <Target Name="ShowRoslynVersion" BeforeTargets="Build">
-        <Message Text="Roslyn raw: $(ROSLYN_VERSION)" Importance="High"/>
-        <Message Text="Roslyn normalized: $(_RoslynVersionTrimmed)" Importance="High"/>
+        <Message Text=">> Roslyn raw: $(ROSLYN_VERSION)" Importance="High"/>
+        <Message Text=">> Roslyn normalized: $(_RoslynVersionNormalized)" Importance="High"/>
+        <Message Text=">> DefineConstants: $(DefineConstants)" Importance="High" />
     </Target>
 
 </Project>

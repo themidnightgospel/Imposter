@@ -633,7 +633,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
-            task.ShouldNotBeNull();
+            _ = task.ShouldNotBeNull();
             task.IsFaulted.ShouldBeTrue();
 
             var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await task);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -23,10 +24,11 @@ internal static class ImposterExtensionsBuilder
         var extensionClassName = $"{imposterGenerationContext.TargetSymbol.Name}{MethodName}Extensions";
         var targetType = SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol);
         var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(imposterNamespaceName, imposterGenerationContext.Imposter.Name);
+        var accessibilityModifiers = GetAccessibilityModifiers(imposterGenerationContext.TargetSymbol);
 
-        var methods = imposterGenerationContext.Imposter.IsClass
-            ? BuildClassMethods(imposterType, imposterGenerationContext)
-            : [BuildParameterlessMethod(imposterType)];
+        IEnumerable<MethodDeclarationSyntax> methodDeclarations = imposterGenerationContext.Imposter.IsClass
+            ? BuildClassMethods(imposterType, accessibilityModifiers, imposterGenerationContext)
+            : [BuildParameterlessMethod(imposterType, accessibilityModifiers)];
 
         var extensionDeclaration =
 #if ROSLYN_5_OR_GREATER
@@ -40,12 +42,17 @@ internal static class ImposterExtensionsBuilder
                         SingletonSeparatedList(
                             Parameter(Identifier(ExtensionParameterName))
                                 .WithType(targetType))))
-                .WithMembers(List(methods.Cast<MemberDeclarationSyntax>()))
+                .WithMembers(List(methodDeclarations.Cast<MemberDeclarationSyntax>()))
                 .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
                 .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
 
-        return new ClassDeclarationBuilder(extensionClassName)
-            .AddPublicModifier()
+        var classDeclarationBuilder = new ClassDeclarationBuilder(extensionClassName);
+        foreach (var modifier in accessibilityModifiers)
+        {
+            classDeclarationBuilder = classDeclarationBuilder.AddModifier(modifier);
+        }
+
+        return classDeclarationBuilder
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddMember(extensionDeclaration)
             .Build();
@@ -53,6 +60,7 @@ internal static class ImposterExtensionsBuilder
 
     private static List<MethodDeclarationSyntax> BuildClassMethods(
         TypeSyntax imposterType,
+        SyntaxTokenList accessibilityModifiers,
         in ImposterGenerationContext imposterGenerationContext)
     {
         var constructors = imposterGenerationContext.Imposter.AccessibleConstructors;
@@ -60,20 +68,20 @@ internal static class ImposterExtensionsBuilder
 
         if (constructors.Any(constructor => constructor.Parameters.Length == 0))
         {
-            methods.Add(BuildParameterlessMethod(imposterType));
+            methods.Add(BuildParameterlessMethod(imposterType, accessibilityModifiers));
         }
 
         foreach (var constructor in constructors)
         {
-            methods.Add(BuildConstructorOverload(imposterType, constructor));
+            methods.Add(BuildConstructorOverload(imposterType, accessibilityModifiers, constructor));
         }
 
         return methods;
     }
 
-    private static MethodDeclarationSyntax BuildParameterlessMethod(TypeSyntax imposterType)
+    private static MethodDeclarationSyntax BuildParameterlessMethod(TypeSyntax imposterType, SyntaxTokenList accessibilityModifiers)
         => new MethodDeclarationBuilder(imposterType, MethodName)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifiers(accessibilityModifiers)
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithExpressionBody(ArrowExpressionClause(imposterType.New()))
             .WithSemicolon()
@@ -81,6 +89,7 @@ internal static class ImposterExtensionsBuilder
 
     private static MethodDeclarationSyntax BuildConstructorOverload(
         TypeSyntax imposterType,
+        SyntaxTokenList accessibilityModifiers,
         in ImposterTargetConstructorMetadata constructorMetadata)
     {
         var parameters = SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters).ToList();
@@ -96,7 +105,7 @@ internal static class ImposterExtensionsBuilder
         arguments.Add(Argument(IdentifierName(InvocationBehaviorParameterName)));
 
         return new MethodDeclarationBuilder(imposterType, MethodName)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifiers(accessibilityModifiers)
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithParameterList(SyntaxFactoryHelper.ParameterListSyntax(parameters))
             .WithExpressionBody(
@@ -115,6 +124,13 @@ internal static class ImposterExtensionsBuilder
                     QualifiedName(
                         WellKnownTypes.Imposter.Abstractions.ImposterMode,
                         IdentifierName("Implicit"))));
+
+    private static SyntaxTokenList GetAccessibilityModifiers(INamedTypeSymbol targetSymbol) =>
+        targetSymbol.DeclaredAccessibility switch
+        {
+            Accessibility.Public => TokenList(Token(SyntaxKind.PublicKeyword)),
+            _ => TokenList(Token(SyntaxKind.InternalKeyword))
+        };
 }
 
 #endif

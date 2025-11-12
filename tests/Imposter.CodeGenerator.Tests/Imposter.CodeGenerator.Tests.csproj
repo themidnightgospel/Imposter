@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <!-- Import Roslyn versioning so Workspaces can follow the same version -->
+    <Import Project="../../Roslyn.Shared.props" />
+
     <PropertyGroup>
         <TargetFramework>.net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
@@ -11,7 +14,7 @@
         <PackageReference Include="Machine.Specifications" Version="1.1.3" />
         <PackageReference Include="Machine.Specifications.Runner.VisualStudio" Version="2.10.2" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(ROSLYN_VERSION)"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2"/>
         <PackageReference Include="Shouldly" Version="4.3.0"/>
 
