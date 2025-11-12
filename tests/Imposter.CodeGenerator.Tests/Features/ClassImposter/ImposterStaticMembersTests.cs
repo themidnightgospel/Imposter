@@ -29,7 +29,7 @@ public class ClassWithStatics
     [Fact]
     public void GivenStaticMembers_WhenImposterGenerated_ThenStaticsAreNotConfigurableAndBaseBehaviorRemains()
     {
-        var artifacts = RunGenerator(LanguageVersion.CSharp13, ClassSource);
+        var artifacts = RunGenerator(LanguageVersion.CSharp8, ClassSource);
 
         // Trying to access a static member on the Imposter type should fail to compile.
         const string failSnippet = /*lang=csharp*/"""
@@ -44,7 +44,7 @@ public static class UseImposterStatics
     }
 }
 """;
-        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp13, artifacts, failSnippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
+        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp8, artifacts, failSnippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
 
         // Calling the original type's static member should compile fine (base behavior remains).
         const string okSnippet = /*lang=csharp*/"""
@@ -58,7 +58,7 @@ public static class UseOriginalStatics
     }
 }
 """;
-        AssertSnippetCompiles(LanguageVersion.CSharp13, artifacts, okSnippet);
+        AssertSnippetCompiles(LanguageVersion.CSharp8, artifacts, okSnippet);
     }
 
     private sealed record GeneratorArtifacts(GeneratorRunResult Result, CSharpCompilation Compilation);
