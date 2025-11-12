@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.ClassImposter.Suts;
 
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>
     {
         private readonly FormatMethodImposter _formatMethodImposter;
@@ -56,7 +56,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void EchoCallbackDelegate<T>(T item);
         // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         public delegate global::System.Exception EchoExceptionGeneratorDelegate<T>(T item);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class EchoArguments<T>
         {
             public T item;
@@ -72,7 +72,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class EchoArgumentsCriteria<T>
         {
             public global::Imposter.Abstractions.Arg<T> item { get; }
@@ -93,13 +93,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationHistory
         {
             bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory
         {
             internal EchoArguments<T> Arguments;
@@ -118,7 +118,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class EchoMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory>();
@@ -133,7 +133,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class EchoMethodImposterCollection
         {
             private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
@@ -159,7 +159,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup<T>
         {
             internal static EchoMethodInvocationImposterGroup<T> Default = new EchoMethodInvocationImposterGroup<T>(new EchoArgumentsCriteria<T>(global::Imposter.Abstractions.Arg<T>.Any()));
@@ -211,7 +211,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, item, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -294,19 +294,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationImposterGroupCallback<T>
         {
             IEchoMethodInvocationImposterGroupContinuation<T> Callback(EchoCallbackDelegate<T> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationImposterGroupContinuation<T> : IEchoMethodInvocationImposterGroupCallback<T>
         {
             IEchoMethodInvocationImposterGroup<T> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationImposterGroup<T> : IEchoMethodInvocationImposterGroupCallback<T>
         {
             IEchoMethodInvocationImposterGroupContinuation<T> Throws<TException>()
@@ -318,32 +318,32 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IEchoMethodInvocationImposterGroupContinuation<T> UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IEchoMethodImposter
         {
             IEchoMethodImposter<TTarget>? As<TTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IEchoMethodImposter<T> : IEchoMethodImposter
         {
             T Invoke(T item, EchoDelegate<T> baseImplementation = null);
             bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface EchoInvocationVerifier<T>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class EchoMethodImposter<T> : IEchoMethodImposter<T>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>>();
@@ -365,7 +365,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TTarget> : IEchoMethodImposter<TTarget>
             {
                 private readonly EchoMethodImposter<T> _target;
@@ -434,7 +434,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IEchoMethodImposterBuilder<T>, IEchoMethodInvocationImposterGroupContinuation<T>
             {
                 private readonly EchoMethodImposterCollection _imposterCollection;
@@ -527,7 +527,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void FormatCallbackDelegate(int value);
         // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         public delegate global::System.Exception FormatExceptionGeneratorDelegate(int value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class FormatArguments
         {
             public int value;
@@ -538,7 +538,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual string ClassWithOverloadsAndGenerics.Format(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class FormatArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> value { get; }
@@ -554,13 +554,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormatMethodInvocationHistory
         {
             bool Matches(FormatArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class FormatMethodInvocationHistory : IFormatMethodInvocationHistory
         {
             internal FormatArguments Arguments;
@@ -579,7 +579,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class FormatMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory>();
@@ -595,7 +595,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual string ClassWithOverloadsAndGenerics.Format(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class FormatMethodInvocationImposterGroup
         {
             internal static FormatMethodInvocationImposterGroup Default = new FormatMethodInvocationImposterGroup(new FormatArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -647,7 +647,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -730,19 +730,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormatMethodInvocationImposterGroupCallback
         {
             IFormatMethodInvocationImposterGroupContinuation Callback(FormatCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormatMethodInvocationImposterGroupContinuation : IFormatMethodInvocationImposterGroupCallback
         {
             IFormatMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormatMethodInvocationImposterGroup : IFormatMethodInvocationImposterGroupCallback
         {
             IFormatMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -754,19 +754,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IFormatMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface FormatInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         public interface IFormatMethodImposterBuilder : IFormatMethodInvocationImposterGroup, IFormatMethodInvocationImposterGroupCallback, FormatInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class FormatMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<FormatMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<FormatMethodInvocationImposterGroup>();
@@ -821,7 +821,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IFormatMethodImposterBuilder, IFormatMethodInvocationImposterGroupContinuation
             {
                 private readonly FormatMethodImposter _imposter;
@@ -913,7 +913,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void Format_1CallbackDelegate(string value, int padding);
         // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         public delegate global::System.Exception Format_1ExceptionGeneratorDelegate(string value, int padding);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class Format_1Arguments
         {
             public string value;
@@ -926,7 +926,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class Format_1ArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<string> value { get; }
@@ -944,13 +944,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormat_1MethodInvocationHistory
         {
             bool Matches(Format_1ArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class Format_1MethodInvocationHistory : IFormat_1MethodInvocationHistory
         {
             internal Format_1Arguments Arguments;
@@ -969,7 +969,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class Format_1MethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IFormat_1MethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IFormat_1MethodInvocationHistory>();
@@ -985,7 +985,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class Format_1MethodInvocationImposterGroup
         {
             internal static Format_1MethodInvocationImposterGroup Default = new Format_1MethodInvocationImposterGroup(new Format_1ArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
@@ -1037,7 +1037,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, padding, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1120,19 +1120,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormat_1MethodInvocationImposterGroupCallback
         {
             IFormat_1MethodInvocationImposterGroupContinuation Callback(Format_1CallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormat_1MethodInvocationImposterGroupContinuation : IFormat_1MethodInvocationImposterGroupCallback
         {
             IFormat_1MethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IFormat_1MethodInvocationImposterGroup : IFormat_1MethodInvocationImposterGroupCallback
         {
             IFormat_1MethodInvocationImposterGroupContinuation Throws<TException>()
@@ -1144,19 +1144,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IFormat_1MethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface Format_1InvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         public interface IFormat_1MethodImposterBuilder : IFormat_1MethodInvocationImposterGroup, IFormat_1MethodInvocationImposterGroupCallback, Format_1InvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class Format_1MethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<Format_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Format_1MethodInvocationImposterGroup>();
@@ -1211,7 +1211,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IFormat_1MethodImposterBuilder, IFormat_1MethodInvocationImposterGroupContinuation
             {
                 private readonly Format_1MethodImposter _imposter;
@@ -1303,7 +1303,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void SelectFirstCallbackDelegate<TFirst, TSecond>(TFirst first, TSecond second);
         // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         public delegate global::System.Exception SelectFirstExceptionGeneratorDelegate<TFirst, TSecond>(TFirst first, TSecond second);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class SelectFirstArguments<TFirst, TSecond>
         {
             public TFirst first;
@@ -1321,7 +1321,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class SelectFirstArgumentsCriteria<TFirst, TSecond>
         {
             public global::Imposter.Abstractions.Arg<TFirst> first { get; }
@@ -1344,13 +1344,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISelectFirstMethodInvocationHistory
         {
             bool Matches<TFirstTarget, TSecondTarget>(SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SelectFirstMethodInvocationHistory<TFirst, TSecond> : ISelectFirstMethodInvocationHistory
         {
             internal SelectFirstArguments<TFirst, TSecond> Arguments;
@@ -1369,7 +1369,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SelectFirstMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ISelectFirstMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISelectFirstMethodInvocationHistory>();
@@ -1384,7 +1384,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SelectFirstMethodImposterCollection
         {
             private readonly SelectFirstMethodInvocationHistoryCollection _selectFirstMethodInvocationHistoryCollection;
@@ -1410,7 +1410,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>
         {
             internal static SelectFirstMethodInvocationImposterGroup<TFirst, TSecond> Default = new SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArgumentsCriteria<TFirst, TSecond>(global::Imposter.Abstractions.Arg<TFirst>.Any(), global::Imposter.Abstractions.Arg<TSecond>.Any()));
@@ -1462,7 +1462,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, first, second, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1545,19 +1545,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>
         {
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Callback(SelectFirstCallbackDelegate<TFirst, TSecond> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>
         {
             ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>
         {
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> Throws<TException>()
@@ -1569,32 +1569,32 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond> UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface ISelectFirstMethodImposter
         {
             ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>? As<TFirstTarget, TSecondTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface ISelectFirstMethodImposter<TFirst, TSecond> : ISelectFirstMethodImposter
         {
             TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond> baseImplementation = null);
             bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface SelectFirstInvocationVerifier<TFirst, TSecond>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         public interface ISelectFirstMethodImposterBuilder<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond>, ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>, SelectFirstInvocationVerifier<TFirst, TSecond>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SelectFirstMethodImposter<TFirst, TSecond> : ISelectFirstMethodImposter<TFirst, TSecond>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>>();
@@ -1616,7 +1616,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TFirstTarget, TSecondTarget> : ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>
             {
                 private readonly SelectFirstMethodImposter<TFirst, TSecond> _target;
@@ -1685,7 +1685,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : ISelectFirstMethodImposterBuilder<TFirst, TSecond>, ISelectFirstMethodInvocationImposterGroupContinuation<TFirst, TSecond>
             {
                 private readonly SelectFirstMethodImposterCollection _imposterCollection;
@@ -1783,7 +1783,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics
         {
             ClassWithOverloadsAndGenericsImposter _imposter;

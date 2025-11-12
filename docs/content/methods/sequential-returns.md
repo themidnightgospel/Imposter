@@ -4,7 +4,7 @@ Imposter supports sequencing multiple outcomes for the same method using `Then()
 
 ## Basic sequencing
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_SequentialReturnsCodeSnippetsTests.cs#L24"}
 imposter.GetNumber()
     .Returns(1)
     .Then().Returns(2)
@@ -17,7 +17,7 @@ service.GetNumber(); // 3
 
 ## Mixing delegates
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_SequentialReturnsCodeSnippetsTests.cs#L40"}
 imposter.GetNumber()
     .Returns(() => 1)
     .Then().Returns(() => 2);
@@ -25,7 +25,7 @@ imposter.GetNumber()
 
 ## Async sequences
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_SequentialReturnsCodeSnippetsTests.cs#L54"}
 imposter.GetNumberAsync()
     .ReturnsAsync(1)
     .Then().Returns(() => Task.FromResult(2));
@@ -35,7 +35,9 @@ imposter.GetNumberAsync()
 
 You can interleave `Throws` within a sequence. Separate each step with `Then()`.
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_SequentialReturnsCodeSnippetsTests.cs#L64"}
+
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs).
 imposter.GetNumber()
     .Returns(1)
     .Then().Throws<InvalidOperationException>()

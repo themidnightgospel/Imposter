@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.ClassImposter.Suts;
 
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>
     {
         private readonly ProtectedVirtualMethodMethodImposter _protectedVirtualMethodMethodImposter;
@@ -77,7 +77,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void InvokeProtectedMethodCallbackDelegate(int value);
         // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         public delegate global::System.Exception InvokeProtectedMethodExceptionGeneratorDelegate(int value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class InvokeProtectedMethodArguments
         {
             public int value;
@@ -88,7 +88,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class InvokeProtectedMethodArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> value { get; }
@@ -104,13 +104,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IInvokeProtectedMethodMethodInvocationHistory
         {
             bool Matches(InvokeProtectedMethodArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class InvokeProtectedMethodMethodInvocationHistory : IInvokeProtectedMethodMethodInvocationHistory
         {
             internal InvokeProtectedMethodArguments Arguments;
@@ -129,7 +129,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class InvokeProtectedMethodMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodMethodInvocationHistory>();
@@ -145,7 +145,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class InvokeProtectedMethodMethodInvocationImposterGroup
         {
             internal static InvokeProtectedMethodMethodInvocationImposterGroup Default = new InvokeProtectedMethodMethodInvocationImposterGroup(new InvokeProtectedMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -197,7 +197,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -280,19 +280,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IInvokeProtectedMethodMethodInvocationImposterGroupCallback
         {
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Callback(InvokeProtectedMethodCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IInvokeProtectedMethodMethodInvocationImposterGroupContinuation : IInvokeProtectedMethodMethodInvocationImposterGroupCallback
         {
             IInvokeProtectedMethodMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IInvokeProtectedMethodMethodInvocationImposterGroup : IInvokeProtectedMethodMethodInvocationImposterGroupCallback
         {
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -304,19 +304,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IInvokeProtectedMethodMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface InvokeProtectedMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         public interface IInvokeProtectedMethodMethodImposterBuilder : IInvokeProtectedMethodMethodInvocationImposterGroup, IInvokeProtectedMethodMethodInvocationImposterGroupCallback, InvokeProtectedMethodInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class InvokeProtectedMethodMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup>();
@@ -371,7 +371,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IInvokeProtectedMethodMethodImposterBuilder, IInvokeProtectedMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly InvokeProtectedMethodMethodImposter _imposter;
@@ -463,7 +463,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void ProtectedVirtualMethodCallbackDelegate(int value);
         // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         public delegate global::System.Exception ProtectedVirtualMethodExceptionGeneratorDelegate(int value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ProtectedVirtualMethodArguments
         {
             public int value;
@@ -474,7 +474,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ProtectedVirtualMethodArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> value { get; }
@@ -490,13 +490,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualMethodMethodInvocationHistory
         {
             bool Matches(ProtectedVirtualMethodArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ProtectedVirtualMethodMethodInvocationHistory : IProtectedVirtualMethodMethodInvocationHistory
         {
             internal ProtectedVirtualMethodArguments Arguments;
@@ -515,7 +515,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ProtectedVirtualMethodMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IProtectedVirtualMethodMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IProtectedVirtualMethodMethodInvocationHistory>();
@@ -531,7 +531,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProtectedVirtualMethodMethodInvocationImposterGroup
         {
             internal static ProtectedVirtualMethodMethodInvocationImposterGroup Default = new ProtectedVirtualMethodMethodInvocationImposterGroup(new ProtectedVirtualMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -583,7 +583,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -666,19 +666,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualMethodMethodInvocationImposterGroupCallback
         {
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Callback(ProtectedVirtualMethodCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualMethodMethodInvocationImposterGroupContinuation : IProtectedVirtualMethodMethodInvocationImposterGroupCallback
         {
             IProtectedVirtualMethodMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualMethodMethodInvocationImposterGroup : IProtectedVirtualMethodMethodInvocationImposterGroupCallback
         {
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -690,19 +690,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IProtectedVirtualMethodMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ProtectedVirtualMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         public interface IProtectedVirtualMethodMethodImposterBuilder : IProtectedVirtualMethodMethodInvocationImposterGroup, IProtectedVirtualMethodMethodInvocationImposterGroupCallback, ProtectedVirtualMethodInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ProtectedVirtualMethodMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup>();
@@ -757,7 +757,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IProtectedVirtualMethodMethodImposterBuilder, IProtectedVirtualMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly ProtectedVirtualMethodMethodImposter _imposter;
@@ -849,13 +849,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void ReadProtectedPropertyCallbackDelegate();
         // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         public delegate global::System.Exception ReadProtectedPropertyExceptionGeneratorDelegate();
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedPropertyMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedPropertyMethodInvocationHistory : IReadProtectedPropertyMethodInvocationHistory
         {
             internal string Result;
@@ -872,7 +872,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedPropertyMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedPropertyMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedPropertyMethodInvocationHistory>();
@@ -888,7 +888,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedPropertyMethodInvocationImposterGroup
         {
             internal static ReadProtectedPropertyMethodInvocationImposterGroup Default = new ReadProtectedPropertyMethodInvocationImposterGroup();
@@ -937,7 +937,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1020,19 +1020,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Callback(ReadProtectedPropertyCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedPropertyMethodInvocationImposterGroupContinuation : IReadProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IReadProtectedPropertyMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedPropertyMethodInvocationImposterGroup : IReadProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -1044,19 +1044,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IReadProtectedPropertyMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ReadProtectedPropertyInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         public interface IReadProtectedPropertyMethodImposterBuilder : IReadProtectedPropertyMethodInvocationImposterGroup, IReadProtectedPropertyMethodInvocationImposterGroupCallback, ReadProtectedPropertyInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedPropertyMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup>();
@@ -1107,7 +1107,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IReadProtectedPropertyMethodImposterBuilder, IReadProtectedPropertyMethodInvocationImposterGroupContinuation
             {
                 private readonly ReadProtectedPropertyMethodImposter _imposter;
@@ -1197,7 +1197,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void ReadProtectedValueCallbackDelegate(int index);
         // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         public delegate global::System.Exception ReadProtectedValueExceptionGeneratorDelegate(int index);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ReadProtectedValueArguments
         {
             public int index;
@@ -1208,7 +1208,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ReadProtectedValueArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> index { get; }
@@ -1224,13 +1224,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedValueMethodInvocationHistory
         {
             bool Matches(ReadProtectedValueArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedValueMethodInvocationHistory : IReadProtectedValueMethodInvocationHistory
         {
             internal ReadProtectedValueArguments Arguments;
@@ -1249,7 +1249,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedValueMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedValueMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedValueMethodInvocationHistory>();
@@ -1265,7 +1265,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedValueMethodInvocationImposterGroup
         {
             internal static ReadProtectedValueMethodInvocationImposterGroup Default = new ReadProtectedValueMethodInvocationImposterGroup(new ReadProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -1317,7 +1317,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, index, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1400,19 +1400,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedValueMethodInvocationImposterGroupCallback
         {
             IReadProtectedValueMethodInvocationImposterGroupContinuation Callback(ReadProtectedValueCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedValueMethodInvocationImposterGroupContinuation : IReadProtectedValueMethodInvocationImposterGroupCallback
         {
             IReadProtectedValueMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IReadProtectedValueMethodInvocationImposterGroup : IReadProtectedValueMethodInvocationImposterGroupCallback
         {
             IReadProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -1424,19 +1424,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IReadProtectedValueMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ReadProtectedValueInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         public interface IReadProtectedValueMethodImposterBuilder : IReadProtectedValueMethodInvocationImposterGroup, IReadProtectedValueMethodInvocationImposterGroupCallback, ReadProtectedValueInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedValueMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup>();
@@ -1491,7 +1491,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IReadProtectedValueMethodImposterBuilder, IReadProtectedValueMethodInvocationImposterGroupContinuation
             {
                 private readonly ReadProtectedValueMethodImposter _imposter;
@@ -1583,7 +1583,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void SubscribeToProtectedEventCallbackDelegate(global::System.EventHandler handler);
         // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         public delegate global::System.Exception SubscribeToProtectedEventExceptionGeneratorDelegate(global::System.EventHandler handler);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class SubscribeToProtectedEventArguments
         {
             public global::System.EventHandler handler;
@@ -1594,7 +1594,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class SubscribeToProtectedEventArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<global::System.EventHandler> handler { get; }
@@ -1610,13 +1610,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISubscribeToProtectedEventMethodInvocationHistory
         {
             bool Matches(SubscribeToProtectedEventArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SubscribeToProtectedEventMethodInvocationHistory : ISubscribeToProtectedEventMethodInvocationHistory
         {
             internal SubscribeToProtectedEventArguments Arguments;
@@ -1633,7 +1633,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SubscribeToProtectedEventMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ISubscribeToProtectedEventMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISubscribeToProtectedEventMethodInvocationHistory>();
@@ -1649,7 +1649,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SubscribeToProtectedEventMethodInvocationImposterGroup
         {
             internal static SubscribeToProtectedEventMethodInvocationImposterGroup Default = new SubscribeToProtectedEventMethodInvocationImposterGroup(new SubscribeToProtectedEventArgumentsCriteria(global::Imposter.Abstractions.Arg<global::System.EventHandler>.Any()));
@@ -1701,7 +1701,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName, handler, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1766,19 +1766,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
         {
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Callback(SubscribeToProtectedEventCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation : ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
         {
             ISubscribeToProtectedEventMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISubscribeToProtectedEventMethodInvocationImposterGroup : ISubscribeToProtectedEventMethodInvocationImposterGroupCallback
         {
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -1788,19 +1788,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface SubscribeToProtectedEventInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         public interface ISubscribeToProtectedEventMethodImposterBuilder : ISubscribeToProtectedEventMethodInvocationImposterGroup, ISubscribeToProtectedEventMethodInvocationImposterGroupCallback, SubscribeToProtectedEventInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class SubscribeToProtectedEventMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup>();
@@ -1854,7 +1854,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : ISubscribeToProtectedEventMethodImposterBuilder, ISubscribeToProtectedEventMethodInvocationImposterGroupContinuation
             {
                 private readonly SubscribeToProtectedEventMethodImposter _imposter;
@@ -1934,7 +1934,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void WriteProtectedPropertyCallbackDelegate(string value);
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         public delegate global::System.Exception WriteProtectedPropertyExceptionGeneratorDelegate(string value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class WriteProtectedPropertyArguments
         {
             public string value;
@@ -1945,7 +1945,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class WriteProtectedPropertyArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<string> value { get; }
@@ -1961,13 +1961,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedPropertyMethodInvocationHistory
         {
             bool Matches(WriteProtectedPropertyArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedPropertyMethodInvocationHistory : IWriteProtectedPropertyMethodInvocationHistory
         {
             internal WriteProtectedPropertyArguments Arguments;
@@ -1984,7 +1984,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedPropertyMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedPropertyMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedPropertyMethodInvocationHistory>();
@@ -2000,7 +2000,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedPropertyMethodInvocationImposterGroup
         {
             internal static WriteProtectedPropertyMethodInvocationImposterGroup Default = new WriteProtectedPropertyMethodInvocationImposterGroup(new WriteProtectedPropertyArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
@@ -2052,7 +2052,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -2117,19 +2117,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Callback(WriteProtectedPropertyCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedPropertyMethodInvocationImposterGroupContinuation : IWriteProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IWriteProtectedPropertyMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedPropertyMethodInvocationImposterGroup : IWriteProtectedPropertyMethodInvocationImposterGroupCallback
         {
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -2139,19 +2139,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IWriteProtectedPropertyMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface WriteProtectedPropertyInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         public interface IWriteProtectedPropertyMethodImposterBuilder : IWriteProtectedPropertyMethodInvocationImposterGroup, IWriteProtectedPropertyMethodInvocationImposterGroupCallback, WriteProtectedPropertyInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedPropertyMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup>();
@@ -2205,7 +2205,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IWriteProtectedPropertyMethodImposterBuilder, IWriteProtectedPropertyMethodInvocationImposterGroupContinuation
             {
                 private readonly WriteProtectedPropertyMethodImposter _imposter;
@@ -2285,7 +2285,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void WriteProtectedValueCallbackDelegate(int index, int value);
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         public delegate global::System.Exception WriteProtectedValueExceptionGeneratorDelegate(int index, int value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class WriteProtectedValueArguments
         {
             public int index;
@@ -2298,7 +2298,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class WriteProtectedValueArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> index { get; }
@@ -2316,13 +2316,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedValueMethodInvocationHistory
         {
             bool Matches(WriteProtectedValueArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedValueMethodInvocationHistory : IWriteProtectedValueMethodInvocationHistory
         {
             internal WriteProtectedValueArguments Arguments;
@@ -2339,7 +2339,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedValueMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedValueMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedValueMethodInvocationHistory>();
@@ -2355,7 +2355,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedValueMethodInvocationImposterGroup
         {
             internal static WriteProtectedValueMethodInvocationImposterGroup Default = new WriteProtectedValueMethodInvocationImposterGroup(new WriteProtectedValueArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
@@ -2407,7 +2407,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName, index, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -2472,19 +2472,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedValueMethodInvocationImposterGroupCallback
         {
             IWriteProtectedValueMethodInvocationImposterGroupContinuation Callback(WriteProtectedValueCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedValueMethodInvocationImposterGroupContinuation : IWriteProtectedValueMethodInvocationImposterGroupCallback
         {
             IWriteProtectedValueMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IWriteProtectedValueMethodInvocationImposterGroup : IWriteProtectedValueMethodInvocationImposterGroupCallback
         {
             IWriteProtectedValueMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -2494,19 +2494,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IWriteProtectedValueMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface WriteProtectedValueInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         public interface IWriteProtectedValueMethodImposterBuilder : IWriteProtectedValueMethodInvocationImposterGroup, IWriteProtectedValueMethodInvocationImposterGroupCallback, WriteProtectedValueInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class WriteProtectedValueMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup>();
@@ -2560,7 +2560,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IWriteProtectedValueMethodImposterBuilder, IWriteProtectedValueMethodInvocationImposterGroupContinuation
             {
                 private readonly WriteProtectedValueMethodImposter _imposter;
@@ -2637,7 +2637,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public IProtectedVirtualPropertyPropertyBuilder ProtectedVirtualProperty => _ProtectedVirtualPropertyPropertyBuilderField;
 
         private readonly ProtectedVirtualPropertyPropertyBuilder _ProtectedVirtualPropertyPropertyBuilderField;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterOutcomeBuilder
         {
             IProtectedVirtualPropertyPropertyGetterContinuationBuilder Returns(string value);
@@ -2647,78 +2647,78 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 where TException : Exception, new();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterCallbackBuilder
         {
             IProtectedVirtualPropertyPropertyGetterContinuationBuilder Callback(global::System.Action callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterContinuationBuilder : IProtectedVirtualPropertyPropertyGetterCallbackBuilder
         {
             IProtectedVirtualPropertyPropertyGetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterFluentBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterContinuationBuilder
         {
             IProtectedVirtualPropertyPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterBuilder : IProtectedVirtualPropertyPropertyGetterOutcomeBuilder, IProtectedVirtualPropertyPropertyGetterCallbackBuilder, IProtectedVirtualPropertyPropertyGetterVerifier
         {
             IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder
         {
             IProtectedVirtualPropertyPropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterCallbackBuilder
         {
             IProtectedVirtualPropertyPropertySetterContinuationBuilder Callback(global::System.Action<string> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterContinuationBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder
         {
             IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterFluentBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterVerifier
         {
             IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder : IProtectedVirtualPropertyPropertySetterFluentBuilder
         {
             IProtectedVirtualPropertyPropertySetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertyBuilder
         {
             IProtectedVirtualPropertyPropertyGetterBuilder Getter();
@@ -2726,7 +2726,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IProtectedVirtualPropertyPropertyBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ProtectedVirtualPropertyPropertyBuilder : IProtectedVirtualPropertyPropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -2741,7 +2741,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
@@ -2749,7 +2749,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 internal string BackingField = default;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class GetterImposterBuilder : IProtectedVirtualPropertyPropertyGetterBuilder, IProtectedVirtualPropertyPropertyGetterFluentBuilder, IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>>();
@@ -2882,7 +2882,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>();
@@ -2958,7 +2958,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _hasConfiguredSetter = true;
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : IProtectedVirtualPropertyPropertySetterBuilder, IProtectedVirtualPropertyPropertySetterFluentBuilder, IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder
                 {
                     private readonly SetterImposter _setterImposter;
@@ -3020,13 +3020,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public IProtectedVirtualEventEventImposterBuilder ProtectedVirtualEvent => _ProtectedVirtualEvent;
 
         private readonly ProtectedVirtualEventEventImposterBuilder _ProtectedVirtualEvent;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualEventEventImposterBuilder : IProtectedVirtualEventEventImposterSetupBuilder, IProtectedVirtualEventEventImposterVerificationBuilder
         {
             IProtectedVirtualEventEventImposterBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualEventEventImposterSetupBuilder
         {
             IProtectedVirtualEventEventImposterSetupBuilder Callback(global::System.EventHandler callback);
@@ -3035,7 +3035,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IProtectedVirtualEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualEventEventImposterVerificationBuilder
         {
             IProtectedVirtualEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
@@ -3044,7 +3044,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IProtectedVirtualEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class ProtectedVirtualEventEventImposterBuilder : IProtectedVirtualEventEventImposterBuilder, IProtectedVirtualEventEventImposterSetupBuilder, IProtectedVirtualEventEventImposterVerificationBuilder
         {
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
@@ -3244,7 +3244,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void IndexerIndexerGetterCallback(int index);
         public delegate void IndexerIndexerSetterCallback(int index, int value);
         public delegate global::System.Exception IndexerIndexerExceptionGenerator(int index);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
         {
             public int index;
@@ -3271,7 +3271,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> index;
@@ -3286,13 +3286,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerBuilder
         {
             private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
             private readonly GetterImposter _getterImposter;
             private readonly SetterImposter _setterImposter;
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultIndexerIndexerBehaviour
             {
                 private bool _isOn = true;
@@ -3349,7 +3349,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return new SetterImposter.Builder(_setterImposter, criteria);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class InvocationBuilder : IIndexerIndexerBuilder
             {
                 private readonly IndexerIndexerBuilder _builder;
@@ -3381,7 +3381,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 _setterImposter.Set(index, value, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private sealed class GetterImposter
             {
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -3475,7 +3475,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
                 {
                     private readonly GetterImposter _imposter;
@@ -3547,7 +3547,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 private sealed class GetterInvocationImposter
                 {
                     private readonly GetterImposter _parent;
@@ -3628,7 +3628,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
@@ -3715,7 +3715,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     MarkConfigured();
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : IIndexerIndexerSetterBuilder, IIndexerIndexerSetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
@@ -3751,7 +3751,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterOutcomeBuilder
         {
             IIndexerIndexerGetterContinuationBuilder Returns(int value);
@@ -3764,64 +3764,64 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IIndexerIndexerGetterContinuationBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterCallbackBuilder
         {
             IIndexerIndexerGetterContinuationBuilder Callback(IndexerIndexerGetterCallback callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterContinuationBuilder : IIndexerIndexerGetterCallbackBuilder
         {
             IIndexerIndexerGetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterFluentBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterCallbackBuilder
         {
             IIndexerIndexerSetterContinuationBuilder Callback(IndexerIndexerSetterCallback callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterContinuationBuilder : IIndexerIndexerSetterCallbackBuilder
         {
             IIndexerIndexerSetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterFluentBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
         {
             IIndexerIndexerSetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerBuilder
         {
             IIndexerIndexerGetterBuilder Getter();
@@ -3845,7 +3845,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers
         {
             ClassWithProtectedOverrideableMembersImposter _imposter;

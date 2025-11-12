@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.ClassImposter.Suts;
 
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class MultiConstructorClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass>
     {
         private readonly CalculateMethodImposter _calculateMethodImposter;
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void CalculateCallbackDelegate(int input);
         // virtual int MultiConstructorClass.Calculate(int input)
         public delegate global::System.Exception CalculateExceptionGeneratorDelegate(int input);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CalculateArguments
         {
             public int input;
@@ -46,7 +46,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int MultiConstructorClass.Calculate(int input)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CalculateArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> input { get; }
@@ -62,13 +62,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICalculateMethodInvocationHistory
         {
             bool Matches(CalculateArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class CalculateMethodInvocationHistory : ICalculateMethodInvocationHistory
         {
             internal CalculateArguments Arguments;
@@ -87,7 +87,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class CalculateMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ICalculateMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICalculateMethodInvocationHistory>();
@@ -103,7 +103,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // virtual int MultiConstructorClass.Calculate(int input)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CalculateMethodInvocationImposterGroup
         {
             internal static CalculateMethodInvocationImposterGroup Default = new CalculateMethodInvocationImposterGroup(new CalculateArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -155,7 +155,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, input, baseImplementation);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -238,19 +238,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICalculateMethodInvocationImposterGroupCallback
         {
             ICalculateMethodInvocationImposterGroupContinuation Callback(CalculateCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICalculateMethodInvocationImposterGroupContinuation : ICalculateMethodInvocationImposterGroupCallback
         {
             ICalculateMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICalculateMethodInvocationImposterGroup : ICalculateMethodInvocationImposterGroupCallback
         {
             ICalculateMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -262,19 +262,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ICalculateMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface CalculateInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // virtual int MultiConstructorClass.Calculate(int input)
         public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class CalculateMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup>();
@@ -329,7 +329,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : ICalculateMethodImposterBuilder, ICalculateMethodInvocationImposterGroupContinuation
             {
                 private readonly CalculateMethodImposter _imposter;
@@ -447,7 +447,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass
         {
             MultiConstructorClassImposter _imposter;

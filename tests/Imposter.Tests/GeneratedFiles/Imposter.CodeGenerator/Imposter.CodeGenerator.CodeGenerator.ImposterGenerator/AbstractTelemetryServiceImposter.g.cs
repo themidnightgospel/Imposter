@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.ClassImposter.Suts;
 
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>
     {
         private readonly ComputeMethodImposter _computeMethodImposter;
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void ComputeCallbackDelegate(int value);
         // abstract int AbstractTelemetryService.Compute(int value)
         public delegate global::System.Exception ComputeExceptionGeneratorDelegate(int value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ComputeArguments
         {
             public int value;
@@ -46,7 +46,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // abstract int AbstractTelemetryService.Compute(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class ComputeArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> value { get; }
@@ -62,13 +62,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IComputeMethodInvocationHistory
         {
             bool Matches(ComputeArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ComputeMethodInvocationHistory : IComputeMethodInvocationHistory
         {
             internal ComputeArguments Arguments;
@@ -87,7 +87,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ComputeMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IComputeMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IComputeMethodInvocationHistory>();
@@ -103,7 +103,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         // abstract int AbstractTelemetryService.Compute(int value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeMethodInvocationImposterGroup
         {
             internal static ComputeMethodInvocationImposterGroup Default = new ComputeMethodInvocationImposterGroup(new ComputeArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -155,7 +155,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -223,19 +223,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroupContinuation Callback(ComputeCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IComputeMethodInvocationImposterGroupContinuation : IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IComputeMethodInvocationImposterGroup : IComputeMethodInvocationImposterGroupCallback
         {
             IComputeMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -246,19 +246,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IComputeMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ComputeInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // abstract int AbstractTelemetryService.Compute(int value)
         public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ComputeMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ComputeMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ComputeMethodInvocationImposterGroup>();
@@ -313,7 +313,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IComputeMethodImposterBuilder, IComputeMethodInvocationImposterGroupContinuation
             {
                 private readonly ComputeMethodImposter _imposter;
@@ -396,7 +396,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
         private readonly NamePropertyBuilder _NamePropertyBuilderField;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterOutcomeBuilder
         {
             INamePropertyGetterContinuationBuilder Returns(string value);
@@ -406,78 +406,78 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 where TException : Exception, new();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterCallbackBuilder
         {
             INamePropertyGetterContinuationBuilder Callback(global::System.Action callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterContinuationBuilder : INamePropertyGetterCallbackBuilder
         {
             INamePropertyGetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterFluentBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder
         {
             INamePropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterCallbackBuilder, INamePropertyGetterVerifier
         {
             INamePropertyGetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyGetterUseBaseImplementationBuilder
         {
             INamePropertyGetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterCallbackBuilder
         {
             INamePropertySetterContinuationBuilder Callback(global::System.Action<string> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterContinuationBuilder : INamePropertySetterCallbackBuilder
         {
             INamePropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterFluentBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterVerifier
         {
             INamePropertySetterUseBaseImplementationBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterUseBaseImplementationBuilder : INamePropertySetterFluentBuilder
         {
             INamePropertySetterFluentBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertyBuilder
         {
             INamePropertyGetterBuilder Getter();
@@ -485,7 +485,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             INamePropertyBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class NamePropertyBuilder : INamePropertyBuilder
         {
             private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -500,7 +500,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.Name");
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
                 internal bool IsOn = true;
@@ -508,7 +508,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 internal string BackingField = default;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder, INamePropertyGetterUseBaseImplementationBuilder
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<string>>();
@@ -641,7 +641,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>();
@@ -717,7 +717,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _hasConfiguredSetter = true;
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : INamePropertySetterBuilder, INamePropertySetterFluentBuilder, INamePropertySetterUseBaseImplementationBuilder
                 {
                     private readonly SetterImposter _setterImposter;
@@ -779,12 +779,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public IStreamAdvancedEventImposterBuilder StreamAdvanced => _StreamAdvanced;
 
         private readonly StreamAdvancedEventImposterBuilder _StreamAdvanced;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IStreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterSetupBuilder, IStreamAdvancedEventImposterVerificationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IStreamAdvancedEventImposterSetupBuilder
         {
             IStreamAdvancedEventImposterSetupBuilder Callback(global::System.EventHandler callback);
@@ -793,7 +793,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IStreamAdvancedEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IStreamAdvancedEventImposterVerificationBuilder
         {
             IStreamAdvancedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
@@ -802,7 +802,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IStreamAdvancedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class StreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterBuilder, IStreamAdvancedEventImposterSetupBuilder, IStreamAdvancedEventImposterVerificationBuilder
         {
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
@@ -974,7 +974,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public delegate void IndexerIndexerGetterCallback(int index);
         public delegate void IndexerIndexerSetterCallback(int index, int value);
         public delegate global::System.Exception IndexerIndexerExceptionGenerator(int index);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
         {
             public int index;
@@ -1001,7 +1001,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> index;
@@ -1016,13 +1016,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerIndexerBuilder
         {
             private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
             private readonly GetterImposter _getterImposter;
             private readonly SetterImposter _setterImposter;
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultIndexerIndexerBehaviour
             {
                 private bool _isOn = true;
@@ -1079,7 +1079,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return new SetterImposter.Builder(_setterImposter, criteria);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class InvocationBuilder : IIndexerIndexerBuilder
             {
                 private readonly IndexerIndexerBuilder _builder;
@@ -1111,7 +1111,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 _setterImposter.Set(index, value, null);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private sealed class GetterImposter
             {
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -1205,7 +1205,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
                 {
                     private readonly GetterImposter _imposter;
@@ -1271,7 +1271,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 private sealed class GetterInvocationImposter
                 {
                     private readonly GetterImposter _parent;
@@ -1352,7 +1352,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
@@ -1416,7 +1416,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     global::System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
                 }
 
-                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
                 internal class Builder : IIndexerIndexerSetterBuilder, IIndexerIndexerSetterFluentBuilder
                 {
                     private readonly SetterImposter _setterImposter;
@@ -1446,7 +1446,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterOutcomeBuilder
         {
             IIndexerIndexerGetterContinuationBuilder Returns(int value);
@@ -1458,63 +1458,63 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterCallbackBuilder
         {
             IIndexerIndexerGetterContinuationBuilder Callback(IndexerIndexerGetterCallback callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterContinuationBuilder : IIndexerIndexerGetterCallbackBuilder
         {
             IIndexerIndexerGetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterFluentBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerGetterBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterCallbackBuilder
         {
             IIndexerIndexerSetterContinuationBuilder Callback(IndexerIndexerSetterCallback callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterContinuationBuilder : IIndexerIndexerSetterCallbackBuilder
         {
             IIndexerIndexerSetterFluentBuilder Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterFluentBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterContinuationBuilder
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterVerifier
         {
             void Called(global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerSetterBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerIndexerBuilder
         {
             IIndexerIndexerGetterBuilder Getter();
@@ -1532,7 +1532,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService
         {
             AbstractTelemetryServiceImposter _imposter;

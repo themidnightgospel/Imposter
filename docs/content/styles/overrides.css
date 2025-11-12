@@ -7,20 +7,31 @@
 /* Base nav/sidebar font size (overridden below per depth) */
 .md-nav { font-size: 0.90rem; }
 
-/* Top header color override (both light and dark schemes) */
+/* Header color + logo sizing */
+/* Light scheme: lighter header so darker logos pop */
 .md-header {
-  background-color: #495057;
-  color: #ffffff;
+  background-color: #eef2ff; /* indigo-50 */
+  color: #1f2937;            /* slate-800 text */
 }
 
+/* Dark scheme: deep slate header with high contrast */
 [data-md-color-scheme="slate"] .md-header {
-  background-color: #495057;
+  background-color: #1f2937; /* slate-800 */
   color: #ffffff;
 }
 
-/* Ensure header links/icons are visible on the new background */
-.md-header a, .md-header .md-header__button, .md-header .md-icon {
-  color: #ffffff !important;
+/* Ensure header links/icons are visible on the background */
+.md-header a,
+.md-header .md-header__button,
+.md-header .md-icon {
+  color: inherit !important;
+}
+
+/* Make the logo bigger and crisp */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2.6rem !important;
+  width: auto !important;
 }
 
 /* Optional: slightly reduce h1/h2 to match smaller body text */
@@ -40,7 +51,7 @@
 
 .md-nav--primary .md-nav__link--active,
 .md-nav--primary .md-nav__item--active > .md-nav__link {
-  background-color: rgba(76, 175, 80, 0.08); /* subtle green tint */
+  background-color: rgba(99, 102, 241, 0.10); /* subtle indigo tint */
 }
 
 .md-nav--primary .md-nav { line-height: 1.25; }

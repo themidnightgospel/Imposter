@@ -25,3 +25,5 @@ imp.InvokeProtected(Arg<int>.Any()).UseBaseImplementation();
 var svc = imp.Instance();
 svc.InvokeProtected(5).ShouldBe(42);
 ```
+
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs).

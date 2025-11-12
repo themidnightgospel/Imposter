@@ -12,7 +12,7 @@ using global::Imposter.Tests.Shared;
 
 namespace Imposter.Tests.Shared
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class IIndexerSetupPocImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>
     {
         private readonly IndexerMethodMethodImposter _indexerMethodMethodImposter;
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Shared
         public delegate void IndexerMethodCallbackDelegate(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog);
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         public delegate global::System.Exception IndexerMethodExceptionGeneratorDelegate(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IndexerMethodArguments
         {
             public int name;
@@ -50,7 +50,7 @@ namespace Imposter.Tests.Shared
         }
 
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IndexerMethodArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> name { get; }
@@ -70,13 +70,13 @@ namespace Imposter.Tests.Shared
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerMethodMethodInvocationHistory
         {
             bool Matches(IndexerMethodArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerMethodMethodInvocationHistory : IIndexerMethodMethodInvocationHistory
         {
             internal IndexerMethodArguments Arguments;
@@ -95,7 +95,7 @@ namespace Imposter.Tests.Shared
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerMethodMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIndexerMethodMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIndexerMethodMethodInvocationHistory>();
@@ -111,7 +111,7 @@ namespace Imposter.Tests.Shared
         }
 
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IndexerMethodMethodInvocationImposterGroup
         {
             internal static IndexerMethodMethodInvocationImposterGroup Default = new IndexerMethodMethodInvocationImposterGroup(new IndexerMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex>.Any()));
@@ -163,7 +163,7 @@ namespace Imposter.Tests.Shared
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, name, lastname, in dog);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -231,19 +231,19 @@ namespace Imposter.Tests.Shared
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroupContinuation Callback(IndexerMethodCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerMethodMethodInvocationImposterGroupContinuation : IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIndexerMethodMethodInvocationImposterGroup : IIndexerMethodMethodInvocationImposterGroupCallback
         {
             IIndexerMethodMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -254,19 +254,19 @@ namespace Imposter.Tests.Shared
             IIndexerMethodMethodInvocationImposterGroupContinuation Returns(string value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IndexerMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IIndexerMethodMethodInvocationImposterGroupCallback, IndexerMethodInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IndexerMethodMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup>();
@@ -321,7 +321,7 @@ namespace Imposter.Tests.Shared
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIndexerMethodMethodImposterBuilder, IIndexerMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly IndexerMethodMethodImposter _imposter;
@@ -408,7 +408,7 @@ namespace Imposter.Tests.Shared
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Shared.IIndexerSetupPoc
         {
             IIndexerSetupPocImposter _imposter;

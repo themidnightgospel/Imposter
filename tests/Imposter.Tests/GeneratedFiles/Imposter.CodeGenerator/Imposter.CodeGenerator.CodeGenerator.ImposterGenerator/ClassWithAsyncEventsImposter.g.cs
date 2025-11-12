@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.ClassImposter.Suts;
 
 namespace Imposter.Tests.Features.ClassImposter.Suts
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class ClassWithAsyncEventsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -25,13 +25,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public ICustomAsyncEventEventImposterBuilder CustomAsyncEvent => _CustomAsyncEvent;
 
         private readonly CustomAsyncEventEventImposterBuilder _CustomAsyncEvent;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
         {
             ICustomAsyncEventEventImposterBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICustomAsyncEventEventImposterSetupBuilder
         {
             ICustomAsyncEventEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> callback);
@@ -40,7 +40,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ICustomAsyncEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICustomAsyncEventEventImposterVerificationBuilder
         {
             ICustomAsyncEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
@@ -49,7 +49,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class CustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterBuilder, ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
         {
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>();
@@ -260,13 +260,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public ITaskBasedEventEventImposterBuilder TaskBasedEvent => _TaskBasedEvent;
 
         private readonly TaskBasedEventEventImposterBuilder _TaskBasedEvent;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ITaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
         {
             ITaskBasedEventEventImposterBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ITaskBasedEventEventImposterSetupBuilder
         {
             ITaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> callback);
@@ -275,7 +275,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ITaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ITaskBasedEventEventImposterVerificationBuilder
         {
             ITaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
@@ -284,7 +284,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             ITaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class TaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterBuilder, ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
         {
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
@@ -495,13 +495,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public IValueTaskBasedEventEventImposterBuilder ValueTaskBasedEvent => _ValueTaskBasedEvent;
 
         private readonly ValueTaskBasedEventEventImposterBuilder _ValueTaskBasedEvent;
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
         {
             IValueTaskBasedEventEventImposterBuilder UseBaseImplementation();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IValueTaskBasedEventEventImposterSetupBuilder
         {
             IValueTaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback);
@@ -510,7 +510,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IValueTaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IValueTaskBasedEventEventImposterVerificationBuilder
         {
             IValueTaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
@@ -519,7 +519,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             IValueTaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class ValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterBuilder, IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
         {
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
@@ -737,7 +737,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents
         {
             ClassWithAsyncEventsImposter _imposter;

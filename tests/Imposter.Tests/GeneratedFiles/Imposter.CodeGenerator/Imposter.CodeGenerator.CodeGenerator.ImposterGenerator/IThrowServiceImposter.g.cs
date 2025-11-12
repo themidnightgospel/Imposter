@@ -8,12 +8,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs;
+using global::Imposter.Tests.Docs.Throwing;
 
-namespace Imposter.Tests.Docs
+namespace Imposter.Tests.Docs.Throwing
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IMyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.IMyService>
+    public sealed class IThrowServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Throwing.IThrowService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly GetNumberAsyncMethodImposter _getNumberAsyncMethodImposter;
@@ -31,16 +31,16 @@ namespace Imposter.Tests.Docs
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.IMyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.IMyService>.Instance()
+        global::Imposter.Tests.Docs.Throwing.IThrowService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Throwing.IThrowService>.Instance()
         {
             return _imposterInstance;
         }
 
-        // int IMyService.GetNumber()
+        // int IThrowService.GetNumber()
         public delegate int GetNumberDelegate();
-        // int IMyService.GetNumber()
+        // int IThrowService.GetNumber()
         public delegate void GetNumberCallbackDelegate();
-        // int IMyService.GetNumber()
+        // int IThrowService.GetNumber()
         public delegate global::System.Exception GetNumberExceptionGeneratorDelegate();
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGetNumberMethodInvocationHistory
@@ -80,7 +80,7 @@ namespace Imposter.Tests.Docs
             }
         }
 
-        // int IMyService.GetNumber()
+        // int IThrowService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -228,7 +228,7 @@ namespace Imposter.Tests.Docs
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IMyService.GetNumber()
+        // int IThrowService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -265,7 +265,7 @@ namespace Imposter.Tests.Docs
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("int IMyService.GetNumber()");
+                        throw new global::Imposter.Abstractions.MissingImposterException("int IThrowService.GetNumber()");
                     }
 
                     matchingInvocationImposterGroup = GetNumberMethodInvocationImposterGroup.Default;
@@ -273,7 +273,7 @@ namespace Imposter.Tests.Docs
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IMyService.GetNumber()");
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IThrowService.GetNumber()");
                     _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(result, default));
                     return result;
                 }
@@ -362,11 +362,11 @@ namespace Imposter.Tests.Docs
             }
         }
 
-        // Task<int> IMyService.GetNumberAsync()
+        // Task<int> IThrowService.GetNumberAsync()
         public delegate global::System.Threading.Tasks.Task<int> GetNumberAsyncDelegate();
-        // Task<int> IMyService.GetNumberAsync()
+        // Task<int> IThrowService.GetNumberAsync()
         public delegate global::System.Threading.Tasks.Task GetNumberAsyncCallbackDelegate();
-        // Task<int> IMyService.GetNumberAsync()
+        // Task<int> IThrowService.GetNumberAsync()
         public delegate global::System.Exception GetNumberAsyncExceptionGeneratorDelegate();
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGetNumberAsyncMethodInvocationHistory
@@ -406,7 +406,7 @@ namespace Imposter.Tests.Docs
             }
         }
 
-        // Task<int> IMyService.GetNumberAsync()
+        // Task<int> IThrowService.GetNumberAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberAsyncMethodInvocationImposterGroup
         {
@@ -572,7 +572,7 @@ namespace Imposter.Tests.Docs
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task<int> IMyService.GetNumberAsync()
+        // Task<int> IThrowService.GetNumberAsync()
         public interface IGetNumberAsyncMethodImposterBuilder : IGetNumberAsyncMethodInvocationImposterGroup, IGetNumberAsyncMethodInvocationImposterGroupCallback, GetNumberAsyncInvocationVerifier
         {
         }
@@ -609,7 +609,7 @@ namespace Imposter.Tests.Docs
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("Task<int> IMyService.GetNumberAsync()");
+                        throw new global::Imposter.Abstractions.MissingImposterException("Task<int> IThrowService.GetNumberAsync()");
                     }
 
                     matchingInvocationImposterGroup = GetNumberAsyncMethodInvocationImposterGroup.Default;
@@ -617,7 +617,7 @@ namespace Imposter.Tests.Docs
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> IMyService.GetNumberAsync()");
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> IThrowService.GetNumberAsync()");
                     _getNumberAsyncMethodInvocationHistoryCollection.Add(new GetNumberAsyncMethodInvocationHistory(result, default));
                     return result;
                 }
@@ -718,7 +718,7 @@ namespace Imposter.Tests.Docs
             }
         }
 
-        public IMyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
+        public IThrowServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, invocationBehavior);
             this._getNumberAsyncMethodImposter = new GetNumberAsyncMethodImposter(_getNumberAsyncMethodInvocationHistoryCollection, invocationBehavior);
@@ -727,10 +727,10 @@ namespace Imposter.Tests.Docs
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.IMyService
+        class ImposterTargetInstance : global::Imposter.Tests.Docs.Throwing.IThrowService
         {
-            IMyServiceImposter _imposter;
-            public ImposterTargetInstance(IMyServiceImposter _imposter)
+            IThrowServiceImposter _imposter;
+            public ImposterTargetInstance(IThrowServiceImposter _imposter)
             {
                 this._imposter = _imposter;
             }

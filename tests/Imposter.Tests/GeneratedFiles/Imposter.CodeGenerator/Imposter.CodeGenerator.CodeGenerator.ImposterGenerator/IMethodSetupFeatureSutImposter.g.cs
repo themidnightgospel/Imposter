@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.MethodImposter;
 
 namespace Imposter.Tests.Features.MethodImposter
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class IMethodSetupFeatureSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut>
     {
         private readonly VoidNoParamsMethodImposter _voidNoParamsMethodImposter;
@@ -168,13 +168,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate global::System.Threading.Tasks.Task AsyncTaskIntNoParamsCallbackDelegate();
         // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         public delegate global::System.Exception AsyncTaskIntNoParamsExceptionGeneratorDelegate();
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncTaskIntNoParamsMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncTaskIntNoParamsMethodInvocationHistory : IAsyncTaskIntNoParamsMethodInvocationHistory
         {
             internal global::System.Threading.Tasks.Task<int> Result;
@@ -191,7 +191,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncTaskIntNoParamsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IAsyncTaskIntNoParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IAsyncTaskIntNoParamsMethodInvocationHistory>();
@@ -207,7 +207,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AsyncTaskIntNoParamsMethodInvocationImposterGroup
         {
             internal static AsyncTaskIntNoParamsMethodInvocationImposterGroup Default = new AsyncTaskIntNoParamsMethodInvocationImposterGroup();
@@ -256,7 +256,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -340,19 +340,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Callback(AsyncTaskIntNoParamsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation : IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncTaskIntNoParamsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncTaskIntNoParamsMethodInvocationImposterGroup : IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -365,19 +365,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation ThrowsAsync(global::System.Exception exception);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface AsyncTaskIntNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationImposterGroup, IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback, AsyncTaskIntNoParamsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncTaskIntNoParamsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup>();
@@ -428,7 +428,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IAsyncTaskIntNoParamsMethodImposterBuilder, IAsyncTaskIntNoParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly AsyncTaskIntNoParamsMethodImposter _imposter;
@@ -524,13 +524,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate global::System.Threading.Tasks.Task AsyncValueTaskIntNoParamsCallbackDelegate();
         // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         public delegate global::System.Exception AsyncValueTaskIntNoParamsExceptionGeneratorDelegate();
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncValueTaskIntNoParamsMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncValueTaskIntNoParamsMethodInvocationHistory : IAsyncValueTaskIntNoParamsMethodInvocationHistory
         {
             internal global::System.Threading.Tasks.ValueTask<int> Result;
@@ -547,7 +547,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IAsyncValueTaskIntNoParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IAsyncValueTaskIntNoParamsMethodInvocationHistory>();
@@ -563,7 +563,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AsyncValueTaskIntNoParamsMethodInvocationImposterGroup
         {
             internal static AsyncValueTaskIntNoParamsMethodInvocationImposterGroup Default = new AsyncValueTaskIntNoParamsMethodInvocationImposterGroup();
@@ -612,7 +612,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -696,19 +696,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Callback(AsyncValueTaskIntNoParamsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback
         {
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -721,19 +721,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation ThrowsAsync(global::System.Exception exception);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface AsyncValueTaskIntNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         public interface IAsyncValueTaskIntNoParamsMethodImposterBuilder : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup, IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback, AsyncValueTaskIntNoParamsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncValueTaskIntNoParamsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup>();
@@ -784,7 +784,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IAsyncValueTaskIntNoParamsMethodImposterBuilder, IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly AsyncValueTaskIntNoParamsMethodImposter _imposter;
@@ -880,7 +880,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
         // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public delegate global::System.Exception GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult>
         {
             public TRef refValue;
@@ -900,7 +900,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>
         {
             public global::Imposter.Abstractions.OutArg<TOut> outValue { get; }
@@ -927,13 +927,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericAllRefKindMethodInvocationHistory
         {
             bool Matches<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationHistory
         {
             internal GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments;
@@ -952,7 +952,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericAllRefKindMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory>();
@@ -967,7 +967,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericAllRefKindMethodImposterCollection
         {
             private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
@@ -993,7 +993,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
             internal static GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Default = new GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>(new GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult>(global::Imposter.Abstractions.OutArg<TOut>.Any(), global::Imposter.Abstractions.Arg<TRef>.Any(), global::Imposter.Abstractions.Arg<TIn>.Any(), global::Imposter.Abstractions.Arg<TParams[]>.Any()));
@@ -1045,7 +1045,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out outValue, ref refValue, in inValue, paramsValues);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1120,19 +1120,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>
         {
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Callback(GenericAllRefKindCallbackDelegate<TOut, TRef, TIn, TParams, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>
         {
             IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>
         {
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Throws<TException>()
@@ -1143,32 +1143,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult> Returns(TResult value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericAllRefKindMethodImposter
         {
             IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>? As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodImposter
         {
             TResult Invoke(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues);
             bool HasMatchingInvocationImposterGroup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
@@ -1190,7 +1190,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> : IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>
             {
                 private readonly GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> _target;
@@ -1268,7 +1268,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult>, IGenericAllRefKindMethodInvocationImposterGroupContinuation<TOut, TRef, TIn, TParams, TResult>
             {
                 private readonly GenericAllRefKindMethodImposterCollection _imposterCollection;
@@ -1355,13 +1355,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericInnerOutParamCallbackDelegate<TValue, TResult>(out global::System.Collections.Generic.List<TValue> value);
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         public delegate global::System.Exception GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult>(out global::System.Collections.Generic.List<TValue> value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerOutParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodInvocationHistory<TValue, TResult> : IGenericInnerOutParamMethodInvocationHistory
         {
             internal global::System.Collections.Generic.Stack<TResult> Result;
@@ -1378,7 +1378,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerOutParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerOutParamMethodInvocationHistory>();
@@ -1393,7 +1393,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodImposterCollection
         {
             private readonly GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
@@ -1419,7 +1419,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>();
@@ -1468,7 +1468,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1543,19 +1543,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericInnerOutParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -1566,32 +1566,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerOutParamMethodImposter
         {
             IGenericInnerOutParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerOutParamMethodImposter<TValue, TResult> : IGenericInnerOutParamMethodImposter
         {
             global::System.Collections.Generic.Stack<TResult> Invoke(out global::System.Collections.Generic.List<TValue> value);
             bool HasMatchingInvocationImposterGroup();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodImposter<TValue, TResult> : IGenericInnerOutParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -1613,7 +1613,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericInnerOutParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericInnerOutParamMethodImposter<TValue, TResult> _target;
@@ -1685,7 +1685,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericInnerOutParamMethodImposterBuilder<TValue, TResult>, IGenericInnerOutParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericInnerOutParamMethodImposterCollection _imposterCollection;
@@ -1770,7 +1770,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericInnerParamsParamCallbackDelegate<TValue, TResult>(global::System.Collections.Generic.List<TValue>[] value);
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         public delegate global::System.Exception GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult>(global::System.Collections.Generic.List<TValue>[] value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerParamsParamArguments<TValue, TResult>
         {
             public global::System.Collections.Generic.List<TValue>[] value;
@@ -1786,7 +1786,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerParamsParamArgumentsCriteria<TValue, TResult>
         {
             public global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>[]> value { get; }
@@ -1807,13 +1807,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerParamsParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>(GenericInnerParamsParamArgumentsCriteria<TValueTarget, TResultTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerParamsParamMethodInvocationHistory<TValue, TResult> : IGenericInnerParamsParamMethodInvocationHistory
         {
             internal GenericInnerParamsParamArguments<TValue, TResult> Arguments;
@@ -1832,7 +1832,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerParamsParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerParamsParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerParamsParamMethodInvocationHistory>();
@@ -1847,7 +1847,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerParamsParamMethodImposterCollection
         {
             private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
@@ -1873,7 +1873,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>(new GenericInnerParamsParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>[]>.Any()));
@@ -1925,7 +1925,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -1993,19 +1993,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericInnerParamsParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -2016,32 +2016,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerParamsParamMethodImposter
         {
             IGenericInnerParamsParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerParamsParamMethodImposter<TValue, TResult> : IGenericInnerParamsParamMethodImposter
         {
             global::System.Collections.Generic.Stack<TResult> Invoke(global::System.Collections.Generic.List<TValue>[] value);
             bool HasMatchingInvocationImposterGroup(GenericInnerParamsParamArguments<TValue, TResult> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerParamsParamMethodImposter<TValue, TResult> : IGenericInnerParamsParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -2063,7 +2063,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericInnerParamsParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericInnerParamsParamMethodImposter<TValue, TResult> _target;
@@ -2132,7 +2132,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult>, IGenericInnerParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericInnerParamsParamMethodImposterCollection _imposterCollection;
@@ -2219,7 +2219,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericInnerRefParamCallbackDelegate<TValue, TResult>(ref global::System.Collections.Generic.List<TValue> value);
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         public delegate global::System.Exception GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult>(ref global::System.Collections.Generic.List<TValue> value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerRefParamArguments<TValue, TResult>
         {
             public global::System.Collections.Generic.List<TValue> value;
@@ -2235,7 +2235,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerRefParamArgumentsCriteria<TValue, TResult>
         {
             public global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>> value { get; }
@@ -2256,13 +2256,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerRefParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>(GenericInnerRefParamArgumentsCriteria<TValueTarget, TResultTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerRefParamMethodInvocationHistory<TValue, TResult> : IGenericInnerRefParamMethodInvocationHistory
         {
             internal GenericInnerRefParamArguments<TValue, TResult> Arguments;
@@ -2281,7 +2281,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerRefParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerRefParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerRefParamMethodInvocationHistory>();
@@ -2296,7 +2296,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerRefParamMethodImposterCollection
         {
             private readonly GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
@@ -2322,7 +2322,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>(new GenericInnerRefParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>>.Any()));
@@ -2374,7 +2374,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -2442,19 +2442,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericInnerRefParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -2465,32 +2465,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(global::System.Collections.Generic.Stack<TResult> value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerRefParamMethodImposter
         {
             IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerRefParamMethodImposter<TValue, TResult> : IGenericInnerRefParamMethodImposter
         {
             global::System.Collections.Generic.Stack<TResult> Invoke(ref global::System.Collections.Generic.List<TValue> value);
             bool HasMatchingInvocationImposterGroup(GenericInnerRefParamArguments<TValue, TResult> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerRefParamMethodImposter<TValue, TResult> : IGenericInnerRefParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -2512,7 +2512,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericInnerRefParamMethodImposter<TValue, TResult> _target;
@@ -2583,7 +2583,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericInnerRefParamMethodImposterBuilder<TValue, TResult>, IGenericInnerRefParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericInnerRefParamMethodImposterCollection _imposterCollection;
@@ -2670,7 +2670,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericInnerSingleParamCallbackDelegate<TValue>(global::System.Collections.Generic.List<TValue> value);
         // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         public delegate global::System.Exception GenericInnerSingleParamExceptionGeneratorDelegate<TValue>(global::System.Collections.Generic.List<TValue> value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerSingleParamArguments<TValue>
         {
             public global::System.Collections.Generic.List<TValue> value;
@@ -2686,7 +2686,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericInnerSingleParamArgumentsCriteria<TValue>
         {
             public global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>> value { get; }
@@ -2707,13 +2707,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerSingleParamMethodInvocationHistory
         {
             bool Matches<TValueTarget>(GenericInnerSingleParamArgumentsCriteria<TValueTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerSingleParamMethodInvocationHistory<TValue> : IGenericInnerSingleParamMethodInvocationHistory
         {
             internal GenericInnerSingleParamArguments<TValue> Arguments;
@@ -2730,7 +2730,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerSingleParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerSingleParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerSingleParamMethodInvocationHistory>();
@@ -2745,7 +2745,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerSingleParamMethodImposterCollection
         {
             private readonly GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
@@ -2771,7 +2771,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerSingleParamMethodInvocationImposterGroup<TValue>
         {
             internal static GenericInnerSingleParamMethodInvocationImposterGroup<TValue> Default = new GenericInnerSingleParamMethodInvocationImposterGroup<TValue>(new GenericInnerSingleParamArgumentsCriteria<TValue>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValue>>.Any()));
@@ -2823,7 +2823,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -2875,19 +2875,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Callback(GenericInnerSingleParamCallbackDelegate<TValue> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericInnerSingleParamMethodInvocationImposterGroup<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws<TException>()
@@ -2896,32 +2896,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerSingleParamMethodImposter
         {
             IGenericInnerSingleParamMethodImposter<TValueTarget>? As<TValueTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericInnerSingleParamMethodImposter<TValue> : IGenericInnerSingleParamMethodImposter
         {
             void Invoke(global::System.Collections.Generic.List<TValue> value);
             bool HasMatchingInvocationImposterGroup(GenericInnerSingleParamArguments<TValue> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericInnerSingleParamInvocationVerifier<TValue>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>, IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>, GenericInnerSingleParamInvocationVerifier<TValue>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerSingleParamMethodImposter<TValue> : IGenericInnerSingleParamMethodImposter<TValue>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>>();
@@ -2943,7 +2943,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget> : IGenericInnerSingleParamMethodImposter<TValueTarget>
             {
                 private readonly GenericInnerSingleParamMethodImposter<TValue> _target;
@@ -3010,7 +3010,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericInnerSingleParamMethodImposterBuilder<TValue>, IGenericInnerSingleParamMethodInvocationImposterGroupContinuation<TValue>
             {
                 private readonly GenericInnerSingleParamMethodImposterCollection _imposterCollection;
@@ -3085,13 +3085,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericOutParamCallbackDelegate<TValue, TResult>(out TValue value);
         // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         public delegate global::System.Exception GenericOutParamExceptionGeneratorDelegate<TValue, TResult>(out TValue value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericOutParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodInvocationHistory<TValue, TResult> : IGenericOutParamMethodInvocationHistory
         {
             internal TResult Result;
@@ -3108,7 +3108,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericOutParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericOutParamMethodInvocationHistory>();
@@ -3123,7 +3123,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodImposterCollection
         {
             private readonly GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
@@ -3149,7 +3149,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericOutParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericOutParamMethodInvocationImposterGroup<TValue, TResult>();
@@ -3198,7 +3198,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -3273,19 +3273,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericOutParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericOutParamMethodInvocationImposterGroup<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -3296,32 +3296,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(TResult value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericOutParamMethodImposter
         {
             IGenericOutParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericOutParamMethodImposter<TValue, TResult> : IGenericOutParamMethodImposter
         {
             TResult Invoke(out TValue value);
             bool HasMatchingInvocationImposterGroup();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericOutParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>, IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericOutParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodImposter<TValue, TResult> : IGenericOutParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -3343,7 +3343,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericOutParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericOutParamMethodImposter<TValue, TResult> _target;
@@ -3415,7 +3415,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericOutParamMethodImposterBuilder<TValue, TResult>, IGenericOutParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericOutParamMethodImposterCollection _imposterCollection;
@@ -3500,7 +3500,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericParamsParamCallbackDelegate<TValue, TResult>(TValue[] value);
         // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         public delegate global::System.Exception GenericParamsParamExceptionGeneratorDelegate<TValue, TResult>(TValue[] value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericParamsParamArguments<TValue, TResult>
         {
             public TValue[] value;
@@ -3516,7 +3516,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericParamsParamArgumentsCriteria<TValue, TResult>
         {
             public global::Imposter.Abstractions.Arg<TValue[]> value { get; }
@@ -3537,13 +3537,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericParamsParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>(GenericParamsParamArgumentsCriteria<TValueTarget, TResultTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericParamsParamMethodInvocationHistory<TValue, TResult> : IGenericParamsParamMethodInvocationHistory
         {
             internal GenericParamsParamArguments<TValue, TResult> Arguments;
@@ -3562,7 +3562,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericParamsParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericParamsParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericParamsParamMethodInvocationHistory>();
@@ -3577,7 +3577,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericParamsParamMethodImposterCollection
         {
             private readonly GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
@@ -3603,7 +3603,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>(new GenericParamsParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<TValue[]>.Any()));
@@ -3655,7 +3655,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -3723,19 +3723,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericParamsParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -3746,32 +3746,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(TResult value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericParamsParamMethodImposter
         {
             IGenericParamsParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericParamsParamMethodImposter<TValue, TResult> : IGenericParamsParamMethodImposter
         {
             TResult Invoke(TValue[] value);
             bool HasMatchingInvocationImposterGroup(GenericParamsParamArguments<TValue, TResult> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericParamsParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>, IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericParamsParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericParamsParamMethodImposter<TValue, TResult> : IGenericParamsParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -3793,7 +3793,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericParamsParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericParamsParamMethodImposter<TValue, TResult> _target;
@@ -3862,7 +3862,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericParamsParamMethodImposterBuilder<TValue, TResult>, IGenericParamsParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericParamsParamMethodImposterCollection _imposterCollection;
@@ -3949,7 +3949,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericRefParamCallbackDelegate<TValue, TResult>(ref TValue value);
         // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         public delegate global::System.Exception GenericRefParamExceptionGeneratorDelegate<TValue, TResult>(ref TValue value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericRefParamArguments<TValue, TResult>
         {
             public TValue value;
@@ -3965,7 +3965,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericRefParamArgumentsCriteria<TValue, TResult>
         {
             public global::Imposter.Abstractions.Arg<TValue> value { get; }
@@ -3986,13 +3986,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericRefParamMethodInvocationHistory
         {
             bool Matches<TValueTarget, TResultTarget>(GenericRefParamArgumentsCriteria<TValueTarget, TResultTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericRefParamMethodInvocationHistory<TValue, TResult> : IGenericRefParamMethodInvocationHistory
         {
             internal GenericRefParamArguments<TValue, TResult> Arguments;
@@ -4011,7 +4011,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericRefParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericRefParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericRefParamMethodInvocationHistory>();
@@ -4026,7 +4026,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericRefParamMethodImposterCollection
         {
             private readonly GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
@@ -4052,7 +4052,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
             internal static GenericRefParamMethodInvocationImposterGroup<TValue, TResult> Default = new GenericRefParamMethodInvocationImposterGroup<TValue, TResult>(new GenericRefParamArgumentsCriteria<TValue, TResult>(global::Imposter.Abstractions.Arg<TValue>.Any()));
@@ -4104,7 +4104,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -4172,19 +4172,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Callback(GenericRefParamCallbackDelegate<TValue, TResult> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericRefParamMethodInvocationImposterGroup<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>
         {
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Throws<TException>()
@@ -4195,32 +4195,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult> Returns(TResult value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericRefParamMethodImposter
         {
             IGenericRefParamMethodImposter<TValueTarget, TResultTarget>? As<TValueTarget, TResultTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericRefParamMethodImposter<TValue, TResult> : IGenericRefParamMethodImposter
         {
             TResult Invoke(ref TValue value);
             bool HasMatchingInvocationImposterGroup(GenericRefParamArguments<TValue, TResult> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericRefParamInvocationVerifier<TValue, TResult>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>, IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericRefParamInvocationVerifier<TValue, TResult>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericRefParamMethodImposter<TValue, TResult> : IGenericRefParamMethodImposter<TValue, TResult>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>>();
@@ -4242,7 +4242,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget, TResultTarget> : IGenericRefParamMethodImposter<TValueTarget, TResultTarget>
             {
                 private readonly GenericRefParamMethodImposter<TValue, TResult> _target;
@@ -4313,7 +4313,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericRefParamMethodImposterBuilder<TValue, TResult>, IGenericRefParamMethodInvocationImposterGroupContinuation<TValue, TResult>
             {
                 private readonly GenericRefParamMethodImposterCollection _imposterCollection;
@@ -4400,7 +4400,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericSingleParamCallbackDelegate<TValue>(TValue value);
         // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         public delegate global::System.Exception GenericSingleParamExceptionGeneratorDelegate<TValue>(TValue value);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericSingleParamArguments<TValue>
         {
             public TValue value;
@@ -4416,7 +4416,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericSingleParamArgumentsCriteria<TValue>
         {
             public global::Imposter.Abstractions.Arg<TValue> value { get; }
@@ -4437,13 +4437,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericSingleParamMethodInvocationHistory
         {
             bool Matches<TValueTarget>(GenericSingleParamArgumentsCriteria<TValueTarget> criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericSingleParamMethodInvocationHistory<TValue> : IGenericSingleParamMethodInvocationHistory
         {
             internal GenericSingleParamArguments<TValue> Arguments;
@@ -4460,7 +4460,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericSingleParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleParamMethodInvocationHistory>();
@@ -4475,7 +4475,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericSingleParamMethodImposterCollection
         {
             private readonly GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
@@ -4501,7 +4501,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericSingleParamMethodInvocationImposterGroup<TValue>
         {
             internal static GenericSingleParamMethodInvocationImposterGroup<TValue> Default = new GenericSingleParamMethodInvocationImposterGroup<TValue>(new GenericSingleParamArgumentsCriteria<TValue>(global::Imposter.Abstractions.Arg<TValue>.Any()));
@@ -4553,7 +4553,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -4605,19 +4605,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Callback(GenericSingleParamCallbackDelegate<TValue> callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> : IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericSingleParamMethodInvocationImposterGroup<TValue> Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericSingleParamMethodInvocationImposterGroup<TValue> : IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>
         {
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws<TException>()
@@ -4626,32 +4626,32 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue> Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericSingleParamMethodImposter
         {
             IGenericSingleParamMethodImposter<TValueTarget>? As<TValueTarget>();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IGenericSingleParamMethodImposter<TValue> : IGenericSingleParamMethodImposter
         {
             void Invoke(TValue value);
             bool HasMatchingInvocationImposterGroup(GenericSingleParamArguments<TValue> arguments);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericSingleParamInvocationVerifier<TValue>
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationImposterGroup<TValue>, IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>, GenericSingleParamInvocationVerifier<TValue>
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericSingleParamMethodImposter<TValue> : IGenericSingleParamMethodImposter<TValue>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>>();
@@ -4673,7 +4673,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return null;
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             private class Adapter<TValueTarget> : IGenericSingleParamMethodImposter<TValueTarget>
             {
                 private readonly GenericSingleParamMethodImposter<TValue> _target;
@@ -4740,7 +4740,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericSingleParamMethodImposterBuilder<TValue>, IGenericSingleParamMethodInvocationImposterGroupContinuation<TValue>
             {
                 private readonly GenericSingleParamMethodImposterCollection _imposterCollection;
@@ -4815,7 +4815,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntAllRefKindsCallbackDelegate(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings);
         // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         public delegate global::System.Exception IntAllRefKindsExceptionGeneratorDelegate(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntAllRefKindsArguments
         {
             public int refValue;
@@ -4832,7 +4832,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntAllRefKindsArgumentsCriteria
         {
             public global::Imposter.Abstractions.OutArg<int> value { get; }
@@ -4856,13 +4856,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntAllRefKindsMethodInvocationHistory
         {
             bool Matches(IntAllRefKindsArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntAllRefKindsMethodInvocationHistory : IIntAllRefKindsMethodInvocationHistory
         {
             internal IntAllRefKindsArguments Arguments;
@@ -4881,7 +4881,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntAllRefKindsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntAllRefKindsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntAllRefKindsMethodInvocationHistory>();
@@ -4897,7 +4897,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntAllRefKindsMethodInvocationImposterGroup
         {
             internal static IntAllRefKindsMethodInvocationImposterGroup Default = new IntAllRefKindsMethodInvocationImposterGroup(new IntAllRefKindsArgumentsCriteria(global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<string[]>.Any()));
@@ -4949,7 +4949,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out value, ref refValue, in inValue, valueAsString, paramsStrings);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -5024,19 +5024,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntAllRefKindsMethodInvocationImposterGroupCallback
         {
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Callback(IntAllRefKindsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntAllRefKindsMethodInvocationImposterGroupContinuation : IIntAllRefKindsMethodInvocationImposterGroupCallback
         {
             IIntAllRefKindsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntAllRefKindsMethodInvocationImposterGroup : IIntAllRefKindsMethodInvocationImposterGroupCallback
         {
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -5047,19 +5047,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntAllRefKindsMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntAllRefKindsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationImposterGroup, IIntAllRefKindsMethodInvocationImposterGroupCallback, IntAllRefKindsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntAllRefKindsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup>();
@@ -5119,7 +5119,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntAllRefKindsMethodImposterBuilder, IIntAllRefKindsMethodInvocationImposterGroupContinuation
             {
                 private readonly IntAllRefKindsMethodImposter _imposter;
@@ -5205,7 +5205,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntInParamCallbackDelegate(in string inStringValue);
         // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         public delegate global::System.Exception IntInParamExceptionGeneratorDelegate(in string inStringValue);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntInParamArguments
         {
             public string inStringValue;
@@ -5216,7 +5216,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntInParamArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<string> inStringValue { get; }
@@ -5232,13 +5232,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntInParamMethodInvocationHistory
         {
             bool Matches(IntInParamArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntInParamMethodInvocationHistory : IIntInParamMethodInvocationHistory
         {
             internal IntInParamArguments Arguments;
@@ -5257,7 +5257,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntInParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntInParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntInParamMethodInvocationHistory>();
@@ -5273,7 +5273,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntInParamMethodInvocationImposterGroup
         {
             internal static IntInParamMethodInvocationImposterGroup Default = new IntInParamMethodInvocationImposterGroup(new IntInParamArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
@@ -5325,7 +5325,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, in inStringValue);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -5393,19 +5393,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntInParamMethodInvocationImposterGroupCallback
         {
             IIntInParamMethodInvocationImposterGroupContinuation Callback(IntInParamCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntInParamMethodInvocationImposterGroupContinuation : IIntInParamMethodInvocationImposterGroupCallback
         {
             IIntInParamMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntInParamMethodInvocationImposterGroup : IIntInParamMethodInvocationImposterGroupCallback
         {
             IIntInParamMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -5416,19 +5416,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntInParamMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntInParamInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationImposterGroup, IIntInParamMethodInvocationImposterGroupCallback, IntInParamInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntInParamMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup>();
@@ -5483,7 +5483,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntInParamMethodImposterBuilder, IIntInParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntInParamMethodImposter _imposter;
@@ -5569,13 +5569,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntNoParamsCallbackDelegate();
         // int IMethodSetupFeatureSut.IntNoParams()
         public delegate global::System.Exception IntNoParamsExceptionGeneratorDelegate();
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntNoParamsMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntNoParamsMethodInvocationHistory : IIntNoParamsMethodInvocationHistory
         {
             internal int Result;
@@ -5592,7 +5592,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntNoParamsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntNoParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntNoParamsMethodInvocationHistory>();
@@ -5608,7 +5608,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntNoParams()
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntNoParamsMethodInvocationImposterGroup
         {
             internal static IntNoParamsMethodInvocationImposterGroup Default = new IntNoParamsMethodInvocationImposterGroup();
@@ -5657,7 +5657,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -5725,19 +5725,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntNoParamsMethodInvocationImposterGroupCallback
         {
             IIntNoParamsMethodInvocationImposterGroupContinuation Callback(IntNoParamsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntNoParamsMethodInvocationImposterGroupContinuation : IIntNoParamsMethodInvocationImposterGroupCallback
         {
             IIntNoParamsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntNoParamsMethodInvocationImposterGroup : IIntNoParamsMethodInvocationImposterGroupCallback
         {
             IIntNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -5748,19 +5748,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntNoParamsMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntNoParams()
         public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationImposterGroup, IIntNoParamsMethodInvocationImposterGroupCallback, IntNoParamsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntNoParamsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup>();
@@ -5811,7 +5811,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntNoParamsMethodImposterBuilder, IIntNoParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly IntNoParamsMethodImposter _imposter;
@@ -5895,13 +5895,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntOutParamCallbackDelegate(out int outValue);
         // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         public delegate global::System.Exception IntOutParamExceptionGeneratorDelegate(out int outValue);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntOutParamMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntOutParamMethodInvocationHistory : IIntOutParamMethodInvocationHistory
         {
             internal int Result;
@@ -5918,7 +5918,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntOutParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntOutParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntOutParamMethodInvocationHistory>();
@@ -5934,7 +5934,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntOutParamMethodInvocationImposterGroup
         {
             internal static IntOutParamMethodInvocationImposterGroup Default = new IntOutParamMethodInvocationImposterGroup();
@@ -5983,7 +5983,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out outValue);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -6058,19 +6058,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntOutParamMethodInvocationImposterGroupCallback
         {
             IIntOutParamMethodInvocationImposterGroupContinuation Callback(IntOutParamCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntOutParamMethodInvocationImposterGroupContinuation : IIntOutParamMethodInvocationImposterGroupCallback
         {
             IIntOutParamMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntOutParamMethodInvocationImposterGroup : IIntOutParamMethodInvocationImposterGroupCallback
         {
             IIntOutParamMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -6081,19 +6081,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntOutParamMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntOutParamInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationImposterGroup, IIntOutParamMethodInvocationImposterGroupCallback, IntOutParamInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntOutParamMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup>();
@@ -6149,7 +6149,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntOutParamMethodImposterBuilder, IIntOutParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntOutParamMethodImposter _imposter;
@@ -6233,7 +6233,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntParamsCallbackDelegate(int age, string name, global::System.Text.RegularExpressions.Regex regex);
         // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         public delegate global::System.Exception IntParamsExceptionGeneratorDelegate(int age, string name, global::System.Text.RegularExpressions.Regex regex);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntParamsArguments
         {
             public int age;
@@ -6248,7 +6248,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntParamsArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> age { get; }
@@ -6268,13 +6268,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsMethodInvocationHistory
         {
             bool Matches(IntParamsArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsMethodInvocationHistory : IIntParamsMethodInvocationHistory
         {
             internal IntParamsArguments Arguments;
@@ -6293,7 +6293,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntParamsMethodInvocationHistory>();
@@ -6309,7 +6309,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntParamsMethodInvocationImposterGroup
         {
             internal static IntParamsMethodInvocationImposterGroup Default = new IntParamsMethodInvocationImposterGroup(new IntParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex>.Any()));
@@ -6361,7 +6361,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, age, name, regex);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -6429,19 +6429,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsMethodInvocationImposterGroupCallback
         {
             IIntParamsMethodInvocationImposterGroupContinuation Callback(IntParamsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsMethodInvocationImposterGroupContinuation : IIntParamsMethodInvocationImposterGroupCallback
         {
             IIntParamsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsMethodInvocationImposterGroup : IIntParamsMethodInvocationImposterGroupCallback
         {
             IIntParamsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -6452,19 +6452,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntParamsMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationImposterGroup, IIntParamsMethodInvocationImposterGroupCallback, IntParamsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup>();
@@ -6519,7 +6519,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntParamsMethodImposterBuilder, IIntParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly IntParamsMethodImposter _imposter;
@@ -6605,7 +6605,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntParamsParamCallbackDelegate(string[] paramsStrings);
         // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         public delegate global::System.Exception IntParamsParamExceptionGeneratorDelegate(string[] paramsStrings);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntParamsParamArguments
         {
             public string[] paramsStrings;
@@ -6616,7 +6616,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntParamsParamArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<string[]> paramsStrings { get; }
@@ -6632,13 +6632,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsParamMethodInvocationHistory
         {
             bool Matches(IntParamsParamArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsParamMethodInvocationHistory : IIntParamsParamMethodInvocationHistory
         {
             internal IntParamsParamArguments Arguments;
@@ -6657,7 +6657,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntParamsParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntParamsParamMethodInvocationHistory>();
@@ -6673,7 +6673,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntParamsParamMethodInvocationImposterGroup
         {
             internal static IntParamsParamMethodInvocationImposterGroup Default = new IntParamsParamMethodInvocationImposterGroup(new IntParamsParamArgumentsCriteria(global::Imposter.Abstractions.Arg<string[]>.Any()));
@@ -6725,7 +6725,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, paramsStrings);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -6793,19 +6793,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsParamMethodInvocationImposterGroupCallback
         {
             IIntParamsParamMethodInvocationImposterGroupContinuation Callback(IntParamsParamCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsParamMethodInvocationImposterGroupContinuation : IIntParamsParamMethodInvocationImposterGroupCallback
         {
             IIntParamsParamMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntParamsParamMethodInvocationImposterGroup : IIntParamsParamMethodInvocationImposterGroupCallback
         {
             IIntParamsParamMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -6816,19 +6816,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntParamsParamMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntParamsParamInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationImposterGroup, IIntParamsParamMethodInvocationImposterGroupCallback, IntParamsParamInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntParamsParamMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup>();
@@ -6883,7 +6883,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntParamsParamMethodImposterBuilder, IIntParamsParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntParamsParamMethodImposter _imposter;
@@ -6969,7 +6969,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntRefParamCallbackDelegate(ref int refValue);
         // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         public delegate global::System.Exception IntRefParamExceptionGeneratorDelegate(ref int refValue);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntRefParamArguments
         {
             public int refValue;
@@ -6980,7 +6980,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntRefParamArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> refValue { get; }
@@ -6996,13 +6996,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntRefParamMethodInvocationHistory
         {
             bool Matches(IntRefParamArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntRefParamMethodInvocationHistory : IIntRefParamMethodInvocationHistory
         {
             internal IntRefParamArguments Arguments;
@@ -7021,7 +7021,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntRefParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntRefParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntRefParamMethodInvocationHistory>();
@@ -7037,7 +7037,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntRefParamMethodInvocationImposterGroup
         {
             internal static IntRefParamMethodInvocationImposterGroup Default = new IntRefParamMethodInvocationImposterGroup(new IntRefParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -7089,7 +7089,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref refValue);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -7157,19 +7157,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntRefParamMethodInvocationImposterGroupCallback
         {
             IIntRefParamMethodInvocationImposterGroupContinuation Callback(IntRefParamCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntRefParamMethodInvocationImposterGroupContinuation : IIntRefParamMethodInvocationImposterGroupCallback
         {
             IIntRefParamMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntRefParamMethodInvocationImposterGroup : IIntRefParamMethodInvocationImposterGroupCallback
         {
             IIntRefParamMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -7180,19 +7180,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntRefParamMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntRefParamInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationImposterGroup, IIntRefParamMethodInvocationImposterGroupCallback, IntRefParamInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntRefParamMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup>();
@@ -7247,7 +7247,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntRefParamMethodImposterBuilder, IIntRefParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntRefParamMethodImposter _imposter;
@@ -7333,7 +7333,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void IntSingleParamCallbackDelegate(int age);
         // int IMethodSetupFeatureSut.IntSingleParam(int age)
         public delegate global::System.Exception IntSingleParamExceptionGeneratorDelegate(int age);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntSingleParamArguments
         {
             public int age;
@@ -7344,7 +7344,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntSingleParam(int age)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntSingleParamArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> age { get; }
@@ -7360,13 +7360,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntSingleParamMethodInvocationHistory
         {
             bool Matches(IntSingleParamArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntSingleParamMethodInvocationHistory : IIntSingleParamMethodInvocationHistory
         {
             internal IntSingleParamArguments Arguments;
@@ -7385,7 +7385,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntSingleParamMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IIntSingleParamMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIntSingleParamMethodInvocationHistory>();
@@ -7401,7 +7401,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // int IMethodSetupFeatureSut.IntSingleParam(int age)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntSingleParamMethodInvocationImposterGroup
         {
             internal static IntSingleParamMethodInvocationImposterGroup Default = new IntSingleParamMethodInvocationImposterGroup(new IntSingleParamArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -7453,7 +7453,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, age);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -7521,19 +7521,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Callback(IntSingleParamCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntSingleParamMethodInvocationImposterGroupContinuation : IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IIntSingleParamMethodInvocationImposterGroup : IIntSingleParamMethodInvocationImposterGroupCallback
         {
             IIntSingleParamMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -7544,19 +7544,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IIntSingleParamMethodInvocationImposterGroupContinuation Returns(int value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IntSingleParamInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // int IMethodSetupFeatureSut.IntSingleParam(int age)
         public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntSingleParamMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup>();
@@ -7611,7 +7611,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IIntSingleParamMethodImposterBuilder, IIntSingleParamMethodInvocationImposterGroupContinuation
             {
                 private readonly IntSingleParamMethodImposter _imposter;
@@ -7697,13 +7697,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void VoidNoParamsCallbackDelegate();
         // void IMethodSetupFeatureSut.VoidNoParams()
         public delegate global::System.Exception VoidNoParamsExceptionGeneratorDelegate();
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVoidNoParamsMethodInvocationHistory
         {
             bool Matches();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class VoidNoParamsMethodInvocationHistory : IVoidNoParamsMethodInvocationHistory
         {
             internal global::System.Exception Exception;
@@ -7718,7 +7718,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class VoidNoParamsMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IVoidNoParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IVoidNoParamsMethodInvocationHistory>();
@@ -7734,7 +7734,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // void IMethodSetupFeatureSut.VoidNoParams()
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class VoidNoParamsMethodInvocationImposterGroup
         {
             internal static VoidNoParamsMethodInvocationImposterGroup Default = new VoidNoParamsMethodInvocationImposterGroup();
@@ -7783,7 +7783,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 invocationImposter.Invoke(invocationBehavior, methodDisplayName);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -7835,19 +7835,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVoidNoParamsMethodInvocationImposterGroupCallback
         {
             IVoidNoParamsMethodInvocationImposterGroupContinuation Callback(VoidNoParamsCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVoidNoParamsMethodInvocationImposterGroupContinuation : IVoidNoParamsMethodInvocationImposterGroupCallback
         {
             IVoidNoParamsMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVoidNoParamsMethodInvocationImposterGroup : IVoidNoParamsMethodInvocationImposterGroupCallback
         {
             IVoidNoParamsMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -7856,19 +7856,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IVoidNoParamsMethodInvocationImposterGroupContinuation Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface VoidNoParamsInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // void IMethodSetupFeatureSut.VoidNoParams()
         public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationImposterGroup, IVoidNoParamsMethodInvocationImposterGroupCallback, VoidNoParamsInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class VoidNoParamsMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup>();
@@ -7918,7 +7918,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IVoidNoParamsMethodImposterBuilder, IVoidNoParamsMethodInvocationImposterGroupContinuation
             {
                 private readonly VoidNoParamsMethodImposter _imposter;
@@ -8010,7 +8010,7 @@ namespace Imposter.Tests.Features.MethodImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut
         {
             IMethodSetupFeatureSutImposter _imposter;

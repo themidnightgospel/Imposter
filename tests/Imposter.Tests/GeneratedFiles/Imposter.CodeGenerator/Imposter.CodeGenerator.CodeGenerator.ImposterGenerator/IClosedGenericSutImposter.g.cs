@@ -12,7 +12,7 @@ using global::Imposter.Tests.Features.MethodImposter;
 
 namespace Imposter.Tests.Features.MethodImposter
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public sealed class IClosedGenericSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>
     {
         private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.MethodImposter
         public delegate void GenericMethodCallbackDelegate(int age);
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public delegate global::System.Exception GenericMethodExceptionGeneratorDelegate(int age);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericMethodArguments
         {
             public int age;
@@ -46,7 +46,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class GenericMethodArgumentsCriteria
         {
             public global::Imposter.Abstractions.Arg<int> age { get; }
@@ -62,13 +62,13 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericMethodMethodInvocationHistory
         {
             bool Matches(GenericMethodArgumentsCriteria criteria);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericMethodMethodInvocationHistory : IGenericMethodMethodInvocationHistory
         {
             internal GenericMethodArguments Arguments;
@@ -87,7 +87,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericMethodMethodInvocationHistoryCollection
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericMethodMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericMethodMethodInvocationHistory>();
@@ -103,7 +103,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericMethodMethodInvocationImposterGroup
         {
             internal static GenericMethodMethodInvocationImposterGroup Default = new GenericMethodMethodInvocationImposterGroup(new GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
@@ -155,7 +155,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 return invocationImposter.Invoke(invocationBehavior, methodDisplayName, age);
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class MethodInvocationImposter
             {
                 internal static MethodInvocationImposter Default;
@@ -223,19 +223,19 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroupContinuation Callback(GenericMethodCallbackDelegate callback);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericMethodMethodInvocationImposterGroupContinuation : IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroup Then();
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IGenericMethodMethodInvocationImposterGroup : IGenericMethodMethodInvocationImposterGroupCallback
         {
             IGenericMethodMethodInvocationImposterGroupContinuation Throws<TException>()
@@ -246,19 +246,19 @@ namespace Imposter.Tests.Features.MethodImposter
             IGenericMethodMethodInvocationImposterGroupContinuation Returns(string value);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface GenericMethodInvocationVerifier
         {
             void Called(Count count);
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, IGenericMethodMethodInvocationImposterGroupCallback, GenericMethodInvocationVerifier
         {
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericMethodMethodImposter
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericMethodMethodInvocationImposterGroup>();
@@ -313,7 +313,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
             }
 
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class Builder : IGenericMethodMethodImposterBuilder, IGenericMethodMethodInvocationImposterGroupContinuation
             {
                 private readonly GenericMethodMethodImposter _imposter;
@@ -400,7 +400,7 @@ namespace Imposter.Tests.Features.MethodImposter
             this._invocationBehavior = invocationBehavior;
         }
 
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>
         {
             IClosedGenericSutImposter _imposter;

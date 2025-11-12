@@ -9,6 +9,8 @@ docs_dir: content
 
 theme:
   name: material
+  logo: assets/imposter_logo.png
+  favicon: assets/imposter_logo.png
   font:
     text: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
   language: en
@@ -25,12 +27,12 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: green
-      accent: light green
+      primary: indigo
+      accent: amber
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: green
-      accent: light green
+      primary: indigo
+      accent: amber
 
 markdown_extensions:
   - admonition
