@@ -15,7 +15,10 @@ internal static class WellKnownTypes
         
     internal static class System
     {
-        internal static NameSyntax Namespace = IdentifierName("System");
+        internal static NameSyntax Namespace = AliasQualifiedName(
+            IdentifierName(Token(SyntaxKind.GlobalKeyword)),
+            IdentifierName("System")
+        );
 
         internal static TypeSyntax Exception = QualifiedName(
             Namespace,

@@ -28,7 +28,7 @@ internal static class UsingStatements
             return DefaultUsings
                 .Concat([
                     UsingDirective(
-                        ParseName(imposterTargetNamespace.ToDisplayString()))
+                        ParseName(imposterTargetNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
                 ])
                 .ToList();
         }
