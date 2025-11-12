@@ -12,6 +12,8 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
+      # Map secret to env so we can safely reference it in conditions
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
     steps:
       - name: Checkout
@@ -60,9 +62,9 @@ jobs:
           path: artifacts/packages
 
       - name: Push to NuGet.org
-        if: ${{ secrets.NUGET_API_KEY != '' }}
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        if: env.NUGET_API_KEY != ''
         run: |
           dotnet nuget push artifacts/packages/*.nupkg \
             --api-key "$NUGET_API_KEY" \
