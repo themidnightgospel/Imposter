@@ -13,6 +13,7 @@ env:
 
 jobs:
   roslyn-matrix:
+    timeout-minutes: 10
     name: Roslyn ${{ matrix.roslynVersion }}
     runs-on: ubuntu-latest
     strategy:
@@ -39,14 +40,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore solution (Roslyn ${{ matrix.roslynVersion }})
+      - name: Build solution (Roslyn ${{ matrix.roslynVersion }})
         run: dotnet build Imposter.sln -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
-
-      - name: Build Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet build -c Release --no-restore -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
-
-      - name: Test Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet test -c Release --no-build -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        
+      - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-build -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
 
   baseline-tests:
     name: Baseline Test Suites
