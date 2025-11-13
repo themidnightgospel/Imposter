@@ -5,7 +5,7 @@ Imposter supports sequencing multiple outcomes for the same method using `Then()
 Target type used in examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L7"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L7"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.ISeqService))]
@@ -20,7 +20,7 @@ Target type used in examples:
 ## Basic sequencing
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L26"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L26"}
     imposter.GetNumber()
         .Returns(1)
         .Then().Returns(2)
@@ -34,7 +34,7 @@ Target type used in examples:
 ## Mixing delegates
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L42"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L42"}
     imposter.GetNumber()
         .Returns(() => 1)
         .Then().Returns(() => 2);
@@ -43,7 +43,7 @@ Target type used in examples:
 ## Async sequences
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L56"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L56"}
     imposter.GetNumberAsync()
         .ReturnsAsync(1)
         .Then().Returns(() => Task.FromResult(2));
@@ -54,7 +54,7 @@ Target type used in examples:
 You can interleave `Throws` within a sequence. Separate each step with `Then()`.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L71"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/SequentialReturnsTests.cs#L71"}
     // See more examples in repo tests
     imposter.GetNumber()
         .Returns(1)
