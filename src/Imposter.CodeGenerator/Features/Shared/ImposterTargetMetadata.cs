@@ -26,11 +26,13 @@ internal readonly struct ImposterTargetMetadata
     internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
 
     private readonly NameSet _symbolNameNamespace = new([]);
+    private readonly SupportedCSharpFeatures _supportedCSharpFeatures;
 
-    internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol)
+    internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol, in SupportedCSharpFeatures supportedCSharpFeatures)
     {
         Name = targetSymbol.Name + "Imposter";
-        Methods = GetMethods(targetSymbol, _symbolNameNamespace);
+        _supportedCSharpFeatures = supportedCSharpFeatures;
+        Methods = GetMethods(targetSymbol, _symbolNameNamespace, _supportedCSharpFeatures);
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
         AccessibleConstructors = GetAccessibleConstructors(targetSymbol);
 
@@ -40,13 +42,18 @@ internal readonly struct ImposterTargetMetadata
         EventSymbols = GetEventSymbols(targetSymbol);
     }
 
-    private static List<ImposterTargetMethodMetadata> GetMethods(INamedTypeSymbol typeSymbol, NameSet nameSet)
+    private static List<ImposterTargetMethodMetadata> GetMethods(
+        INamedTypeSymbol typeSymbol,
+        NameSet nameSet,
+        in SupportedCSharpFeatures supportedCSharpFeatures)
     {
+        var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
+        
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name)))
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name), supportsNullableGenericType))
                 .ToList();
         }
 
@@ -54,7 +61,7 @@ internal readonly struct ImposterTargetMetadata
         {
             return typeSymbol
                 .GetAllOverridableMethods()
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name)))
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name), supportsNullableGenericType))
                 .ToList();
         }
 

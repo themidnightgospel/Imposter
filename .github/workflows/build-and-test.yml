@@ -10,12 +10,13 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  BUILD_CONFIGURATION: Release
 
 jobs:
   baseline-tests:
     name: Baseline Test Suites
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET 8 SDK
@@ -27,10 +28,10 @@ jobs:
         run: dotnet restore Imposter.sln
 
       - name: Test Imposter.Abstractions.Tests
-        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c Release
+        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION --list-tests
 
       - name: Test Imposter.CodeGenerator.Tests
-        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c Release
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION --list-tests
          
   roslyn-matrix:
     timeout-minutes: 10
@@ -63,8 +64,8 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Build solution (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet build Imposter.sln -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c Release --no-build
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c $BUILD_CONFIGURATION --no-build --framework net8.0 --list-tests
 

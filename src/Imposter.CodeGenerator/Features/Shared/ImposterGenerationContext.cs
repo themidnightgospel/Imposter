@@ -26,7 +26,7 @@ internal readonly struct ImposterGenerationContext
         in SupportedCSharpFeatures supportedCSharpFeatures)
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
-        Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget);
+        Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget, supportedCSharpFeatures);
         ImposterComponentsNamespace = BuildImposterComponentsNamespace(TargetSymbol);
         TargetNamespaceName = TargetSymbol.ContainingNamespace.ToDisplayString();
         ImposterNamespaceName = generateImposterDeclaration.PutInTheSameNamespace

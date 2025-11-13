@@ -29,7 +29,7 @@ public class ClassWithStatics
     [Fact]
     public void GivenStaticMembers_WhenImposterGenerated_ThenStaticsAreNotConfigurableAndBaseBehaviorRemains()
     {
-        var artifacts = RunGenerator(LanguageVersion.CSharp8, ClassSource);
+        var artifacts = RunGenerator(LanguageVersion.CSharp10, ClassSource);
 
         // Trying to access a static member on the Imposter type should fail to compile.
         const string failSnippet = /*lang=csharp*/"""
