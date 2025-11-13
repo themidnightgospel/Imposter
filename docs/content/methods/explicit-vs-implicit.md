@@ -5,7 +5,7 @@ Two Imposter modes determine what happens when a method without a setup is invok
 Target type used in examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L6"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L6"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IMyService))]
@@ -25,7 +25,7 @@ Target type used in examples:
 Methods without a setups are implicitly stubbed and return `default(T)`.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L21"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L21"}
 var imposter = new IMyServiceImposter(ImposterMode.Implicit);
 var service = imposter.Instance();
 
@@ -46,7 +46,7 @@ var v = await service.GetNumberAsync(); // 7
 Missing setups throw an exception so unintended calls are caught.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L41"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ImposterModesTests.cs#L41"}
 var imposter = new IMyServiceImposter(ImposterMode.Explicit);
 var service = imposter.Instance();
 
@@ -58,4 +58,4 @@ imposter.GetNumber().Returns(42);
 service.GetNumber(); // 42
     ```
 
-View more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/MethodImposter/ExplicitModeTests.cs).
+View more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ExplicitModeTests.cs).

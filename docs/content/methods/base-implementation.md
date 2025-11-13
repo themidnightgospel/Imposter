@@ -5,7 +5,7 @@ Forward method calls to the class’s own implementation when generating imposte
 Target type used in examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L7"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L7"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.MyService))]
@@ -29,7 +29,7 @@ Target type used in examples:
 ## Basic example
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L27"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L27"}
 // Given a class target with an overridable method
 public class MyService
 {
@@ -49,7 +49,7 @@ var sum = svc.Add(2, 5); // 7 (calls MyService.Add)
 ## With matchers and sequencing
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L38"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L38"}
 // Otherwise return a specific value (fallback)
 imp.Add(Arg<int>.Any(), Arg<int>.Any())
    .Returns(-1);
@@ -64,7 +64,7 @@ svc.Add(-2, 3); // -1
 Sequence with `Then()` if you need to call base once and then switch behavior:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L54"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L54"}
 imp.Add(Arg<int>.Any(), Arg<int>.Any())
    .UseBaseImplementation()
    .Then()
@@ -80,7 +80,7 @@ svc.Add(1, 1); // 100
 - Ref/out/in: signatures must match; you can still use `Arg<T>` and `OutArg<T>.Any()` in your setup and call base.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L70"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L70"}
 imp.ProcessAsync(Arg<string>.Any()).UseBaseImplementation();
 await svc.ProcessAsync("x"); // runs class implementation
     ```
@@ -90,9 +90,9 @@ await svc.ProcessAsync("x"); // runs class implementation
 If the base method throws, the exception flows to the caller. You can verify invocations using `Called(Count.*)` in either mode.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L74"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/BaseImplementationTests.cs#L74"}
 imp.MightFail(Arg<int>.Any()).UseBaseImplementation();
 Assert.Throws<InvalidOperationException>(() => svc.MightFail(5));
     ```
 
-See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/ClassImposter/ClassMethodBaseImplementationTests.cs).
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/ClassImposter/ClassMethodBaseImplementationTests.cs).

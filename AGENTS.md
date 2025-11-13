@@ -71,6 +71,7 @@ When editing/adding documentation pages (MkDocs Material), follow these patterns
 - Snippet linking and tests
   - Every C# snippet in docs must map to an executable test in `tests/Imposter.Tests/Docs/<Section>/...`.
   - Add `data-gh-link` to each C# code block, pointing to the exact test line (e.g., ```csharp {data-gh-link="https://github.com/.../tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L42"}```).
+  - Use the `master` branch in GitHub links (e.g., `.../blob/master/...`).
   - The site already injects a GitHub icon button for code blocks via `docs/content/scripts/code-links.js` and styles it via `docs/content/styles/overrides.css`. Do not replace this mechanism; just supply the attribute.
 
 - Test file organization (by docs section)

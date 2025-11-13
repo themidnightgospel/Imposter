@@ -25,13 +25,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore solution
-        run: dotnet restore Imposter.sln
+        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -p:IMPOSTER_LOG=true
 
       - name: Test Imposter.Abstractions.Tests
-        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION --list-tests
+        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION --no-build --list-tests
 
       - name: Test Imposter.CodeGenerator.Tests
-        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION --list-tests
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION --no-build --list-tests
          
   roslyn-matrix:
     timeout-minutes: 10
@@ -64,8 +64,8 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Build solution (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}"
+        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -p:IMPOSTER_LOG=true
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c $BUILD_CONFIGURATION --no-build --framework net8.0 --list-tests
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -c $BUILD_CONFIGURATION --no-build --list-tests
 

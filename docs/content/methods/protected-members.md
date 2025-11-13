@@ -5,7 +5,7 @@ Overrideable protected members of the class can be mocked just like other overri
 Target type used in examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/ProtectedMembersTests.cs#L5"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ProtectedMembersTests.cs#L5"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.Protected.MyService))]
@@ -23,7 +23,7 @@ Target type used in examples:
 ## Example
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/ProtectedMembersTests.cs#L20"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ProtectedMembersTests.cs#L20"}
 // Class target with a protected virtual method and a public wrapper that calls it
 [assembly: GenerateImposter(typeof(MyService))]
 
@@ -45,4 +45,4 @@ var svc = imp.Instance();
 svc.InvokeProtected(5).ShouldBe(42);
     ```
 
-See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs).
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs).

@@ -72,6 +72,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures, logger);
 
             logger.LogSupportedCSharpFeatures(supportedCSharpFeatures);
+            logger.LogCompilation(compilationContext.Compilation);
 
             sourceProductionContext.AddSource(
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",

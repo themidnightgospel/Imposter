@@ -34,7 +34,7 @@ This package includes both the source generator (analyzer) and the runtime abstr
 Annotate the target type with the assembly level attribute and build. The generator produces a `<TypeName>Imposter` you can new up in code.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L12"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L12"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(IMyService))]
@@ -52,7 +52,7 @@ After a build, use the generated type:
 
 === "C# 14"
 
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L66"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L66"}
     var imposter = IMyService.Imposter();
     imposter.GetNumber().Returns(42);
 
@@ -64,7 +64,7 @@ After a build, use the generated type:
 
     Use the generated imposter type directly:
 
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L31"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L31"}
     var imposter = new IMyServiceImposter();
     imposter.GetNumber().Returns(42);
 
@@ -78,7 +78,7 @@ Generate imposter for classes
     Only non-sealed classes can be impersonated.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L20"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L20"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(BaseService))]
@@ -93,7 +93,7 @@ After a build, use the generated type:
 
 === "C# 14"
 
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L69"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L69"}
     var imposter = BaseService.Imposter();
     imposter.GetNumber().Returns(42);
 
@@ -103,7 +103,7 @@ After a build, use the generated type:
 
 === "C# 8-13"
 
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L51"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L51"}
     var imposter = new BaseServiceImposter();
     imposter.GetNumber().Returns(42);
 
