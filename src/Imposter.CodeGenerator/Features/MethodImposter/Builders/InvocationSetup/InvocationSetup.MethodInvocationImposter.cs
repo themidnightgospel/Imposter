@@ -75,7 +75,7 @@ internal static partial class InvocationSetupBuilder
 
     private static FieldDeclarationSyntax ResultGeneratorField(in ImposterTargetMethodMetadata method) =>
         SingleVariableField(
-            method.Delegate.Syntax,
+            method.Delegate.Syntax.ToNullableType(),
             "_resultGenerator",
             TokenList(Token(SyntaxKind.PrivateKeyword)));
 

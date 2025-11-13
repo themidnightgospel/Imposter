@@ -43,6 +43,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
     internal readonly bool HasReturnValue;
 
     internal readonly bool SupportsBaseImplementation;
+    internal readonly bool SupportsNullableGenericType;
 
     internal readonly string UniqueName;
 
@@ -70,7 +71,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,
-        string uniqueName)
+        string uniqueName,
+        bool supportsNullableGenericType)
     {
         Symbol = symbol;
         UniqueName = uniqueName;
@@ -80,6 +82,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         ReturnType = new ReturnTypeMetadata(Symbol.ReturnType);
         HasReturnValue = !Symbol.ReturnsVoid;
         SupportsBaseImplementation = Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
+        SupportsNullableGenericType = supportsNullableGenericType;
         IsAsync = IsMethodAsync(symbol);
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
