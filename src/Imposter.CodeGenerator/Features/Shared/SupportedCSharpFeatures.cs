@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
-internal readonly struct SupportedCSharpFeatures
+internal readonly record struct SupportedCSharpFeatures
 {
     internal bool SupportsTypeExtensions { get; }
 

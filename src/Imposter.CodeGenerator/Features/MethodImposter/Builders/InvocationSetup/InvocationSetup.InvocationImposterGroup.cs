@@ -22,7 +22,7 @@ internal static partial class InvocationSetupBuilder
 
 internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in ImposterTargetMethodMetadata method) =>
     SingleVariableField(
-        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName),
+        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName).ToNullableType(),
         "_lastestInvocationImposter",
         SyntaxKind.PrivateKeyword);
 
@@ -52,18 +52,17 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
     {
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
 
-        return new MethodDeclarationBuilder(NullableType(invocationImposterType), "GetInvocationImposter")
+        return new MethodDeclarationBuilder(invocationImposterType.ToNullableType(), "GetInvocationImposter")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
-                    LocalVariableDeclarationSyntax(invocationImposterType, "invocationImposter"),
                     IfStatement(
                         IdentifierName("_invocationImposters")
                             .Dot(IdentifierName("TryDequeue"))
                             .Call(
                                 ArgumentList(
                                     SingletonSeparatedList(
-                                        Argument(IdentifierName("invocationImposter")).WithRefKindKeyword(Token(SyntaxKind.OutKeyword))))),
+                                        OutVarArgument("invocationImposter")))),
                         Block(
                             IfStatement(
                                 Not(

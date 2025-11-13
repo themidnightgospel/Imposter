@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
 
@@ -21,9 +22,12 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
+    internal readonly IGeneratorLogger Logger;
+
     internal ImposterGenerationContext(
         GenerateImposterDeclaration generateImposterDeclaration,
-        in SupportedCSharpFeatures supportedCSharpFeatures)
+        in SupportedCSharpFeatures supportedCSharpFeatures,
+        IGeneratorLogger logger)
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(generateImposterDeclaration.ImposterTarget, supportedCSharpFeatures);
@@ -33,6 +37,7 @@ internal readonly struct ImposterGenerationContext
             ? TargetNamespaceName
             : ImposterComponentsNamespace;
         SupportedCSharpFeatures = supportedCSharpFeatures;
+        Logger = logger;
     }
 
     private static string BuildImposterComponentsNamespace(INamedTypeSymbol targetSymbol)
