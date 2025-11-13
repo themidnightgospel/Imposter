@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
@@ -66,7 +67,11 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         try
         {
             var supportedCSharpFeatures = new SupportedCSharpFeatures(compilationContext.Compilation);
-            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures);
+            var logger = GeneratorLoggerFactory.Create(sourceProductionContext, compilationContext.IsLoggingEnabled);
+            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures, logger);
+
+            logger.LogSupportedCSharpFeatures(supportedCSharpFeatures);
+
             sourceProductionContext.AddSource(
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
                 // NOTE: NormalizeWhitespace has a performance impact.
@@ -104,7 +109,15 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
                 imposterGenerationContext,
                 imposterGenerationContext.ImposterNamespaceName));
+
+            imposterGenerationContext.Logger.Log("Generated imposter extensions.");
         }
+        else
+        {
+            imposterGenerationContext.Logger.Log("Skipping generation of Imposter Extensions because the current C# version does not support type extensions.");
+        }
+#else
+    imposterGenerationContext.Logger.Log("Skipping generation of Imposter Extensions because it requires ROSLYN 4.14 or greater.");
 #endif
 
         var imposterNamespace = imposterNamespaceBuilder

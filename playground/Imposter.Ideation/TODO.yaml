@@ -51,6 +51,7 @@ FEATURES:
       - Add a sample project.
       - UseBaseImplementation for interface members
       - enable TreatWarningsAsErrors in generator project.
+      - AnalyzerReleases.Unshipped.md
 
   MEDIUM:
     - NOT Started:

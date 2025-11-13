@@ -1,25 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <IsPackable>false</IsPackable>
         <RootNamespace>Imposter.Tests</RootNamespace>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <Import Project="../../Roslyn.Shared.props" />
     <Import Project="Imposter.Tests.Roslyn$(ROSLYN_VERSION).props" />
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2"/>
-        <PackageReference Include="Shouldly" Version="4.3.0"/>
-
-        <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-
-    </ItemGroup>
 
     <!-- Source code generation settings-->
     <PropertyGroup>

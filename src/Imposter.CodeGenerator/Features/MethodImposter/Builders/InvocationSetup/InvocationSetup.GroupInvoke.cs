@@ -15,7 +15,7 @@ internal static partial class InvocationSetupBuilder
         var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
         var invocationImposterIdentifier = IdentifierName("invocationImposter");
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
-            invocationImposterType,
+            Var,
             "invocationImposter",
             IdentifierName("GetInvocationImposter").Call());
 
