@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
@@ -27,12 +28,15 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
     {
         Name = "GetterImposterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
-        ReturnValuesField = new ReturnValuesFieldMetadata(property);
+        var returnHandlerType = WellKnownTypes.System.Func(
+            property.AsSystemFuncType.ToNullableType(),
+            property.TypeSyntax);
+        ReturnValuesField = new ReturnValuesFieldMetadata(returnHandlerType);
         CallbacksField = new CallbacksFieldMetadata();
-        LastReturnValueField = new LastReturnValueFieldMetadata(property);
+        LastReturnValueField = new LastReturnValueFieldMetadata(returnHandlerType);
         InvocationCountField = new InvocationCountFieldMetadata();
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
-        AddReturnValueMethod = new AddReturnValueMethodMetadata(property);
+        AddReturnValueMethod = new AddReturnValueMethodMetadata(returnHandlerType);
         GetMethod = new GetMethodMetadata(property);
     }
 }

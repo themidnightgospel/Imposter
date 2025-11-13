@@ -10,4 +10,4 @@ imposter.Age.Setter(Arg<int>.Any()).UseBaseImplementation();
 Notes
 - For class targets with initializers, the first read mirrors the initialized value.
 - In Explicit mode, if base is unavailable and no setup matches, `MissingImposterException` is thrown.
-
+- Getter builders can now interleave `UseBaseImplementation()` with `Then()`/`Returns(...)`/`Throws(...)`, so you can sequence base → custom → base just like you already can with indexers.

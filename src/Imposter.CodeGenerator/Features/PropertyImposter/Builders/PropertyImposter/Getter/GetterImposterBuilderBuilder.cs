@@ -33,7 +33,6 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(SinglePrivateReadonlyVariableField(WellKnownTypes.Imposter.Abstractions.ImposterMode, "_invocationBehavior"))
             .AddMember(SinglePrivateReadonlyVariableField(PredefinedType(Token(SyntaxKind.StringKeyword)), "_propertyDisplayName"))
             .AddMember(SingleVariableField(WellKnownTypes.Bool, "_hasConfiguredReturn", SyntaxKind.PrivateKeyword))
-            .AddMember(SingleVariableField(WellKnownTypes.Bool, "_useBaseImplementation", SyntaxKind.PrivateKeyword))
             .AddMember(BuildConstructor(property))
             .AddMember(BuildAddGetterReturnValueMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour))
             .AddMembers(BuildReturnsMethod(property.GetterImposterBuilder, property.GetterImposterBuilderInterface))
@@ -143,7 +142,8 @@ internal static class GetterImposterBuilderBuilder
                 IdentifierName(builder.AddReturnValueMethod.Name)
                     .Call(
                         Argument(
-                            EmptyParametersGoesTo(IdentifierName(builderInterface.ReturnsMethod.ValueParameter.Name)))
+                            IgnoreBaseImplementationLambda(
+                                IdentifierName(builderInterface.ReturnsMethod.ValueParameter.Name)))
                     )
                     .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
@@ -156,7 +156,13 @@ internal static class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax))
             .WithBody(Block(
                 IdentifierName(builder.AddReturnValueMethod.Name)
-                    .Call(Argument(IdentifierName(builderInterface.ReturnsMethod.ValueGeneratorParameter.Name)))
+                    .Call(
+                        Argument(
+                            IgnoreBaseImplementationLambda(
+                                IdentifierName(builderInterface.ReturnsMethod.ValueGeneratorParameter.Name).Call()
+                            )
+                        )
+                    )
                     .ToStatementSyntax(),
                     ReturnStatement(ThisExpression())
                 )
@@ -175,7 +181,7 @@ internal static class GetterImposterBuilderBuilder
                 IdentifierName(builder.AddReturnValueMethod.Name)
                     .Call(
                         Argument(
-                            EmptyParametersGoesTo(
+                            IgnoreBaseImplementationLambda(
                                 ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.ExceptionParameter.Name))
                             )
                         )
@@ -193,7 +199,7 @@ internal static class GetterImposterBuilderBuilder
                 IdentifierName(builder.AddReturnValueMethod.Name)
                     .Call(
                         Argument(
-                            EmptyParametersGoesTo(
+                            IgnoreBaseImplementationLambda(
                                 ThrowExpression(IdentifierName(builderInterface.ThrowsMethod.GenericTypeParameterName).New())
                             )
                         )
@@ -281,18 +287,54 @@ internal static class GetterImposterBuilderBuilder
         new MethodDeclarationBuilder(WellKnownTypes.Void, "EnableBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(Block(
-            IdentifierName(property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name)
-            .Dot(IdentifierName(property.DefaultPropertyBehaviour.IsOnField.Name))
-            .Assign(True)
-            .ToStatementSyntax(),
-            IdentifierName("_useBaseImplementation")
-            .Assign(True)
-            .ToStatementSyntax(),
-            IdentifierName("_hasConfiguredReturn")
-                .Assign(True)
-                .ToStatementSyntax()
+                IdentifierName(property.GetterImposterBuilder.AddReturnValueMethod.Name)
+                    .Call(Argument(BuildBaseImplementationReturnHandler(property)))
+                    .ToStatementSyntax()
             ))
             .Build();
+
+    private static ParenthesizedLambdaExpressionSyntax BuildBaseImplementationReturnHandler(in ImposterPropertyMetadata property)
+    {
+        const string BaseImplementationParameterName = "baseImplementation";
+
+        var baseImplementationParameter = Parameter(Identifier(BaseImplementationParameterName))
+            .WithType(property.Core.AsSystemFuncType.ToNullableType());
+        var baseImplementationIdentifier = IdentifierName(BaseImplementationParameterName);
+        var messageExpression = BinaryExpression(
+            SyntaxKind.AddExpression,
+            IdentifierName("_propertyDisplayName"),
+            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (getter)")));
+
+        return ParenthesizedLambdaExpression()
+            .WithParameterList(ParameterList(SingletonSeparatedList(baseImplementationParameter)))
+            .WithBlock(
+                Block(
+                    IfStatement(
+                        baseImplementationIdentifier.IsNotNull(),
+                        ReturnStatement(baseImplementationIdentifier.Call()),
+                        ElseClause(
+                            ThrowStatement(
+                                WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                                    .New(
+                                        Argument(messageExpression)
+                                            .AsSingleArgumentListSyntax()
+                                    )
+                            )
+                        )
+                    )
+                )
+            );
+    }
+
+    private static ParenthesizedLambdaExpressionSyntax IgnoreBaseImplementationLambda(ExpressionSyntax body) =>
+        ParenthesizedLambdaExpression(body)
+            .WithParameterList(
+                ParameterList(
+                    SingletonSeparatedList(
+                        Parameter(Identifier("_"))
+                    )
+                )
+            );
 
     internal static MethodDeclarationSyntax BuildGetMethod(
         in PropertyGetterImposterBuilderMetadata builder,
@@ -313,7 +355,7 @@ internal static class GetterImposterBuilderBuilder
                     DequeNextGetterReturnValue(builder, ReturnValueVariableName),
                     DeclareNextGetterReturnValue(builder, ReturnValueVariableName, NextReturnValueVariableName),
                     UpdateLastGetterReturnValue(builder, NextReturnValueVariableName),
-                    ReturnNextGetterReturnValue(NextReturnValueVariableName)
+                    ReturnNextGetterReturnValue(NextReturnValueVariableName, baseImplementationIdentifier)
                 )
             )
             .Build();
@@ -358,8 +400,11 @@ internal static class GetterImposterBuilderBuilder
                     .ToStatementSyntax()
             );
 
-        static StatementSyntax ReturnNextGetterReturnValue(string nextVariableName) =>
-            ReturnStatement(IdentifierName(nextVariableName).Call());
+        static StatementSyntax ReturnNextGetterReturnValue(string nextVariableName, ExpressionSyntax baseImplementationIdentifier) =>
+            ReturnStatement(
+                IdentifierName(nextVariableName)
+                    .Call(Argument(baseImplementationIdentifier))
+            );
 
 
         static StatementSyntax IfAutoPropertyBehaviourReturnBackingField(
@@ -370,21 +415,10 @@ internal static class GetterImposterBuilderBuilder
             var defaultBehaviourCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
             var baseImplementationIsNotNull = baseImplementationIdentifier.IsNotNull();
-            var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
             var returnBackingField = ReturnStatement(
                 IdentifierName(builder.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
             );
-            var missingBaseImplementation = ThrowStatement(
-                WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                    .New(
-                        Argument(
-                                BinaryExpression(
-                                    SyntaxKind.AddExpression,
-                                    IdentifierName("_propertyDisplayName"),
-                                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (getter)"))))
-                            .AsSingleArgumentListSyntax()
-                    ));
 
             // If default behaviour is on, optionally seed the backing field from base on first read
             var hasValueSetCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
@@ -395,27 +429,17 @@ internal static class GetterImposterBuilderBuilder
                         IdentifierName(builder.InvocationCountField.Name),
                         LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))
                     .And(baseImplementationIsNotNull)
-                    .And(Not(useBaseImplementationCheck).And(Not(hasValueSetCheck)));
+                    .And(Not(hasValueSetCheck));
 
-            var seedFromBase = 
-            IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                .Assign(baseImplementationIdentifier.Call())
-                .ToStatementSyntax();
+            var seedFromBase =
+                IdentifierName(builder.DefaultPropertyBehaviourField.Name)
+                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+                    .Assign(baseImplementationIdentifier.Call())
+                    .ToStatementSyntax();
 
             return IfStatement(
                 defaultBehaviourCheck,
                 Block(
-                    IfStatement(
-                        useBaseImplementationCheck,
-                        Block(
-                            IfStatement(
-                                baseImplementationIsNotNull,
-                                ReturnStatement(baseImplementationIdentifier.Call()),
-                                ElseClause(missingBaseImplementation)
-                            )
-                        )
-                    ),
                     IfStatement(seedFromBaseCondition, Block(seedFromBase)),
                     returnBackingField
                 )

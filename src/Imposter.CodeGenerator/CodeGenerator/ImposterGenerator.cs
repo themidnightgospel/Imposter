@@ -43,6 +43,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
+
         context.RegisterSourceOutput(context
                 .GetGenerateImposterDeclarations()
                 .Combine(context.GetCompilationContext()),

@@ -17,24 +17,22 @@ internal static class CompilationContextProvider
         var loggingEnabledProvider = context
             .AnalyzerConfigOptionsProvider
             .Select(static (options, _) =>
-            {
-                return options.GlobalOptions.TryGetValue("build_property.IMPOSTER_LOG", out var v)
-                       && string.Equals(v?.Trim(), "true", System.StringComparison.OrdinalIgnoreCase);
-            });
+                options.GlobalOptions.TryGetValue("build_property.IMPOSTER_LOG", out var v)
+                && string.Equals(v?.Trim(), "true", System.StringComparison.OrdinalIgnoreCase));
 
         return context
-            .CompilationProvider
-            .Combine(loggingEnabledProvider)
-            .Select(static (pair, _) => new CompilationContext(
-                    (CSharpCompilation)pair.Left,
-                    new NameSet([]),
-                    pair.Right
+                .CompilationProvider
+                .Combine(loggingEnabledProvider)
+                .Select(static (pair, _) => new CompilationContext(
+                        (CSharpCompilation)pair.Left,
+                        new NameSet([]),
+                        pair.Right
+                    )
                 )
-            )
 #if ROSLYN4_4_OR_GREATER
-            .WithTrackingName("CompilationContext")
+                .WithTrackingName("CompilationContext")
 #endif
-        ;
+            ;
     }
 
     internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this in IncrementalGeneratorInitializationContext context)
