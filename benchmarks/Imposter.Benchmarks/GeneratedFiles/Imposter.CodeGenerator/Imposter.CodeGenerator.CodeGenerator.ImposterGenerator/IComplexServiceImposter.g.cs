@@ -118,7 +118,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
             internal ProcessArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-            private MethodInvocationImposter _lastestInvocationImposter;
+            private MethodInvocationImposter? _lastestInvocationImposter;
             public ProcessMethodInvocationImposterGroup(ProcessArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
@@ -133,8 +133,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
             private MethodInvocationImposter? GetInvocationImposter()
             {
-                MethodInvocationImposter invocationImposter;
-                if (_invocationImposters.TryDequeue(out invocationImposter))
+                if (_invocationImposters.TryDequeue(out var invocationImposter))
                 {
                     if (!invocationImposter.IsEmpty)
                     {
@@ -149,7 +148,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
             public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string route, int severity, global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ComplexMethodMockingBenchmark.OperationContext context)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
                     if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)

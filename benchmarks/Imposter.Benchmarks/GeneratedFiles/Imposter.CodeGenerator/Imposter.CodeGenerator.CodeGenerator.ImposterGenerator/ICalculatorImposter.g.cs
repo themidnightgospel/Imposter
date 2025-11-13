@@ -110,7 +110,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
             internal SquareArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-            private MethodInvocationImposter _lastestInvocationImposter;
+            private MethodInvocationImposter? _lastestInvocationImposter;
             public SquareMethodInvocationImposterGroup(SquareArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
@@ -125,8 +125,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
             private MethodInvocationImposter? GetInvocationImposter()
             {
-                MethodInvocationImposter invocationImposter;
-                if (_invocationImposters.TryDequeue(out invocationImposter))
+                if (_invocationImposters.TryDequeue(out var invocationImposter))
                 {
                     if (!invocationImposter.IsEmpty)
                     {
@@ -141,7 +140,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
             public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int input)
             {
-                MethodInvocationImposter invocationImposter = GetInvocationImposter();
+                var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
                 {
                     if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
