@@ -16,7 +16,8 @@ internal readonly record struct SupportedCSharpFeatures
 
     private static bool SupportsTypeExtensionsCore(LanguageVersion languageVersion)
     {
-        return languageVersion is not LanguageVersion.Preview and >= (LanguageVersion)1400; // C#14
+        var effectiveVersion = languageVersion.MapSpecifiedToEffectiveVersion();
+        return (int)effectiveVersion >= 1400;
     }
 
     private static bool SupportsNullableGenericTypeCore(LanguageVersion languageVersion)

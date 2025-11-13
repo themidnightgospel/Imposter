@@ -360,7 +360,7 @@ namespace Sample
     }
 
     [Fact]
-    public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementationAfterThen_ShouldCompile()
+    public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -370,7 +370,7 @@ namespace Sample
         public static void Execute()
         {
             var imposter = new SampleServiceImposter();
-            imposter.Age.Setter(Imposter.Abstractions.Arg<int>.Any()).Then().UseBaseImplementation();
+            imposter.Age.Setter(Imposter.Abstractions.Arg<int>.Any()).UseBaseImplementation();
         }
     }
 }
@@ -452,26 +452,6 @@ namespace Sample
 """);
 
         AssertNoDiagnostics(diagnostics);
-    }
-
-    [Fact]
-    public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementationWithoutThen_ShouldFail()
-    {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
-namespace Sample
-{
-    public static class Scenario
-    {
-        public static void Execute()
-        {
-            var imposter = new SampleServiceImposter();
-            imposter.Age.Setter(Imposter.Abstractions.Arg<int>.Any()).UseBaseImplementation();
-        }
-    }
-}
-""");
-
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
     }
 
     [Fact]

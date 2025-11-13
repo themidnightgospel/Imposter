@@ -17,16 +17,4 @@
     <ItemGroup>
         <CompilerVisibleProperty Include="IMPOSTER_LOG"/>
     </ItemGroup>
-
-    <!-- Source code generation settings-->
-    <PropertyGroup>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-
-    <!-- Include but don't compile generated code. The system will already compile the code, but this will make it visible for reference.-->
-    <ItemGroup>
-        <Compile Remove="GeneratedFiles\**"/>
-        <None Include="GeneratedFiles\**"/>
-    </ItemGroup>
 </Project>

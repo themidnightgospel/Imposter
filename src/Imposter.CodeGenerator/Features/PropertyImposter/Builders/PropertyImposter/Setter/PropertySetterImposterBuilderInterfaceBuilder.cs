@@ -35,13 +35,22 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
         return members.ToArray();
     }
 
-    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterPropertyMetadata property) =>
-        new InterfaceDeclarationBuilder(property.SetterImposterBuilderInterface.Name)
+    private static InterfaceDeclarationSyntax BuildBuilderInterface(in ImposterPropertyMetadata property)
+    {
+        var builder = new InterfaceDeclarationBuilder(property.SetterImposterBuilderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.CallbackInterfaceTypeSyntax))
-            .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.VerificationInterfaceTypeSyntax))
+            .AddBaseType(SimpleBaseType(property.SetterImposterBuilderInterface.VerificationInterfaceTypeSyntax));
+
+        if (property.SetterImposterBuilderInterface.UseBaseImplementationEntryInterfaceTypeSyntax is { } useBaseImplementationInterface)
+        {
+            builder = builder.AddBaseType(SimpleBaseType(useBaseImplementationInterface));
+        }
+
+        return builder
             .AddMember(BuildInitialThenMethod(property))
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildFluentInterface(in ImposterPropertyMetadata property) =>
         new InterfaceDeclarationBuilder(property.SetterImposterBuilderInterface.FluentInterfaceName)

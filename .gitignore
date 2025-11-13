@@ -365,5 +365,14 @@ FodyWeavers.xsd
 # Ignore C# generated source files emitted by generators
 **/*.g.cs
 
+# But keep generated snapshots under project GeneratedFiles for review
+!benchmarks/Imposter.Benchmarks/GeneratedFiles/**/*.g.cs
+!tests/Imposter.Tests/GeneratedFiles/**/*.g.cs
+!tests/Imposter.CodeGenerator.Tests/GeneratedFiles/**/*.g.cs
+!tests/Imposter.Abstractions.Tests/GeneratedFiles/**/*.g.cs
+!src/Imposter.CodeGenerator/GeneratedFiles/**/*.g.cs
+!src/Imposter.Abstractions/GeneratedFiles/**/*.g.cs
+!playground/Imposter.Playground/GeneratedFiles/**/*.g.cs
+
 # JetBrains IDE project settings (do not track)
 .idea/

@@ -95,16 +95,50 @@
 }
 .md-code-gh-link {
   position: absolute;
-  top: .4rem;
-  right: 2.6rem; /* leave space for copy icon */
-  font-size: .72rem;
-  line-height: 1.6;
-  padding: 0 .4rem;
-  border-radius: 3px;
+  top: .25rem;
+  right: 2.9rem; /* leave space for enlarged copy icon */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.0rem;   /* larger click target */
+  height: 2.0rem;  /* larger click target */
+  border-radius: 6px;
   text-decoration: none;
   color: var(--md-default-fg-color);
   background: transparent;
   border: 1px solid transparent;
   z-index: 2;
 }
-.md-code-gh-link:hover{ text-decoration: underline; }
+.md-code-gh-icon {
+  width: 1.35rem;   /* bigger icon */
+  height: 1.35rem;  /* bigger icon */
+  opacity: .75;
+  transition: opacity .15s ease, transform .08s ease;
+}
+.md-code-gh-link:hover .md-code-gh-icon { opacity: 1; }
+.md-code-gh-link:active .md-code-gh-icon { transform: scale(0.97); }
+
+/* Enlarge MkDocs Material built-in code copy button to match GitHub icon */
+.md-typeset .md-clipboard {
+  top: .25rem !important;
+  right: .5rem !important;
+  width: 2.0rem !important;
+  height: 2.0rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  /* Ensure icon inside scales on all Material versions */
+  --md-icon-size: 1.35rem;
+}
+.md-typeset .md-clipboard .md-icon,
+.md-typeset .md-clipboard.md-icon {
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  font-size: 1.35rem !important;
+}
+/* Cover SVG-based and font-based icons */
+.md-typeset .md-clipboard svg { width: 1.35rem !important; height: 1.35rem !important; }
+.md-typeset .md-clipboard .material-icons { font-size: 1.35rem !important; }
+/* Some theme versions render the icon via ::before on the button */
+.md-typeset .md-clipboard::before { font-size: 1.35rem !important; }

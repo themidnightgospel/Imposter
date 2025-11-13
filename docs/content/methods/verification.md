@@ -2,6 +2,21 @@
 
 Verify that methods were invoked the expected number of times with specific arguments. Use `Called(Count.*)` on the method builder.
 
+Target type used in examples:
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L5"}
+    using Imposter.Abstractions;
+
+    [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IVerifyService))]
+
+    public interface IVerifyService
+    {
+        void Increment(int v);
+        int Combine(int a, int b);
+    }
+    ```
+
 ## Semantics
 
 - `Called(Count)` counts only invocations that match the builder’s argument matchers.
@@ -14,13 +29,14 @@ Verify that methods were invoked the expected number of times with specific argu
 
 ## Basic counts
 
-```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L23"}
-service.Increment(1);
-service.Increment(2);
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L26"}
+    service.Increment(1);
+    service.Increment(2);
 
-imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
-imposter.Increment(2).Called(Count.Once());
-```
+    imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
+    imposter.Increment(2).Called(Count.Once());
+    ```
 
 ## Count helpers
 
@@ -35,12 +51,12 @@ imposter.Increment(2).Called(Count.Once());
 
 Verification respects the same argument matching rules used for arrangements:
 
-```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods_VerificationCodeSnippetsTests.cs#L40"}
-
-See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Features/MethodImposter/InvocationVerificationTests.cs).
-imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3));
-imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count.Once());
-```
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L41"}
+    // See more examples in repo tests
+    imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3));
+    imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count.Once());
+    ```
 
 ## Failures
 
