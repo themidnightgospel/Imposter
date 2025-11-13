@@ -45,6 +45,21 @@ internal static class WellKnownTypes
                 TypeArgumentList(SingletonSeparatedList(returnType))
             )
         );
+
+        internal static TypeSyntax Func(TypeSyntax parameterType, TypeSyntax returnType) => QualifiedName(
+            Namespace,
+            GenericName(
+                Identifier("Func"),
+                TypeArgumentList(
+                    SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
+                    {
+                        parameterType,
+                        Token(SyntaxKind.CommaToken),
+                        returnType
+                    })
+                )
+            )
+        );
         
         internal static TypeSyntax IEquatable(TypeSyntax typeArgument) => QualifiedName(
             Namespace,

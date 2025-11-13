@@ -9,8 +9,8 @@ internal readonly struct LastReturnValueFieldMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
-    internal LastReturnValueFieldMetadata(in ImposterPropertyCoreMetadata property)
+    internal LastReturnValueFieldMetadata(TypeSyntax handlerType)
     {
-        TypeSyntax = WellKnownTypes.System.FuncOfT(property.TypeSyntax);
+        TypeSyntax = handlerType;
     }
 }

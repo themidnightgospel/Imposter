@@ -9,10 +9,8 @@ internal readonly struct ReturnValuesFieldMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
-    internal ReturnValuesFieldMetadata(in ImposterPropertyCoreMetadata property)
+    internal ReturnValuesFieldMetadata(TypeSyntax handlerType)
     {
-        TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-            WellKnownTypes.System.FuncOfT(property.TypeSyntax)
-        );
+        TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(handlerType);
     }
 }

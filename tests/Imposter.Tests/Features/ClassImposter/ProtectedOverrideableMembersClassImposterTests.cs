@@ -174,6 +174,28 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
+        public void GivenProtectedPropertyGetter_WhenSequencingBaseReturnsBase_ThenInvocationsRunInOrder()
+        {
+            var imposter = new ClassWithProtectedOverrideableMembersImposter();
+            var getter = imposter.ProtectedVirtualProperty.Getter();
+            imposter.ProtectedVirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
+
+            getter.UseBaseImplementation()
+                .Then().Returns("overridden")
+                .Then().UseBaseImplementation();
+
+            var instance = imposter.Instance();
+
+            instance.WriteProtectedProperty("first");
+            instance.ReadProtectedProperty().ShouldBe("first");
+
+            instance.ReadProtectedProperty().ShouldBe("overridden");
+
+            instance.WriteProtectedProperty("final");
+            instance.ReadProtectedProperty().ShouldBe("final");
+        }
+
+        [Fact]
         public void GivenProtectedIndexerUseBaseImplementation_WhenInvoked_ThenUsesBaseAccessors()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();

@@ -4,18 +4,6 @@
     </PropertyGroup>
 
     <Import Project="Imposter.Tests.Roslyn$(ROSLYN_VERSION).props" />
-
-    <!-- Source code generation settings-->
-    <PropertyGroup>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-
-    <!-- Include but don't compile generated code. The system will already compile the code, but this will make it visible for reference.-->
-    <ItemGroup>
-        <Compile Remove="GeneratedFiles\**"/>
-        <None Include="GeneratedFiles\**"/>
-    </ItemGroup>
     <ItemGroup>
         <!--  OutputItemType="Analyzer" is necessary for generator to access it during generation.
           see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->

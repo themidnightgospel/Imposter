@@ -11,10 +11,9 @@ internal readonly struct AddReturnValueMethodMetadata
 
     internal readonly ParameterMetadata ValueGeneratorParameter;
 
-    internal AddReturnValueMethodMetadata(in ImposterPropertyCoreMetadata property)
+    internal AddReturnValueMethodMetadata(TypeSyntax handlerType)
     {
         ReturnType = WellKnownTypes.Void;
-        ValueGeneratorParameter = new ParameterMetadata("valueGenerator",
-            WellKnownTypes.System.FuncOfT(property.TypeSyntax));
+        ValueGeneratorParameter = new ParameterMetadata("valueGenerator", handlerType);
     }
 }
