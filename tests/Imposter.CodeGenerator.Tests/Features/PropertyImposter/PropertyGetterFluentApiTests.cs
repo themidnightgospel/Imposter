@@ -593,9 +593,29 @@ namespace Sample
 
         AssertNoDiagnostics(diagnostics);
     }
-
+    
     [Fact]
     public async Task GivenOverrideableGetter_WhenCallingUseBaseImplementationAfterThen_ShouldCompile()
+    {
+        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+                                                              namespace Sample
+                                                              {
+                                                                  public static class Scenario
+                                                                  {
+                                                                      public static void Execute()
+                                                                      {
+                                                                          var imposter = new SampleServiceImposter();
+                                                                          imposter.Age.Getter().Then().UseBaseImplementation();
+                                                                      }
+                                                                  }
+                                                              }
+                                                              """);
+
+        AssertNoDiagnostics(diagnostics);
+    }
+
+    [Fact]
+    public async Task GivenOverrideableGetter_WhenCallingUseBaseImplementation_ShouldCompile()
     {
         var diagnostics = await CompileSnippet(/*lang=csharp*/"""
 namespace Sample
@@ -605,7 +625,7 @@ namespace Sample
         public static void Execute()
         {
             var imposter = new SampleServiceImposter();
-            imposter.Age.Getter().Then().UseBaseImplementation();
+            imposter.Age.Getter().UseBaseImplementation();
         }
     }
 }
@@ -712,26 +732,6 @@ namespace Sample
 """);
 
         AssertNoDiagnostics(diagnostics);
-    }
-
-    [Fact]
-    public async Task GivenOverrideableGetter_WhenCallingUseBaseImplementationWithoutThen_ShouldFail()
-    {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
-namespace Sample
-{
-    public static class Scenario
-    {
-        public static void Execute()
-        {
-            var imposter = new SampleServiceImposter();
-            imposter.Age.Getter().UseBaseImplementation();
-        }
-    }
-}
-""");
-
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
     }
 
     [Fact]

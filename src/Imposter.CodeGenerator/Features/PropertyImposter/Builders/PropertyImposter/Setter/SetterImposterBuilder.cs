@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -84,21 +85,23 @@ internal static class SetterImposterBuilder
     internal static MethodDeclarationSyntax BuildSetMethod(in PropertySetterImposterMetadata setterImposter, in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour)
     {
         var baseImplementationIdentifier = IdentifierName(setterImposter.SetMethod.BaseImplementationParameter.Name);
+        var bodyStatements = new List<StatementSyntax>
+        {
+            IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax(),
+            TrackSetterInvocation(setterImposter),
+            InvokeCallbacks(setterImposter)
+        };
+
+        bodyStatements.AddRange(SetBackingField(setterImposter, defaultPropertyBehaviour, baseImplementationIdentifier));
 
         return new MethodDeclarationBuilder(setterImposter.SetMethod.ReturnType, setterImposter.SetMethod.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.BaseImplementationParameter))
-            .WithBody(Block(
-                    IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax(),
-                    TrackSetterInvocation(setterImposter),
-                    InvokeCallbacks(setterImposter),
-                    SetBackingField(setterImposter, defaultPropertyBehaviour, baseImplementationIdentifier)
-                )
-            )
+            .WithBody(Block(bodyStatements.ToArray()))
             .Build();
 
-        static StatementSyntax SetBackingField(
+        static IEnumerable<StatementSyntax> SetBackingField(
             in PropertySetterImposterMetadata setterImposter,
             in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
             ExpressionSyntax baseImplementationIdentifier)
@@ -122,7 +125,8 @@ internal static class SetterImposterBuilder
                             .AsSingleArgumentListSyntax()
                     ));
 
-            var assignBackingField = Block(
+            StatementSyntax[] assignBackingFieldStatements =
+            [
                 IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
                     .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
                     .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
@@ -131,27 +135,32 @@ internal static class SetterImposterBuilder
                     .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name))
                     .Assign(True)
                     .ToStatementSyntax()
-            );
+            ];
 
-            return IfStatement(
-                defaultBehaviourCheck,
-                Block(
-                    IfStatement(
-                        useBaseImplementationCheck,
-                        Block(
-                            IfStatement(
-                                baseImplementationIdentifier.IsNotNull(),
-                                Block(
-                                    baseImplementationCall.ToStatementSyntax(),
-                                    ReturnStatement()
-                                ),
-                                ElseClause(missingBaseImplementation)
-                            )
+            var baseImplementationPath =
+                IfStatement(
+                    useBaseImplementationCheck,
+                    Block(
+                        IfStatement(
+                            baseImplementationIdentifier.IsNotNull(),
+                            Block(
+                                baseImplementationCall.ToStatementSyntax(),
+                                ReturnStatement()
+                            ),
+                            ElseClause(missingBaseImplementation)
                         )
-                    ),
-                    assignBackingField
-                )
-            );
+                    ));
+
+            var defaultBehaviourPath =
+                IfStatement(
+                    defaultBehaviourCheck,
+                    Block(assignBackingFieldStatements));
+
+            return new StatementSyntax[]
+            {
+                baseImplementationPath,
+                defaultBehaviourPath
+            };
         }
 
         static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)

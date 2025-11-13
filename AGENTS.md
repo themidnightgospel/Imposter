@@ -43,6 +43,62 @@ Start here for a high-level map: `Imposter_codex/ARCHITECTURE.md`
 - Keep public-facing docs in sync with behaviour (XML docs in abstractions + module docs here).
 - Do not edit generated source files directly. Any file ending with `.g.cs` is generated output and must never be manually modified. Make changes in the generator or source templates instead, and regenerate.
 
+## Terminology
+
+- Use the term "impersonate / impersonation" instead of "mock / mocking" in all docs, comments, commit messages, UI labels, and variable names where feasible. Examples:
+  - Say "impersonate a method/property/event" not "mock a method/property/event".
+  - Say "only virtual and abstract members of the class can be impersonated" when describing class constraints.
+  - Generated types are "imposters"; their behavior is configured via the fluent API.
+  - Avoid introducing "mock" nomenclature except when comparing to other libraries.
+
+## Docs Page Structure (Admonitions + Snippets)
+
+When editing/adding documentation pages (MkDocs Material), follow these patterns used on the Getting Started page to keep the site uniform and scannable.
+
+- Admonition types and purposes
+  - `!!! note` — succinct callouts about versions or constraints (e.g., minimum supported C#, or “only virtual/abstract members can be impersonated”).
+  - `!!! tip "Pro tip"` — practical guidance for local dev (e.g., how to inspect generated files).
+  - `!!! warning` — hard limitations or “gotchas” (e.g., “only non‑sealed classes can have imposters”).
+  - `!!! example` — wrap primary code examples/definitions shown in the flow (attribute/targets, class examples, etc.).
+  - `!!! info "Next steps"` — closing box for onward navigation and quick links.
+
+- Code examples and versions
+  - Use tabs for language/version variants: `=== "C# 14"` and `=== "C# 8-13"`.
+  - Prefer the C# 14 static extension API in examples where available; include the C# 8–13 form directly below.
+  - In tests, gate C# 14 examples under `#if ROSLYN_5_OR_GREATER` so the suite compiles across Roslyn baselines.
+  - Wrap all C# code snippets in `!!! example` admonitions for consistent visual framing. When a snippet appears within a list item, indent the admonition under that list level.
+
+- Snippet linking and tests
+  - Every C# snippet in docs must map to an executable test in `tests/Imposter.Tests/Docs/<Section>/...`.
+  - Add `data-gh-link` to each C# code block, pointing to the exact test line (e.g., ```csharp {data-gh-link="https://github.com/.../tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L42"}```).
+  - The site already injects a GitHub icon button for code blocks via `docs/content/scripts/code-links.js` and styles it via `docs/content/styles/overrides.css`. Do not replace this mechanism; just supply the attribute.
+
+- Test file organization (by docs section)
+  - Put snippet tests for each docs section under a matching folder, one class per page:
+    - Getting Started: `tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs`
+    - Methods: `tests/Imposter.Tests/Docs/Methods/OverviewTests.cs`, `SequentialReturnsTests.cs`, `ThrowingTests.cs`, `VerificationTests.cs`, `CallbacksTests.cs`, `BaseImplementationTests.cs`, `ProtectedMembersTests.cs`, `ImposterModesTests.cs`
+    - Properties/Indexers/Events: mirror this pattern (`OverviewTests.cs`, etc.).
+  - Namespace should mirror the folder: e.g., `Imposter.Tests.Docs.Methods` (and deeper sub-namespaces if needed to avoid type name collisions).
+  - Keep names stable to minimize churn in `data-gh-link` anchors; when editing, try to append rather than insert above existing snippet lines to avoid changing anchors.
+
+- Section layout (recommended)
+  - Title + short tagline.
+  - `!!! note` with minimum supported C#.
+  - Installation block (`bash`).
+  - `!!! tip "Pro tip"` for generator file inspection settings.
+  - “Generate an Imposter”
+    - `!!! example` wrapping the attribute + interface (or class) definition.
+    - “After a build…” followed by tabs for `C# 14` and `C# 8-13` usage.
+  - For classes
+    - `!!! warning` that only non‑sealed classes can have imposters.
+    - `!!! example` for the class definition.
+    - Tabs for usage, followed by `!!! note` that only virtual/abstract members can be impersonated.
+  - Close with `!!! info "Next steps"` linking to Methods/Properties/Indexers/Events, Key API Reference, Compatibility, and Limitations.
+
+- Terminology in docs
+  - Use “impersonate/impersonated” consistently (e.g., “impersonate a method”; “members can be impersonated”), not “mock/mocked”.
+  - When comparing with other libraries, it is acceptable to reference “mocking” explicitly for clarity.
+
 ## Where To Look First
 
 - Attribute entrypoint: `src/Imposter.Abstractions/GenerateImposterAttribute.cs`

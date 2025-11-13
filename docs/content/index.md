@@ -1,9 +1,6 @@
 # Getting Started
 
-Imposter — Source-generated test doubles, zero runtime overhead.
-
-!!! note
-    Minimum supported C# version is 8.0
+Imposter — Source-generated test doubles/mocks/imposters, zero runtime overhead.
 
 ## Installation
 
@@ -36,101 +33,96 @@ This package includes both the source generator (analyzer) and the runtime abstr
 
 Annotate the target type with the assembly level attribute and build. The generator produces a `<TypeName>Imposter` you can new up in code.
 
-```csharp
-using Imposter.Abstractions;
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L12"}
+    using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(IMyService))]
+    [assembly: GenerateImposter(typeof(IMyService))]
 
-public interface IMyService
-{
-    int GetNumber();
-    int Increment(int value);
-    event EventHandler SomethingHappened;
-    int this[int key] { get; set; }
-}
-```
+    public interface IMyService
+    {
+        int GetNumber();
+        int Increment(int value);
+        event EventHandler SomethingHappened;
+        int this[int key] { get; set; }
+    }
+    ```
 
 After a build, use the generated type:
 
 === "C# 14"
 
-    ```csharp
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L66"}
     var imposter = IMyService.Imposter();
+    imposter.GetNumber().Returns(42);
+
     var service = imposter.Instance();
+    service.GetNumber().ShouldBe(42);
     ```
 
 === "C# 8-13"
 
     Use the generated imposter type directly:
 
-    ```csharp
-    var imposter = new IMyServiceImposter(); // default: Implicit behavior
-    var service = imposter.Instance();       // user-facing instance
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L31"}
+    var imposter = new IMyServiceImposter();
+    imposter.GetNumber().Returns(42);
+
+    var service = imposter.Instance();
+    service.GetNumber().ShouldBe(42);
     ```
 
-!!! tip "Pro tip"
-    C# 14+ enables static type extensions like `IMyService.Imposter()`. On C# 8–13, use the generated `IMyServiceImposter` type instead.
+Generate imposter for classes
 
-Example: Classes
+!!! warning
+    Only non-sealed classes can be impersonated.
 
-```csharp
-using Imposter.Abstractions;
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L20"}
+    using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(BaseService))]
+    [assembly: GenerateImposter(typeof(BaseService))]
 
-public abstract class BaseService
-{
-    public virtual int GetNumber() => 0;
-}
-```
+    public abstract class BaseService
+    {
+        public virtual int GetNumber() => 0;
+    }
+    ```
 
 After a build, use the generated type:
 
 === "C# 14"
 
-    ```csharp
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L69"}
     var imposter = BaseService.Imposter();
+    imposter.GetNumber().Returns(42);
+
     var service = imposter.Instance();
+    service.GetNumber().ShouldBe(42);
     ```
 
 === "C# 8-13"
 
-    ```csharp
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/main/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L51"}
     var imposter = new BaseServiceImposter();
+    imposter.GetNumber().Returns(42);
+
     var service = imposter.Instance();
+    service.GetNumber().ShouldBe(42);
     ```
 
 !!! note
-    For classes, only virtual or abstract members can be intercepted.
+    For classes, only virtual or abstract members can be impersonated (mocked).
 
-Mock a method
+!!! warning
+    Minimum supported C# version is 8.0
 
-```csharp
-imposter.GetNumber().Returns(42);
-service.GetNumber(); // 42
+!!! info "Next steps"
 
-// Parameterized with a delegate
-imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
-
-// Match a specific value directly (implicit Arg<int> conversion)
-imposter.Increment(20).Returns(200);
-service.Increment(5); // 7
-```
-
-!!! tip "Pro tip"
-    Exact values implicitly convert to `Arg<T>`
-
-## Next Steps
-
-- Explore Advanced Features:
-  - Methods: [methods](methods/index.md)
-  - Properties: [properties](properties/index.md)
-  - Indexers: [indexers](indexers/index.md)
-  - Events: [events](events/index.md)
-- Quick lookup: [Key API Reference](key-api-reference.md)
-- Check platform support: [Compatibility](compatibility.md)
-- Understand the scope: [Limitations](limitations.md)
-- Browse repository tests for real-world scenarios:
-  - `tests/Imposter.Tests/Features/*`
-  - `tests/Imposter.CodeGenerator.Tests/Features/*`
-- Architecture and design notes: see site navigation for Architecture, Usage, Fluent API, and Troubleshooting.
+      - [Methods](methods/index.md)
+      - [Properties](properties/index.md)
+      - [Indexers](indexers/index.md)
+      - [Events](events/index.md)
+      - [Key API Reference](key-api-reference.md)
+      - [Compatibility](compatibility.md)
+      - [Limitations](limitations.md)

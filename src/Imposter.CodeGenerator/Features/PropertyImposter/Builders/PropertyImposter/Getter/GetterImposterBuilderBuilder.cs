@@ -101,7 +101,7 @@ internal static class GetterImposterBuilderBuilder
             getterImposterBuilder.LastReturnValueField.TypeSyntax,
             getterImposterBuilder.LastReturnValueField.Name,
             TokenList(Token(SyntaxKind.PrivateKeyword)),
-            EmptyParametersGoesTo(Default)
+            DiscardParameterGoesTo(Default)
         );
 
     private static FieldDeclarationSyntax BuildGetterInvocationCountField(in PropertyGetterImposterBuilderMetadata getterImposterBuilder) =>

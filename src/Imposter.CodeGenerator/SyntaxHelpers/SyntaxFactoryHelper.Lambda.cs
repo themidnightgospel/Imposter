@@ -17,6 +17,9 @@ internal static partial class SyntaxFactoryHelper
             body
         );
 
+    public static SimpleLambdaExpressionSyntax DiscardParameterGoesTo(CSharpSyntaxNode body, string parameterName = "_") =>
+        Identifier(parameterName).Lambda(body);
+
     public static SimpleLambdaExpressionSyntax Lambda(this ParameterSyntax lambdaParameter, CSharpSyntaxNode body)
         => SimpleLambdaExpression(lambdaParameter, body);
 

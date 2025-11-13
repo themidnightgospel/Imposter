@@ -86,7 +86,7 @@ public static class InterfaceUsage
 }
 """;
 
-        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp8, artifacts, snippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
+        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp10, artifacts, snippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
     }
 
     [Fact]
