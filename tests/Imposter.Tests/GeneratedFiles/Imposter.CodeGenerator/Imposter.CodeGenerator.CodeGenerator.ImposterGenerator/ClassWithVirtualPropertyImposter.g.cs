@@ -98,7 +98,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVirtualPropertyPropertySetterBuilder : IVirtualPropertyPropertySetterCallbackBuilder, IVirtualPropertyPropertySetterVerifier, IVirtualPropertyPropertySetterUseBaseImplementationBuilder
         {
-            IVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -367,11 +366,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                         return this;
                     }
 
-                    IVirtualPropertyPropertySetterUseBaseImplementationBuilder IVirtualPropertyPropertySetterBuilder.Then()
-                    {
-                        return this;
-                    }
-
                     IVirtualPropertyPropertySetterFluentBuilder IVirtualPropertyPropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
                     {
                         _setterImposter.UseBaseImplementation();
@@ -474,7 +468,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IVirtualPropertyWithInitializerPropertySetterBuilder : IVirtualPropertyWithInitializerPropertySetterCallbackBuilder, IVirtualPropertyWithInitializerPropertySetterVerifier, IVirtualPropertyWithInitializerPropertySetterUseBaseImplementationBuilder
         {
-            IVirtualPropertyWithInitializerPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -739,11 +732,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     IVirtualPropertyWithInitializerPropertySetterUseBaseImplementationBuilder IVirtualPropertyWithInitializerPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    IVirtualPropertyWithInitializerPropertySetterUseBaseImplementationBuilder IVirtualPropertyWithInitializerPropertySetterBuilder.Then()
                     {
                         return this;
                     }

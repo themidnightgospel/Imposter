@@ -98,7 +98,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISPropertySetterBuilder : ISPropertySetterCallbackBuilder, ISPropertySetterVerifier, ISPropertySetterUseBaseImplementationBuilder
         {
-            ISPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -363,11 +362,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     ISPropertySetterUseBaseImplementationBuilder ISPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    ISPropertySetterUseBaseImplementationBuilder ISPropertySetterBuilder.Then()
                     {
                         return this;
                     }
