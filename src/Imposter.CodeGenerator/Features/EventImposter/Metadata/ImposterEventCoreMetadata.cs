@@ -16,6 +16,8 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly TypeSyntax HandlerTypeSyntax;
 
+    internal readonly TypeSyntax NullableAwareHandlerTypeSyntax;
+
     internal readonly TypeSyntax HandlerArgTypeSyntax;
 
     internal readonly EventParameterMetadata[] Parameters;
@@ -32,6 +34,7 @@ internal readonly ref struct ImposterEventCoreMetadata
         Name = eventSymbol.Name;
         DisplayName = $"{eventSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
         HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntax(eventSymbol.Type);
+        NullableAwareHandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(eventSymbol.Type);
         HandlerArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(HandlerTypeSyntax);
 
         if (eventSymbol.Type is not INamedTypeSymbol delegateSymbol || delegateSymbol.DelegateInvokeMethod is null)

@@ -751,7 +751,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
             }
 
-            protected override event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> CustomAsyncEvent
+            protected override event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>? CustomAsyncEvent
             {
                 add
                 {
@@ -772,7 +772,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            protected override event global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> TaskBasedEvent
+            protected override event global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>? TaskBasedEvent
             {
                 add
                 {
@@ -793,7 +793,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            protected override event global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> ValueTaskBasedEvent
+            protected override event global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>? ValueTaskBasedEvent
             {
                 add
                 {

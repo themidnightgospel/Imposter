@@ -3881,7 +3881,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            protected override event global::System.EventHandler ProtectedVirtualEvent
+            protected override event global::System.EventHandler? ProtectedVirtualEvent
             {
                 add
                 {

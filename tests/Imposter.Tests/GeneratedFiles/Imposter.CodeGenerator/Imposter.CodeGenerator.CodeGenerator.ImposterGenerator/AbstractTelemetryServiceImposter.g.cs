@@ -1556,7 +1556,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            public override event global::System.EventHandler StreamAdvanced
+            public override event global::System.EventHandler? StreamAdvanced
             {
                 add
                 {

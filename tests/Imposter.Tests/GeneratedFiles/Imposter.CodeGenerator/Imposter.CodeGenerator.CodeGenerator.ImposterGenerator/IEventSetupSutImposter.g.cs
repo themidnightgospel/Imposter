@@ -852,7 +852,7 @@ namespace Imposter.Tests.Features.EventImposter
                 this._imposter = _imposter;
             }
 
-            public event global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> AsyncSomethingHappened
+            public event global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>? AsyncSomethingHappened
             {
                 add
                 {
@@ -867,7 +867,7 @@ namespace Imposter.Tests.Features.EventImposter
                 }
             }
 
-            public event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> CustomAsyncSomethingHappened
+            public event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>? CustomAsyncSomethingHappened
             {
                 add
                 {
@@ -897,7 +897,7 @@ namespace Imposter.Tests.Features.EventImposter
                 }
             }
 
-            public event global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> ValueTaskSomethingHappened
+            public event global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>? ValueTaskSomethingHappened
             {
                 add
                 {
