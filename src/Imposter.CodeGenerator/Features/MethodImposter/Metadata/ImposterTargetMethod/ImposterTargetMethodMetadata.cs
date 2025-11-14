@@ -66,8 +66,6 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 
-    internal readonly SyntaxList<TypeParameterConstraintClauseSyntax> GenericTypeConstraintClauses;
-
     internal readonly string Namespace;
 
     internal bool IsAsync { get; }
@@ -94,7 +92,6 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
-        GenericTypeConstraintClauses = SyntaxFactory.List(SyntaxFactoryHelper.TypeParameterConstraintClauses(Symbol));
 
         var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         TargetGenericTypeArguments = Symbol.TypeParameters
@@ -129,15 +126,16 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         return new NameSet(names);
     }
 
-    private static bool IsMethodAsync(IMethodSymbol methodSymbol) =>
-        methodSymbol.ReturnsVoid == false
-        && methodSymbol.ReturnType.AllInterfaces.Any(i => i.ToDisplayString() == "System.Runtime.CompilerServices.IAsyncStateMachine")
-        || (methodSymbol.ReturnType is INamedTypeSymbol namedType &&
-            (namedType.ToDisplayString() == "System.Threading.Tasks.Task" ||
-             namedType.ToDisplayString() == "System.Threading.Tasks.ValueTask" ||
-              (namedType.IsGenericType &&
-               (namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.Task<TResult>" ||
-                namedType.ConstructedFrom.ToDisplayString() == "System.Threading.Tasks.ValueTask<TResult>"))));
+    private static bool IsMethodAsync(IMethodSymbol methodSymbol)
+    {
+        if (methodSymbol.ReturnsVoid == false &&
+            methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface())
+        {
+            return true;
+        }
+
+        return methodSymbol.ReturnType.IsTaskLike();
+    }
 
     internal readonly struct AsMethodMetadata
     {

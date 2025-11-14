@@ -175,6 +175,11 @@ internal static class WellKnownTypes
             public static class CompilerServices
             {
                 internal static NameSyntax Namespace = QualifiedName(Runtime.Namespace, IdentifierName("CompilerServices"));
+
+                internal static TypeSyntax IAsyncStateMachine = QualifiedName(
+                    Namespace,
+                    IdentifierName("IAsyncStateMachine")
+                );
             }
         }
 

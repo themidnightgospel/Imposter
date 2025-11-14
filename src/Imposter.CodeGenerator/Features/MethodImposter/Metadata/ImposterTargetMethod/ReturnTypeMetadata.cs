@@ -20,48 +20,15 @@ internal readonly struct ReturnTypeMetadata
 
     internal ReturnTypeMetadata(ITypeSymbol returnTypeSymbol)
     {
-        var isTask = false;
-        var isGenericTask = false;
-        var isValueTask = false;
-        var isGenericValueTask = false;
-        var supportsAsyncValueResult = false;
-        TypeSyntax? asyncValueTypeSyntax = null;
+        var taskLikeMetadata = returnTypeSymbol.GetTaskLikeMetadata();
 
-        if (returnTypeSymbol is INamedTypeSymbol namedType)
-        {
-            var displayString = namedType.ToDisplayString();
-            isTask = displayString == "System.Threading.Tasks.Task";
-            isValueTask = displayString == "System.Threading.Tasks.ValueTask";
-
-            if (namedType.IsGenericType)
-            {
-                var constructedFrom = namedType.ConstructedFrom.ToDisplayString();
-                isGenericTask = constructedFrom == "System.Threading.Tasks.Task<TResult>";
-                isGenericValueTask = constructedFrom == "System.Threading.Tasks.ValueTask<TResult>";
-
-                if (isGenericTask)
-                {
-                    isTask = true;
-                }
-
-                if (isGenericValueTask)
-                {
-                    isValueTask = true;
-                }
-
-                if (isGenericTask || isGenericValueTask)
-                {
-                    supportsAsyncValueResult = true;
-                    asyncValueTypeSyntax = SyntaxFactoryHelper.TypeSyntax(namedType.TypeArguments[0]);
-                }
-            }
-        }
-
-        IsTask = isTask;
-        IsGenericTask = isGenericTask;
-        IsValueTask = isValueTask;
-        IsGenericValueTask = isGenericValueTask;
-        SupportsAsyncValueResult = supportsAsyncValueResult;
-        AsyncValueTypeSyntax = asyncValueTypeSyntax;
+        IsTask = taskLikeMetadata.IsTask;
+        IsGenericTask = taskLikeMetadata.IsGenericTask;
+        IsValueTask = taskLikeMetadata.IsValueTask;
+        IsGenericValueTask = taskLikeMetadata.IsGenericValueTask;
+        SupportsAsyncValueResult = taskLikeMetadata.SupportsAsyncValueResult;
+        AsyncValueTypeSyntax = taskLikeMetadata.AsyncValueTypeSymbol is null
+            ? null
+            : SyntaxFactoryHelper.TypeSyntax(taskLikeMetadata.AsyncValueTypeSymbol);
     }
 }
