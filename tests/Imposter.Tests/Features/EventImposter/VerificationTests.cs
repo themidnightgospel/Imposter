@@ -7,7 +7,12 @@ namespace Imposter.Tests.Features.EventImposter
 {
     public class VerificationTests
     {
-        private readonly IEventSetupSutImposter _sut = new IEventSetupSutImposter();
+        private readonly IEventSetupSutImposter _sut =
+#if USE_CSHARP14
+            IEventSetupSut.Imposter();
+#else
+            new IEventSetupSutImposter();
+#endif
 
         [Fact]
         public void GivenSubscriptions_WhenVerifyingSubscribedCounts_ShouldMatch()
@@ -64,4 +69,3 @@ namespace Imposter.Tests.Features.EventImposter
         }
     }
 }
-

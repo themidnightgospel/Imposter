@@ -8,7 +8,12 @@ namespace Imposter.Tests.Features.IndexerImposter
 {
     public class GetterTests
     {
-        private readonly IIndexerSetupSutImposter _sut = new IIndexerSetupSutImposter();
+        private readonly IIndexerSetupSutImposter _sut =
+#if USE_CSHARP14
+            IIndexerSetupSut.Imposter();
+#else
+            new IIndexerSetupSutImposter();
+#endif
 
         [Fact]
         public void GivenConfiguredGetter_WhenAccessed_ThenReturnsConfiguredValue()

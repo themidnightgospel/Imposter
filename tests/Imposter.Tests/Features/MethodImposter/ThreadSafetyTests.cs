@@ -8,7 +8,12 @@ namespace Imposter.Tests.Features.MethodImposter
     public class ThreadSafetyTests
     {
         private const int ThreadCount = 200;
-        private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
+        private readonly IMethodSetupFeatureSutImposter _sut =
+#if USE_CSHARP14
+            IMethodSetupFeatureSut.Imposter();
+#else
+            new IMethodSetupFeatureSutImposter();
+#endif
 
         [Fact]
         public void GivenConcurrentOperations_WhenMixingVoidAndReturnMethods_ShouldNotThrowExceptions()

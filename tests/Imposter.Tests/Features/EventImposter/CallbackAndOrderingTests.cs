@@ -8,7 +8,12 @@ namespace Imposter.Tests.Features.EventImposter
 {
     public class CallbackAndOrderingTests
     {
-        private readonly IEventSetupSutImposter _sut = new IEventSetupSutImposter();
+        private readonly IEventSetupSutImposter _sut =
+#if USE_CSHARP14
+            IEventSetupSut.Imposter();
+#else
+            new IEventSetupSutImposter();
+#endif
 
         [Fact]
         public void GivenCallbacks_WhenRaise_ShouldInvokeCallbacksBeforeHandlers()
@@ -39,4 +44,3 @@ namespace Imposter.Tests.Features.EventImposter
         }
     }
 }
-

@@ -8,7 +8,12 @@ namespace Imposter.Tests.Features.IndexerImposter
     public class ThreadSafetyTests
     {
         private const int ThreadCount = 200;
-        private readonly IIndexerSetupSutImposter _sut = new IIndexerSetupSutImposter();
+        private readonly IIndexerSetupSutImposter _sut =
+#if USE_CSHARP14
+            IIndexerSetupSut.Imposter();
+#else
+            new IIndexerSetupSutImposter();
+#endif
 
         [Fact]
         public void GivenConcurrentOperations_WhenMixingGetterAndSetter_ShouldNotThrowExceptions()

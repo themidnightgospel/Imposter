@@ -1,72 +1,90 @@
-name: Publish NuGet Package
+# Derived from Mapperly's packaging script (https://github.com/riok/mapperly) under the MIT License.
+
+name: release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'         # e.g. v1.2.3
-      - 'v*.*.*-*'       # e.g. v1.2.3-alpha, v1.0.0-beta.1, etc.
+  release:
+    types:
+      - published
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  NUGET_SOURCE: 'https://api.nuget.org/v3/index.json'
+
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
-  build-pack-publish:
+  build-and-test:
+    uses: ./.github/workflows/build-and-test.yml
+
+  release:
+    needs: build-and-test
     runs-on: ubuntu-latest
-
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      # Map secret to env so we can safely reference it in conditions
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
+    environment: ${{ github.event.release.prerelease && 'next' || 'stable' }}
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: checkout git
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-      - name: Setup .NET 8
+      - id: extract-version
+        name: extract version
+        run: echo "RELEASE_VERSION=${RELEASE_NAME#v}" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_NAME: ${{ github.event.release.name }}
+
+      - name: extract release notes
+        id: extract-release-notes
+        run: |
+          {
+            echo 'RELEASE_NOTES<<EOF';
+            gh release view '${{ github.event.release.name }}' --json body --jq .body;
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: convert release notes markdown to text
+        id: release-notes-text
+        uses: koistya/strip-markdown@v1
+        with:
+          content: ${{ steps.extract-release-notes.outputs.RELEASE_NOTES }}
+
+      - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Determine version from tag
-        id: ver
-        shell: bash
-        run: |
-          set -euo pipefail
-          tag="${GITHUB_REF_NAME}"
-          # Strip leading 'v' if present (expect tags like v0.1.0)
-          version="${tag#v}"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Restore
-        run: dotnet restore Imposter.sln
-
-      - name: Build (Release)
-        run: dotnet build Imposter.sln -c Release --no-restore
-
-      - name: Test (Release)
-        run: dotnet test Imposter.sln -c Release --no-build --verbosity normal
-
-      - name: Pack (Imposter)
-        run: |
-          dotnet pack src/Imposter.CodeGenerator/Imposter.CodeGenerator.csproj \
-            -c Release \
-            -p:Version=${{ steps.ver.outputs.version }} \
-            -o artifacts/packages
-
-      - name: Publish artifacts
-        uses: actions/upload-artifact@v4
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
         with:
-          name: nuget-packages
-          path: artifacts/packages
+          dotnet-version: '10.0.x'
 
-      - name: Push to NuGet.org
+      - name: install dependencies
+        run: sudo apt update && sudo apt -y install zipmerge # zipmerge is used to merge the multi target nupkg
+
+      - name: build release
+        run: ./build-scripts/build-and-pack.sh
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-            if [ -z "$NUGET_API_KEY" ]; then
-              echo "NUGET_API_KEY is not set. Skipping NuGet publish."
-              exit 0
-            fi
-            
-            echo "Publishing to NuGet.org..."
-            dotnet nuget push artifacts/packages/*.nupkg \
-              --api-key "$NUGET_API_KEY" \
-              --source https://api.nuget.org/v3/index.json \
-              --skip-duplicate
+          RELEASE_NOTES: ${{ steps.release-notes-text.outputs.content }}
+          RELEASE_VERSION: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
+
+      - name: publish nuget
+        run: dotnet nuget push './artifacts/*.nupkg' --source "$NUGET_SOURCE" --api-key '${{ secrets.NUGET_API_KEY }}' --skip-duplicate
+
+      - name: add release assets
+        run: gh release upload "${{ github.event.release.name }}" artifacts/*.nupkg
+        env:
+          GH_TOKEN: ${{ github.token }}
+  docs:
+    needs: release
+    uses: ./.github/workflows/docs.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+    secrets: inherit
