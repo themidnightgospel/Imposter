@@ -25,14 +25,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore solution
-        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true
-
       - name: Test Imposter.CodeGenerator.Tests
-        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION --no-build --list-tests
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true --list-tests
         
   abstractions-tests:
-    name: Imposter.Abstractions & Imposter.CodeGenerator Tests
+    name: Imposter.Abstractions Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -42,11 +39,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore solution
-        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true
-
       - name: Test Imposter.Abstractions.Tests
-        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION --no-build --list-tests
+        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true --list-tests
          
   roslyn-matrix:
     timeout-minutes: 10
