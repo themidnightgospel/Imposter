@@ -79,17 +79,14 @@
                 PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
                 Visible="false"
         />
-        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll"
+        <None Include="$(OutputPath)\Imposter.Abstractions.dll"
                 Pack="true"
                 PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
                 Visible="false"
         />
 
-        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
-        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
-        <None Remove="Imposter.CodeGenerator.Abstractions.dll" />
+        <None Include="$(OutputPath)\Imposter.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+        <None Include="$(OutputPath)\Imposter.Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
 
     </ItemGroup>
-
-
 </Project>
