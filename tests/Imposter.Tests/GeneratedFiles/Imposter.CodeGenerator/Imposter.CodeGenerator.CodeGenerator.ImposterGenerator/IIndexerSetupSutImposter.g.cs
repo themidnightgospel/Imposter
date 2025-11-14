@@ -227,7 +227,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     }
                 }
 
-                private GetterInvocationImposter FindGetterInvocationImposter(IndexerIndexerArguments arguments)
+                private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments)
                 {
                     foreach (var getterInvocationImposter in _getterInvocationImposters)
                     {
@@ -785,7 +785,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     }
                 }
 
-                private GetterInvocationImposter FindGetterInvocationImposter(Indexer_1IndexerArguments arguments)
+                private GetterInvocationImposter? FindGetterInvocationImposter(Indexer_1IndexerArguments arguments)
                 {
                     foreach (var getterInvocationImposter in _getterInvocationImposters)
                     {

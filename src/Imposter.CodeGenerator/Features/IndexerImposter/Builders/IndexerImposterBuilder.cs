@@ -1386,7 +1386,7 @@ internal static class IndexerImposterBuilder
     }
     private static MethodDeclarationSyntax BuildFindGetterInvocationImposterMethod(in ImposterIndexerMetadata indexer)
     {
-        var getterInvocationType = IdentifierName(indexer.GetterImplementation.Invocation.Name);
+        var getterInvocationType = NullableType(IdentifierName(indexer.GetterImplementation.Invocation.Name));
 
         return new MethodDeclarationBuilder(getterInvocationType, "FindGetterInvocationImposter")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

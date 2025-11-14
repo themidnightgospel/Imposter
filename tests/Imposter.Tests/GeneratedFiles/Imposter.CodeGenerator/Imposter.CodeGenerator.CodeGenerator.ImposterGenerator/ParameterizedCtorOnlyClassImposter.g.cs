@@ -1198,7 +1198,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
                 }
 
-                private GetterInvocationImposter FindGetterInvocationImposter(IndexerIndexerArguments arguments)
+                private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments)
                 {
                     foreach (var getterInvocationImposter in _getterInvocationImposters)
                     {
