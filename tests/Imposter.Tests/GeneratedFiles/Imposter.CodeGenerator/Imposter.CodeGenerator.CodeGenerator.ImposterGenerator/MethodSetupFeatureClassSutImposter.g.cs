@@ -112,9 +112,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class BuildLabelAsyncMethodInvocationHistory : IBuildLabelAsyncMethodInvocationHistory
         {
             internal BuildLabelAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.ValueTask<string> Result;
+            internal global::System.Threading.Tasks.ValueTask<string>? Result;
             internal global::System.Exception? Exception;
-            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string> Result, global::System.Exception? Exception)
+            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -527,9 +527,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntSingleParamMethodInvocationHistory : IIntSingleParamMethodInvocationHistory
         {
             internal IntSingleParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -916,9 +916,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class RefOutWithParamsMethodInvocationHistory : IRefOutWithParamsMethodInvocationHistory
         {
             internal RefOutWithParamsArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public RefOutWithParamsMethodInvocationHistory(RefOutWithParamsArguments Arguments, int Result, global::System.Exception? Exception)
+            public RefOutWithParamsMethodInvocationHistory(RefOutWithParamsArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1315,9 +1315,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class SumAsyncMethodInvocationHistory : ISumAsyncMethodInvocationHistory
         {
             internal SumAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task<int> Result;
+            internal global::System.Threading.Tasks.Task<int>? Result;
             internal global::System.Exception? Exception;
-            public SumAsyncMethodInvocationHistory(SumAsyncArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+            public SumAsyncMethodInvocationHistory(SumAsyncArguments Arguments, global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1730,9 +1730,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class ThrowingCalculationMethodInvocationHistory : IThrowingCalculationMethodInvocationHistory
         {
             internal ThrowingCalculationArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ThrowingCalculationMethodInvocationHistory(ThrowingCalculationArguments Arguments, int Result, global::System.Exception? Exception)
+            public ThrowingCalculationMethodInvocationHistory(ThrowingCalculationArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

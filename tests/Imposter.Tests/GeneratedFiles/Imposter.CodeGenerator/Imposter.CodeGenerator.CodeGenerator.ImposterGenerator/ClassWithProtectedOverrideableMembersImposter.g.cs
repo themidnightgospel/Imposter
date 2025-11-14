@@ -115,9 +115,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class InvokeProtectedMethodMethodInvocationHistory : IInvokeProtectedMethodMethodInvocationHistory
         {
             internal InvokeProtectedMethodArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public InvokeProtectedMethodMethodInvocationHistory(InvokeProtectedMethodArguments Arguments, int Result, global::System.Exception? Exception)
+            public InvokeProtectedMethodMethodInvocationHistory(InvokeProtectedMethodArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -498,9 +498,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class ProtectedVirtualMethodMethodInvocationHistory : IProtectedVirtualMethodMethodInvocationHistory
         {
             internal ProtectedVirtualMethodArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ProtectedVirtualMethodMethodInvocationHistory(ProtectedVirtualMethodArguments Arguments, int Result, global::System.Exception? Exception)
+            public ProtectedVirtualMethodMethodInvocationHistory(ProtectedVirtualMethodArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -853,9 +853,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class ReadProtectedPropertyMethodInvocationHistory : IReadProtectedPropertyMethodInvocationHistory
         {
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public ReadProtectedPropertyMethodInvocationHistory(string Result, global::System.Exception? Exception)
+            public ReadProtectedPropertyMethodInvocationHistory(string? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1226,9 +1226,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class ReadProtectedValueMethodInvocationHistory : IReadProtectedValueMethodInvocationHistory
         {
             internal ReadProtectedValueArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ReadProtectedValueMethodInvocationHistory(ReadProtectedValueArguments Arguments, int Result, global::System.Exception? Exception)
+            public ReadProtectedValueMethodInvocationHistory(ReadProtectedValueArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

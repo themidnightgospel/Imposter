@@ -73,9 +73,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericMethodMethodInvocationHistory : IGenericMethodMethodInvocationHistory
         {
             internal GenericMethodArguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, string Result, global::System.Exception? Exception)
+            public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

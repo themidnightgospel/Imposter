@@ -80,9 +80,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
         internal class InvokeProtectedMethodInvocationHistory : IInvokeProtectedMethodInvocationHistory
         {
             internal InvokeProtectedArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public InvokeProtectedMethodInvocationHistory(InvokeProtectedArguments Arguments, int Result, global::System.Exception? Exception)
+            public InvokeProtectedMethodInvocationHistory(InvokeProtectedArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -463,9 +463,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
         internal class ProtectedAddMethodInvocationHistory : IProtectedAddMethodInvocationHistory
         {
             internal ProtectedAddArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ProtectedAddMethodInvocationHistory(ProtectedAddArguments Arguments, int Result, global::System.Exception? Exception)
+            public ProtectedAddMethodInvocationHistory(ProtectedAddArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

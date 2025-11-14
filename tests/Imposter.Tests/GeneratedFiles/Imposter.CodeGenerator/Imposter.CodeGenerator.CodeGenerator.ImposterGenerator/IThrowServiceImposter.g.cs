@@ -52,9 +52,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -375,9 +375,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberAsyncMethodInvocationHistory : IGetNumberAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int> Result;
+            internal global::System.Threading.Tasks.Task<int>? Result;
             internal global::System.Exception? Exception;
-            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;

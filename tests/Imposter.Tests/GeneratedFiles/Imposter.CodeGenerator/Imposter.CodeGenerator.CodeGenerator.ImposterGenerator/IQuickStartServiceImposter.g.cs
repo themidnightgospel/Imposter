@@ -112,9 +112,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class CombineMethodInvocationHistory : ICombineMethodInvocationHistory
         {
             internal CombineArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public CombineMethodInvocationHistory(CombineArguments Arguments, int Result, global::System.Exception? Exception)
+            public CombineMethodInvocationHistory(CombineArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -445,9 +445,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class DoWorkAsyncMethodInvocationHistory : IDoWorkAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task Result;
+            internal global::System.Threading.Tasks.Task? Result;
             internal global::System.Exception? Exception;
-            public DoWorkAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
+            public DoWorkAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -783,9 +783,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1106,9 +1106,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberAsyncMethodInvocationHistory : IGetNumberAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int> Result;
+            internal global::System.Threading.Tasks.Task<int>? Result;
             internal global::System.Exception? Exception;
-            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1487,9 +1487,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
         {
             internal IncrementArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int Result, global::System.Exception? Exception)
+            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1848,9 +1848,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class VirtualComputeMethodInvocationHistory : IVirtualComputeMethodInvocationHistory
         {
             internal VirtualComputeArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public VirtualComputeMethodInvocationHistory(VirtualComputeArguments Arguments, int Result, global::System.Exception? Exception)
+            public VirtualComputeMethodInvocationHistory(VirtualComputeArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

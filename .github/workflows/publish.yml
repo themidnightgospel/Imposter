@@ -84,6 +84,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
   docs:
     needs: release
+    permissions:
+      contents: write
     uses: ./.github/workflows/docs.yml
     with:
       version: ${{ needs.release.outputs.version }}

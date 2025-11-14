@@ -80,9 +80,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class ComputeMethodInvocationHistory : IComputeMethodInvocationHistory
         {
             internal ComputeArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int Result, global::System.Exception? Exception)
+            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

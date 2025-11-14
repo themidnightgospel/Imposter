@@ -562,9 +562,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class FormatMethodInvocationHistory : IFormatMethodInvocationHistory
         {
             internal FormatArguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public FormatMethodInvocationHistory(FormatArguments Arguments, string Result, global::System.Exception? Exception)
+            public FormatMethodInvocationHistory(FormatArguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -949,9 +949,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class Format_1MethodInvocationHistory : IFormat_1MethodInvocationHistory
         {
             internal Format_1Arguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public Format_1MethodInvocationHistory(Format_1Arguments Arguments, string Result, global::System.Exception? Exception)
+            public Format_1MethodInvocationHistory(Format_1Arguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

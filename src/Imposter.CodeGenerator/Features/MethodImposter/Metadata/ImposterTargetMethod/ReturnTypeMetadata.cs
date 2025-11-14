@@ -18,7 +18,9 @@ internal readonly struct ReturnTypeMetadata
 
     internal readonly TypeSyntax? AsyncValueTypeSyntax;
 
-    internal ReturnTypeMetadata(ITypeSymbol returnTypeSymbol)
+    internal readonly TypeSymbolMetadata TypeSymbolMetadata;
+
+    internal ReturnTypeMetadata(ITypeSymbol returnTypeSymbol, bool supportsNullableGenericType)
     {
         var taskLikeMetadata = returnTypeSymbol.GetTaskLikeMetadata();
 
@@ -30,5 +32,6 @@ internal readonly struct ReturnTypeMetadata
         AsyncValueTypeSyntax = taskLikeMetadata.AsyncValueTypeSymbol is null
             ? null
             : SyntaxFactoryHelper.TypeSyntax(taskLikeMetadata.AsyncValueTypeSymbol);
+        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(supportsNullableGenericType);
     }
 }

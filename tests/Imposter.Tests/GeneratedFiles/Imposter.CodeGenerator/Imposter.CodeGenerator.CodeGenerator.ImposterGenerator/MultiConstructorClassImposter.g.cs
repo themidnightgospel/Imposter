@@ -73,9 +73,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class CalculateMethodInvocationHistory : ICalculateMethodInvocationHistory
         {
             internal CalculateArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public CalculateMethodInvocationHistory(CalculateArguments Arguments, int Result, global::System.Exception? Exception)
+            public CalculateMethodInvocationHistory(CalculateArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

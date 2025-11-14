@@ -80,7 +80,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         DisplayName = Symbol.ToFullDisplayName();
         Namespace = Symbol.ContainingNamespace.ToDisplayString();
         ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Symbol.ReturnType);
-        ReturnType = new ReturnTypeMetadata(Symbol.ReturnType);
+        ReturnType = new ReturnTypeMetadata(Symbol.ReturnType, supportsNullableGenericType);
         HasReturnValue = !Symbol.ReturnsVoid;
         HasGenericReturnType = Symbol.ReturnType.TypeKind == TypeKind.TypeParameter;
         SupportsBaseImplementation = Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;

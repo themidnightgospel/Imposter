@@ -84,9 +84,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class CombineMethodInvocationHistory : ICombineMethodInvocationHistory
         {
             internal CombineArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public CombineMethodInvocationHistory(CombineArguments Arguments, int Result, global::System.Exception? Exception)
+            public CombineMethodInvocationHistory(CombineArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

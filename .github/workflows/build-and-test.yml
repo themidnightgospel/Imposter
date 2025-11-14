@@ -15,7 +15,7 @@ env:
 
 jobs:
   baseline-tests:
-    name: Baseline Test Suites
+    name: Imposter.Abstractions & Imposter.CodeGenerator Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -36,7 +36,7 @@ jobs:
          
   roslyn-matrix:
     timeout-minutes: 10
-    name: Test for Roslyn ${{ matrix.roslynVersion }}
+    name: Imposter.Tests / Roslyn ${{ matrix.roslynVersion }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

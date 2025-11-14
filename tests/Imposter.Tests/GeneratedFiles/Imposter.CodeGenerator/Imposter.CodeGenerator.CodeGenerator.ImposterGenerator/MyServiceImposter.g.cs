@@ -91,9 +91,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class AddMethodInvocationHistory : IAddMethodInvocationHistory
         {
             internal AddArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public AddMethodInvocationHistory(AddArguments Arguments, int Result, global::System.Exception? Exception)
+            public AddMethodInvocationHistory(AddArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -474,9 +474,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class MightFailMethodInvocationHistory : IMightFailMethodInvocationHistory
         {
             internal MightFailArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public MightFailMethodInvocationHistory(MightFailArguments Arguments, int Result, global::System.Exception? Exception)
+            public MightFailMethodInvocationHistory(MightFailArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -857,9 +857,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class ProcessAsyncMethodInvocationHistory : IProcessAsyncMethodInvocationHistory
         {
             internal ProcessAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task Result;
+            internal global::System.Threading.Tasks.Task? Result;
             internal global::System.Exception? Exception;
-            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
+            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

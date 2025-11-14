@@ -62,6 +62,25 @@ internal static class TypeSymbolExtensions
             asyncValueTypeSymbol: asyncValueTypeSymbol);
     }
 
+    internal static TypeSymbolMetadata GetTypeSymbolMetadata(this ITypeSymbol? symbol, bool supportsNullableGenericType)
+    {
+        if (symbol is null)
+        {
+            return TypeSymbolMetadata.Empty;
+        }
+
+        var typeSyntax = SyntaxFactoryHelper.TypeSyntax(symbol);
+        var isGenericType = symbol.TypeKind == TypeKind.TypeParameter;
+        var isNullableType = typeSyntax is NullableTypeSyntax;
+        var isConstructedGenericType = typeSyntax is GenericNameSyntax;
+        var shouldConvertToNullable = !isNullableType && !((isGenericType || isConstructedGenericType) && !supportsNullableGenericType);
+        var nullableTypeSyntax = shouldConvertToNullable
+            ? typeSyntax.ToNullableType()
+            : typeSyntax;
+
+        return new TypeSymbolMetadata(typeSyntax, isGenericType, nullableTypeSyntax);
+    }
+
     internal static bool ImplementsAsyncStateMachineInterface(this ITypeSymbol? symbol)
     {
         if (symbol is null)
@@ -115,4 +134,25 @@ internal readonly struct TaskLikeMetadata
     internal bool IsTaskLike => IsTask || IsValueTask;
 
     internal ITypeSymbol? AsyncValueTypeSymbol { get; }
+}
+
+internal readonly struct TypeSymbolMetadata
+{
+    internal static TypeSymbolMetadata Empty => default;
+
+    internal TypeSymbolMetadata(
+        TypeSyntax typeSyntax,
+        bool isGenericType,
+        TypeSyntax nullableTypeSyntax)
+    {
+        TypeSyntax = typeSyntax;
+        IsGenericType = isGenericType;
+        NullableTypeSyntax = nullableTypeSyntax;
+    }
+
+    internal TypeSyntax TypeSyntax { get; }
+
+    internal bool IsGenericType { get; }
+
+    internal TypeSyntax NullableTypeSyntax { get; }
 }

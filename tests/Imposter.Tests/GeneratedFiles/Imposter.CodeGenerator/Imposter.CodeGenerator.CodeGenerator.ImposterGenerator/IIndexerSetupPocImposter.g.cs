@@ -81,9 +81,9 @@ namespace Imposter.Tests.Shared
         internal class IndexerMethodMethodInvocationHistory : IIndexerMethodMethodInvocationHistory
         {
             internal IndexerMethodArguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public IndexerMethodMethodInvocationHistory(IndexerMethodArguments Arguments, string Result, global::System.Exception? Exception)
+            public IndexerMethodMethodInvocationHistory(IndexerMethodArguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

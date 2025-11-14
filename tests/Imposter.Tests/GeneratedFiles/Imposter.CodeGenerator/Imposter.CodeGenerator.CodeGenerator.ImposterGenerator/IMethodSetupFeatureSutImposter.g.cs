@@ -178,9 +178,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncTaskIntNoParamsMethodInvocationHistory : IAsyncTaskIntNoParamsMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int> Result;
+            internal global::System.Threading.Tasks.Task<int>? Result;
             internal global::System.Exception? Exception;
-            public AsyncTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+            public AsyncTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -531,9 +531,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncValueTaskIntNoParamsMethodInvocationHistory : IAsyncValueTaskIntNoParamsMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.ValueTask<int> Result;
+            internal global::System.Threading.Tasks.ValueTask<int>? Result;
             internal global::System.Exception? Exception;
-            public AsyncValueTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
+            public AsyncValueTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.ValueTask<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1356,9 +1356,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodInvocationHistory<TValue, TResult> : IGenericInnerOutParamMethodInvocationHistory
         {
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerOutParamMethodInvocationHistory(global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerOutParamMethodInvocationHistory(global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1806,9 +1806,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerParamsParamMethodInvocationHistory<TValue, TResult> : IGenericInnerParamsParamMethodInvocationHistory
         {
             internal GenericInnerParamsParamArguments<TValue, TResult> Arguments;
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerParamsParamMethodInvocationHistory(GenericInnerParamsParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerParamsParamMethodInvocationHistory(GenericInnerParamsParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -2252,9 +2252,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerRefParamMethodInvocationHistory<TValue, TResult> : IGenericInnerRefParamMethodInvocationHistory
         {
             internal GenericInnerRefParamArguments<TValue, TResult> Arguments;
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerRefParamMethodInvocationHistory(GenericInnerRefParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerRefParamMethodInvocationHistory(GenericInnerRefParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -4834,9 +4834,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntAllRefKindsMethodInvocationHistory : IIntAllRefKindsMethodInvocationHistory
         {
             internal IntAllRefKindsArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntAllRefKindsMethodInvocationHistory(IntAllRefKindsArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntAllRefKindsMethodInvocationHistory(IntAllRefKindsArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -5207,9 +5207,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntInParamMethodInvocationHistory : IIntInParamMethodInvocationHistory
         {
             internal IntInParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntInParamMethodInvocationHistory(IntInParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntInParamMethodInvocationHistory(IntInParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -5540,9 +5540,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntNoParamsMethodInvocationHistory : IIntNoParamsMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntNoParamsMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public IntNoParamsMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -5863,9 +5863,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntOutParamMethodInvocationHistory : IIntOutParamMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntOutParamMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public IntOutParamMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -6234,9 +6234,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntParamsMethodInvocationHistory : IIntParamsMethodInvocationHistory
         {
             internal IntParamsArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntParamsMethodInvocationHistory(IntParamsArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntParamsMethodInvocationHistory(IntParamsArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -6595,9 +6595,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntParamsParamMethodInvocationHistory : IIntParamsParamMethodInvocationHistory
         {
             internal IntParamsParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntParamsParamMethodInvocationHistory(IntParamsParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntParamsParamMethodInvocationHistory(IntParamsParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -6956,9 +6956,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntRefParamMethodInvocationHistory : IIntRefParamMethodInvocationHistory
         {
             internal IntRefParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntRefParamMethodInvocationHistory(IntRefParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntRefParamMethodInvocationHistory(IntRefParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -7317,9 +7317,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntSingleParamMethodInvocationHistory : IIntSingleParamMethodInvocationHistory
         {
             internal IntSingleParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
