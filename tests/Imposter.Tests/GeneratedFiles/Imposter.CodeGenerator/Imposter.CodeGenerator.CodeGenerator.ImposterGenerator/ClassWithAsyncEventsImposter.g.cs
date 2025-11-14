@@ -187,20 +187,26 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _history.Enqueue((sender, args));
                 global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks)
+                foreach (var handler in EnumerateActiveHandlers())
                 {
-                    global::System.Threading.Tasks.Task task = callback(sender, args);
-                    if (task != null)
+                    _handlerInvocations.Enqueue((handler, sender, args));
+                    var task = handler(sender, args);
+                    if (task != default)
                     {
                         pendingTasks.Add(task);
                     }
                 }
 
-                foreach (var handler in EnumerateActiveHandlers())
+                if (pendingTasks.Count > 0)
                 {
-                    _handlerInvocations.Enqueue((handler, sender, args));
-                    global::System.Threading.Tasks.Task task = handler(sender, args);
-                    if (task != null)
+                    await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
+                }
+
+                pendingTasks.Clear();
+                foreach (var callback in _callbacks)
+                {
+                    var task = callback(sender, args);
+                    if (task != default)
                     {
                         pendingTasks.Add(task);
                     }
@@ -422,20 +428,26 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _history.Enqueue((arg1, arg2));
                 global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks)
+                foreach (var handler in EnumerateActiveHandlers())
                 {
-                    global::System.Threading.Tasks.Task task = callback(arg1, arg2);
-                    if (task != null)
+                    _handlerInvocations.Enqueue((handler, arg1, arg2));
+                    var task = handler(arg1, arg2);
+                    if (task != default)
                     {
                         pendingTasks.Add(task);
                     }
                 }
 
-                foreach (var handler in EnumerateActiveHandlers())
+                if (pendingTasks.Count > 0)
                 {
-                    _handlerInvocations.Enqueue((handler, arg1, arg2));
-                    global::System.Threading.Tasks.Task task = handler(arg1, arg2);
-                    if (task != null)
+                    await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
+                }
+
+                pendingTasks.Clear();
+                foreach (var callback in _callbacks)
+                {
+                    var task = callback(arg1, arg2);
+                    if (task != default)
                     {
                         pendingTasks.Add(task);
                     }
@@ -657,20 +669,26 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _history.Enqueue((arg1, arg2));
                 global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-                foreach (var callback in _callbacks)
+                foreach (var handler in EnumerateActiveHandlers())
                 {
-                    global::System.Threading.Tasks.ValueTask task = callback(arg1, arg2);
-                    if (task != null)
+                    _handlerInvocations.Enqueue((handler, arg1, arg2));
+                    var task = handler(arg1, arg2);
+                    if (task != default)
                     {
                         pendingTasks.Add(task.AsTask());
                     }
                 }
 
-                foreach (var handler in EnumerateActiveHandlers())
+                if (pendingTasks.Count > 0)
                 {
-                    _handlerInvocations.Enqueue((handler, arg1, arg2));
-                    global::System.Threading.Tasks.ValueTask task = handler(arg1, arg2);
-                    if (task != null)
+                    await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
+                }
+
+                pendingTasks.Clear();
+                foreach (var callback in _callbacks)
+                {
+                    var task = callback(arg1, arg2);
+                    if (task != default)
                     {
                         pendingTasks.Add(task.AsTask());
                     }

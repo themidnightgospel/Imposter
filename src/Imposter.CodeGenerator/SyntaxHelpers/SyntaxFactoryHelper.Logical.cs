@@ -24,4 +24,10 @@ internal static partial class SyntaxFactoryHelper
 
     internal static BinaryExpressionSyntax IsNull(this ExpressionSyntax left) =>
         BinaryExpression(SyntaxKind.EqualsExpression, left, Null);
+
+    internal static BinaryExpressionSyntax IsNotDefault(this ExpressionSyntax left) =>
+        BinaryExpression(SyntaxKind.NotEqualsExpression, left, Default);
+
+    internal static BinaryExpressionSyntax IsDefault(this ExpressionSyntax left) =>
+        BinaryExpression(SyntaxKind.EqualsExpression, left, Default);
 }
