@@ -142,7 +142,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<int>?, int>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private global::System.Func<global::System.Func<int>?, int> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<int>?, int> _lastReturnValue = _ => default;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -250,8 +250,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    if (_returnValues.TryDequeue(out var returnValue))
-                        _lastReturnValue = returnValue;
+                    _returnValues.TryDequeue(out var returnValue);
                     var nextReturnValue = returnValue ?? _lastReturnValue;
                     if (nextReturnValue != null)
                         _lastReturnValue = nextReturnValue;
@@ -424,16 +423,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     });
                 }
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class ClassWithInitialValuePropertyImposterExtensions
-    {
-        extension(global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty imposter)
-        {
-            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValuePropertyImposter Imposter() => new global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValuePropertyImposter();
-            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValuePropertyImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValuePropertyImposter(invocationBehavior);
         }
     }
 }

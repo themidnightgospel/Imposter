@@ -52,9 +52,9 @@ namespace Imposter.Tests.Docs.GettingStarted
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -81,7 +81,6 @@ namespace Imposter.Tests.Docs.GettingStarted
             }
         }
 
-        // int IMyService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -137,7 +136,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(() => DefaultResultGenerator() ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private GetNumberDelegate? _resultGenerator;
@@ -153,7 +152,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = () => DefaultResultGenerator() ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke();
@@ -191,7 +190,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     };
                 }
 
-                internal static int? DefaultResultGenerator()
+                internal static int DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -228,7 +227,6 @@ namespace Imposter.Tests.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IMyService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -405,9 +403,9 @@ namespace Imposter.Tests.Docs.GettingStarted
         internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
         {
             internal IncrementArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
+            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -435,7 +433,6 @@ namespace Imposter.Tests.Docs.GettingStarted
             }
         }
 
-        // int IMyService.Increment(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -494,7 +491,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private IncrementDelegate? _resultGenerator;
@@ -510,7 +507,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(value);
@@ -548,7 +545,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -585,7 +582,6 @@ namespace Imposter.Tests.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IMyService.Increment(int value)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }
@@ -1232,7 +1228,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -1531,15 +1527,6 @@ namespace Imposter.Tests.Docs.GettingStarted
                     _imposter._IndexerIndexer.Set(key, value);
                 }
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IMyServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Docs.GettingStarted.IMyService imposter)
-        {
-            public static global::Imposter.Tests.Docs.GettingStarted.IMyServiceImposter Imposter() => new global::Imposter.Tests.Docs.GettingStarted.IMyServiceImposter();
         }
     }
 }

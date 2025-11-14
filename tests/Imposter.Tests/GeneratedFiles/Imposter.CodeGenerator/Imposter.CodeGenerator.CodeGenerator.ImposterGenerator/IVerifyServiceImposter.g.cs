@@ -84,9 +84,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class CombineMethodInvocationHistory : ICombineMethodInvocationHistory
         {
             internal CombineArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public CombineMethodInvocationHistory(CombineArguments Arguments, int? Result, global::System.Exception? Exception)
+            public CombineMethodInvocationHistory(CombineArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -114,7 +114,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IVerifyService.Combine(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CombineMethodInvocationImposterGroup
         {
@@ -173,7 +172,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int a, int b) => DefaultResultGenerator(a, b) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private CombineDelegate? _resultGenerator;
@@ -189,7 +188,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int a, int b) => DefaultResultGenerator(a, b) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(a, b);
@@ -227,7 +226,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int a, int b)
+                internal static int DefaultResultGenerator(int a, int b)
                 {
                     return default;
                 }
@@ -264,7 +263,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IVerifyService.Combine(int a, int b)
         public interface ICombineMethodImposterBuilder : ICombineMethodInvocationImposterGroup, ICombineMethodInvocationImposterGroupCallback, CombineInvocationVerifier
         {
         }
@@ -475,7 +473,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // void IVerifyService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -607,7 +604,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IVerifyService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }
@@ -760,15 +756,6 @@ namespace Imposter.Tests.Docs.Methods
             {
                 return _imposter._combineMethodImposter.Invoke(a, b);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IVerifyServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Docs.Methods.IVerifyService imposter)
-        {
-            public static global::Imposter.Tests.Docs.Methods.IVerifyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.IVerifyServiceImposter();
         }
     }
 }

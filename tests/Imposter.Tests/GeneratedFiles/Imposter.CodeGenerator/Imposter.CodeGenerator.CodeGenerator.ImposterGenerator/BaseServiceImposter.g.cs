@@ -45,9 +45,9 @@ namespace Imposter.Tests.Docs.GettingStarted
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -74,7 +74,6 @@ namespace Imposter.Tests.Docs.GettingStarted
             }
         }
 
-        // virtual int BaseService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -130,7 +129,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(() => DefaultResultGenerator() ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private GetNumberDelegate? _resultGenerator;
@@ -152,7 +151,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = () => DefaultResultGenerator() ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke();
@@ -199,7 +198,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator()
+                internal static int DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -237,7 +236,6 @@ namespace Imposter.Tests.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int BaseService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -397,16 +395,6 @@ namespace Imposter.Tests.Docs.GettingStarted
             {
                 return _imposter._getNumberMethodImposter.Invoke(base.GetNumber);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class BaseServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Docs.GettingStarted.BaseService imposter)
-        {
-            public static global::Imposter.Tests.Docs.GettingStarted.BaseServiceImposter Imposter() => new global::Imposter.Tests.Docs.GettingStarted.BaseServiceImposter();
-            public static global::Imposter.Tests.Docs.GettingStarted.BaseServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Docs.GettingStarted.BaseServiceImposter(invocationBehavior);
         }
     }
 }

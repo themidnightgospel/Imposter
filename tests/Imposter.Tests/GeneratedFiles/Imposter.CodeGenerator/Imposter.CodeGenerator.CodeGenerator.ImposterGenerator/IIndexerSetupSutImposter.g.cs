@@ -348,7 +348,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -906,7 +906,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback>();
-                    private global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal Indexer_1IndexerArgumentsCriteria Criteria { get; private set; }
@@ -1191,15 +1191,6 @@ namespace Imposter.Tests.Features.IndexerImposter
                     _imposter._Indexer_1Indexer.Set(key1, value);
                 }
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IIndexerSetupSutImposterExtensions
-    {
-        extension(global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut imposter)
-        {
-            public static global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSutImposter();
         }
     }
 }

@@ -684,7 +684,9 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
+#pragma warning disable CS4014
             task.ShouldNotBeNull();
+#pragma warning restore CS4014
             
             var result = await task;
             result.ShouldBe(0);
@@ -710,7 +712,9 @@ namespace Imposter.Tests.Features.MethodImposter
 
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
+#pragma warning disable CS4014
             task.ShouldNotBeNull();
+#pragma warning restore CS4014
             task.IsCompleted.ShouldBeTrue();
 
             var result = await task;

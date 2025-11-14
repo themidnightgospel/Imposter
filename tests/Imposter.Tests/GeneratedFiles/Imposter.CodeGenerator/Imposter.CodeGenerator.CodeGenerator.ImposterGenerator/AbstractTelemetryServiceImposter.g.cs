@@ -80,9 +80,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class ComputeMethodInvocationHistory : IComputeMethodInvocationHistory
         {
             internal ComputeArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int? Result, global::System.Exception? Exception)
+            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -110,7 +110,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // abstract int AbstractTelemetryService.Compute(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeMethodInvocationImposterGroup
         {
@@ -169,7 +168,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private ComputeDelegate? _resultGenerator;
@@ -185,7 +184,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(value);
@@ -223,7 +222,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -260,7 +259,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // abstract int AbstractTelemetryService.Compute(int value)
         public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
@@ -473,7 +471,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // abstract int? AbstractTelemetryService.ComputeNullable(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeNullableMethodInvocationImposterGroup
         {
@@ -623,7 +620,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // abstract int? AbstractTelemetryService.ComputeNullable(int value)
         public interface IComputeNullableMethodImposterBuilder : IComputeNullableMethodInvocationImposterGroup, IComputeNullableMethodInvocationImposterGroupCallback, ComputeNullableInvocationVerifier
         {
         }
@@ -882,7 +878,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -990,8 +986,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    if (_returnValues.TryDequeue(out var returnValue))
-                        _lastReturnValue = returnValue;
+                    _returnValues.TryDequeue(out var returnValue);
                     var nextReturnValue = returnValue ?? _lastReturnValue;
                     if (nextReturnValue != null)
                         _lastReturnValue = nextReturnValue;
@@ -1252,7 +1247,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1360,8 +1355,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    if (_returnValues.TryDequeue(out var returnValue))
-                        _lastReturnValue = returnValue;
+                    _returnValues.TryDequeue(out var returnValue);
                     var nextReturnValue = returnValue ?? _lastReturnValue;
                     if (nextReturnValue != null)
                         _lastReturnValue = nextReturnValue;
@@ -2010,7 +2004,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -2573,7 +2567,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>, int?>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>, int?>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback>();
-                    private global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>, int?>? _lastReturnValue;
+                    private volatile global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>, int?>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal Indexer_1IndexerArgumentsCriteria Criteria { get; private set; }
@@ -2920,16 +2914,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _imposter._Indexer_1Indexer.Set(index, indexNullable, value);
                 }
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class AbstractTelemetryServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService imposter)
-        {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryServiceImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryServiceImposter();
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryServiceImposter(invocationBehavior);
         }
     }
 }

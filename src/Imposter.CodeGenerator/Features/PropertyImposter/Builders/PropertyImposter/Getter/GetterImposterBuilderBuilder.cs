@@ -100,7 +100,7 @@ internal static class GetterImposterBuilderBuilder
         SingleVariableField(
             getterImposterBuilder.LastReturnValueField.TypeSyntax,
             getterImposterBuilder.LastReturnValueField.Name,
-            TokenList(Token(SyntaxKind.PrivateKeyword)),
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword)),
             DiscardParameterGoesTo(Default)
         );
 
@@ -363,21 +363,17 @@ internal static class GetterImposterBuilderBuilder
         static StatementSyntax DequeNextGetterReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,
             string variableName) =>
-            IfStatement(
-                IdentifierName(builder.ReturnValuesField.Name)
-                    .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                    .Call(
-                        Argument(
-                            null,
-                            Token(SyntaxKind.OutKeyword),
-                            DeclarationExpression(
-                                Var,
-                                SingleVariableDesignation(Identifier(variableName))))
-                    ),
-                IdentifierName(builder.LastReturnValueField.Name)
-                    .Assign(IdentifierName(variableName))
-                    .ToStatementSyntax()
-            );
+            IdentifierName(builder.ReturnValuesField.Name)
+                .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
+                .Call(
+                    Argument(
+                        null,
+                        Token(SyntaxKind.OutKeyword),
+                        DeclarationExpression(
+                            Var,
+                            SingleVariableDesignation(Identifier(variableName))))
+                )
+                .ToStatementSyntax();
 
         static LocalDeclarationStatementSyntax DeclareNextGetterReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,
