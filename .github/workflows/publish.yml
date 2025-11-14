@@ -35,20 +35,20 @@ jobs:
 
       - id: extract-version
         name: extract version
-        run: echo "RELEASE_VERSION=${RELEASE_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: echo "RELEASE_VERSION=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
         env:
-          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
 
       - name: extract release notes
         id: extract-release-notes
         run: |
           {
-            echo 'RELEASE_NOTES<<EOF';
-            gh release view '${{ github.event.release.tag_name }}' --json body --jq .body;
+            echo 'RELEASE_NOTES<<EOF'
+            printf '%s\n' "$RELEASE_BODY"
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
         env:
-          GH_TOKEN: ${{ github.token }}
+          RELEASE_BODY: ${{ github.event.release.body }}
 
       - name: convert release notes markdown to text
         id: release-notes-text
