@@ -679,7 +679,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut
         {
-            IPropertySetupSutImposter _imposter;
+            private readonly IPropertySetupSutImposter _imposter;
             public ImposterTargetInstance(IPropertySetupSutImposter _imposter)
             {
                 this._imposter = _imposter;

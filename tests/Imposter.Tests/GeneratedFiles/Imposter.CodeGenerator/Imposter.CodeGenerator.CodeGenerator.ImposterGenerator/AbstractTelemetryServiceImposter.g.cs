@@ -1517,22 +1517,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._StreamAdvanced = new StreamAdvancedEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.this[int index]");
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService
         {
-            AbstractTelemetryServiceImposter _imposter;
-            internal void InitializeImposter(AbstractTelemetryServiceImposter imposter)
+            private readonly AbstractTelemetryServiceImposter _imposter;
+            internal ImposterTargetInstance(AbstractTelemetryServiceImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             public override int Compute(int value)

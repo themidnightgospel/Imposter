@@ -679,8 +679,9 @@ namespace Imposter.Tests.Features.MethodImposter
             });
             syncException.ShouldBeNull();
 
-            pendingTask.ShouldNotBeNull();
-            pendingTask!.IsFaulted.ShouldBeTrue();
+#pragma warning disable CS4014
+            pendingTask.ShouldNotBeNull().IsFaulted.ShouldBeTrue();
+#pragma warning restore CS4014
 
             var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await pendingTask!);
             exception.ShouldBe(expectedException);

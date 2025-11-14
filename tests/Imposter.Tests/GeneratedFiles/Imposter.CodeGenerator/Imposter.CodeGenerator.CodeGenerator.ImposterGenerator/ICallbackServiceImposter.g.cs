@@ -1123,7 +1123,7 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.ICallbackService
         {
-            ICallbackServiceImposter _imposter;
+            private readonly ICallbackServiceImposter _imposter;
             public ImposterTargetInstance(ICallbackServiceImposter _imposter)
             {
                 this._imposter = _imposter;

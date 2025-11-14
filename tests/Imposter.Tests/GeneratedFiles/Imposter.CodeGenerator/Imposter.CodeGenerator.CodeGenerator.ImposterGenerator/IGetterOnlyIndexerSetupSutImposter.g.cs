@@ -456,7 +456,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut
         {
-            IGetterOnlyIndexerSetupSutImposter _imposter;
+            private readonly IGetterOnlyIndexerSetupSutImposter _imposter;
             public ImposterTargetInstance(IGetterOnlyIndexerSetupSutImposter _imposter)
             {
                 this._imposter = _imposter;

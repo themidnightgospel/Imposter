@@ -767,22 +767,17 @@ namespace Imposter.Tests.Features.PropertyImposter
         {
             this._VirtualPropertyPropertyBuilderField = new VirtualPropertyPropertyBuilder(invocationBehavior);
             this._VirtualPropertyWithInitializerPropertyBuilderField = new VirtualPropertyWithInitializerPropertyBuilder(invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty
         {
-            ClassWithVirtualPropertyImposter _imposter;
-            internal void InitializeImposter(ClassWithVirtualPropertyImposter imposter)
+            private readonly ClassWithVirtualPropertyImposter _imposter;
+            internal ImposterTargetInstance(ClassWithVirtualPropertyImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             public override string VirtualProperty

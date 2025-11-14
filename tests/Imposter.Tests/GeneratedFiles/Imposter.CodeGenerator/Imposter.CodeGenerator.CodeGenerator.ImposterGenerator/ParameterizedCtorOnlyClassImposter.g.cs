@@ -1605,22 +1605,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.this[int index]");
-            this._imposterInstance = new ImposterTargetInstance(seed, name);
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this, seed, name);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass
         {
-            ParameterizedCtorOnlyClassImposter _imposter;
-            internal void InitializeImposter(ParameterizedCtorOnlyClassImposter imposter)
+            private readonly ParameterizedCtorOnlyClassImposter _imposter;
+            internal ImposterTargetInstance(ParameterizedCtorOnlyClassImposter _imposter, int seed, string name) : base(seed, name)
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance(int seed, string name) : base(seed, name)
-            {
+                this._imposter = _imposter;
             }
 
             public override int Compute(int value)

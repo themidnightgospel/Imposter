@@ -28,7 +28,7 @@ namespace Imposter.Tests.Features.EventImposter
         public async Task GivenAsyncCallbackReturnsNullTask_WhenRaiseAsync_ShouldNotThrow()
         {
             // Delegate returns null; generator handles null by skipping await
-            _sut.AsyncSomethingHappened.Callback((s, e) => null);
+            _sut.AsyncSomethingHappened.Callback((s, e) => null!);
 
             await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
 

@@ -846,7 +846,7 @@ namespace Imposter.Tests.Features.EventImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.EventImposter.IEventSetupSut
         {
-            IEventSetupSutImposter _imposter;
+            private readonly IEventSetupSutImposter _imposter;
             public ImposterTargetInstance(IEventSetupSutImposter _imposter)
             {
                 this._imposter = _imposter;

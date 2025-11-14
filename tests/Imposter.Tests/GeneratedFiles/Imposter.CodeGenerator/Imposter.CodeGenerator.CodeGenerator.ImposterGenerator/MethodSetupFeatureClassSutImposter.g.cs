@@ -2426,22 +2426,17 @@ namespace Imposter.Tests.Features.MethodImposter
             this._buildLabelAsyncMethodImposter = new BuildLabelAsyncMethodImposter(_buildLabelAsyncMethodInvocationHistoryCollection, invocationBehavior);
             this._refOutWithParamsMethodImposter = new RefOutWithParamsMethodImposter(_refOutWithParamsMethodInvocationHistoryCollection, invocationBehavior);
             this._throwingCalculationMethodImposter = new ThrowingCalculationMethodImposter(_throwingCalculationMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut
         {
-            MethodSetupFeatureClassSutImposter _imposter;
-            internal void InitializeImposter(MethodSetupFeatureClassSutImposter imposter)
+            private readonly MethodSetupFeatureClassSutImposter _imposter;
+            internal ImposterTargetInstance(MethodSetupFeatureClassSutImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             internal override int IntSingleParam(int age)

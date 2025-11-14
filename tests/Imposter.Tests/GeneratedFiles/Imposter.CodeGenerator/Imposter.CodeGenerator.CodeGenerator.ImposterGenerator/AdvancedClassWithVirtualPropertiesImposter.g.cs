@@ -1020,22 +1020,17 @@ namespace Imposter.Tests.Features.PropertyImposter
             this._SetterOnlyVirtualPropertyPropertyBuilderField = new SetterOnlyVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ThrowingGetterVirtualPropertyPropertyBuilderField = new ThrowingGetterVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ThrowingSetterVirtualPropertyPropertyBuilderField = new ThrowingSetterVirtualPropertyPropertyBuilder(invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties
         {
-            AdvancedClassWithVirtualPropertiesImposter _imposter;
-            internal void InitializeImposter(AdvancedClassWithVirtualPropertiesImposter imposter)
+            private readonly AdvancedClassWithVirtualPropertiesImposter _imposter;
+            internal ImposterTargetInstance(AdvancedClassWithVirtualPropertiesImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             public override string GetterOnlyVirtualProperty

@@ -741,7 +741,7 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IVerifyService
         {
-            IVerifyServiceImposter _imposter;
+            private readonly IVerifyServiceImposter _imposter;
             public ImposterTargetInstance(IVerifyServiceImposter _imposter)
             {
                 this._imposter = _imposter;

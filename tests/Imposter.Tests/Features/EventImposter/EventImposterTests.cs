@@ -109,7 +109,7 @@ namespace Imposter.Tests.Features.EventImposter
 
             Should.NotThrow(() =>
                 _sut.CustomAsyncSomethingHappened.Raised(
-                    Arg<object?>.Is(s => s == sender),
+                    Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Is(a => a == args),
                     Count.Exactly(1)));
         }
@@ -126,7 +126,7 @@ namespace Imposter.Tests.Features.EventImposter
 
             Should.NotThrow(() =>
                 _sut.ValueTaskSomethingHappened.Raised(
-                    Arg<object?>.Is(s => s == sender),
+                    Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Is(a => a == args),
                     Count.Exactly(1)));
         }

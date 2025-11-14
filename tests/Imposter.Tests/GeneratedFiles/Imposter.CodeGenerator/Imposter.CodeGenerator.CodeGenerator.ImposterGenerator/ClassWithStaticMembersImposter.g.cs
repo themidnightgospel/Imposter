@@ -25,22 +25,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         public ClassWithStaticMembersImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithStaticMembers
         {
-            ClassWithStaticMembersImposter _imposter;
-            internal void InitializeImposter(ClassWithStaticMembersImposter imposter)
+            private readonly ClassWithStaticMembersImposter _imposter;
+            internal ImposterTargetInstance(ClassWithStaticMembersImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
         }
     }
