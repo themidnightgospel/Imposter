@@ -913,6 +913,15 @@ namespace Imposter.Tests.Features.EventImposter
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class IEventSetupSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.EventImposter.IEventSetupSut imposter)
+        {
+            public static global::Imposter.Tests.Features.EventImposter.IEventSetupSutImposter Imposter() => new global::Imposter.Tests.Features.EventImposter.IEventSetupSutImposter();
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

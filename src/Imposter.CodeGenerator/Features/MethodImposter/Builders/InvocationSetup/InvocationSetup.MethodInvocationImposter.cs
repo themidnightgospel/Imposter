@@ -55,7 +55,7 @@ internal static partial class InvocationSetupBuilder
             body.AddStatement(
                 IdentifierName("Default")
                     .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
-                    .Call(Argument(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)))
+                    .Call(Argument(DefaultResultGeneratorDelegate(method)))
                     .ToStatementSyntax());
         }
         else
@@ -63,7 +63,7 @@ internal static partial class InvocationSetupBuilder
             body.AddStatement(
                 IdentifierName("Default")
                     .Dot(IdentifierName("_resultGenerator"))
-                    .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name))
+                    .Assign(DefaultResultGeneratorDelegate(method))
                     .ToStatementSyntax());
         }
 
@@ -152,7 +152,7 @@ internal static partial class InvocationSetupBuilder
                                             Argument(IdentifierName("methodDisplayName"))
                                                 .AsSingleArgumentListSyntax())))),
                         IdentifierName("_resultGenerator")
-                            .Assign(IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name)).ToStatementSyntax())));
+                            .Assign(DefaultResultGeneratorDelegate(method)).ToStatementSyntax())));
 
         if (method.Symbol.ReturnsVoid)
         {
@@ -344,6 +344,24 @@ internal static partial class InvocationSetupBuilder
                         .ToStatementSyntax()))
             .Build();
 
+    private static ExpressionSyntax DefaultResultGeneratorDelegate(in ImposterTargetMethodMetadata method)
+    {
+        var defaultResultGenerator = IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name);
+
+        if (!method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnsNullable)
+        {
+            return defaultResultGenerator;
+        }
+
+        var invocation = defaultResultGenerator.Call(ArgumentListSyntax(method.Symbol.Parameters));
+        var defaultValue = DefaultExpression(method.ReturnTypeSyntax);
+        var coalescedExpression = BinaryExpression(SyntaxKind.CoalesceExpression, invocation, defaultValue);
+
+        return ParenthesizedLambdaExpression()
+            .WithParameterList(method.Parameters.ParameterListSyntax)
+            .WithExpressionBody(coalescedExpression);
+    }
+
     private static MethodDeclarationSyntax ReturnsAsyncMethod(in ImposterTargetMethodMetadata method)
     {
         var returnsAsync = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
@@ -457,3 +475,4 @@ internal static partial class InvocationSetupBuilder
             .Call(Argument(exceptionExpression).AsSingleArgumentListSyntax());
     }
 }
+

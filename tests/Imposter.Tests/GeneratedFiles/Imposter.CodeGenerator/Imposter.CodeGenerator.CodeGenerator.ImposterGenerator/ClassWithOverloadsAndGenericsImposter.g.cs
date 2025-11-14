@@ -104,9 +104,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory
         {
             internal EchoArguments<T> Arguments;
-            internal T Result;
+            internal T? Result;
             internal global::System.Exception? Exception;
-            public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T Result, global::System.Exception? Exception)
+            public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -159,6 +159,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup<T>
         {
@@ -337,6 +338,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>
         {
         }
@@ -562,9 +564,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class FormatMethodInvocationHistory : IFormatMethodInvocationHistory
         {
             internal FormatArguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public FormatMethodInvocationHistory(FormatArguments Arguments, string Result, global::System.Exception? Exception)
+            public FormatMethodInvocationHistory(FormatArguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -592,6 +594,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class FormatMethodInvocationImposterGroup
         {
@@ -650,7 +653,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(string));
                 }
 
                 private FormatDelegate? _resultGenerator;
@@ -672,7 +675,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(string);
                     }
 
                     string result = _resultGenerator.Invoke(value);
@@ -719,7 +722,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string DefaultResultGenerator(int value)
+                internal static string? DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -757,6 +760,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         public interface IFormatMethodImposterBuilder : IFormatMethodInvocationImposterGroup, IFormatMethodInvocationImposterGroupCallback, FormatInvocationVerifier
         {
         }
@@ -949,9 +953,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class Format_1MethodInvocationHistory : IFormat_1MethodInvocationHistory
         {
             internal Format_1Arguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public Format_1MethodInvocationHistory(Format_1Arguments Arguments, string Result, global::System.Exception? Exception)
+            public Format_1MethodInvocationHistory(Format_1Arguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -979,6 +983,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class Format_1MethodInvocationImposterGroup
         {
@@ -1037,7 +1042,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((string value, int padding) => DefaultResultGenerator(value, padding) ?? default(string));
                 }
 
                 private Format_1Delegate? _resultGenerator;
@@ -1059,7 +1064,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (string value, int padding) => DefaultResultGenerator(value, padding) ?? default(string);
                     }
 
                     string result = _resultGenerator.Invoke(value, padding);
@@ -1106,7 +1111,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string DefaultResultGenerator(string value, int padding)
+                internal static string? DefaultResultGenerator(string value, int padding)
                 {
                     return default;
                 }
@@ -1144,6 +1149,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         public interface IFormat_1MethodImposterBuilder : IFormat_1MethodInvocationImposterGroup, IFormat_1MethodInvocationImposterGroupCallback, Format_1InvocationVerifier
         {
         }
@@ -1346,9 +1352,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class SelectFirstMethodInvocationHistory<TFirst, TSecond> : ISelectFirstMethodInvocationHistory
         {
             internal SelectFirstArguments<TFirst, TSecond> Arguments;
-            internal TFirst Result;
+            internal TFirst? Result;
             internal global::System.Exception? Exception;
-            public SelectFirstMethodInvocationHistory(SelectFirstArguments<TFirst, TSecond> Arguments, TFirst Result, global::System.Exception? Exception)
+            public SelectFirstMethodInvocationHistory(SelectFirstArguments<TFirst, TSecond> Arguments, TFirst? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1401,6 +1407,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>
         {
@@ -1579,6 +1586,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         public interface ISelectFirstMethodImposterBuilder<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond>, ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>, SelectFirstInvocationVerifier<TFirst, TSecond>
         {
         }
@@ -1800,6 +1808,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst);
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ClassWithOverloadsAndGenericsImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics imposter)
+        {
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter();
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter(invocationBehavior);
         }
     }
 }

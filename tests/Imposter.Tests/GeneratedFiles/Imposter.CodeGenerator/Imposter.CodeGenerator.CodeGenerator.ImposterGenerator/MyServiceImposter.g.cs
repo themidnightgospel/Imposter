@@ -91,9 +91,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class AddMethodInvocationHistory : IAddMethodInvocationHistory
         {
             internal AddArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public AddMethodInvocationHistory(AddArguments Arguments, int Result, global::System.Exception? Exception)
+            public AddMethodInvocationHistory(AddArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -121,6 +121,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // virtual int MyService.Add(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AddMethodInvocationImposterGroup
         {
@@ -179,7 +180,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int a, int b) => DefaultResultGenerator(a, b) ?? default(int));
                 }
 
                 private AddDelegate? _resultGenerator;
@@ -201,7 +202,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int a, int b) => DefaultResultGenerator(a, b) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(a, b);
@@ -248,7 +249,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int a, int b)
+                internal static int? DefaultResultGenerator(int a, int b)
                 {
                     return default;
                 }
@@ -286,6 +287,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int MyService.Add(int a, int b)
         public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, IAddMethodInvocationImposterGroupCallback, AddInvocationVerifier
         {
         }
@@ -474,9 +476,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class MightFailMethodInvocationHistory : IMightFailMethodInvocationHistory
         {
             internal MightFailArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public MightFailMethodInvocationHistory(MightFailArguments Arguments, int Result, global::System.Exception? Exception)
+            public MightFailMethodInvocationHistory(MightFailArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -504,6 +506,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // virtual int MyService.MightFail(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class MightFailMethodInvocationImposterGroup
         {
@@ -562,7 +565,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int v) => DefaultResultGenerator(v) ?? default(int));
                 }
 
                 private MightFailDelegate? _resultGenerator;
@@ -584,7 +587,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int v) => DefaultResultGenerator(v) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(v);
@@ -631,7 +634,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int v)
+                internal static int? DefaultResultGenerator(int v)
                 {
                     return default;
                 }
@@ -669,6 +672,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int MyService.MightFail(int v)
         public interface IMightFailMethodImposterBuilder : IMightFailMethodInvocationImposterGroup, IMightFailMethodInvocationImposterGroupCallback, MightFailInvocationVerifier
         {
         }
@@ -857,9 +861,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class ProcessAsyncMethodInvocationHistory : IProcessAsyncMethodInvocationHistory
         {
             internal ProcessAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task Result;
+            internal global::System.Threading.Tasks.Task? Result;
             internal global::System.Exception? Exception;
-            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
+            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -887,6 +891,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // virtual Task MyService.ProcessAsync(string s)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProcessAsyncMethodInvocationImposterGroup
         {
@@ -1062,6 +1067,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual Task MyService.ProcessAsync(string s)
         public interface IProcessAsyncMethodImposterBuilder : IProcessAsyncMethodInvocationImposterGroup, IProcessAsyncMethodInvocationImposterGroupCallback, ProcessAsyncInvocationVerifier
         {
         }
@@ -1245,6 +1251,16 @@ namespace Imposter.Tests.Docs.Methods
             {
                 return _imposter._mightFailMethodImposter.Invoke(v, base.MightFail);
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class MyServiceImposterExtensions
+    {
+        extension(global::Imposter.Tests.Docs.Methods.MyService imposter)
+        {
+            public static global::Imposter.Tests.Docs.Methods.MyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.MyServiceImposter();
+            public static global::Imposter.Tests.Docs.Methods.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Docs.Methods.MyServiceImposter(invocationBehavior);
         }
     }
 }

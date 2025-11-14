@@ -97,9 +97,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class GenericAllRefKindMethodInvocationHistory : IGenericAllRefKindMethodInvocationHistory
         {
             internal GenericAllRefKindArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments Arguments, int Result, global::System.Exception? Exception)
+            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -127,6 +127,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // int ICallbackService.GenericAllRefKind(out int o, ref string r, in double d, bool[] args)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup
         {
@@ -185,7 +186,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((out int o, ref string r, in double d, bool[] args) => DefaultResultGenerator(out o, ref r, in d, args) ?? default(int));
                 }
 
                 private GenericAllRefKindDelegate? _resultGenerator;
@@ -201,7 +202,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (out int o, ref string r, in double d, bool[] args) => DefaultResultGenerator(out o, ref r, in d, args) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(out o, ref r, in d, args);
@@ -245,7 +246,7 @@ namespace Imposter.Tests.Docs.Methods
                     o = default(int);
                 }
 
-                internal static int DefaultResultGenerator(out int o, ref string r, in double d, bool[] args)
+                internal static int? DefaultResultGenerator(out int o, ref string r, in double d, bool[] args)
                 {
                     InitializeOutParametersWithDefaultValues(out o);
                     return default;
@@ -283,6 +284,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int ICallbackService.GenericAllRefKind(out int o, ref string r, in double d, bool[] args)
         public interface IGenericAllRefKindMethodImposterBuilder : IGenericAllRefKindMethodInvocationImposterGroup, IGenericAllRefKindMethodInvocationImposterGroupCallback, GenericAllRefKindInvocationVerifier
         {
         }
@@ -442,9 +444,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -471,6 +473,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // int ICallbackService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -526,7 +529,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns(() => DefaultResultGenerator() ?? default(int));
                 }
 
                 private GetNumberDelegate? _resultGenerator;
@@ -542,7 +545,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = () => DefaultResultGenerator() ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke();
@@ -580,7 +583,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -617,6 +620,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int ICallbackService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -793,9 +797,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
         {
             internal IncrementArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int Result, global::System.Exception? Exception)
+            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -823,6 +827,7 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
+        // int ICallbackService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -881,7 +886,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int v) => DefaultResultGenerator(v) ?? default(int));
                 }
 
                 private IncrementDelegate? _resultGenerator;
@@ -897,7 +902,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int v) => DefaultResultGenerator(v) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(v);
@@ -935,7 +940,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int DefaultResultGenerator(int v)
+                internal static int? DefaultResultGenerator(int v)
                 {
                     return default;
                 }
@@ -972,6 +977,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int ICallbackService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }
@@ -1143,6 +1149,15 @@ namespace Imposter.Tests.Docs.Methods
             {
                 return _imposter._genericAllRefKindMethodImposter.Invoke(out o, ref r, in d, args);
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ICallbackServiceImposterExtensions
+    {
+        extension(global::Imposter.Tests.Docs.Methods.ICallbackService imposter)
+        {
+            public static global::Imposter.Tests.Docs.Methods.ICallbackServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.ICallbackServiceImposter();
         }
     }
 }

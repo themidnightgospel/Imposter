@@ -810,6 +810,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ClassWithAsyncEventsImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents imposter)
+        {
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEventsImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEventsImposter();
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEventsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEventsImposter(invocationBehavior);
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

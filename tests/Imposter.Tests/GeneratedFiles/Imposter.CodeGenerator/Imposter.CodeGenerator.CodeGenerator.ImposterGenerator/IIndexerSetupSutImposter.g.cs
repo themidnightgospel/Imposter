@@ -1193,6 +1193,15 @@ namespace Imposter.Tests.Features.IndexerImposter
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class IIndexerSetupSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut imposter)
+        {
+            public static global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSutImposter();
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

@@ -29,7 +29,7 @@ internal static class TypeSymbolExtensions
 
         return string.Equals(candidateName, wellKnownTypeName, StringComparison.Ordinal);
     }
-
+    
     internal static bool IsTaskLike(this ITypeSymbol? symbol)
     {
         if (symbol is not INamedTypeSymbol named)

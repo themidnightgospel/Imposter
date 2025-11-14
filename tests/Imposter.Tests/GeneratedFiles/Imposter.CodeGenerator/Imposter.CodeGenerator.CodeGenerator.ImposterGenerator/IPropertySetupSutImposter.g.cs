@@ -715,6 +715,15 @@ namespace Imposter.Tests.Features.PropertyImposter
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class IPropertySetupSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut imposter)
+        {
+            public static global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSutImposter Imposter() => new global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSutImposter();
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

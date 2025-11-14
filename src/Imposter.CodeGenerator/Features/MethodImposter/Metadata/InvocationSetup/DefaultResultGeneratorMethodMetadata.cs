@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
@@ -8,8 +9,25 @@ internal readonly struct DefaultResultGeneratorMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal DefaultResultGeneratorMethodMetadata(TypeSyntax methodReturnTypeSyntax)
+    internal readonly bool ReturnsNullable;
+
+    internal DefaultResultGeneratorMethodMetadata(
+        TypeSyntax methodReturnTypeSyntax,
+        bool hasReturnValue,
+        bool supportsNullableGenericType,
+        bool hasGenericReturnType,
+        bool hasTaskLikeReturnType)
     {
-        ReturnType = methodReturnTypeSyntax;
+        var shouldUseNullable = hasReturnValue &&
+            supportsNullableGenericType &&
+            !hasGenericReturnType &&
+            !hasTaskLikeReturnType &&
+            methodReturnTypeSyntax is not NullableTypeSyntax;
+
+        ReturnsNullable = shouldUseNullable;
+
+        ReturnType = shouldUseNullable
+            ? methodReturnTypeSyntax.ToNullableType()
+            : methodReturnTypeSyntax;
     }
 }
