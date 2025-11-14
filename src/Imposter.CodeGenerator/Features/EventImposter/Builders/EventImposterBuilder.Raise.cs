@@ -111,26 +111,15 @@ internal static partial class EventImposterBuilder
                 "pendingTasks",
                 taskListType.New()));
 
-        blockBuilder.AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask));
         blockBuilder.AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask));
-
+        blockBuilder.AddStatement(AwaitPendingTasksStatement());
         blockBuilder.AddStatement(
-            IfStatement(
-                BinaryExpression(
-                    SyntaxKind.GreaterThanExpression,
-                    IdentifierName("pendingTasks").Dot(IdentifierName("Count")),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
-                Block(
-                    WellKnownTypes.System.Threading.Tasks.Task
-                        .Dot(IdentifierName("WhenAll"))
-                        .Call(Argument(IdentifierName("pendingTasks")))
-                        .Dot(IdentifierName("ConfigureAwait"))
-                        .Call(Argument(False))
-                        .Await()
-                        .ToStatementSyntax()
-                )
-            )
-        );
+            IdentifierName("pendingTasks")
+                .Dot(IdentifierName("Clear"))
+                .Call()
+                .ToStatementSyntax());
+        blockBuilder.AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask));
+        blockBuilder.AddStatement(AwaitPendingTasksStatement());
 
         return blockBuilder.Build();
     }
@@ -258,10 +247,6 @@ internal static partial class EventImposterBuilder
 
     private static ForEachStatementSyntax ForEachAsyncInvocation(in FieldMetadata field, in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
     {
-        var asyncResultType = usesValueTask
-            ? WellKnownTypes.System.Threading.Tasks.ValueTask
-            : taskType;
-
         return
             ForEachStatement(
                 Var,
@@ -269,12 +254,12 @@ internal static partial class EventImposterBuilder
                 FieldIdentifier(field),
                 Block(
                     LocalVariableDeclarationSyntax(
-                        asyncResultType,
+                        Var,
                         "task",
                         IdentifierName("callback")
                             .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                     IfStatement(
-                        IdentifierName("task").IsNotNull(),
+                        IdentifierName("task").IsNotDefault(),
                         Block(
                                 IdentifierName("pendingTasks")
                                     .Dot(IdentifierName("Add"))
@@ -283,10 +268,6 @@ internal static partial class EventImposterBuilder
 
     private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
     {
-        var asyncResultType = usesValueTask
-            ? WellKnownTypes.System.Threading.Tasks.ValueTask
-            : taskType;
-
         return
             ForEachStatement(
                 Var,
@@ -297,15 +278,32 @@ internal static partial class EventImposterBuilder
                             .Dot(IdentifierName("Enqueue"))
                             .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event))).ToStatementSyntax(),
                     LocalVariableDeclarationSyntax(
-                        asyncResultType,
+                        Var,
                         "task",
                         IdentifierName("handler")
                             .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
                     IfStatement(
-                        IdentifierName("task").IsNotNull(),
+                        IdentifierName("task").IsNotDefault(),
                         Block(
                                 IdentifierName("pendingTasks")
                                     .Dot(IdentifierName("Add"))
                                     .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))).ToStatementSyntax()))));
     }
+
+    private static IfStatementSyntax AwaitPendingTasksStatement() =>
+        IfStatement(
+            BinaryExpression(
+                SyntaxKind.GreaterThanExpression,
+                IdentifierName("pendingTasks").Dot(IdentifierName("Count")),
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
+            Block(
+                WellKnownTypes.System.Threading.Tasks.Task
+                    .Dot(IdentifierName("WhenAll"))
+                    .Call(Argument(IdentifierName("pendingTasks")))
+                    .Dot(IdentifierName("ConfigureAwait"))
+                    .Call(Argument(False))
+                    .Await()
+                    .ToStatementSyntax()
+            )
+        );
 }
