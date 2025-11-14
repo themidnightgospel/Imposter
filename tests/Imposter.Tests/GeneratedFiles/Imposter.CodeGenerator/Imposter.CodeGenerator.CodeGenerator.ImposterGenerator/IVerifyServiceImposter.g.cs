@@ -226,7 +226,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int DefaultResultGenerator(int a, int b)
+                internal static int? DefaultResultGenerator(int a, int b)
                 {
                     return default;
                 }

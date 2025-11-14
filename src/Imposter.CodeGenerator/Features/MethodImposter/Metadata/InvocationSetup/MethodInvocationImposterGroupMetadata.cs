@@ -52,8 +52,8 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             Interface.Syntax,
             ContinuationInterface.Syntax,
             method.Delegate.Syntax);
-        ReturnsAsyncMethod = method.ReturnType.SupportsAsyncValueResult
-            ? new ReturnsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax, method.ReturnType.AsyncValueTypeSyntax!)
+        ReturnsAsyncMethod = method.ReturnType.TaskLikeMetadata is { IsAwaitable: true, GenericAwaitableResultType: not null }
+            ? new ReturnsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax, method.ReturnType.GenericAwaitableResultType!)
             : null;
         ThrowsMethod = new ThrowsMethodMetadata(
             method,
@@ -61,7 +61,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             Interface.Syntax,
             ContinuationInterface.Syntax,
             method.GenericTypeParameterNameSet);
-        
+
         ThrowsAsyncMethod = method.IsAsync
             ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax)
             : null;
@@ -75,11 +75,6 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             ? new UseBaseImplementationMethodMetadata(Interface.Syntax, ContinuationInterface.Syntax)
             : null;
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
-        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(
-            method.ReturnTypeSyntax,
-            method.HasReturnValue,
-            method.SupportsNullableGenericType,
-            method.HasGenericReturnType,
-            method.ReturnType.IsTask || method.ReturnType.IsValueTask);
+        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(method.ReturnType);
     }
 }

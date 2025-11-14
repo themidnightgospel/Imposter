@@ -29,7 +29,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             handlerInvoked.ShouldBeTrue();
             imposter.TaskBasedEvent.Raised(Arg<object>.Is(instance), Arg<EventArgs>.Any(), Count.Once());
-            imposter.TaskBasedEvent.HandlerInvoked(Arg<Func<object?, EventArgs, Task>>.Is(h => h == handler), Count.Once());
+            imposter.TaskBasedEvent.HandlerInvoked(Arg<Func<object, EventArgs, Task>>.Is(h => h == handler), Count.Once());
         }
 
         [Fact]

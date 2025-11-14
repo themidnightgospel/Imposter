@@ -49,8 +49,7 @@ internal static partial class InvocationSetupBuilder
                 return null;
             }
 
-            if (!method.ReturnType.SupportsAsyncValueResult &&
-                (method.ReturnType.IsTask || method.ReturnType.IsValueTask))
+            if (method.ReturnType.TaskLikeMetadata is { IsAwaitable: true, GenericAwaitableResultType: null })
             {
                 return SyntaxFactoryHelper.ReturnVoid;
             }

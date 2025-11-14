@@ -190,7 +190,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -507,9 +507,9 @@ namespace Imposter.Tests.Docs.Methods
 
                 internal void ReturnsAsync(int value)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return global::System.Threading.Tasks.Task.FromResult(value);
+                        return value;
                     };
                 }
 
@@ -523,13 +523,13 @@ namespace Imposter.Tests.Docs.Methods
 
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return global::System.Threading.Tasks.Task.FromException<int>(exception);
+                        return throw exception;
                     };
                 }
 
-                internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator()
+                internal static async global::System.Threading.Tasks.Task<int>? DefaultResultGenerator()
                 {
                     return default;
                 }

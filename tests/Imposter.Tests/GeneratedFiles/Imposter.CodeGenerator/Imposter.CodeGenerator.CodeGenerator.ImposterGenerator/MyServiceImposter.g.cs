@@ -248,7 +248,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int a, int b)
+                internal static int? DefaultResultGenerator(int a, int b)
                 {
                     return default;
                 }
@@ -631,7 +631,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int v)
+                internal static int? DefaultResultGenerator(int v)
                 {
                     return default;
                 }
@@ -1011,9 +1011,9 @@ namespace Imposter.Tests.Docs.Methods
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (string s) =>
+                    _resultGenerator = async (string s) =>
                     {
-                        return global::System.Threading.Tasks.Task.FromException(exception);
+                        return throw exception;
                     };
                 }
 
@@ -1023,7 +1023,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.Task DefaultResultGenerator(string s)
+                internal static async global::System.Threading.Tasks.Task? DefaultResultGenerator(string s)
                 {
                     return;
                 }

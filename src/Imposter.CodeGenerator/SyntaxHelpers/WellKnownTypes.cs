@@ -155,6 +155,22 @@ internal static class WellKnownTypes
                         )
                     )
                 );
+
+                internal static TypeSyntax IAsyncEnumerable(TypeSyntax typeArgument) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("IAsyncEnumerable"),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
+                    )
+                );
+
+                internal static TypeSyntax IAsyncEnumerator(TypeSyntax typeArgument) => QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier("IAsyncEnumerator"),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
+                    )
+                );
             }
         }
 

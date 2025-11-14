@@ -29,8 +29,8 @@ internal static class TypeSymbolExtensions
 
         return string.Equals(candidateName, wellKnownTypeName, StringComparison.Ordinal);
     }
-    
-    internal static bool IsTaskLike(this ITypeSymbol? symbol) => symbol.GetTaskLikeMetadata().IsTaskLike;
+
+    internal static bool IsAwaitable(this ITypeSymbol? symbol) => symbol.GetTaskLikeMetadata().IsAwaitable;
 
     internal static TaskLikeMetadata GetTaskLikeMetadata(this ITypeSymbol? symbol)
     {
@@ -46,23 +46,32 @@ internal static class TypeSymbolExtensions
         var genericParameter = IdentifierName("TResult");
         var genericTask = WellKnownTypes.System.Threading.Tasks.TaskOfT(genericParameter);
         var genericValueTask = WellKnownTypes.System.Threading.Tasks.ValueTaskOfT(genericParameter);
+        var genericAsyncEnumerable = WellKnownTypes.System.Collections.Generic.IAsyncEnumerable(genericParameter);
+        var genericAsyncEnumerator = WellKnownTypes.System.Collections.Generic.IAsyncEnumerator(genericParameter);
 
         var isGenericTask = named.IsGenericType && definition.IsWellKnownType(genericTask, WellKnownAssemblyNames.SystemAssemblies);
         var isGenericValueTask = named.IsGenericType && definition.IsWellKnownType(genericValueTask, WellKnownAssemblyNames.SystemAssemblies);
+        var isAsyncEnumerable = named.IsGenericType && definition.IsWellKnownType(genericAsyncEnumerable, WellKnownAssemblyNames.SystemAssemblies);
+        var isAsyncEnumerator = named.IsGenericType && definition.IsWellKnownType(genericAsyncEnumerator, WellKnownAssemblyNames.SystemAssemblies);
+        var isAwaitable = isTask || isGenericTask || isValueTask || isGenericValueTask || isAsyncEnumerable || isAsyncEnumerator;
 
-        ITypeSymbol? asyncValueTypeSymbol = (isGenericTask || isGenericValueTask) && named.TypeArguments.Length > 0
-            ? named.TypeArguments[0]
-            : null;
+        var genericAwaitableResultType = isAwaitable && named.TypeArguments.Length > 0 ? named.TypeArguments[0] : null;
 
         return new TaskLikeMetadata(
             isTask: isTask || isGenericTask,
             isGenericTask: isGenericTask,
             isValueTask: isValueTask || isGenericValueTask,
             isGenericValueTask: isGenericValueTask,
-            asyncValueTypeSymbol: asyncValueTypeSymbol);
+            isAsyncEnumerable: isAsyncEnumerable,
+            isAsyncEnumerator: isAsyncEnumerator,
+            isAwaitable: isAwaitable,
+            genericAwaitableResultType: genericAwaitableResultType);
     }
 
-    internal static TypeSymbolMetadata GetTypeSymbolMetadata(this ITypeSymbol? symbol, bool supportsNullableGenericType)
+    internal static TypeSymbolMetadata GetTypeSymbolMetadata(
+        this ITypeSymbol? symbol,
+        bool isAwaitable,
+        bool supportsNullableGenericType)
     {
         if (symbol is null)
         {
@@ -73,7 +82,11 @@ internal static class TypeSymbolExtensions
         var isGenericType = symbol.TypeKind == TypeKind.TypeParameter;
         var isNullableType = typeSyntax is NullableTypeSyntax;
         var isConstructedGenericType = typeSyntax is GenericNameSyntax;
-        var shouldConvertToNullable = !isNullableType && !((isGenericType || isConstructedGenericType) && !supportsNullableGenericType);
+        var shouldConvertToNullable = !isNullableType
+                                      && symbol.SpecialType != SpecialType.System_Void
+                                      && !isAwaitable
+                                      && !((isGenericType || isConstructedGenericType) && !supportsNullableGenericType);
+        
         var nullableTypeSyntax = shouldConvertToNullable
             ? typeSyntax.ToNullableType()
             : typeSyntax;
@@ -112,13 +125,19 @@ internal readonly struct TaskLikeMetadata
         bool isGenericTask,
         bool isValueTask,
         bool isGenericValueTask,
-        ITypeSymbol? asyncValueTypeSymbol)
+        bool isAsyncEnumerable,
+        bool isAsyncEnumerator,
+        bool isAwaitable,
+        ITypeSymbol? genericAwaitableResultType)
     {
         IsTask = isTask;
         IsGenericTask = isGenericTask;
         IsValueTask = isValueTask;
         IsGenericValueTask = isGenericValueTask;
-        AsyncValueTypeSymbol = asyncValueTypeSymbol;
+        IsAsyncEnumerable = isAsyncEnumerable;
+        IsAsyncEnumerator = isAsyncEnumerator;
+        GenericAwaitableResultType = genericAwaitableResultType;
+        IsAwaitable = isAwaitable;
     }
 
     internal bool IsTask { get; }
@@ -129,11 +148,13 @@ internal readonly struct TaskLikeMetadata
 
     internal bool IsGenericValueTask { get; }
 
-    internal bool SupportsAsyncValueResult => AsyncValueTypeSymbol is not null;
+    internal bool IsAsyncEnumerable { get; }
 
-    internal bool IsTaskLike => IsTask || IsValueTask;
+    internal bool IsAsyncEnumerator { get; }
 
-    internal ITypeSymbol? AsyncValueTypeSymbol { get; }
+    internal bool IsAwaitable { get; }
+    
+    internal ITypeSymbol? GenericAwaitableResultType { get; }
 }
 
 internal readonly struct TypeSymbolMetadata

@@ -134,7 +134,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
             return true;
         }
 
-        return methodSymbol.ReturnType.IsTaskLike();
+        return methodSymbol.ReturnType.IsAwaitable();
     }
 
     internal readonly struct AsMethodMetadata

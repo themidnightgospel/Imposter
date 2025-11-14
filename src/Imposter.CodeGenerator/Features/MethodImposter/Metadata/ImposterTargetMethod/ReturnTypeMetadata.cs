@@ -6,32 +6,20 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.ImposterTarget
 
 internal readonly struct ReturnTypeMetadata
 {
-    internal readonly bool IsTask;
-
-    internal readonly bool IsGenericTask;
-
-    internal readonly bool IsValueTask;
-
-    internal readonly bool IsGenericValueTask;
-
-    internal readonly bool SupportsAsyncValueResult;
-
-    internal readonly TypeSyntax? AsyncValueTypeSyntax;
+    internal readonly TypeSyntax? GenericAwaitableResultType;
 
     internal readonly TypeSymbolMetadata TypeSymbolMetadata;
 
+    internal readonly TaskLikeMetadata TaskLikeMetadata;
+
     internal ReturnTypeMetadata(ITypeSymbol returnTypeSymbol, bool supportsNullableGenericType)
     {
-        var taskLikeMetadata = returnTypeSymbol.GetTaskLikeMetadata();
+        TaskLikeMetadata = returnTypeSymbol.GetTaskLikeMetadata();
 
-        IsTask = taskLikeMetadata.IsTask;
-        IsGenericTask = taskLikeMetadata.IsGenericTask;
-        IsValueTask = taskLikeMetadata.IsValueTask;
-        IsGenericValueTask = taskLikeMetadata.IsGenericValueTask;
-        SupportsAsyncValueResult = taskLikeMetadata.SupportsAsyncValueResult;
-        AsyncValueTypeSyntax = taskLikeMetadata.AsyncValueTypeSymbol is null
+        GenericAwaitableResultType = TaskLikeMetadata.GenericAwaitableResultType is null
             ? null
-            : SyntaxFactoryHelper.TypeSyntax(taskLikeMetadata.AsyncValueTypeSymbol);
-        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(supportsNullableGenericType);
+            : SyntaxFactoryHelper.TypeSyntax(TaskLikeMetadata.GenericAwaitableResultType);
+
+        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(supportsNullableGenericType, TaskLikeMetadata.IsAwaitable);
     }
 }

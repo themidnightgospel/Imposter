@@ -310,9 +310,9 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 internal void ReturnsAsync(int value)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return global::System.Threading.Tasks.Task.FromResult(value);
+                        return value;
                     };
                 }
 
@@ -326,13 +326,13 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return global::System.Threading.Tasks.Task.FromException<int>(exception);
+                        return throw exception;
                     };
                 }
 
-                internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator()
+                internal static async global::System.Threading.Tasks.Task<int>? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -663,9 +663,9 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 internal void ReturnsAsync(int value)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return new global::System.Threading.Tasks.ValueTask<int>(value);
+                        return value;
                     };
                 }
 
@@ -679,13 +679,13 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
-                    _resultGenerator = () =>
+                    _resultGenerator = async () =>
                     {
-                        return new global::System.Threading.Tasks.ValueTask<int>(global::System.Threading.Tasks.Task.FromException<int>(exception));
+                        return throw exception;
                     };
                 }
 
-                internal static async global::System.Threading.Tasks.ValueTask<int> DefaultResultGenerator()
+                internal static async global::System.Threading.Tasks.ValueTask<int>? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -1525,7 +1525,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     value = default(global::System.Collections.Generic.List<TValue>);
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(out global::System.Collections.Generic.List<TValue> value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(out global::System.Collections.Generic.List<TValue> value)
                 {
                     InitializeOutParametersWithDefaultValues(out value);
                     return default;
@@ -1973,7 +1973,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(global::System.Collections.Generic.List<TValue>[] value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(global::System.Collections.Generic.List<TValue>[] value)
                 {
                     return default;
                 }
@@ -2419,7 +2419,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(ref global::System.Collections.Generic.List<TValue> value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(ref global::System.Collections.Generic.List<TValue> value)
                 {
                     return default;
                 }
@@ -4982,7 +4982,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     value = default(int);
                 }
 
-                internal static int DefaultResultGenerator(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
+                internal static int? DefaultResultGenerator(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
                 {
                     InitializeOutParametersWithDefaultValues(out value);
                     return default;
@@ -5349,7 +5349,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(in string inStringValue)
+                internal static int? DefaultResultGenerator(in string inStringValue)
                 {
                     return default;
                 }
@@ -5678,7 +5678,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -6007,7 +6007,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     outValue = default(int);
                 }
 
-                internal static int DefaultResultGenerator(out int outValue)
+                internal static int? DefaultResultGenerator(out int outValue)
                 {
                     InitializeOutParametersWithDefaultValues(out outValue);
                     return default;
@@ -6376,7 +6376,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(int age, string name, global::System.Text.RegularExpressions.Regex regex)
+                internal static int? DefaultResultGenerator(int age, string name, global::System.Text.RegularExpressions.Regex regex)
                 {
                     return default;
                 }
@@ -6737,7 +6737,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(string[] paramsStrings)
+                internal static int? DefaultResultGenerator(string[] paramsStrings)
                 {
                     return default;
                 }
@@ -7098,7 +7098,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(ref int refValue)
+                internal static int? DefaultResultGenerator(ref int refValue)
                 {
                     return default;
                 }
@@ -7459,7 +7459,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(int age)
+                internal static int? DefaultResultGenerator(int age)
                 {
                     return default;
                 }

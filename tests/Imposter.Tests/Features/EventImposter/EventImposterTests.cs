@@ -92,7 +92,7 @@ namespace Imposter.Tests.Features.EventImposter
 
             Should.NotThrow(() =>
                 _sut.SomethingHappened.Raised(
-                    Arg<object?>.Is(s => s == sender),
+                    Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Any(),
                     Count.Exactly(1)));
         }

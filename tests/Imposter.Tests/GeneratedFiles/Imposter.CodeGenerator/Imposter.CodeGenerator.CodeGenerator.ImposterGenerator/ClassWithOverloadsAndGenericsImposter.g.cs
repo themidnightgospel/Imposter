@@ -719,7 +719,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string DefaultResultGenerator(int value)
+                internal static string? DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -1106,7 +1106,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string DefaultResultGenerator(string value, int padding)
+                internal static string? DefaultResultGenerator(string value, int padding)
                 {
                     return default;
                 }

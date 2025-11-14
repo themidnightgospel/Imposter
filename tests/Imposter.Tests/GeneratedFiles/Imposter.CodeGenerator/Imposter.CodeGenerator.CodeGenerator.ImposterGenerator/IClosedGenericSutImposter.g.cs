@@ -215,7 +215,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static string DefaultResultGenerator(int age)
+                internal static string? DefaultResultGenerator(int age)
                 {
                     return default;
                 }

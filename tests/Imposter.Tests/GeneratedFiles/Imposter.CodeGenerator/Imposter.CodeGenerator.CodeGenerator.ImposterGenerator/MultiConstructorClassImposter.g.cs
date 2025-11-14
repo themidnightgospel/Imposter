@@ -230,7 +230,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int input)
+                internal static int? DefaultResultGenerator(int input)
                 {
                     return default;
                 }

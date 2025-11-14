@@ -198,7 +198,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }

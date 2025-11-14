@@ -291,7 +291,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
     public class ClassWithVirtualProperty
     {
-        public virtual string VirtualProperty { get; set; }
+        public virtual string VirtualProperty { get; set; } = default!;
 
         public virtual string VirtualPropertyWithInitializer { get; set; } = "initial-value";
     }

@@ -257,9 +257,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 internal void ReturnsAsync(string value)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
+                    _resultGenerator = async (string prefix, string suffix) =>
                     {
-                        return new global::System.Threading.Tasks.ValueTask<string>(value);
+                        return value;
                     };
                 }
 
@@ -275,9 +275,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (string prefix, string suffix) =>
+                    _resultGenerator = async (string prefix, string suffix) =>
                     {
-                        return new global::System.Threading.Tasks.ValueTask<string>(global::System.Threading.Tasks.Task.FromException<string>(exception));
+                        return throw exception;
                     };
                 }
 
@@ -287,7 +287,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.ValueTask<string> DefaultResultGenerator(string prefix, string suffix)
+                internal static async global::System.Threading.Tasks.ValueTask<string>? DefaultResultGenerator(string prefix, string suffix)
                 {
                     return default;
                 }
@@ -684,7 +684,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int age)
+                internal static int? DefaultResultGenerator(int age)
                 {
                     return default;
                 }
@@ -1079,7 +1079,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     doubled = default(int);
                 }
 
-                internal static int DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
+                internal static int? DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
                 {
                     InitializeOutParametersWithDefaultValues(out doubled);
                     return default;
@@ -1460,9 +1460,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 internal void ReturnsAsync(int value)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int left, int right) =>
+                    _resultGenerator = async (int left, int right) =>
                     {
-                        return global::System.Threading.Tasks.Task.FromResult(value);
+                        return value;
                     };
                 }
 
@@ -1478,9 +1478,9 @@ namespace Imposter.Tests.Features.MethodImposter
                 internal void ThrowsAsync(global::System.Exception exception)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int left, int right) =>
+                    _resultGenerator = async (int left, int right) =>
                     {
-                        return global::System.Threading.Tasks.Task.FromException<int>(exception);
+                        return throw exception;
                     };
                 }
 
@@ -1490,7 +1490,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator(int left, int right)
+                internal static async global::System.Threading.Tasks.Task<int>? DefaultResultGenerator(int left, int right)
                 {
                     return default;
                 }
@@ -1887,7 +1887,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int value)
+                internal static int? DefaultResultGenerator(int value)
                 {
                     return default;
                 }

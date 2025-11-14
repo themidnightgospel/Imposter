@@ -190,7 +190,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     };
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -545,7 +545,7 @@ namespace Imposter.Tests.Docs.GettingStarted
                     };
                 }
 
-                internal static int DefaultResultGenerator(int value)
+                internal static int? DefaultResultGenerator(int value)
                 {
                     return default;
                 }

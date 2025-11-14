@@ -223,7 +223,7 @@ namespace Imposter.Tests.Shared
                     };
                 }
 
-                internal static string DefaultResultGenerator(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
+                internal static string? DefaultResultGenerator(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
                 {
                     return default;
                 }
