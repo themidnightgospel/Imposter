@@ -1767,22 +1767,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._format_1MethodImposter = new Format_1MethodImposter(_format_1MethodInvocationHistoryCollection, invocationBehavior);
             this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
             this._selectFirstMethodImposterCollection = new SelectFirstMethodImposterCollection(_selectFirstMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics
         {
-            ClassWithOverloadsAndGenericsImposter _imposter;
-            internal void InitializeImposter(ClassWithOverloadsAndGenericsImposter imposter)
+            private readonly ClassWithOverloadsAndGenericsImposter _imposter;
+            internal ImposterTargetInstance(ClassWithOverloadsAndGenericsImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             public override string Format(int value)

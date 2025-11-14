@@ -807,22 +807,17 @@ namespace Imposter.Tests.Docs.Methods.Protected
         {
             this._protectedAddMethodImposter = new ProtectedAddMethodImposter(_protectedAddMethodInvocationHistoryCollection, invocationBehavior);
             this._invokeProtectedMethodImposter = new InvokeProtectedMethodImposter(_invokeProtectedMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.Protected.MyService
         {
-            MyServiceImposter _imposter;
-            internal void InitializeImposter(MyServiceImposter imposter)
+            private readonly MyServiceImposter _imposter;
+            internal ImposterTargetInstance(MyServiceImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             protected override int ProtectedAdd(int value)

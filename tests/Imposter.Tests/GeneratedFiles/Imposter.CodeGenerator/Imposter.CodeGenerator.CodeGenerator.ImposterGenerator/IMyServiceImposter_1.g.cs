@@ -724,7 +724,7 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IMyService
         {
-            IMyServiceImposter _imposter;
+            private readonly IMyServiceImposter _imposter;
             public ImposterTargetInstance(IMyServiceImposter _imposter)
             {
                 this._imposter = _imposter;

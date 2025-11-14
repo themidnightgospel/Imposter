@@ -416,58 +416,53 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public MultiConstructorClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         public MultiConstructorClassImposter(int value, string label, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(value, label);
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this, value, label);
             this._invocationBehavior = invocationBehavior;
         }
 
         public MultiConstructorClassImposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(correlationId);
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this, correlationId);
             this._invocationBehavior = invocationBehavior;
         }
 
         public MultiConstructorClassImposter(bool enabled, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance(enabled);
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this, enabled);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass
         {
-            MultiConstructorClassImposter _imposter;
-            internal void InitializeImposter(MultiConstructorClassImposter imposter)
+            private readonly MultiConstructorClassImposter _imposter;
+            internal ImposterTargetInstance(MultiConstructorClassImposter _imposter) : base()
             {
-                _imposter = imposter;
+                this._imposter = _imposter;
             }
 
-            internal ImposterTargetInstance() : base()
+            internal ImposterTargetInstance(MultiConstructorClassImposter _imposter, int value, string label) : base(value, label)
             {
+                this._imposter = _imposter;
             }
 
-            internal ImposterTargetInstance(int value, string label) : base(value, label)
+            internal ImposterTargetInstance(MultiConstructorClassImposter _imposter, global::System.Guid correlationId) : base(correlationId)
             {
+                this._imposter = _imposter;
             }
 
-            internal ImposterTargetInstance(global::System.Guid correlationId) : base(correlationId)
+            internal ImposterTargetInstance(MultiConstructorClassImposter _imposter, bool enabled) : base(enabled)
             {
-            }
-
-            internal ImposterTargetInstance(bool enabled) : base(enabled)
-            {
+                this._imposter = _imposter;
             }
 
             public override int Calculate(int input)

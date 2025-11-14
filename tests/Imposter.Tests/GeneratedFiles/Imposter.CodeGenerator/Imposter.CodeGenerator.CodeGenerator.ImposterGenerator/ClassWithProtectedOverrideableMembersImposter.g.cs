@@ -3812,22 +3812,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._ProtectedVirtualPropertyPropertyBuilderField = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ProtectedVirtualEvent = new ProtectedVirtualEventEventImposterBuilder();
             this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.this[int index]");
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers
         {
-            ClassWithProtectedOverrideableMembersImposter _imposter;
-            internal void InitializeImposter(ClassWithProtectedOverrideableMembersImposter imposter)
+            private readonly ClassWithProtectedOverrideableMembersImposter _imposter;
+            internal ImposterTargetInstance(ClassWithProtectedOverrideableMembersImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             protected override int ProtectedVirtualMethod(int value)

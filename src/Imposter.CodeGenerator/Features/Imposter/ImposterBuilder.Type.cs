@@ -346,7 +346,6 @@ internal readonly ref partial struct ImposterBuilder
             var constructorBody = _constructorBodyBuilder.Build()
                 .AddStatements(
                     BuildClassImposterInstanceAssignment(constructorMetadata.Parameters),
-                    BuildInitializeImposterStatement(),
                     BuildInvocationBehaviorAssignment());
 
             constructors.Add(constructorBuilder.WithBody(constructorBody).Build());
@@ -363,22 +362,24 @@ internal readonly ref partial struct ImposterBuilder
 
     private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(in ImmutableArray<IParameterSymbol> parameters)
     {
-        var argumentList = parameters.Length > 0
-            ? SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true)
-            : null;
+        var arguments = new List<ArgumentSyntax>(parameters.Length + 1)
+        {
+            Argument(ThisExpression())
+        };
+
+        if (parameters.Length > 0)
+        {
+            arguments.AddRange(
+                SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true).Arguments);
+        }
+
+        var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(arguments);
 
         return ThisExpression()
             .Dot(IdentifierName(_typeMetadata.ImposterInstanceFieldName))
             .Assign(IdentifierName(_typeMetadata.ImposterTargetInstanceClassName).New(argumentList))
             .ToStatementSyntax();
     }
-
-    private ExpressionStatementSyntax BuildInitializeImposterStatement() =>
-        ThisExpression()
-            .Dot(IdentifierName(_typeMetadata.ImposterInstanceFieldName))
-            .Dot(IdentifierName("InitializeImposter"))
-            .Call(ThisExpression().ToSingleArgumentList())
-            .ToStatementSyntax();
 
     private ExpressionStatementSyntax BuildInvocationBehaviorAssignment() =>
         ThisExpression()

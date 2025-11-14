@@ -401,7 +401,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>
         {
-            IClosedGenericSutImposter _imposter;
+            private readonly IClosedGenericSutImposter _imposter;
             public ImposterTargetInstance(IClosedGenericSutImposter _imposter)
             {
                 this._imposter = _imposter;

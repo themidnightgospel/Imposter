@@ -51,7 +51,7 @@ namespace Imposter.Tests.Features.ClassImposter
 
             handlerInvocationCount.ShouldBe(1);
             imposter.ValueTaskBasedEvent.Raised(Arg<object>.Is(instance), Arg<EventArgs>.Any(), Count.Once());
-            imposter.ValueTaskBasedEvent.HandlerInvoked(Arg<Func<object?, EventArgs, ValueTask>>.Is(h => h == handler), Count.Once());
+            imposter.ValueTaskBasedEvent.HandlerInvoked(Arg<Func<object, EventArgs, ValueTask>>.Is(h => h == handler), Count.Once());
         }
 
         [Fact]

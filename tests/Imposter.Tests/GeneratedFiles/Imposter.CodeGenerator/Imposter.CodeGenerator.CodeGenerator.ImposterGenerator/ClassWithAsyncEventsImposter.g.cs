@@ -733,22 +733,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._CustomAsyncEvent = new CustomAsyncEventEventImposterBuilder();
             this._TaskBasedEvent = new TaskBasedEventEventImposterBuilder();
             this._ValueTaskBasedEvent = new ValueTaskBasedEventEventImposterBuilder();
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents
         {
-            ClassWithAsyncEventsImposter _imposter;
-            internal void InitializeImposter(ClassWithAsyncEventsImposter imposter)
+            private readonly ClassWithAsyncEventsImposter _imposter;
+            internal ImposterTargetInstance(ClassWithAsyncEventsImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             protected override event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>? CustomAsyncEvent

@@ -63,7 +63,7 @@ namespace Imposter.Tests.Features.MethodImposter
             sut.VoidNoParams().Callback(() => callbackInvoked = true);
 
             var exception = Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
-            exception.MethodName.ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
+            exception.MethodName.ShouldNotBeNull().ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
             callbackInvoked.ShouldBeFalse();
         }
     }

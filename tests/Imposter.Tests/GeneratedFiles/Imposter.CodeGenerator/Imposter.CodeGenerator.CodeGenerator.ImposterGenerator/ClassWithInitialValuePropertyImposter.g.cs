@@ -396,22 +396,17 @@ namespace Imposter.Tests.Features.PropertyImposter
         public ClassWithInitialValuePropertyImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._APropertyBuilderField = new APropertyBuilder(invocationBehavior);
-            this._imposterInstance = new ImposterTargetInstance();
-            this._imposterInstance.InitializeImposter(this);
+            this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueProperty
         {
-            ClassWithInitialValuePropertyImposter _imposter;
-            internal void InitializeImposter(ClassWithInitialValuePropertyImposter imposter)
+            private readonly ClassWithInitialValuePropertyImposter _imposter;
+            internal ImposterTargetInstance(ClassWithInitialValuePropertyImposter _imposter) : base()
             {
-                _imposter = imposter;
-            }
-
-            internal ImposterTargetInstance() : base()
-            {
+                this._imposter = _imposter;
             }
 
             public override int A

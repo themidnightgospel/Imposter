@@ -213,9 +213,8 @@ internal readonly ref struct ImposterInstanceBuilder
             .AddMembers(fields);
 
         imposterClassBuilder = imposterGenerationContext.Imposter.IsClass
-            ? imposterClassBuilder
-                .AddMember(BuildInitializeImposterMethod(imposterGenerationContext.Imposter.Name, imposterFieldName))
-                .AddMembers(BuildConstructorsForClassTarget(imposterGenerationContext, name))
+            ? imposterClassBuilder.AddMembers(
+                BuildConstructorsForClassTarget(imposterGenerationContext, name, imposterFieldName))
             : imposterClassBuilder.AddMember(BuildConstructorAndInitializeMembers(name, fields));
 
         imposterClassBuilder = imposterClassBuilder
@@ -228,7 +227,7 @@ internal readonly ref struct ImposterInstanceBuilder
         ImposterGenerationContext imposterGenerationContext,
         string imposterFieldName) =>
     [
-        SingleVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), imposterFieldName)
+        SinglePrivateReadonlyVariableField(IdentifierName(imposterGenerationContext.Imposter.Name), imposterFieldName)
     ];
 
     private static string CreateImposterFieldName(in ImposterGenerationContext imposterGenerationContext)
@@ -242,48 +241,50 @@ internal readonly ref struct ImposterInstanceBuilder
         return nameSet.Use("_imposter");
     }
 
-    private static MethodDeclarationSyntax BuildInitializeImposterMethod(string imposterName, string imposterFieldName)
-    {
-        var assignment = IdentifierName(imposterFieldName).Assign(IdentifierName("imposter"));
-
-        return new MethodDeclarationBuilder(
-                WellKnownTypes.Void,
-                "InitializeImposter")
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                Parameter(Identifier("imposter"))
-                    .WithType(IdentifierName(imposterName)))
-            .WithBody(Block(assignment.ToStatementSyntax()))
-            .Build();
-    }
-
     private static List<ConstructorDeclarationSyntax> BuildConstructorsForClassTarget(
         in ImposterGenerationContext imposterGenerationContext,
-        string name)
+        string name,
+        string imposterFieldName)
     {
         if (!imposterGenerationContext.Imposter.IsClass)
         {
             return [];
         }
 
-        return imposterGenerationContext
-            .Imposter
-            .AccessibleConstructors
+        var imposterName = imposterGenerationContext.Imposter.Name;
+        var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
+
+        return accessibleConstructors
             .Select(constructorMetadata =>
             {
-                var parameterList = ParameterListSyntax(constructorMetadata.Parameters, includeRefKind: true);
-                var argumentList = ArgumentListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+                var constructorParameters = new List<ParameterSyntax>(constructorMetadata.Parameters.Length + 1)
+                {
+                    ParameterSyntax(
+                        IdentifierName(imposterName),
+                        imposterFieldName)
+                };
+                constructorParameters.AddRange(
+                    constructorMetadata.Parameters.Select(parameter => ParameterSyntax(parameter, includeRefKind: true)));
+
+                var baseArgumentList = ArgumentListSyntax(constructorMetadata.Parameters, includeRefKind: true);
+
+                var constructorBody = Block(
+                    ThisExpression()
+                        .Dot(IdentifierName(imposterFieldName))
+                        .Assign(IdentifierName(imposterFieldName))
+                        .ToStatementSyntax());
 
                 return new ConstructorBuilder(name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .WithParameterList(parameterList)
+                    .WithParameterList(ParameterListSyntax(constructorParameters))
                     .AddInitializer(
                         ConstructorInitializer(
                             SyntaxKind.BaseConstructorInitializer,
-                            argumentList))
+                            baseArgumentList))
+                    .WithBody(constructorBody)
                     .Build();
-
-            }).ToList();
+            })
+            .ToList();
     }
 
     private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(
