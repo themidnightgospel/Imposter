@@ -6,7 +6,12 @@ namespace Imposter.Tests.Features.PropertyImposter
 {
     public class CallbackTests
     {
-        private readonly IPropertySetupSutImposter _sut = new IPropertySetupSutImposter();
+        private readonly IPropertySetupSutImposter _sut =
+#if USE_CSHARP14
+            IPropertySetupSut.Imposter();
+#else
+            new IPropertySetupSutImposter();
+#endif
 
         [Fact]
         public void GivenSetterCallbackWithMatchingCriteria_WhenPropertyIsSet_ShouldInvokeCallback()

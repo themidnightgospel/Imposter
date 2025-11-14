@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+  workflow_call:
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true

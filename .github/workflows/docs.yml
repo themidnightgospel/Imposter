@@ -1,11 +1,17 @@
 name: Docs
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
-      - 'v*.*.*-*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Docs version label (defaults to tag or dev)'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -37,7 +43,7 @@ jobs:
 
       - name: Deploy docs with mike (mkdocs at docs/mkdocs.yml)
         env:
-          DOCS_VERSION: dev
+          DOCS_VERSION: ${{ inputs.version || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || 'dev' }}
         run: |
           mike deploy -F docs/mkdocs.yml --push --remote origin --branch gh-pages ${DOCS_VERSION} latest
           mike set-default -F docs/mkdocs.yml --push --remote origin --branch gh-pages latest

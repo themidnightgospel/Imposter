@@ -12,7 +12,12 @@ namespace Imposter.Tests.Features.MethodImposter
 {
     public class ThrowTests
     {
-        private readonly IMethodSetupFeatureSutImposter _sut = new IMethodSetupFeatureSutImposter();
+        private readonly IMethodSetupFeatureSutImposter _sut =
+#if USE_CSHARP14
+            IMethodSetupFeatureSut.Imposter();
+#else
+            new IMethodSetupFeatureSutImposter();
+#endif
 
         #region VoidNoParams Tests
 
