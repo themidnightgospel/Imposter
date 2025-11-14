@@ -27,57 +27,24 @@ Use `[GenerateImposter]` attribute to generate an imposter
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(IMyService))]
+[assembly: GenerateImposter(typeof(ICalculator))]
 
-public interface IMyService
+public interface ICalculator
 {
-    int GetNumber();
-    Task<int> GetNumberAsync();
+    int Add(int a, int b);
 }
 
 
-var imposter = new IMyServiceImposter();
+// c# 14
+var imposter = ICalculator.Imposter();
 
-imposter.GetNumber().Returns(42);
-imposter.Instance().GetNumber(); // 42
+// c# 8 - 13
+// var imposter = new ICalculatorImposter();
 
-imposter.GetNumberAsync().ReturnsAsync(7);
-await imposter.Instance().GetNumberAsync(); // 7
+imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
+
+imposter.Instance().Add(1, 2); // 42
 ```
-
-Example: classes (virtual/abstract members)
-
-```csharp
-using System.Threading.Tasks;
-using Imposter.Abstractions;
-
-[assembly: GenerateImposter(typeof(BaseService))]
-
-public abstract class BaseService
-{
-    public virtual int GetNumber() => 0;
-    public virtual Task<int> GetNumberAsync() => Task.FromResult(0);
-}
-
-var classImposter = new BaseServiceImposter();
-classImposter.GetNumber().Returns(42);
-classImposter.Instance().GetNumber(); // 42
-```
-
-Note: For classes, only virtual/abstract members can be intercepted.
-
-## Accessing the generated imposter
-
-If you're using C# 14 or later then accessing the imposter is more simpler and refactoring-friendly
-
-```csharp
-var imposter = IMyService.Imposter();
-```
-
-## Behavior modes
-
-- Implicit (loose, default): Missing setups return default values; calls succeed.
-- Explicit (strict): Missing setups throw `MissingImposterException`.
 
 Learn more: https://themidnightgospel.github.io/Imposter/methods/explicit-vs-implicit/
 

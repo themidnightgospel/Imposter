@@ -44,7 +44,7 @@ jobs:
         run: |
           {
             echo 'RELEASE_NOTES<<EOF';
-            gh release view '${{ github.event.release.name }}' --json body --jq .body;
+            gh release view '${{ github.event.release.tag_name }}' --json body --jq .body;
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
         env:
@@ -79,7 +79,7 @@ jobs:
         run: dotnet nuget push './artifacts/*.nupkg' --source "$NUGET_SOURCE" --api-key '${{ secrets.NUGET_API_KEY }}' --skip-duplicate
 
       - name: add release assets
-        run: gh release upload "${{ github.event.release.name }}" artifacts/*.nupkg
+        run: gh release upload "${{ github.event.release.tag_name }}" artifacts/*.nupkg
         env:
           GH_TOKEN: ${{ github.token }}
   docs:
