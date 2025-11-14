@@ -75,6 +75,11 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             ? new UseBaseImplementationMethodMetadata(Interface.Syntax, ContinuationInterface.Syntax)
             : null;
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
-        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(method.ReturnTypeSyntax);
+        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(
+            method.ReturnTypeSyntax,
+            method.HasReturnValue,
+            method.SupportsNullableGenericType,
+            method.HasGenericReturnType,
+            method.ReturnType.IsTask || method.ReturnType.IsValueTask);
     }
 }

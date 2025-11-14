@@ -656,6 +656,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ClassWithMultiParameterIndexerImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithMultiParameterIndexer imposter)
+        {
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithMultiParameterIndexerImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithMultiParameterIndexerImposter();
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithMultiParameterIndexerImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithMultiParameterIndexerImposter(invocationBehavior);
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

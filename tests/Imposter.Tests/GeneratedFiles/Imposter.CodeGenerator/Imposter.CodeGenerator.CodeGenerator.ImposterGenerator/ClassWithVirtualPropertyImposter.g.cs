@@ -813,6 +813,16 @@ namespace Imposter.Tests.Features.PropertyImposter
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ClassWithVirtualPropertyImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty imposter)
+        {
+            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter Imposter() => new global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter();
+            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter(invocationBehavior);
+        }
+    }
 }
 #nullable restore
 #pragma warning restore CS8608

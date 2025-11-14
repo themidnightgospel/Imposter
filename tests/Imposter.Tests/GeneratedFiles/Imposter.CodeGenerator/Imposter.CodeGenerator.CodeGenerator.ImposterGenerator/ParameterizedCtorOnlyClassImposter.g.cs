@@ -73,9 +73,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class ComputeMethodInvocationHistory : IComputeMethodInvocationHistory
         {
             internal ComputeArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int Result, global::System.Exception? Exception)
+            public ComputeMethodInvocationHistory(ComputeArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -103,6 +103,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual int ParameterizedCtorOnlyClass.Compute(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeMethodInvocationImposterGroup
         {
@@ -161,7 +162,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(int));
                 }
 
                 private ComputeDelegate? _resultGenerator;
@@ -183,7 +184,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(value);
@@ -230,7 +231,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int value)
+                internal static int? DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -268,6 +269,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int ParameterizedCtorOnlyClass.Compute(int value)
         public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
@@ -1675,6 +1677,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     });
                 }
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class ParameterizedCtorOnlyClassImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass imposter)
+        {
+            public static global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClassImposter Imposter(int seed, string name, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClassImposter(seed, name, invocationBehavior);
         }
     }
 }

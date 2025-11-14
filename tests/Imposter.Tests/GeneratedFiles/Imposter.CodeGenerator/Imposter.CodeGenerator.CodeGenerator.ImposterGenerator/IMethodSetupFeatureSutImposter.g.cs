@@ -178,9 +178,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncTaskIntNoParamsMethodInvocationHistory : IAsyncTaskIntNoParamsMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int> Result;
+            internal global::System.Threading.Tasks.Task<int>? Result;
             internal global::System.Exception? Exception;
-            public AsyncTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+            public AsyncTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -207,6 +207,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AsyncTaskIntNoParamsMethodInvocationImposterGroup
         {
@@ -371,6 +372,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // Task<int> IMethodSetupFeatureSut.AsyncTaskIntNoParams()
         public interface IAsyncTaskIntNoParamsMethodImposterBuilder : IAsyncTaskIntNoParamsMethodInvocationImposterGroup, IAsyncTaskIntNoParamsMethodInvocationImposterGroupCallback, AsyncTaskIntNoParamsInvocationVerifier
         {
         }
@@ -531,9 +533,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class AsyncValueTaskIntNoParamsMethodInvocationHistory : IAsyncValueTaskIntNoParamsMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.ValueTask<int> Result;
+            internal global::System.Threading.Tasks.ValueTask<int>? Result;
             internal global::System.Exception? Exception;
-            public AsyncValueTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
+            public AsyncValueTaskIntNoParamsMethodInvocationHistory(global::System.Threading.Tasks.ValueTask<int>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -560,6 +562,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AsyncValueTaskIntNoParamsMethodInvocationImposterGroup
         {
@@ -724,6 +727,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // ValueTask<int> IMethodSetupFeatureSut.AsyncValueTaskIntNoParams()
         public interface IAsyncValueTaskIntNoParamsMethodImposterBuilder : IAsyncValueTaskIntNoParamsMethodInvocationImposterGroup, IAsyncValueTaskIntNoParamsMethodInvocationImposterGroupCallback, AsyncValueTaskIntNoParamsInvocationVerifier
         {
         }
@@ -932,9 +936,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationHistory
         {
             internal GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -987,6 +991,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>
         {
@@ -1156,6 +1161,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>(out TOut outValue, ref TRef refValue, in TIn inValue, params TParams[] paramsValues)
         public interface IGenericAllRefKindMethodImposterBuilder<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>, IGenericAllRefKindMethodInvocationImposterGroupCallback<TOut, TRef, TIn, TParams, TResult>, GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
         {
         }
@@ -1356,9 +1362,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericInnerOutParamMethodInvocationHistory<TValue, TResult> : IGenericInnerOutParamMethodInvocationHistory
         {
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerOutParamMethodInvocationHistory(global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerOutParamMethodInvocationHistory(global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1410,6 +1416,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -1465,7 +1472,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((out global::System.Collections.Generic.List<TValue> value) => DefaultResultGenerator(out value) ?? default(global::System.Collections.Generic.Stack<TResult>));
                 }
 
                 private GenericInnerOutParamDelegate<TValue, TResult>? _resultGenerator;
@@ -1481,7 +1488,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (out global::System.Collections.Generic.List<TValue> value) => DefaultResultGenerator(out value) ?? default(global::System.Collections.Generic.Stack<TResult>);
                     }
 
                     global::System.Collections.Generic.Stack<TResult> result = _resultGenerator.Invoke(out value);
@@ -1525,7 +1532,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     value = default(global::System.Collections.Generic.List<TValue>);
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(out global::System.Collections.Generic.List<TValue> value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(out global::System.Collections.Generic.List<TValue> value)
                 {
                     InitializeOutParametersWithDefaultValues(out value);
                     return default;
@@ -1576,6 +1583,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerOutParam<TValue, TResult>(out List<TValue> value)
         public interface IGenericInnerOutParamMethodImposterBuilder<TValue, TResult> : IGenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerOutParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerOutParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -1806,9 +1814,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerParamsParamMethodInvocationHistory<TValue, TResult> : IGenericInnerParamsParamMethodInvocationHistory
         {
             internal GenericInnerParamsParamArguments<TValue, TResult> Arguments;
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerParamsParamMethodInvocationHistory(GenericInnerParamsParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerParamsParamMethodInvocationHistory(GenericInnerParamsParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1861,6 +1869,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -1919,7 +1928,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((global::System.Collections.Generic.List<TValue>[] value) => DefaultResultGenerator(value) ?? default(global::System.Collections.Generic.Stack<TResult>));
                 }
 
                 private GenericInnerParamsParamDelegate<TValue, TResult>? _resultGenerator;
@@ -1935,7 +1944,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (global::System.Collections.Generic.List<TValue>[] value) => DefaultResultGenerator(value) ?? default(global::System.Collections.Generic.Stack<TResult>);
                     }
 
                     global::System.Collections.Generic.Stack<TResult> result = _resultGenerator.Invoke(value);
@@ -1973,7 +1982,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(global::System.Collections.Generic.List<TValue>[] value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(global::System.Collections.Generic.List<TValue>[] value)
                 {
                     return default;
                 }
@@ -2023,6 +2032,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerParamsParam<TValue, TResult>(params List<TValue>[] value)
         public interface IGenericInnerParamsParamMethodImposterBuilder<TValue, TResult> : IGenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerParamsParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -2252,9 +2262,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericInnerRefParamMethodInvocationHistory<TValue, TResult> : IGenericInnerRefParamMethodInvocationHistory
         {
             internal GenericInnerRefParamArguments<TValue, TResult> Arguments;
-            internal global::System.Collections.Generic.Stack<TResult> Result;
+            internal global::System.Collections.Generic.Stack<TResult>? Result;
             internal global::System.Exception? Exception;
-            public GenericInnerRefParamMethodInvocationHistory(GenericInnerRefParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult> Result, global::System.Exception? Exception)
+            public GenericInnerRefParamMethodInvocationHistory(GenericInnerRefParamArguments<TValue, TResult> Arguments, global::System.Collections.Generic.Stack<TResult>? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -2307,6 +2317,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -2365,7 +2376,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((ref global::System.Collections.Generic.List<TValue> value) => DefaultResultGenerator(ref value) ?? default(global::System.Collections.Generic.Stack<TResult>));
                 }
 
                 private GenericInnerRefParamDelegate<TValue, TResult>? _resultGenerator;
@@ -2381,7 +2392,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (ref global::System.Collections.Generic.List<TValue> value) => DefaultResultGenerator(ref value) ?? default(global::System.Collections.Generic.Stack<TResult>);
                     }
 
                     global::System.Collections.Generic.Stack<TResult> result = _resultGenerator.Invoke(ref value);
@@ -2419,7 +2430,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(ref global::System.Collections.Generic.List<TValue> value)
+                internal static global::System.Collections.Generic.Stack<TResult>? DefaultResultGenerator(ref global::System.Collections.Generic.List<TValue> value)
                 {
                     return default;
                 }
@@ -2469,6 +2480,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // Stack<TResult> IMethodSetupFeatureSut.GenericInnerRefParam<TValue, TResult>(ref List<TValue> value)
         public interface IGenericInnerRefParamMethodImposterBuilder<TValue, TResult> : IGenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>, IGenericInnerRefParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericInnerRefParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -2753,6 +2765,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericInnerSingleParamMethodInvocationImposterGroup<TValue>
         {
@@ -2897,6 +2910,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)
         public interface IGenericInnerSingleParamMethodImposterBuilder<TValue> : IGenericInnerSingleParamMethodInvocationImposterGroup<TValue>, IGenericInnerSingleParamMethodInvocationImposterGroupCallback<TValue>, GenericInnerSingleParamInvocationVerifier<TValue>
         {
         }
@@ -3074,9 +3088,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodInvocationHistory<TValue, TResult> : IGenericOutParamMethodInvocationHistory
         {
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericOutParamMethodInvocationHistory(TResult Result, global::System.Exception? Exception)
+            public GenericOutParamMethodInvocationHistory(TResult? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -3128,6 +3142,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericOutParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -3294,6 +3309,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericOutParam<TValue, TResult>(out TValue value)
         public interface IGenericOutParamMethodImposterBuilder<TValue, TResult> : IGenericOutParamMethodInvocationImposterGroup<TValue, TResult>, IGenericOutParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericOutParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -3524,9 +3540,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericParamsParamMethodInvocationHistory<TValue, TResult> : IGenericParamsParamMethodInvocationHistory
         {
             internal GenericParamsParamArguments<TValue, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericParamsParamMethodInvocationHistory(GenericParamsParamArguments<TValue, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericParamsParamMethodInvocationHistory(GenericParamsParamArguments<TValue, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -3579,6 +3595,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -3741,6 +3758,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericParamsParam<TValue, TResult>(params TValue[] value)
         public interface IGenericParamsParamMethodImposterBuilder<TValue, TResult> : IGenericParamsParamMethodInvocationImposterGroup<TValue, TResult>, IGenericParamsParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericParamsParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -3970,9 +3988,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericRefParamMethodInvocationHistory<TValue, TResult> : IGenericRefParamMethodInvocationHistory
         {
             internal GenericRefParamArguments<TValue, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericRefParamMethodInvocationHistory(GenericRefParamArguments<TValue, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericRefParamMethodInvocationHistory(GenericRefParamArguments<TValue, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -4025,6 +4043,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericRefParamMethodInvocationImposterGroup<TValue, TResult>
         {
@@ -4187,6 +4206,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // TResult IMethodSetupFeatureSut.GenericRefParam<TValue, TResult>(ref TValue value)
         public interface IGenericRefParamMethodImposterBuilder<TValue, TResult> : IGenericRefParamMethodInvocationImposterGroup<TValue, TResult>, IGenericRefParamMethodInvocationImposterGroupCallback<TValue, TResult>, GenericRefParamInvocationVerifier<TValue, TResult>
         {
         }
@@ -4471,6 +4491,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericSingleParamMethodInvocationImposterGroup<TValue>
         {
@@ -4615,6 +4636,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)
         public interface IGenericSingleParamMethodImposterBuilder<TValue> : IGenericSingleParamMethodInvocationImposterGroup<TValue>, IGenericSingleParamMethodInvocationImposterGroupCallback<TValue>, GenericSingleParamInvocationVerifier<TValue>
         {
         }
@@ -4834,9 +4856,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntAllRefKindsMethodInvocationHistory : IIntAllRefKindsMethodInvocationHistory
         {
             internal IntAllRefKindsArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntAllRefKindsMethodInvocationHistory(IntAllRefKindsArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntAllRefKindsMethodInvocationHistory(IntAllRefKindsArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -4864,6 +4886,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntAllRefKindsMethodInvocationImposterGroup
         {
@@ -4922,7 +4945,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) => DefaultResultGenerator(out value, ref refValue, in inValue, valueAsString, paramsStrings) ?? default(int));
                 }
 
                 private IntAllRefKindsDelegate? _resultGenerator;
@@ -4938,7 +4961,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) => DefaultResultGenerator(out value, ref refValue, in inValue, valueAsString, paramsStrings) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(out value, ref refValue, in inValue, valueAsString, paramsStrings);
@@ -4982,7 +5005,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     value = default(int);
                 }
 
-                internal static int DefaultResultGenerator(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
+                internal static int? DefaultResultGenerator(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
                 {
                     InitializeOutParametersWithDefaultValues(out value);
                     return default;
@@ -5020,6 +5043,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings)
         public interface IIntAllRefKindsMethodImposterBuilder : IIntAllRefKindsMethodInvocationImposterGroup, IIntAllRefKindsMethodInvocationImposterGroupCallback, IntAllRefKindsInvocationVerifier
         {
         }
@@ -5207,9 +5231,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntInParamMethodInvocationHistory : IIntInParamMethodInvocationHistory
         {
             internal IntInParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntInParamMethodInvocationHistory(IntInParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntInParamMethodInvocationHistory(IntInParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -5237,6 +5261,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntInParamMethodInvocationImposterGroup
         {
@@ -5295,7 +5320,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((in string inStringValue) => DefaultResultGenerator(in inStringValue) ?? default(int));
                 }
 
                 private IntInParamDelegate? _resultGenerator;
@@ -5311,7 +5336,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (in string inStringValue) => DefaultResultGenerator(in inStringValue) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(in inStringValue);
@@ -5349,7 +5374,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(in string inStringValue)
+                internal static int? DefaultResultGenerator(in string inStringValue)
                 {
                     return default;
                 }
@@ -5386,6 +5411,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntInParam(in string inStringValue)
         public interface IIntInParamMethodImposterBuilder : IIntInParamMethodInvocationImposterGroup, IIntInParamMethodInvocationImposterGroupCallback, IntInParamInvocationVerifier
         {
         }
@@ -5540,9 +5566,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntNoParamsMethodInvocationHistory : IIntNoParamsMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntNoParamsMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public IntNoParamsMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -5569,6 +5595,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntNoParamsMethodInvocationImposterGroup
         {
@@ -5624,7 +5651,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns(() => DefaultResultGenerator() ?? default(int));
                 }
 
                 private IntNoParamsDelegate? _resultGenerator;
@@ -5640,7 +5667,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = () => DefaultResultGenerator() ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke();
@@ -5678,7 +5705,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator()
+                internal static int? DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -5715,6 +5742,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntNoParams()
         public interface IIntNoParamsMethodImposterBuilder : IIntNoParamsMethodInvocationImposterGroup, IIntNoParamsMethodInvocationImposterGroupCallback, IntNoParamsInvocationVerifier
         {
         }
@@ -5863,9 +5891,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class IntOutParamMethodInvocationHistory : IIntOutParamMethodInvocationHistory
         {
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntOutParamMethodInvocationHistory(int Result, global::System.Exception? Exception)
+            public IntOutParamMethodInvocationHistory(int? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -5892,6 +5920,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntOutParamMethodInvocationImposterGroup
         {
@@ -5947,7 +5976,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((out int outValue) => DefaultResultGenerator(out outValue) ?? default(int));
                 }
 
                 private IntOutParamDelegate? _resultGenerator;
@@ -5963,7 +5992,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (out int outValue) => DefaultResultGenerator(out outValue) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(out outValue);
@@ -6007,7 +6036,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     outValue = default(int);
                 }
 
-                internal static int DefaultResultGenerator(out int outValue)
+                internal static int? DefaultResultGenerator(out int outValue)
                 {
                     InitializeOutParametersWithDefaultValues(out outValue);
                     return default;
@@ -6045,6 +6074,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntOutParam(out int outValue)
         public interface IIntOutParamMethodImposterBuilder : IIntOutParamMethodInvocationImposterGroup, IIntOutParamMethodInvocationImposterGroupCallback, IntOutParamInvocationVerifier
         {
         }
@@ -6234,9 +6264,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntParamsMethodInvocationHistory : IIntParamsMethodInvocationHistory
         {
             internal IntParamsArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntParamsMethodInvocationHistory(IntParamsArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntParamsMethodInvocationHistory(IntParamsArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -6264,6 +6294,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntParamsMethodInvocationImposterGroup
         {
@@ -6322,7 +6353,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int age, string name, global::System.Text.RegularExpressions.Regex regex) => DefaultResultGenerator(age, name, regex) ?? default(int));
                 }
 
                 private IntParamsDelegate? _resultGenerator;
@@ -6338,7 +6369,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int age, string name, global::System.Text.RegularExpressions.Regex regex) => DefaultResultGenerator(age, name, regex) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(age, name, regex);
@@ -6376,7 +6407,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(int age, string name, global::System.Text.RegularExpressions.Regex regex)
+                internal static int? DefaultResultGenerator(int age, string name, global::System.Text.RegularExpressions.Regex regex)
                 {
                     return default;
                 }
@@ -6413,6 +6444,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntParams(int age, string name, Regex regex)
         public interface IIntParamsMethodImposterBuilder : IIntParamsMethodInvocationImposterGroup, IIntParamsMethodInvocationImposterGroupCallback, IntParamsInvocationVerifier
         {
         }
@@ -6595,9 +6627,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntParamsParamMethodInvocationHistory : IIntParamsParamMethodInvocationHistory
         {
             internal IntParamsParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntParamsParamMethodInvocationHistory(IntParamsParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntParamsParamMethodInvocationHistory(IntParamsParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -6625,6 +6657,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntParamsParamMethodInvocationImposterGroup
         {
@@ -6683,7 +6716,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((string[] paramsStrings) => DefaultResultGenerator(paramsStrings) ?? default(int));
                 }
 
                 private IntParamsParamDelegate? _resultGenerator;
@@ -6699,7 +6732,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (string[] paramsStrings) => DefaultResultGenerator(paramsStrings) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(paramsStrings);
@@ -6737,7 +6770,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(string[] paramsStrings)
+                internal static int? DefaultResultGenerator(string[] paramsStrings)
                 {
                     return default;
                 }
@@ -6774,6 +6807,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntParamsParam(params string[] paramsStrings)
         public interface IIntParamsParamMethodImposterBuilder : IIntParamsParamMethodInvocationImposterGroup, IIntParamsParamMethodInvocationImposterGroupCallback, IntParamsParamInvocationVerifier
         {
         }
@@ -6956,9 +6990,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntRefParamMethodInvocationHistory : IIntRefParamMethodInvocationHistory
         {
             internal IntRefParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntRefParamMethodInvocationHistory(IntRefParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntRefParamMethodInvocationHistory(IntRefParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -6986,6 +7020,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntRefParamMethodInvocationImposterGroup
         {
@@ -7044,7 +7079,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((ref int refValue) => DefaultResultGenerator(ref refValue) ?? default(int));
                 }
 
                 private IntRefParamDelegate? _resultGenerator;
@@ -7060,7 +7095,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (ref int refValue) => DefaultResultGenerator(ref refValue) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(ref refValue);
@@ -7098,7 +7133,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(ref int refValue)
+                internal static int? DefaultResultGenerator(ref int refValue)
                 {
                     return default;
                 }
@@ -7135,6 +7170,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntRefParam(ref int refValue)
         public interface IIntRefParamMethodImposterBuilder : IIntRefParamMethodInvocationImposterGroup, IIntRefParamMethodInvocationImposterGroupCallback, IntRefParamInvocationVerifier
         {
         }
@@ -7317,9 +7353,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class IntSingleParamMethodInvocationHistory : IIntSingleParamMethodInvocationHistory
         {
             internal IntSingleParamArguments Arguments;
-            internal int Result;
+            internal int? Result;
             internal global::System.Exception? Exception;
-            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int Result, global::System.Exception? Exception)
+            public IntSingleParamMethodInvocationHistory(IntSingleParamArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -7347,6 +7383,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntSingleParamMethodInvocationImposterGroup
         {
@@ -7405,7 +7442,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int age) => DefaultResultGenerator(age) ?? default(int));
                 }
 
                 private IntSingleParamDelegate? _resultGenerator;
@@ -7421,7 +7458,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int age) => DefaultResultGenerator(age) ?? default(int);
                     }
 
                     int result = _resultGenerator.Invoke(age);
@@ -7459,7 +7496,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static int DefaultResultGenerator(int age)
+                internal static int? DefaultResultGenerator(int age)
                 {
                     return default;
                 }
@@ -7496,6 +7533,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMethodSetupFeatureSut.IntSingleParam(int age)
         public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier
         {
         }
@@ -7677,6 +7715,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // void IMethodSetupFeatureSut.VoidNoParams()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class VoidNoParamsMethodInvocationImposterGroup
         {
@@ -7805,6 +7844,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IMethodSetupFeatureSut.VoidNoParams()
         public interface IVoidNoParamsMethodImposterBuilder : IVoidNoParamsMethodInvocationImposterGroup, IVoidNoParamsMethodInvocationImposterGroupCallback, VoidNoParamsInvocationVerifier
         {
         }
@@ -8059,6 +8099,15 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return _imposter._asyncValueTaskIntNoParamsMethodImposter.Invoke();
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class IMethodSetupFeatureSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSut imposter)
+        {
+            public static global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSutImposter Imposter() => new global::Imposter.Tests.Features.MethodImposter.IMethodSetupFeatureSutImposter();
         }
     }
 }

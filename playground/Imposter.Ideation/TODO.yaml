@@ -52,6 +52,7 @@ FEATURES:
       - UseBaseImplementation for interface members
       - enable TreatWarningsAsErrors in generator project.
       - AnalyzerReleases.Unshipped.md
+      - refactor ImposterTargetMethodMetadata.IsMethodAsync method.
 
   MEDIUM:
     - NOT Started:

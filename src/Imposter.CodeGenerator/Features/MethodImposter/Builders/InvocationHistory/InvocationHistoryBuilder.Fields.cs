@@ -20,7 +20,7 @@ internal static partial class InvocationHistoryBuilder
 
         if (method.HasReturnValue)
         {
-            var resultType = method.SupportsNullableGenericType
+            var resultType = method is { SupportsNullableGenericType: true, ReturnTypeSyntax: not NullableTypeSyntax }
                 ? method.ReturnTypeSyntax.ToNullableType()
                 : method.ReturnTypeSyntax;
             fields.Add(SingleVariableField(resultType, InvocationHistoryTypeMetadata.ResultFieldName, TokenList(Token(SyntaxKind.InternalKeyword))));

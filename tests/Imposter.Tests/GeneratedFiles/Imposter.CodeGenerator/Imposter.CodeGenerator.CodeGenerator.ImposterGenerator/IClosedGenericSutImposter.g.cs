@@ -73,9 +73,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericMethodMethodInvocationHistory : IGenericMethodMethodInvocationHistory
         {
             internal GenericMethodArguments Arguments;
-            internal string Result;
+            internal string? Result;
             internal global::System.Exception? Exception;
-            public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, string Result, global::System.Exception? Exception)
+            public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, string? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -103,6 +103,7 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericMethodMethodInvocationImposterGroup
         {
@@ -161,7 +162,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
+                    Default.Returns((int age) => DefaultResultGenerator(age) ?? default(string));
                 }
 
                 private GenericMethodDelegate? _resultGenerator;
@@ -177,7 +178,7 @@ namespace Imposter.Tests.Features.MethodImposter
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = DefaultResultGenerator;
+                        _resultGenerator = (int age) => DefaultResultGenerator(age) ?? default(string);
                     }
 
                     string result = _resultGenerator.Invoke(age);
@@ -215,7 +216,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     };
                 }
 
-                internal static string DefaultResultGenerator(int age)
+                internal static string? DefaultResultGenerator(int age)
                 {
                     return default;
                 }
@@ -252,6 +253,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // string IClosedGenericSut<int, string>.GenericMethod(int age)
         public interface IGenericMethodMethodImposterBuilder : IGenericMethodMethodInvocationImposterGroup, IGenericMethodMethodInvocationImposterGroupCallback, GenericMethodInvocationVerifier
         {
         }
@@ -411,6 +413,15 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return _imposter._genericMethodMethodImposter.Invoke(age);
             }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    internal static class IClosedGenericSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> imposter)
+        {
+            internal static global::Imposter.Tests.Features.MethodImposter.IClosedGenericSutImposter Imposter() => new global::Imposter.Tests.Features.MethodImposter.IClosedGenericSutImposter();
         }
     }
 }
