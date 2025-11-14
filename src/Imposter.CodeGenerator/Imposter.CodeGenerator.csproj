@@ -16,19 +16,27 @@
         <Version>0.1.0</Version>
         <Description>Imposter — Source-generated test doubles, zero runtime overhead. A high-performance Roslyn incremental source generator that produces imposters (mocks/stubs) for interfaces and overridable class members via GenerateImposterAttribute. Ships analyzer + runtime in a single package.</Description>
         <PackageTags>source generator;mock;stub;imposter;roslyn;testing</PackageTags>
+        
+        <Authors>Bitchiko Tchelidze</Authors>
+        <PackageProjectUrl>https://github.com/themidnightgospel/Imposter</PackageProjectUrl>
+        
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <Deterministic>true</Deterministic>
-        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EnablePackageValidation>true</EnablePackageValidation>
-        <!-- License file from repo root -->
+        
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        
         <!-- README and icon for NuGet package -->
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>imposter_logo.png</PackageIcon>
+
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     </PropertyGroup>
     <Import Project="../../Roslyn.Shared.props" />
     <Import Project="Imposter.Roslyn$(ROSLYN_VERSION).props" />
@@ -80,6 +88,7 @@
 
         <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
         <None Include="$(OutputPath)\$(AssemblyName).Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+        <None Remove="Imposter.CodeGenerator.Abstractions.dll" />
 
     </ItemGroup>
 
