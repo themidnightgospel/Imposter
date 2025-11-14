@@ -27,7 +27,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
     {
-        var propertyBuilder = new PropertyDeclarationBuilder(property.Core.TypeSyntax, property.Core.Name)
+        var propertyBuilder = new PropertyDeclarationBuilder(property.Core.NullableAwareTypeSyntax, property.Core.Name)
             .AddModifiers(property.ImposterInstanceModifiers);
 
         if (property.Core.HasGetter)
@@ -104,7 +104,9 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddIndexer(in ImposterIndexerMetadata indexer)
     {
-        var parameters = indexer.Core.Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
+        var parameters = indexer.Core.Parameters
+            .Select(parameter => ParameterSyntaxIncludingNullable(parameter.Symbol))
+            .ToArray();
         var parameterList = BracketedParameterList(SeparatedList(parameters));
 
         var accessors = new List<AccessorDeclarationSyntax>();
@@ -172,7 +174,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     .WithBody(Block(setterCall.ToStatementSyntax())));
         }
 
-        var indexerDeclaration = IndexerDeclaration(indexer.Core.TypeSyntax)
+        var indexerDeclaration = IndexerDeclaration(indexer.Core.NullableAwareTypeSyntax)
             .WithModifiers(indexer.ImposterInstanceModifiers)
             .WithParameterList(parameterList)
             .WithAccessorList(AccessorList(List(accessors)));
@@ -184,7 +186,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
-        var eventDeclaration = EventDeclaration(@event.Core.HandlerTypeSyntax, Identifier(@event.Core.Name))
+        var eventDeclaration = EventDeclaration(@event.Core.NullableAwareHandlerTypeSyntax, Identifier(@event.Core.Name))
             .WithModifiers(@event.ImposterInstanceModifiers)
             .WithAccessorList(
                 AccessorList(
@@ -303,9 +305,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("Invoke"))
                 .Call(ArgumentList(SeparatedList(invokeArguments)));
 
-            var methodBuilder = new MethodDeclarationBuilder(TypeSyntax(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
+            var methodBuilder = new MethodDeclarationBuilder(TypeSyntaxIncludingNullable(imposterMethod.Symbol.ReturnType), imposterMethod.Symbol.Name)
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
-                .AddParameters(ParameterSyntaxes(imposterMethod.Symbol.Parameters))
+                .AddParameters(ParameterSyntaxesIncludingNullable(imposterMethod.Symbol.Parameters))
                 .WithBody(Block(
                     imposterMethod.HasReturnValue
                         ? ReturnStatement(invokeMethodInvocationExpression)

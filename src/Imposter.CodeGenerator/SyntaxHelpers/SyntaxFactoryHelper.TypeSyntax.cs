@@ -14,6 +14,16 @@ internal static partial class SyntaxFactoryHelper
             typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
         );
 
+    private static readonly SymbolDisplayFormat FullyQualifiedFormatWithNullableReferenceTypes =
+        SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
+            SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions |
+            SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
+    internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
+        ParseTypeName(
+            typeSymbol.ToDisplayString(FullyQualifiedFormatWithNullableReferenceTypes)
+        );
+
     internal static TypeParameterSyntax TypeParameterSyntax(ITypeParameterSymbol typeParameterSymbol)
         => TypeParameter(typeParameterSymbol.Name);
 

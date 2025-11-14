@@ -42,7 +42,13 @@ internal static partial class SyntaxFactoryHelper
 
     internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(IEnumerable<IParameterSymbol> parameters) => parameters.Select(ParameterSyntax);
 
-    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) => ParameterSyntax(parameter, true);
+    internal static IEnumerable<ParameterSyntax> ParameterSyntaxesIncludingNullable(IEnumerable<IParameterSymbol> parameters) =>
+        parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter));
+
+    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) => ParameterSyntax(parameter, includeRefKind: true);
+
+    internal static ParameterSyntax ParameterSyntaxIncludingNullable(IParameterSymbol parameter, bool includeRefKind = true) =>
+        ParameterSyntaxInternal(parameter, includeRefKind, includeNullableReferenceAnnotations: true);
 
     internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name)
         => new ParameterBuilder(type, name).Build();
@@ -55,9 +61,19 @@ internal static partial class SyntaxFactoryHelper
     internal static ParameterListSyntax ToSingleParameterListSyntax(this ParameterSyntax parameterSyntax)
         => ParameterList(SingletonSeparatedList(parameterSyntax));
 
-    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter, bool includeRefKind)
+    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter, bool includeRefKind) =>
+        ParameterSyntaxInternal(parameter, includeRefKind, includeNullableReferenceAnnotations: false);
+
+    private static ParameterSyntax ParameterSyntaxInternal(
+        IParameterSymbol parameter,
+        bool includeRefKind,
+        bool includeNullableReferenceAnnotations)
     {
-        var parameterBuilder = new ParameterBuilder(TypeSyntax(parameter.Type), parameter.Name);
+        var parameterType = includeNullableReferenceAnnotations
+            ? TypeSyntaxIncludingNullable(parameter.Type)
+            : TypeSyntax(parameter.Type);
+
+        var parameterBuilder = new ParameterBuilder(parameterType, parameter.Name);
 
         if (includeRefKind)
         {
@@ -79,7 +95,7 @@ internal static partial class SyntaxFactoryHelper
         {
             var defaultValue = parameter.ExplicitDefaultValue != null
                 ? ParseExpression(parameter.ExplicitDefaultValue.ToString())
-                : DefaultExpression(TypeSyntax(parameter.Type));
+                : DefaultExpression(parameterType);
 
             parameterBuilder.WithDefaultValue(defaultValue);
         }

@@ -1644,7 +1644,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            public override event global::System.EventHandler SomethingHappened
+            public override event global::System.EventHandler? SomethingHappened
             {
                 add
                 {

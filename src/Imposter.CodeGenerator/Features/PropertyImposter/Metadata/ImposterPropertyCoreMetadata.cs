@@ -16,6 +16,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
+    internal readonly TypeSyntax NullableAwareTypeSyntax;
+
     internal readonly string DisplayName;
 
     internal readonly TypeSyntax AsSystemActionType;
@@ -37,6 +39,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         HasSetter = property.SetMethod != null;
         Name = property.Name;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
+        NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(TypeSyntax);
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
