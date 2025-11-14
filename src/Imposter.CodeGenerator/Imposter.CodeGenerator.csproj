@@ -29,7 +29,6 @@
         <EnablePackageValidation>true</EnablePackageValidation>
         
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         
         <!-- README and icon for NuGet package -->
