@@ -81,9 +81,9 @@ namespace Imposter.Tests.Shared
         internal class IndexerMethodMethodInvocationHistory : IIndexerMethodMethodInvocationHistory
         {
             internal IndexerMethodArguments Arguments;
-            internal string? Result;
+            internal string Result;
             internal global::System.Exception? Exception;
-            public IndexerMethodMethodInvocationHistory(IndexerMethodArguments Arguments, string? Result, global::System.Exception? Exception)
+            public IndexerMethodMethodInvocationHistory(IndexerMethodArguments Arguments, string Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -111,7 +111,6 @@ namespace Imposter.Tests.Shared
             }
         }
 
-        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IndexerMethodMethodInvocationImposterGroup
         {
@@ -170,7 +169,7 @@ namespace Imposter.Tests.Shared
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) => DefaultResultGenerator(name, lastname, in dog) ?? default(string));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private IndexerMethodDelegate? _resultGenerator;
@@ -186,7 +185,7 @@ namespace Imposter.Tests.Shared
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) => DefaultResultGenerator(name, lastname, in dog) ?? default(string);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     string result = _resultGenerator.Invoke(name, lastname, in dog);
@@ -224,7 +223,7 @@ namespace Imposter.Tests.Shared
                     };
                 }
 
-                internal static string? DefaultResultGenerator(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
+                internal static string DefaultResultGenerator(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
                 {
                     return default;
                 }
@@ -261,7 +260,6 @@ namespace Imposter.Tests.Shared
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)
         public interface IIndexerMethodMethodImposterBuilder : IIndexerMethodMethodInvocationImposterGroup, IIndexerMethodMethodInvocationImposterGroupCallback, IndexerMethodInvocationVerifier
         {
         }
@@ -421,15 +419,6 @@ namespace Imposter.Tests.Shared
             {
                 return _imposter._indexerMethodMethodImposter.Invoke(name, lastname, in dog);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IIndexerSetupPocImposterExtensions
-    {
-        extension(global::Imposter.Tests.Shared.IIndexerSetupPoc imposter)
-        {
-            public static global::Imposter.Tests.Shared.IIndexerSetupPocImposter Imposter() => new global::Imposter.Tests.Shared.IIndexerSetupPocImposter();
         }
     }
 }

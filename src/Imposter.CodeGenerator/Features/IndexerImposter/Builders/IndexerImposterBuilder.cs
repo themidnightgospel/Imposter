@@ -549,7 +549,11 @@ internal static class IndexerImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.DefaultBehaviourField))
             .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.ReturnValuesField, invocationMetadata.ReturnValuesField.Type.New()))
             .AddMember(SinglePrivateReadonlyVariableField(invocationMetadata.CallbacksField, invocationMetadata.CallbacksField.Type.New()))
-            .AddMember(SingleVariableField(invocationMetadata.LastReturnValueField.Type, invocationMetadata.LastReturnValueField.Name, SyntaxKind.PrivateKeyword))
+            .AddMember(
+                SingleVariableField(
+                    invocationMetadata.LastReturnValueField.Type,
+                    invocationMetadata.LastReturnValueField.Name,
+                    TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))))
             .AddMember(SingleVariableField(invocationMetadata.InvocationCountField.Type, invocationMetadata.InvocationCountField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(SingleVariableField(invocationMetadata.PropertyDisplayNameField.Type, invocationMetadata.PropertyDisplayNameField.Name, SyntaxKind.PrivateKeyword))
             .AddMember(

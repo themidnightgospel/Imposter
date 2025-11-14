@@ -325,7 +325,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -469,15 +469,6 @@ namespace Imposter.Tests.Features.IndexerImposter
                     return _imposter._IndexerIndexer.Get(key, name);
                 }
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IGetterOnlyIndexerSetupSutImposterExtensions
-    {
-        extension(global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut imposter)
-        {
-            public static global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSutImposter();
         }
     }
 }

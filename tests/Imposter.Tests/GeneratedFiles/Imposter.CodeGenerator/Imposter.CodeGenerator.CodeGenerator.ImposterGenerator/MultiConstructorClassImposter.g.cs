@@ -73,9 +73,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class CalculateMethodInvocationHistory : ICalculateMethodInvocationHistory
         {
             internal CalculateArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public CalculateMethodInvocationHistory(CalculateArguments Arguments, int? Result, global::System.Exception? Exception)
+            public CalculateMethodInvocationHistory(CalculateArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -103,7 +103,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual int MultiConstructorClass.Calculate(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CalculateMethodInvocationImposterGroup
         {
@@ -162,7 +161,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int input) => DefaultResultGenerator(input) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private CalculateDelegate? _resultGenerator;
@@ -184,7 +183,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int input) => DefaultResultGenerator(input) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(input);
@@ -231,7 +230,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int input)
+                internal static int DefaultResultGenerator(int input)
                 {
                     return default;
                 }
@@ -269,7 +268,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MultiConstructorClass.Calculate(int input)
         public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier
         {
         }
@@ -471,19 +469,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 return _imposter._calculateMethodImposter.Invoke(input, base.Calculate);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class MultiConstructorClassImposterExtensions
-    {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClass imposter)
-        {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter();
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter(invocationBehavior);
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter Imposter(int value, string label, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter(value, label, invocationBehavior);
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter Imposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter(correlationId, invocationBehavior);
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter Imposter(bool enabled, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.MultiConstructorClassImposter(enabled, invocationBehavior);
         }
     }
 }

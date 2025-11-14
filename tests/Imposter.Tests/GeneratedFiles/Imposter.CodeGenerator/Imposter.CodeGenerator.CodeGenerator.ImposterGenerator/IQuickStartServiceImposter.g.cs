@@ -112,9 +112,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class CombineMethodInvocationHistory : ICombineMethodInvocationHistory
         {
             internal CombineArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public CombineMethodInvocationHistory(CombineArguments Arguments, int? Result, global::System.Exception? Exception)
+            public CombineMethodInvocationHistory(CombineArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -142,7 +142,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.Combine(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CombineMethodInvocationImposterGroup
         {
@@ -201,7 +200,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int a, int b) => DefaultResultGenerator(a, b) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private CombineDelegate? _resultGenerator;
@@ -217,7 +216,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int a, int b) => DefaultResultGenerator(a, b) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(a, b);
@@ -255,7 +254,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int a, int b)
+                internal static int DefaultResultGenerator(int a, int b)
                 {
                     return default;
                 }
@@ -292,7 +291,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.Combine(int a, int b)
         public interface ICombineMethodImposterBuilder : ICombineMethodInvocationImposterGroup, ICombineMethodInvocationImposterGroupCallback, CombineInvocationVerifier
         {
         }
@@ -447,9 +445,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class DoWorkAsyncMethodInvocationHistory : IDoWorkAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task? Result;
+            internal global::System.Threading.Tasks.Task Result;
             internal global::System.Exception? Exception;
-            public DoWorkAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task? Result, global::System.Exception? Exception)
+            public DoWorkAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -476,7 +474,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // Task IQuickStartService.DoWorkAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DoWorkAsyncMethodInvocationImposterGroup
         {
@@ -632,7 +629,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task IQuickStartService.DoWorkAsync()
         public interface IDoWorkAsyncMethodImposterBuilder : IDoWorkAsyncMethodInvocationImposterGroup, IDoWorkAsyncMethodInvocationImposterGroupCallback, DoWorkAsyncInvocationVerifier
         {
         }
@@ -787,9 +783,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
         {
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
+            public GetNumberMethodInvocationHistory(int Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -816,7 +812,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -872,7 +867,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns(() => DefaultResultGenerator() ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private GetNumberDelegate? _resultGenerator;
@@ -888,7 +883,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = () => DefaultResultGenerator() ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke();
@@ -926,7 +921,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator()
+                internal static int DefaultResultGenerator()
                 {
                     return default;
                 }
@@ -963,7 +958,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -1112,9 +1106,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberAsyncMethodInvocationHistory : IGetNumberAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int>? Result;
+            internal global::System.Threading.Tasks.Task<int> Result;
             internal global::System.Exception? Exception;
-            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
+            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -1141,7 +1135,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // Task<int> IQuickStartService.GetNumberAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberAsyncMethodInvocationImposterGroup
         {
@@ -1306,7 +1299,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task<int> IQuickStartService.GetNumberAsync()
         public interface IGetNumberAsyncMethodImposterBuilder : IGetNumberAsyncMethodInvocationImposterGroup, IGetNumberAsyncMethodInvocationImposterGroupCallback, GetNumberAsyncInvocationVerifier
         {
         }
@@ -1495,9 +1487,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
         {
             internal IncrementArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
+            public IncrementMethodInvocationHistory(IncrementArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1525,7 +1517,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -1584,7 +1575,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int v) => DefaultResultGenerator(v) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private IncrementDelegate? _resultGenerator;
@@ -1600,7 +1591,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int v) => DefaultResultGenerator(v) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(v);
@@ -1638,7 +1629,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int v)
+                internal static int DefaultResultGenerator(int v)
                 {
                     return default;
                 }
@@ -1675,7 +1666,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }
@@ -1858,9 +1848,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class VirtualComputeMethodInvocationHistory : IVirtualComputeMethodInvocationHistory
         {
             internal VirtualComputeArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public VirtualComputeMethodInvocationHistory(VirtualComputeArguments Arguments, int? Result, global::System.Exception? Exception)
+            public VirtualComputeMethodInvocationHistory(VirtualComputeArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1888,7 +1878,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.VirtualCompute(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class VirtualComputeMethodInvocationImposterGroup
         {
@@ -1947,7 +1936,7 @@ namespace Imposter.Tests.Docs.Methods
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int v) => DefaultResultGenerator(v) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private VirtualComputeDelegate? _resultGenerator;
@@ -1963,7 +1952,7 @@ namespace Imposter.Tests.Docs.Methods
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int v) => DefaultResultGenerator(v) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(v);
@@ -2001,7 +1990,7 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int v)
+                internal static int DefaultResultGenerator(int v)
                 {
                     return default;
                 }
@@ -2038,7 +2027,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.VirtualCompute(int v)
         public interface IVirtualComputeMethodImposterBuilder : IVirtualComputeMethodInvocationImposterGroup, IVirtualComputeMethodInvocationImposterGroupCallback, VirtualComputeInvocationVerifier
         {
         }
@@ -2228,15 +2216,6 @@ namespace Imposter.Tests.Docs.Methods
             {
                 return _imposter._virtualComputeMethodImposter.Invoke(v);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class IQuickStartServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Docs.Methods.IQuickStartService imposter)
-        {
-            public static global::Imposter.Tests.Docs.Methods.IQuickStartServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.IQuickStartServiceImposter();
         }
     }
 }

@@ -80,9 +80,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
         internal class InvokeProtectedMethodInvocationHistory : IInvokeProtectedMethodInvocationHistory
         {
             internal InvokeProtectedArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public InvokeProtectedMethodInvocationHistory(InvokeProtectedArguments Arguments, int? Result, global::System.Exception? Exception)
+            public InvokeProtectedMethodInvocationHistory(InvokeProtectedArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -110,7 +110,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
             }
         }
 
-        // virtual int MyService.InvokeProtected(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class InvokeProtectedMethodInvocationImposterGroup
         {
@@ -169,7 +168,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private InvokeProtectedDelegate? _resultGenerator;
@@ -191,7 +190,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(value);
@@ -238,7 +237,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -276,7 +275,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MyService.InvokeProtected(int value)
         public interface IInvokeProtectedMethodImposterBuilder : IInvokeProtectedMethodInvocationImposterGroup, IInvokeProtectedMethodInvocationImposterGroupCallback, InvokeProtectedInvocationVerifier
         {
         }
@@ -465,9 +463,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
         internal class ProtectedAddMethodInvocationHistory : IProtectedAddMethodInvocationHistory
         {
             internal ProtectedAddArguments Arguments;
-            internal int? Result;
+            internal int Result;
             internal global::System.Exception? Exception;
-            public ProtectedAddMethodInvocationHistory(ProtectedAddArguments Arguments, int? Result, global::System.Exception? Exception)
+            public ProtectedAddMethodInvocationHistory(ProtectedAddArguments Arguments, int Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -495,7 +493,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
             }
         }
 
-        // virtual int MyService.ProtectedAdd(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProtectedAddMethodInvocationImposterGroup
         {
@@ -554,7 +551,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                 static MethodInvocationImposter()
                 {
                     Default = new MethodInvocationImposter();
-                    Default.Returns((int value) => DefaultResultGenerator(value) ?? default(int));
+                    Default.Returns(DefaultResultGenerator);
                 }
 
                 private ProtectedAddDelegate? _resultGenerator;
@@ -576,7 +573,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                             throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
                         }
 
-                        _resultGenerator = (int value) => DefaultResultGenerator(value) ?? default(int);
+                        _resultGenerator = DefaultResultGenerator;
                     }
 
                     int result = _resultGenerator.Invoke(value);
@@ -623,7 +620,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default;
                 }
@@ -661,7 +658,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MyService.ProtectedAdd(int value)
         public interface IProtectedAddMethodImposterBuilder : IProtectedAddMethodInvocationImposterGroup, IProtectedAddMethodInvocationImposterGroupCallback, ProtectedAddInvocationVerifier
         {
         }
@@ -833,16 +829,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
             {
                 return _imposter._invokeProtectedMethodImposter.Invoke(value, base.InvokeProtected);
             }
-        }
-    }
-
-    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public static class MyServiceImposterExtensions
-    {
-        extension(global::Imposter.Tests.Docs.Methods.Protected.MyService imposter)
-        {
-            public static global::Imposter.Tests.Docs.Methods.Protected.MyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.Protected.MyServiceImposter();
-            public static global::Imposter.Tests.Docs.Methods.Protected.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Docs.Methods.Protected.MyServiceImposter(invocationBehavior);
         }
     }
 }
