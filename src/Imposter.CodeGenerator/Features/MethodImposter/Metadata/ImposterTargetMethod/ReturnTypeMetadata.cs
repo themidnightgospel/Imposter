@@ -20,6 +20,6 @@ internal readonly struct ReturnTypeMetadata
             ? null
             : SyntaxFactoryHelper.TypeSyntax(TaskLikeMetadata.GenericAwaitableResultType);
 
-        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(supportsNullableGenericType, TaskLikeMetadata.IsAwaitable);
+        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(TaskLikeMetadata.IsAwaitable, supportsNullableGenericType);
     }
 }

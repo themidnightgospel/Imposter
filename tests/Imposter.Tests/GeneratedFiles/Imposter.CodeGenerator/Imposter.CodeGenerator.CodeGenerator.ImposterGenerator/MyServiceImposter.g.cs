@@ -248,9 +248,9 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int a, int b)
+                internal static int DefaultResultGenerator(int a, int b)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -631,9 +631,9 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int v)
+                internal static int DefaultResultGenerator(int v)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -857,9 +857,9 @@ namespace Imposter.Tests.Docs.Methods
         internal class ProcessAsyncMethodInvocationHistory : IProcessAsyncMethodInvocationHistory
         {
             internal ProcessAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task? Result;
+            internal global::System.Threading.Tasks.Task Result;
             internal global::System.Exception? Exception;
-            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task? Result, global::System.Exception? Exception)
+            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1013,7 +1013,7 @@ namespace Imposter.Tests.Docs.Methods
                     _useBaseImplementation = false;
                     _resultGenerator = async (string s) =>
                     {
-                        return throw exception;
+                        throw exception;
                     };
                 }
 
@@ -1023,7 +1023,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.Task? DefaultResultGenerator(string s)
+                internal static async global::System.Threading.Tasks.Task DefaultResultGenerator(string s)
                 {
                     return;
                 }

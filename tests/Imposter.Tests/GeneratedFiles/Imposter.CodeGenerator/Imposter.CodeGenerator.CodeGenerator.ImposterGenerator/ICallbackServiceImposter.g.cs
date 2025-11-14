@@ -245,10 +245,10 @@ namespace Imposter.Tests.Docs.Methods
                     o = default(int);
                 }
 
-                internal static int? DefaultResultGenerator(out int o, ref string r, in double d, bool[] args)
+                internal static int DefaultResultGenerator(out int o, ref string r, in double d, bool[] args)
                 {
                     InitializeOutParametersWithDefaultValues(out o);
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -580,9 +580,9 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator()
+                internal static int DefaultResultGenerator()
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -935,9 +935,9 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int v)
+                internal static int DefaultResultGenerator(int v)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

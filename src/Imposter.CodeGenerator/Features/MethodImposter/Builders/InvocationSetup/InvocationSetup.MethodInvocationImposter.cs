@@ -412,7 +412,7 @@ internal static partial class InvocationSetupBuilder
                 .Assign(
                     AsyncLambda(
                         method.Symbol.Parameters,
-                        Block(ReturnStatement(ThrowExpression(IdentifierName(throwsAsync.ExceptionParameter.Name))))
+                        Block(ThrowExpression(IdentifierName(throwsAsync.ExceptionParameter.Name)).ToStatementSyntax())
                     )
                 )
                 .ToStatementSyntax());
@@ -429,18 +429,4 @@ internal static partial class InvocationSetupBuilder
         IdentifierName("_useBaseImplementation")
             .Assign(False)
             .ToStatementSyntax();
-
-    private static ExpressionSyntax BuildAsyncReturnExpression(in ImposterTargetMethodMetadata method, ExpressionSyntax valueExpression)
-    {
-        if (method.ReturnType.TaskLikeMetadata.IsGenericTask)
-        {
-            return WellKnownTypes.System.Threading.Tasks.Task
-                .Dot(IdentifierName("FromResult"))
-                .Call(Argument(valueExpression).AsSingleArgumentListSyntax());
-        }
-
-        return ObjectCreationExpression(
-                WellKnownTypes.System.Threading.Tasks.ValueTaskOfT(method.ReturnType.GenericAwaitableResultType!))
-            .WithArgumentList(Argument(valueExpression).AsSingleArgumentListSyntax());
-    }
 }

@@ -222,9 +222,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     };
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -585,7 +585,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 internal static int? DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

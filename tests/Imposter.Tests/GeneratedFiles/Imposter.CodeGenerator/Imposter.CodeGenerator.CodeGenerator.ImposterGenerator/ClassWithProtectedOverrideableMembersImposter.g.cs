@@ -272,9 +272,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -655,9 +655,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1006,9 +1006,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string? DefaultResultGenerator()
+                internal static string DefaultResultGenerator()
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1383,9 +1383,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int index)
+                internal static int DefaultResultGenerator(int index)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

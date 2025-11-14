@@ -288,7 +288,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 internal static T DefaultResultGenerator(T item)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -719,9 +719,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string? DefaultResultGenerator(int value)
+                internal static string DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1106,9 +1106,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     _resultGenerator = null;
                 }
 
-                internal static string? DefaultResultGenerator(string value, int padding)
+                internal static string DefaultResultGenerator(string value, int padding)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1530,7 +1530,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 internal static TFirst DefaultResultGenerator(TFirst first, TSecond second)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

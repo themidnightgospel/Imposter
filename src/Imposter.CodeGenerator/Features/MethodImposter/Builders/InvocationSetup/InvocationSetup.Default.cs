@@ -54,7 +54,7 @@ internal static partial class InvocationSetupBuilder
                 return SyntaxFactoryHelper.ReturnVoid;
             }
 
-            return SyntaxFactoryHelper.ReturnDefault;
+            return SyntaxFactoryHelper.ReturnDefaultNonNullable;
         }
     }
 }

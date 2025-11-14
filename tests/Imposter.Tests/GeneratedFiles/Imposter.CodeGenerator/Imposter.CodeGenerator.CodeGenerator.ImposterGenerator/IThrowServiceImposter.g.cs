@@ -190,9 +190,9 @@ namespace Imposter.Tests.Docs.Methods
                     };
                 }
 
-                internal static int? DefaultResultGenerator()
+                internal static int DefaultResultGenerator()
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -375,9 +375,9 @@ namespace Imposter.Tests.Docs.Methods
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GetNumberAsyncMethodInvocationHistory : IGetNumberAsyncMethodInvocationHistory
         {
-            internal global::System.Threading.Tasks.Task<int>? Result;
+            internal global::System.Threading.Tasks.Task<int> Result;
             internal global::System.Exception? Exception;
-            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
+            public GetNumberAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -525,13 +525,13 @@ namespace Imposter.Tests.Docs.Methods
                 {
                     _resultGenerator = async () =>
                     {
-                        return throw exception;
+                        throw exception;
                     };
                 }
 
-                internal static async global::System.Threading.Tasks.Task<int>? DefaultResultGenerator()
+                internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator()
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

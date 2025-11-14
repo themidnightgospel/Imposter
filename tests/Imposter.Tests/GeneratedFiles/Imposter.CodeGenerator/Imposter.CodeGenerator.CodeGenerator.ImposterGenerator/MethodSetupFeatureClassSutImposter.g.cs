@@ -112,9 +112,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class BuildLabelAsyncMethodInvocationHistory : IBuildLabelAsyncMethodInvocationHistory
         {
             internal BuildLabelAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.ValueTask<string>? Result;
+            internal global::System.Threading.Tasks.ValueTask<string> Result;
             internal global::System.Exception? Exception;
-            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string>? Result, global::System.Exception? Exception)
+            public BuildLabelAsyncMethodInvocationHistory(BuildLabelAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<string> Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -277,7 +277,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _useBaseImplementation = false;
                     _resultGenerator = async (string prefix, string suffix) =>
                     {
-                        return throw exception;
+                        throw exception;
                     };
                 }
 
@@ -287,9 +287,9 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.ValueTask<string>? DefaultResultGenerator(string prefix, string suffix)
+                internal static async global::System.Threading.Tasks.ValueTask<string> DefaultResultGenerator(string prefix, string suffix)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -684,9 +684,9 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int age)
+                internal static int DefaultResultGenerator(int age)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1079,10 +1079,10 @@ namespace Imposter.Tests.Features.MethodImposter
                     doubled = default(int);
                 }
 
-                internal static int? DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
+                internal static int DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
                 {
                     InitializeOutParametersWithDefaultValues(out doubled);
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1315,9 +1315,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class SumAsyncMethodInvocationHistory : ISumAsyncMethodInvocationHistory
         {
             internal SumAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task<int>? Result;
+            internal global::System.Threading.Tasks.Task<int> Result;
             internal global::System.Exception? Exception;
-            public SumAsyncMethodInvocationHistory(SumAsyncArguments Arguments, global::System.Threading.Tasks.Task<int>? Result, global::System.Exception? Exception)
+            public SumAsyncMethodInvocationHistory(SumAsyncArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1480,7 +1480,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     _useBaseImplementation = false;
                     _resultGenerator = async (int left, int right) =>
                     {
-                        return throw exception;
+                        throw exception;
                     };
                 }
 
@@ -1490,9 +1490,9 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static async global::System.Threading.Tasks.Task<int>? DefaultResultGenerator(int left, int right)
+                internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator(int left, int right)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -1887,9 +1887,9 @@ namespace Imposter.Tests.Features.MethodImposter
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

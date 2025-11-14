@@ -237,9 +237,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -620,9 +620,9 @@ namespace Imposter.Tests.Docs.Methods.Protected
                     _resultGenerator = null;
                 }
 
-                internal static int? DefaultResultGenerator(int value)
+                internal static int DefaultResultGenerator(int value)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }

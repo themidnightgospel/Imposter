@@ -10,6 +10,6 @@ internal readonly struct DefaultResultGeneratorMethodMetadata
 
     internal DefaultResultGeneratorMethodMetadata(ReturnTypeMetadata methodReturnType)
     {
-        ReturnType = methodReturnType.TypeSymbolMetadata.NullableTypeSyntax;
+        ReturnType = methodReturnType.TypeSymbolMetadata.TypeSyntax;
     }
 }
