@@ -70,7 +70,7 @@ jobs:
         run: sudo apt update && sudo apt -y install zipmerge # zipmerge is used to merge the multi target nupkg
 
       - name: build release
-        run: ./build-scripts/build-and-pack.sh
+        run: bash ./build-scripts/build-and-pack.sh
         env:
           RELEASE_NOTES: ${{ steps.release-notes-text.outputs.content }}
           RELEASE_VERSION: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
