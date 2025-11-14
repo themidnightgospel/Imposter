@@ -269,7 +269,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ISetterOnlyVirtualPropertyPropertySetterBuilder : ISetterOnlyVirtualPropertyPropertySetterCallbackBuilder, ISetterOnlyVirtualPropertyPropertySetterVerifier, ISetterOnlyVirtualPropertyPropertySetterUseBaseImplementationBuilder
         {
-            ISetterOnlyVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -403,11 +402,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     ISetterOnlyVirtualPropertyPropertySetterUseBaseImplementationBuilder ISetterOnlyVirtualPropertyPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    ISetterOnlyVirtualPropertyPropertySetterUseBaseImplementationBuilder ISetterOnlyVirtualPropertyPropertySetterBuilder.Then()
                     {
                         return this;
                     }
@@ -725,7 +719,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IThrowingSetterVirtualPropertyPropertySetterBuilder : IThrowingSetterVirtualPropertyPropertySetterCallbackBuilder, IThrowingSetterVirtualPropertyPropertySetterVerifier, IThrowingSetterVirtualPropertyPropertySetterUseBaseImplementationBuilder
         {
-            IThrowingSetterVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -990,11 +983,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     IThrowingSetterVirtualPropertyPropertySetterUseBaseImplementationBuilder IThrowingSetterVirtualPropertyPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    IThrowingSetterVirtualPropertyPropertySetterUseBaseImplementationBuilder IThrowingSetterVirtualPropertyPropertySetterBuilder.Then()
                     {
                         return this;
                     }

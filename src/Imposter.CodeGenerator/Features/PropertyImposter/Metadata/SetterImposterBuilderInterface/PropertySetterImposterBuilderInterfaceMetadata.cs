@@ -62,7 +62,9 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
                 UseBaseImplementationEntryInterfaceTypeSyntax,
                 FluentInterfaceTypeSyntax);
             ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, UseBaseImplementationEntryInterfaceTypeSyntax);
-            InitialThenMethod = new PropertySetterThenMethodMetadata(Syntax, UseBaseImplementationEntryInterfaceTypeSyntax);
+            // Setter builders already inherit the fluent chain via the use-base interface, so emitting
+            // another Then() on the builder would only hide the inherited member.
+            InitialThenMethod = null;
         }
         else
         {

@@ -466,7 +466,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface INamePropertySetterBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterVerifier, INamePropertySetterUseBaseImplementationBuilder
         {
-            INamePropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -731,11 +730,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
 
                     INamePropertySetterUseBaseImplementationBuilder INamePropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    INamePropertySetterUseBaseImplementationBuilder INamePropertySetterBuilder.Then()
                     {
                         return this;
                     }

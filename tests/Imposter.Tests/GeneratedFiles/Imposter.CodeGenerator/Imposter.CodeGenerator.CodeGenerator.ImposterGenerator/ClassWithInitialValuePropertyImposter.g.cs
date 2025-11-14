@@ -98,7 +98,6 @@ namespace Imposter.Tests.Features.PropertyImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IAPropertySetterBuilder : IAPropertySetterCallbackBuilder, IAPropertySetterVerifier, IAPropertySetterUseBaseImplementationBuilder
         {
-            IAPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -363,11 +362,6 @@ namespace Imposter.Tests.Features.PropertyImposter
                     }
 
                     IAPropertySetterUseBaseImplementationBuilder IAPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    IAPropertySetterUseBaseImplementationBuilder IAPropertySetterBuilder.Then()
                     {
                         return this;
                     }

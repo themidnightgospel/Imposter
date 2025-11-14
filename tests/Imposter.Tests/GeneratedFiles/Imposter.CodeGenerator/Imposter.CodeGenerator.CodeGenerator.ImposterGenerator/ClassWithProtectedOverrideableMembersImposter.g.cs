@@ -2689,7 +2689,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IProtectedVirtualPropertyPropertySetterBuilder : IProtectedVirtualPropertyPropertySetterCallbackBuilder, IProtectedVirtualPropertyPropertySetterVerifier, IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder
         {
-            IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2954,11 +2953,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     }
 
                     IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder IProtectedVirtualPropertyPropertySetterContinuationBuilder.Then()
-                    {
-                        return this;
-                    }
-
-                    IProtectedVirtualPropertyPropertySetterUseBaseImplementationBuilder IProtectedVirtualPropertyPropertySetterBuilder.Then()
                     {
                         return this;
                     }
