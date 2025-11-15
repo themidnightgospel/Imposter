@@ -1,0 +1,1163 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Imposter — The Fastest and Most Memory-Efficient Mocking Library">
+      
+      
+      
+        <link rel="canonical" href="https://themidnightgospel.github.io/Imposter/0.0.22/methods/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="sequential-returns/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/imposter_logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Overview - Imposter</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=system-ui,+-apple-system,+BlinkMacSystemFont,+"Segoe+UI",+Roboto,+"Helvetica+Neue",+Arial,+sans-serif:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/overrides.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#method-impersonation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Imposter" class="md-header__button md-logo" aria-label="Imposter" data-md-component="logo">
+      
+  <img src="../assets/imposter_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Imposter
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/themidnightgospel/Imposter" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    themidnightgospel/Imposter
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Imposter" class="md-nav__button md-logo" aria-label="Imposter" data-md-component="logo">
+      
+  <img src="../assets/imposter_logo.png" alt="logo">
+
+    </a>
+    Imposter
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/themidnightgospel/Imposter" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    themidnightgospel/Imposter
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methods
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Methods
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sequential-returns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sequential Returns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="throwing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Throwing Exceptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="verification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Callbacks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="protected-members/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protected Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="explicit-vs-implicit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Imposter Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="base-implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../properties/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../indexers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Indexers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../events/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../benchmarks/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="method-impersonation">Method Impersonation<a class="headerlink" href="#method-impersonation" title="Permanent link">&para;</a></h1>
+<p>Here we'll cover returns, async, exceptions, callbacks, sequencing, argument matching, ref/out/in parameters, base forwarding, verification, and concurrency notes.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Generated imposters expose fluent method builders you can use to:</p>
+<ul>
+<li>Arrange outcomes: <code>Returns</code>, <code>ReturnsAsync</code>, <code>Throws</code></li>
+<li>Add side effects: <code>Callback</code></li>
+<li>Sequence behaviors: <code>Then</code></li>
+<li>Verify invocations: <code>Called(Count.*)</code></li>
+</ul>
+<p>Invocation modes:</p>
+<ul>
+<li><code>Implicit</code> (default): missing setups return default values and do nothing for void methods.</li>
+<li><code>Explicit</code>: missing setups throw <code>MissingImposterException</code>.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Pro tip</p>
+<p>Use <code>Explicit</code> mode for strict unit tests to fail fast on unintended calls. Keep <code>Implicit</code> for exploratory tests where defaults are acceptable.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Imposter Modes</p>
+<p>See a deeper dive with examples in <a href="explicit-vs-implicit/">Imposter Modes</a>.</p>
+</div>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<p>Define the target interface and enable generation:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L7"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Imposter.Abstractions</span><span class="p">;</span>
+
+<span class="na">[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IQuickStartService))]</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IQuickStartService</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">GetNumber</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">Increment</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">.</span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetNumberAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">.</span><span class="n">Task</span><span class="w"> </span><span class="n">DoWorkAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">Combine</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">VirtualCompute</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L26"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">imposter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IQuickStartServiceImposter</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">imposter</span><span class="p">.</span><span class="n">Instance</span><span class="p">();</span>
+
+<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="n">service</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">();</span><span class="w"> </span><span class="c1">// 42</span>
+
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">()).</span><span class="n">Returns</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Is</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)).</span><span class="n">Returns</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">Returns</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span><span class="w">          </span><span class="c1">// exact match (implicit Arg&lt;int&gt;)</span>
+</code></pre></div>
+</div>
+<h2 id="arranging-returns">Arranging Returns<a class="headerlink" href="#arranging-returns" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Return a constant value:</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L43"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<ul>
+<li>Return via a delegate (captures inputs):</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L34"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">()).</span><span class="n">Returns</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<ul>
+<li>Sequence multiple outcomes with <code>Then()</code>:</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L42"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">().</span><span class="n">Returns</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>Use <code>Then()</code> to set up sequence.</li>
+<li>After a sequence is exhausted, the last outcome repeats (when applicable).</li>
+</ul>
+</div>
+<h2 id="async-methods">Async Methods<a class="headerlink" href="#async-methods" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Task<T> and ValueTask<T> methods:</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L51"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumberAsync</span><span class="p">().</span><span class="n">ReturnsAsync</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumberAsync</span><span class="p">().</span><span class="n">Returns</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+</code></pre></div>
+</div>
+<ul>
+<li>Task-returning (no result):</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L54"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">DoWorkAsync</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<ul>
+<li>Sequencing remains the same:</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L56"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumberAsync</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">ReturnsAsync</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">().</span><span class="n">Returns</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+</code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Pro tip</p>
+<p>Prefer <code>ReturnsAsync</code> for Task/ValueTask methods. It reads cleaner and avoids accidental sync-over-async in factories.</p>
+</div>
+<h2 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h2>
+<p>Arrange exceptions instead of return values:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L64"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Throws</span><span class="o">&lt;</span><span class="n">InvalidOperationException</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Throws</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="s">&quot;boom&quot;</span><span class="p">));</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Throws</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="s">&quot;deferred&quot;</span><span class="p">));</span>
+</code></pre></div>
+</div>
+<p>Mix with returns using <code>Then()</code>:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L75"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">().</span><span class="n">Throws</span><span class="o">&lt;</span><span class="n">InvalidOperationException</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<h2 id="callbacks">Callbacks<a class="headerlink" href="#callbacks" title="Permanent link">&para;</a></h2>
+<p>Callbacks run after an outcome is produced (or after the default result for missing returns in Implicit mode):</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L84"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">stages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">stages</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;return&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Callback</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">stages</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;first&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Callback</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">stages</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;second&quot;</span><span class="p">));</span>
+</code></pre></div>
+</div>
+<p>Parameterized callbacks capture inputs:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L91"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">()).</span><span class="n">Callback</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="cm">/* observe v */</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<p>Sequence-local callbacks:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L93"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Callback</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Log</span><span class="p">(</span><span class="s">&quot;first&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Then</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Callback</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Log</span><span class="p">(</span><span class="s">&quot;second&quot;</span><span class="p">));</span>
+</code></pre></div>
+</div>
+<h2 id="argument-matching">Argument Matching<a class="headerlink" href="#argument-matching" title="Permanent link">&para;</a></h2>
+<p>Use precise values or matchers per parameter:
+- Exact value (implicit <code>Arg&lt;T&gt;</code>): <code>imposter.Increment(5)</code>
+- Any value: <code>Arg&lt;T&gt;.Any()</code>
+- Predicate: <code>Arg&lt;T&gt;.Is(x =&gt; x &gt; 10)</code> / negation: <code>Arg&lt;T&gt;.IsNot(...)</code>
+- Membership: <code>Arg&lt;T&gt;.IsIn(collection)</code> / <code>IsNotIn(collection)</code>
+- Default: <code>Arg&lt;T&gt;.IsDefault()</code></p>
+<p>Combine for multi-parameter methods:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L103"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span>
+<span class="w">    </span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Is</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Is</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span>
+<span class="w">  </span><span class="p">.</span><span class="n">Returns</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Pro tip</p>
+<p>Start with precise matchers (e.g., <code>Is(...)</code>) before adding broad <code>Any()</code> fallbacks. This reduces ambiguity between overlapping setups.</p>
+</div>
+<h2 id="refoutin-parameters">Ref/Out/In Parameters<a class="headerlink" href="#refoutin-parameters" title="Permanent link">&para;</a></h2>
+<p>Use <code>OutArg&lt;T&gt;.Any()</code> to match <code>out</code> parameters; <code>Arg&lt;T&gt;</code> for <code>ref</code> and <code>in</code>.</p>
+<p>Returns and callbacks can specify <code>out/ref/in</code> in the delegate signature:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/CallbacksTests.cs#L56"><pre><span></span><code><span class="n">imposter</span><span class="p">.</span><span class="n">GenericAllRefKind</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="n">OutArg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Returns</span><span class="p">((</span><span class="k">out</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="k">ref</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="p">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">99</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Callback</span><span class="p">((</span><span class="k">out</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="k">ref</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="p">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+</div>
+<h2 id="base-implementation-class-targets">Base Implementation (Class Targets)<a class="headerlink" href="#base-implementation-class-targets" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>UseBaseImplementation()</code> applies only to non-abstract, virtual class members. It is not available for interfaces. See the dedicated page: <a href="base-implementation/">Base Implementation</a>.</p>
+</div>
+<h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">&para;</a></h2>
+<p>Use <code>Called(Count.*)</code> on the method to assert invocation counts:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L26"><pre><span></span><code><span class="c1">// After calling service methods</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">()).</span><span class="n">Called</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">AtLeast</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">Called</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Once</span><span class="p">());</span>
+</code></pre></div>
+</div>
+<p>See more examples on <a href="https://github.com/themidnightgospel/Imposter/tree/main/tests/Imposter.Tests/Features/MethodImposter">GitHub</a>.
+<code>Count</code> options:
+- <code>Exactly(n)</code>, <code>AtLeast(n)</code>, <code>AtMost(n)</code>, <code>Once()</code>, <code>Never()</code>, <code>Any</code></p>
+<p>If verification fails, a <code>VerificationFailedException</code> is thrown with a clear message.</p>
+<div class="admonition tip">
+<p class="admonition-title">Pro tip</p>
+<p>Place verification at the end of the test. Verify the broad call first (e.g., <code>Any()</code>), then the specific one to keep failure messages focused.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Next steps</p>
+<ul>
+<li>Deep dives for methods:</li>
+<li><a href="sequential-returns/">Sequential Returns</a></li>
+<li><a href="throwing/">Throwing Exceptions</a></li>
+<li><a href="verification/">Verification</a></li>
+<li><a href="callbacks/">Callbacks</a></li>
+<li><a href="base-implementation/">Base Implementation</a></li>
+<li><a href="protected-members/">Protected Methods</a></li>
+<li><a href="explicit-vs-implicit/">Imposter Modes</a></li>
+</ul>
+</div>
+<h2 id="concurrency-notes">Concurrency Notes<a class="headerlink" href="#concurrency-notes" title="Permanent link">&para;</a></h2>
+<p>Sequenced outcomes are consumed in order under concurrency; the implementation avoids races that would otherwise reorder or drop planned outcomes. If a sequence is exhausted, the last outcome is repeated (when applicable) or default behavior applies.</p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Repeating <code>Returns</code> or <code>Throws</code> without <code>Then()</code> is invalid.</li>
+<li>In <code>Explicit</code> mode, missing setups throw <code>MissingImposterException</code>.</li>
+<li>Ensure <code>OutArg&lt;T&gt;.Any()</code> is used for <code>out</code> parameters; use <code>Arg&lt;T&gt;</code> for <code>ref</code>/<code>in</code>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.prune", "navigation.indexes", "navigation.instant", "toc.follow", "toc.integrate", "content.code.copy", "search.suggest", "search.share"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../scripts/code-links.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,144 @@
+/* Reduce overall typography size */
+:root {
+  /* Scales body text across content */
+  --md-typeset-font-size: 0.88rem;
+}
+
+/* Base nav/sidebar font size (overridden below per depth) */
+.md-nav { font-size: 0.90rem; }
+
+/* Header color + logo sizing */
+/* Light scheme: lighter header so darker logos pop */
+.md-header {
+  background-color: #eef2ff; /* indigo-50 */
+  color: #1f2937;            /* slate-800 text */
+}
+
+/* Dark scheme: deep slate header with high contrast */
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #1f2937; /* slate-800 */
+  color: #ffffff;
+}
+
+/* Ensure header links/icons are visible on the background */
+.md-header a,
+.md-header .md-header__button,
+.md-header .md-icon {
+  color: inherit !important;
+}
+
+/* Make the logo bigger and crisp */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2.6rem !important;
+  width: auto !important;
+}
+
+/* Optional: slightly reduce h1/h2 to match smaller body text */
+.md-typeset h1 { font-size: 1.6em; }
+.md-typeset h2 { font-size: 1.35em; }
+
+/* Primary sidebar (left) navigation visual tweaks */
+.md-nav--primary .md-nav__item > .md-nav__link {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.md-nav--primary .md-nav__item--section > .md-nav__link {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.md-nav--primary .md-nav__link--active,
+.md-nav--primary .md-nav__item--active > .md-nav__link {
+  background-color: rgba(99, 102, 241, 0.10); /* subtle indigo tint */
+}
+
+.md-nav--primary .md-nav { line-height: 1.25; }
+
+.md-sidebar--primary { border-right: 1px solid var(--md-default-fg-color--lightest); }
+
+/* Nav hierarchy sizing: top-level same size; sub-pages smaller */
+/* Top-level items */
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link {
+  font-size: 0.96rem;
+}
+
+/* Second level and deeper */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__link {
+  font-size: 0.86rem;
+}
+
+/* Third level (and deeper) slightly smaller */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__list .md-nav__link {
+  font-size: 0.84rem;
+}
+
+/* Hide site title/brand in the left sidebar above nav */
+.md-sidebar--primary .md-sidebar__brand { display: none; }
+/* Also hide the primary nav title row (logo + site name) */
+.md-nav--primary > .md-nav__title { display: none !important; }
+
+/* Move top search to the right on wide screens */
+@media screen and (min-width: 60rem) {
+  .md-header [data-md-component="search"],
+  .md-header .md-search {
+    margin-left: auto !important;
+    margin-inline-start: auto !important;
+  }
+}
+
+/* Code block GitHub link next to copy button */
+.md-typeset .highlight, .md-typeset .md-typeset__highlight {
+  position: relative;
+}
+.md-code-gh-link {
+  position: absolute;
+  top: .25rem;
+  right: 2.9rem; /* leave space for enlarged copy icon */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.0rem;   /* larger click target */
+  height: 2.0rem;  /* larger click target */
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--md-default-fg-color);
+  background: transparent;
+  border: 1px solid transparent;
+  z-index: 2;
+}
+.md-code-gh-icon {
+  width: 1.35rem;   /* bigger icon */
+  height: 1.35rem;  /* bigger icon */
+  opacity: .75;
+  transition: opacity .15s ease, transform .08s ease;
+}
+.md-code-gh-link:hover .md-code-gh-icon { opacity: 1; }
+.md-code-gh-link:active .md-code-gh-icon { transform: scale(0.97); }
+
+/* Enlarge MkDocs Material built-in code copy button to match GitHub icon */
+.md-typeset .md-clipboard {
+  top: .25rem !important;
+  right: .5rem !important;
+  width: 2.0rem !important;
+  height: 2.0rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  /* Ensure icon inside scales on all Material versions */
+  --md-icon-size: 1.35rem;
+}
+.md-typeset .md-clipboard .md-icon,
+.md-typeset .md-clipboard.md-icon {
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  font-size: 1.35rem !important;
+}
+/* Cover SVG-based and font-based icons */
+.md-typeset .md-clipboard svg { width: 1.35rem !important; height: 1.35rem !important; }
+.md-typeset .md-clipboard .material-icons { font-size: 1.35rem !important; }
+/* Some theme versions render the icon via ::before on the button */
+.md-typeset .md-clipboard::before { font-size: 1.35rem !important; }
