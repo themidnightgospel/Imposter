@@ -1,10 +1,11 @@
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.Verification;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IVerifyService))]
+[assembly: GenerateImposter(typeof(IVerifyService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Verification
 {
     public interface IVerifyService
     {

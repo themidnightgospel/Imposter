@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.Callbacks;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.ICallbackService))]
+[assembly: GenerateImposter(typeof(ICallbackService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 {
     public interface ICallbackService
     {

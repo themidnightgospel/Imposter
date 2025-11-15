@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.Callbacks;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ICallbackServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.ICallbackService>
+    public sealed class ICallbackServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly IncrementMethodImposter _incrementMethodImposter;
@@ -39,7 +39,7 @@ namespace Imposter.Tests.Docs.Methods
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.ICallbackService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.ICallbackService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService>.Instance()
         {
             return _imposterInstance;
         }
@@ -1121,7 +1121,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.ICallbackService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService
         {
             private readonly ICallbackServiceImposter _imposter;
             public ImposterTargetInstance(ICallbackServiceImposter _imposter)

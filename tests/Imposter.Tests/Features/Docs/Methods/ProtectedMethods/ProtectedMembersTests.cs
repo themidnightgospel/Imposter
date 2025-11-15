@@ -1,10 +1,11 @@
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.ProtectedMethods;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.Protected.MyService))]
+[assembly: GenerateImposter(typeof(MyService))]
 
-namespace Imposter.Tests.Docs.Methods.Protected
+namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 {
     public class MyService
     {

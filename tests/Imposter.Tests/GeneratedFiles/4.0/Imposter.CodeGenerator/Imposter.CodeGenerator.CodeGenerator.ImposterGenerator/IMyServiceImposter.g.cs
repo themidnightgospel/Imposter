@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.GettingStarted;
+using global::Imposter.Tests.Features.Docs.GettingStarted;
 
-namespace Imposter.Tests.Docs.GettingStarted
+namespace Imposter.Tests.Features.Docs.GettingStarted
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IMyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.GettingStarted.IMyService>
+    public sealed class IMyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.IMyService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly IncrementMethodImposter _incrementMethodImposter;
@@ -32,7 +32,7 @@ namespace Imposter.Tests.Docs.GettingStarted
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.GettingStarted.IMyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.GettingStarted.IMyService>.Instance()
+        global::Imposter.Tests.Features.Docs.GettingStarted.IMyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.IMyService>.Instance()
         {
             return _imposterInstance;
         }
@@ -1476,13 +1476,13 @@ namespace Imposter.Tests.Docs.GettingStarted
             this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, invocationBehavior);
             this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, invocationBehavior);
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Docs.GettingStarted.IMyService.this[int key]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.Docs.GettingStarted.IMyService.this[int key]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.GettingStarted.IMyService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.GettingStarted.IMyService
         {
             private readonly IMyServiceImposter _imposter;
             public ImposterTargetInstance(IMyServiceImposter _imposter)

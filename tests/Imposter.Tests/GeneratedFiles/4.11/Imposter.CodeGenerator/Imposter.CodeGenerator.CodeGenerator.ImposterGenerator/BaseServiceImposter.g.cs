@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.GettingStarted;
+using global::Imposter.Tests.Features.Docs.GettingStarted;
 
-namespace Imposter.Tests.Docs.GettingStarted
+namespace Imposter.Tests.Features.Docs.GettingStarted
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class BaseServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.GettingStarted.BaseService>
+    public sealed class BaseServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.BaseService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
@@ -25,7 +25,7 @@ namespace Imposter.Tests.Docs.GettingStarted
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.GettingStarted.BaseService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.GettingStarted.BaseService>.Instance()
+        global::Imposter.Tests.Features.Docs.GettingStarted.BaseService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.BaseService>.Instance()
         {
             return _imposterInstance;
         }
@@ -383,7 +383,7 @@ namespace Imposter.Tests.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.GettingStarted.BaseService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.GettingStarted.BaseService
         {
             private readonly BaseServiceImposter _imposter;
             internal ImposterTargetInstance(BaseServiceImposter _imposter) : base()

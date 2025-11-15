@@ -1,13 +1,13 @@
 using System;
 using Imposter.Abstractions;
-using Imposter.Tests.Docs.GettingStarted;
+using Imposter.Tests.Features.Docs.GettingStarted;
 using Shouldly;
 using Xunit;
 
 [assembly: GenerateImposter(typeof(IMyService))]
 [assembly: GenerateImposter(typeof(BaseService))]
 
-namespace Imposter.Tests.Docs.GettingStarted
+namespace Imposter.Tests.Features.Docs.GettingStarted
 {
     public interface IMyService
     {
@@ -28,7 +28,7 @@ namespace Imposter.Tests.Docs.GettingStarted
         public void Interface_Generation_And_Usage()
         {
             // C# 8-13 usage
-            var imposter = new GettingStarted.IMyServiceImposter(); // default: Implicit behavior
+            var imposter = new IMyServiceImposter(); // default: Implicit behavior
             var service = imposter.Instance(); // user-facing instance
 
             // Mock a method

@@ -16,11 +16,7 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-#  build-and-test: disable temporarily
-#    uses: ./.github/workflows/build-and-test.yml
-
   release:
-#    needs: build-and-test
     runs-on: ubuntu-latest
     environment: ${{ github.event.release.prerelease && 'next' || 'stable' }}
     permissions:

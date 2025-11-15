@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.Throw;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IThrowService))]
+[assembly: GenerateImposter(typeof(IThrowService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Throw
 {
     public interface IThrowService
     {

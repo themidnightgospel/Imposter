@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.SequentialReturns;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.ISeqService))]
+[assembly: GenerateImposter(typeof(ISeqService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
 {
     public interface ISeqService
     {

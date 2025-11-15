@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.UseBaseImplementation;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.MyService))]
+[assembly: GenerateImposter(typeof(MyService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 {
     public class MyService
     {
@@ -17,7 +18,7 @@ namespace Imposter.Tests.Docs.Methods
         public virtual int MightFail(int v) => throw new InvalidOperationException("fail");
     }
 
-    public class BaseImplementationTests
+    public class UseBaseImplementationTests
     {
         [Fact]
         public void Methods_BaseImplementation_BasicExample()

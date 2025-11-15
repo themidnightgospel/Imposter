@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.Docs.Methods.Overview;
 using Shouldly;
 using Xunit;
 
-[assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IQuickStartService))]
+[assembly: GenerateImposter(typeof(IQuickStartService))]
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Overview
 {
     public interface IQuickStartService
     {

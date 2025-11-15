@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.Overview;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Overview
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IQuickStartServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IQuickStartService>
+    public sealed class IQuickStartServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly IncrementMethodImposter _incrementMethodImposter;
@@ -60,7 +60,7 @@ namespace Imposter.Tests.Docs.Methods
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.IQuickStartService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IQuickStartService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService>.Instance()
         {
             return _imposterInstance;
         }
@@ -2179,7 +2179,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IQuickStartService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService
         {
             private readonly IQuickStartServiceImposter _imposter;
             public ImposterTargetInstance(IQuickStartServiceImposter _imposter)
