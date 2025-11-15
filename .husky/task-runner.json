@@ -10,8 +10,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.0",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -23,8 +22,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.4",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -36,8 +34,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.5",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -49,8 +46,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.7",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -62,8 +58,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.11",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -75,8 +70,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=4.14",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     },
     {
@@ -88,8 +82,7 @@
         "-c",
         "Release",
         "/p:ROSLYN_VERSION=5.0.0-2.final",
-        "-p:IMPOSTER_LOG=true",
-        "--list-tests"
+        "-p:IMPOSTER_LOG=true"
       ]
     }
   ]
