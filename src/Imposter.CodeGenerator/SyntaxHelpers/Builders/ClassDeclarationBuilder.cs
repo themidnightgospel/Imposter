@@ -8,7 +8,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = default)
+internal readonly struct ClassDeclarationBuilder(
+    string name,
+    TypeParameterListSyntax? typeParameters = default
+)
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
     private readonly List<AttributeListSyntax> _attribute = [];
@@ -47,12 +50,16 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
         return this;
     }
 
-    internal ClassDeclarationBuilder AddMemberIf(bool condition, Func<MemberDeclarationSyntax> memberGenerator)
+    internal ClassDeclarationBuilder AddMemberIf(
+        bool condition,
+        Func<MemberDeclarationSyntax> memberGenerator
+    )
     {
         return condition ? AddMember(memberGenerator()) : this;
     }
 
-    internal ClassDeclarationBuilder AddPublicModifier() => AddModifier(Token(SyntaxKind.PublicKeyword));
+    internal ClassDeclarationBuilder AddPublicModifier() =>
+        AddModifier(Token(SyntaxKind.PublicKeyword));
 
     internal ClassDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
@@ -69,6 +76,7 @@ internal readonly struct ClassDeclarationBuilder(string name, TypeParameterListS
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
             default,
-            new SyntaxList<MemberDeclarationSyntax>(_members));
+            new SyntaxList<MemberDeclarationSyntax>(_members)
+        );
     }
 }

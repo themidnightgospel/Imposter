@@ -28,7 +28,10 @@ internal readonly struct ImposterTargetMetadata
     private readonly NameSet _symbolNameNamespace = new([]);
     private readonly SupportedCSharpFeatures _supportedCSharpFeatures;
 
-    internal ImposterTargetMetadata(INamedTypeSymbol targetSymbol, in SupportedCSharpFeatures supportedCSharpFeatures)
+    internal ImposterTargetMetadata(
+        INamedTypeSymbol targetSymbol,
+        in SupportedCSharpFeatures supportedCSharpFeatures
+    )
     {
         Name = targetSymbol.Name + "Imposter";
         _supportedCSharpFeatures = supportedCSharpFeatures;
@@ -45,15 +48,20 @@ internal readonly struct ImposterTargetMetadata
     private static List<ImposterTargetMethodMetadata> GetMethods(
         INamedTypeSymbol typeSymbol,
         NameSet nameSet,
-        in SupportedCSharpFeatures supportedCSharpFeatures)
+        in SupportedCSharpFeatures supportedCSharpFeatures
+    )
     {
         var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
-        
+
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
             return typeSymbol
                 .GetAllInterfaceMethods()
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name), supportsNullableGenericType))
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(
+                    methodSymbol,
+                    nameSet.Use(methodSymbol.Name),
+                    supportsNullableGenericType
+                ))
                 .ToList();
         }
 
@@ -61,22 +69,31 @@ internal readonly struct ImposterTargetMetadata
         {
             return typeSymbol
                 .GetAllOverridableMethods()
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(methodSymbol, nameSet.Use(methodSymbol.Name), supportsNullableGenericType))
+                .Select(methodSymbol => new ImposterTargetMethodMetadata(
+                    methodSymbol,
+                    nameSet.Use(methodSymbol.Name),
+                    supportsNullableGenericType
+                ))
                 .ToList();
         }
 
         return [];
     }
 
-    private static ImposterTargetConstructorMetadata[] GetAccessibleConstructors(INamedTypeSymbol typeSymbol)
+    private static ImposterTargetConstructorMetadata[] GetAccessibleConstructors(
+        INamedTypeSymbol typeSymbol
+    )
     {
         if (typeSymbol.TypeKind is not TypeKind.Class)
         {
             return [];
         }
 
-        var declaredConstructors = typeSymbol.InstanceConstructors
-            .Where(constructor => !constructor.IsImplicitlyDeclared && constructor.DeclaredAccessibility != Accessibility.Private)
+        var declaredConstructors = typeSymbol
+            .InstanceConstructors.Where(constructor =>
+                !constructor.IsImplicitlyDeclared
+                && constructor.DeclaredAccessibility != Accessibility.Private
+            )
             .Select(ImposterTargetConstructorMetadata.FromSymbol)
             .ToArray();
 
@@ -89,14 +106,18 @@ internal readonly struct ImposterTargetMetadata
         {
             return new[]
             {
-                ImposterTargetConstructorMetadata.CreateImplicitParameterless(typeSymbol.DeclaredAccessibility),
+                ImposterTargetConstructorMetadata.CreateImplicitParameterless(
+                    typeSymbol.DeclaredAccessibility
+                ),
             };
         }
 
         return [];
     }
 
-    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(INamedTypeSymbol typeSymbol)
+    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(
+        INamedTypeSymbol typeSymbol
+    )
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
@@ -111,14 +132,19 @@ internal readonly struct ImposterTargetMetadata
         return [];
     }
 
-    internal ImposterPropertyMetadata CreatePropertyMetadata(IPropertySymbol propertySymbol, NameSet memberNameSet)
-        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name), memberNameSet);
+    internal ImposterPropertyMetadata CreatePropertyMetadata(
+        IPropertySymbol propertySymbol,
+        NameSet memberNameSet
+    ) => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name), memberNameSet);
 
-    internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol)
-        => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name));
+    internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
+        new(
+            propertySymbol,
+            _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name)
+        );
 
-    internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol)
-        => new(eventSymbol, _symbolNameNamespace.Use(eventSymbol.Name));
+    internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
+        new(eventSymbol, _symbolNameNamespace.Use(eventSymbol.Name));
 
     private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(INamedTypeSymbol typeSymbol)
     {

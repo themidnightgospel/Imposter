@@ -8,9 +8,14 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterBuilder
 {
-    internal static FieldDeclarationSyntax BuildInvocationSetupsField(in ImposterTargetMethodMetadata method)
+    internal static FieldDeclarationSyntax BuildInvocationSetupsField(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var invocationSetupsFieldType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.MethodInvocationImposterGroup.Syntax);
+        var invocationSetupsFieldType =
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+                method.MethodInvocationImposterGroup.Syntax
+            );
 
         return SingleVariableField(
             invocationSetupsFieldType,

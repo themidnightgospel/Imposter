@@ -15,10 +15,14 @@ internal readonly struct CallbackMethodMetadata
     internal CallbackMethodMetadata(
         in IndexerDelegateMetadata delegatesMetadata,
         TypeSyntax returnType,
-        NameSyntax interfaceSyntax)
+        NameSyntax interfaceSyntax
+    )
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        CallbackParameter = new ParameterMetadata("callback", delegatesMetadata.GetterCallbackDelegateType);
+        CallbackParameter = new ParameterMetadata(
+            "callback",
+            delegatesMetadata.GetterCallbackDelegateType
+        );
     }
 }

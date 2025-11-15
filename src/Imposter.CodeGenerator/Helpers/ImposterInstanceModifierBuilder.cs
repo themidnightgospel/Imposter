@@ -20,12 +20,24 @@ internal static class ImposterInstanceModifierBuilder
     {
         return accessibility switch
         {
-            Accessibility.Public => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-            Accessibility.Internal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-            Accessibility.Protected => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-            Accessibility.ProtectedOrInternal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword), SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-            Accessibility.ProtectedAndInternal => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword), SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-            _ => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+            Accessibility.Public => SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword)
+            ),
+            Accessibility.Internal => SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.InternalKeyword)
+            ),
+            Accessibility.Protected => SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)
+            ),
+            Accessibility.ProtectedOrInternal => SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.ProtectedKeyword),
+                SyntaxFactory.Token(SyntaxKind.InternalKeyword)
+            ),
+            Accessibility.ProtectedAndInternal => SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
+                SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)
+            ),
+            _ => SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
         };
     }
 }

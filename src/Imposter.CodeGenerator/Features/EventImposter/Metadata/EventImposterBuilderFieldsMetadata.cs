@@ -28,14 +28,22 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
     internal EventImposterBuilderFieldsMetadata(in ImposterEventCoreMetadata core)
     {
-        var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(core.HandlerTypeSyntax);
+        var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+            core.HandlerTypeSyntax
+        );
         var handlerCountsType = WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
             core.HandlerTypeSyntax,
-            WellKnownTypes.Int);
-        var historyQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(BuildHistoryEntryType(core));
-        var handlerInvocationType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(BuildHandlerInvocationEntryType(core));
+            WellKnownTypes.Int
+        );
+        var historyQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+            BuildHistoryEntryType(core)
+        );
+        var handlerInvocationType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+            BuildHandlerInvocationEntryType(core)
+        );
         var interceptorQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-            WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax));
+            WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax)
+        );
 
         HandlerOrder = new FieldMetadata("_handlerOrder", handlerQueueType);
         HandlerCounts = new FieldMetadata("_handlerCounts", handlerCountsType);
@@ -44,7 +52,10 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         SubscribeHistory = new FieldMetadata("_subscribeHistory", handlerQueueType);
         UnsubscribeHistory = new FieldMetadata("_unsubscribeHistory", handlerQueueType);
         SubscribeInterceptors = new FieldMetadata("_subscribeInterceptors", interceptorQueueType);
-        UnsubscribeInterceptors = new FieldMetadata("_unsubscribeInterceptors", interceptorQueueType);
+        UnsubscribeInterceptors = new FieldMetadata(
+            "_unsubscribeInterceptors",
+            interceptorQueueType
+        );
         HandlerInvocations = new FieldMetadata("_handlerInvocations", handlerInvocationType);
     }
 
@@ -60,8 +71,9 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             return core.Parameters[0].TypeSyntax;
         }
 
-        var tupleElements = core.Parameters
-            .Select(parameter => TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name)));
+        var tupleElements = core.Parameters.Select(parameter =>
+            TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name))
+        );
 
         return TupleType(SeparatedList(tupleElements));
     }
@@ -75,11 +87,14 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
         var elements = new List<TupleElementSyntax>
         {
-            TupleElement(core.HandlerTypeSyntax).WithIdentifier(Identifier("Handler"))
+            TupleElement(core.HandlerTypeSyntax).WithIdentifier(Identifier("Handler")),
         };
 
-        elements.AddRange(core.Parameters.Select(parameter =>
-            TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name))));
+        elements.AddRange(
+            core.Parameters.Select(parameter =>
+                TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name))
+            )
+        );
 
         return TupleType(SeparatedList(elements));
     }

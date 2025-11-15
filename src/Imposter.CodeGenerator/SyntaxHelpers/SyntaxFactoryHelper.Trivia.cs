@@ -6,18 +6,13 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    public static SyntaxToken WithLeadingTriviaComment(
-        this in SyntaxToken node,
-        string comment)
-        => node
-            .WithLeadingTrivia(CommentSyntaxTrivias(comment));
+    public static SyntaxToken WithLeadingTriviaComment(this in SyntaxToken node, string comment) =>
+        node.WithLeadingTrivia(CommentSyntaxTrivias(comment));
 
-    public static TSyntax WithLeadingTriviaComment<TSyntax>(
-        this TSyntax node,
-        string comment) where TSyntax : SyntaxNode
+    public static TSyntax WithLeadingTriviaComment<TSyntax>(this TSyntax node, string comment)
+        where TSyntax : SyntaxNode
     {
-        return node
-            .WithLeadingTrivia(CommentSyntaxTrivias(comment));
+        return node.WithLeadingTrivia(CommentSyntaxTrivias(comment));
     }
 
     private static IEnumerable<SyntaxTrivia> CommentSyntaxTrivias(string comment)

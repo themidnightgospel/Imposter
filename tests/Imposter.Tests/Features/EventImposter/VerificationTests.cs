@@ -9,9 +9,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]
@@ -42,7 +42,11 @@ namespace Imposter.Tests.Features.EventImposter
                 .Raise(this, EventArgs.Empty)
                 .Raise(this, EventArgs.Empty);
 
-            _sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.AtLeast(3));
+            _sut.SomethingHappened.Raised(
+                Arg<object>.Any(),
+                Arg<EventArgs>.Any(),
+                Count.AtLeast(3)
+            );
         }
 
         [Fact]
@@ -51,7 +55,12 @@ namespace Imposter.Tests.Features.EventImposter
             _sut.SomethingHappened.Raise(this, EventArgs.Empty);
 
             Should.Throw<VerificationFailedException>(() =>
-                _sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.Exactly(2)));
+                _sut.SomethingHappened.Raised(
+                    Arg<object>.Any(),
+                    Arg<EventArgs>.Any(),
+                    Count.Exactly(2)
+                )
+            );
         }
 
         [Fact]
@@ -61,8 +70,7 @@ namespace Imposter.Tests.Features.EventImposter
             EventHandler h = (s, e) => count++;
             _sut.Instance().SomethingHappened += h;
 
-            _sut.SomethingHappened.Raise(this, EventArgs.Empty)
-                .Raise(this, EventArgs.Empty);
+            _sut.SomethingHappened.Raise(this, EventArgs.Empty).Raise(this, EventArgs.Empty);
 
             count.ShouldBe(2);
             _sut.SomethingHappened.HandlerInvoked(Arg<EventHandler>.Is(h), Count.Exactly(2));

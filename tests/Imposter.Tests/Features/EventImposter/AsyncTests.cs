@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]
@@ -32,16 +32,26 @@ namespace Imposter.Tests.Features.EventImposter
 
             await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
 
-            _sut.AsyncSomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.Once());
+            _sut.AsyncSomethingHappened.Raised(
+                Arg<object>.Any(),
+                Arg<EventArgs>.Any(),
+                Count.Once()
+            );
         }
 
         [Fact]
         public async Task GivenAsyncHandlerThrows_WhenRaiseAsync_ShouldPropagateException()
         {
-            _sut.Instance().AsyncSomethingHappened += async (s, e) => { throw new InvalidOperationException("boom"); };
+            _sut.Instance().AsyncSomethingHappened += async (s, e) =>
+            {
+                throw new InvalidOperationException("boom");
+            };
 
             await Should.ThrowAsync<InvalidOperationException>(async () =>
-                await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty).WaitAsync(TimeSpan.FromSeconds(1)));
+                await _sut
+                    .AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty)
+                    .WaitAsync(TimeSpan.FromSeconds(1))
+            );
         }
     }
 }

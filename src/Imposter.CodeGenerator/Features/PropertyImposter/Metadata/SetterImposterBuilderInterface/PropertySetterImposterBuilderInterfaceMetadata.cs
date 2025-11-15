@@ -40,7 +40,9 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly PropertySetterThenMethodMetadata? InitialThenMethod;
 
-    internal PropertySetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
+    internal PropertySetterImposterBuilderInterfaceMetadata(
+        in ImposterPropertyCoreMetadata property
+    )
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
         Syntax = SyntaxFactory.ParseName(Name);
@@ -53,15 +55,26 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         VerificationInterfaceName = $"I{property.UniqueName}PropertySetterVerifier";
         VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
-        CallbackMethod = new CallbackMethodMetadata(property, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(
+            property,
+            ContinuationInterfaceTypeSyntax,
+            CallbackInterfaceTypeSyntax
+        );
         if (property.SetterSupportsBaseImplementation)
         {
-            UseBaseImplementationEntryInterfaceName = $"I{property.UniqueName}PropertySetterUseBaseImplementationBuilder";
-            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(UseBaseImplementationEntryInterfaceName);
+            UseBaseImplementationEntryInterfaceName =
+                $"I{property.UniqueName}PropertySetterUseBaseImplementationBuilder";
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(
+                UseBaseImplementationEntryInterfaceName
+            );
             UseBaseImplementationEntryMethod = new SetterUseBaseImplementationMethodMetadata(
                 UseBaseImplementationEntryInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax);
-            ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, UseBaseImplementationEntryInterfaceTypeSyntax);
+                FluentInterfaceTypeSyntax
+            );
+            ThenMethod = new PropertySetterThenMethodMetadata(
+                ContinuationInterfaceTypeSyntax,
+                UseBaseImplementationEntryInterfaceTypeSyntax
+            );
             // Setter builders already inherit the fluent chain via the use-base interface, so emitting
             // another Then() on the builder would only hide the inherited member.
             InitialThenMethod = null;
@@ -71,7 +84,10 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
             UseBaseImplementationEntryInterfaceName = null;
             UseBaseImplementationEntryInterfaceTypeSyntax = null;
             UseBaseImplementationEntryMethod = null;
-            ThenMethod = new PropertySetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+            ThenMethod = new PropertySetterThenMethodMetadata(
+                ContinuationInterfaceTypeSyntax,
+                FluentInterfaceTypeSyntax
+            );
             InitialThenMethod = null;
         }
     }

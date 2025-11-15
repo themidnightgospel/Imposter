@@ -20,12 +20,16 @@ internal readonly struct ReturnsMethodMetadata
         in ImposterIndexerCoreMetadata core,
         in IndexerDelegateMetadata delegatesMetadata,
         TypeSyntax returnType,
-        NameSyntax interfaceSyntax)
+        NameSyntax interfaceSyntax
+    )
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
         ValueParameter = new ParameterMetadata("value", core.TypeSyntax);
         FuncParameter = new ParameterMetadata("valueGenerator", core.AsSystemFuncType);
-        DelegateParameter = new ParameterMetadata("valueGenerator", delegatesMetadata.ValueDelegateType);
+        DelegateParameter = new ParameterMetadata(
+            "valueGenerator",
+            delegatesMetadata.ValueDelegateType
+        );
     }
 }

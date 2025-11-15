@@ -8,7 +8,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 {
     public class ClassWithMultiParameterIndexer
     {
-        private readonly Dictionary<(int Row, string Column), int> _values = new Dictionary<(int Row, string Column), int>();
+        private readonly Dictionary<(int Row, string Column), int> _values =
+            new Dictionary<(int Row, string Column), int>();
 
         protected virtual int this[int row, string column]
         {

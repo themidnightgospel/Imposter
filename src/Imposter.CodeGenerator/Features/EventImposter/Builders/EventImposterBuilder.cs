@@ -46,28 +46,55 @@ internal static partial class EventImposterBuilder
         var members = new List<MemberDeclarationSyntax>
         {
             SinglePrivateReadonlyVariableField(fields.HandlerOrder, fields.HandlerOrder.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.HandlerCounts, fields.HandlerCounts.Type.New()),
+            SinglePrivateReadonlyVariableField(
+                fields.HandlerCounts,
+                fields.HandlerCounts.Type.New()
+            ),
             SinglePrivateReadonlyVariableField(fields.Callbacks, fields.Callbacks.Type.New()),
             SinglePrivateReadonlyVariableField(fields.History, fields.History.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.SubscribeHistory, fields.SubscribeHistory.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.UnsubscribeHistory, fields.UnsubscribeHistory.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.SubscribeInterceptors, fields.SubscribeInterceptors.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.UnsubscribeInterceptors, fields.UnsubscribeInterceptors.Type.New()),
-            SinglePrivateReadonlyVariableField(fields.HandlerInvocations, fields.HandlerInvocations.Type.New())
+            SinglePrivateReadonlyVariableField(
+                fields.SubscribeHistory,
+                fields.SubscribeHistory.Type.New()
+            ),
+            SinglePrivateReadonlyVariableField(
+                fields.UnsubscribeHistory,
+                fields.UnsubscribeHistory.Type.New()
+            ),
+            SinglePrivateReadonlyVariableField(
+                fields.SubscribeInterceptors,
+                fields.SubscribeInterceptors.Type.New()
+            ),
+            SinglePrivateReadonlyVariableField(
+                fields.UnsubscribeInterceptors,
+                fields.UnsubscribeInterceptors.Type.New()
+            ),
+            SinglePrivateReadonlyVariableField(
+                fields.HandlerInvocations,
+                fields.HandlerInvocations.Type.New()
+            ),
         };
 
         if (@event.Core.SupportsBaseImplementation)
         {
-            members.Add(SingleVariableField(
-                WellKnownTypes.Bool,
-                "_useBaseImplementation",
-                SyntaxKind.PrivateKeyword));
+            members.Add(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    "_useBaseImplementation",
+                    SyntaxKind.PrivateKeyword
+                )
+            );
 
-            members.Add(SingleVariableField(
-                PredefinedType(Token(SyntaxKind.StringKeyword)),
-                "_eventDisplayName",
-                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(@event.Core.DisplayName))));
+            members.Add(
+                SingleVariableField(
+                    PredefinedType(Token(SyntaxKind.StringKeyword)),
+                    "_eventDisplayName",
+                    TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
+                    LiteralExpression(
+                        SyntaxKind.StringLiteralExpression,
+                        Literal(@event.Core.DisplayName)
+                    )
+                )
+            );
         }
 
         return members.ToArray();
@@ -82,9 +109,11 @@ internal static partial class EventImposterBuilder
     private static MethodDeclarationBuilder ExplicitInterfaceMethod(
         NameSyntax interfaceType,
         TypeSyntax returnType,
-        string name) =>
-        new MethodDeclarationBuilder(returnType, name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(interfaceType));
+        string name
+    ) =>
+        new MethodDeclarationBuilder(returnType, name).WithExplicitInterfaceSpecifier(
+            ExplicitInterfaceSpecifier(interfaceType)
+        );
 
     private static InvocationExpressionSyntax ThrowIfNull(string parameterName) =>
         IdentifierName(nameof(ArgumentNullException))
@@ -94,7 +123,9 @@ internal static partial class EventImposterBuilder
     private static IdentifierNameSyntax FieldIdentifier(in FieldMetadata field) =>
         IdentifierName(field.Name);
 
-    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(in ImposterEventMetadata @event)
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
+        in ImposterEventMetadata @event
+    )
     {
         if (@event.BuilderInterface.UseBaseImplementationMethod is not { } methodMetadata)
         {
@@ -102,13 +133,15 @@ internal static partial class EventImposterBuilder
         }
 
         return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax)
+            )
             .WithBody(
                 Block(
-                    IdentifierName("_useBaseImplementation")
-                        .Assign(True)
-                        .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())))
+                    IdentifierName("_useBaseImplementation").Assign(True).ToStatementSyntax(),
+                    ReturnStatement(ThisExpression())
+                )
+            )
             .Build();
     }
 }

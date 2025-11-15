@@ -19,9 +19,7 @@ public class MissingImposterException : Exception
     public string? MethodName { get; }
 
     /// <inheritdoc />
-    public MissingImposterException()
-    {
-    }
+    public MissingImposterException() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MissingImposterException"/> class for the specified method.

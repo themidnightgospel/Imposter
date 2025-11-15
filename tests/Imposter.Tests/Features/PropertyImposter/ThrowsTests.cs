@@ -9,9 +9,9 @@ namespace Imposter.Tests.Features.PropertyImposter
     {
         private readonly IPropertySetupSutImposter _sut =
 #if USE_CSHARP14
-            IPropertySetupSut.Imposter();
+        IPropertySetupSut.Imposter();
 #else
-            new IPropertySetupSutImposter();
+        new IPropertySetupSutImposter();
 #endif
 
         [Fact]
@@ -55,7 +55,8 @@ namespace Imposter.Tests.Features.PropertyImposter
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ValueShouldNotBeSet()
         {
-            _sut.Age.Setter(Arg<int>.Any()).Callback(_ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.Setter(Arg<int>.Any())
+                .Callback(_ => throw new InvalidOperationException("Callback error"));
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
             _sut.Instance().Age.ShouldBe(default);
@@ -64,7 +65,8 @@ namespace Imposter.Tests.Features.PropertyImposter
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ShouldTrackSetHistory()
         {
-            _sut.Age.Setter(Arg<int>.Any()).Callback(_ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.Setter(Arg<int>.Any())
+                .Callback(_ => throw new InvalidOperationException("Callback error"));
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
@@ -74,7 +76,8 @@ namespace Imposter.Tests.Features.PropertyImposter
         [Fact]
         public void GivenGetterCallbackThatThrows_WhenPropertyIsAccessed_ShouldTrackGetHistory()
         {
-            _sut.Age.Getter().Callback(() => throw new InvalidOperationException("Getter callback error"));
+            _sut.Age.Getter()
+                .Callback(() => throw new InvalidOperationException("Getter callback error"));
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age);
 

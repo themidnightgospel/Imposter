@@ -43,10 +43,13 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new IThrowServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumber()
+            imposter
+                .GetNumber()
                 .Returns(1)
-                .Then().Throws<InvalidOperationException>()
-                .Then().Returns(2);
+                .Then()
+                .Throws<InvalidOperationException>()
+                .Then()
+                .Returns(2);
 
             service.GetNumber().ShouldBe(1);
             Should.Throw<InvalidOperationException>(() => service.GetNumber());

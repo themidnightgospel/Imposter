@@ -19,4 +19,3 @@ namespace Imposter.Tests.Features.ImposterStaticExtension
     }
 }
 #endif
-

@@ -15,17 +15,33 @@ internal static partial class MethodImposterBuilderBuilder
         var builderClass = new ClassDeclarationBuilder(method.MethodImposter.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.BuilderInterface.Syntax))
-            .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.ContinuationInterface.Syntax))
+            .AddBaseType(
+                SimpleBaseType(method.MethodInvocationImposterGroup.ContinuationInterface.Syntax)
+            )
             .AddMembers(fields)
-            .AddMember(SinglePrivateReadonlyVariableField(method.MethodImposter.Builder.InvocationImposterGroupField.Type, method.MethodImposter.Builder.InvocationImposterGroupField.Name))
-            .AddMember(SingleVariableField(
-                method.MethodImposter.Builder.CurrentInvocationImposterField.Type,
-                method.MethodImposter.Builder.CurrentInvocationImposterField.Name,
-                TokenList(Token(SyntaxKind.PrivateKeyword))));
+            .AddMember(
+                SinglePrivateReadonlyVariableField(
+                    method.MethodImposter.Builder.InvocationImposterGroupField.Type,
+                    method.MethodImposter.Builder.InvocationImposterGroupField.Name
+                )
+            )
+            .AddMember(
+                SingleVariableField(
+                    method.MethodImposter.Builder.CurrentInvocationImposterField.Type,
+                    method.MethodImposter.Builder.CurrentInvocationImposterField.Name,
+                    TokenList(Token(SyntaxKind.PrivateKeyword))
+                )
+            );
 
-        var constructor = BuildConstructorAndInitializeMembers(method.MethodImposter.Builder.Name, fields);
+        var constructor = BuildConstructorAndInitializeMembers(
+            method.MethodImposter.Builder.Name,
+            fields
+        );
         constructor = constructor.WithBody(
-            constructor.Body!.AddStatements(BuildInvocationSetupInitializationStatements(method).ToArray()));
+            constructor.Body!.AddStatements(
+                BuildInvocationSetupInitializationStatements(method).ToArray()
+            )
+        );
 
         return builderClass
             .AddMember(constructor)

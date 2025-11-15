@@ -8,7 +8,8 @@ public class MethodParameterCollisionPreventionTests : NamingCollisionPrevention
     [Fact]
     public async Task GivenParametersMatchingImposterLocals_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -29,7 +30,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -37,7 +39,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenParametersMatchingInvocationSetupNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Sample.NamingCollision;
 using Imposter.Abstractions;
@@ -60,7 +63,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -68,7 +72,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenParametersMatchingArgumentsCriteriaNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -82,7 +87,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -90,7 +96,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenParametersMatchingInvocationHistoryNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Sample.NamingCollision;
 using Imposter.Abstractions;
@@ -106,7 +113,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -114,7 +122,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenParametersMatchingAdapterNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -129,7 +138,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -137,7 +147,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenParametersMatchingBaseImplementationAdapterName_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -152,12 +163,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

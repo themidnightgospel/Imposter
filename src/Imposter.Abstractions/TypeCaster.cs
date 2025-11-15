@@ -60,6 +60,8 @@ public static class TypeCaster
             return result;
         }
 
-        throw new InvalidCastException($"Cannot cast from type '{typeof(TIn)}' to '{typeof(TOut)}'.");
+        throw new InvalidCastException(
+            $"Cannot cast from type '{typeof(TIn)}' to '{typeof(TOut)}'."
+        );
     }
 }

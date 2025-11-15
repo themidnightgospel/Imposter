@@ -20,7 +20,8 @@ internal readonly struct PropertyImposterBuilderInterfaceMetadata
     internal PropertyImposterBuilderInterfaceMetadata(
         in ImposterPropertyCoreMetadata property,
         in PropertySetterImposterBuilderInterfaceMetadata setterInterfaceMetadata,
-        in PropertyGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata)
+        in PropertyGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata
+    )
     {
         Name = $"I{property.UniqueName}PropertyBuilder";
         Syntax = SyntaxFactory.ParseName(Name);

@@ -24,10 +24,7 @@ namespace Imposter.Tests.Features.ClassImposter
         [Fact]
         public void GivenImposterConstructors_WhenPassingInvocationBehavior_ThenAcceptBehavior()
         {
-            var imposter = new MultiConstructorClassImposter(
-                10,
-                "beta",
-                ImposterMode.Explicit);
+            var imposter = new MultiConstructorClassImposter(10, "beta", ImposterMode.Explicit);
 
             imposter.Calculate(Arg<int>.Any()).Returns(42);
 
@@ -52,10 +49,7 @@ namespace Imposter.Tests.Features.ClassImposter
             const int value = 8;
             const string label = "core";
 
-            var imposter = new MultiConstructorClassImposter(
-                value,
-                label,
-                ImposterMode.Explicit);
+            var imposter = new MultiConstructorClassImposter(value, label, ImposterMode.Explicit);
 
             var instance = imposter.Instance();
             instance.CtorSignature.ShouldBe($"value:{value}/label:{label}");
@@ -77,12 +71,14 @@ namespace Imposter.Tests.Features.ClassImposter
         [Fact]
         public void GivenProtectedConstructor_WhenGeneratingImposter_ThenConstructorIsExposed()
         {
-            var constructor = typeof(MultiConstructorClassImposter)
-                .GetConstructor(new[] { typeof(bool), typeof(ImposterMode) });
+            var constructor = typeof(MultiConstructorClassImposter).GetConstructor(
+                new[] { typeof(bool), typeof(ImposterMode) }
+            );
 
             constructor.ShouldNotBeNull();
 
-            var imposter = (MultiConstructorClassImposter)constructor!.Invoke(new object[] { true, ImposterMode.Implicit });
+            var imposter = (MultiConstructorClassImposter)
+                constructor!.Invoke(new object[] { true, ImposterMode.Implicit });
 
             imposter.Instance().CtorSignature.ShouldBe("flag:True");
         }
@@ -97,7 +93,7 @@ namespace Imposter.Tests.Features.ClassImposter
                 new MultiConstructorClassImposter(ImposterMode.Explicit),
                 new MultiConstructorClassImposter(3, "explicit", ImposterMode.Explicit),
                 new MultiConstructorClassImposter(correlationId, ImposterMode.Explicit),
-                new MultiConstructorClassImposter(false, ImposterMode.Explicit)
+                new MultiConstructorClassImposter(false, ImposterMode.Explicit),
             };
 
             foreach (var imposter in imposters)

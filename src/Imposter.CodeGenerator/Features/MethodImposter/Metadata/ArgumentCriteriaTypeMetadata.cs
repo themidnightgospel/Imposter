@@ -21,9 +21,14 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
     {
         var argumentsCriteriaName = $"{method.UniqueName}ArgumentsCriteria";
         Name = argumentsCriteriaName;
-        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, argumentsCriteriaName);
-        SyntaxWithTargetGenericTypeArguments =
-            SyntaxFactoryHelper.WithMethodGenericArguments(method.TargetGenericTypeArguments, argumentsCriteriaName);
+        Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(
+            method.GenericTypeArguments,
+            argumentsCriteriaName
+        );
+        SyntaxWithTargetGenericTypeArguments = SyntaxFactoryHelper.WithMethodGenericArguments(
+            method.TargetGenericTypeArguments,
+            argumentsCriteriaName
+        );
 
         var nameContext = new NameSet(method.Symbol.Parameters.Select(p => p.Name));
         MatchesMethod = new MatchesMethodMetadata(nameContext);

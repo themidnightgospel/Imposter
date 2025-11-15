@@ -5,10 +5,16 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static class TypeCasterSyntaxHelper
 {
-    internal static ExpressionSyntax CastExpression(string varName, TypeSyntax fromType, TypeSyntax toType)
+    internal static ExpressionSyntax CastExpression(
+        string varName,
+        TypeSyntax fromType,
+        TypeSyntax toType
+    )
     {
-        return WellKnownTypes.Imposter.Abstractions.TypeCaster
-            .Dot(GenericName(Identifier("Cast"), TypeArgumentList(SeparatedList([fromType, toType]))))
+        return WellKnownTypes
+            .Imposter.Abstractions.TypeCaster.Dot(
+                GenericName(Identifier("Cast"), TypeArgumentList(SeparatedList([fromType, toType])))
+            )
             .Call(Argument(IdentifierName(varName)));
     }
 }

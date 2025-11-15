@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.IndexerImposter
         private const int ThreadCount = 200;
         private readonly IIndexerSetupSutImposter _sut =
 #if USE_CSHARP14
-            IIndexerSetupSut.Imposter();
+        IIndexerSetupSut.Imposter();
 #else
-            new IIndexerSetupSutImposter();
+        new IIndexerSetupSutImposter();
 #endif
 
         [Fact]
@@ -29,21 +29,22 @@ namespace Imposter.Tests.Features.IndexerImposter
             for (int i = 0; i < ThreadCount; i++)
             {
                 var index = i;
-                threads[i] = index % 2 == 0
-                    ? new Thread(() =>
-                    {
-                        readySignal.Signal();
-                        startSignal.Wait();
+                threads[i] =
+                    index % 2 == 0
+                        ? new Thread(() =>
+                        {
+                            readySignal.Signal();
+                            startSignal.Wait();
 
-                        instance[index] = index;
-                    })
-                    : new Thread(() =>
-                    {
-                        readySignal.Signal();
-                        startSignal.Wait();
+                            instance[index] = index;
+                        })
+                        : new Thread(() =>
+                        {
+                            readySignal.Signal();
+                            startSignal.Wait();
 
-                        var _ = instance[index];
-                    });
+                            var _ = instance[index];
+                        });
             }
 
             foreach (var thread in threads)

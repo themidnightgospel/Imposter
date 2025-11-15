@@ -5,8 +5,8 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static InvocationExpressionSyntax IsAssignableTo(this ExpressionSyntax left, ExpressionSyntax right) =>
-        left
-            .Dot(IdentifierName("IsAssignableTo"))
-            .Call(Argument(right));
+    internal static InvocationExpressionSyntax IsAssignableTo(
+        this ExpressionSyntax left,
+        ExpressionSyntax right
+    ) => left.Dot(IdentifierName("IsAssignableTo")).Call(Argument(right));
 }

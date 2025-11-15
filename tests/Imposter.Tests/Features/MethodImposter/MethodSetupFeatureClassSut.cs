@@ -37,7 +37,11 @@ namespace Imposter.Tests.Features.MethodImposter
             return $"{prefix}-{suffix}";
         }
 
-        internal virtual int RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
+        internal virtual int RefOutWithParams(
+            ref int seed,
+            out int doubled,
+            params int[] adjustments
+        )
         {
             var applied = 0;
             if (adjustments != null && adjustments.Length > 0)

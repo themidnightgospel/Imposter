@@ -45,7 +45,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
     internal readonly bool HasGenericReturnType;
 
     internal readonly bool SupportsBaseImplementation;
-    
+
     internal readonly bool SupportsNullableGenericType;
 
     internal readonly string UniqueName;
@@ -73,7 +73,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,
         string uniqueName,
-        bool supportsNullableGenericType)
+        bool supportsNullableGenericType
+    )
     {
         Symbol = symbol;
         UniqueName = uniqueName;
@@ -83,30 +84,53 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         ReturnType = new ReturnTypeMetadata(Symbol.ReturnType, supportsNullableGenericType);
         HasReturnValue = !Symbol.ReturnsVoid;
         HasGenericReturnType = Symbol.ReturnType.TypeKind == TypeKind.TypeParameter;
-        SupportsBaseImplementation = Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
+        SupportsBaseImplementation =
+            Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
         SupportsNullableGenericType = supportsNullableGenericType;
         IsAsync = IsMethodAsync(symbol);
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
         GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
-        GenericTypeArguments = Symbol.TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name)).ToArray();
-        GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(GenericTypeArguments);
-        GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(GenericTypeArguments);
+        GenericTypeArguments = Symbol
+            .TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name))
+            .ToArray();
+        GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(
+            GenericTypeArguments
+        );
+        GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(
+            GenericTypeArguments
+        );
 
         var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
-        TargetGenericTypeArguments = Symbol.TypeParameters
-            .Select(p => SyntaxFactory.IdentifierName(targetGenericNameContext.Use($"{p.Name}Target")))
+        TargetGenericTypeArguments = Symbol
+            .TypeParameters.Select(p =>
+                SyntaxFactory.IdentifierName(targetGenericNameContext.Use($"{p.Name}Target"))
+            )
             .ToArray();
-        TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TargetGenericTypeArguments);
+        TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(
+            TargetGenericTypeArguments
+        );
 
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
-        CallbackDelegate = TypeMetadataFactory.Create($"{uniqueName}CallbackDelegate", GenericTypeArguments);
-        ExceptionGeneratorDelegate = TypeMetadataFactory.Create($"{uniqueName}ExceptionGeneratorDelegate", GenericTypeArguments);
+        CallbackDelegate = TypeMetadataFactory.Create(
+            $"{uniqueName}CallbackDelegate",
+            GenericTypeArguments
+        );
+        ExceptionGeneratorDelegate = TypeMetadataFactory.Create(
+            $"{uniqueName}ExceptionGeneratorDelegate",
+            GenericTypeArguments
+        );
 
         var argumentsTypeName = $"{uniqueName}Arguments";
-        Arguments = new TypeMetadata(argumentsTypeName, SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName));
+        Arguments = new TypeMetadata(
+            argumentsTypeName,
+            SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName)
+        );
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
-        ArgumentsCriteriaAsMethod = new AsMethodMetadata(Symbol.TypeParameters, GenericTypeParameterNameSet);
+        ArgumentsCriteriaAsMethod = new AsMethodMetadata(
+            Symbol.TypeParameters,
+            GenericTypeParameterNameSet
+        );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         MethodInvocationImposter = new MethodInvocationImposterMetadata(this);
@@ -120,7 +144,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         var names = new List<string>(Parameters.Parameters.Select(p => p.Name))
         {
             UniqueName,
-            Namespace
+            Namespace,
         };
 
         return new NameSet(names);
@@ -128,8 +152,10 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     private static bool IsMethodAsync(IMethodSymbol methodSymbol)
     {
-        if (methodSymbol.ReturnsVoid == false &&
-            methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface())
+        if (
+            methodSymbol.ReturnsVoid == false
+            && methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface()
+        )
         {
             return true;
         }
@@ -142,7 +168,10 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         internal readonly NameSyntax[] TargetTypeArguments;
         internal readonly TypeParameterSyntax[] TypeParameters;
 
-        internal AsMethodMetadata(IReadOnlyList<ITypeParameterSymbol> typeParameters, NameSet nameSet)
+        internal AsMethodMetadata(
+            IReadOnlyList<ITypeParameterSymbol> typeParameters,
+            NameSet nameSet
+        )
         {
             var allocatedNames = typeParameters
                 .Select(p => nameSet.Use($"{p.Name}Target"))
@@ -152,9 +181,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
                 .Select(name => (NameSyntax)SyntaxFactory.IdentifierName(name))
                 .ToArray();
 
-            TypeParameters = allocatedNames
-                .Select(SyntaxFactory.TypeParameter)
-                .ToArray();
+            TypeParameters = allocatedNames.Select(SyntaxFactory.TypeParameter).ToArray();
         }
     }
 }

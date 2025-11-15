@@ -4,7 +4,7 @@ namespace Imposter.CodeGenerator.Helpers;
 
 internal class NameSet(IEnumerable<string> alreadyUsedNames)
 {
-    private readonly HashSet<string> _alreadyUsedNames = [..alreadyUsedNames];
+    private readonly HashSet<string> _alreadyUsedNames = [.. alreadyUsedNames];
 
     internal string Use(string key)
     {

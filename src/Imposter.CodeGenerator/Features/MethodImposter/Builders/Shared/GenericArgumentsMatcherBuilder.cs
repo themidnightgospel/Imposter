@@ -10,9 +10,14 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.Shared;
 
 internal static class GenericArgumentsMatcherBuilder
 {
-    internal static ExpressionSyntax GenerateExactMatchCriteria(in ImposterTargetMethodMetadata method)
+    internal static ExpressionSyntax GenerateExactMatchCriteria(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
+        var typeParamRenamer = new TypeParameterRenamer(
+            method.Symbol.TypeParameters,
+            method.TargetGenericTypeArguments
+        );
 
         var conditions = new List<ExpressionSyntax>();
 
@@ -21,7 +26,13 @@ internal static class GenericArgumentsMatcherBuilder
             var sourceTypeSyntax = TypeSyntax(parameter.Type);
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
-            conditions.Add(BinaryExpression(SyntaxKind.EqualsExpression, TypeOfExpression(targetTypeSyntax), TypeOfExpression(sourceTypeSyntax)));
+            conditions.Add(
+                BinaryExpression(
+                    SyntaxKind.EqualsExpression,
+                    TypeOfExpression(targetTypeSyntax),
+                    TypeOfExpression(sourceTypeSyntax)
+                )
+            );
         }
 
         if (method.HasReturnValue)
@@ -31,7 +42,13 @@ internal static class GenericArgumentsMatcherBuilder
             var sourceTypeSyntax = TypeSyntax(returnType);
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
-            conditions.Add(BinaryExpression(SyntaxKind.EqualsExpression, TypeOfExpression(sourceTypeSyntax), TypeOfExpression(targetTypeSyntax)));
+            conditions.Add(
+                BinaryExpression(
+                    SyntaxKind.EqualsExpression,
+                    TypeOfExpression(sourceTypeSyntax),
+                    TypeOfExpression(targetTypeSyntax)
+                )
+            );
         }
 
         return conditions.Count > 0

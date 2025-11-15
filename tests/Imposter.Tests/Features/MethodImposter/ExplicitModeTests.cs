@@ -11,8 +11,12 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
-            var exception = Should.Throw<MissingImposterException>(() => sut.Instance().IntNoParams());
-            exception.MethodName.ShouldNotBeNull().ShouldContain(nameof(IMethodSetupFeatureSut.IntNoParams));
+            var exception = Should.Throw<MissingImposterException>(() =>
+                sut.Instance().IntNoParams()
+            );
+            exception
+                .MethodName.ShouldNotBeNull()
+                .ShouldContain(nameof(IMethodSetupFeatureSut.IntNoParams));
         }
 
         [Fact]
@@ -20,8 +24,12 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
-            var exception = Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
-            exception.MethodName.ShouldNotBeNull().ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
+            var exception = Should.Throw<MissingImposterException>(() =>
+                sut.Instance().VoidNoParams()
+            );
+            exception
+                .MethodName.ShouldNotBeNull()
+                .ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
         }
 
         [Fact]
@@ -29,7 +37,9 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
-            var exception = Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
+            var exception = Should.Throw<MissingImposterException>(() =>
+                sut.Instance().VoidNoParams()
+            );
             exception.MethodName.ShouldBe("void IMethodSetupFeatureSut.VoidNoParams()");
             exception.Message.ShouldContain("void IMethodSetupFeatureSut.VoidNoParams()");
         }
@@ -62,8 +72,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             sut.VoidNoParams().Callback(() => callbackInvoked = true);
 
-            var exception = Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
-            exception.MethodName.ShouldNotBeNull().ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
+            var exception = Should.Throw<MissingImposterException>(() =>
+                sut.Instance().VoidNoParams()
+            );
+            exception
+                .MethodName.ShouldNotBeNull()
+                .ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
             callbackInvoked.ShouldBeFalse();
         }
     }

@@ -10,58 +10,56 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol) =>
-        ParseTypeName(
-            typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-        );
+        ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
     private static readonly SymbolDisplayFormat FullyQualifiedFormatWithNullableReferenceTypes =
         SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
-            SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions |
-            SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
-
-    internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
-        ParseTypeName(
-            typeSymbol.ToDisplayString(FullyQualifiedFormatWithNullableReferenceTypes)
+            SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
+                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
         );
 
-    internal static TypeParameterSyntax TypeParameterSyntax(ITypeParameterSymbol typeParameterSymbol)
-        => TypeParameter(typeParameterSymbol.Name);
+    internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
+        ParseTypeName(typeSymbol.ToDisplayString(FullyQualifiedFormatWithNullableReferenceTypes));
+
+    internal static TypeParameterSyntax TypeParameterSyntax(
+        ITypeParameterSymbol typeParameterSymbol
+    ) => TypeParameter(typeParameterSymbol.Name);
 
     internal static IEnumerable<TypeParameterSyntax> TypeParametersSyntax(IMethodSymbol method) =>
-        method.TypeParameters.Length > 0
-            ? method.TypeParameters.Select(TypeParameterSyntax)
-            : [];
+        method.TypeParameters.Length > 0 ? method.TypeParameters.Select(TypeParameterSyntax) : [];
 
     internal static TypeParameterListSyntax? TypeParameterListSyntax(IMethodSymbol method) =>
         method.TypeParameters.Length > 0
-            ? TypeParameterList(
-                SeparatedList(
-                    TypeParametersSyntax(method)
-                )
-            )
+            ? TypeParameterList(SeparatedList(TypeParametersSyntax(method)))
             : null;
 
-    internal static SimpleNameSyntax WithMethodGenericArguments(string identifier, in ImposterTargetMethodMetadata method) =>
+    internal static SimpleNameSyntax WithMethodGenericArguments(
+        string identifier,
+        in ImposterTargetMethodMetadata method
+    ) =>
         method.GenericTypeArgumentListSyntax is not null
             ? GenericName(Identifier(identifier), method.GenericTypeArgumentListSyntax)
             : IdentifierName(identifier);
 
-    internal static NameSyntax WithMethodGenericArguments(IReadOnlyList<NameSyntax> genericArguments, string typeName)
+    internal static NameSyntax WithMethodGenericArguments(
+        IReadOnlyList<NameSyntax> genericArguments,
+        string typeName
+    )
     {
         if (genericArguments.Count > 0)
         {
             return GenericName(
                 Identifier(typeName),
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(genericArguments)
-                )
+                TypeArgumentList(SeparatedList<TypeSyntax>(genericArguments))
             );
         }
 
         return IdentifierName(typeName);
     }
 
-    internal static IEnumerable<TypeParameterConstraintClauseSyntax> TypeParameterConstraintClauses(IMethodSymbol method)
+    internal static IEnumerable<TypeParameterConstraintClauseSyntax> TypeParameterConstraintClauses(
+        IMethodSymbol method
+    )
     {
         foreach (var typeParameter in method.TypeParameters)
         {
@@ -70,9 +68,14 @@ internal static partial class SyntaxFactoryHelper
             if (typeParameter.HasReferenceTypeConstraint)
             {
                 var referenceConstraint = ClassOrStructConstraint(SyntaxKind.ClassConstraint);
-                if (typeParameter.ReferenceTypeConstraintNullableAnnotation == NullableAnnotation.Annotated)
+                if (
+                    typeParameter.ReferenceTypeConstraintNullableAnnotation
+                    == NullableAnnotation.Annotated
+                )
                 {
-                    referenceConstraint = referenceConstraint.WithQuestionToken(Token(SyntaxKind.QuestionToken));
+                    referenceConstraint = referenceConstraint.WithQuestionToken(
+                        Token(SyntaxKind.QuestionToken)
+                    );
                 }
 
                 constraints.Add(referenceConstraint);
@@ -93,7 +96,10 @@ internal static partial class SyntaxFactoryHelper
             }
 
             constraints.AddRange(
-                typeParameter.ConstraintTypes.Select(constraintType => TypeConstraint(TypeSyntax(constraintType))));
+                typeParameter.ConstraintTypes.Select(constraintType =>
+                    TypeConstraint(TypeSyntax(constraintType))
+                )
+            );
 
             if (typeParameter.HasConstructorConstraint)
             {
@@ -113,7 +119,7 @@ internal static partial class SyntaxFactoryHelper
         {
             SimpleNameSyntax simpleName => simpleName,
             QualifiedNameSyntax qualifiedName => qualifiedName.Right,
-            _ => IdentifierName(nameSyntax.ToString())
+            _ => IdentifierName(nameSyntax.ToString()),
         };
 
     internal static NameSyntax GlobalQualifiedName(string @namespace, string type)

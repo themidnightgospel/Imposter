@@ -1,5 +1,4 @@
-﻿
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Features.PropertySetup;
 using Shouldly;
 using Xunit;

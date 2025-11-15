@@ -40,7 +40,9 @@ namespace Imposter.Ideation.NonInterfaceTargets
     /// Proof-of-concept imposter that derives from <see cref="WarehouseAllocationService"/> and overrides
     /// public/protected virtual members using Imposter abstractions.
     /// </summary>
-    public sealed class WarehouseAllocationImposter : WarehouseAllocationService, IHaveImposterInstance<WarehouseAllocationService>
+    public sealed class WarehouseAllocationImposter
+        : WarehouseAllocationService,
+            IHaveImposterInstance<WarehouseAllocationService>
     {
         private readonly ReserveMethodImposter _reserve;
         private readonly FormatAuditMethodImposter _formatAudit;
@@ -55,25 +57,32 @@ namespace Imposter.Ideation.NonInterfaceTargets
             _region = new VirtualPropertyStore<string>(Member(nameof(Region)), mode);
             _region.SetGetter(() => "global");
 
-            _activeReservations = new VirtualPropertyStore<int>(Member(nameof(ActiveReservations)), mode);
+            _activeReservations = new VirtualPropertyStore<int>(
+                Member(nameof(ActiveReservations)),
+                mode
+            );
             _activeReservations.SetAutoProperty(0);
         }
 
         public WarehouseAllocationService Instance() => this;
 
-        public IReserveMethodImposterBuilder Reserve(Arg<string> sku, Arg<int> quantity)
-            => _reserve.CreateBuilder(new AllocationArgumentsCriteria(sku, quantity));
+        public IReserveMethodImposterBuilder Reserve(Arg<string> sku, Arg<int> quantity) =>
+            _reserve.CreateBuilder(new AllocationArgumentsCriteria(sku, quantity));
 
-        public IFormatAuditMethodImposterBuilder FormatAudit(Arg<string> sku, Arg<int> quantity)
-            => _formatAudit.CreateBuilder(new AllocationArgumentsCriteria(sku, quantity));
+        public IFormatAuditMethodImposterBuilder FormatAudit(Arg<string> sku, Arg<int> quantity) =>
+            _formatAudit.CreateBuilder(new AllocationArgumentsCriteria(sku, quantity));
 
-        public IReadOnlyPropertyImposterBuilder<string> RegionProperty() => new ReadOnlyPropertyBuilder<string>(_region);
+        public IReadOnlyPropertyImposterBuilder<string> RegionProperty() =>
+            new ReadOnlyPropertyBuilder<string>(_region);
 
-        public IReadWritePropertyImposterBuilder<int> ActiveReservationsProperty() => new ReadWritePropertyBuilder<int>(_activeReservations);
+        public IReadWritePropertyImposterBuilder<int> ActiveReservationsProperty() =>
+            new ReadWritePropertyBuilder<int>(_activeReservations);
 
-        public override int Reserve(string sku, int quantity) => _reserve.Invoke(new AllocationArguments(sku, quantity));
+        public override int Reserve(string sku, int quantity) =>
+            _reserve.Invoke(new AllocationArguments(sku, quantity));
 
-        protected override string FormatAudit(string sku, int quantity) => _formatAudit.Invoke(new AllocationArguments(sku, quantity));
+        protected override string FormatAudit(string sku, int quantity) =>
+            _formatAudit.Invoke(new AllocationArguments(sku, quantity));
 
         public override string Region => _region.Get();
 
@@ -83,7 +92,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
             set => _activeReservations.Set(value);
         }
 
-        private static string Member(string memberName) => $"{typeof(WarehouseAllocationService).FullName}.{memberName}";
+        private static string Member(string memberName) =>
+            $"{typeof(WarehouseAllocationService).FullName}.{memberName}";
 
         #region Method imposters
 
@@ -110,8 +120,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
                 _quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
             }
 
-            internal bool Matches(AllocationArguments arguments)
-                => _sku.Matches(arguments.Sku) && _quantity.Matches(arguments.Quantity);
+            internal bool Matches(AllocationArguments arguments) =>
+                _sku.Matches(arguments.Sku) && _quantity.Matches(arguments.Quantity);
         }
 
         public interface IReserveMethodImposterBuilder
@@ -120,7 +130,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             IReserveMethodImposterBuilder Returns(Func<string, int, int> generator);
 
-            IReserveMethodImposterBuilder Throws<TException>() where TException : Exception, new();
+            IReserveMethodImposterBuilder Throws<TException>()
+                where TException : Exception, new();
 
             IReserveMethodImposterBuilder Throws(Exception exception);
 
@@ -137,7 +148,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             IFormatAuditMethodImposterBuilder Returns(Func<string, int, string> generator);
 
-            IFormatAuditMethodImposterBuilder Throws<TException>() where TException : Exception, new();
+            IFormatAuditMethodImposterBuilder Throws<TException>()
+                where TException : Exception, new();
 
             IFormatAuditMethodImposterBuilder Throws(Exception exception);
 
@@ -157,7 +169,9 @@ namespace Imposter.Ideation.NonInterfaceTargets
                 _method = new VirtualMethodImposter<AllocationArguments, int>(behavior, memberName);
             }
 
-            internal IReserveMethodImposterBuilder CreateBuilder(AllocationArgumentsCriteria criteria)
+            internal IReserveMethodImposterBuilder CreateBuilder(
+                AllocationArgumentsCriteria criteria
+            )
             {
                 var configuration = _method.CreateSetup(criteria.Matches);
                 return new Builder(this, configuration, criteria);
@@ -165,15 +179,26 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal int Invoke(AllocationArguments arguments) => _method.Invoke(arguments);
 
-            internal void Verify(AllocationArgumentsCriteria criteria, Count count) => _method.Verify(criteria.Matches, count);
+            internal void Verify(AllocationArgumentsCriteria criteria, Count count) =>
+                _method.Verify(criteria.Matches, count);
 
             private sealed class Builder : IReserveMethodImposterBuilder
             {
                 private readonly ReserveMethodImposter _owner;
                 private readonly AllocationArgumentsCriteria _criteria;
-                private readonly VirtualMethodImposter<AllocationArguments, int>.ConfiguredInvocation _configuration;
+                private readonly VirtualMethodImposter<
+                    AllocationArguments,
+                    int
+                >.ConfiguredInvocation _configuration;
 
-                internal Builder(ReserveMethodImposter owner, VirtualMethodImposter<AllocationArguments, int>.ConfiguredInvocation configuration, AllocationArgumentsCriteria criteria)
+                internal Builder(
+                    ReserveMethodImposter owner,
+                    VirtualMethodImposter<
+                        AllocationArguments,
+                        int
+                    >.ConfiguredInvocation configuration,
+                    AllocationArgumentsCriteria criteria
+                )
                 {
                     _owner = owner;
                     _configuration = configuration;
@@ -188,12 +213,16 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
                 public IReserveMethodImposterBuilder Returns(Func<string, int, int> generator)
                 {
-                    if (generator is null) throw new ArgumentNullException(nameof(generator));
-                    _configuration.Returns(arguments => generator(arguments.Sku, arguments.Quantity));
+                    if (generator is null)
+                        throw new ArgumentNullException(nameof(generator));
+                    _configuration.Returns(arguments =>
+                        generator(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
-                public IReserveMethodImposterBuilder Throws<TException>() where TException : Exception, new()
+                public IReserveMethodImposterBuilder Throws<TException>()
+                    where TException : Exception, new()
                 {
                     _configuration.Throws(_ => new TException());
                     return this;
@@ -201,28 +230,38 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
                 public IReserveMethodImposterBuilder Throws(Exception exception)
                 {
-                    if (exception is null) throw new ArgumentNullException(nameof(exception));
+                    if (exception is null)
+                        throw new ArgumentNullException(nameof(exception));
                     _configuration.Throws(_ => exception);
                     return this;
                 }
 
-                public IReserveMethodImposterBuilder Throws(Func<string, int, Exception> exceptionFactory)
+                public IReserveMethodImposterBuilder Throws(
+                    Func<string, int, Exception> exceptionFactory
+                )
                 {
-                    if (exceptionFactory is null) throw new ArgumentNullException(nameof(exceptionFactory));
-                    _configuration.Throws(arguments => exceptionFactory(arguments.Sku, arguments.Quantity));
+                    if (exceptionFactory is null)
+                        throw new ArgumentNullException(nameof(exceptionFactory));
+                    _configuration.Throws(arguments =>
+                        exceptionFactory(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
                 public IReserveMethodImposterBuilder Callback(Action<string, int> callback)
                 {
-                    if (callback is null) throw new ArgumentNullException(nameof(callback));
-                    _configuration.Callback(arguments => callback(arguments.Sku, arguments.Quantity));
+                    if (callback is null)
+                        throw new ArgumentNullException(nameof(callback));
+                    _configuration.Callback(arguments =>
+                        callback(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
                 public void Called(Count count)
                 {
-                    if (count is null) throw new ArgumentNullException(nameof(count));
+                    if (count is null)
+                        throw new ArgumentNullException(nameof(count));
                     _owner.Verify(_criteria, count);
                 }
             }
@@ -234,10 +273,15 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal FormatAuditMethodImposter(ImposterMode behavior, string memberName)
             {
-                _method = new VirtualMethodImposter<AllocationArguments, string>(behavior, memberName);
+                _method = new VirtualMethodImposter<AllocationArguments, string>(
+                    behavior,
+                    memberName
+                );
             }
 
-            internal IFormatAuditMethodImposterBuilder CreateBuilder(AllocationArgumentsCriteria criteria)
+            internal IFormatAuditMethodImposterBuilder CreateBuilder(
+                AllocationArgumentsCriteria criteria
+            )
             {
                 var configuration = _method.CreateSetup(criteria.Matches);
                 return new Builder(this, configuration, criteria);
@@ -245,15 +289,26 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal string Invoke(AllocationArguments arguments) => _method.Invoke(arguments);
 
-            internal void Verify(AllocationArgumentsCriteria criteria, Count count) => _method.Verify(criteria.Matches, count);
+            internal void Verify(AllocationArgumentsCriteria criteria, Count count) =>
+                _method.Verify(criteria.Matches, count);
 
             private sealed class Builder : IFormatAuditMethodImposterBuilder
             {
                 private readonly FormatAuditMethodImposter _owner;
                 private readonly AllocationArgumentsCriteria _criteria;
-                private readonly VirtualMethodImposter<AllocationArguments, string>.ConfiguredInvocation _configuration;
+                private readonly VirtualMethodImposter<
+                    AllocationArguments,
+                    string
+                >.ConfiguredInvocation _configuration;
 
-                internal Builder(FormatAuditMethodImposter owner, VirtualMethodImposter<AllocationArguments, string>.ConfiguredInvocation configuration, AllocationArgumentsCriteria criteria)
+                internal Builder(
+                    FormatAuditMethodImposter owner,
+                    VirtualMethodImposter<
+                        AllocationArguments,
+                        string
+                    >.ConfiguredInvocation configuration,
+                    AllocationArgumentsCriteria criteria
+                )
                 {
                     _owner = owner;
                     _configuration = configuration;
@@ -266,14 +321,20 @@ namespace Imposter.Ideation.NonInterfaceTargets
                     return this;
                 }
 
-                public IFormatAuditMethodImposterBuilder Returns(Func<string, int, string> generator)
+                public IFormatAuditMethodImposterBuilder Returns(
+                    Func<string, int, string> generator
+                )
                 {
-                    if (generator is null) throw new ArgumentNullException(nameof(generator));
-                    _configuration.Returns(arguments => generator(arguments.Sku, arguments.Quantity));
+                    if (generator is null)
+                        throw new ArgumentNullException(nameof(generator));
+                    _configuration.Returns(arguments =>
+                        generator(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
-                public IFormatAuditMethodImposterBuilder Throws<TException>() where TException : Exception, new()
+                public IFormatAuditMethodImposterBuilder Throws<TException>()
+                    where TException : Exception, new()
                 {
                     _configuration.Throws(_ => new TException());
                     return this;
@@ -281,28 +342,38 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
                 public IFormatAuditMethodImposterBuilder Throws(Exception exception)
                 {
-                    if (exception is null) throw new ArgumentNullException(nameof(exception));
+                    if (exception is null)
+                        throw new ArgumentNullException(nameof(exception));
                     _configuration.Throws(_ => exception);
                     return this;
                 }
 
-                public IFormatAuditMethodImposterBuilder Throws(Func<string, int, Exception> exceptionFactory)
+                public IFormatAuditMethodImposterBuilder Throws(
+                    Func<string, int, Exception> exceptionFactory
+                )
                 {
-                    if (exceptionFactory is null) throw new ArgumentNullException(nameof(exceptionFactory));
-                    _configuration.Throws(arguments => exceptionFactory(arguments.Sku, arguments.Quantity));
+                    if (exceptionFactory is null)
+                        throw new ArgumentNullException(nameof(exceptionFactory));
+                    _configuration.Throws(arguments =>
+                        exceptionFactory(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
                 public IFormatAuditMethodImposterBuilder Callback(Action<string, int> callback)
                 {
-                    if (callback is null) throw new ArgumentNullException(nameof(callback));
-                    _configuration.Callback(arguments => callback(arguments.Sku, arguments.Quantity));
+                    if (callback is null)
+                        throw new ArgumentNullException(nameof(callback));
+                    _configuration.Callback(arguments =>
+                        callback(arguments.Sku, arguments.Quantity)
+                    );
                     return this;
                 }
 
                 public void Called(Count count)
                 {
-                    if (count is null) throw new ArgumentNullException(nameof(count));
+                    if (count is null)
+                        throw new ArgumentNullException(nameof(count));
                     _owner.Verify(_criteria, count);
                 }
             }
@@ -323,7 +394,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal ConfiguredInvocation CreateSetup(Func<TArguments, bool> criteria)
             {
-                if (criteria is null) throw new ArgumentNullException(nameof(criteria));
+                if (criteria is null)
+                    throw new ArgumentNullException(nameof(criteria));
                 var configuration = new ConfiguredInvocation(criteria);
                 _setups.Add(configuration);
                 return configuration;
@@ -351,8 +423,10 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal void Verify(Func<TArguments, bool> criteria, Count count)
             {
-                if (criteria is null) throw new ArgumentNullException(nameof(criteria));
-                if (count is null) throw new ArgumentNullException(nameof(count));
+                if (criteria is null)
+                    throw new ArgumentNullException(nameof(criteria));
+                if (count is null)
+                    throw new ArgumentNullException(nameof(count));
 
                 var actual = _invocations.Count(criteria);
                 if (!count.Matches(actual))
@@ -375,19 +449,23 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
                 internal ConfiguredInvocation Returns(Func<TArguments, TResult> generator)
                 {
-                    _resultGenerator = generator ?? throw new ArgumentNullException(nameof(generator));
+                    _resultGenerator =
+                        generator ?? throw new ArgumentNullException(nameof(generator));
                     return this;
                 }
 
                 internal ConfiguredInvocation Throws(Func<TArguments, Exception> exceptionFactory)
                 {
-                    _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
+                    _exceptionFactory =
+                        exceptionFactory
+                        ?? throw new ArgumentNullException(nameof(exceptionFactory));
                     return this;
                 }
 
                 internal ConfiguredInvocation Callback(Action<TArguments> callback)
                 {
-                    if (callback is null) throw new ArgumentNullException(nameof(callback));
+                    if (callback is null)
+                        throw new ArgumentNullException(nameof(callback));
                     _callback += callback;
                     return this;
                 }
@@ -468,7 +546,8 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             internal void AddSetterCallback(Action<T> callback)
             {
-                if (callback is null) throw new ArgumentNullException(nameof(callback));
+                if (callback is null)
+                    throw new ArgumentNullException(nameof(callback));
                 _setterCallback += callback;
             }
 
@@ -556,7 +635,9 @@ namespace Imposter.Ideation.NonInterfaceTargets
 
             public IReadWritePropertyImposterBuilder<T> SetterCallback(Action<T> callback)
             {
-                _store.AddSetterCallback(callback ?? throw new ArgumentNullException(nameof(callback)));
+                _store.AddSetterCallback(
+                    callback ?? throw new ArgumentNullException(nameof(callback))
+                );
                 return this;
             }
         }

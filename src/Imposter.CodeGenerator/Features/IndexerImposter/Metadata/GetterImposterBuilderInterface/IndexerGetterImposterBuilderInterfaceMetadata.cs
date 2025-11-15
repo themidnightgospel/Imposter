@@ -43,7 +43,8 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
 
     internal IndexerGetterImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
-        in IndexerDelegateMetadata delegatesMetadata)
+        in IndexerDelegateMetadata delegatesMetadata
+    )
     {
         Name = $"I{core.UniqueName}IndexerGetterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
@@ -63,13 +64,32 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
         FluentInterfaceName = $"I{core.UniqueName}IndexerGetterFluentBuilder";
         FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
 
-        ReturnsMethod = new ReturnsMethodMetadata(core, delegatesMetadata, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
-        ThrowsMethod = new ThrowsMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
-        CallbackMethod = new CallbackMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
+        ReturnsMethod = new ReturnsMethodMetadata(
+            core,
+            delegatesMetadata,
+            ContinuationInterfaceTypeSyntax,
+            OutcomeInterfaceTypeSyntax
+        );
+        ThrowsMethod = new ThrowsMethodMetadata(
+            delegatesMetadata,
+            ContinuationInterfaceTypeSyntax,
+            OutcomeInterfaceTypeSyntax
+        );
+        CallbackMethod = new CallbackMethodMetadata(
+            delegatesMetadata,
+            ContinuationInterfaceTypeSyntax,
+            CallbackInterfaceTypeSyntax
+        );
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new ThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        ThenMethod = new ThenMethodMetadata(
+            ContinuationInterfaceTypeSyntax,
+            FluentInterfaceTypeSyntax
+        );
         UseBaseImplementationMethod = core.GetterSupportsBaseImplementation
-            ? new UseBaseImplementationMethodMetadata(OutcomeInterfaceTypeSyntax, ContinuationInterfaceTypeSyntax)
+            ? new UseBaseImplementationMethodMetadata(
+                OutcomeInterfaceTypeSyntax,
+                ContinuationInterfaceTypeSyntax
+            )
             : null;
     }
 }

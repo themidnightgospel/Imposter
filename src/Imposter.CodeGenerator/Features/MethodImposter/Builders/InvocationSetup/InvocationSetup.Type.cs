@@ -14,7 +14,11 @@ internal static partial class InvocationSetupBuilder
         return ClassDeclarationBuilderFactory
             .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.Name)
             .AddMember(DefaultInstanceLazyInitializer(method))
-            .AddMember(method.Parameters.HasInputParameters ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax) : null)
+            .AddMember(
+                method.Parameters.HasInputParameters
+                    ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax)
+                    : null
+            )
             .AddMember(InvocationImpostersFieldDeclaration(method))
             .AddMember(LastInvocationImposterFieldDeclaration(method))
             .AddMember(Constructor(method))
@@ -26,22 +30,29 @@ internal static partial class InvocationSetupBuilder
 #if DEBUG
             .WithLeadingTriviaComment(method.DisplayName)
 #endif
-            ;
+        ;
     }
 
     private static ConstructorDeclarationSyntax Constructor(in ImposterTargetMethodMetadata method)
     {
-        var ctorBuilder = new ConstructorBuilder(method.MethodInvocationImposterGroup.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
+        var ctorBuilder = new ConstructorBuilder(
+            method.MethodInvocationImposterGroup.Name
+        ).WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
 
         if (method.Parameters.HasInputParameters)
         {
             ctorBuilder = ctorBuilder
-                .AddParameter(Parameter(Identifier("argumentsCriteria")).WithType(method.ArgumentsCriteria.Syntax))
-                .WithBody(Block(
-                    IdentifierName("ArgumentsCriteria")
-                        .Assign(IdentifierName("argumentsCriteria"))
-                        .ToStatementSyntax()));
+                .AddParameter(
+                    Parameter(Identifier("argumentsCriteria"))
+                        .WithType(method.ArgumentsCriteria.Syntax)
+                )
+                .WithBody(
+                    Block(
+                        IdentifierName("ArgumentsCriteria")
+                            .Assign(IdentifierName("argumentsCriteria"))
+                            .ToStatementSyntax()
+                    )
+                );
         }
         else
         {

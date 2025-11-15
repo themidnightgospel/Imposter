@@ -8,9 +8,7 @@ internal readonly struct CompilationUnitSyntaxBuilder
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
 
-    public CompilationUnitSyntaxBuilder()
-    {
-    }
+    public CompilationUnitSyntaxBuilder() { }
 
     internal CompilationUnitSyntaxBuilder AddMember(MemberDeclarationSyntax member)
     {

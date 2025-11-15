@@ -8,7 +8,8 @@ public class CallbackAndCalledFailuresFluentApiTests : MethodImposterFluentApiTe
     [Fact]
     public async Task GivenMethod_WhenCallingThen_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -20,15 +21,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodReturns_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -40,15 +47,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodReturns_WhenCallingThenCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -60,15 +73,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -82,15 +101,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenThenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -105,15 +130,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 11);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 11
+        );
     }
 
     [Fact]
     public async Task GivenMethodThrows_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -125,15 +156,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodThrowsAsync_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -145,15 +182,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodUseBaseImplementation_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -165,15 +208,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenReturning_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -187,15 +236,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenReturningAsync_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -209,15 +264,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenThrowing_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -231,15 +292,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenThrowingAsync_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -253,15 +320,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 
     [Fact]
     public async Task GivenMethodCallback_WhenUsingBaseImplementation_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -275,9 +348,13 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 10);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 10
+        );
     }
 }
-

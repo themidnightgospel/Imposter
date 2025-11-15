@@ -9,7 +9,8 @@ namespace Imposter.Tests.Features.ClassImposter
 {
     public class ClassMethodBaseImplementationTests
     {
-        private readonly MethodSetupFeatureClassSutImposter _classSut = new MethodSetupFeatureClassSutImposter();
+        private readonly MethodSetupFeatureClassSutImposter _classSut =
+            new MethodSetupFeatureClassSutImposter();
 
         [Fact]
         public void GivenClassMethodUseBaseImplementation_WhenInvoked_ThenReturnsBaseResult()
@@ -38,7 +39,8 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             var callbackArgument = 0;
 
-            _classSut.VoidWithSideEffect(Arg<int>.Is(3))
+            _classSut
+                .VoidWithSideEffect(Arg<int>.Is(3))
                 .UseBaseImplementation()
                 .Callback(value => callbackArgument = value);
 
@@ -55,21 +57,27 @@ namespace Imposter.Tests.Features.ClassImposter
             var sumCallback = 0;
             var labelCallback = string.Empty;
 
-            _classSut.SumAsync(Arg<int>.Is(2), Arg<int>.Is(3))
+            _classSut
+                .SumAsync(Arg<int>.Is(2), Arg<int>.Is(3))
                 .UseBaseImplementation()
-                .Callback((int left, int right) =>
-                {
-                    sumCallback = left + right;
-                    return Task.CompletedTask;
-                });
+                .Callback(
+                    (int left, int right) =>
+                    {
+                        sumCallback = left + right;
+                        return Task.CompletedTask;
+                    }
+                );
 
-            _classSut.BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
+            _classSut
+                .BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
                 .UseBaseImplementation()
-                .Callback((string prefix, string suffix) =>
-                {
-                    labelCallback = prefix + suffix;
-                    return Task.CompletedTask;
-                });
+                .Callback(
+                    (string prefix, string suffix) =>
+                    {
+                        labelCallback = prefix + suffix;
+                        return Task.CompletedTask;
+                    }
+                );
 
             var instance = _classSut.Instance();
 
@@ -90,11 +98,13 @@ namespace Imposter.Tests.Features.ClassImposter
             var builder = _classSut
                 .BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
                 .UseBaseImplementation()
-                .Callback((string prefix, string suffix) =>
-                {
-                    callbackCount++;
-                    return Task.CompletedTask;
-                });
+                .Callback(
+                    (string prefix, string suffix) =>
+                    {
+                        callbackCount++;
+                        return Task.CompletedTask;
+                    }
+                );
 
             var instance = _classSut.Instance();
 
@@ -105,7 +115,11 @@ namespace Imposter.Tests.Features.ClassImposter
             second.ShouldBe("gamma-delta");
             callbackCount.ShouldBe(2);
 
-            Should.NotThrow(() => _classSut.BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any()).Called(Count.Exactly(2)));
+            Should.NotThrow(() =>
+                _classSut
+                    .BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
+                    .Called(Count.Exactly(2))
+            );
         }
 
         [Fact]
@@ -122,10 +136,8 @@ namespace Imposter.Tests.Features.ClassImposter
         [Fact]
         public void GivenRefOutMethodUseBaseImplementation_WhenInvoked_ThenPassesThroughAssignments()
         {
-            _classSut.RefOutWithParams(
-                    Arg<int>.Any(),
-                    OutArg<int>.Any(),
-                    Arg<int[]>.Any())
+            _classSut
+                .RefOutWithParams(Arg<int>.Any(), OutArg<int>.Any(), Arg<int[]>.Any())
                 .UseBaseImplementation();
 
             var instance = _classSut.Instance();

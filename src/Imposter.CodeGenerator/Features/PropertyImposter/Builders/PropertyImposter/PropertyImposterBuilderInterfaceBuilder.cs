@@ -16,27 +16,41 @@ internal static class PropertyImposterBuilderInterfaceBuilder
             .AddMember(property.Core.HasSetter ? BuildSetterMethod(property) : null)
             .AddMember(BuildUseBaseImplementationMethod(property))
             .Build();
-    
-    internal static MethodDeclarationSyntax? BuildGetterMethod(in ImposterPropertyMetadata property) =>
-        new MethodDeclarationBuilder(property.ImposterBuilderInterface.GetterMethod.ReturnType, property.ImposterBuilderInterface.GetterMethod.Name)
-            .WithSemicolon()
-            .Build();
-    
-    internal static MethodDeclarationSyntax? BuildSetterMethod(in ImposterPropertyMetadata property) =>
-        new MethodDeclarationBuilder(property.ImposterBuilderInterface.SetterMethod.ReturnType, property.ImposterBuilderInterface.SetterMethod.Name)
-            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(property.ImposterBuilderInterface.SetterMethod.CriteriaParameter))
+
+    internal static MethodDeclarationSyntax? BuildGetterMethod(
+        in ImposterPropertyMetadata property
+    ) =>
+        new MethodDeclarationBuilder(
+            property.ImposterBuilderInterface.GetterMethod.ReturnType,
+            property.ImposterBuilderInterface.GetterMethod.Name
+        )
             .WithSemicolon()
             .Build();
 
-    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(in ImposterPropertyMetadata property)
+    internal static MethodDeclarationSyntax? BuildSetterMethod(
+        in ImposterPropertyMetadata property
+    ) =>
+        new MethodDeclarationBuilder(
+            property.ImposterBuilderInterface.SetterMethod.ReturnType,
+            property.ImposterBuilderInterface.SetterMethod.Name
+        )
+            .AddParameter(
+                SyntaxFactoryHelper.ParameterSyntax(
+                    property.ImposterBuilderInterface.SetterMethod.CriteriaParameter
+                )
+            )
+            .WithSemicolon()
+            .Build();
+
+    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
+        in ImposterPropertyMetadata property
+    )
     {
         if (property.ImposterBuilderInterface.UseBaseImplementationMethod is not { } method)
         {
             return null;
         }
 
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name)
-            .WithSemicolon()
-            .Build();
+        return new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build();
     }
 }

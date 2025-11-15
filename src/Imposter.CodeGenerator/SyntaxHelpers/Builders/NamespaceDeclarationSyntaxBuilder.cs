@@ -25,7 +25,9 @@ internal readonly struct NamespaceDeclarationSyntaxBuilder(string @namespace)
         return this;
     }
 
-    internal NamespaceDeclarationSyntaxBuilder AddMembers(IEnumerable<MemberDeclarationSyntax> members)
+    internal NamespaceDeclarationSyntaxBuilder AddMembers(
+        IEnumerable<MemberDeclarationSyntax> members
+    )
     {
         _members.AddRange(members);
         return this;
@@ -36,5 +38,6 @@ internal readonly struct NamespaceDeclarationSyntaxBuilder(string @namespace)
             IdentifierName(@namespace),
             externs: List<ExternAliasDirectiveSyntax>(),
             usings: List<UsingDirectiveSyntax>(),
-            members: List(_members));
+            members: List(_members)
+        );
 }

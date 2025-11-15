@@ -16,7 +16,10 @@ internal readonly struct DefaultIndexerBehaviourMetadata
 
     internal readonly FieldMetadata BackingField;
 
-    internal DefaultIndexerBehaviourMetadata(in ImposterIndexerCoreMetadata core, in IndexerArgumentsMetadata arguments)
+    internal DefaultIndexerBehaviourMetadata(
+        in ImposterIndexerCoreMetadata core,
+        in IndexerArgumentsMetadata arguments
+    )
     {
         Name = $"Default{core.UniqueName}IndexerBehaviour";
         TypeSyntax = IdentifierName(Name);
@@ -24,6 +27,10 @@ internal readonly struct DefaultIndexerBehaviourMetadata
         IsOnBackingField = new FieldMetadata("_isOn", WellKnownTypes.Bool);
         BackingField = new FieldMetadata(
             "BackingField",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(arguments.TypeSyntax, core.TypeSyntax));
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
+                arguments.TypeSyntax,
+                core.TypeSyntax
+            )
+        );
     }
 }

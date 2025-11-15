@@ -15,14 +15,21 @@ internal static class DefaultIndexerBehaviourBuilder
         return new ClassDeclarationBuilder(indexer.DefaultIndexerBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
-                SingleVariableField(indexer.DefaultIndexerBehaviour.IsOnBackingField.Type, indexer.DefaultIndexerBehaviour.IsOnBackingField.Name, TokenList(Token(SyntaxKind.PrivateKeyword)),
-                    True))
+                SingleVariableField(
+                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Type,
+                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Name,
+                    TokenList(Token(SyntaxKind.PrivateKeyword)),
+                    True
+                )
+            )
             .AddMember(BuildIsOnProperty(indexer))
             .AddMember(
                 SingleVariableField(
                     indexer.DefaultIndexerBehaviour.BackingField,
                     SyntaxKind.InternalKeyword,
-                    indexer.DefaultIndexerBehaviour.BackingField.Type.New(EmptyArgumentListSyntax)))
+                    indexer.DefaultIndexerBehaviour.BackingField.Type.New(EmptyArgumentListSyntax)
+                )
+            )
             .AddMember(BuildGetMethod(indexer))
             .AddMember(BuildSetMethod(indexer))
             .Build();
@@ -32,29 +39,42 @@ internal static class DefaultIndexerBehaviourBuilder
     {
         var getBody = Block(
             ReturnStatement(
-                WellKnownTypes.System.Threading.Volatile
-                    .Dot(IdentifierName("Read"))
+                WellKnownTypes
+                    .System.Threading.Volatile.Dot(IdentifierName("Read"))
                     .Call(
                         ArgumentListSyntax([
-                            Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name))
+                            Argument(
+                                null,
+                                Token(SyntaxKind.RefKeyword),
+                                IdentifierName(
+                                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Name
+                                )
+                            ),
                         ])
                     )
             )
         );
 
         var setBody = Block(
-            WellKnownTypes.System.Threading.Volatile
-                .Dot(IdentifierName("Write"))
+            WellKnownTypes
+                .System.Threading.Volatile.Dot(IdentifierName("Write"))
                 .Call(
                     ArgumentListSyntax([
-                        Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)),
-                        Argument(IdentifierName("value"))
+                        Argument(
+                            null,
+                            Token(SyntaxKind.RefKeyword),
+                            IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)
+                        ),
+                        Argument(IdentifierName("value")),
                     ])
                 )
                 .ToStatementSyntax()
         );
 
-        return new PropertyDeclarationBuilder(WellKnownTypes.Bool, indexer.DefaultIndexerBehaviour.IsOnPropertyName)
+        return new PropertyDeclarationBuilder(
+            WellKnownTypes.Bool,
+            indexer.DefaultIndexerBehaviour.IsOnPropertyName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithGetterBody(getBody)
             .WithSetterBody(setBody)
@@ -63,7 +83,8 @@ internal static class DefaultIndexerBehaviourBuilder
 
     private static MethodDeclarationSyntax BuildGetMethod(in ImposterIndexerMetadata indexer)
     {
-        var argumentsParam = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
+        var argumentsParam = Parameter(Identifier("arguments"))
+            .WithType(indexer.Arguments.TypeSyntax);
         var baseImplementationParam = Parameter(Identifier("baseImplementation"))
             .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
             .WithDefault(EqualsValueClause(Null));
@@ -73,27 +94,34 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
             .AddParameter(baseImplementationParam)
-            .WithBody(Block(
-                LocalVariableDeclarationSyntax(
-                    indexer.Core.TypeSyntax,
-                    valueIdentifier.Identifier.Text,
-                    DefaultExpression(indexer.Core.TypeSyntax)),
-                IfStatement(
-                    IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
-                        .Dot(IdentifierName("TryGetValue"))
-                        .Call(
-                            ArgumentListSyntax(
-                            [
-                                Argument(IdentifierName("arguments")),
-                                Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier)
-                            ])),
-                    ReturnStatement(valueIdentifier)),
-                IfStatement(
-                    IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
-                    ReturnStatement(
-                        IdentifierName(baseImplementationParam.Identifier)
-                            .Call(EmptyArgumentListSyntax))),
-                ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))))
+            .WithBody(
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        indexer.Core.TypeSyntax,
+                        valueIdentifier.Identifier.Text,
+                        DefaultExpression(indexer.Core.TypeSyntax)
+                    ),
+                    IfStatement(
+                        IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
+                            .Dot(IdentifierName("TryGetValue"))
+                            .Call(
+                                ArgumentListSyntax([
+                                    Argument(IdentifierName("arguments")),
+                                    Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier),
+                                ])
+                            ),
+                        ReturnStatement(valueIdentifier)
+                    ),
+                    IfStatement(
+                        IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
+                        ReturnStatement(
+                            IdentifierName(baseImplementationParam.Identifier)
+                                .Call(EmptyArgumentListSyntax)
+                        )
+                    ),
+                    ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))
+                )
+            )
             .Build();
     }
 
@@ -103,30 +131,32 @@ internal static class DefaultIndexerBehaviourBuilder
             .WithType(indexer.Core.AsSystemActionType.ToNullableType())
             .WithDefault(EqualsValueClause(Null));
 
-        var argumentsParameter = Parameter(Identifier("arguments")).WithType(indexer.Arguments.TypeSyntax);
+        var argumentsParameter = Parameter(Identifier("arguments"))
+            .WithType(indexer.Arguments.TypeSyntax);
 
-        var assignment = 
-            ElementAccessExpression(IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name))
-                .WithArgumentList(
-                    BracketedArgumentList(
-                        SingletonSeparatedList(Argument(IdentifierName("arguments")))))
-                .Assign(IdentifierName("value")).ToStatementSyntax();
+        var assignment = ElementAccessExpression(
+                IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
+            )
+            .WithArgumentList(
+                BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))
+            )
+            .Assign(IdentifierName("value"))
+            .ToStatementSyntax();
 
         var baseInvocation = IfStatement(
             IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
             Block(
-                    IdentifierName(baseImplementationParam.Identifier)
-                        .Call().ToStatementSyntax(),
-                ReturnStatement()));
+                IdentifierName(baseImplementationParam.Identifier).Call().ToStatementSyntax(),
+                ReturnStatement()
+            )
+        );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParameter)
             .AddParameter(Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax))
             .AddParameter(baseImplementationParam)
-            .WithBody(Block(
-                baseInvocation,
-                assignment))
+            .WithBody(Block(baseInvocation, assignment))
             .Build();
     }
 }

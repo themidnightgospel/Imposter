@@ -8,9 +8,9 @@ namespace Imposter.Tests.Features.PropertyImposter
     {
         private readonly IPropertySetupSutImposter _sut =
 #if USE_CSHARP14
-            IPropertySetupSut.Imposter();
+        IPropertySetupSut.Imposter();
 #else
-            new IPropertySetupSutImposter();
+        new IPropertySetupSutImposter();
 #endif
 
         [Fact]

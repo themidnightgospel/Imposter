@@ -34,11 +34,18 @@ namespace Imposter.Tests.Docs.Methods
             var service = imposter.Instance();
 
             // Exercise some calls
-            for (int i = 0; i < 3; i++) service.Increment(11);
+            for (int i = 0; i < 3; i++)
+                service.Increment(11);
             service.Combine(2, 5);
 
-            Should.NotThrow(() => imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3)));
-            Should.NotThrow(() => imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count.Once()));
+            Should.NotThrow(() =>
+                imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3))
+            );
+            Should.NotThrow(() =>
+                imposter
+                    .Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10))
+                    .Called(Count.Once())
+            );
         }
     }
 }

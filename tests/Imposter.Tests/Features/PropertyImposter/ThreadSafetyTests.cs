@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.PropertyImposter
         private const int ThreadCount = 200;
         private readonly IPropertySetupSutImposter _sut =
 #if USE_CSHARP14
-            IPropertySetupSut.Imposter();
+        IPropertySetupSut.Imposter();
 #else
-            new IPropertySetupSutImposter();
+        new IPropertySetupSutImposter();
 #endif
 
         [Fact]
@@ -63,7 +63,9 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             // Should not throw - just testing for thread safety
             Should.NotThrow(() => _sut.Age.Getter().Called(Count.Exactly(ThreadCount / 2)));
-            Should.NotThrow(() => _sut.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(ThreadCount / 2)));
+            Should.NotThrow(() =>
+                _sut.Age.Setter(Arg<int>.Any()).Called(Count.Exactly(ThreadCount / 2))
+            );
         }
 
         [Fact]

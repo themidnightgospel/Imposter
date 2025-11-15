@@ -16,7 +16,10 @@ internal readonly struct CallbackMethodMetadata
     internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
         ReturnType = WellKnownTypes.Void;
-        CallbackParameter = new ParameterMetadata("callback", WellKnownTypes.System.ActionOfT(property.TypeSyntax));
+        CallbackParameter = new ParameterMetadata(
+            "callback",
+            WellKnownTypes.System.ActionOfT(property.TypeSyntax)
+        );
         CriteriaParameter = new ParameterMetadata("criteria", property.AsArgType);
     }
 }

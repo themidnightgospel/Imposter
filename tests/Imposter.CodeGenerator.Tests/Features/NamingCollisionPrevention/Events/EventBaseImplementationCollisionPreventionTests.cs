@@ -3,12 +3,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events;
 
-public class EventBaseImplementationCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
+public class EventBaseImplementationCollisionPreventionTests
+    : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenVirtualEventsMatchingBaseImplementationFlow_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -34,7 +36,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -42,7 +45,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenRaiseAsyncEventsWithConflictingNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using System.Threading.Tasks;
 using Sample.NamingCollision;
@@ -63,7 +67,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -71,7 +76,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenDuplicateEventsAcrossInheritance_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Sample.NamingCollision;
 
@@ -92,7 +98,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -100,7 +107,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenMultipleOperationNamedEventsOnSameType_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -123,7 +131,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }

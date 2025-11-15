@@ -32,7 +32,8 @@ internal readonly struct ThrowsMethodMetadata
         NameSyntax exceptionGeneratorDelegateSyntax,
         NameSyntax interfaceTypeSyntax,
         NameSyntax continuationInterfaceSyntax,
-        NameSet genericTypeParameterNameSet)
+        NameSet genericTypeParameterNameSet
+    )
     {
         InterfaceSyntax = interfaceTypeSyntax;
         ReturnType = continuationInterfaceSyntax;
@@ -40,16 +41,23 @@ internal readonly struct ThrowsMethodMetadata
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
         InterfaceExceptionParameterName = "exception";
         InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
-        ExceptionParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionParameterName), WellKnownTypes.System.Exception);
-        ExceptionGeneratorParameter = new ParameterMetadata(nameContext.Use(InterfaceExceptionGeneratorParameterName), exceptionGeneratorDelegateSyntax);
+        ExceptionParameter = new ParameterMetadata(
+            nameContext.Use(InterfaceExceptionParameterName),
+            WellKnownTypes.System.Exception
+        );
+        ExceptionGeneratorParameter = new ParameterMetadata(
+            nameContext.Use(InterfaceExceptionGeneratorParameterName),
+            exceptionGeneratorDelegateSyntax
+        );
 
         TypeParameterList = TypeParameterList(
-            SingletonSeparatedList(
-                TypeParameter(GenericTypeParameterName)));
+            SingletonSeparatedList(TypeParameter(GenericTypeParameterName))
+        );
 
         TypeParameterConstraintClause = TypeParameterConstraintClause(GenericTypeParameterName)
             .AddConstraints(
                 TypeConstraint(WellKnownTypes.System.Exception),
-                ConstructorConstraint());
+                ConstructorConstraint()
+            );
     }
 }

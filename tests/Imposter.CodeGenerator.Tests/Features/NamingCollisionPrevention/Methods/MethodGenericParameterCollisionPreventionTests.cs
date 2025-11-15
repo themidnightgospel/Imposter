@@ -8,7 +8,8 @@ public class MethodGenericParameterCollisionPreventionTests : NamingCollisionPre
     [Fact]
     public async Task GivenGenericMethodWithTargetNamedTypeParameters_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -22,7 +23,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -30,7 +32,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenGenericMethodWithTExceptionParameter_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -44,15 +47,17 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 
     [Fact]
     public async Task GivenGenericMethodWithTResultParameter_WhenSnippetIsCompiled_ShouldCompile()
-        {
-            var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+    {
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Sample.NamingCollision;
 
@@ -71,12 +76,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

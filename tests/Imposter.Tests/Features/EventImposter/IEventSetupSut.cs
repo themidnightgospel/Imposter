@@ -18,5 +18,6 @@ namespace Imposter.Tests.Features.EventImposter
         event AsyncEventHandler<EventArgs>? CustomAsyncSomethingHappened;
     }
 
-    public delegate Task AsyncEventHandler<in TEventArgs>(object? sender, TEventArgs args) where TEventArgs : EventArgs;
+    public delegate Task AsyncEventHandler<in TEventArgs>(object? sender, TEventArgs args)
+        where TEventArgs : EventArgs;
 }

@@ -19,13 +19,23 @@ internal readonly struct IndexerImposterBuilderMetadata
 
     internal IndexerImposterBuilderMetadata(
         in ImposterIndexerCoreMetadata core,
-        in FieldMetadata defaultBehaviourField)
+        in FieldMetadata defaultBehaviourField
+    )
     {
         Name = $"{core.UniqueName}IndexerBuilder";
         TypeSyntax = IdentifierName(Name);
         DefaultBehaviourField = defaultBehaviourField;
-        GetterImposterField = new FieldMetadata("_getterImposter", IdentifierName("GetterImposter"));
-        SetterImposterField = new FieldMetadata("_setterImposter", IdentifierName("SetterImposter"));
-        InvocationBuilderTypeSyntax = QualifiedName(TypeSyntax, IdentifierName("InvocationBuilder"));
+        GetterImposterField = new FieldMetadata(
+            "_getterImposter",
+            IdentifierName("GetterImposter")
+        );
+        SetterImposterField = new FieldMetadata(
+            "_setterImposter",
+            IdentifierName("SetterImposter")
+        );
+        InvocationBuilderTypeSyntax = QualifiedName(
+            TypeSyntax,
+            IdentifierName("InvocationBuilder")
+        );
     }
 }

@@ -12,39 +12,44 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class CompilationContextProvider
 {
-    internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValueProvider<CompilationContext> GetCompilationContext(
+        this in IncrementalGeneratorInitializationContext context
+    )
     {
-        var loggingEnabledProvider = context
-            .AnalyzerConfigOptionsProvider
-            .Select(static (options, _) =>
+        var loggingEnabledProvider = context.AnalyzerConfigOptionsProvider.Select(
+            static (options, _) =>
                 options.GlobalOptions.TryGetValue("build_property.IMPOSTER_LOG", out var v)
-                && string.Equals(v?.Trim(), "true", System.StringComparison.OrdinalIgnoreCase));
+                && string.Equals(v?.Trim(), "true", System.StringComparison.OrdinalIgnoreCase)
+        );
 
         return context
-                .CompilationProvider
-                .Combine(loggingEnabledProvider)
-                .Select(static (pair, _) => new CompilationContext(
+            .CompilationProvider.Combine(loggingEnabledProvider)
+            .Select(
+                static (pair, _) =>
+                    new CompilationContext(
                         (CSharpCompilation)pair.Left,
                         new NameSet([]),
                         pair.Right
                     )
-                )
+            )
 #if ROSLYN4_4_OR_GREATER
-                .WithTrackingName("CompilationContext")
+            .WithTrackingName("CompilationContext")
 #endif
-            ;
+        ;
     }
 
-    internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(
+        this in IncrementalGeneratorInitializationContext context
+    )
     {
         return context
-                .CompilationProvider
-                .SelectMany(static (compilation, _) => ValidateCSharpCompilation(compilation))
-
+            .CompilationProvider.SelectMany(
+                static (compilation, _) => ValidateCSharpCompilation(compilation)
+            )
 #if ROSLYN4_4_OR_GREATER
-                .WithTrackingName("CompilationDiagnostics")
+            .WithTrackingName("CompilationDiagnostics")
 #endif
-            ;
+        ;
     }
 
     private static IEnumerable<Diagnostic> ValidateCSharpCompilation(Compilation compilation)
@@ -65,7 +70,8 @@ internal static class CompilationContextProvider
             yield return Diagnostic.Create(
                 DiagnosticDescriptors.NotSupportedCSharpVersion,
                 Location.None,
-                csCompilation.LanguageVersion.ToDisplayString(), LanguageVersion.CSharp8.ToDisplayString()
+                csCompilation.LanguageVersion.ToDisplayString(),
+                LanguageVersion.CSharp8.ToDisplayString()
             );
         }
     }

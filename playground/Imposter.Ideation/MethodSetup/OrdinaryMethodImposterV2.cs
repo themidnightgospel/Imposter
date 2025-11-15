@@ -1,21 +1,30 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Imposter.Abstractions;
 
 #pragma warning disable nullable
 namespace Imposter.Playground
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
-    public class IOrdinaryMethodPocImposter : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IOrdinaryMethodPoc>
+    public class IOrdinaryMethodPocImposter
+        : Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IOrdinaryMethodPoc>
     {
         private readonly AddMethodImposter _addMethodImposter;
-        private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+        private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection =
+            new AddMethodInvocationHistoryCollection();
 
-        public IAddMethodImposterBuilder Add(Imposter.Abstractions.Arg<int> a, Imposter.Abstractions.Arg<int> b)
+        public IAddMethodImposterBuilder Add(
+            Imposter.Abstractions.Arg<int> a,
+            Imposter.Abstractions.Arg<int> b
+        )
         {
-            return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(a, b));
+            return new AddMethodImposter.Builder(
+                _addMethodImposter,
+                _addMethodInvocationHistoryCollection,
+                new AddArgumentsCriteria(a, b)
+            );
         }
 
         private ImposterTargetInstance _imposterInstance;
@@ -60,7 +69,10 @@ namespace Imposter.Playground
             public Imposter.Abstractions.Arg<int> a { get; }
             public Imposter.Abstractions.Arg<int> b { get; }
 
-            public AddArgumentsCriteria(Imposter.Abstractions.Arg<int> a, Imposter.Abstractions.Arg<int> b)
+            public AddArgumentsCriteria(
+                Imposter.Abstractions.Arg<int> a,
+                Imposter.Abstractions.Arg<int> b
+            )
             {
                 this.a = a;
                 this.b = b;
@@ -84,7 +96,11 @@ namespace Imposter.Playground
             internal int Result;
             internal System.Exception Exception;
 
-            public AddMethodInvocationHistory(AddArguments Arguments, int Result, System.Exception Exception)
+            public AddMethodInvocationHistory(
+                AddArguments Arguments,
+                int Result,
+                System.Exception Exception
+            )
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -100,7 +116,8 @@ namespace Imposter.Playground
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class AddMethodInvocationHistoryCollection
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory> _invocationHistory = new System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory> _invocationHistory =
+                new System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory>();
 
             internal void Add(IAddMethodInvocationHistory invocationHistory)
             {
@@ -120,7 +137,9 @@ namespace Imposter.Playground
                 where TException : Exception, new();
 
             IAddMethodInvocationImposterBuilder Throws(System.Exception exception);
-            IAddMethodInvocationImposterBuilder Throws(AddExceptionGeneratorDelegate exceptionGenerator);
+            IAddMethodInvocationImposterBuilder Throws(
+                AddExceptionGeneratorDelegate exceptionGenerator
+            );
             IAddMethodInvocationImposterBuilder Callback(AddCallbackDelegate callback);
             IAddMethodInvocationImposterBuilder Returns(AddDelegate resultGenerator);
             IAddMethodInvocationImposterBuilder Returns(int value);
@@ -128,9 +147,7 @@ namespace Imposter.Playground
             IAddMethodInvocationImposterBuilder Then();
         }
 
-        public interface IAddMethodInvocationImposterBuilderReturnsOrThrows
-        {
-        }
+        public interface IAddMethodInvocationImposterBuilderReturnsOrThrows { }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         public interface AddMethodInvocationVerifier
@@ -140,19 +157,25 @@ namespace Imposter.Playground
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         // int IOrdinaryMethodPoc.Add(int a, int b)
-        public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterBuilder, AddMethodInvocationVerifier
-        {
-        }
+        public interface IAddMethodImposterBuilder
+            : IAddMethodInvocationImposterBuilder,
+                AddMethodInvocationVerifier { }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         class AddMethodInvocationImposterGroup
         {
-            internal static AddMethodInvocationImposterGroup Default = new AddMethodInvocationImposterGroup(
-                new AddArgumentsCriteria(Imposter.Abstractions.Arg<int>.Any(), Imposter.Abstractions.Arg<int>.Any()));
+            internal static AddMethodInvocationImposterGroup Default =
+                new AddMethodInvocationImposterGroup(
+                    new AddArgumentsCriteria(
+                        Imposter.Abstractions.Arg<int>.Any(),
+                        Imposter.Abstractions.Arg<int>.Any()
+                    )
+                );
 
             internal AddArgumentsCriteria ArgumentsCriteria { get; }
 
-            private readonly Queue<AddMethodInvocationImposter> _invocationImposters = new Queue<AddMethodInvocationImposter>();
+            private readonly Queue<AddMethodInvocationImposter> _invocationImposters =
+                new Queue<AddMethodInvocationImposter>();
 
             public AddMethodInvocationImposterGroup(AddArgumentsCriteria argumentsCriteria)
             {
@@ -180,7 +203,8 @@ namespace Imposter.Playground
 
             public int Invoke(int a, int b)
             {
-                var invocationImposter = GetInvocationImposter() ?? AddMethodInvocationImposter.Default;
+                var invocationImposter =
+                    GetInvocationImposter() ?? AddMethodInvocationImposter.Default;
                 return invocationImposter.Invoke(a, b);
             }
         }
@@ -201,7 +225,8 @@ namespace Imposter.Playground
             }
 
             private AddDelegate? _resultGenerator;
-            private readonly ConcurrentQueue<AddCallbackDelegate> _callbacks = new ConcurrentQueue<AddCallbackDelegate>();
+            private readonly ConcurrentQueue<AddCallbackDelegate> _callbacks =
+                new ConcurrentQueue<AddCallbackDelegate>();
 
             internal bool IsEmpty => _resultGenerator == null && _callbacks.Count == 0;
 
@@ -226,7 +251,10 @@ namespace Imposter.Playground
 
             internal void Returns(int value)
             {
-                _resultGenerator = (i, i1) => { return value; };
+                _resultGenerator = (i, i1) =>
+                {
+                    return value;
+                };
             }
 
             internal void Returns(AddDelegate resultGenerator)
@@ -243,10 +271,13 @@ namespace Imposter.Playground
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "1.0.0.0")]
         internal class AddMethodImposter
         {
-            private readonly System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationSetups = new System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
+            private readonly System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationSetups =
+                new System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
             private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
 
-            public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection)
+            public AddMethodImposter(
+                AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection
+            )
             {
                 this._addMethodInvocationHistoryCollection = _addMethodInvocationHistoryCollection;
             }
@@ -256,7 +287,9 @@ namespace Imposter.Playground
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(AddArguments arguments)
+            private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(
+                AddArguments arguments
+            )
             {
                 foreach (var setup in _invocationSetups)
                 {
@@ -270,16 +303,22 @@ namespace Imposter.Playground
             public int Invoke(int a, int b)
             {
                 var arguments = new AddArguments(a, b);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments) ?? AddMethodInvocationImposterGroup.Default;
+                var matchingInvocationImposterGroup =
+                    FindMatchingInvocationImposterGroup(arguments)
+                    ?? AddMethodInvocationImposterGroup.Default;
                 try
                 {
                     var result = matchingInvocationImposterGroup.Invoke(a, b);
-                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, result, default));
+                    _addMethodInvocationHistoryCollection.Add(
+                        new AddMethodInvocationHistory(arguments, result, default)
+                    );
                     return result;
                 }
                 catch (System.Exception ex)
                 {
-                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default, ex));
+                    _addMethodInvocationHistoryCollection.Add(
+                        new AddMethodInvocationHistory(arguments, default, ex)
+                    );
                     throw;
                 }
             }
@@ -292,12 +331,19 @@ namespace Imposter.Playground
                 private readonly AddMethodInvocationImposterGroup _invocationImposterGroup;
                 private AddMethodInvocationImposter _currentInvocationSetup;
 
-                public Builder(AddMethodImposter _imposter, AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, AddArgumentsCriteria _argumentsCriteria)
+                public Builder(
+                    AddMethodImposter _imposter,
+                    AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection,
+                    AddArgumentsCriteria _argumentsCriteria
+                )
                 {
-                    this._addMethodInvocationHistoryCollection = _addMethodInvocationHistoryCollection;
+                    this._addMethodInvocationHistoryCollection =
+                        _addMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
 
-                    _invocationImposterGroup = new AddMethodInvocationImposterGroup(_argumentsCriteria);
+                    _invocationImposterGroup = new AddMethodInvocationImposterGroup(
+                        _argumentsCriteria
+                    );
                     _imposter._invocationSetups.Push(_invocationImposterGroup);
 
                     _currentInvocationSetup = _invocationImposterGroup.AddInvocationImposter();
@@ -309,31 +355,41 @@ namespace Imposter.Playground
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(System.Exception exception)
+                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(
+                    System.Exception exception
+                )
                 {
                     _currentInvocationSetup.Throws((a, b) => throw exception);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Throws(
+                    AddExceptionGeneratorDelegate exceptionGenerator
+                )
                 {
                     _currentInvocationSetup.Throws((a, b) => throw exceptionGenerator.Invoke(a, b));
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Callback(AddCallbackDelegate callback)
+                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Callback(
+                    AddCallbackDelegate callback
+                )
                 {
                     _currentInvocationSetup.Callback(callback);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(AddDelegate resultGenerator)
+                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(
+                    AddDelegate resultGenerator
+                )
                 {
                     _currentInvocationSetup.Returns(resultGenerator);
                     return this;
                 }
 
-                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(int value)
+                IAddMethodInvocationImposterBuilder IAddMethodInvocationImposterBuilder.Returns(
+                    int value
+                )
                 {
                     _currentInvocationSetup.Returns((a, b) => value);
                     return this;
@@ -347,10 +403,15 @@ namespace Imposter.Playground
 
                 void AddMethodInvocationVerifier.Called(Imposter.Abstractions.Count count)
                 {
-                    var invocationCount = _addMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    var invocationCount = _addMethodInvocationHistoryCollection.Count(
+                        _argumentsCriteria
+                    );
                     if (!count.Matches(invocationCount))
                     {
-                        throw new Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new Imposter.Abstractions.VerificationFailedException(
+                            count,
+                            invocationCount
+                        );
                     }
                 }
             }

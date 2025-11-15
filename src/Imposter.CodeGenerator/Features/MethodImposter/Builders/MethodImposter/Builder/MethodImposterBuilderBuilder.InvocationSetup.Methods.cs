@@ -8,20 +8,24 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static IdentifierNameSyntax CurrentInvocationImposterAccess(in ImposterTargetMethodMetadata method) =>
-        IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name);
+    private static IdentifierNameSyntax CurrentInvocationImposterAccess(
+        in ImposterTargetMethodMetadata method
+    ) => IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name);
 
-    private static MethodDeclarationSyntax BuildThrowsGenericImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildThrowsGenericImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var throwsMethod = method.MethodInvocationImposterGroup.ThrowsMethod;
-        var builder = new MethodDeclarationBuilder(throwsMethod.ReturnType, throwsMethod.Name)
-            .WithTypeParameters(throwsMethod.TypeParameterList);
+        var builder = new MethodDeclarationBuilder(
+            throwsMethod.ReturnType,
+            throwsMethod.Name
+        ).WithTypeParameters(throwsMethod.TypeParameterList);
 
         var throwGenericExceptionLambda = Lambda(
             method.Symbol.Parameters,
-            Block(
-                ThrowStatement(IdentifierName(throwsMethod.GenericTypeParameterName).New())
-            ));
+            Block(ThrowStatement(IdentifierName(throwsMethod.GenericTypeParameterName).New()))
+        );
 
         var configureThrowsGenericCall = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
@@ -29,24 +33,40 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureThrowsGenericCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildThrowsExceptionInstanceImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildThrowsExceptionInstanceImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter));
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ThrowsMethod.Name
+        ).AddParameter(
+            ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter)
+        );
 
-        var parameterName = method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionParameter.Name;
+        var parameterName = method
+            .MethodInvocationImposterGroup
+            .ThrowsMethod
+            .ExceptionParameter
+            .Name;
 
         var throwProvidedExceptionLambda = Lambda(
             method.Symbol.Parameters,
-            Block(ThrowStatement(IdentifierName(parameterName))));
+            Block(ThrowStatement(IdentifierName(parameterName)))
+        );
 
         var configureThrowsInstanceCall = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
@@ -54,20 +74,37 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureThrowsInstanceCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildThrowsExceptionGeneratorImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildThrowsExceptionGeneratorImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType, method.MethodInvocationImposterGroup.ThrowsMethod.Name)
-            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter));
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ThrowsMethod.Name
+        ).AddParameter(
+            ParameterSyntax(
+                method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter
+            )
+        );
 
-        var parameterName = method.MethodInvocationImposterGroup.ThrowsMethod.ExceptionGeneratorParameter.Name;
+        var parameterName = method
+            .MethodInvocationImposterGroup
+            .ThrowsMethod
+            .ExceptionGeneratorParameter
+            .Name;
 
         var throwGeneratedExceptionLambda = Lambda(
             method.Symbol.Parameters,
@@ -76,7 +113,9 @@ internal static partial class MethodImposterBuilderBuilder
                     IdentifierName(parameterName)
                         .Dot(IdentifierName("Invoke"))
                         .Call(ArgumentListSyntax(method.Symbol.Parameters))
-                )));
+                )
+            )
+        );
 
         var configureThrowsGeneratorCall = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
@@ -84,19 +123,28 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureThrowsGeneratorCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildThrowsAsyncImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildThrowsAsyncImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var throwsAsyncMethod = method.MethodInvocationImposterGroup.ThrowsAsyncMethod!.Value;
-        var builder = new MethodDeclarationBuilder(throwsAsyncMethod.ReturnType, throwsAsyncMethod.Name)
-            .AddParameter(ParameterSyntax(throwsAsyncMethod.ExceptionParameter));
+        var builder = new MethodDeclarationBuilder(
+            throwsAsyncMethod.ReturnType,
+            throwsAsyncMethod.Name
+        ).AddParameter(ParameterSyntax(throwsAsyncMethod.ExceptionParameter));
 
         var parameterName = throwsAsyncMethod.ExceptionParameter.Name;
 
@@ -106,20 +154,33 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureThrowsAsyncCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(throwsAsyncMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(throwsAsyncMethod.InterfaceSyntax)
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildCallbackImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildCallbackImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.CallbackMethod.ReturnType, method.MethodInvocationImposterGroup.CallbackMethod.Name)
-            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter));
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.CallbackMethod.ReturnType,
+            method.MethodInvocationImposterGroup.CallbackMethod.Name
+        ).AddParameter(
+            ParameterSyntax(method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter)
+        );
 
-        var parameterName = method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter.Name;
+        var parameterName = method
+            .MethodInvocationImposterGroup
+            .CallbackMethod
+            .CallbackParameter
+            .Name;
 
         var configureCallbackCall = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.Name))
@@ -127,20 +188,37 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureCallbackCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildReturnsDelegateImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildReturnsDelegateImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter));
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ReturnsMethod.Name
+        ).AddParameter(
+            ParameterSyntax(
+                method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter
+            )
+        );
 
-        var parameterName = method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name;
+        var parameterName = method
+            .MethodInvocationImposterGroup
+            .ReturnsMethod
+            .ResultGeneratorParameter
+            .Name;
 
         var configureReturnsDelegateCall = CurrentInvocationImposterAccess(method)
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
@@ -148,18 +226,29 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureReturnsDelegateCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildReturnsValueImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildReturnsValueImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType, method.MethodInvocationImposterGroup.ReturnsMethod.Name)
-            .AddParameter(ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter));
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ReturnsMethod.Name
+        ).AddParameter(
+            ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter)
+        );
 
         var parameterName = method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name;
 
@@ -169,19 +258,28 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureReturnsValueCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildReturnsAsyncImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildReturnsAsyncImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var returnsAsyncMethod = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
-        var builder = new MethodDeclarationBuilder(returnsAsyncMethod.ReturnType, returnsAsyncMethod.Name)
-            .AddParameter(ParameterSyntax(returnsAsyncMethod.ValueParameter));
+        var builder = new MethodDeclarationBuilder(
+            returnsAsyncMethod.ReturnType,
+            returnsAsyncMethod.Name
+        ).AddParameter(ParameterSyntax(returnsAsyncMethod.ValueParameter));
 
         var parameterName = returnsAsyncMethod.ValueParameter.Name;
 
@@ -191,15 +289,20 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             configureReturnsAsyncCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(returnsAsyncMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(returnsAsyncMethod.InterfaceSyntax)
+            )
             .WithBody(body)
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildUseBaseImplementationImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildUseBaseImplementationImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var metadata = method.MethodInvocationImposterGroup.UseBaseImplementationMethod!.Value;
         var builder = new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name);
@@ -210,7 +313,8 @@ internal static partial class MethodImposterBuilderBuilder
 
         var body = Block(
             enableBaseImplementationCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+            ReturnStatement(ThisExpression())
+        );
 
         return builder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
@@ -218,23 +322,31 @@ internal static partial class MethodImposterBuilderBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildThenImplementation(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildThenImplementation(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var builder = new MethodDeclarationBuilder(method.MethodInvocationImposterGroup.ThenMethod.ReturnType, method.MethodInvocationImposterGroup.ThenMethod.Name);
+        var builder = new MethodDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ThenMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ThenMethod.Name
+        );
 
         var assignment = ThisExpression()
             .Dot(IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name))
             .Assign(
                 IdentifierName(method.MethodImposter.Builder.InvocationImposterGroupField.Name)
                     .Dot(IdentifierName("AddInvocationImposter"))
-                    .Call());
+                    .Call()
+            );
 
-        var body = Block(
-            assignment.ToStatementSyntax(),
-            ReturnStatement(ThisExpression()));
+        var body = Block(assignment.ToStatementSyntax(), ReturnStatement(ThisExpression()));
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(
+                    method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax
+                )
+            )
             .WithBody(body)
             .Build();
     }

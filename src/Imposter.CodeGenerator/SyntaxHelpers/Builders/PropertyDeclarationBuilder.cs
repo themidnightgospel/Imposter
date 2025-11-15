@@ -34,11 +34,11 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
 
         return this;
     }
-    
 
     public PropertyDeclarationBuilder WithGetter()
     {
-        _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         return this;
     }
 
@@ -76,6 +76,7 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
             typeSyntax,
             explicitInterfaceSpecifier: default!,
             Identifier(name),
-            accessorList);
+            accessorList
+        );
     }
 }

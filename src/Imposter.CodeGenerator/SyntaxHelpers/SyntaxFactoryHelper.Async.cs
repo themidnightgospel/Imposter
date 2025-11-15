@@ -5,6 +5,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static AwaitExpressionSyntax Await(this ExpressionSyntax expression)
-        => AwaitExpression(expression);
+    internal static AwaitExpressionSyntax Await(this ExpressionSyntax expression) =>
+        AwaitExpression(expression);
 }

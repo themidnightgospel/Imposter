@@ -24,12 +24,14 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         public virtual string ReadProtectedProperty() => ProtectedVirtualProperty;
 
-        public virtual void WriteProtectedProperty(string value) => ProtectedVirtualProperty = value;
+        public virtual void WriteProtectedProperty(string value) =>
+            ProtectedVirtualProperty = value;
 
         public virtual int ReadProtectedValue(int index) => this[index];
 
         public virtual void WriteProtectedValue(int index, int value) => this[index] = value;
 
-        public virtual void SubscribeToProtectedEvent(EventHandler handler) => ProtectedVirtualEvent += handler;
+        public virtual void SubscribeToProtectedEvent(EventHandler handler) =>
+            ProtectedVirtualEvent += handler;
     }
 }

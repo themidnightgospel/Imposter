@@ -35,7 +35,8 @@ public interface IGeneric<TFirst, TSecond>
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorNamespaceTests),
-            languageVersion: LanguageVersion.CSharp8);
+            languageVersion: LanguageVersion.CSharp8
+        );
 
     [Fact]
     public async Task GivenGenericTarget_WhenGeneratorRuns_ShouldUseSanitizedNamespaceComponents()
@@ -44,9 +45,11 @@ public interface IGeneric<TFirst, TSecond>
         var result = testContext.RunGenerator();
         var compilation = testContext.Compilation;
 
-        var imposterSource = result.GeneratedSources.Single(source => source.HintName == "IGenericImposter.g.cs");
-        var namespaceLine = imposterSource.SourceText
-            .ToString()
+        var imposterSource = result.GeneratedSources.Single(source =>
+            source.HintName == "IGenericImposter.g.cs"
+        );
+        var namespaceLine = imposterSource
+            .SourceText.ToString()
             .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
             .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
             .Trim();
@@ -63,7 +66,8 @@ public interface IGeneric<TFirst, TSecond>
         var interfaceSymbol = compilation.GetTypeByMetadataName("Sample.IGeneric`2")!;
         var constructed = interfaceSymbol.Construct(
             compilation.GetSpecialType(SpecialType.System_Int32),
-            compilation.GetSpecialType(SpecialType.System_String));
+            compilation.GetSpecialType(SpecialType.System_String)
+        );
 
         var display = constructed.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         const string globalPrefix = "global::";

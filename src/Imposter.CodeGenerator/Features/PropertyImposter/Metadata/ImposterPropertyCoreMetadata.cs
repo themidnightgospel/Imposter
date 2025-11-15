@@ -45,9 +45,13 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };
-        SetterSupportsBaseImplementation = containingTypeIsClass && property.SetMethod is { IsAbstract: false };
-        SupportsBaseImplementation = GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
-        DisplayName = $"{containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? property.Name}.{Name}";
+        GetterSupportsBaseImplementation =
+            containingTypeIsClass && property.GetMethod is { IsAbstract: false };
+        SetterSupportsBaseImplementation =
+            containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        SupportsBaseImplementation =
+            GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
+        DisplayName =
+            $"{containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? property.Name}.{Name}";
     }
 }

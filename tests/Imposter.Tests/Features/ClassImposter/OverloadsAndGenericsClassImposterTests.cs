@@ -54,15 +54,23 @@ namespace Imposter.Tests.Features.ClassImposter
         {
             var imposter = new ClassWithOverloadsAndGenericsImposter();
 
-            var stringIntSelect = imposter.SelectFirst<string, int>(Arg<string>.Any(), Arg<int>.Any());
-            var personGuidSelect = imposter.SelectFirst<Person, Guid>(Arg<Person>.Any(), Arg<Guid>.Any());
+            var stringIntSelect = imposter.SelectFirst<string, int>(
+                Arg<string>.Any(),
+                Arg<int>.Any()
+            );
+            var personGuidSelect = imposter.SelectFirst<Person, Guid>(
+                Arg<Person>.Any(),
+                Arg<Guid>.Any()
+            );
 
             stringIntSelect.Returns((string first, int number) => $"{first}:{number}");
-            personGuidSelect.Returns((Person person, Guid id) =>
-            {
-                var suffix = id.ToString("N")[..4];
-                return new Person($"{person.Name}-{suffix}");
-            });
+            personGuidSelect.Returns(
+                (Person person, Guid id) =>
+                {
+                    var suffix = id.ToString("N")[..4];
+                    return new Person($"{person.Name}-{suffix}");
+                }
+            );
 
             var instance = imposter.Instance();
 

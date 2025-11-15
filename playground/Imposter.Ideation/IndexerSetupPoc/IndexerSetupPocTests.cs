@@ -27,7 +27,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
             imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()]
                 .Getter()
-                .Returns((value1, value2, value3) => value1 + value2.Length + ((value3 as int?) ?? 0));
+                .Returns(
+                    (value1, value2, value3) => value1 + value2.Length + ((value3 as int?) ?? 0)
+                );
 
             imposter.Instance()[2, "abc", 5].ShouldBe(10);
         }
@@ -36,8 +38,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
         public void Getter_WithSequentialSetup_ReturnsValuesInOrder()
         {
             var imposter = new IndexerSetupPocImposter();
-            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()]
-                .Getter();
+            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()].Getter();
 
             builder.Returns(1).Then().Returns(5).Then().Returns(10);
 
@@ -91,13 +92,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
             var imposter = new IndexerSetupPocImposter();
             var key = new object();
 
-            imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()]
-                .Getter()
-                .Returns(10);
+            imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()].Getter().Returns(10);
 
-            imposter[Arg<int>.Is(7), Arg<string>.Any(), Arg<object?>.Any()]
-                .Getter()
-                .Returns(42);
+            imposter[Arg<int>.Is(7), Arg<string>.Any(), Arg<object?>.Any()].Getter().Returns(42);
 
             var instance = imposter.Instance();
 
@@ -109,8 +106,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
         public void Getter_CalledVerificationCountsInvocations()
         {
             var imposter = new IndexerSetupPocImposter();
-            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()]
-                .Getter();
+            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()].Getter();
 
             builder.Returns(5);
 
@@ -155,7 +151,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
             imposter[Arg<int>.Is(9), Arg<string>.Is("setter"), Arg<object?>.Is(key)]
                 .Setter()
-                .Callback((value1, value2, value3, value) => captured = (value1, value2, value3, value));
+                .Callback(
+                    (value1, value2, value3, value) => captured = (value1, value2, value3, value)
+                );
 
             var instance = imposter.Instance();
             instance[9, "setter", key] = 55;
@@ -188,8 +186,7 @@ namespace Imposter.Ideation.IndexerSetupPoc
         public void Setter_CalledVerificationCountsInvocations()
         {
             var imposter = new IndexerSetupPocImposter();
-            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()]
-                .Setter();
+            var builder = imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object?>.Any()].Setter();
 
             var instance = imposter.Instance();
             var firstKey = new object();

@@ -18,7 +18,7 @@ internal static class UsingStatements
         UsingDirective(WellKnownTypes.System.Diagnostics.Namespace),
         UsingDirective(WellKnownTypes.System.Runtime.CompilerServices.Namespace),
         UsingDirective(WellKnownTypes.Imposter.Abstractions.Namespace),
-        UsingDirective(WellKnownTypes.System.Collections.Concurrent.Namespace)
+        UsingDirective(WellKnownTypes.System.Collections.Concurrent.Namespace),
     ];
 
     internal static List<UsingDirectiveSyntax> Build(INamespaceSymbol imposterTargetNamespace)
@@ -28,7 +28,12 @@ internal static class UsingStatements
             return DefaultUsings
                 .Concat([
                     UsingDirective(
-                        ParseName(imposterTargetNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+                        ParseName(
+                            imposterTargetNamespace.ToDisplayString(
+                                SymbolDisplayFormat.FullyQualifiedFormat
+                            )
+                        )
+                    ),
                 ])
                 .ToList();
         }

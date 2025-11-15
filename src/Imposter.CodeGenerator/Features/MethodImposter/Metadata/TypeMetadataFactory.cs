@@ -6,7 +6,8 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
 
 internal static class TypeMetadataFactory
 {
-    internal static TypeMetadata Create(string typeName, IReadOnlyList<NameSyntax> genericArguments) =>
-        new(typeName, SyntaxFactoryHelper.WithMethodGenericArguments(genericArguments, typeName));
-
+    internal static TypeMetadata Create(
+        string typeName,
+        IReadOnlyList<NameSyntax> genericArguments
+    ) => new(typeName, SyntaxFactoryHelper.WithMethodGenericArguments(genericArguments, typeName));
 }

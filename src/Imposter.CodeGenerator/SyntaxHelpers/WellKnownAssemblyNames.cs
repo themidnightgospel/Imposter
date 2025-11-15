@@ -12,6 +12,6 @@ internal static class WellKnownAssemblyNames
     [
         SystemRuntime,
         SystemPrivateCoreLib,
-        Mscorlib
+        Mscorlib,
     ];
 }

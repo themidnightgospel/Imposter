@@ -12,7 +12,11 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly ParameterMetadata CallbackParameter;
 
-    internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property, TypeSyntax returnType, NameSyntax interfaceSyntax)
+    internal CallbackMethodMetadata(
+        in ImposterPropertyCoreMetadata property,
+        TypeSyntax returnType,
+        NameSyntax interfaceSyntax
+    )
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;

@@ -16,14 +16,13 @@ internal static partial class EventImposterBuilder
         var method = @event.Builder.Methods.Subscribe;
         var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
 
-        var addOrUpdateExpression =
-            FieldIdentifier(fields.HandlerCounts)
-                .Dot(IdentifierName("AddOrUpdate"))
-                .Call([
-                    Argument(handlerIdentifier),
-                    Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))),
-                    Argument(CounterIncrementLambda())
-                ]);
+        var addOrUpdateExpression = FieldIdentifier(fields.HandlerCounts)
+            .Dot(IdentifierName("AddOrUpdate"))
+            .Call([
+                Argument(handlerIdentifier),
+                Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))),
+                Argument(CounterIncrementLambda()),
+            ]);
 
         var methodBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -39,23 +38,28 @@ internal static partial class EventImposterBuilder
             .AddExpression(
                 FieldIdentifier(fields.HandlerOrder)
                     .Dot(IdentifierName("Enqueue"))
-                    .Call(Argument(handlerIdentifier)))
+                    .Call(Argument(handlerIdentifier))
+            )
             .AddExpression(addOrUpdateExpression)
             .AddExpression(
                 FieldIdentifier(fields.SubscribeHistory)
                     .Dot(IdentifierName("Enqueue"))
-                    .Call(Argument(handlerIdentifier)))
-            .AddStatement(ForEachInterceptor(fields.SubscribeInterceptors, method.HandlerParameter.Name));
+                    .Call(Argument(handlerIdentifier))
+            )
+            .AddStatement(
+                ForEachInterceptor(fields.SubscribeInterceptors, method.HandlerParameter.Name)
+            );
 
         if (method.BaseImplementationParameter is { } subscribeBaseImplementationParameter)
         {
             blockBuilder.AddStatement(
-                BuildBaseImplementationInvocation(IdentifierName(subscribeBaseImplementationParameter.Name)));
+                BuildBaseImplementationInvocation(
+                    IdentifierName(subscribeBaseImplementationParameter.Name)
+                )
+            );
         }
 
-        return methodBuilder
-            .WithBody(blockBuilder.Build())
-            .Build();
+        return methodBuilder.WithBody(blockBuilder.Build()).Build();
     }
 
     private static MethodDeclarationSyntax BuildUnsubscribeMethod(in ImposterEventMetadata @event)
@@ -69,7 +73,9 @@ internal static partial class EventImposterBuilder
 
         if (method.BaseImplementationParameter is { } unsubscribeBaseParameter)
         {
-            unsubscribeBuilder = unsubscribeBuilder.AddParameter(ParameterSyntax(unsubscribeBaseParameter));
+            unsubscribeBuilder = unsubscribeBuilder.AddParameter(
+                ParameterSyntax(unsubscribeBaseParameter)
+            );
         }
 
         var unsubscribeBlockBuilder = new BlockBuilder()
@@ -79,24 +85,34 @@ internal static partial class EventImposterBuilder
                     .Dot(IdentifierName("AddOrUpdate"))
                     .Call([
                         Argument(handlerIdentifier),
-                        Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
-                        Argument(CounterDecrementLambda())
-                    ]))
+                        Argument(
+                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                        ),
+                        Argument(CounterDecrementLambda()),
+                    ])
+            )
             .AddExpression(
                 FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
                     .Dot(IdentifierName("Enqueue"))
-                    .Call(Argument(handlerIdentifier)))
-            .AddStatement(ForEachInterceptor(@event.Builder.Fields.UnsubscribeInterceptors, method.HandlerParameter.Name));
+                    .Call(Argument(handlerIdentifier))
+            )
+            .AddStatement(
+                ForEachInterceptor(
+                    @event.Builder.Fields.UnsubscribeInterceptors,
+                    method.HandlerParameter.Name
+                )
+            );
 
         if (method.BaseImplementationParameter is { } unsubscribeBaseImplementationParameter)
         {
             unsubscribeBlockBuilder.AddStatement(
-                BuildBaseImplementationInvocation(IdentifierName(unsubscribeBaseImplementationParameter.Name)));
+                BuildBaseImplementationInvocation(
+                    IdentifierName(unsubscribeBaseImplementationParameter.Name)
+                )
+            );
         }
 
-        return unsubscribeBuilder
-            .WithBody(unsubscribeBlockBuilder.Build())
-            .Build();
+        return unsubscribeBuilder.WithBody(unsubscribeBlockBuilder.Build()).Build();
     }
 
     private static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
@@ -107,7 +123,8 @@ internal static partial class EventImposterBuilder
         return ExplicitInterfaceMethod(
                 @event.BuilderInterface.SetupInterfaceTypeSyntax,
                 @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name)
+                method.Name
+            )
             .AddParameter(ParameterSyntax(method.CallbackParameter))
             .WithBody(
                 new BlockBuilder()
@@ -115,44 +132,60 @@ internal static partial class EventImposterBuilder
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.Callbacks)
                             .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(callbackIdentifier)))
+                            .Call(Argument(callbackIdentifier))
+                    )
                     .AddStatement(ReturnStatement(ThisExpression()))
-                    .Build())
+                    .Build()
+            )
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildOnSubscribeMethod(in ImposterEventMetadata @event) =>
+    private static MethodDeclarationSyntax BuildOnSubscribeMethod(
+        in ImposterEventMetadata @event
+    ) =>
         BuildInterceptorRegistrationMethod(
             @event,
             @event.Builder.Methods.OnSubscribe,
-            @event.Builder.Fields.SubscribeInterceptors);
+            @event.Builder.Fields.SubscribeInterceptors
+        );
 
-    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(in ImposterEventMetadata @event) =>
+    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(
+        in ImposterEventMetadata @event
+    ) =>
         BuildInterceptorRegistrationMethod(
             @event,
             @event.Builder.Methods.OnUnsubscribe,
-            @event.Builder.Fields.UnsubscribeInterceptors);
+            @event.Builder.Fields.UnsubscribeInterceptors
+        );
 
-    private static ForEachStatementSyntax ForEachInterceptor(in FieldMetadata interceptorsField, string handlerIdentifier) =>
+    private static ForEachStatementSyntax ForEachInterceptor(
+        in FieldMetadata interceptorsField,
+        string handlerIdentifier
+    ) =>
         ForEachStatement(
             Var,
             Identifier("interceptor"),
             FieldIdentifier(interceptorsField),
             Block(
-                    IdentifierName("interceptor")
-                        .Call(Argument(IdentifierName(handlerIdentifier))).ToStatementSyntax()));
+                IdentifierName("interceptor")
+                    .Call(Argument(IdentifierName(handlerIdentifier)))
+                    .ToStatementSyntax()
+            )
+        );
 
     private static MethodDeclarationSyntax BuildInterceptorRegistrationMethod(
         in ImposterEventMetadata @event,
         in EventImposterBuilderMethodsMetadata.InterceptorMethodMetadata method,
-        in FieldMetadata interceptorsField)
+        in FieldMetadata interceptorsField
+    )
     {
         var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
 
         return ExplicitInterfaceMethod(
                 @event.BuilderInterface.SetupInterfaceTypeSyntax,
                 @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name)
+                method.Name
+            )
             .AddParameter(ParameterSyntax(method.InterceptorParameter))
             .WithBody(
                 new BlockBuilder()
@@ -160,13 +193,17 @@ internal static partial class EventImposterBuilder
                     .AddExpression(
                         FieldIdentifier(interceptorsField)
                             .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(interceptorIdentifier)))
+                            .Call(Argument(interceptorIdentifier))
+                    )
                     .AddStatement(ReturnStatement(ThisExpression()))
-                    .Build())
+                    .Build()
+            )
             .Build();
     }
 
-    private static IfStatementSyntax BuildBaseImplementationInvocation(IdentifierNameSyntax baseImplementationIdentifier) =>
+    private static IfStatementSyntax BuildBaseImplementationInvocation(
+        IdentifierNameSyntax baseImplementationIdentifier
+    ) =>
         IfStatement(
             IdentifierName("_useBaseImplementation"),
             Block(
@@ -175,12 +212,25 @@ internal static partial class EventImposterBuilder
                     Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
                     ElseClause(
                         ThrowStatement(
-                            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                            ObjectCreationExpression(
+                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                                )
                                 .WithArgumentList(
                                     Argument(
                                             BinaryExpression(
                                                 SyntaxKind.AddExpression,
                                                 IdentifierName("_eventDisplayName"),
-                                                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (event)"))))
-                                        .AsSingleArgumentListSyntax()))))));
+                                                LiteralExpression(
+                                                    SyntaxKind.StringLiteralExpression,
+                                                    Literal(" (event)")
+                                                )
+                                            )
+                                        )
+                                        .AsSingleArgumentListSyntax()
+                                )
+                        )
+                    )
+                )
+            )
+        );
 }

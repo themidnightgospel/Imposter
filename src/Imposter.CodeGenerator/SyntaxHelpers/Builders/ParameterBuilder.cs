@@ -32,9 +32,7 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
         if (defaultValue is not null)
         {
             // Roslyn factory requires the EqualsToken to be part of the EqualsValueClauseSyntax
-            _defaultValueClause = EqualsValueClause(
-                Token(SyntaxKind.EqualsToken),
-                defaultValue);
+            _defaultValueClause = EqualsValueClause(Token(SyntaxKind.EqualsToken), defaultValue);
         }
 
         return this;

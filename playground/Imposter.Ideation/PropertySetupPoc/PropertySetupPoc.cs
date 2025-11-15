@@ -66,12 +66,20 @@ namespace Imposter.Ideation.PropertySetupPoc
 
         class AgePropertyImposter : IAgePropertyImposter
         {
-            private readonly ConcurrentQueue<Func<int>> _getterReturnValues = new ConcurrentQueue<Func<int>>();
-            private readonly ConcurrentQueue<Action> _getterCallbacks = new ConcurrentQueue<Action>();
+            private readonly ConcurrentQueue<Func<int>> _getterReturnValues =
+                new ConcurrentQueue<Func<int>>();
+            private readonly ConcurrentQueue<Action> _getterCallbacks =
+                new ConcurrentQueue<Action>();
             private Func<int> _lastGetterReturnValue = () => default(int);
             private int _getterInvocationCount;
 
-            private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>> _setterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<Imposter.Abstractions.Arg<int>, System.Action<int>>>();
+            private readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<
+                Imposter.Abstractions.Arg<int>,
+                System.Action<int>
+            >> _setterCallbacks = new System.Collections.Concurrent.ConcurrentQueue<System.Tuple<
+                Imposter.Abstractions.Arg<int>,
+                System.Action<int>
+            >>();
             private readonly ConcurrentBag<int> _setterInvocationHistory = new ConcurrentBag<int>();
 
             private bool _useAutoPropertyBehaviour = true;
@@ -107,7 +115,10 @@ namespace Imposter.Ideation.PropertySetupPoc
                 return this;
             }
 
-            IAgePropertyImposter IAgePropertyImposter.SetterCallback(Arg<int> criteria, Action<int> callback)
+            IAgePropertyImposter IAgePropertyImposter.SetterCallback(
+                Arg<int> criteria,
+                Action<int> callback
+            )
             {
                 _setterCallbacks.Enqueue(new Tuple<Arg<int>, Action<int>>(criteria, callback));
                 return this;

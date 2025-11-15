@@ -111,7 +111,9 @@ namespace Imposter.Tests.Features.ClassImposter
 
             var backingDelegate = (EventHandler?)eventField.GetValue(instance);
             backingDelegate.ShouldNotBeNull();
-            backingDelegate.GetInvocationList().ShouldContain(subscription => ReferenceEquals(subscription, handler));
+            backingDelegate
+                .GetInvocationList()
+                .ShouldContain(subscription => ReferenceEquals(subscription, handler));
         }
 
         [Fact]
@@ -142,7 +144,8 @@ namespace Imposter.Tests.Features.ClassImposter
 
             imposter.ProtectedVirtualMethod(Arg<int>.Any()).UseBaseImplementation();
 
-            imposter.InvokeProtectedMethod(Arg<int>.Any())
+            imposter
+                .InvokeProtectedMethod(Arg<int>.Any())
                 .UseBaseImplementation()
                 .Callback((int _) => callbackCount++);
 
@@ -151,7 +154,9 @@ namespace Imposter.Tests.Features.ClassImposter
             instance.InvokeProtectedMethod(6).ShouldBe(12);
             callbackCount.ShouldBe(1);
 
-            Should.NotThrow(() => imposter.InvokeProtectedMethod(Arg<int>.Any()).Called(Count.Exactly(1)));
+            Should.NotThrow(() =>
+                imposter.InvokeProtectedMethod(Arg<int>.Any()).Called(Count.Exactly(1))
+            );
         }
 
         [Fact]
@@ -170,7 +175,9 @@ namespace Imposter.Tests.Features.ClassImposter
             instance.ReadProtectedProperty().ShouldBe("updated");
 
             Should.NotThrow(() => imposter.ReadProtectedProperty().Called(Count.Exactly(2)));
-            Should.NotThrow(() => imposter.WriteProtectedProperty(Arg<string>.Any()).Called(Count.Exactly(1)));
+            Should.NotThrow(() =>
+                imposter.WriteProtectedProperty(Arg<string>.Any()).Called(Count.Exactly(1))
+            );
         }
 
         [Fact]
@@ -187,8 +194,14 @@ namespace Imposter.Tests.Features.ClassImposter
             instance.WriteProtectedValue(2, 99);
             instance.ReadProtectedValue(2).ShouldBe(99);
 
-            Should.NotThrow(() => imposter.ReadProtectedValue(Arg<int>.Any()).Called(Count.Exactly(2)));
-            Should.NotThrow(() => imposter.WriteProtectedValue(Arg<int>.Any(), Arg<int>.Any()).Called(Count.Exactly(1)));
+            Should.NotThrow(() =>
+                imposter.ReadProtectedValue(Arg<int>.Any()).Called(Count.Exactly(2))
+            );
+            Should.NotThrow(() =>
+                imposter
+                    .WriteProtectedValue(Arg<int>.Any(), Arg<int>.Any())
+                    .Called(Count.Exactly(1))
+            );
         }
     }
 }

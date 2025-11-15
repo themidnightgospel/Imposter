@@ -10,20 +10,26 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationSetu
 
 internal static partial class InvocationSetupBuilder
 {
-    internal static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(in ImposterTargetMethodMetadata method)
+    internal static MethodDeclarationSyntax InvokeMethodDeclarationSyntax(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(
+            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+        );
         var invocationImposterIdentifier = IdentifierName("invocationImposter");
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
             Var,
             "invocationImposter",
-            IdentifierName("GetInvocationImposter").Call());
+            IdentifierName("GetInvocationImposter").Call()
+        );
 
         var guardMissingImposter = IfStatement(
             BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName("invocationImposter"),
-                Null),
+                Null
+            ),
             Block(
                 IfStatement(
                     BinaryExpression(
@@ -31,15 +37,26 @@ internal static partial class InvocationSetupBuilder
                         IdentifierName("invocationBehavior"),
                         QualifiedName(
                             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                            IdentifierName("Explicit"))),
+                            IdentifierName("Explicit")
+                        )
+                    ),
                     Block(
                         ThrowStatement(
-                            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                            ObjectCreationExpression(
+                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                                )
                                 .WithArgumentList(
                                     Argument(IdentifierName("methodDisplayName"))
-                                        .AsSingleArgumentListSyntax())))),
-                    IdentifierName("invocationImposter")
-                        .Assign(invocationImposterType.Dot(IdentifierName("Default"))).ToStatementSyntax()));
+                                        .AsSingleArgumentListSyntax()
+                                )
+                        )
+                    )
+                ),
+                IdentifierName("invocationImposter")
+                    .Assign(invocationImposterType.Dot(IdentifierName("Default")))
+                    .ToStatementSyntax()
+            )
+        );
 
         var invokeCall = invocationImposterIdentifier
             .Dot(IdentifierName("Invoke"))
@@ -65,16 +82,26 @@ internal static partial class InvocationSetupBuilder
         {
             var parameters = new List<ParameterSyntax>
             {
-                ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, "invocationBehavior"),
-                ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName")
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                    "invocationBehavior"
+                ),
+                ParameterSyntax(
+                    PredefinedType(Token(SyntaxKind.StringKeyword)),
+                    "methodDisplayName"
+                ),
             };
 
             parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
             if (method.SupportsBaseImplementation)
             {
                 parameters.Add(
-                    ParameterSyntax(method.Delegate.Syntax.ToNullableType(), method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
-                        .WithDefault(EqualsValueClause(Null)));
+                    ParameterSyntax(
+                            method.Delegate.Syntax.ToNullableType(),
+                            method.MethodImposter.InvokeMethod.BaseInvocationParameterName
+                        )
+                        .WithDefault(EqualsValueClause(Null))
+                );
             }
 
             return ParameterList(SeparatedList(parameters));
@@ -85,13 +112,19 @@ internal static partial class InvocationSetupBuilder
             var arguments = new List<ArgumentSyntax>
             {
                 Argument(IdentifierName("invocationBehavior")),
-                Argument(IdentifierName("methodDisplayName"))
+                Argument(IdentifierName("methodDisplayName")),
             };
 
             arguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
             if (method.SupportsBaseImplementation)
             {
-                arguments.Add(Argument(IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)));
+                arguments.Add(
+                    Argument(
+                        IdentifierName(
+                            method.MethodImposter.InvokeMethod.BaseInvocationParameterName
+                        )
+                    )
+                );
             }
 
             return ArgumentList(SeparatedList(arguments));

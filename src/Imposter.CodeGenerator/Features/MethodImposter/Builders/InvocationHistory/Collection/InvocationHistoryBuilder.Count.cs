@@ -11,34 +11,64 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MethodDeclarationSyntax BuildCountMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(WellKnownTypes.Int, InvocationHistoryCollectionCountMethodMetadata.Name)
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Int,
+            InvocationHistoryCollectionCountMethodMetadata.Name
+        )
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(GetParameter(method))
-            .WithBody(Block(ReturnStatement(
-                IdentifierName(InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName)
-                    .Dot(IdentifierName("Count"))
-                    .Call(Parameter(Identifier("it"))
-                        .Lambda(It
-                            .Dot(method.Symbol.IsGenericMethod
-                                ? GenericName(Identifier(InvocationHistoryMatchesMethodMetadata.Name), method.GenericTypeArguments.ToTypeArguments())
-                                : IdentifierName(InvocationHistoryMatchesMethodMetadata.Name)
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IdentifierName(
+                                InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
                             )
-                            .Call(GetMatchesMethodArguments(method)?.ToSingleArgumentList()))
-                        .ToSingleArgumentList()
-                    ))))
+                            .Dot(IdentifierName("Count"))
+                            .Call(
+                                Parameter(Identifier("it"))
+                                    .Lambda(
+                                        It.Dot(
+                                                method.Symbol.IsGenericMethod
+                                                    ? GenericName(
+                                                        Identifier(
+                                                            InvocationHistoryMatchesMethodMetadata.Name
+                                                        ),
+                                                        method.GenericTypeArguments.ToTypeArguments()
+                                                    )
+                                                    : IdentifierName(
+                                                        InvocationHistoryMatchesMethodMetadata.Name
+                                                    )
+                                            )
+                                            .Call(
+                                                GetMatchesMethodArguments(method)
+                                                    ?.ToSingleArgumentList()
+                                            )
+                                    )
+                                    .ToSingleArgumentList()
+                            )
+                    )
+                )
+            )
             .Build();
 
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
         {
             return method.Parameters.HasInputParameters
-                ? ParameterSyntax(method.ArgumentsCriteria.Syntax, InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName)
+                ? ParameterSyntax(
+                    method.ArgumentsCriteria.Syntax,
+                    InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName
+                )
                 : null;
         }
 
         static ArgumentSyntax? GetMatchesMethodArguments(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasInputParameters
-                ? Argument(IdentifierName(InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName))
+                ? Argument(
+                    IdentifierName(
+                        InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName
+                    )
+                )
                 : null;
     }
 }

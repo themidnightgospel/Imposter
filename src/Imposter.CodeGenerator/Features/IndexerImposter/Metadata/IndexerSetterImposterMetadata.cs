@@ -1,5 +1,5 @@
-using Microsoft.CodeAnalysis;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -46,36 +46,54 @@ internal readonly struct IndexerSetterImposterMetadata
         SetterSuffix = " (setter)";
         CallbacksField = new FieldMetadata(
             "_callbacks",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(BuildRegistrationTuple(indexer)));
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+                BuildRegistrationTuple(indexer)
+            )
+        );
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax));
-        DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax)
+        );
+        DefaultBehaviourField = new FieldMetadata(
+            "_defaultBehaviour",
+            indexer.DefaultIndexerBehaviour.TypeSyntax
+        );
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode);
+            WellKnownTypes.Imposter.Abstractions.ImposterMode
+        );
         PropertyDisplayNameField = new FieldMetadata(
             "_propertyDisplayName",
-            PredefinedType(Token(SyntaxKind.StringKeyword)));
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
         HasConfiguredSetterField = new FieldMetadata("_hasConfiguredSetter", WellKnownTypes.Bool);
         BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
             ? new FieldMetadata(
                 "_baseCriteria",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.ArgumentsCriteria.TypeSyntax))
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+                    indexer.ArgumentsCriteria.TypeSyntax
+                )
+            )
             : null;
         BaseImplementationParameterName = indexer.Core.ParameterNameSet.Use("baseImplementation");
 
         Builder = new SetterBuilderMetadata();
     }
 
-    private static TupleTypeSyntax BuildRegistrationTuple(in ImposterIndexerMetadata indexer)
-        => TupleType(
-            SeparatedList<TupleElementSyntax>(new SyntaxNodeOrToken[]
-            {
-                TupleElement(indexer.ArgumentsCriteria.TypeSyntax, Identifier("Criteria")),
-                Token(SyntaxKind.CommaToken),
-                TupleElement(indexer.Delegates.SetterCallbackDelegateType, Identifier("Callback"))
-            }));
+    private static TupleTypeSyntax BuildRegistrationTuple(in ImposterIndexerMetadata indexer) =>
+        TupleType(
+            SeparatedList<TupleElementSyntax>(
+                new SyntaxNodeOrToken[]
+                {
+                    TupleElement(indexer.ArgumentsCriteria.TypeSyntax, Identifier("Criteria")),
+                    Token(SyntaxKind.CommaToken),
+                    TupleElement(
+                        indexer.Delegates.SetterCallbackDelegateType,
+                        Identifier("Callback")
+                    ),
+                }
+            )
+        );
 
     internal readonly struct SetterBuilderMetadata
     {

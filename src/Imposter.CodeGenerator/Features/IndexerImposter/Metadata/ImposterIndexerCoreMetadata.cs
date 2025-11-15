@@ -41,16 +41,28 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
-        Parameters = property.Parameters.Select(parameter => new IndexerParameterMetadata(parameter)).ToArray();
+        Parameters = property
+            .Parameters.Select(parameter => new IndexerParameterMetadata(parameter))
+            .ToArray();
         ParameterNameSet = new NameSet(Parameters.Select(parameter => parameter.Name));
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation = containingTypeIsClass && property.GetMethod is { IsAbstract: false };
-        SetterSupportsBaseImplementation = containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        GetterSupportsBaseImplementation =
+            containingTypeIsClass && property.GetMethod is { IsAbstract: false };
+        SetterSupportsBaseImplementation =
+            containingTypeIsClass && property.SetMethod is { IsAbstract: false };
 
-        var parametersDisplay = string.Join(", ", Parameters.Select(p => p.Symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)));
-        var containingTypeDisplay = containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
-            ?? property.ContainingSymbol?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+        var parametersDisplay = string.Join(
+            ", ",
+            Parameters.Select(p =>
+                p.Symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+            )
+        );
+        var containingTypeDisplay =
+            containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+            ?? property.ContainingSymbol?.ToDisplayString(
+                SymbolDisplayFormat.CSharpErrorMessageFormat
+            )
             ?? property.Name;
         DisplayName = $"{containingTypeDisplay}.this[{parametersDisplay}]";
     }

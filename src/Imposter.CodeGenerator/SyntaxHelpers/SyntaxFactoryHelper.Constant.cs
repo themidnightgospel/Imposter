@@ -6,7 +6,11 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal partial class SyntaxFactoryHelper
 {
-    public static readonly LiteralExpressionSyntax True = LiteralExpression(SyntaxKind.TrueLiteralExpression);
-    
-    public static readonly LiteralExpressionSyntax False = LiteralExpression(SyntaxKind.FalseLiteralExpression);
+    public static readonly LiteralExpressionSyntax True = LiteralExpression(
+        SyntaxKind.TrueLiteralExpression
+    );
+
+    public static readonly LiteralExpressionSyntax False = LiteralExpression(
+        SyntaxKind.FalseLiteralExpression
+    );
 }

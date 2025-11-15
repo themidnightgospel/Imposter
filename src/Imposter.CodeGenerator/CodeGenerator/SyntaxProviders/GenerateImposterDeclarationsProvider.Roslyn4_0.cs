@@ -13,24 +13,31 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class GenerateImposterDeclarationsProvider
 {
-    private static readonly string GenerateImposterAttribute = typeof(GenerateImposterAttribute).FullName!;
+    private static readonly string GenerateImposterAttribute =
+        typeof(GenerateImposterAttribute).FullName!;
 
-    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(
+        this in IncrementalGeneratorInitializationContext context
+    )
     {
         // Roslyn 4.0 does not expose GeneratorAttributeSyntaxContext/ForAttributeWithMetadataName.
         // Fall back to a syntax predicate for AttributeSyntax and resolve via semantic model.
         return context
-            .SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: static (node, _) => node is AttributeSyntax attr && IsCandidateAttributeName(attr),
-                transform: static (ctx, token) => GetImposterDeclarations(ctx, token))
+            .SyntaxProvider.CreateSyntaxProvider(
+                predicate: static (node, _) =>
+                    node is AttributeSyntax attr && IsCandidateAttributeName(attr),
+                transform: static (ctx, token) => GetImposterDeclarations(ctx, token)
+            )
             .Where(static list => list is not null)
             .SelectMany(static (list, _) => list!)
             .Collect()
             .SelectMany(static (targetSymbols, _) => targetSymbols.Distinct());
     }
 
-    private static IEnumerable<GenerateImposterDeclaration>? GetImposterDeclarations(in GeneratorSyntaxContext context, in CancellationToken token)
+    private static IEnumerable<GenerateImposterDeclaration>? GetImposterDeclarations(
+        in GeneratorSyntaxContext context,
+        in CancellationToken token
+    )
     {
         token.ThrowIfCancellationRequested();
 
@@ -50,9 +57,17 @@ internal static class GenerateImposterDeclarationsProvider
             .Where(static a => a.ConstructorArguments.Length > 0)
             .Select(static a =>
             {
-                if (a.ConstructorArguments[0].Value is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType)
+                if (
+                    a.ConstructorArguments[0].Value is INamedTypeSymbol
+                    {
+                        TypeKind: not TypeKind.Error
+                    } imposterType
+                )
                 {
-                    return new GenerateImposterDeclaration(imposterType, GetPutInTheSameNamespaceValue(a));
+                    return new GenerateImposterDeclaration(
+                        imposterType,
+                        GetPutInTheSameNamespaceValue(a)
+                    );
                 }
 
                 return default;
@@ -66,10 +81,13 @@ internal static class GenerateImposterDeclarationsProvider
         // Quick syntactic filter to reduce semantic model work.
         // Matches short and fully-qualified names e.g., GenerateImposter, GenerateImposterAttribute, Imposter.Abstractions.GenerateImposterAttribute
         var name = attribute.Name.ToString();
-        return name.EndsWith("GenerateImposter") || name.EndsWith("GenerateImposterAttribute") || name.Contains("GenerateImposterAttribute");
+        return name.EndsWith("GenerateImposter")
+            || name.EndsWith("GenerateImposterAttribute")
+            || name.Contains("GenerateImposterAttribute");
     }
 
     private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
-        attributeData.ConstructorArguments.Length != 2 || (bool)attributeData.ConstructorArguments[1].Value!;
+        attributeData.ConstructorArguments.Length != 2
+        || (bool)attributeData.ConstructorArguments[1].Value!;
 }
 #endif

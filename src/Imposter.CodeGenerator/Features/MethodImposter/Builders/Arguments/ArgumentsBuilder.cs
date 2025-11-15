@@ -18,22 +18,27 @@ internal static class ArgumentsBuilder
             return null;
         }
 
-        var argumentsClassBuilder = new ClassDeclarationBuilder(method.Arguments.Name, SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments))
+        var argumentsClassBuilder = new ClassDeclarationBuilder(
+            method.Arguments.Name,
+            SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
+        )
             .AddPublicModifier()
             .AddMembers(inputParameters.Select(SyntaxFactoryHelper.ParameterAsReadonlyField))
-            .AddMember(new ConstructorBuilder(method.Arguments.Name)
-                .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                .WithParameterList(method.Parameters.InputParameterWithoutRefKindListSyntax)
-                .WithBody(Block(inputParameters
-                        .Select(parameter =>
-                            ThisExpression()
-                                .Dot(IdentifierName(parameter.Name))
-                                .Assign(IdentifierName(parameter.Name))
-                                .ToStatementSyntax()
+            .AddMember(
+                new ConstructorBuilder(method.Arguments.Name)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .WithParameterList(method.Parameters.InputParameterWithoutRefKindListSyntax)
+                    .WithBody(
+                        Block(
+                            inputParameters.Select(parameter =>
+                                ThisExpression()
+                                    .Dot(IdentifierName(parameter.Name))
+                                    .Assign(IdentifierName(parameter.Name))
+                                    .ToStatementSyntax()
+                            )
                         )
                     )
-                )
-                .Build()
+                    .Build()
             );
 
         if (method.Symbol.IsGenericMethod)
@@ -44,7 +49,9 @@ internal static class ArgumentsBuilder
         return argumentsClassBuilder.Build();
     }
 
-    private static MethodDeclarationSyntax BuildArgumentsAsMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildArgumentsAsMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var typeParameters = method.Symbol.TypeParameters;
         var targetGenericTypeArguments = method.TargetGenericTypeArguments;
@@ -54,42 +61,42 @@ internal static class ArgumentsBuilder
         var asMethodTypeParams = targetTypeArgumentSimpleNames
             .Select(simpleName => TypeParameter(simpleName.Identifier.Text))
             .ToArray();
-        var targetTypeArgs = targetTypeArgumentSimpleNames
-            .Cast<TypeSyntax>()
-            .ToArray();
+        var targetTypeArgs = targetTypeArgumentSimpleNames.Cast<TypeSyntax>().ToArray();
 
         var returnType = GenericName(method.Arguments.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
 
         var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
-        var constructorArgs = method
-            .Parameters
-            .InputParameters.Select(p =>
-            {
-                var sourceType = SyntaxFactoryHelper.TypeSyntax(p.Type);
-                var targetType = (TypeSyntax)renamer.Visit(sourceType);
+        var constructorArgs = method.Parameters.InputParameters.Select(p =>
+        {
+            var sourceType = SyntaxFactoryHelper.TypeSyntax(p.Type);
+            var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
-                return Argument(
-                    IdentifierName("TypeCaster")
-                        .Dot(
-                            GenericName("Cast")
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(SeparatedList<TypeSyntax>([sourceType, targetType]))
+            return Argument(
+                IdentifierName("TypeCaster")
+                    .Dot(
+                        GenericName("Cast")
+                            .WithTypeArgumentList(
+                                TypeArgumentList(
+                                    SeparatedList<TypeSyntax>([sourceType, targetType])
                                 )
-                        )
-                        .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name)))))
-                );
-            });
+                            )
+                    )
+                    .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name)))))
+            );
+        });
 
         return new MethodDeclarationBuilder(returnType, "As")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(Block(
-                ReturnStatement(
-                    ObjectCreationExpression(returnType)
-                        .WithArgumentList(ArgumentList(SeparatedList(constructorArgs)))
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        ObjectCreationExpression(returnType)
+                            .WithArgumentList(ArgumentList(SeparatedList(constructorArgs)))
+                    )
                 )
-            ))
+            )
             .Build();
     }
 }

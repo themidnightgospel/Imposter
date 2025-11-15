@@ -11,7 +11,8 @@ internal readonly struct DiagnosticLogger : IGeneratorLogger
         category: Diagnostics.DiagnosticCategories.Imposter,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Internal generator log message. Enable with IMPOSTER_LOG=true.");
+        description: "Internal generator log message. Enable with IMPOSTER_LOG=true."
+    );
 
     private readonly SourceProductionContext _context;
     private readonly bool _enabled;
@@ -32,7 +33,5 @@ internal readonly struct DiagnosticLogger : IGeneratorLogger
         _context.ReportDiagnostic(Diagnostic.Create(LogDescriptor, Location.None, message));
     }
 
-    public void Log(string label, string value)
-        => Log($"{label}: {value}");
+    public void Log(string label, string value) => Log($"{label}: {value}");
 }
-

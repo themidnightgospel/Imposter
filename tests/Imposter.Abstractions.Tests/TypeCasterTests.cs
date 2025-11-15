@@ -8,17 +8,11 @@ namespace Imposter.CodeGenerator.Tests;
 
 public class TypeCasterTests
 {
-    private interface IAnimal
-    {
-    }
+    private interface IAnimal { }
 
-    private class Animal : IAnimal
-    {
-    }
+    private class Animal : IAnimal { }
 
-    private class Dog : Animal
-    {
-    }
+    private class Dog : Animal { }
 
     [Fact]
     public void Cast_WhenUpcastingReferenceType_ShouldSucceed()

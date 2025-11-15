@@ -8,7 +8,8 @@ public class IndexerDelegateCollisionPreventionTests : IndexerNamingCollisionPre
     [Fact]
     public async Task GivenIndexersMatchingDelegateNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -33,7 +34,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -41,7 +43,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenIndexersMatchingArgumentAndParameterNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -66,10 +69,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-

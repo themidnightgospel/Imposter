@@ -16,13 +16,17 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string CallbackIterationVariableName;
 
-    public MethodImposterInvokeMethodMetadata(IParameterNameContextProvider parameterNameContextProvider)
+    public MethodImposterInvokeMethodMetadata(
+        IParameterNameContextProvider parameterNameContextProvider
+    )
     {
         var parameterNameContext = parameterNameContextProvider.CreateParameterNameContext();
 
         ExceptionVariableName = parameterNameContext.Use("ex");
         ResultVariableName = parameterNameContext.Use("result");
-        MatchingInvocationImposterGroupVariableName = parameterNameContext.Use("matchingInvocationImposterGroup");
+        MatchingInvocationImposterGroupVariableName = parameterNameContext.Use(
+            "matchingInvocationImposterGroup"
+        );
         ArgumentsVariableName = parameterNameContext.Use("arguments");
         BaseInvocationParameterName = parameterNameContext.Use("baseImplementation");
         CallbackIterationVariableName = parameterNameContext.Use("callback");

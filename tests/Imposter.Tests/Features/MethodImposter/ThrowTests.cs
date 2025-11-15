@@ -14,9 +14,9 @@ namespace Imposter.Tests.Features.MethodImposter
     {
         private readonly IMethodSetupFeatureSutImposter _sut =
 #if USE_CSHARP14
-            IMethodSetupFeatureSut.Imposter();
+        IMethodSetupFeatureSut.Imposter();
 #else
-            new IMethodSetupFeatureSutImposter();
+        new IMethodSetupFeatureSutImposter();
 #endif
 
         #region VoidNoParams Tests
@@ -24,9 +24,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenVoidMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .VoidNoParams()
-                .Throws<InvalidOperationException>();
+            _sut.VoidNoParams().Throws<InvalidOperationException>();
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().VoidNoParams());
         }
@@ -35,12 +33,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenVoidMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new ArgumentException("Test message");
-            
-            _sut
-                .VoidNoParams()
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<ArgumentException>(() => _sut.Instance().VoidNoParams());
+            _sut.VoidNoParams().Throws(expectedException);
+
+            var thrownException = Should.Throw<ArgumentException>(() =>
+                _sut.Instance().VoidNoParams()
+            );
             thrownException.ShouldBe(expectedException);
             thrownException.Message.ShouldBe("Test message");
         }
@@ -52,9 +50,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenIntMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntNoParams()
-                .Throws<NotImplementedException>();
+            _sut.IntNoParams().Throws<NotImplementedException>();
 
             Should.Throw<NotImplementedException>(() => _sut.Instance().IntNoParams());
         }
@@ -63,12 +59,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenIntMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new InvalidOperationException("Custom error");
-            
-            _sut
-                .IntNoParams()
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<InvalidOperationException>(() => _sut.Instance().IntNoParams());
+            _sut.IntNoParams().Throws(expectedException);
+
+            var thrownException = Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().IntNoParams()
+            );
             thrownException.ShouldBe(expectedException);
             thrownException.Message.ShouldBe("Custom error");
         }
@@ -76,11 +72,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenIntMethodSetupToThrowAfterReturns_WhenMethodIsInvokedMultipleTimes_ShouldThrowOnSecondCall()
         {
-            _sut
-                .IntNoParams()
-                .Returns(42)
-                .Then()
-                .Throws<ArgumentException>();
+            _sut.IntNoParams().Returns(42).Then().Throws<ArgumentException>();
 
             _sut.Instance().IntNoParams().ShouldBe(42);
             Should.Throw<ArgumentException>(() => _sut.Instance().IntNoParams());
@@ -89,11 +81,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenIntMethodSetupToThrowThenReturn_WhenMethodIsInvoked_ShouldSwitchBehavior()
         {
-            _sut
-                .IntNoParams()
-                .Throws<InvalidOperationException>()
-                .Then()
-                .Returns(7);
+            _sut.IntNoParams().Throws<InvalidOperationException>().Then().Returns(7);
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().IntNoParams());
             _sut.Instance().IntNoParams().ShouldBe(7);
@@ -107,9 +95,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenSingleParamMethodSetupToThrowGenericException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Is(42))
-                .Throws<DivideByZeroException>();
+            _sut.IntSingleParam(Arg<int>.Is(42)).Throws<DivideByZeroException>();
 
             Should.Throw<DivideByZeroException>(() => _sut.Instance().IntSingleParam(42));
         }
@@ -117,13 +103,16 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenSingleParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
-            var expectedException = new ArgumentOutOfRangeException("age", "Age cannot be negative");
-            
-            _sut
-                .IntSingleParam(Arg<int>.Is(x => x < 0))
-                .Throws(expectedException);
+            var expectedException = new ArgumentOutOfRangeException(
+                "age",
+                "Age cannot be negative"
+            );
 
-            var thrownException = Should.Throw<ArgumentOutOfRangeException>(() => _sut.Instance().IntSingleParam(-1));
+            _sut.IntSingleParam(Arg<int>.Is(x => x < 0)).Throws(expectedException);
+
+            var thrownException = Should.Throw<ArgumentOutOfRangeException>(() =>
+                _sut.Instance().IntSingleParam(-1)
+            );
             thrownException.ShouldBe(expectedException);
             thrownException.ParamName.ShouldBe("age");
         }
@@ -131,8 +120,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenSingleParamMethodSetupToReturnThenThrow_WhenMethodIsInvoked_ShouldKeepThrowingAfterFirstFailure()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
+            _sut.IntSingleParam(Arg<int>.Any())
                 .Returns(_ => 10)
                 .Then()
                 .Throws<InvalidOperationException>();
@@ -145,9 +133,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenSingleParamMethodSetupToThrowWithAnyArg_WhenMethodIsInvokedWithAnyValue_ShouldThrowForAnyValue()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
-                .Throws<NotSupportedException>();
+            _sut.IntSingleParam(Arg<int>.Any()).Throws<NotSupportedException>();
 
             Should.Throw<NotSupportedException>(() => _sut.Instance().IntSingleParam(10));
             Should.Throw<NotSupportedException>(() => _sut.Instance().IntSingleParam(100));
@@ -157,13 +143,11 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenSingleParamMethodSetupToThrowWithPredicate_WhenMethodIsInvokedWithValues_ShouldThrowOnlyForMatchingValues()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Is(x => x > 100))
-                .Throws<OverflowException>();
+            _sut.IntSingleParam(Arg<int>.Is(x => x > 100)).Throws<OverflowException>();
 
             Should.Throw<OverflowException>(() => _sut.Instance().IntSingleParam(101));
             Should.Throw<OverflowException>(() => _sut.Instance().IntSingleParam(1000));
-            
+
             // Should not throw for non-matching values
             _sut.Instance().IntSingleParam(50).ShouldBe(default);
             _sut.Instance().IntSingleParam(100).ShouldBe(default);
@@ -176,38 +160,38 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenMultipleParamsMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
+            _sut.IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
                 .Throws<InvalidDataException>();
 
-            Should.Throw<InvalidDataException>(() => 
-                _sut.Instance().IntParams(1, "test", new Regex(".*")));
+            Should.Throw<InvalidDataException>(() =>
+                _sut.Instance().IntParams(1, "test", new Regex(".*"))
+            );
         }
 
         [Fact]
         public void GivenMultipleParamsMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new FormatException("Invalid format provided");
-            
-            _sut
-                .IntParams(Arg<int>.Is(0), Arg<string>.Any(), Arg<Regex>.Any())
+
+            _sut.IntParams(Arg<int>.Is(0), Arg<string>.Any(), Arg<Regex>.Any())
                 .Throws(expectedException);
 
-            var thrownException = Should.Throw<FormatException>(() => 
-                _sut.Instance().IntParams(0, "invalid", new Regex("test")));
+            var thrownException = Should.Throw<FormatException>(() =>
+                _sut.Instance().IntParams(0, "invalid", new Regex("test"))
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenMultipleParamsMethodSetupToThrowWithSpecificArgs_WhenMethodIsInvokedWithDifferentArgs_ShouldThrowOnlyForMatchingArgs()
         {
-            _sut
-                .IntParams(Arg<int>.Is(999), Arg<string>.Is("error"), Arg<Regex>.Any())
+            _sut.IntParams(Arg<int>.Is(999), Arg<string>.Is("error"), Arg<Regex>.Any())
                 .Throws<ApplicationException>();
 
-            Should.Throw<ApplicationException>(() => 
-                _sut.Instance().IntParams(999, "error", new Regex(".*")));
-            
+            Should.Throw<ApplicationException>(() =>
+                _sut.Instance().IntParams(999, "error", new Regex(".*"))
+            );
+
             // Should not throw for non-matching args
             _sut.Instance().IntParams(999, "success", new Regex(".*")).ShouldBe(default);
             _sut.Instance().IntParams(1, "error", new Regex(".*")).ShouldBe(default);
@@ -220,23 +204,23 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenOutParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntOutParam(OutArg<int>.Any())
-                .Throws<UnauthorizedAccessException>();
+            _sut.IntOutParam(OutArg<int>.Any()).Throws<UnauthorizedAccessException>();
 
-            Should.Throw<UnauthorizedAccessException>(() => _sut.Instance().IntOutParam(out var outVal));
+            Should.Throw<UnauthorizedAccessException>(() =>
+                _sut.Instance().IntOutParam(out var outVal)
+            );
         }
 
         [Fact]
         public void GivenOutParamMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new TimeoutException("Operation timed out");
-            
-            _sut
-                .IntOutParam(OutArg<int>.Any())
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<TimeoutException>(() => _sut.Instance().IntOutParam(out var outVal));
+            _sut.IntOutParam(OutArg<int>.Any()).Throws(expectedException);
+
+            var thrownException = Should.Throw<TimeoutException>(() =>
+                _sut.Instance().IntOutParam(out var outVal)
+            );
             thrownException.ShouldBe(expectedException);
             thrownException.Message.ShouldBe("Operation timed out");
         }
@@ -248,9 +232,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenRefParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntRefParam(Arg<int>.Any())
-                .Throws<NullReferenceException>();
+            _sut.IntRefParam(Arg<int>.Any()).Throws<NullReferenceException>();
 
             var refValue = 42;
             Should.Throw<NullReferenceException>(() => _sut.Instance().IntRefParam(ref refValue));
@@ -260,13 +242,13 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenRefParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new InvalidCastException("Cannot cast value");
-            
-            _sut
-                .IntRefParam(Arg<int>.Is(x => x < 0))
-                .Throws(expectedException);
+
+            _sut.IntRefParam(Arg<int>.Is(x => x < 0)).Throws(expectedException);
 
             var refValue = -10;
-            var thrownException = Should.Throw<InvalidCastException>(() => _sut.Instance().IntRefParam(ref refValue));
+            var thrownException = Should.Throw<InvalidCastException>(() =>
+                _sut.Instance().IntRefParam(ref refValue)
+            );
             thrownException.ShouldBe(expectedException);
         }
 
@@ -277,9 +259,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenInParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntInParam(Arg<string>.Any())
-                .Throws<FileNotFoundException>();
+            _sut.IntInParam(Arg<string>.Any()).Throws<FileNotFoundException>();
 
             Should.Throw<FileNotFoundException>(() => _sut.Instance().IntInParam("test"));
         }
@@ -288,12 +268,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenInParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new DirectoryNotFoundException("Path not found");
-            
-            _sut
-                .IntInParam(Arg<string>.Is(s => s.StartsWith("missing")))
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<DirectoryNotFoundException>(() => _sut.Instance().IntInParam("missing_file"));
+            _sut.IntInParam(Arg<string>.Is(s => s.StartsWith("missing"))).Throws(expectedException);
+
+            var thrownException = Should.Throw<DirectoryNotFoundException>(() =>
+                _sut.Instance().IntInParam("missing_file")
+            );
             thrownException.ShouldBe(expectedException);
         }
 
@@ -304,9 +284,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenParamsArrayMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntParamsParam(Arg<string[]>.Any())
-                .Throws<OutOfMemoryException>();
+            _sut.IntParamsParam(Arg<string[]>.Any()).Throws<OutOfMemoryException>();
 
             Should.Throw<OutOfMemoryException>(() => _sut.Instance().IntParamsParam("a", "b", "c"));
         }
@@ -315,13 +293,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenParamsArrayMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new IndexOutOfRangeException("Index was out of range");
-            
-            _sut
-                .IntParamsParam(Arg<string[]>.Is(arr => arr.Length > 5))
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<IndexOutOfRangeException>(() => 
-                _sut.Instance().IntParamsParam("1", "2", "3", "4", "5", "6"));
+            _sut.IntParamsParam(Arg<string[]>.Is(arr => arr.Length > 5)).Throws(expectedException);
+
+            var thrownException = Should.Throw<IndexOutOfRangeException>(() =>
+                _sut.Instance().IntParamsParam("1", "2", "3", "4", "5", "6")
+            );
             thrownException.ShouldBe(expectedException);
         }
 
@@ -332,29 +309,43 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenAllRefKindsMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .IntAllRefKinds(OutArg<int>.Any(), Arg<int>.Any(), Arg<int>.Any(), Arg<string>.Any(), Arg<string[]>.Any())
+            _sut.IntAllRefKinds(
+                    OutArg<int>.Any(),
+                    Arg<int>.Any(),
+                    Arg<int>.Any(),
+                    Arg<string>.Any(),
+                    Arg<string[]>.Any()
+                )
                 .Throws<StackOverflowException>();
 
             var refValue = 100;
             int inValue = 50;
-            Should.Throw<StackOverflowException>(() => 
-                _sut.Instance().IntAllRefKinds(out var outVal, ref refValue, in inValue, "test", "a", "b"));
+            Should.Throw<StackOverflowException>(() =>
+                _sut.Instance()
+                    .IntAllRefKinds(out var outVal, ref refValue, in inValue, "test", "a", "b")
+            );
         }
 
         [Fact]
         public void GivenAllRefKindsMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new AccessViolationException("Memory access violation");
-            
-            _sut
-                .IntAllRefKinds(OutArg<int>.Any(), Arg<int>.Is(0), Arg<int>.Any(), Arg<string>.Any(), Arg<string[]>.Any())
+
+            _sut.IntAllRefKinds(
+                    OutArg<int>.Any(),
+                    Arg<int>.Is(0),
+                    Arg<int>.Any(),
+                    Arg<string>.Any(),
+                    Arg<string[]>.Any()
+                )
                 .Throws(expectedException);
 
             var refValue = 0;
             int inValue = 50;
-            var thrownException = Should.Throw<AccessViolationException>(() => 
-                _sut.Instance().IntAllRefKinds(out var outVal, ref refValue, in inValue, "error", "x", "y"));
+            var thrownException = Should.Throw<AccessViolationException>(() =>
+                _sut.Instance()
+                    .IntAllRefKinds(out var outVal, ref refValue, in inValue, "error", "x", "y")
+            );
             thrownException.ShouldBe(expectedException);
         }
 
@@ -365,102 +356,104 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenGenericSingleParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .GenericSingleParam<string>(Arg<string>.Any())
-                .Throws<ArgumentNullException>();
+            _sut.GenericSingleParam<string>(Arg<string>.Any()).Throws<ArgumentNullException>();
 
-            Should.Throw<ArgumentNullException>(() => _sut.Instance().GenericSingleParam<string>("test"));
+            Should.Throw<ArgumentNullException>(() =>
+                _sut.Instance().GenericSingleParam<string>("test")
+            );
         }
 
         [Fact]
         public void GivenGenericSingleParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingValue_ShouldThrowException()
         {
             var expectedException = new NotImplementedException("Feature not implemented");
-            
-            _sut
-                .GenericSingleParam<int>(Arg<int>.Is(x => x == 999))
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<NotImplementedException>(() => _sut.Instance().GenericSingleParam<int>(999));
+            _sut.GenericSingleParam<int>(Arg<int>.Is(x => x == 999)).Throws(expectedException);
+
+            var thrownException = Should.Throw<NotImplementedException>(() =>
+                _sut.Instance().GenericSingleParam<int>(999)
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenGenericOutParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .GenericOutParam<string, int>(OutArg<string>.Any())
+            _sut.GenericOutParam<string, int>(OutArg<string>.Any())
                 .Throws<InvalidOperationException>();
 
-            Should.Throw<InvalidOperationException>(() => _sut.Instance().GenericOutParam<string, int>(out var outVal));
+            Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().GenericOutParam<string, int>(out var outVal)
+            );
         }
 
         [Fact]
         public void GivenGenericOutParamMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldThrowException()
         {
             var expectedException = new ObjectDisposedException("Object has been disposed");
-            
-            _sut
-                .GenericOutParam<Cat, bool>(OutArg<Cat>.Any())
-                .Throws(expectedException);
 
-            var thrownException = Should.Throw<ObjectDisposedException>(() => _sut.Instance().GenericOutParam<Cat, bool>(out var outVal));
+            _sut.GenericOutParam<Cat, bool>(OutArg<Cat>.Any()).Throws(expectedException);
+
+            var thrownException = Should.Throw<ObjectDisposedException>(() =>
+                _sut.Instance().GenericOutParam<Cat, bool>(out var outVal)
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenGenericRefParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .GenericRefParam<string, int>(Arg<string>.Any())
-                .Throws<FormatException>();
+            _sut.GenericRefParam<string, int>(Arg<string>.Any()).Throws<FormatException>();
 
             var refValue = "test";
-            Should.Throw<FormatException>(() => _sut.Instance().GenericRefParam<string, int>(ref refValue));
+            Should.Throw<FormatException>(() =>
+                _sut.Instance().GenericRefParam<string, int>(ref refValue)
+            );
         }
 
         [Fact]
         public void GivenGenericRefParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new UriFormatException("Invalid URI format");
-            
-            _sut
-                .GenericRefParam<string, Uri>(Arg<string>.Is(s => !s.StartsWith("http")))
+
+            _sut.GenericRefParam<string, Uri>(Arg<string>.Is(s => !s.StartsWith("http")))
                 .Throws(expectedException);
 
             var refValue = "invalid-uri";
-            var thrownException = Should.Throw<UriFormatException>(() => _sut.Instance().GenericRefParam<string, Uri>(ref refValue));
+            var thrownException = Should.Throw<UriFormatException>(() =>
+                _sut.Instance().GenericRefParam<string, Uri>(ref refValue)
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenGenericParamsParamMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .GenericParamsParam<string, int>(Arg<string[]>.Any())
-                .Throws<ArgumentException>();
+            _sut.GenericParamsParam<string, int>(Arg<string[]>.Any()).Throws<ArgumentException>();
 
-            Should.Throw<ArgumentException>(() => _sut.Instance().GenericParamsParam<string, int>("a", "b"));
+            Should.Throw<ArgumentException>(() =>
+                _sut.Instance().GenericParamsParam<string, int>("a", "b")
+            );
         }
 
         [Fact]
         public void GivenGenericParamsParamMethodSetupToThrowSpecificException_WhenMethodIsInvokedWithMatchingCondition_ShouldThrowException()
         {
             var expectedException = new InvalidEnumArgumentException("Invalid enum value");
-            
-            _sut
-                .GenericParamsParam<int, string>(Arg<int[]>.Is(arr => arr.Length == 0))
+
+            _sut.GenericParamsParam<int, string>(Arg<int[]>.Is(arr => arr.Length == 0))
                 .Throws(expectedException);
 
-            var thrownException = Should.Throw<InvalidEnumArgumentException>(() => _sut.Instance().GenericParamsParam<int, string>());
+            var thrownException = Should.Throw<InvalidEnumArgumentException>(() =>
+                _sut.Instance().GenericParamsParam<int, string>()
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenGenericAllRefKindMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .GenericAllRefKind<Cat, IAnimal, Dog, Tiger, string>(
+            _sut.GenericAllRefKind<Cat, IAnimal, Dog, Tiger, string>(
                     OutArg<Cat>.Any(),
                     Arg<IAnimal>.Any(),
                     Arg<Dog>.Any(),
@@ -472,9 +465,15 @@ namespace Imposter.Tests.Features.MethodImposter
             var inDog = new Dog("buddy");
             var tigers = new Tiger[] { new Tiger("tiger1") };
 
-            Should.Throw<NotSupportedException>(() => 
-                _sut.Instance().GenericAllRefKind<Cat, IAnimal, Dog, Tiger, string>(
-                    out var outCat, ref refAnimal, in inDog, tigers));
+            Should.Throw<NotSupportedException>(() =>
+                _sut.Instance()
+                    .GenericAllRefKind<Cat, IAnimal, Dog, Tiger, string>(
+                        out var outCat,
+                        ref refAnimal,
+                        in inDog,
+                        tigers
+                    )
+            );
         }
 
         #endregion
@@ -484,8 +483,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenChainedThrowsSetup_WhenMethodIsInvokedMultipleTimes_ShouldThrowInSequence()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
+            _sut.IntSingleParam(Arg<int>.Any())
                 .Throws<ArgumentException>()
                 .Then()
                 .Throws<InvalidOperationException>()
@@ -503,28 +501,27 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var exception1 = new ArgumentException("First error");
             var exception2 = new InvalidOperationException("Second error");
-            
-            _sut
-                .IntNoParams()
-                .Throws(exception1)
-                .Then()
-                .Throws(exception2);
+
+            _sut.IntNoParams().Throws(exception1).Then().Throws(exception2);
 
             var thrown1 = Should.Throw<ArgumentException>(() => _sut.Instance().IntNoParams());
             thrown1.ShouldBe(exception1);
-            
-            var thrown2 = Should.Throw<InvalidOperationException>(() => _sut.Instance().IntNoParams());
+
+            var thrown2 = Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().IntNoParams()
+            );
             thrown2.ShouldBe(exception2);
-            
-            var thrown3 = Should.Throw<InvalidOperationException>(() => _sut.Instance().IntNoParams());
+
+            var thrown3 = Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().IntNoParams()
+            );
             thrown3.ShouldBe(exception2); // Repeats last
         }
 
         [Fact]
         public void GivenMixedReturnsAndThrowsSetup_WhenMethodIsInvokedMultipleTimes_ShouldBehaveCorrectly()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
+            _sut.IntSingleParam(Arg<int>.Any())
                 .Returns(100)
                 .Then()
                 .Throws<ArgumentException>()
@@ -544,9 +541,7 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenMethodSetupToThrowCustomException_WhenMethodIsInvoked_ShouldThrowCustomException()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
-                .Throws<CustomTestException>();
+            _sut.IntSingleParam(Arg<int>.Any()).Throws<CustomTestException>();
 
             Should.Throw<CustomTestException>(() => _sut.Instance().IntSingleParam(42));
         }
@@ -555,12 +550,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public void GivenMethodSetupToThrowCustomExceptionWithMessage_WhenMethodIsInvoked_ShouldThrowWithMessage()
         {
             var customException = new CustomTestException("Custom error message", 404);
-            
-            _sut
-                .IntSingleParam(Arg<int>.Is(404))
-                .Throws(customException);
 
-            var thrownException = Should.Throw<CustomTestException>(() => _sut.Instance().IntSingleParam(404));
+            _sut.IntSingleParam(Arg<int>.Is(404)).Throws(customException);
+
+            var thrownException = Should.Throw<CustomTestException>(() =>
+                _sut.Instance().IntSingleParam(404)
+            );
             thrownException.ShouldBe(customException);
             thrownException.Message.ShouldBe("Custom error message");
             thrownException.ErrorCode.ShouldBe(404);
@@ -573,11 +568,11 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenMethodSetupToThrowDerivedType_WhenMethodIsInvoked_ShouldThrowDerivedType()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Any())
-                .Throws<ArgumentNullException>();
+            _sut.IntSingleParam(Arg<int>.Any()).Throws<ArgumentNullException>();
 
-            var thrownException = Should.Throw<ArgumentNullException>(() => _sut.Instance().IntSingleParam(42));
+            var thrownException = Should.Throw<ArgumentNullException>(() =>
+                _sut.Instance().IntSingleParam(42)
+            );
             thrownException.ShouldBeOfType<ArgumentNullException>();
             thrownException.ShouldBeAssignableTo<ArgumentException>();
         }
@@ -588,10 +583,14 @@ namespace Imposter.Tests.Features.MethodImposter
             _sut.IntSingleParam(Arg<int>.Is(1)).Throws<ArgumentException>();
             _sut.IntSingleParam(Arg<int>.Is(2)).Throws<ArgumentNullException>();
 
-            var exception1 = Should.Throw<ArgumentException>(() => _sut.Instance().IntSingleParam(1));
+            var exception1 = Should.Throw<ArgumentException>(() =>
+                _sut.Instance().IntSingleParam(1)
+            );
             exception1.ShouldBeOfType<ArgumentException>();
-            
-            var exception2 = Should.Throw<ArgumentNullException>(() => _sut.Instance().IntSingleParam(2));
+
+            var exception2 = Should.Throw<ArgumentNullException>(() =>
+                _sut.Instance().IntSingleParam(2)
+            );
             exception2.ShouldBeOfType<ArgumentNullException>();
         }
 
@@ -602,13 +601,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenOverriddenMethodSetup_WhenMethodIsInvoked_ShouldUseLastSetup()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Is(42))
-                .Throws<ArgumentException>();
+            _sut.IntSingleParam(Arg<int>.Is(42)).Throws<ArgumentException>();
 
-            _sut
-                .IntSingleParam(Arg<int>.Is(42))
-                .Throws<InvalidOperationException>();
+            _sut.IntSingleParam(Arg<int>.Is(42)).Throws<InvalidOperationException>();
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().IntSingleParam(42));
         }
@@ -616,49 +611,47 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenMethodSetupWithThrowsForSpecificValue_WhenMethodIsInvokedWithNonMatchingValue_ShouldReturnDefault()
         {
-            _sut
-                .IntSingleParam(Arg<int>.Is(42))
-                .Throws<ArgumentException>();
+            _sut.IntSingleParam(Arg<int>.Is(42)).Throws<ArgumentException>();
 
             // Should not throw for non-matching value
             _sut.Instance().IntSingleParam(43).ShouldBe(default);
         }
 
         #endregion
-        
-        
+
+
         [Fact]
         public async Task GivenAsyncTaskMethodSetupWithThrowsAsync_WhenMethodIsInvoked_ShouldReturnFaultedTask()
         {
             var expectedException = new InvalidOperationException("Async failure");
 
-            _sut
-                .AsyncTaskIntNoParams()
-                .ThrowsAsync(expectedException);
+            _sut.AsyncTaskIntNoParams().ThrowsAsync(expectedException);
 
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
             _ = task.ShouldNotBeNull();
             task.IsFaulted.ShouldBeTrue();
 
-            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await task);
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () =>
+                await task
+            );
             exception.ShouldBe(expectedException);
         }
-        
+
         [Fact]
         public async Task GivenAsyncValueTaskMethodSetupWithThrowsAsync_WhenMethodIsInvoked_ShouldReturnFaultedTask()
         {
             var expectedException = new InvalidOperationException("Async failure");
 
-            _sut
-                .AsyncValueTaskIntNoParams()
-                .ThrowsAsync(expectedException);
+            _sut.AsyncValueTaskIntNoParams().ThrowsAsync(expectedException);
 
             var task = _sut.Instance().AsyncValueTaskIntNoParams();
 
             task.IsFaulted.ShouldBeTrue();
 
-            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await task);
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () =>
+                await task
+            );
             exception.ShouldBe(expectedException);
         }
 
@@ -667,9 +660,7 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var expectedException = new InvalidOperationException("Async failure");
 
-            _sut
-                .AsyncTaskIntNoParams()
-                .ThrowsAsync(expectedException);
+            _sut.AsyncTaskIntNoParams().ThrowsAsync(expectedException);
 
             Task<int>? pendingTask = null;
 
@@ -683,7 +674,9 @@ namespace Imposter.Tests.Features.MethodImposter
             pendingTask.ShouldNotBeNull().IsFaulted.ShouldBeTrue();
 #pragma warning restore CS4014
 
-            var exception = await Should.ThrowAsync<InvalidOperationException>(async () => await pendingTask!);
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () =>
+                await pendingTask!
+            );
             exception.ShouldBe(expectedException);
         }
 
@@ -691,41 +684,35 @@ namespace Imposter.Tests.Features.MethodImposter
         public async Task GivenAsyncTaskMethodSetupToThrowSpecificException_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
             var testException = new InvalidOperationException("Test async exception");
-            
-            _sut
-                .AsyncTaskIntNoParams()
-                .Throws(testException);
 
-            var exception = await Should.ThrowAsync<InvalidOperationException>(
-                async () => await _sut.Instance().AsyncTaskIntNoParams()
+            _sut.AsyncTaskIntNoParams().Throws(testException);
+
+            var exception = await Should.ThrowAsync<InvalidOperationException>(async () =>
+                await _sut.Instance().AsyncTaskIntNoParams()
             );
-            
+
             exception.Message.ShouldBe("Test async exception");
         }
 
         [Fact]
         public async Task GivenAsyncTaskMethodSetupToThrowGenericException_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
-            _sut
-                .AsyncTaskIntNoParams()
-                .Throws<ArgumentNullException>();
+            _sut.AsyncTaskIntNoParams().Throws<ArgumentNullException>();
 
-            await Should.ThrowAsync<ArgumentNullException>(
-                async () => await _sut.Instance().AsyncTaskIntNoParams()
+            await Should.ThrowAsync<ArgumentNullException>(async () =>
+                await _sut.Instance().AsyncTaskIntNoParams()
             );
         }
 
         [Fact]
         public async Task GivenAsyncTaskMethodSetupToThrowWithExceptionGenerator_WhenMethodIsInvoked_ShouldPropagateCorrectly()
         {
-            _sut
-                .AsyncTaskIntNoParams()
-                .Throws(() => new TimeoutException("Generated exception"));
+            _sut.AsyncTaskIntNoParams().Throws(() => new TimeoutException("Generated exception"));
 
-            var exception = await Should.ThrowAsync<TimeoutException>(
-                async () => await _sut.Instance().AsyncTaskIntNoParams()
+            var exception = await Should.ThrowAsync<TimeoutException>(async () =>
+                await _sut.Instance().AsyncTaskIntNoParams()
             );
-            
+
             exception.Message.ShouldBe("Generated exception");
         }
     }
@@ -736,10 +723,12 @@ namespace Imposter.Tests.Features.MethodImposter
         public int ErrorCode { get; }
 
         public CustomTestException() { }
-        
-        public CustomTestException(string message) : base(message) { }
-        
-        public CustomTestException(string message, int errorCode) : base(message) 
+
+        public CustomTestException(string message)
+            : base(message) { }
+
+        public CustomTestException(string message, int errorCode)
+            : base(message)
         {
             ErrorCode = errorCode;
         }

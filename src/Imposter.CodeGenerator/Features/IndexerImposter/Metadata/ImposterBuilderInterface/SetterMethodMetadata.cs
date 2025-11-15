@@ -13,7 +13,8 @@ internal readonly struct SetterMethodMetadata
 
     internal SetterMethodMetadata(
         in ImposterIndexerCoreMetadata core,
-        in IndexerSetterImposterBuilderInterfaceMetadata setterInterfaceMetadata)
+        in IndexerSetterImposterBuilderInterfaceMetadata setterInterfaceMetadata
+    )
     {
         ReturnType = setterInterfaceMetadata.TypeSyntax;
         Parameters = [];

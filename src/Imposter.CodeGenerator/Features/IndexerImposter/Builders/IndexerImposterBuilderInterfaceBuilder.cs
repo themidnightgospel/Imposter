@@ -17,20 +17,28 @@ internal static class IndexerImposterBuilderInterfaceBuilder
 
         return new InterfaceDeclarationBuilder(builderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(indexer.Core.HasGetter ? BuildGetterMethod(builderInterface.GetterMethod) : null)
-            .AddMember(indexer.Core.HasSetter ? BuildSetterMethod(builderInterface.SetterMethod) : null)
+            .AddMember(
+                indexer.Core.HasGetter ? BuildGetterMethod(builderInterface.GetterMethod) : null
+            )
+            .AddMember(
+                indexer.Core.HasSetter ? BuildSetterMethod(builderInterface.SetterMethod) : null
+            )
             .Build();
     }
 
     private static MethodDeclarationSyntax BuildGetterMethod(GetterMethodMetadata getterMethod) =>
         new MethodDeclarationBuilder(getterMethod.ReturnType, getterMethod.Name)
-            .AddParameters(getterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray())
+            .AddParameters(
+                getterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray()
+            )
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildSetterMethod(SetterMethodMetadata setterMethod) =>
         new MethodDeclarationBuilder(setterMethod.ReturnType, setterMethod.Name)
-            .AddParameters(setterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray())
+            .AddParameters(
+                setterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray()
+            )
             .WithSemicolon()
             .Build();
 }

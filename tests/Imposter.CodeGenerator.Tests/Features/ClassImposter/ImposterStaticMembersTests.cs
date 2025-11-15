@@ -13,7 +13,8 @@ namespace Imposter.CodeGenerator.Tests.Features.ClassImposter;
 
 public class ImposterStaticMembersTests
 {
-    private const string ClassSource = /*lang=csharp*/"""
+    private const string ClassSource = /*lang=csharp*/
+        """
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.ClassWithStatics))]
@@ -32,7 +33,8 @@ public class ClassWithStatics
         var artifacts = RunGenerator(LanguageVersion.CSharp10, ClassSource);
 
         // Trying to access a static member on the Imposter type should fail to compile.
-        const string failSnippet = /*lang=csharp*/"""
+        const string failSnippet = /*lang=csharp*/
+            """
 namespace Sample;
 
 public static class UseImposterStatics
@@ -44,10 +46,16 @@ public static class UseImposterStatics
     }
 }
 """;
-        AssertSnippetFailsWithDiagnostic(LanguageVersion.CSharp10, artifacts, failSnippet, WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition);
+        AssertSnippetFailsWithDiagnostic(
+            LanguageVersion.CSharp10,
+            artifacts,
+            failSnippet,
+            WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition
+        );
 
         // Calling the original type's static member should compile fine (base behavior remains).
-        const string okSnippet = /*lang=csharp*/"""
+        const string okSnippet = /*lang=csharp*/
+            """
 namespace Sample;
 
 public static class UseOriginalStatics
@@ -61,13 +69,24 @@ public static class UseOriginalStatics
         AssertSnippetCompiles(LanguageVersion.CSharp10, artifacts, okSnippet);
     }
 
-    private sealed record GeneratorArtifacts(GeneratorRunResult Result, CSharpCompilation Compilation);
+    private sealed record GeneratorArtifacts(
+        GeneratorRunResult Result,
+        CSharpCompilation Compilation
+    );
 
-    private static void AssertSnippetCompiles(LanguageVersion languageVersion, GeneratorArtifacts artifacts, string snippet)
+    private static void AssertSnippetCompiles(
+        LanguageVersion languageVersion,
+        GeneratorArtifacts artifacts,
+        string snippet
+    )
     {
         var (compilation, parseOptions) = InitializeCompilation(languageVersion, artifacts);
 
-        var snippetTree = CSharpSyntaxTree.ParseText(snippet, options: parseOptions, path: "Snippet.cs");
+        var snippetTree = CSharpSyntaxTree.ParseText(
+            snippet,
+            options: parseOptions,
+            path: "Snippet.cs"
+        );
         compilation = compilation.AddSyntaxTrees(snippetTree);
 
         var diagnostics = compilation
@@ -81,11 +100,20 @@ public static class UseOriginalStatics
         }
     }
 
-    private static void AssertSnippetFailsWithDiagnostic(LanguageVersion languageVersion, GeneratorArtifacts artifacts, string snippet, string expectedDiagnosticId)
+    private static void AssertSnippetFailsWithDiagnostic(
+        LanguageVersion languageVersion,
+        GeneratorArtifacts artifacts,
+        string snippet,
+        string expectedDiagnosticId
+    )
     {
         var (compilation, parseOptions) = InitializeCompilation(languageVersion, artifacts);
 
-        var snippetTree = CSharpSyntaxTree.ParseText(snippet, options: parseOptions, path: "Snippet.cs");
+        var snippetTree = CSharpSyntaxTree.ParseText(
+            snippet,
+            options: parseOptions,
+            path: "Snippet.cs"
+        );
         compilation = compilation.AddSyntaxTrees(snippetTree);
 
         var diagnostics = compilation
@@ -94,13 +122,17 @@ public static class UseOriginalStatics
             .ToArray();
 
         diagnostics.ShouldNotBeEmpty("Expected snippet to produce compile errors.");
-        diagnostics.Any(diagnostic => diagnostic.Id == expectedDiagnosticId)
-            .ShouldBeTrue($"Expected diagnostic {expectedDiagnosticId} but saw:{Environment.NewLine}{FormatDiagnostics(diagnostics)}");
+        diagnostics
+            .Any(diagnostic => diagnostic.Id == expectedDiagnosticId)
+            .ShouldBeTrue(
+                $"Expected diagnostic {expectedDiagnosticId} but saw:{Environment.NewLine}{FormatDiagnostics(diagnostics)}"
+            );
     }
 
-    private static (CSharpCompilation Compilation, CSharpParseOptions ParseOptions) InitializeCompilation(
-        LanguageVersion languageVersion,
-        GeneratorArtifacts artifacts)
+    private static (
+        CSharpCompilation Compilation,
+        CSharpParseOptions ParseOptions
+    ) InitializeCompilation(LanguageVersion languageVersion, GeneratorArtifacts artifacts)
     {
         var parseOptions = new CSharpParseOptions(languageVersion);
         var compilation = artifacts.Compilation;
@@ -126,17 +158,23 @@ public static class UseOriginalStatics
             {
                 var span = diagnostic.Location.GetLineSpan();
                 return $"{diagnostic.Id}: {diagnostic.GetMessage()} ({span.Path}:{span.StartLinePosition.Line + 1},{span.StartLinePosition.Character + 1})";
-            }));
+            })
+        );
     }
 
     private static GeneratorArtifacts RunGenerator(LanguageVersion languageVersion, string source)
     {
         var compilation = CreateCompilation(languageVersion, source);
         var parseOptions = new CSharpParseOptions(languageVersion);
-        var driver = CSharpGeneratorDriver.Create(new ImposterGenerator())
+        var driver = CSharpGeneratorDriver
+            .Create(new ImposterGenerator())
             .WithUpdatedParseOptions(parseOptions);
 
-        var updatedDriver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out var diagnostics);
+        var updatedDriver = driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var updatedCompilation,
+            out var diagnostics
+        );
         diagnostics.ShouldBeEmpty();
 
         var runResult = updatedDriver.GetRunResult();
@@ -148,24 +186,31 @@ public static class UseOriginalStatics
         return new GeneratorArtifacts(generatorResult, (CSharpCompilation)updatedCompilation);
     }
 
-    private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion, string source)
+    private static CSharpCompilation CreateCompilation(
+        LanguageVersion languageVersion,
+        string source
+    )
     {
         var parseOptions = new CSharpParseOptions(languageVersion);
 
-        var references = ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
+        var references = ReferenceAssemblies
+            .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(new[]
-            {
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            });
+            .Concat(
+                new[]
+                {
+                    MetadataReference.CreateFromFile(
+                        typeof(GenerateImposterAttribute).Assembly.Location
+                    ),
+                }
+            );
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterStaticMembersTests",
             syntaxTrees: new[] { CSharpSyntaxTree.ParseText(source, parseOptions) },
             references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
     }
 }
-

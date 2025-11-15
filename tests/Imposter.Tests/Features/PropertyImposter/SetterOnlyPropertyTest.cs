@@ -8,20 +8,19 @@ namespace Imposter.Tests.Features.PropertyImposter
     {
         private readonly IPropertySetupSutImposter _sut =
 #if USE_CSHARP14
-            IPropertySetupSut.Imposter();
+        IPropertySetupSut.Imposter();
 #else
-            new IPropertySetupSutImposter();
+        new IPropertySetupSutImposter();
 #endif
 
         [Fact]
         public void GivenSetterOnlyProperty_WhenImposterAccessed_ShouldHaveGetterApi()
         {
             _sut.LastName.Setter(1);
-            
+
             _sut.LastName.Setter(1).ShouldNotBeNull();
             _sut.LastName.Setter(1).Callback(_ => { }).ShouldNotBeNull();
             _sut.LastName.Setter(1).Called(Count.Never());
         }
-
     }
 }

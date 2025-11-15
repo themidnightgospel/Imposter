@@ -14,14 +14,17 @@ namespace Imposter.CodeGenerator.Tests.Helpers;
 
 internal static class GeneratorTestHelper
 {
-    private static readonly Lazy<Task<MetadataReference[]>> CachedReferences = new(ResolveReferencesAsync);
+    private static readonly Lazy<Task<MetadataReference[]>> CachedReferences = new(
+        ResolveReferencesAsync
+    );
 
     internal static async Task<GeneratorTestContext> CreateContext(
         string source,
         string baseSourceFileName,
         string snippetFileName,
         string assemblyName,
-        LanguageVersion languageVersion = LanguageVersion.CSharp8)
+        LanguageVersion languageVersion = LanguageVersion.CSharp8
+    )
     {
         return new GeneratorTestContext(
             source,
@@ -29,7 +32,8 @@ internal static class GeneratorTestHelper
             snippetFileName,
             assemblyName,
             languageVersion,
-            await CachedReferences.Value.ConfigureAwait(false));
+            await CachedReferences.Value.ConfigureAwait(false)
+        );
     }
 
     internal static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
@@ -41,7 +45,8 @@ internal static class GeneratorTestHelper
         ImmutableArray<Diagnostic> diagnostics,
         string expectedId,
         int expectedLine,
-        string snippetFileName = "Snippet.cs")
+        string snippetFileName = "Snippet.cs"
+    )
     {
         diagnostics.Length.ShouldBe(1, FormatDiagnostics(diagnostics));
         var diagnostic = diagnostics[0];
@@ -72,18 +77,21 @@ internal static class GeneratorTestHelper
             {
                 var span = diagnostic.Location.GetLineSpan();
                 return $"{diagnostic.Id}: {diagnostic.GetMessage()} ({span.Path}:{span.StartLinePosition.Line + 1},{span.StartLinePosition.Character + 1})";
-            }));
+            })
+        );
     }
 
     private static async Task<MetadataReference[]> ResolveReferencesAsync()
     {
-        var references = await ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
+        var references = await ReferenceAssemblies
+            .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .ConfigureAwait(false);
 
         return references
             .Concat([
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
+                MetadataReference.CreateFromFile(
+                    typeof(GenerateImposterAttribute).Assembly.Location
+                ),
             ])
             .ToArray();
     }
@@ -106,7 +114,8 @@ internal sealed class GeneratorTestContext
         string snippetFileName,
         string assemblyName,
         LanguageVersion languageVersion,
-        MetadataReference[] references)
+        MetadataReference[] references
+    )
     {
         _source = source;
         _baseSourceFileName = baseSourceFileName;
@@ -122,21 +131,32 @@ internal sealed class GeneratorTestContext
     {
         var generatorResult = _generatorResult.Value;
 
-        var baseTree = CSharpSyntaxTree.ParseText(_source, _parseOptions, path: _baseSourceFileName);
-        var snippetTree = CSharpSyntaxTree.ParseText(snippet, _parseOptions, path: _snippetFileName);
-        var generatedTrees = generatorResult.GeneratedSources
-            .Select(gs => CSharpSyntaxTree.ParseText(gs.SourceText.ToString(), _parseOptions, path: gs.HintName));
+        var baseTree = CSharpSyntaxTree.ParseText(
+            _source,
+            _parseOptions,
+            path: _baseSourceFileName
+        );
+        var snippetTree = CSharpSyntaxTree.ParseText(
+            snippet,
+            _parseOptions,
+            path: _snippetFileName
+        );
+        var generatedTrees = generatorResult.GeneratedSources.Select(gs =>
+            CSharpSyntaxTree.ParseText(gs.SourceText.ToString(), _parseOptions, path: gs.HintName)
+        );
 
         var compilation = CSharpCompilation.Create(
             assemblyName: $"{_assemblyName}.Snippet",
             syntaxTrees: new[] { baseTree, snippetTree }.Concat(generatedTrees),
             references: _references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
 
-        return [
-            ..compilation
+        return
+        [
+            .. compilation
                 .GetDiagnostics()
-                .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error),
         ];
     }
 
@@ -161,7 +181,11 @@ internal sealed class GeneratorTestContext
     private CSharpCompilation CreateCompilation() =>
         CSharpCompilation.Create(
             assemblyName: _assemblyName,
-            syntaxTrees: [CSharpSyntaxTree.ParseText(_source, _parseOptions, path: _baseSourceFileName)],
+            syntaxTrees:
+            [
+                CSharpSyntaxTree.ParseText(_source, _parseOptions, path: _baseSourceFileName),
+            ],
             references: _references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
 }

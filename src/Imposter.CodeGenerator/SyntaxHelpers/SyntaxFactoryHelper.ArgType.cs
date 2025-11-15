@@ -14,12 +14,15 @@ internal static partial class SyntaxFactoryHelper
             ? WellKnownTypes.Imposter.Abstractions.OutArg(TypeSyntax(parameter.Type))
             : WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax(parameter.Type));
 
-    internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(TypeSyntax argArgumentTypeSyntax) =>
+    internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
+        TypeSyntax argArgumentTypeSyntax
+    ) =>
         PropertyDeclaration(argArgumentTypeSyntax, Identifier("ArgumentsCriteria"))
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+            );
 
     internal static ArgumentSyntax ArgAnyArgument(IParameterSymbol parameter) =>
         Argument(ArgType(parameter).Dot(IdentifierName("Any")).Call());
@@ -30,21 +33,22 @@ internal static partial class SyntaxFactoryHelper
     internal static InvocationExpressionSyntax ArgAny(TypeSyntax type) =>
         WellKnownTypes.Imposter.Abstractions.Arg(type).Dot(IdentifierName("Any")).Call();
 
-    internal static ArgumentListSyntax ArgAnyArgumentList(IEnumerable<IParameterSymbol> parameter) => ArgumentListSyntax(SeparatedList(parameter.Select(ArgAnyArgument)));
+    internal static ArgumentListSyntax ArgAnyArgumentList(
+        IEnumerable<IParameterSymbol> parameter
+    ) => ArgumentListSyntax(SeparatedList(parameter.Select(ArgAnyArgument)));
 
     internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
-    internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) => ParameterSyntax(ArgType(parameter), parameter.Name);
+    internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
+        ParameterSyntax(ArgType(parameter), parameter.Name);
 
-    internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(ImposterTargetMethodMetadata method)
-        => method.ArgumentsCriteria.Syntax
-            .New(
-                ArgumentListSyntax(
-                    method
-                        .Symbol
-                        .Parameters
-                        .Select(p => Argument(IdentifierName(p.Name)))
-                )
-            );
+    internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(
+        ImposterTargetMethodMetadata method
+    ) =>
+        method.ArgumentsCriteria.Syntax.New(
+            ArgumentListSyntax(
+                method.Symbol.Parameters.Select(p => Argument(IdentifierName(p.Name)))
+            )
+        );
 }

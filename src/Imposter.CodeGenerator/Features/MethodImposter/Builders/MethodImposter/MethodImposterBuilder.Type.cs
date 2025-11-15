@@ -19,25 +19,33 @@ internal static partial class MethodImposterBuilder
 
         if (method.Symbol.IsGenericMethod)
         {
-            methodImposterClassBuilder = methodImposterClassBuilder.AddBaseType(SimpleBaseType(method.MethodImposter.GenericInterface.Syntax));
+            methodImposterClassBuilder = methodImposterClassBuilder.AddBaseType(
+                SimpleBaseType(method.MethodImposter.GenericInterface.Syntax)
+            );
         }
 
-        var invocationHistoryCollectionField = SyntaxFactoryHelper
-            .SingleVariableField(
-                method.InvocationHistory.Collection.Syntax,
-                method.InvocationHistory.Collection.AsField.Name,
-                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
+        var invocationHistoryCollectionField = SyntaxFactoryHelper.SingleVariableField(
+            method.InvocationHistory.Collection.Syntax,
+            method.InvocationHistory.Collection.AsField.Name,
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+        );
 
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
             "_invocationBehavior",
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+        );
 
         return methodImposterClassBuilder
             .AddMember(BuildInvocationSetupsField(method))
             .AddMember(invocationHistoryCollectionField)
             .AddMember(invocationBehaviorField)
-            .AddMember(SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(method.MethodImposter.Name, [invocationHistoryCollectionField, invocationBehaviorField]))
+            .AddMember(
+                SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
+                    method.MethodImposter.Name,
+                    [invocationHistoryCollectionField, invocationBehaviorField]
+                )
+            )
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))
@@ -47,7 +55,9 @@ internal static partial class MethodImposterBuilder
             .AddMember(MethodImposterBuilderBuilder.Build(method))
             .Build();
 
-        static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(in ImposterTargetMethodMetadata method) =>
+        static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(
+            in ImposterTargetMethodMetadata method
+        ) =>
             method.Parameters.HasOutputParameters
                 ? InitializeOutParametersMethodBuilder.Build(method)
                 : null;

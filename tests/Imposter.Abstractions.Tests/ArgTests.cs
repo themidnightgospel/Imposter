@@ -12,7 +12,7 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<int>.Any();
-            
+
         // Act & Assert
         arg.Matches(100).ShouldBeTrue();
         arg.Matches(-50).ShouldBeTrue();
@@ -24,7 +24,7 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<string>.Any();
-            
+
         // Act & Assert
         arg.Matches("hello").ShouldBeTrue();
         arg.Matches("").ShouldBeTrue();
@@ -36,7 +36,7 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<int>.Is(42);
-            
+
         // Act & Assert
         arg.Matches(42).ShouldBeTrue();
         arg.Matches(43).ShouldBeFalse();
@@ -85,24 +85,24 @@ public class ArgTests
         arg.Matches("bar").ShouldBeTrue();
         arg.Matches("FOO").ShouldBeFalse();
     }
-        
+
     [Fact]
     public void Arg_Is_Reference_ShouldMatchEqualReference()
     {
         // Arrange
         var arg = Arg<string>.Is("test");
-            
+
         // Act & Assert
         arg.Matches("test").ShouldBeTrue();
         arg.Matches("different").ShouldBeFalse();
     }
-        
+
     [Fact]
     public void Arg_Is_Null_ShouldMatchNull()
     {
         // Arrange
         var arg = Arg<string>.Is((string?)null);
-            
+
         // Act & Assert
         arg.Matches(null!).ShouldBeTrue();
         arg.Matches("not null").ShouldBeFalse();
@@ -124,7 +124,7 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<int>.Is(i => i > 10);
-            
+
         // Act & Assert
         arg.Matches(11).ShouldBeTrue();
         arg.Matches(10).ShouldBeFalse();
@@ -176,13 +176,13 @@ public class ArgTests
         arg.Matches("baz").ShouldBeTrue();
         arg.Matches("FOO").ShouldBeFalse();
     }
-        
+
     [Fact]
     public void Arg_IsDefault_ShouldMatchDefaultValueType()
     {
         // Arrange
         var arg = Arg<int>.IsDefault();
-            
+
         // Act & Assert
         arg.Matches(0).ShouldBeTrue();
         arg.Matches(1).ShouldBeFalse();
@@ -193,7 +193,7 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<string>.IsDefault();
-            
+
         // Act & Assert
         arg.Matches(null!).ShouldBeTrue();
         arg.Matches("").ShouldBeFalse();
@@ -204,31 +204,31 @@ public class ArgTests
     {
         // Arrange
         var arg = Arg<TestStruct>.IsDefault();
-            
+
         // Act & Assert
         arg.Matches(default).ShouldBeTrue();
         arg.Matches(new TestStruct(1)).ShouldBeFalse();
     }
-        
+
     [Fact]
     public void OutArg_Any_ShouldAlwaysMatch()
     {
         // Arrange
         var arg = OutArg<int>.Any();
-            
+
         // Act & Assert
         // For an 'out' param, the value passed to Matches will be the default,
         // but the matcher should be independent of it.
         arg.Matches(0).ShouldBeTrue();
         arg.Matches(100).ShouldBeTrue(); // Hypothetical value
     }
-        
+
     [Fact]
     public void OutArg_Any_ShouldAlwaysMatchForReferenceTypes()
     {
         // Arrange
         var arg = OutArg<string>.Any();
-            
+
         // Act & Assert
         arg.Matches(null!).ShouldBeTrue();
 
@@ -236,10 +236,11 @@ public class ArgTests
         // so this just confirms the matcher always returns true.
         arg.Matches("some value").ShouldBeTrue();
     }
-        
+
     private struct TestStruct
     {
         public int Value { get; }
+
         public TestStruct(int value) => Value = value;
     }
 }

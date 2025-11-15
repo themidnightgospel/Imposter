@@ -1,7 +1,7 @@
 using Imposter.Abstractions;
 using Imposter.Tests.Features.IndexerImposter;
 
-[assembly:GenerateImposter(typeof(ISetterOnlyIndexerSetupSut))]
+[assembly: GenerateImposter(typeof(ISetterOnlyIndexerSetupSut))]
 
 namespace Imposter.Tests.Features.IndexerImposter
 {

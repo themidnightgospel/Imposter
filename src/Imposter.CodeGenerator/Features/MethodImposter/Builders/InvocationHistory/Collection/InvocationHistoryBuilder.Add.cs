@@ -9,13 +9,19 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationHist
 
 internal static partial class InvocationHistoryCollectionBuilder
 {
-    internal static MethodDeclarationSyntax BuildAddMethod(in ImposterTargetMethodMetadata method) =>
+    internal static MethodDeclarationSyntax BuildAddMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, "Add")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(method.InvocationHistory.Interface.Syntax, "invocationHistory"))
+            .AddParameter(
+                ParameterSyntax(method.InvocationHistory.Interface.Syntax, "invocationHistory")
+            )
             .WithBody(
                 Block(
-                IdentifierName(InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName)
+                    IdentifierName(
+                            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+                        )
                         .Dot(IdentifierName("Push"))
                         .Call(ArgumentListSyntax(Argument(IdentifierName("invocationHistory"))))
                         .ToStatementSyntax()

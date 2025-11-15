@@ -24,7 +24,9 @@ internal static class IndexerArgumentsBuilder
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
                     new FieldMetadata(parameter.Name, parameter.TypeSyntax),
-                    SyntaxKind.PublicKeyword));
+                    SyntaxKind.PublicKeyword
+                )
+            );
         }
 
         classBuilder = classBuilder.AddMember(BuildConstructor(indexer));
@@ -37,8 +39,9 @@ internal static class IndexerArgumentsBuilder
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterIndexerMetadata indexer)
     {
-        var constructorBuilder = new ConstructorBuilder(indexer.Arguments.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)));
+        var constructorBuilder = new ConstructorBuilder(indexer.Arguments.Name).WithModifiers(
+            TokenList(Token(SyntaxKind.InternalKeyword))
+        );
 
         var bodyBuilder = new BlockBuilder();
 
@@ -46,10 +49,11 @@ internal static class IndexerArgumentsBuilder
         {
             constructorBuilder = constructorBuilder.AddParameter(parameter.ParameterSyntax);
             bodyBuilder.AddStatement(
-            ThisExpression()
-                .Dot(IdentifierName(parameter.Name))
-                .Assign(IdentifierName(parameter.Name))
-                .ToStatementSyntax());
+                ThisExpression()
+                    .Dot(IdentifierName(parameter.Name))
+                    .Assign(IdentifierName(parameter.Name))
+                    .ToStatementSyntax()
+            );
         }
 
         return constructorBuilder.WithBody(bodyBuilder.Build()).Build();
@@ -68,7 +72,8 @@ internal static class IndexerArgumentsBuilder
             var equalsExpression = BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 IdentifierName(parameter.Name),
-                otherIdentifierName.Dot(IdentifierName(parameter.Name)));
+                otherIdentifierName.Dot(IdentifierName(parameter.Name))
+            );
 
             comparison = comparison.And(equalsExpression);
         }
@@ -80,32 +85,54 @@ internal static class IndexerArgumentsBuilder
                 Block(
                     IfStatement(
                         BinaryExpression(SyntaxKind.EqualsExpression, otherIdentifierName, Null),
-                        Block(ReturnStatement(False))),
-                    ReturnStatement(comparison)))
+                        Block(ReturnStatement(False))
+                    ),
+                    ReturnStatement(comparison)
+                )
+            )
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildObjectEqualsMethod(in ImposterIndexerMetadata indexer)
+    private static MethodDeclarationSyntax BuildObjectEqualsMethod(
+        in ImposterIndexerMetadata indexer
+    )
     {
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .AddParameter(
                 Parameter(Identifier("obj"))
-                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword)))))
-            .WithBody(Block(
-                ReturnStatement(
-                    IsPatternExpression(
-                        IdentifierName("obj"),
-                        DeclarationPattern(indexer.Arguments.TypeSyntax, SingleVariableDesignation(Identifier("other")))
-                    ).And(
-                        IdentifierName("Equals")
-                            .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("other")))))
-                    ))))
+                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+            )
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IsPatternExpression(
+                                IdentifierName("obj"),
+                                DeclarationPattern(
+                                    indexer.Arguments.TypeSyntax,
+                                    SingleVariableDesignation(Identifier("other"))
+                                )
+                            )
+                            .And(
+                                IdentifierName("Equals")
+                                    .Call(
+                                        ArgumentList(
+                                            SingletonSeparatedList(
+                                                Argument(IdentifierName("other"))
+                                            )
+                                        )
+                                    )
+                            )
+                    )
+                )
+            )
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildGetHashCodeMethod(in ImposterIndexerMetadata indexer)
+    private static MethodDeclarationSyntax BuildGetHashCodeMethod(
+        in ImposterIndexerMetadata indexer
+    )
     {
         var statements = new List<StatementSyntax>
         {
@@ -113,18 +140,23 @@ internal static class IndexerArgumentsBuilder
                 WellKnownTypes.System.HashCode,
                 "hash",
                 ObjectCreationExpression(WellKnownTypes.System.HashCode)
-                    .WithArgumentList(EmptyArgumentListSyntax))
+                    .WithArgumentList(EmptyArgumentListSyntax)
+            ),
         };
 
         foreach (var parameter in indexer.Core.Parameters)
         {
             statements.Add(
-                    IdentifierName("hash")
-                        .Dot(IdentifierName("Add"))
-                        .Call(Argument(IdentifierName(parameter.Name))).ToStatementSyntax());
+                IdentifierName("hash")
+                    .Dot(IdentifierName("Add"))
+                    .Call(Argument(IdentifierName(parameter.Name)))
+                    .ToStatementSyntax()
+            );
         }
 
-        statements.Add(ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call()));
+        statements.Add(
+            ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call())
+        );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Int, "GetHashCode")
             .AddModifier(Token(SyntaxKind.PublicKeyword))

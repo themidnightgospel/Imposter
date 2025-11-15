@@ -12,17 +12,15 @@ namespace Imposter.Tests.Features.MethodImposter
     {
         private readonly IMethodSetupFeatureSutImposter _sut =
 #if USE_CSHARP14
-            IMethodSetupFeatureSut.Imposter();
+        IMethodSetupFeatureSut.Imposter();
 #else
-            new IMethodSetupFeatureSutImposter();
+        new IMethodSetupFeatureSutImposter();
 #endif
 
         [Fact]
         public void GivenIntNoParamsMethod_WhenInvoked_ThenVerifiesAllInvocations()
         {
-            _sut
-                .IntNoParams()
-                .Returns(1);
+            _sut.IntNoParams().Returns(1);
 
             _sut.Instance().IntNoParams().ShouldBe(1);
             _sut.Instance().IntNoParams().ShouldBe(1);
@@ -69,7 +67,9 @@ namespace Imposter.Tests.Features.MethodImposter
 
             _sut.IntNoParams().Called(Count.AtLeast(2));
             _sut.IntNoParams().Called(Count.AtLeast(3));
-            Should.Throw<VerificationFailedException>(() => _sut.IntNoParams().Called(Count.AtLeast(4)));
+            Should.Throw<VerificationFailedException>(() =>
+                _sut.IntNoParams().Called(Count.AtLeast(4))
+            );
         }
 
         [Fact]
@@ -80,15 +80,15 @@ namespace Imposter.Tests.Features.MethodImposter
 
             _sut.IntNoParams().Called(Count.AtMost(3));
             _sut.IntNoParams().Called(Count.AtMost(2));
-            Should.Throw<VerificationFailedException>(() => _sut.IntNoParams().Called(Count.AtMost(1)));
+            Should.Throw<VerificationFailedException>(() =>
+                _sut.IntNoParams().Called(Count.AtMost(1))
+            );
         }
 
         [Fact]
         public async Task GivenAsyncTaskIntNoParams_WhenAwaited_ThenVerifiesCallCount()
         {
-            _sut
-                .AsyncTaskIntNoParams()
-                .Returns(() => Task.FromResult(5));
+            _sut.AsyncTaskIntNoParams().Returns(() => Task.FromResult(5));
 
             await _sut.Instance().AsyncTaskIntNoParams();
             await _sut.Instance().AsyncTaskIntNoParams();
@@ -99,21 +99,19 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public async Task GivenAsyncTaskIntNoParams_WhenVerificationMismatch_ThenThrows()
         {
-            _sut
-                .AsyncTaskIntNoParams()
-                .Returns(() => Task.FromResult(1));
+            _sut.AsyncTaskIntNoParams().Returns(() => Task.FromResult(1));
 
             await _sut.Instance().AsyncTaskIntNoParams();
 
             Should.Throw<VerificationFailedException>(() =>
-                _sut.AsyncTaskIntNoParams().Called(Count.Exactly(2)));
+                _sut.AsyncTaskIntNoParams().Called(Count.Exactly(2))
+            );
         }
 
         [Fact]
         public async Task GivenAsyncTaskIntNoParams_WhenChainingThen_ThenVerifiesAcrossInvocations()
         {
-            _sut
-                .AsyncTaskIntNoParams()
+            _sut.AsyncTaskIntNoParams()
                 .Returns(() => Task.FromResult(10))
                 .Then()
                 .Returns(() => Task.FromResult(20));
@@ -124,15 +122,14 @@ namespace Imposter.Tests.Features.MethodImposter
 
             _sut.AsyncTaskIntNoParams().Called(Count.Exactly(3));
             Should.Throw<VerificationFailedException>(() =>
-                _sut.AsyncTaskIntNoParams().Called(Count.AtLeast(4)));
+                _sut.AsyncTaskIntNoParams().Called(Count.AtLeast(4))
+            );
         }
 
         [Fact]
         public async Task GivenAsyncValueTaskIntNoParams_WhenAwaited_ThenVerifiesCallCount()
         {
-            _sut
-                .AsyncValueTaskIntNoParams()
-                .ReturnsAsync(7);
+            _sut.AsyncValueTaskIntNoParams().ReturnsAsync(7);
 
             await _sut.Instance().AsyncValueTaskIntNoParams();
             await _sut.Instance().AsyncValueTaskIntNoParams();
@@ -184,9 +181,12 @@ namespace Imposter.Tests.Features.MethodImposter
             _sut.Instance().IntParams(2, "name2", regex2);
             _sut.Instance().IntParams(1, "name1", regex1);
 
-            _sut.IntParams(Arg<int>.Is(1), Arg<string>.Is("name1"), Arg<Regex>.Any()).Called(Count.Exactly(2));
-            _sut.IntParams(Arg<int>.Is(2), Arg<string>.Any(), Arg<Regex>.Any()).Called(Count.Once());
-            _sut.IntParams(Arg<int>.Is(3), Arg<string>.Any(), Arg<Regex>.Any()).Called(Count.Never());
+            _sut.IntParams(Arg<int>.Is(1), Arg<string>.Is("name1"), Arg<Regex>.Any())
+                .Called(Count.Exactly(2));
+            _sut.IntParams(Arg<int>.Is(2), Arg<string>.Any(), Arg<Regex>.Any())
+                .Called(Count.Once());
+            _sut.IntParams(Arg<int>.Is(3), Arg<string>.Any(), Arg<Regex>.Any())
+                .Called(Count.Never());
         }
 
         [Fact]
@@ -243,7 +243,9 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             _sut.Instance().IntParamsParam("alpha", "beta", "gamma");
 
-            _sut.IntParamsParam(Arg<string[]>.Is(arr => arr.SequenceEqual(new[] { "alpha", "beta", "gamma" })))
+            _sut.IntParamsParam(
+                    Arg<string[]>.Is(arr => arr.SequenceEqual(new[] { "alpha", "beta", "gamma" }))
+                )
                 .Called(Count.Once());
         }
 
@@ -254,25 +256,29 @@ namespace Imposter.Tests.Features.MethodImposter
             var refValue2 = 200;
 
             int inVal = 50;
-            _sut.Instance().IntAllRefKinds(out var outVal1, ref refValue1, in inVal, "test1", "a", "b");
+            _sut.Instance()
+                .IntAllRefKinds(out var outVal1, ref refValue1, in inVal, "test1", "a", "b");
             int inVal2 = 60;
-            _sut.Instance().IntAllRefKinds(out var outVal2, ref refValue2, in inVal2, "test2", "x", "y", "z");
+            _sut.Instance()
+                .IntAllRefKinds(out var outVal2, ref refValue2, in inVal2, "test2", "x", "y", "z");
 
             _sut.IntAllRefKinds(
-                OutArg<int>.Any(),
-                Arg<int>.Any(),
-                Arg<int>.Any(),
-                Arg<string>.Any(),
-                Arg<string[]>.Any()
-            ).Called(Count.Exactly(2));
+                    OutArg<int>.Any(),
+                    Arg<int>.Any(),
+                    Arg<int>.Any(),
+                    Arg<string>.Any(),
+                    Arg<string[]>.Any()
+                )
+                .Called(Count.Exactly(2));
 
             _sut.IntAllRefKinds(
-                OutArg<int>.Any(),
-                Arg<int>.Is(100),
-                Arg<int>.Is(50),
-                Arg<string>.Is("test1"),
-                Arg<string[]>.Is(arr => arr.Length == 2)
-            ).Called(Count.Once());
+                    OutArg<int>.Any(),
+                    Arg<int>.Is(100),
+                    Arg<int>.Is(50),
+                    Arg<string>.Is("test1"),
+                    Arg<string[]>.Is(arr => arr.Length == 2)
+                )
+                .Called(Count.Once());
         }
 
         [Fact]
@@ -336,7 +342,8 @@ namespace Imposter.Tests.Features.MethodImposter
 
             _sut.GenericParamsParam<string, int>(Arg<string[]>.Any()).Called(Count.Exactly(2));
             _sut.GenericParamsParam<int, string>(Arg<int[]>.Any()).Called(Count.Once());
-            _sut.GenericParamsParam<string, int>(Arg<string[]>.Is(arr => arr.Length == 2)).Called(Count.Once());
+            _sut.GenericParamsParam<string, int>(Arg<string[]>.Is(arr => arr.Length == 2))
+                .Called(Count.Once());
         }
 
         [Fact]
@@ -346,34 +353,39 @@ namespace Imposter.Tests.Features.MethodImposter
             IAnimal refAnimal2 = new Dog("dog1");
 
             var inVal = new Dog("input1");
-            _sut.Instance().GenericAllRefKind<Cat, IAnimal, Dog, Tiger, bool>(
-                out var outCat1,
-                ref refAnimal1,
-                in inVal,
-                new Tiger("tiger1"), new Tiger("tiger2")
-            );
+            _sut.Instance()
+                .GenericAllRefKind<Cat, IAnimal, Dog, Tiger, bool>(
+                    out var outCat1,
+                    ref refAnimal1,
+                    in inVal,
+                    new Tiger("tiger1"),
+                    new Tiger("tiger2")
+                );
 
             var inVal2 = new Cat("input2");
-            _sut.Instance().GenericAllRefKind<Dog, IAnimal, Cat, Tiger, string>(
-                out var outDog1,
-                ref refAnimal2,
-                in inVal2,
-                new Tiger("tiger3")
-            );
+            _sut.Instance()
+                .GenericAllRefKind<Dog, IAnimal, Cat, Tiger, string>(
+                    out var outDog1,
+                    ref refAnimal2,
+                    in inVal2,
+                    new Tiger("tiger3")
+                );
 
             _sut.GenericAllRefKind<Cat, IAnimal, Dog, Tiger, bool>(
-                OutArg<Cat>.Any(),
-                Arg<IAnimal>.Any(),
-                Arg<Dog>.Any(),
-                Arg<Tiger[]>.Any()
-            ).Called(Count.Once());
+                    OutArg<Cat>.Any(),
+                    Arg<IAnimal>.Any(),
+                    Arg<Dog>.Any(),
+                    Arg<Tiger[]>.Any()
+                )
+                .Called(Count.Once());
 
             _sut.GenericAllRefKind<Dog, IAnimal, Cat, Tiger, string>(
-                OutArg<Dog>.Any(),
-                Arg<IAnimal>.Any(),
-                Arg<Cat>.Any(),
-                Arg<Tiger[]>.Any()
-            ).Called(Count.Once());
+                    OutArg<Dog>.Any(),
+                    Arg<IAnimal>.Any(),
+                    Arg<Cat>.Any(),
+                    Arg<Tiger[]>.Any()
+                )
+                .Called(Count.Once());
         }
 
         [Fact]
@@ -384,13 +396,14 @@ namespace Imposter.Tests.Features.MethodImposter
             _sut.Instance().GenericSingleParam<Cat>(new Cat("whiskers"));
 
             _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Any()).Called(Count.Exactly(2));
-            
+
             _sut.GenericSingleParam<Cat>(Arg<Cat>.Any()).Called(Count.Exactly(1));
             _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Is(it => it is Cat)).Called(Count.Once());
             _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Is(it => it is Dog)).Called(Count.Once());
-            _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Is(a => a.Name.StartsWith("fluf"))).Called(Count.Once());
+            _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Is(a => a.Name.StartsWith("fluf")))
+                .Called(Count.Once());
         }
-        
+
         [Fact]
         public void GivenGenericOutParamMethod_WhenCalledWithInheritanceTypes_ThenVerifiesCorrectly()
         {
@@ -403,9 +416,9 @@ namespace Imposter.Tests.Features.MethodImposter
             _sut.GenericOutParam<Animal, int>(OutArg<Animal>.Any()).Called(Count.Never());
             _sut.GenericOutParam<Cat, string>(OutArg<Cat>.Any()).Called(Count.Never());
             _sut.GenericOutParam<Cat, int>(OutArg<Cat>.Any()).Called(Count.Once());
-            
+
             _sut.GenericOutParam<Dog, string>(OutArg<Dog>.Any()).Called(Count.Once());
-            
+
             _sut.GenericOutParam<Tiger, double>(OutArg<Tiger>.Any()).Called(Count.Once());
         }
 
@@ -466,8 +479,10 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             _sut.Instance().IntParams(42, null, new Regex("test"));
 
-            _sut.IntParams(Arg<int>.Is(42), Arg<string>.Is((string)null), Arg<Regex>.Any()).Called(Count.Once());
-            _sut.IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any()).Called(Count.Once());
+            _sut.IntParams(Arg<int>.Is(42), Arg<string>.Is((string)null), Arg<Regex>.Any())
+                .Called(Count.Once());
+            _sut.IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
+                .Called(Count.Once());
         }
 
         [Fact]

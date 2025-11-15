@@ -11,10 +11,12 @@ internal static partial class SyntaxFactoryHelper
     // TODO incorporate in ConstructorWithFieldInitializationBuilder
     internal static ConstructorDeclarationSyntax BuildConstructorAndInitializeMembers(
         string className,
-        IEnumerable<FieldDeclarationSyntax> fields)
+        IEnumerable<FieldDeclarationSyntax> fields
+    )
     {
-        var constructorBuilder = new ConstructorBuilder(className)
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
+        var constructorBuilder = new ConstructorBuilder(className).WithModifiers(
+            TokenList(Token(SyntaxKind.PublicKeyword))
+        );
 
         var constructorBody = new BlockBuilder();
 

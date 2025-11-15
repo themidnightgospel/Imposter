@@ -25,8 +25,13 @@ namespace Imposter.Tests.Docs.Methods
 
             var stages = new List<string>();
 
-            imposter.GetNumber()
-                .Returns(() => { stages.Add("return"); return 42; })
+            imposter
+                .GetNumber()
+                .Returns(() =>
+                {
+                    stages.Add("return");
+                    return 42;
+                })
                 .Callback(() => stages.Add("first"))
                 .Callback(() => stages.Add("second"));
 
@@ -53,13 +58,26 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GenericAllRefKind(
+            imposter
+                .GenericAllRefKind(
                     OutArg<int>.Any(),
                     Arg<string>.Any(),
                     Arg<double>.Any(),
-                    Arg<bool[]>.Any())
-                .Returns((out int o, ref string r, in double d, bool[] args) => { o = 5; return 99; })
-                .Callback((out int o, ref string r, in double d, bool[] args) => { o = 5; });
+                    Arg<bool[]>.Any()
+                )
+                .Returns(
+                    (out int o, ref string r, in double d, bool[] args) =>
+                    {
+                        o = 5;
+                        return 99;
+                    }
+                )
+                .Callback(
+                    (out int o, ref string r, in double d, bool[] args) =>
+                    {
+                        o = 5;
+                    }
+                );
 
             string r = "x";
             double d = 3.14;
@@ -76,7 +94,8 @@ namespace Imposter.Tests.Docs.Methods
 
             var seen = new List<string>();
 
-            imposter.Increment(Arg<int>.Any())
+            imposter
+                .Increment(Arg<int>.Any())
                 .Returns(_ => 10)
                 .Callback(_ => seen.Add("first"))
                 .Then()
@@ -94,7 +113,8 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumber()
+            imposter
+                .GetNumber()
                 .Returns(1)
                 .Callback(() => throw new InvalidOperationException("boom"));
 

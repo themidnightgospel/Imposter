@@ -13,7 +13,8 @@ internal readonly struct GetterMethodMetadata
 
     internal GetterMethodMetadata(
         in ImposterIndexerCoreMetadata core,
-        in IndexerGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata)
+        in IndexerGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata
+    )
     {
         ReturnType = getterInterfaceMetadata.TypeSyntax;
         Parameters = [];

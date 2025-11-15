@@ -42,13 +42,20 @@ internal readonly ref struct ImposterIndexerMetadata
         Arguments = new IndexerArgumentsMetadata(Core);
         ArgumentsCriteria = new IndexerArgumentsCriteriaMetadata(Core);
         DefaultIndexerBehaviour = new DefaultIndexerBehaviourMetadata(Core, Arguments);
-        DefaultIndexerBehaviourField = new FieldMetadata($"_{Core.UniqueName}DefaultIndexerBehaviour", DefaultIndexerBehaviour.TypeSyntax);
+        DefaultIndexerBehaviourField = new FieldMetadata(
+            $"_{Core.UniqueName}DefaultIndexerBehaviour",
+            DefaultIndexerBehaviour.TypeSyntax
+        );
         Delegates = new IndexerDelegateMetadata(Core);
         GetterImplementation = new IndexerGetterImposterMetadata(this);
         SetterImplementation = new IndexerSetterImposterMetadata(this);
         GetterBuilderInterface = new IndexerGetterImposterBuilderInterfaceMetadata(Core, Delegates);
         SetterBuilderInterface = new IndexerSetterImposterBuilderInterfaceMetadata(Core, Delegates);
-        BuilderInterface = new IndexerImposterBuilderInterfaceMetadata(Core, SetterBuilderInterface, GetterBuilderInterface);
+        BuilderInterface = new IndexerImposterBuilderInterfaceMetadata(
+            Core,
+            SetterBuilderInterface,
+            GetterBuilderInterface
+        );
         Builder = new IndexerImposterBuilderMetadata(Core, DefaultIndexerBehaviourField);
         BuilderField = new FieldMetadata($"_{Core.UniqueName}Indexer", Builder.TypeSyntax);
         ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(propertySymbol);

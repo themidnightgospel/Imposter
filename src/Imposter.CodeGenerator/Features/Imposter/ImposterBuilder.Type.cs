@@ -38,7 +38,8 @@ internal readonly ref partial struct ImposterBuilder
         string invocationBehaviorParameterName,
         bool isClassTarget,
         ImposterTargetConstructorMetadata[] accessibleConstructors,
-        NameSet memberNameSet)
+        NameSet memberNameSet
+    )
     {
         _imposterBuilder = imposterBuilder;
         _imposterInstanceBuilder = imposterInstanceBuilder;
@@ -71,24 +72,28 @@ internal readonly ref partial struct ImposterBuilder
                 property.ImposterBuilderInterface.Syntax,
                 property.Core.Name,
                 IdentifierName(property.AsField.Name)
-            ));
+            )
+        );
 
         _imposterBuilder.AddMember(
             SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
                 property.ImposterBuilder.Syntax,
-                property.AsField.Name));
+                property.AsField.Name
+            )
+        );
 
         _constructorBodyBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(property.AsField.Name))
                 .Assign(
-                    property.ImposterBuilder.Syntax
-                        .New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
-                            [
-                                Argument(IdentifierName(_invocationBehaviorParameterName))
-                            ])))
-                .ToStatementSyntax());
+                    property.ImposterBuilder.Syntax.New(
+                        SyntaxFactoryHelper.ArgumentListSyntax([
+                            Argument(IdentifierName(_invocationBehaviorParameterName)),
+                        ])
+                    )
+                )
+                .ToStatementSyntax()
+        );
 
         _imposterInstanceBuilder.AddImposterProperty(property);
 
@@ -102,18 +107,22 @@ internal readonly ref partial struct ImposterBuilder
                 @event.BuilderInterface.TypeSyntax,
                 @event.Core.Name,
                 IdentifierName(@event.BuilderField.Name)
-            ));
+            )
+        );
 
         _imposterBuilder.AddMember(
             SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
                 @event.Builder.TypeSyntax,
-                @event.BuilderField.Name));
+                @event.BuilderField.Name
+            )
+        );
 
         _constructorBodyBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(@event.BuilderField.Name))
                 .Assign(@event.Builder.TypeSyntax.New())
-                .ToStatementSyntax());
+                .ToStatementSyntax()
+        );
 
         _imposterInstanceBuilder.AddEvent(@event);
 
@@ -122,44 +131,65 @@ internal readonly ref partial struct ImposterBuilder
 
     internal ImposterBuilder AddIndexerImposter(in ImposterIndexerMetadata indexer)
     {
-        var propertyDisplayLiteral = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(indexer.Core.DisplayName));
-
-        _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, indexer.BuilderField.Name)
+        var propertyDisplayLiteral = LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            Literal(indexer.Core.DisplayName)
         );
 
-        var invocationBuilderCreation = indexer.Builder.InvocationBuilderTypeSyntax
-            .New(
-                SyntaxFactoryHelper.ArgumentListSyntax(
-                [
-                    Argument(IdentifierName(indexer.BuilderField.Name)),
-                    Argument(
-                        indexer.ArgumentsCriteria.TypeSyntax.New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
-                                indexer.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))))
-                ]));
+        _imposterBuilder.AddMember(
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+                indexer.Builder.TypeSyntax,
+                indexer.BuilderField.Name
+            )
+        );
+
+        var invocationBuilderCreation = indexer.Builder.InvocationBuilderTypeSyntax.New(
+            SyntaxFactoryHelper.ArgumentListSyntax([
+                Argument(IdentifierName(indexer.BuilderField.Name)),
+                Argument(
+                    indexer.ArgumentsCriteria.TypeSyntax.New(
+                        SyntaxFactoryHelper.ArgumentListSyntax(
+                            indexer.Core.Parameters.Select(parameter =>
+                                Argument(IdentifierName(parameter.Name))
+                            )
+                        )
+                    )
+                ),
+            ])
+        );
 
         _imposterBuilder.AddMember(
             IndexerDeclaration(indexer.BuilderInterface.TypeSyntax)
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))
                 .WithParameterList(
                     BracketedParameterList(
-                        SeparatedList(indexer.Core.Parameters.Select(parameter => SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name)))))
+                        SeparatedList(
+                            indexer.Core.Parameters.Select(parameter =>
+                                SyntaxFactoryHelper.ParameterSyntax(
+                                    parameter.ArgTypeSyntax,
+                                    parameter.Name
+                                )
+                            )
+                        )
+                    )
+                )
                 .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+        );
 
         _constructorBodyBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Assign(
-                    indexer.Builder.TypeSyntax
-                        .New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(
-                            [
-                                Argument(IdentifierName(_invocationBehaviorParameterName)),
-                                Argument(propertyDisplayLiteral)
-                            ])))
-                .ToStatementSyntax());
+                    indexer.Builder.TypeSyntax.New(
+                        SyntaxFactoryHelper.ArgumentListSyntax([
+                            Argument(IdentifierName(_invocationBehaviorParameterName)),
+                            Argument(propertyDisplayLiteral),
+                        ])
+                    )
+                )
+                .ToStatementSyntax()
+        );
 
         _imposterInstanceBuilder.AddIndexer(indexer);
 
@@ -180,15 +210,19 @@ internal readonly ref partial struct ImposterBuilder
             imposterBuilder = imposterBuilder.AddMember(constructor);
         }
 
-        return imposterBuilder
-            .AddMember(_imposterInstanceBuilder.Build())
-            .Build();
+        return imposterBuilder.AddMember(_imposterInstanceBuilder.Build()).Build();
     }
 
     internal static ImposterBuilder Create(in ImposterGenerationContext imposterGenerationContext)
     {
         var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.Imposter.Name)
-            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol))))
+            .AddBaseType(
+                SimpleBaseType(
+                    WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
+                        SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)
+                    )
+                )
+            )
             .AddMembers(MethodImposterFields(imposterGenerationContext))
             .AddMembers(InvocationHistoryCollectionFields(imposterGenerationContext))
             .AddMembers(BuildImposterMethods(imposterGenerationContext));
@@ -198,7 +232,8 @@ internal readonly ref partial struct ImposterBuilder
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
             typeMetadata.InvocationBehaviorFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)));
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+        );
 
         var constructorParameterName = "invocationBehavior";
         var isClassTarget = imposterGenerationContext.Imposter.IsClass;
@@ -211,24 +246,36 @@ internal readonly ref partial struct ImposterBuilder
         {
             constructorBodyBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
                 imposterGenerationContext,
-                constructorParameterName);
+                constructorParameterName
+            );
             constructorBuilder = default;
         }
         else
         {
             (constructorBuilder, constructorBodyBuilder) = CreateConstructorBuilder(
                 imposterGenerationContext,
-                constructorParameterName);
+                constructorParameterName
+            );
         }
 
         var imposterClassBuilder = imposterBuilder
             .AddMember(invocationBehaviorField)
-            .AddMember(ImposterInstanceField(typeMetadata.ImposterTargetInstanceClassName, typeMetadata.ImposterInstanceFieldName))
-            .AddMember(InstanceMethod(imposterGenerationContext, typeMetadata.ImposterInstanceFieldName))
+            .AddMember(
+                ImposterInstanceField(
+                    typeMetadata.ImposterTargetInstanceClassName,
+                    typeMetadata.ImposterInstanceFieldName
+                )
+            )
+            .AddMember(
+                InstanceMethod(imposterGenerationContext, typeMetadata.ImposterInstanceFieldName)
+            )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword));
 
-        var imposterInstanceBuilder = ImposterInstanceBuilder.Create(imposterGenerationContext, typeMetadata.ImposterTargetInstanceClassName);
+        var imposterInstanceBuilder = ImposterInstanceBuilder.Create(
+            imposterGenerationContext,
+            typeMetadata.ImposterTargetInstanceClassName
+        );
 
         return new ImposterBuilder(
             imposterClassBuilder,
@@ -240,14 +287,16 @@ internal readonly ref partial struct ImposterBuilder
             constructorParameterName,
             isClassTarget,
             accessibleConstructors,
-            memberNameSet);
+            memberNameSet
+        );
     }
 
     internal NameSet MemberNameSet => _memberNameSet;
 
     private static NameSet GetImposterNameSet(
         in ImposterGenerationContext imposterGenerationContext,
-        IReadOnlyList<MemberDeclarationSyntax> imposterBuilderMembers)
+        IReadOnlyList<MemberDeclarationSyntax> imposterBuilderMembers
+    )
     {
         var futureMemberNames = GetMemberNames(imposterGenerationContext);
 
@@ -258,29 +307,40 @@ internal readonly ref partial struct ImposterBuilder
         return new NameSet(memberNameSeeds);
     }
 
-    private static List<string> GetMemberNames(in ImposterGenerationContext imposterGenerationContext)
+    private static List<string> GetMemberNames(
+        in ImposterGenerationContext imposterGenerationContext
+    )
     {
         var memberNames = new List<string>();
 
-        memberNames
-            .AddRange(imposterGenerationContext.Imposter.PropertySymbols.Select(it => it.Name));
-        memberNames
-            .AddRange(imposterGenerationContext.Imposter.IndexerSymbols.Select(it => it.IsIndexer ? "Indexer" : it.Name));
-        memberNames
-            .AddRange(imposterGenerationContext.Imposter.Methods.Select(it => it.Symbol.Name));
-        memberNames
-            .AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
+        memberNames.AddRange(
+            imposterGenerationContext.Imposter.PropertySymbols.Select(it => it.Name)
+        );
+        memberNames.AddRange(
+            imposterGenerationContext.Imposter.IndexerSymbols.Select(it =>
+                it.IsIndexer ? "Indexer" : it.Name
+            )
+        );
+        memberNames.AddRange(
+            imposterGenerationContext.Imposter.Methods.Select(it => it.Symbol.Name)
+        );
+        memberNames.AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
 
         return memberNames;
     }
 
-    private static (ConstructorBuilder constructorBuilder, BlockBuilder bodyBuilder) CreateConstructorBuilder(
+    private static (
+        ConstructorBuilder constructorBuilder,
+        BlockBuilder bodyBuilder
+    ) CreateConstructorBuilder(
         in ImposterGenerationContext imposterGenerationContext,
-        string invocationBehaviorParameterName)
+        string invocationBehaviorParameterName
+    )
     {
         var blockBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
             imposterGenerationContext,
-            invocationBehaviorParameterName);
+            invocationBehaviorParameterName
+        );
 
         var constructorBuilder = new ConstructorBuilder(imposterGenerationContext.Imposter.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -291,46 +351,55 @@ internal readonly ref partial struct ImposterBuilder
 
     private static BlockBuilder CreateConstructorBodyBuilderWithoutInstanceAssignment(
         in ImposterGenerationContext imposterGenerationContext,
-        string invocationBehaviorParameterName)
+        string invocationBehaviorParameterName
+    )
     {
-        return new BlockBuilder()
-            .AddStatements(
-                imposterGenerationContext
-                    .Imposter
-                    .Methods
-                    .Select(method =>
-                    {
-                        var constructorArguments = new List<ArgumentSyntax>
-                        {
-                            Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                            Argument(IdentifierName(invocationBehaviorParameterName))
-                        };
+        return new BlockBuilder().AddStatements(
+            imposterGenerationContext.Imposter.Methods.Select(method =>
+            {
+                var constructorArguments = new List<ArgumentSyntax>
+                {
+                    Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                    Argument(IdentifierName(invocationBehaviorParameterName)),
+                };
 
-                        return ThisExpression()
-                            .Dot(method.Symbol.IsGenericMethod
-                                ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
-                                : IdentifierName(method.MethodImposter.AsField.Name))
-                            .Assign((method.Symbol.IsGenericMethod ? method.MethodImposter.Collection.Syntax : method.MethodImposter.Syntax)
-                                .New(ArgumentList(SeparatedList(constructorArguments)))
-                            )
-                            .ToStatementSyntax();
-                    })
-            );
+                return ThisExpression()
+                    .Dot(
+                        method.Symbol.IsGenericMethod
+                            ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
+                            : IdentifierName(method.MethodImposter.AsField.Name)
+                    )
+                    .Assign(
+                        (
+                            method.Symbol.IsGenericMethod
+                                ? method.MethodImposter.Collection.Syntax
+                                : method.MethodImposter.Syntax
+                        ).New(ArgumentList(SeparatedList(constructorArguments)))
+                    )
+                    .ToStatementSyntax();
+            })
+        );
     }
 
-    private static ParameterSyntax CreateInvocationBehaviorParameter(string parameterName)
-        => Parameter(Identifier(parameterName))
+    private static ParameterSyntax CreateInvocationBehaviorParameter(string parameterName) =>
+        Parameter(Identifier(parameterName))
             .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
-            .WithDefault(EqualsValueClause(
-                QualifiedName(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    IdentifierName("Implicit"))));
+            .WithDefault(
+                EqualsValueClause(
+                    QualifiedName(
+                        WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                        IdentifierName("Implicit")
+                    )
+                )
+            );
 
     private BlockSyntax BuildInterfaceConstructorBody() =>
-        _constructorBodyBuilder.Build()
+        _constructorBodyBuilder
+            .Build()
             .AddStatements(
                 BuildInterfaceImposterInstanceAssignment(),
-                BuildInvocationBehaviorAssignment());
+                BuildInvocationBehaviorAssignment()
+            );
 
     private List<ConstructorDeclarationSyntax> BuildClassConstructors()
     {
@@ -340,13 +409,17 @@ internal readonly ref partial struct ImposterBuilder
         {
             var constructorBuilder = new ConstructorBuilder(_imposterName)
                 .WithModifiers(GetConstructorModifiers(constructorMetadata.Accessibility))
-                .AddParameters(SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters))
+                .AddParameters(
+                    SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
+                )
                 .AddParameter(CreateInvocationBehaviorParameter(_invocationBehaviorParameterName));
 
-            var constructorBody = _constructorBodyBuilder.Build()
+            var constructorBody = _constructorBodyBuilder
+                .Build()
                 .AddStatements(
                     BuildClassImposterInstanceAssignment(constructorMetadata.Parameters),
-                    BuildInvocationBehaviorAssignment());
+                    BuildInvocationBehaviorAssignment()
+                );
 
             constructors.Add(constructorBuilder.WithBody(constructorBody).Build());
         }
@@ -357,20 +430,26 @@ internal readonly ref partial struct ImposterBuilder
     private ExpressionStatementSyntax BuildInterfaceImposterInstanceAssignment() =>
         ThisExpression()
             .Dot(IdentifierName(_typeMetadata.ImposterInstanceFieldName))
-            .Assign(IdentifierName(_typeMetadata.ImposterTargetInstanceClassName).New(ThisExpression().ToSingleArgumentList()))
+            .Assign(
+                IdentifierName(_typeMetadata.ImposterTargetInstanceClassName)
+                    .New(ThisExpression().ToSingleArgumentList())
+            )
             .ToStatementSyntax();
 
-    private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(in ImmutableArray<IParameterSymbol> parameters)
+    private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(
+        in ImmutableArray<IParameterSymbol> parameters
+    )
     {
         var arguments = new List<ArgumentSyntax>(parameters.Length + 1)
         {
-            Argument(ThisExpression())
+            Argument(ThisExpression()),
         };
 
         if (parameters.Length > 0)
         {
             arguments.AddRange(
-                SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true).Arguments);
+                SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true).Arguments
+            );
         }
 
         var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(arguments);
@@ -390,8 +469,15 @@ internal readonly ref partial struct ImposterBuilder
     private static SyntaxTokenList GetConstructorModifiers(Accessibility accessibility) =>
         TokenList(Token(SyntaxKind.PublicKeyword));
 
-    private static FieldDeclarationSyntax ImposterInstanceField(in string imposterTargetInstanceClassName, string imposterInstanceFieldName) =>
-        SyntaxFactoryHelper.SingleVariableField(IdentifierName(imposterTargetInstanceClassName), imposterInstanceFieldName, SyntaxKind.PrivateKeyword);
+    private static FieldDeclarationSyntax ImposterInstanceField(
+        in string imposterTargetInstanceClassName,
+        string imposterInstanceFieldName
+    ) =>
+        SyntaxFactoryHelper.SingleVariableField(
+            IdentifierName(imposterTargetInstanceClassName),
+            imposterInstanceFieldName,
+            SyntaxKind.PrivateKeyword
+        );
 
     private readonly struct TypeMetadata
     {

@@ -7,7 +7,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax? typeParameters = null)
+internal class InterfaceDeclarationBuilder(
+    string name,
+    TypeParameterListSyntax? typeParameters = null
+)
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
     private readonly List<AttributeListSyntax> _attributes = [];
@@ -52,7 +55,10 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
         return this;
     }
 
-    internal InterfaceDeclarationBuilder AddMemberIf(bool condition, Func<MemberDeclarationSyntax> memberGenerator)
+    internal InterfaceDeclarationBuilder AddMemberIf(
+        bool condition,
+        Func<MemberDeclarationSyntax> memberGenerator
+    )
     {
         return condition ? AddMember(memberGenerator()) : this;
     }
@@ -66,6 +72,7 @@ internal class InterfaceDeclarationBuilder(string name, TypeParameterListSyntax?
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
             default,
-            List(_members));
+            List(_members)
+        );
     }
 }

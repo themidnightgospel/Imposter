@@ -12,7 +12,10 @@ internal static partial class InvocationHistoryBuilder
 {
     static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(WellKnownTypes.Bool, InvocationHistoryMatchesMethodMetadata.Name)
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Bool,
+            InvocationHistoryMatchesMethodMetadata.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))
@@ -21,22 +24,33 @@ internal static partial class InvocationHistoryBuilder
 
         ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method) =>
             method.Parameters.HasInputParameters
-                ? ParameterSyntax(method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments, InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName)
+                ? ParameterSyntax(
+                    method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments,
+                    InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+                )
                 : null;
 
         static ExpressionSyntax CallMatchesMethod(in ImposterTargetMethodMetadata method)
         {
             if (method.Symbol.IsGenericMethod)
             {
-                var genericArgumentsMatchCriteria = GenericArgumentsMatcherBuilder.GenerateExactMatchCriteria(method);
+                var genericArgumentsMatchCriteria =
+                    GenericArgumentsMatcherBuilder.GenerateExactMatchCriteria(method);
 
                 if (!method.Parameters.HasInputParameters)
                 {
                     return genericArgumentsMatchCriteria;
                 }
 
-                var argumentsMatchCriteria = IdentifierName(InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName)
-                    .Dot(GenericName(Identifier(method.ArgumentsCriteria.AsMethod.Name), method.GenericTypeArguments.ToTypeArguments()))
+                var argumentsMatchCriteria = IdentifierName(
+                        InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+                    )
+                    .Dot(
+                        GenericName(
+                            Identifier(method.ArgumentsCriteria.AsMethod.Name),
+                            method.GenericTypeArguments.ToTypeArguments()
+                        )
+                    )
                     .Call()
                     .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
                     .Call(IdentifierName("Arguments").ToSingleArgumentList());
@@ -49,7 +63,9 @@ internal static partial class InvocationHistoryBuilder
                 return True;
             }
 
-            return IdentifierName(InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName)
+            return IdentifierName(
+                    InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+                )
                 .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
                 .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("Arguments")))));
         }

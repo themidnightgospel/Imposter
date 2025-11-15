@@ -1,11 +1,15 @@
 <Project>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0-2.final" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0-2.final"/>
-    </ItemGroup>
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <DefineConstants>$(DefineConstants);USE_CSHARP14</DefineConstants>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.CodeAnalysis.CSharp"
+      Version="5.0.0-2.final"
+      PrivateAssets="all"
+    />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0-2.final" />
+  </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <DefineConstants>$(DefineConstants);USE_CSHARP14</DefineConstants>
+  </PropertyGroup>
 </Project>

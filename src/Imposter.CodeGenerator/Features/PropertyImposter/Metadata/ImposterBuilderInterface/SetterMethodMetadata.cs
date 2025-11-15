@@ -11,7 +11,10 @@ internal readonly struct SetterMethodMetadata
 
     internal readonly ParameterMetadata CriteriaParameter;
 
-    internal SetterMethodMetadata(in ImposterPropertyCoreMetadata property, in PropertySetterImposterBuilderInterfaceMetadata setterInterfaceMetadata)
+    internal SetterMethodMetadata(
+        in ImposterPropertyCoreMetadata property,
+        in PropertySetterImposterBuilderInterfaceMetadata setterInterfaceMetadata
+    )
     {
         ReturnType = setterInterfaceMetadata.Syntax;
         CriteriaParameter = new ParameterMetadata("criteria", property.AsArgType);

@@ -17,11 +17,12 @@ namespace Imposter.Tests.Features.PropertyImposter
             var imposter = new ClassWithVirtualPropertyImposter();
 
             imposter
-                .VirtualProperty
-                .Getter()
+                .VirtualProperty.Getter()
                 .UseBaseImplementation()
-                .Then().Returns("overridden")
-                .Then().UseBaseImplementation();
+                .Then()
+                .Returns("overridden")
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -36,11 +37,12 @@ namespace Imposter.Tests.Features.PropertyImposter
             var imposter = new ClassWithVirtualPropertyImposter();
 
             imposter
-                .VirtualPropertyWithInitializer
-                .Getter()
+                .VirtualPropertyWithInitializer.Getter()
                 .UseBaseImplementation()
-                .Then().Returns("overridden")
-                .Then().UseBaseImplementation();
+                .Then()
+                .Returns("overridden")
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -56,12 +58,17 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
 
-            imposter.VirtualProperty.Getter()
+            imposter
+                .VirtualProperty.Getter()
                 .UseBaseImplementation()
-                .Then().Returns("override-1")
-                .Then().UseBaseImplementation()
-                .Then().Returns("override-2")
-                .Then().UseBaseImplementation();
+                .Then()
+                .Returns("override-1")
+                .Then()
+                .UseBaseImplementation()
+                .Then()
+                .Returns("override-2")
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -84,7 +91,8 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             var callbackCount = 0;
 
-            imposter.VirtualProperty.Getter()
+            imposter
+                .VirtualProperty.Getter()
                 .UseBaseImplementation()
                 .Callback(() => callbackCount++);
 
@@ -122,7 +130,8 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             instance.GetterOnlyVirtualProperty.ShouldBe("getter-only-base");
 
-            var builderType = typeof(AdvancedClassWithVirtualPropertiesImposter.IGetterOnlyVirtualPropertyPropertyBuilder);
+            var builderType =
+                typeof(AdvancedClassWithVirtualPropertiesImposter.IGetterOnlyVirtualPropertyPropertyBuilder);
             var hasSetter = false;
 
             foreach (var method in builderType.GetMethods())
@@ -156,7 +165,9 @@ namespace Imposter.Tests.Features.PropertyImposter
         {
             var imposter = new ClassWithVirtualPropertyImposter();
 
-            imposter.VirtualPropertyWithInitializer.Setter(Arg<string>.Any()).UseBaseImplementation();
+            imposter
+                .VirtualPropertyWithInitializer.Setter(Arg<string>.Any())
+                .UseBaseImplementation();
             imposter.VirtualPropertyWithInitializer.Getter().UseBaseImplementation();
 
             var instance = imposter.Instance();
@@ -175,7 +186,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             var callbackCount = 0;
             string callbackValue = string.Empty;
 
-            imposter.VirtualProperty.Setter(Arg<string>.Any())
+            imposter
+                .VirtualProperty.Setter(Arg<string>.Any())
                 .UseBaseImplementation()
                 .Callback(value =>
                 {
@@ -199,11 +211,15 @@ namespace Imposter.Tests.Features.PropertyImposter
         {
             var imposter = new AdvancedClassWithVirtualPropertiesImposter();
 
-            imposter.ThrowingSetterVirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
+            imposter
+                .ThrowingSetterVirtualProperty.Setter(Arg<string>.Any())
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
-            Should.Throw<InvalidOperationException>(() => instance.ThrowingSetterVirtualProperty = "value");
+            Should.Throw<InvalidOperationException>(() =>
+                instance.ThrowingSetterVirtualProperty = "value"
+            );
         }
 
         [Fact]
@@ -227,10 +243,13 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
 
-            imposter.VirtualProperty.Getter()
+            imposter
+                .VirtualProperty.Getter()
                 .UseBaseImplementation()
-                .Then().Returns("X")
-                .Then().UseBaseImplementation();
+                .Then()
+                .Returns("X")
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -248,11 +267,15 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
 
-            imposter.VirtualProperty.Getter()
+            imposter
+                .VirtualProperty.Getter()
                 .Returns("A")
-                .Then().UseBaseImplementation()
-                .Then().Returns("B")
-                .Then().UseBaseImplementation();
+                .Then()
+                .UseBaseImplementation()
+                .Then()
+                .Returns("B")
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -272,10 +295,13 @@ namespace Imposter.Tests.Features.PropertyImposter
 
             imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
 
-            imposter.VirtualProperty.Getter()
+            imposter
+                .VirtualProperty.Getter()
                 .UseBaseImplementation()
-                .Then().Throws(new InvalidOperationException("getter failure"))
-                .Then().UseBaseImplementation();
+                .Then()
+                .Throws(new InvalidOperationException("getter failure"))
+                .Then()
+                .UseBaseImplementation();
 
             var instance = imposter.Instance();
 
@@ -302,7 +328,8 @@ namespace Imposter.Tests.Features.PropertyImposter
         private string _setterOnlyBacking = string.Empty;
         private string _throwingSetterBacking = string.Empty;
 
-        public virtual string ThrowingGetterVirtualProperty => throw new InvalidOperationException("Base getter failed.");
+        public virtual string ThrowingGetterVirtualProperty =>
+            throw new InvalidOperationException("Base getter failed.");
 
         public virtual string GetterOnlyVirtualProperty => _getterOnlyBacking;
 

@@ -19,7 +19,8 @@ internal static partial class SyntaxFactoryHelper
     internal static PropertyDeclarationSyntax ReadOnlyPropertyDeclarationSyntax(
         TypeSyntax type,
         string name,
-        ExpressionSyntax? initializer = null) =>
+        ExpressionSyntax? initializer = null
+    ) =>
         PropertyDeclaration(
             attributeLists: default,
             modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
@@ -31,5 +32,4 @@ internal static partial class SyntaxFactoryHelper
             initializer: null,
             semicolonToken: Token(SyntaxKind.SemicolonToken)
         );
-
 }

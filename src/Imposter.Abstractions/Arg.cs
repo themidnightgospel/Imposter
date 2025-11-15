@@ -53,7 +53,8 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public static Arg<T> Is(Func<T, bool> predicate)
     {
-        if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+        if (predicate is null)
+            throw new ArgumentNullException(nameof(predicate));
         return new(predicate);
     }
 
@@ -73,7 +74,8 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     public static Arg<T> Is(T? value, IEqualityComparer<T> comparer)
     {
-        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        if (comparer is null)
+            throw new ArgumentNullException(nameof(comparer));
         return new(it => comparer.Equals(it, value!));
     }
 
@@ -85,7 +87,8 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public static Arg<T> IsNot(Func<T, bool> predicate)
     {
-        if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+        if (predicate is null)
+            throw new ArgumentNullException(nameof(predicate));
         return new(it => !predicate(it));
     }
 
@@ -105,7 +108,8 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     public static Arg<T> IsNot(T? value, IEqualityComparer<T> comparer)
     {
-        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        if (comparer is null)
+            throw new ArgumentNullException(nameof(comparer));
         return new(it => !comparer.Equals(it, value!));
     }
 
@@ -125,8 +129,10 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="values"/> or <paramref name="comparer"/> is <see langword="null"/>.</exception>
     public static Arg<T> IsIn(IEnumerable<T> values, IEqualityComparer<T> comparer)
     {
-        if (values is null) throw new ArgumentNullException(nameof(values));
-        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        if (values is null)
+            throw new ArgumentNullException(nameof(values));
+        if (comparer is null)
+            throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
         return new(lookup.Contains);
@@ -137,7 +143,8 @@ public class Arg<T>
     /// </summary>
     /// <param name="values">The collection that defines the disallowed set.</param>
     /// <returns>An <see cref="Arg{T}"/> that matches when the value does not appear in <paramref name="values"/>.</returns>
-    public static Arg<T> IsNotIn(IEnumerable<T> values) => IsNotIn(values, EqualityComparer<T>.Default);
+    public static Arg<T> IsNotIn(IEnumerable<T> values) =>
+        IsNotIn(values, EqualityComparer<T>.Default);
 
     /// <summary>
     /// Matches an argument if it does not belong to the provided set of values, using a custom comparer.
@@ -148,8 +155,10 @@ public class Arg<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="values"/> or <paramref name="comparer"/> is <see langword="null"/>.</exception>
     public static Arg<T> IsNotIn(IEnumerable<T> values, IEqualityComparer<T> comparer)
     {
-        if (values is null) throw new ArgumentNullException(nameof(values));
-        if (comparer is null) throw new ArgumentNullException(nameof(comparer));
+        if (values is null)
+            throw new ArgumentNullException(nameof(values));
+        if (comparer is null)
+            throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
         return new(it => !lookup.Contains(it));
@@ -199,9 +208,7 @@ public class OutArg<T>
     /// </summary>
     public static OutArg<T> Any() => Instance;
 
-    private OutArg()
-    {
-    }
+    private OutArg() { }
 
     /// <summary>
     /// Always returns <see langword="true"/>. Out arguments cannot be constrained and are treated as wildcards.

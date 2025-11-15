@@ -8,7 +8,8 @@ public class PropertyNameCollisionPreventionTests : PropertyNamingCollisionPreve
     [Fact]
     public async Task GivenPropertyBuilderOperationNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -39,7 +40,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -47,7 +49,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenImposterMemberNamedProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -69,7 +72,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -77,7 +81,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenPropertiesMatchingGeneratedFields_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -97,7 +102,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -105,7 +111,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenCommonPropertyNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -123,7 +130,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -131,7 +139,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenReusedPropertyNamesAcrossAccessors_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -151,12 +160,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

@@ -18,12 +18,12 @@ internal readonly struct IndexerImposterBuilderInterfaceMetadata
     internal IndexerImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
         in IndexerSetterImposterBuilderInterfaceMetadata setterInterfaceMetadata,
-        in IndexerGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata)
+        in IndexerGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata
+    )
     {
         Name = $"I{core.UniqueName}IndexerBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
         GetterMethod = new GetterMethodMetadata(core, getterInterfaceMetadata);
         SetterMethod = new SetterMethodMetadata(core, setterInterfaceMetadata);
     }
-
 }

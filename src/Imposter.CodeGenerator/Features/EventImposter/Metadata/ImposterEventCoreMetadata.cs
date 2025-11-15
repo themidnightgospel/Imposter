@@ -32,26 +32,37 @@ internal readonly ref struct ImposterEventCoreMetadata
     {
         UniqueName = uniqueName;
         Name = eventSymbol.Name;
-        DisplayName = $"{eventSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
+        DisplayName =
+            $"{eventSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
         HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntax(eventSymbol.Type);
-        NullableAwareHandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(eventSymbol.Type);
+        NullableAwareHandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
+            eventSymbol.Type
+        );
         HandlerArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(HandlerTypeSyntax);
 
-        if (eventSymbol.Type is not INamedTypeSymbol delegateSymbol || delegateSymbol.DelegateInvokeMethod is null)
+        if (
+            eventSymbol.Type is not INamedTypeSymbol delegateSymbol
+            || delegateSymbol.DelegateInvokeMethod is null
+        )
         {
             throw new InvalidOperationException("Events must expose a delegate invoke method.");
         }
 
-        Parameters = delegateSymbol.DelegateInvokeMethod.Parameters
-            .Select(parameter => new EventParameterMetadata(parameter))
+        Parameters = delegateSymbol
+            .DelegateInvokeMethod.Parameters.Select(parameter => new EventParameterMetadata(
+                parameter
+            ))
             .ToArray();
 
         DelegateReturnTypeSymbol = delegateSymbol.DelegateInvokeMethod.ReturnType;
         IsAsync = DelegateReturnTypeSymbol.IsAwaitable();
 
         var containingTypeIsClass = eventSymbol.ContainingType?.TypeKind == TypeKind.Class;
-        var addSupportsBaseImplementation = containingTypeIsClass && eventSymbol.AddMethod is { IsAbstract: false };
-        var removeSupportsBaseImplementation = containingTypeIsClass && eventSymbol.RemoveMethod is { IsAbstract: false };
-        SupportsBaseImplementation = addSupportsBaseImplementation && removeSupportsBaseImplementation;
+        var addSupportsBaseImplementation =
+            containingTypeIsClass && eventSymbol.AddMethod is { IsAbstract: false };
+        var removeSupportsBaseImplementation =
+            containingTypeIsClass && eventSymbol.RemoveMethod is { IsAbstract: false };
+        SupportsBaseImplementation =
+            addSupportsBaseImplementation && removeSupportsBaseImplementation;
     }
 }

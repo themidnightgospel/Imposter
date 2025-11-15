@@ -20,11 +20,15 @@ internal readonly struct ThrowsMethodMetadata
     internal ThrowsMethodMetadata(
         in IndexerDelegateMetadata delegatesMetadata,
         TypeSyntax returnType,
-        NameSyntax interfaceSyntax)
+        NameSyntax interfaceSyntax
+    )
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
         ExceptionParameter = new ParameterMetadata("exception", WellKnownTypes.System.Exception);
-        DelegateParameter = new ParameterMetadata("exceptionGenerator", delegatesMetadata.ExceptionDelegateType);
+        DelegateParameter = new ParameterMetadata(
+            "exceptionGenerator",
+            delegatesMetadata.ExceptionDelegateType
+        );
     }
 }

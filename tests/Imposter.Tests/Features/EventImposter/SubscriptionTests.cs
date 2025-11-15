@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]

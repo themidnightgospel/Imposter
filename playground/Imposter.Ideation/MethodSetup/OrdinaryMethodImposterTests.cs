@@ -15,12 +15,13 @@ namespace Imposter.Ideation.MethodSetup
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void GivenMethodSetupWithCallBefore_WhenMethodIsInvoked_ShouldInvokeCallback(int invocationCount)
+        public void GivenMethodSetupWithCallBefore_WhenMethodIsInvoked_ShouldInvokeCallback(
+            int invocationCount
+        )
         {
             var callBeforeCallbackInvokedCount = 0;
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => ++callBeforeCallbackInvokedCount);
 
             for (var i = 0; i < invocationCount; i++)
@@ -34,20 +35,23 @@ namespace Imposter.Ideation.MethodSetup
         [Theory]
         [InlineData(1)]
         [InlineData(5)]
-        public void GivenMethodSetupWithCallBefore_WhenMethodIsInvoked_ShouldInvokeCallbackWithParameters(int invocationCount)
+        public void GivenMethodSetupWithCallBefore_WhenMethodIsInvoked_ShouldInvokeCallbackWithParameters(
+            int invocationCount
+        )
         {
             var callBeforeCallbackInvokedCount = 0;
             var aParametersPassedToCallback = new List<int>();
             var bParametersPassedToCallback = new List<int>();
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Callback((a, b) =>
-                {
-                    callBeforeCallbackInvokedCount++;
-                    aParametersPassedToCallback.Add(a);
-                    bParametersPassedToCallback.Add(b);
-                });
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
+                .Callback(
+                    (a, b) =>
+                    {
+                        callBeforeCallbackInvokedCount++;
+                        aParametersPassedToCallback.Add(a);
+                        bParametersPassedToCallback.Add(b);
+                    }
+                );
 
             for (var i = 0; i < invocationCount; i++)
             {
@@ -65,9 +69,13 @@ namespace Imposter.Ideation.MethodSetup
             var callbackInvokedCount = 0;
             var returnValue = 0;
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Callback((a, b) => { callbackInvokedCount++; })
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
+                .Callback(
+                    (a, b) =>
+                    {
+                        callbackInvokedCount++;
+                    }
+                )
                 .Returns(42);
 
             returnValue = _sut.Instance().Add(1, 2);
@@ -82,8 +90,7 @@ namespace Imposter.Ideation.MethodSetup
             var callbackInvokedCount = 0;
             var capturedReturnValues = new List<int>();
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => callbackInvokedCount++)
                 .Returns(1)
                 .Then()
@@ -107,23 +114,23 @@ namespace Imposter.Ideation.MethodSetup
         {
             var expectedException = new InvalidOperationException("Test exception");
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Callback((a, b) => throw expectedException);
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Callback((a, b) => throw expectedException);
 
-            var thrownException = Should.Throw<InvalidOperationException>(() => _sut.Instance().Add(1, 2));
+            var thrownException = Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().Add(1, 2)
+            );
             thrownException.ShouldBe(expectedException);
         }
 
         [Fact]
         public void GivenCallBeforeThatThrowsWithReturnValue_WhenMethodIsInvoked_ShouldPropagateExceptionAndNotReturnValue()
         {
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => throw new ArgumentException($"Invalid values: {a}, {b}"))
                 .Returns(100);
 
-            Should.Throw<ArgumentException>(() => _sut.Instance().Add(42, 24))
+            Should
+                .Throw<ArgumentException>(() => _sut.Instance().Add(42, 24))
                 .Message.ShouldBe("Invalid values: 42, 24");
         }
 
@@ -132,8 +139,7 @@ namespace Imposter.Ideation.MethodSetup
         {
             var callBeforeCount = 0;
 
-            _sut
-                .Add(Arg<int>.Is(42), Arg<int>.Is(24))
+            _sut.Add(Arg<int>.Is(42), Arg<int>.Is(24))
                 .Callback((a, b) => callBeforeCount++)
                 .Returns(100);
 
@@ -151,20 +157,21 @@ namespace Imposter.Ideation.MethodSetup
             var capturedAValues = new List<int>();
             var capturedBValues = new List<int>();
 
-            _sut
-                .Add(Arg<int>.Is(x => x > 10), Arg<int>.Is(x => x < 50))
-                .Callback((a, b) =>
-                {
-                    callBeforeCount++;
-                    capturedAValues.Add(a);
-                    capturedBValues.Add(b);
-                })
+            _sut.Add(Arg<int>.Is(x => x > 10), Arg<int>.Is(x => x < 50))
+                .Callback(
+                    (a, b) =>
+                    {
+                        callBeforeCount++;
+                        capturedAValues.Add(a);
+                        capturedBValues.Add(b);
+                    }
+                )
                 .Returns(999);
 
-            _sut.Instance().Add(5, 40);   // Should not match (a <= 10)
-            _sut.Instance().Add(15, 45);  // Should match
-            _sut.Instance().Add(20, 60);  // Should not match (b >= 50)
-            _sut.Instance().Add(25, 30);  // Should match
+            _sut.Instance().Add(5, 40); // Should not match (a <= 10)
+            _sut.Instance().Add(15, 45); // Should match
+            _sut.Instance().Add(20, 60); // Should not match (b >= 50)
+            _sut.Instance().Add(25, 30); // Should match
 
             callBeforeCount.ShouldBe(2);
             capturedAValues.ShouldBe(new[] { 15, 25 });
@@ -176,9 +183,7 @@ namespace Imposter.Ideation.MethodSetup
         {
             var callBeforeCount = 0;
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Callback((a, b) => callBeforeCount++);
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Callback((a, b) => callBeforeCount++);
 
             _sut.Instance().Add(1, 2);
 
@@ -191,8 +196,7 @@ namespace Imposter.Ideation.MethodSetup
             var callBeforeValues = new List<(int a, int b)>();
             var callAfterValues = new List<(int a, int b)>();
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => callBeforeValues.Add((a, b)))
                 .Returns((a, b) => a + b)
                 .Callback((a, b) => callAfterValues.Add((a, b)));
@@ -210,8 +214,7 @@ namespace Imposter.Ideation.MethodSetup
             var firstCallbackInvokedCount = 0;
             var secondCallbackInvokedCount = 0;
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => ++firstCallbackInvokedCount)
                 .Callback((a, b) => ++secondCallbackInvokedCount);
 
@@ -225,9 +228,7 @@ namespace Imposter.Ideation.MethodSetup
         [Fact]
         public void GivenReturnValueSetup_WhenMethodIsInvoked_ShouldReturnConfiguredValue()
         {
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Returns(100);
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(100);
 
             var result = _sut.Instance().Add(1, 2);
 
@@ -237,9 +238,7 @@ namespace Imposter.Ideation.MethodSetup
         [Fact]
         public void GivenReturnDelegateSetup_WhenMethodIsInvoked_ShouldReturnValueFromDelegate()
         {
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Returns((a, b) => a * b);
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Returns((a, b) => a * b);
 
             var result = _sut.Instance().Add(6, 7);
 
@@ -251,8 +250,7 @@ namespace Imposter.Ideation.MethodSetup
         {
             var results = new List<int>();
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Returns(10)
                 .Then()
                 .Returns(20)
@@ -270,9 +268,7 @@ namespace Imposter.Ideation.MethodSetup
         [Fact]
         public void GivenThrowsSetup_WhenMethodIsInvoked_ShouldThrowException()
         {
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Throws<InvalidOperationException>();
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Throws<InvalidOperationException>();
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Add(1, 2));
         }
@@ -282,9 +278,7 @@ namespace Imposter.Ideation.MethodSetup
         {
             var expectedException = new ArgumentException("Test message");
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
-                .Throws(expectedException);
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any()).Throws(expectedException);
 
             var thrownException = Should.Throw<ArgumentException>(() => _sut.Instance().Add(1, 2));
             thrownException.ShouldBe(expectedException);
@@ -293,11 +287,12 @@ namespace Imposter.Ideation.MethodSetup
         [Fact]
         public void GivenThrowsWithDelegateSetup_WhenMethodIsInvoked_ShouldThrowExceptionFromDelegate()
         {
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Throws((a, b) => new ArgumentException($"Sum {a + b} is invalid"));
 
-            var thrownException = Should.Throw<ArgumentException>(() => _sut.Instance().Add(10, 15));
+            var thrownException = Should.Throw<ArgumentException>(() =>
+                _sut.Instance().Add(10, 15)
+            );
             thrownException.Message.ShouldBe("Sum 25 is invalid");
         }
 
@@ -316,7 +311,7 @@ namespace Imposter.Ideation.MethodSetup
         public void GivenInvocationVerificationWithCriteria_WhenMethodIsCalledWithDifferentArgs_ShouldVerifyCorrectly()
         {
             var specificSetup = _sut.Add(Arg<int>.Is(42), Arg<int>.Any());
-            
+
             _sut.Instance().Add(42, 1);
             _sut.Instance().Add(43, 2); // Different first arg
             _sut.Instance().Add(42, 3);
@@ -359,23 +354,33 @@ namespace Imposter.Ideation.MethodSetup
         {
             var executionOrder = new List<string>();
 
-            _sut
-                .Add(Arg<int>.Any(), Arg<int>.Any())
+            _sut.Add(Arg<int>.Any(), Arg<int>.Any())
                 .Callback((a, b) => executionOrder.Add("before-1"))
-                .Returns((a, b) => { executionOrder.Add("during-1"); return 10; })
+                .Returns(
+                    (a, b) =>
+                    {
+                        executionOrder.Add("during-1");
+                        return 10;
+                    }
+                )
                 .Callback((a, b) => executionOrder.Add("after-1"))
                 .Then()
                 .Callback((a, b) => executionOrder.Add("before-2"))
-                .Returns((a, b) => { executionOrder.Add("during-2"); return 20; })
+                .Returns(
+                    (a, b) =>
+                    {
+                        executionOrder.Add("during-2");
+                        return 20;
+                    }
+                )
                 .Callback((a, b) => executionOrder.Add("after-2"));
 
             _sut.Instance().Add(1, 1);
             _sut.Instance().Add(1, 1);
 
-            executionOrder.ShouldBe(new[] { 
-                "before-1", "during-1", "after-1",
-                "before-2", "during-2", "after-2"
-            });
+            executionOrder.ShouldBe(
+                new[] { "before-1", "during-1", "after-1", "before-2", "during-2", "after-2" }
+            );
         }
     }
 }

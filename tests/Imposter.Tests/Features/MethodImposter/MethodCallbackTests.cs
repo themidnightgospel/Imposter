@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.MethodImposter
     {
         private readonly IMethodSetupFeatureSutImposter _sut =
 #if USE_CSHARP14
-            IMethodSetupFeatureSut.Imposter();
+        IMethodSetupFeatureSut.Imposter();
 #else
-            new IMethodSetupFeatureSutImposter();
+        new IMethodSetupFeatureSutImposter();
 #endif
 
         [Fact]
@@ -20,8 +20,7 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var stages = new List<string>();
 
-            _sut
-                .IntNoParams()
+            _sut.IntNoParams()
                 .Returns(() =>
                 {
                     stages.Add("return");
@@ -39,9 +38,7 @@ namespace Imposter.Tests.Features.MethodImposter
         {
             var callbackInvocations = 0;
 
-            _sut
-                .IntSingleParam(Arg<int>.Any())
-                .Callback(_ => callbackInvocations++);
+            _sut.IntSingleParam(Arg<int>.Any()).Callback(_ => callbackInvocations++);
 
             _sut.Instance().IntSingleParam(123).ShouldBe(default);
             callbackInvocations.ShouldBe(1);
@@ -58,28 +55,50 @@ namespace Imposter.Tests.Features.MethodImposter
                     Arg<double>.Any(),
                     Arg<bool[]>.Any()
                 )
-                .Returns((out int o, ref string r, in double input, bool[] values) =>
-                {
-                    o = 5;
-                    stages.Add("return");
-                    return 99;
-                })
-                .Callback((out int callbackOut, ref string callbackRef, in double callbackIn, bool[] callbackParams) =>
-                {
-                    callbackOut = 5;
-                    stages.Add("callback-1");
-                })
-                .Callback((out int callbackOut, ref string callbackRef, in double callbackIn, bool[] callbackParams) =>
-                {
-                    callbackOut = 5;
-                    stages.Add("callback-2");
-                });
+                .Returns(
+                    (out int o, ref string r, in double input, bool[] values) =>
+                    {
+                        o = 5;
+                        stages.Add("return");
+                        return 99;
+                    }
+                )
+                .Callback(
+                    (
+                        out int callbackOut,
+                        ref string callbackRef,
+                        in double callbackIn,
+                        bool[] callbackParams
+                    ) =>
+                    {
+                        callbackOut = 5;
+                        stages.Add("callback-1");
+                    }
+                )
+                .Callback(
+                    (
+                        out int callbackOut,
+                        ref string callbackRef,
+                        in double callbackIn,
+                        bool[] callbackParams
+                    ) =>
+                    {
+                        callbackOut = 5;
+                        stages.Add("callback-2");
+                    }
+                );
 
             string refValue = "seed";
             double input = 5.0;
             var paramsArg = new[] { true };
 
-            var result = _sut.Instance().GenericAllRefKind<int, string, double, bool, int>(out var outValue, ref refValue, in input, paramsArg);
+            var result = _sut.Instance()
+                .GenericAllRefKind<int, string, double, bool, int>(
+                    out var outValue,
+                    ref refValue,
+                    in input,
+                    paramsArg
+                );
 
             result.ShouldBe(99);
             outValue.ShouldBe(5);
@@ -118,7 +137,9 @@ namespace Imposter.Tests.Features.MethodImposter
                     throw new InvalidOperationException("callback-boom");
                 });
 
-            var ex = Should.Throw<InvalidOperationException>(() => _sut.Instance().IntSingleParam(5));
+            var ex = Should.Throw<InvalidOperationException>(() =>
+                _sut.Instance().IntSingleParam(5)
+            );
             ex.Message.ShouldContain("callback-boom");
             callbackObserved.ShouldBeTrue();
         }

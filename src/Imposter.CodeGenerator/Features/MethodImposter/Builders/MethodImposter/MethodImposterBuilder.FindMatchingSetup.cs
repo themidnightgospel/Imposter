@@ -9,49 +9,78 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal partial class MethodImposterBuilder
 {
-    internal static MemberDeclarationSyntax BuildFindMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method)
+    internal static MemberDeclarationSyntax BuildFindMatchingInvocationImposterGroupMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var setupIdentifier = Identifier(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName);
+        var setupIdentifier = Identifier(
+            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName
+        );
         var setupIdentifierName = IdentifierName(setupIdentifier);
 
-        var findMatchingSetupMethod = new MethodDeclarationBuilder(NullableType(method.MethodInvocationImposterGroup.Syntax), method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
+        var findMatchingSetupMethod = new MethodDeclarationBuilder(
+            NullableType(method.MethodInvocationImposterGroup.Syntax),
+            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(GetArgumentsParameter(method));
 
         if (method.Parameters.HasInputParameters)
         {
             return findMatchingSetupMethod
-                .WithBody(Block(
-                    ForEachStatement(
-                        Var,
-                        setupIdentifier,
-                        IdentifierName(method.MethodImposter.InvocationImpostersField.Name),
-                        Block(
-                            IfStatement(
-                                setupIdentifierName
-                                    .Dot(IdentifierName("ArgumentsCriteria"))
-                                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                                    .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))),
-                                ReturnStatement(setupIdentifierName)
+                .WithBody(
+                    Block(
+                        ForEachStatement(
+                            Var,
+                            setupIdentifier,
+                            IdentifierName(method.MethodImposter.InvocationImpostersField.Name),
+                            Block(
+                                IfStatement(
+                                    setupIdentifierName
+                                        .Dot(IdentifierName("ArgumentsCriteria"))
+                                        .Dot(
+                                            IdentifierName(
+                                                method.ArgumentsCriteria.MatchesMethod.Name
+                                            )
+                                        )
+                                        .Call(
+                                            ArgumentList(
+                                                SingletonSeparatedList(
+                                                    Argument(IdentifierName("arguments"))
+                                                )
+                                            )
+                                        ),
+                                    ReturnStatement(setupIdentifierName)
+                                )
                             )
-                        )
-                    ),
-                    ReturnStatement(Null)
-                ))
+                        ),
+                        ReturnStatement(Null)
+                    )
+                )
                 .Build();
         }
 
         return findMatchingSetupMethod
-            .WithBody(Block(
-                IfStatement(
-                    IdentifierName(method.MethodImposter.InvocationImpostersField.Name)
-                        .Dot(ConcurrentStackSyntaxHelper.TryPeek)
-                        .Call(ArgumentListSyntax(OutVarArgument(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName))
-                        ),
-                    ReturnStatement(setupIdentifierName),
-                    ElseClause(ReturnStatement(Null))
+            .WithBody(
+                Block(
+                    IfStatement(
+                        IdentifierName(method.MethodImposter.InvocationImpostersField.Name)
+                            .Dot(ConcurrentStackSyntaxHelper.TryPeek)
+                            .Call(
+                                ArgumentListSyntax(
+                                    OutVarArgument(
+                                        method
+                                            .MethodImposter
+                                            .FindMatchingInvocationImposterGroupMethod
+                                            .SetupVariableName
+                                    )
+                                )
+                            ),
+                        ReturnStatement(setupIdentifierName),
+                        ElseClause(ReturnStatement(Null))
+                    )
                 )
-            ))
+            )
             .Build();
 
         static ParameterSyntax? GetArgumentsParameter(in ImposterTargetMethodMetadata method) =>

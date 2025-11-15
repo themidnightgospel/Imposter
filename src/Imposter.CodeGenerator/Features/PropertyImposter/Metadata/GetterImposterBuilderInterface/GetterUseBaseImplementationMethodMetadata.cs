@@ -10,7 +10,10 @@ internal readonly struct GetterUseBaseImplementationMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal GetterUseBaseImplementationMethodMetadata(NameSyntax interfaceSyntax, TypeSyntax returnType)
+    internal GetterUseBaseImplementationMethodMetadata(
+        NameSyntax interfaceSyntax,
+        TypeSyntax returnType
+    )
     {
         InterfaceSyntax = interfaceSyntax;
         ReturnType = returnType;

@@ -17,21 +17,29 @@ public class TypeParameterRenamer : CSharpSyntaxRewriter
 
     public TypeParameterRenamer(IReadOnlyList<ITypeParameterSymbol> typeParameters, string suffix)
     {
-        _typeParameterNames = [..typeParameters.Select(it => it.Name)];
+        _typeParameterNames = [.. typeParameters.Select(it => it.Name)];
         _suffix = suffix;
     }
 
-    public TypeParameterRenamer(IReadOnlyList<ITypeParameterSymbol> typeParameters, IReadOnlyList<NameSyntax> replacementNames)
+    public TypeParameterRenamer(
+        IReadOnlyList<ITypeParameterSymbol> typeParameters,
+        IReadOnlyList<NameSyntax> replacementNames
+    )
     {
-        _typeParameterNames = [..typeParameters.Select(it => it.Name)];
+        _typeParameterNames = [.. typeParameters.Select(it => it.Name)];
 
         if (typeParameters.Count != replacementNames.Count)
         {
-            throw new ArgumentException("Replacement names count must match type parameters count.", nameof(replacementNames));
+            throw new ArgumentException(
+                "Replacement names count must match type parameters count.",
+                nameof(replacementNames)
+            );
         }
 
         _nameMap = typeParameters
-            .Select((tp, index) => (tp.Name, Replacement: ToIdentifierText(replacementNames[index])))
+            .Select(
+                (tp, index) => (tp.Name, Replacement: ToIdentifierText(replacementNames[index]))
+            )
             .ToDictionary(pair => pair.Name, pair => pair.Replacement);
     }
 
@@ -54,6 +62,6 @@ public class TypeParameterRenamer : CSharpSyntaxRewriter
         {
             SimpleNameSyntax simpleName => simpleName.Identifier.Text,
             QualifiedNameSyntax qualifiedName => qualifiedName.Right.Identifier.Text,
-            _ => nameSyntax.ToString()
+            _ => nameSyntax.ToString(),
         };
 }

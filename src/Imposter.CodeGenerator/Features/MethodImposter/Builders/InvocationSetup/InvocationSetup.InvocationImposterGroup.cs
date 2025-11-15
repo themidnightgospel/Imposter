@@ -9,38 +9,60 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationSetu
 
 internal static partial class InvocationSetupBuilder
 {
-    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(in ImposterTargetMethodMetadata method)
+    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
-        var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(invocationImposterType);
+        var invocationImposterType = IdentifierName(
+            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+        );
+        var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+            invocationImposterType
+        );
 
         return SinglePrivateReadonlyVariableField(
             queueType,
             "_invocationImposters",
-            queueType.New(ArgumentList()));
+            queueType.New(ArgumentList())
+        );
     }
 
-internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in ImposterTargetMethodMetadata method) =>
-    SingleVariableField(
-        IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName).ToNullableType(),
-        "_lastestInvocationImposter",
-        SyntaxKind.PrivateKeyword);
+    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        SingleVariableField(
+            IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
+                .ToNullableType(),
+            "_lastestInvocationImposter",
+            SyntaxKind.PrivateKeyword
+        );
 
-    internal static MethodDeclarationSyntax AddInvocationImposterMethod(in ImposterTargetMethodMetadata method)
+    internal static MethodDeclarationSyntax AddInvocationImposterMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(
+            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+        );
 
         return new MethodDeclarationBuilder(invocationImposterType, "AddInvocationImposter")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
-                    invocationImposterType,
-                    "invocationImposter",
-                    invocationImposterType.New(ArgumentList())),
+                        invocationImposterType,
+                        "invocationImposter",
+                        invocationImposterType.New(ArgumentList())
+                    ),
                     IdentifierName("_invocationImposters")
                         .Dot(IdentifierName("Enqueue"))
-                        .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))))
+                        .Call(
+                            ArgumentList(
+                                SingletonSeparatedList(
+                                    Argument(IdentifierName("invocationImposter"))
+                                )
+                            )
+                        )
                         .ToStatementSyntax(),
                     ReturnStatement(IdentifierName("invocationImposter"))
                 )
@@ -48,11 +70,18 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
             .Build();
     }
 
-    internal static MethodDeclarationSyntax GetInvocationImposterMethod(in ImposterTargetMethodMetadata method)
+    internal static MethodDeclarationSyntax GetInvocationImposterMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var invocationImposterType = IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName);
+        var invocationImposterType = IdentifierName(
+            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+        );
 
-        return new MethodDeclarationBuilder(invocationImposterType.ToNullableType(), "GetInvocationImposter")
+        return new MethodDeclarationBuilder(
+            invocationImposterType.ToNullableType(),
+            "GetInvocationImposter"
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
@@ -61,15 +90,19 @@ internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(in
                             .Dot(IdentifierName("TryDequeue"))
                             .Call(
                                 ArgumentList(
-                                    SingletonSeparatedList(
-                                        OutVarArgument("invocationImposter")))),
+                                    SingletonSeparatedList(OutVarArgument("invocationImposter"))
+                                )
+                            ),
                         Block(
                             IfStatement(
                                 Not(
-                                    IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty"))),
+                                    IdentifierName("invocationImposter")
+                                        .Dot(IdentifierName("IsEmpty"))
+                                ),
                                 Block(
-                                        IdentifierName("_lastestInvocationImposter")
-                                            .Assign(IdentifierName("invocationImposter")).ToStatementSyntax()
+                                    IdentifierName("_lastestInvocationImposter")
+                                        .Assign(IdentifierName("invocationImposter"))
+                                        .ToStatementSyntax()
                                 )
                             ),
                             ReturnStatement(IdentifierName("invocationImposter"))

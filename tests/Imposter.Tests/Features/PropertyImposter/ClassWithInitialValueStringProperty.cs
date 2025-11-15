@@ -10,4 +10,3 @@ namespace Imposter.Tests.Features.PropertyImposter
         public virtual string S { get; set; } = "hello";
     }
 }
-

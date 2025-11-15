@@ -15,6 +15,6 @@ public static class ImposterExtensions
     /// This is a convenience wrapper over <see cref="IHaveImposterInstance{TInstance}.Instance"/> that improves readability
     /// in tests: <c>sut.Instance().Method()</c>.
     /// </remarks>
-    public static TInstance Instance<TInstance>(this IHaveImposterInstance<TInstance> imposter)
-        => imposter.Instance();
+    public static TInstance Instance<TInstance>(this IHaveImposterInstance<TInstance> imposter) =>
+        imposter.Instance();
 }

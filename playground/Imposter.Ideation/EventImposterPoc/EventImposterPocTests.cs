@@ -27,14 +27,12 @@ namespace Imposter.Ideation.EventImposterPoc
 
             poc.SomethingHappened.Subscribed(handler, Count.Once());
 
-            poc.SomethingHappened
-                .Raise(instance, EventArgs.Empty)
+            poc.SomethingHappened.Raise(instance, EventArgs.Empty)
                 .Raised(Arg<object?>.Is(instance), Arg<EventArgs>.Any(), Count.Once())
                 .HandlerInvoked(handler, Count.Once());
 
             hits.ShouldBe(1);
             lastSender.ShouldBe(instance);
-
         }
 
         [Fact]
@@ -62,8 +60,7 @@ namespace Imposter.Ideation.EventImposterPoc
             instance.SomethingHappened += (sender, _) => seen = sender;
 
             var args = EventArgs.Empty;
-            poc.SomethingHappened
-                .Raise(instance, args)
+            poc.SomethingHappened.Raise(instance, args)
                 .Raised(Arg<object?>.Is(instance), Arg<EventArgs>.Is(args), Count.Once());
 
             seen.ShouldBe(instance);
@@ -90,13 +87,13 @@ namespace Imposter.Ideation.EventImposterPoc
             instance.SomethingHappened += handlerB;
             instance.SomethingHappened -= handlerA;
 
-            poc.SomethingHappened
-                .Subscribed(handlerA, Count.Once())
+            poc.SomethingHappened.Subscribed(handlerA, Count.Once())
                 .Subscribed(handlerB, Count.Once())
                 .Unsubscribed(handlerA, Count.Once());
 
             Should.Throw<VerificationFailedException>(() =>
-                poc.SomethingHappened.Unsubscribed(handlerB, Count.Once()));
+                poc.SomethingHappened.Unsubscribed(handlerB, Count.Once())
+            );
         }
 
         [Fact]
@@ -108,8 +105,7 @@ namespace Imposter.Ideation.EventImposterPoc
             EventHandler? subscribedHandler = null;
             EventHandler? unsubscribedHandler = null;
 
-            poc.SomethingHappened
-                .OnSubscribe(handler => subscribedHandler = handler)
+            poc.SomethingHappened.OnSubscribe(handler => subscribedHandler = handler)
                 .OnUnsubscribe(handler => unsubscribedHandler = handler);
 
             EventHandler handlerRef = (sender, args) => { };
@@ -136,8 +132,7 @@ namespace Imposter.Ideation.EventImposterPoc
             poc.SomethingHappened.Raise(instance, EventArgs.Empty);
             poc.SomethingHappened.Raise(instance, EventArgs.Empty);
 
-            poc.SomethingHappened
-                .HandlerInvoked(handlerA, Count.Exactly(2))
+            poc.SomethingHappened.HandlerInvoked(handlerA, Count.Exactly(2))
                 .HandlerInvoked(handlerB, Count.Exactly(2));
         }
 

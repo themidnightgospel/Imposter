@@ -36,10 +36,22 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         HasOutputParameters = OutputParameters.Count > 0;
 
         ParameterListSyntax = SyntaxFactoryHelper.ParameterListSyntax(symbolParameters);
-        InputParameterWithoutRefKindListSyntax = SyntaxFactoryHelper.ParameterListSyntax(InputParameters, includeRefKind: false);
+        InputParameterWithoutRefKindListSyntax = SyntaxFactoryHelper.ParameterListSyntax(
+            InputParameters,
+            includeRefKind: false
+        );
 
-        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(InputParameters, includeRefKind: false);
-        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(InputParameters, includeRefKind: true);
-        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(Parameters, includeRefKind: true);
+        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(
+            InputParameters,
+            includeRefKind: false
+        );
+        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(
+            InputParameters,
+            includeRefKind: true
+        );
+        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(
+            Parameters,
+            includeRefKind: true
+        );
     }
 }

@@ -258,8 +258,12 @@ namespace Imposter.Ideation.PropertySetupPoc
             _sut.Instance().Age = 20;
             _sut.Instance().Age = 10;
 
-            Should.NotThrow(() => _sut.Age.SetterCalled(Arg<int>.Is(x => x == 20), Count.Exactly(1)));
-            Should.NotThrow(() => _sut.Age.SetterCalled(Arg<int>.Is(x => x == 10), Count.Exactly(2)));
+            Should.NotThrow(() =>
+                _sut.Age.SetterCalled(Arg<int>.Is(x => x == 20), Count.Exactly(1))
+            );
+            Should.NotThrow(() =>
+                _sut.Age.SetterCalled(Arg<int>.Is(x => x == 10), Count.Exactly(2))
+            );
             Should.NotThrow(() => _sut.Age.SetterCalled(Arg<int>.Any(), Count.Exactly(3)));
         }
 
@@ -297,7 +301,7 @@ namespace Imposter.Ideation.PropertySetupPoc
                     });
                 }
             }
-            
+
             foreach (var thread in threads)
             {
                 thread.Start();
@@ -335,7 +339,7 @@ namespace Imposter.Ideation.PropertySetupPoc
             {
                 thread.Start();
             }
-            
+
             foreach (var thread in threads)
             {
                 thread.Join();
@@ -353,16 +357,22 @@ namespace Imposter.Ideation.PropertySetupPoc
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ValueShouldNotBeSet()
         {
-            _sut.Age.SetterCallback(Arg<int>.Any(), _ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.SetterCallback(
+                Arg<int>.Any(),
+                _ => throw new InvalidOperationException("Callback error")
+            );
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
             _sut.Instance().Age.ShouldBe(default);
         }
-        
+
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ShouldTrackSetHistory()
         {
-            _sut.Age.SetterCallback(Arg<int>.Any(), _ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.SetterCallback(
+                Arg<int>.Any(),
+                _ => throw new InvalidOperationException("Callback error")
+            );
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
@@ -372,10 +382,12 @@ namespace Imposter.Ideation.PropertySetupPoc
         [Fact]
         public void GivenGetterCallbackThatThrows_WhenPropertyIsAccessed_ShouldTrackGetHistory()
         {
-            _sut.Age.GetterCallback(() => throw new InvalidOperationException("Getter callback error"));
+            _sut.Age.GetterCallback(() =>
+                throw new InvalidOperationException("Getter callback error")
+            );
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age);
-            
+
             _sut.Age.GetterCalled(Count.Exactly(1));
         }
 
@@ -417,7 +429,9 @@ namespace Imposter.Ideation.PropertySetupPoc
             _sut.Instance().Age = 10;
 
             // Verification should work based on set history
-            Should.NotThrow(() => _sut.Age.SetterCalled(Arg<int>.Is(x => x == 10), Count.Exactly(2)));
+            Should.NotThrow(() =>
+                _sut.Age.SetterCalled(Arg<int>.Is(x => x == 10), Count.Exactly(2))
+            );
             Should.NotThrow(() => _sut.Age.SetterCalled(Arg<int>.Any(), Count.Exactly(3)));
         }
 

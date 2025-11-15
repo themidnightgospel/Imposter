@@ -36,7 +36,8 @@ public interface IDuplicate
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorDuplicateAttributeTests),
-            languageVersion: LanguageVersion.CSharp8);
+            languageVersion: LanguageVersion.CSharp8
+        );
 
     [Fact]
     public async Task GivenDuplicateAssemblyAttributes_WhenGeneratorRuns_ShouldDeduplicateSources()
@@ -44,8 +45,8 @@ public interface IDuplicate
         var testContext = await TestContextTask.ConfigureAwait(false);
         var result = testContext.RunGenerator();
 
-        var imposterSources = result.GeneratedSources
-            .Where(static source => source.HintName == "IDuplicateImposter.g.cs")
+        var imposterSources = result
+            .GeneratedSources.Where(static source => source.HintName == "IDuplicateImposter.g.cs")
             .ToList();
 
         imposterSources.ShouldHaveSingleItem();

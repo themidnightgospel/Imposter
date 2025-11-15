@@ -13,43 +13,41 @@ internal static class DefaultAttributes
     static DefaultAttributes()
 #pragma warning restore CA1810
     {
-        DefaultTypeAttributes =
-        [
-            GeneratedCodeAttribute
-        ];
+        DefaultTypeAttributes = [GeneratedCodeAttribute];
     }
 
     internal static readonly IReadOnlyList<AttributeListSyntax> DefaultTypeAttributes;
 
-    private const string GeneratedCodeAttributeName = "global::System.CodeDom.Compiler.GeneratedCode";
-    private static readonly AssemblyName ImposterGeneratorAssembly = typeof(SyntaxFactoryHelper).Assembly.GetName();
+    private const string GeneratedCodeAttributeName =
+        "global::System.CodeDom.Compiler.GeneratedCode";
+    private static readonly AssemblyName ImposterGeneratorAssembly =
+        typeof(SyntaxFactoryHelper).Assembly.GetName();
 
-    internal static readonly AttributeListSyntax GeneratedCodeAttribute =
-        AttributeList(
-            SingletonSeparatedList(
-                Attribute(IdentifierName(GeneratedCodeAttributeName))
-                    .WithArgumentList(
-                        AttributeArgumentList(
-                            SeparatedList<AttributeArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    AttributeArgument(
-                                        LiteralExpression(
-                                            SyntaxKind.StringLiteralExpression,
-                                            Literal(ImposterGeneratorAssembly.Name)
-                                        )
-                                    ),
-                                    Token(SyntaxKind.CommaToken),
-                                    AttributeArgument(
-                                        LiteralExpression(
-                                            SyntaxKind.StringLiteralExpression,
-                                            Literal(ImposterGeneratorAssembly.Version.ToString())
-                                        )
+    internal static readonly AttributeListSyntax GeneratedCodeAttribute = AttributeList(
+        SingletonSeparatedList(
+            Attribute(IdentifierName(GeneratedCodeAttributeName))
+                .WithArgumentList(
+                    AttributeArgumentList(
+                        SeparatedList<AttributeArgumentSyntax>(
+                            new SyntaxNodeOrToken[]
+                            {
+                                AttributeArgument(
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal(ImposterGeneratorAssembly.Name)
                                     )
-                                }
-                            )
+                                ),
+                                Token(SyntaxKind.CommaToken),
+                                AttributeArgument(
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal(ImposterGeneratorAssembly.Version.ToString())
+                                    )
+                                ),
+                            }
                         )
                     )
-            )
-        );
+                )
+        )
+    );
 }

@@ -4,7 +4,9 @@ internal readonly struct MethodInvocationImposterMetadata
 {
     internal readonly string ResultVariableName;
 
-    internal MethodInvocationImposterMetadata(IParameterNameContextProvider parameterNameContextProvider)
+    internal MethodInvocationImposterMetadata(
+        IParameterNameContextProvider parameterNameContextProvider
+    )
     {
         var nameContext = parameterNameContextProvider.CreateParameterNameContext();
         ResultVariableName = nameContext.Use("result");

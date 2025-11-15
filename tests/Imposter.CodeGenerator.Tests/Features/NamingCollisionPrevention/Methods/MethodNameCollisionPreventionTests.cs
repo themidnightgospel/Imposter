@@ -8,7 +8,8 @@ public class MethodNameCollisionPreventionTests : NamingCollisionPreventionTests
     [Fact]
     public async Task GivenMethodsMatchingGroupedTypeBaseNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -30,7 +31,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -38,7 +40,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenOverloadedMethodNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -54,7 +57,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -62,7 +66,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenMethodsMatchingBuilderOperationNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -84,7 +89,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -92,7 +98,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenMethodsMatchingHelperNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 
 namespace Sample.NamingCollisionUsage
@@ -109,7 +116,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -117,7 +125,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenMethodsMatchingImposterMembers_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Sample.NamingCollision;
 using Imposter.Abstractions;
 
@@ -138,12 +147,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

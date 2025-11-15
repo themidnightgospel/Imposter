@@ -5,7 +5,9 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static List<MemberDeclarationSyntax> ImplementInvocationSetupBuilderInterface(in ImposterTargetMethodMetadata method)
+    private static List<MemberDeclarationSyntax> ImplementInvocationSetupBuilderInterface(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var implementations = new List<MemberDeclarationSyntax>
         {
@@ -40,5 +42,4 @@ internal static partial class MethodImposterBuilderBuilder
 
         return implementations;
     }
-
 }

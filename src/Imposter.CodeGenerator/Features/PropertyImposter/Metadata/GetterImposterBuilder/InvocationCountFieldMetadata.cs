@@ -9,7 +9,5 @@ internal readonly struct InvocationCountFieldMetadata
 
     internal readonly TypeSyntax TypeSyntax = WellKnownTypes.Int;
 
-    public InvocationCountFieldMetadata()
-    {
-    }
+    public InvocationCountFieldMetadata() { }
 }

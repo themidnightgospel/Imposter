@@ -12,18 +12,23 @@ internal static partial class InvocationHistoryCollectionBuilder
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
-                .AddModifier(Token(SyntaxKind.InternalKeyword))
-                .AddMember(
-                    SingleVariableField(
-                        WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.InvocationHistory.Interface.Syntax),
-                        InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName,
-                        TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-                        WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(method.InvocationHistory.Interface.Syntax).New()
-                    )
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+                        method.InvocationHistory.Interface.Syntax
+                    ),
+                    InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName,
+                    TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
+                    WellKnownTypes
+                        .System.Collections.Concurrent.ConcurrentStack(
+                            method.InvocationHistory.Interface.Syntax
+                        )
+                        .New()
                 )
-                .AddMember(BuildAddMethod(method))
-                .AddMember(BuildCountMethod(method))
-                .Build()
-            ;
+            )
+            .AddMember(BuildAddMethod(method))
+            .AddMember(BuildCountMethod(method))
+            .Build();
     }
 }

@@ -13,7 +13,8 @@ namespace Imposter.CodeGenerator.Tests.Features.ClassImposter;
 
 public class ImposterGeneratorTargetTypeTests
 {
-    private const string Source = @"using Imposter.Abstractions;
+    private const string Source =
+        @"using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.SealedClass))]
 
@@ -38,19 +39,24 @@ public sealed class SealedClass { }
     private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion)
     {
         var parseOptions = new CSharpParseOptions(languageVersion);
-        var references = ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
+        var references = ReferenceAssemblies
+            .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(new[]
-            {
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            });
+            .Concat(
+                new[]
+                {
+                    MetadataReference.CreateFromFile(
+                        typeof(GenerateImposterAttribute).Assembly.Location
+                    ),
+                }
+            );
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorTargetTypeTests",
             syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
             references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
     }
 }

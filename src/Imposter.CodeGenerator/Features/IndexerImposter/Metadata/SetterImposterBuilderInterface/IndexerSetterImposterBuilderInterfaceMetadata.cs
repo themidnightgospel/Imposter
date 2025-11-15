@@ -35,7 +35,8 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
 
     internal IndexerSetterImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
-        in IndexerDelegateMetadata delegatesMetadata)
+        in IndexerDelegateMetadata delegatesMetadata
+    )
     {
         Name = $"I{core.UniqueName}IndexerSetterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
@@ -51,9 +52,16 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
         FluentInterfaceName = $"I{core.UniqueName}IndexerSetterFluentBuilder";
         FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
 
-        CallbackMethod = new CallbackMethodMetadata(delegatesMetadata, ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
+        CallbackMethod = new CallbackMethodMetadata(
+            delegatesMetadata,
+            ContinuationInterfaceTypeSyntax,
+            CallbackInterfaceTypeSyntax
+        );
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new ThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        ThenMethod = new ThenMethodMetadata(
+            ContinuationInterfaceTypeSyntax,
+            FluentInterfaceTypeSyntax
+        );
         UseBaseImplementationMethod = core.SetterSupportsBaseImplementation
             ? new UseBaseImplementationMethodMetadata(TypeSyntax, FluentInterfaceTypeSyntax)
             : null;

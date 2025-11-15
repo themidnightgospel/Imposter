@@ -15,9 +15,7 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             public string Name { get; set; } = string.Empty;
         }
 
-        private class Dog : Animal
-        {
-        }
+        private class Dog : Animal { }
 
         [Fact]
         public void GivenSetupUsingDerivedOutType_WhenInvokedThroughBaseType_ShouldAdaptOutValueAndReturnResult()
@@ -26,13 +24,21 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                     OutArg<Dog>.Any(),
                     Arg<string>.Is("ref-value"),
                     Arg<int>.Is(i => i > 0),
-                    Arg<string[]>.Any())
-                .Returns((out Dog outValue, ref string refValue, in int inValue, string[] paramsValues) =>
-                {
-                    outValue = new Dog { Name = $"dog-{inValue}" };
-                    refValue = $"{refValue}-updated";
-                    return $"result-{paramsValues.Length}";
-                });
+                    Arg<string[]>.Any()
+                )
+                .Returns(
+                    (
+                        out Dog outValue,
+                        ref string refValue,
+                        in int inValue,
+                        string[] paramsValues
+                    ) =>
+                    {
+                        outValue = new Dog { Name = $"dog-{inValue}" };
+                        refValue = $"{refValue}-updated";
+                        return $"result-{paramsValues.Length}";
+                    }
+                );
 
             var target = _sut.Instance();
 
@@ -44,7 +50,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                 ref refArgument,
                 in inArgument,
                 "one",
-                "two");
+                "two"
+            );
 
             result.ShouldBe("result-2");
             refArgument.ShouldBe("ref-value-updated");
@@ -55,25 +62,48 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         [Fact]
         public void GivenCallbackSetup_WhenInvoked_ShouldRunForEveryInvocation()
         {
-            var callbackInvocations = new List<(int OutValue, string RefValue, int InValue, IReadOnlyList<string> Params)>();
+            var callbackInvocations =
+                new List<(
+                    int OutValue,
+                    string RefValue,
+                    int InValue,
+                    IReadOnlyList<string> Params
+                )>();
 
             _sut.GenericAllRefKind<int, string, int, string, int>(
                     OutArg<int>.Any(),
                     Arg<string>.Any(),
                     Arg<int>.Any(),
-                    Arg<string[]>.Any())
-                .Returns((out int outValue, ref string refValue, in int inValue, string[] paramsValues) =>
-                {
-                    outValue = inValue;
-                    refValue = $"{refValue}-from-result";
-                    return paramsValues.Length;
-                })
-                .Callback((out int callbackOut, ref string callbackRef, in int callbackIn, string[] callbackParams) =>
-                {
-                    callbackOut = callbackIn * 10;
-                    callbackRef = $"{callbackRef}-from-callback";
-                    callbackInvocations.Add((callbackOut, callbackRef, callbackIn, callbackParams.ToArray()));
-                });
+                    Arg<string[]>.Any()
+                )
+                .Returns(
+                    (
+                        out int outValue,
+                        ref string refValue,
+                        in int inValue,
+                        string[] paramsValues
+                    ) =>
+                    {
+                        outValue = inValue;
+                        refValue = $"{refValue}-from-result";
+                        return paramsValues.Length;
+                    }
+                )
+                .Callback(
+                    (
+                        out int callbackOut,
+                        ref string callbackRef,
+                        in int callbackIn,
+                        string[] callbackParams
+                    ) =>
+                    {
+                        callbackOut = callbackIn * 10;
+                        callbackRef = $"{callbackRef}-from-callback";
+                        callbackInvocations.Add(
+                            (callbackOut, callbackRef, callbackIn, callbackParams.ToArray())
+                        );
+                    }
+                );
 
             var target = _sut.Instance();
 
@@ -83,7 +113,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                 out var firstOut,
                 ref firstRef,
                 in firstInValue,
-                "alpha");
+                "alpha"
+            );
 
             var secondInValue = 5;
             var secondRef = "second";
@@ -92,7 +123,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                 ref secondRef,
                 in secondInValue,
                 "beta",
-                "gamma");
+                "gamma"
+            );
 
             firstResult.ShouldBe(1);
             secondResult.ShouldBe(2);
@@ -120,7 +152,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                     OutArg<int>.Any(),
                     Arg<string>.Any(),
                     Arg<int>.Any(),
-                    Arg<string[]>.Any())
+                    Arg<string[]>.Any()
+                )
                 .Returns(10L)
                 .Then(default)
                 .Returns(20L)
@@ -134,11 +167,14 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
             {
                 var refValue = "value";
                 var inValue = 1;
-                results.Add(target.GenericAllRefKind<int, string, int, string, long>(
-                    out _,
-                    ref refValue,
-                    in inValue,
-                    "only"));
+                results.Add(
+                    target.GenericAllRefKind<int, string, int, string, long>(
+                        out _,
+                        ref refValue,
+                        in inValue,
+                        "only"
+                    )
+                );
             }
 
             results.ShouldBe(new[] { 10L, 20L, 30L, 30L });
@@ -148,10 +184,11 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
         public void GivenInvocationVerification_WhenCountsDoNotMatch_ShouldThrowVerificationFailedException()
         {
             var builder = _sut.GenericAllRefKind<int, string, int, string, long>(
-                    OutArg<int>.Any(),
-                    Arg<string>.Is("tracked"),
-                    Arg<int>.Any(),
-                    Arg<string[]>.Any());
+                OutArg<int>.Any(),
+                Arg<string>.Is("tracked"),
+                Arg<int>.Any(),
+                Arg<string[]>.Any()
+            );
 
             builder.Returns(99L);
 
@@ -163,7 +200,8 @@ namespace Imposter.Ideation.GenericMethodPoc.V2
                 out _,
                 ref refValue,
                 in inValue,
-                "param");
+                "param"
+            );
 
             builder.Called(Count.Once());
 

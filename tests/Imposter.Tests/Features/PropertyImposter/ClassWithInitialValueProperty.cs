@@ -10,4 +10,3 @@ namespace Imposter.Tests.Features.PropertyImposter
         public virtual int A { get; set; } = 11;
     }
 }
-

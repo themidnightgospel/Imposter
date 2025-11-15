@@ -24,13 +24,17 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly GetMethodMetadata GetMethod;
 
-    internal PropertyGetterImposterBuilderMetadata(in ImposterPropertyCoreMetadata property, in FieldMetadata defaultPropertyBehaviourMetadata)
+    internal PropertyGetterImposterBuilderMetadata(
+        in ImposterPropertyCoreMetadata property,
+        in FieldMetadata defaultPropertyBehaviourMetadata
+    )
     {
         Name = "GetterImposterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
         var returnHandlerType = WellKnownTypes.System.Func(
             property.AsSystemFuncType.ToNullableType(),
-            property.TypeSyntax);
+            property.TypeSyntax
+        );
         ReturnValuesField = new ReturnValuesFieldMetadata(returnHandlerType);
         CallbacksField = new CallbacksFieldMetadata();
         LastReturnValueField = new LastReturnValueFieldMetadata(returnHandlerType);

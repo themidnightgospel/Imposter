@@ -1,8 +1,8 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
 
@@ -45,8 +45,16 @@ internal readonly struct EventImposterBuilderMethodsMetadata
         Callback = new CallbackMethodMetadata(core);
         OnSubscribe = new InterceptorMethodMetadata("OnSubscribe", core);
         OnUnsubscribe = new InterceptorMethodMetadata("OnUnsubscribe", core);
-        Subscribed = new CriteriaMethodMetadata("Subscribed", "criteria", core.HandlerArgTypeSyntax);
-        Unsubscribed = new CriteriaMethodMetadata("Unsubscribed", "criteria", core.HandlerArgTypeSyntax);
+        Subscribed = new CriteriaMethodMetadata(
+            "Subscribed",
+            "criteria",
+            core.HandlerArgTypeSyntax
+        );
+        Unsubscribed = new CriteriaMethodMetadata(
+            "Unsubscribed",
+            "criteria",
+            core.HandlerArgTypeSyntax
+        );
         HandlerInvoked = new HandlerInvokedMethodMetadata(core);
         CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
         RaiseInternalName = "RaiseInternal";
@@ -71,7 +79,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
                 ? new ParameterMetadata(
                     "baseImplementation",
                     WellKnownTypes.System.Action.ToNullableType(),
-                    LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    LiteralExpression(SyntaxKind.NullLiteralExpression)
+                )
                 : null;
         }
     }
@@ -90,7 +99,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
                 ? new ParameterMetadata(
                     "baseImplementation",
                     WellKnownTypes.System.Action.ToNullableType(),
-                    Null)
+                    Null
+                )
                 : null;
         }
     }
@@ -117,7 +127,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             Name = name;
             InterceptorParameter = new ParameterMetadata(
                 "interceptor",
-                WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax));
+                WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax)
+            );
         }
     }
 
@@ -141,7 +152,10 @@ internal readonly struct EventImposterBuilderMethodsMetadata
         internal HandlerInvokedMethodMetadata(in ImposterEventCoreMetadata core)
         {
             Name = "HandlerInvoked";
-            HandlerCriteriaParameter = new ParameterMetadata("handlerCriteria", core.HandlerArgTypeSyntax);
+            HandlerCriteriaParameter = new ParameterMetadata(
+                "handlerCriteria",
+                core.HandlerArgTypeSyntax
+            );
         }
     }
 }

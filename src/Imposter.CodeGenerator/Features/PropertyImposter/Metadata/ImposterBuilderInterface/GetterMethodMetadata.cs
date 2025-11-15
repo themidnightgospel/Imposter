@@ -9,7 +9,9 @@ internal readonly struct GetterMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal GetterMethodMetadata(in PropertyGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata)
+    internal GetterMethodMetadata(
+        in PropertyGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata
+    )
     {
         ReturnType = getterInterfaceMetadata.TypeSyntax;
     }

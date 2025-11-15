@@ -50,7 +50,9 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly PropertyGetterThenMethodMetadata? InitialThenMethod;
 
-    internal PropertyGetterImposterBuilderInterfaceMetadata(in ImposterPropertyCoreMetadata property)
+    internal PropertyGetterImposterBuilderInterfaceMetadata(
+        in ImposterPropertyCoreMetadata property
+    )
     {
         Name = $"I{property.UniqueName}PropertyGetterBuilder";
         TypeSyntax = SyntaxFactory.ParseName(Name);
@@ -65,25 +67,44 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         FluentInterfaceName = $"I{property.UniqueName}PropertyGetterFluentBuilder";
         FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
 
-        ReturnsMethod = new ReturnsMethodMetadata(in property, ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
-        ThrowsMethod = new ThrowsMethodMetadata(ContinuationInterfaceTypeSyntax, OutcomeInterfaceTypeSyntax);
-        CallbackMethod = new CallbackMethodMetadata(ContinuationInterfaceTypeSyntax, CallbackInterfaceTypeSyntax);
+        ReturnsMethod = new ReturnsMethodMetadata(
+            in property,
+            ContinuationInterfaceTypeSyntax,
+            OutcomeInterfaceTypeSyntax
+        );
+        ThrowsMethod = new ThrowsMethodMetadata(
+            ContinuationInterfaceTypeSyntax,
+            OutcomeInterfaceTypeSyntax
+        );
+        CallbackMethod = new CallbackMethodMetadata(
+            ContinuationInterfaceTypeSyntax,
+            CallbackInterfaceTypeSyntax
+        );
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new PropertyGetterThenMethodMetadata(ContinuationInterfaceTypeSyntax, FluentInterfaceTypeSyntax);
+        ThenMethod = new PropertyGetterThenMethodMetadata(
+            ContinuationInterfaceTypeSyntax,
+            FluentInterfaceTypeSyntax
+        );
         if (property.GetterSupportsBaseImplementation)
         {
             UseBaseImplementationMethod = new GetterUseBaseImplementationMethodMetadata(
                 FluentInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax);
+                FluentInterfaceTypeSyntax
+            );
 
-            UseBaseImplementationEntryInterfaceName = $"I{property.UniqueName}PropertyGetterUseBaseImplementationBuilder";
-            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(UseBaseImplementationEntryInterfaceName);
+            UseBaseImplementationEntryInterfaceName =
+                $"I{property.UniqueName}PropertyGetterUseBaseImplementationBuilder";
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(
+                UseBaseImplementationEntryInterfaceName
+            );
             UseBaseImplementationEntryMethod = new GetterUseBaseImplementationMethodMetadata(
                 UseBaseImplementationEntryInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax);
+                FluentInterfaceTypeSyntax
+            );
             InitialThenMethod = new PropertyGetterThenMethodMetadata(
                 TypeSyntax,
-                UseBaseImplementationEntryInterfaceTypeSyntax);
+                UseBaseImplementationEntryInterfaceTypeSyntax
+            );
         }
         else
         {

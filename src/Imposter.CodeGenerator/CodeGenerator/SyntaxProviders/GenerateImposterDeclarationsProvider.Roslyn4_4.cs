@@ -12,23 +12,29 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class GenerateImposterDeclarationsProvider
 {
-    private static readonly string GenerateImposterAttribute = typeof(GenerateImposterAttribute).FullName!;
+    private static readonly string GenerateImposterAttribute =
+        typeof(GenerateImposterAttribute).FullName!;
 
-    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(this in IncrementalGeneratorInitializationContext context)
+    internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(
+        this in IncrementalGeneratorInitializationContext context
+    )
     {
         return context
-            .SyntaxProvider
-            .ForAttributeWithMetadataName(
+            .SyntaxProvider.ForAttributeWithMetadataName(
                 GenerateImposterAttribute,
                 predicate: static (_, _) => true,
-                transform: static (ctx, token) => GetImposterTargetTypeSymbol(ctx, token))
+                transform: static (ctx, token) => GetImposterTargetTypeSymbol(ctx, token)
+            )
             .SelectMany((symbols, _) => symbols)
             .Collect()
             .SelectMany((targetSymbols, _) => targetSymbols.Distinct())
             .WithTrackingName("GenerateImposterDeclarations");
     }
 
-    private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(in GeneratorAttributeSyntaxContext context, in CancellationToken token)
+    private static IEnumerable<GenerateImposterDeclaration> GetImposterTargetTypeSymbol(
+        in GeneratorAttributeSyntaxContext context,
+        in CancellationToken token
+    )
     {
         token.ThrowIfCancellationRequested();
 
@@ -38,13 +44,18 @@ internal static class GenerateImposterDeclarationsProvider
         }
 
         return context
-            .Attributes
-            .Select(it =>
+            .Attributes.Select(it =>
             {
-                if (it.ConstructorArguments.Length > 0
-                    && it.ConstructorArguments[0].Value is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType)
+                if (
+                    it.ConstructorArguments.Length > 0
+                    && it.ConstructorArguments[0].Value
+                        is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType
+                )
                 {
-                    return new GenerateImposterDeclaration(imposterType, GetPutInTheSameNamespaceValue(it));
+                    return new GenerateImposterDeclaration(
+                        imposterType,
+                        GetPutInTheSameNamespaceValue(it)
+                    );
                 }
 
                 return default;
@@ -55,6 +66,7 @@ internal static class GenerateImposterDeclarationsProvider
     }
 
     private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
-        attributeData.ConstructorArguments.Length != 2 || (bool)attributeData.ConstructorArguments[1].Value!;
+        attributeData.ConstructorArguments.Length != 2
+        || (bool)attributeData.ConstructorArguments[1].Value!;
 }
 #endif

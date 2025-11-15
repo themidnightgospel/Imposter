@@ -10,7 +10,10 @@ internal readonly struct UseBaseImplementationMethodMetadata
 
     internal readonly NameSyntax InterfaceSyntax;
 
-    internal UseBaseImplementationMethodMetadata(NameSyntax interfaceSyntax, NameSyntax continuationInterfaceSyntax)
+    internal UseBaseImplementationMethodMetadata(
+        NameSyntax interfaceSyntax,
+        NameSyntax continuationInterfaceSyntax
+    )
     {
         InterfaceSyntax = interfaceSyntax;
         ReturnType = continuationInterfaceSyntax;

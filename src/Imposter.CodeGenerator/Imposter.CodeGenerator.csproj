@@ -1,90 +1,108 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <IsPackable>true</IsPackable>
-        <Nullable>enable</Nullable>
-        <LangVersion>13</LangVersion>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
 
-        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <IsRoslynComponent>true</IsRoslynComponent>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
+    <RootNamespace>Imposter.CodeGenerator</RootNamespace>
+    <!-- Single NuGet package that contains analyzer + runtime -->
+    <PackageId>Imposter</PackageId>
+    <Version>0.1.0</Version>
+    <Description>Imposter — Source-generated test doubles, zero runtime overhead. A high-performance Roslyn incremental source generator that produces imposters (mocks/stubs) for interfaces and overridable class members via GenerateImposterAttribute. Ships analyzer + runtime in a single package.</Description>
+    <PackageTags>source generator;mock;stub;imposter;roslyn;testing</PackageTags>
 
-        <RootNamespace>Imposter.CodeGenerator</RootNamespace>
-        <!-- Single NuGet package that contains analyzer + runtime -->
-        <PackageId>Imposter</PackageId>
-        <Version>0.1.0</Version>
-        <Description>Imposter — Source-generated test doubles, zero runtime overhead. A high-performance Roslyn incremental source generator that produces imposters (mocks/stubs) for interfaces and overridable class members via GenerateImposterAttribute. Ships analyzer + runtime in a single package.</Description>
-        <PackageTags>source generator;mock;stub;imposter;roslyn;testing</PackageTags>
+    <Authors>Bitchiko Tchelidze</Authors>
+    <PackageProjectUrl>https://github.com/themidnightgospel/Imposter</PackageProjectUrl>
 
-        <Authors>Bitchiko Tchelidze</Authors>
-        <PackageProjectUrl>https://github.com/themidnightgospel/Imposter</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnablePackageValidation>true</EnablePackageValidation>
 
-        <RepositoryType>git</RepositoryType>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <Deterministic>true</Deterministic>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- README and icon for NuGet package -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>imposter_logo.png</PackageIcon>
 
-        <!-- README and icon for NuGet package -->
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageIcon>imposter_logo.png</PackageIcon>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'"
+      >true</ContinuousIntegrationBuild
+    >
+  </PropertyGroup>
+  <Import Project="../../Roslyn.Shared.props" />
+  <Import Project="Imposter.Roslyn$(ROSLYN_VERSION).props" />
 
-        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    </PropertyGroup>
-    <Import Project="../../Roslyn.Shared.props"/>
-    <Import Project="Imposter.Roslyn$(ROSLYN_VERSION).props"/>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+    <AnalysisLevelPerformance>latest</AnalysisLevelPerformance>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
-        <AnalysisLevelPerformance>latest</AnalysisLevelPerformance>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.CodeAnalysis.PerformanceSensitiveAnalyzers"
+      Version="3.3.1"
+    >
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="PolySharp" Version="1.15.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.PerformanceSensitiveAnalyzers" Version="3.3.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="PolySharp" Version="1.15.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+    <ProjectReference
+      Include="..\Imposter.Abstractions\Imposter.Abstractions.csproj"
+      PrivateAssets="all"
+    />
+  </ItemGroup>
 
-        <ProjectReference Include="..\Imposter.Abstractions\Imposter.Abstractions.csproj" PrivateAssets="all"/>
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\docs\imposter_logo.png" Pack="true" PackagePath="" Visible="false" />
 
-    <ItemGroup>
-        <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" Visible="false"/>
-        <None Include="..\..\README.md" Pack="true" PackagePath="" Visible="false"/>
-        <None Include="..\..\docs\imposter_logo.png" Pack="true" PackagePath="" Visible="false"/>
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll"
+      Pack="true"
+      PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
+      Visible="false"
+    />
+    <None
+      Include="$(OutputPath)\Imposter.Abstractions.dll"
+      Pack="true"
+      PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
+      Visible="false"
+    />
 
-        <None Include="$(OutputPath)\$(AssemblyName).dll"
-              Pack="true"
-              PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
-              Visible="false"
-        />
-        <None Include="$(OutputPath)\Imposter.Abstractions.dll"
-              Pack="true"
-              PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs"
-              Visible="false"
-        />
-
-        <None Include="$(OutputPath)\Imposter.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
-        <None Include="$(OutputPath)\Imposter.Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
-
-    </ItemGroup>
+    <None
+      Include="$(OutputPath)\Imposter.Abstractions.dll"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+    <None
+      Include="$(OutputPath)\Imposter.Abstractions.xml"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+  </ItemGroup>
 </Project>

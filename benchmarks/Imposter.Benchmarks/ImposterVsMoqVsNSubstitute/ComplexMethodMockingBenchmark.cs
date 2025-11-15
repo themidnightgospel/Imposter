@@ -26,11 +26,17 @@ public class ComplexMethodMockingBenchmark
             var severityFloor = i % 5;
             var mock = new Mock<IComplexService>();
 
-            mock.SetupSequence(service => service.Process(
-                    It.Is<string>(route => route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)),
-                    It.Is<int>(severity => severity > severityFloor),
-                    It.Is<OperationContext>(context =>
-                        context.Region == "us-east" && context.RetryCount < 3)))
+            mock.SetupSequence(service =>
+                    service.Process(
+                        It.Is<string>(route =>
+                            route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)
+                        ),
+                        It.Is<int>(severity => severity > severityFloor),
+                        It.Is<OperationContext>(context =>
+                            context.Region == "us-east" && context.RetryCount < 3
+                        )
+                    )
+                )
                 .Returns("primed")
                 .Returns("engaged")
                 .Returns("completed");
@@ -47,11 +53,16 @@ public class ComplexMethodMockingBenchmark
             var severityFloor = i % 5;
             var substitute = Substitute.For<IComplexService>();
 
-            substitute.Process(
-                    NSubArg.Is<string>(route => route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)),
+            substitute
+                .Process(
+                    NSubArg.Is<string>(route =>
+                        route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)
+                    ),
                     NSubArg.Is<int>(severity => severity > severityFloor),
                     NSubArg.Is<OperationContext>(context =>
-                        context.Region == "us-east" && context.RetryCount < 3))
+                        context.Region == "us-east" && context.RetryCount < 3
+                    )
+                )
                 .Returns("primed", "engaged", "completed");
 
             ConsumeSequence(substitute, severityFloor);
@@ -66,15 +77,21 @@ public class ComplexMethodMockingBenchmark
             var severityFloor = i % 5;
             var imposter = new IComplexServiceImposter();
 
-            imposter.Process(
+            imposter
+                .Process(
                     Arg<string>.Is(route =>
-                        route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)),
+                        route.StartsWith("critical", StringComparison.OrdinalIgnoreCase)
+                    ),
                     Arg<int>.Is(severity => severity > severityFloor),
                     Arg<OperationContext>.Is(context =>
-                        context.Region == "us-east" && context.RetryCount < 3))
+                        context.Region == "us-east" && context.RetryCount < 3
+                    )
+                )
                 .Returns("primed")
-                .Then().Returns("engaged")
-                .Then().Returns("completed");
+                .Then()
+                .Returns("engaged")
+                .Then()
+                .Returns("completed");
 
             var instance = imposter.Instance();
             ConsumeSequence(instance, severityFloor);

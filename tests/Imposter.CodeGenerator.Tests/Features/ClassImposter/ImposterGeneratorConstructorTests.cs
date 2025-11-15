@@ -13,7 +13,8 @@ namespace Imposter.CodeGenerator.Tests.Features.ClassImposter;
 
 public class ImposterGeneratorConstructorTests
 {
-    private const string Source = @"using Imposter.Abstractions;
+    private const string Source =
+        @"using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.PrivateOnlyClass))]
 
@@ -35,26 +36,33 @@ public class PrivateOnlyClass
         var runResult = driver.RunGenerators(compilation).GetRunResult();
         var diagnostic = runResult.Diagnostics.ShouldHaveSingleItem();
 
-        diagnostic.Id.ShouldBe(DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id);
+        diagnostic.Id.ShouldBe(
+            DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id
+        );
         diagnostic.GetMessage().ShouldContain("Sample.PrivateOnlyClass");
     }
 
     private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion)
     {
         var parseOptions = new CSharpParseOptions(languageVersion);
-        var references = ReferenceAssemblies.Net.Net90
-            .ResolveAsync(null, CancellationToken.None)
+        var references = ReferenceAssemblies
+            .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(new[]
-            {
-                MetadataReference.CreateFromFile(typeof(GenerateImposterAttribute).Assembly.Location)
-            });
+            .Concat(
+                new[]
+                {
+                    MetadataReference.CreateFromFile(
+                        typeof(GenerateImposterAttribute).Assembly.Location
+                    ),
+                }
+            );
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorConstructorTests",
             syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
             references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
     }
 }

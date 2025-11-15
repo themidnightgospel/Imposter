@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]
@@ -35,7 +35,9 @@ namespace Imposter.Tests.Features.EventImposter
                 invoked = true;
             };
 
-            await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty).WaitAsync(TimeSpan.FromSeconds(1));
+            await _sut
+                .AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty)
+                .WaitAsync(TimeSpan.FromSeconds(1));
 
             invoked.ShouldBeTrue();
         }
@@ -79,7 +81,9 @@ namespace Imposter.Tests.Features.EventImposter
             Should.NotThrow(() =>
                 _sut.SomethingHappened.Subscribed(
                     Arg<EventHandler>.Is(h => h == handler),
-                    Count.Exactly(1)));
+                    Count.Exactly(1)
+                )
+            );
         }
 
         [Fact]
@@ -94,7 +98,9 @@ namespace Imposter.Tests.Features.EventImposter
                 _sut.SomethingHappened.Raised(
                     Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Any(),
-                    Count.Exactly(1)));
+                    Count.Exactly(1)
+                )
+            );
         }
 
         [Fact]
@@ -111,7 +117,9 @@ namespace Imposter.Tests.Features.EventImposter
                 _sut.CustomAsyncSomethingHappened.Raised(
                     Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Is(a => a == args),
-                    Count.Exactly(1)));
+                    Count.Exactly(1)
+                )
+            );
         }
 
         [Fact]
@@ -128,7 +136,9 @@ namespace Imposter.Tests.Features.EventImposter
                 _sut.ValueTaskSomethingHappened.Raised(
                     Arg<object>.Is(s => s == sender),
                     Arg<EventArgs>.Is(a => a == args),
-                    Count.Exactly(1)));
+                    Count.Exactly(1)
+                )
+            );
         }
     }
 }

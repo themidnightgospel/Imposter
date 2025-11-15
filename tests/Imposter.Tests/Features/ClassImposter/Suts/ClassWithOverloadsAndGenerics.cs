@@ -11,7 +11,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         public virtual string Format(string value, int padding) => value.PadLeft(padding, '0');
 
-        public virtual T Echo<T>(T item) where T : class => item;
+        public virtual T Echo<T>(T item)
+            where T : class => item;
 
         public virtual TFirst SelectFirst<TFirst, TSecond>(TFirst first, TSecond second) => first;
 
@@ -19,8 +20,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         public string FormatString(string value, int padding) => Format(value, padding);
 
-        public T EchoValue<T>(T item) where T : class => Echo(item);
+        public T EchoValue<T>(T item)
+            where T : class => Echo(item);
 
-        public TFirst SelectFirstValue<TFirst, TSecond>(TFirst first, TSecond second) => SelectFirst(first, second);
+        public TFirst SelectFirstValue<TFirst, TSecond>(TFirst first, TSecond second) =>
+            SelectFirst(first, second);
     }
 }

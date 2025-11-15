@@ -56,7 +56,8 @@ public sealed class Count
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
     public static Count Exactly(int count)
     {
-        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count));
         return new Count(exactly: count, atLeast: null, atMost: null);
     }
 
@@ -68,7 +69,8 @@ public sealed class Count
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
     public static Count AtLeast(int count)
     {
-        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count));
         return new Count(exactly: null, atLeast: count, atMost: null);
     }
 
@@ -80,7 +82,8 @@ public sealed class Count
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
     public static Count AtMost(int count)
     {
-        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count));
         return new Count(exactly: null, atLeast: null, atMost: count);
     }
 

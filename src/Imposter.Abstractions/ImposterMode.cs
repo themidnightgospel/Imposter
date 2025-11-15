@@ -17,5 +17,5 @@ public enum ImposterMode
     /// <summary>
     /// Explicit (strict) mode — missing setups throw <see cref="MissingImposterException"/>.
     /// </summary>
-    Explicit = 1
+    Explicit = 1,
 }

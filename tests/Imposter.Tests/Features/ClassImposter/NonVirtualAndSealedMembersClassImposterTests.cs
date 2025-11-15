@@ -8,7 +8,8 @@ namespace Imposter.Tests.Features.ClassImposter
 {
     public class NonVirtualAndSealedMembersClassImposterTests
     {
-        private static readonly BindingFlags PublicMembers = BindingFlags.Instance | BindingFlags.Public;
+        private static readonly BindingFlags PublicMembers =
+            BindingFlags.Instance | BindingFlags.Public;
 
         [Fact]
         public void GivenNonVirtualMembers_WhenBuildingImposter_ThenMembersAreNotConfigurableAndBaseBehaviorRuns()
@@ -43,7 +44,10 @@ namespace Imposter.Tests.Features.ClassImposter
 
         private static void AssertNoBuilderMember(string memberName)
         {
-            var members = typeof(ClassWithNonVirtualAndSealedMembersImposter).GetMember(memberName, PublicMembers);
+            var members = typeof(ClassWithNonVirtualAndSealedMembersImposter).GetMember(
+                memberName,
+                PublicMembers
+            );
             members.ShouldBeEmpty($"Imposter builder unexpectedly exposes '{memberName}'.");
         }
     }

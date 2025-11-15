@@ -6,9 +6,10 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-public static bool Validate(
+    public static bool Validate(
         in SourceProductionContext sourceProductionContext,
-        GenerateImposterDeclaration generateImposterDeclaration)
+        GenerateImposterDeclaration generateImposterDeclaration
+    )
     {
         var target = generateImposterDeclaration.ImposterTarget;
 
@@ -27,9 +28,10 @@ public static bool Validate(
         return true;
     }
 
-private static void ReportImposterTargetMustBeInterface(
+    private static void ReportImposterTargetMustBeInterface(
         in SourceProductionContext sourceProductionContext,
-        INamedTypeSymbol target)
+        INamedTypeSymbol target
+    )
     {
         var targetLocation = GetPreferredLocation(target);
         var targetDisplayName = target.ToDisplayString();
@@ -39,12 +41,15 @@ private static void ReportImposterTargetMustBeInterface(
                 DiagnosticDescriptors.InvalidImposterTarget,
                 targetLocation,
                 targetDisplayName,
-                target.TypeKind));
+                target.TypeKind
+            )
+        );
     }
 
-private static void ReportImposterTargetMustHaveAccessibleConstructor(
+    private static void ReportImposterTargetMustHaveAccessibleConstructor(
         in SourceProductionContext sourceProductionContext,
-        INamedTypeSymbol target)
+        INamedTypeSymbol target
+    )
     {
         var targetLocation = GetPreferredLocation(target);
 
@@ -52,12 +57,14 @@ private static void ReportImposterTargetMustHaveAccessibleConstructor(
             Diagnostic.Create(
                 DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
                 targetLocation,
-                target.ToDisplayString()));
+                target.ToDisplayString()
+            )
+        );
     }
 
-    private static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol)
-        => typeSymbol.TypeKind == TypeKind.Interface ||
-           typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
+    private static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol) =>
+        typeSymbol.TypeKind == TypeKind.Interface
+        || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
 
     private static bool HasAccessibleConstructor(INamedTypeSymbol typeSymbol)
     {

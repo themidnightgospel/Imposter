@@ -12,18 +12,38 @@ internal static partial class MethodImposterBuilderBuilder
 
         if (method.Symbol.IsGenericMethod)
         {
-            fields.Add(SinglePrivateReadonlyVariableField(method.MethodImposter.Builder.ImposterCollectionField.Type, method.MethodImposter.Builder.ImposterCollectionField.Name));
+            fields.Add(
+                SinglePrivateReadonlyVariableField(
+                    method.MethodImposter.Builder.ImposterCollectionField.Type,
+                    method.MethodImposter.Builder.ImposterCollectionField.Name
+                )
+            );
         }
         else
         {
-            fields.Add(SinglePrivateReadonlyVariableField(method.MethodImposter.Builder.MethodImposterField.Type, method.MethodImposter.Builder.MethodImposterField.Name));
+            fields.Add(
+                SinglePrivateReadonlyVariableField(
+                    method.MethodImposter.Builder.MethodImposterField.Type,
+                    method.MethodImposter.Builder.MethodImposterField.Name
+                )
+            );
         }
 
-        fields.Add(SinglePrivateReadonlyVariableField(method.InvocationHistory.Collection.Syntax, method.InvocationHistory.Collection.AsField.Name));
+        fields.Add(
+            SinglePrivateReadonlyVariableField(
+                method.InvocationHistory.Collection.Syntax,
+                method.InvocationHistory.Collection.AsField.Name
+            )
+        );
 
         if (method.Parameters.HasInputParameters)
         {
-            fields.Add(SinglePrivateReadonlyVariableField(method.MethodImposter.Builder.ArgumentsCriteriaField.Type, method.MethodImposter.Builder.ArgumentsCriteriaField.Name));
+            fields.Add(
+                SinglePrivateReadonlyVariableField(
+                    method.MethodImposter.Builder.ArgumentsCriteriaField.Type,
+                    method.MethodImposter.Builder.ArgumentsCriteriaField.Name
+                )
+            );
         }
 
         return fields;

@@ -6,9 +6,7 @@ using Imposter.Tests.Shared;
 
 namespace Imposter.Tests.Shared
 {
-    public interface IMammal
-    {
-    }
+    public interface IMammal { }
 
     public interface IAnimal : IMammal
     {
@@ -25,47 +23,34 @@ namespace Imposter.Tests.Shared
         public string Name { get; }
     }
 
-    public interface ICat : IAnimal
-    {
-    }
+    public interface ICat : IAnimal { }
 
     public class Cat : Animal, ICat
     {
         public Cat(string name)
-            : base(name)
-        {
-        }
+            : base(name) { }
     }
 
     public class Tiger : Cat
     {
-        public Tiger(string name) : base(name)
-        {
-        }
+        public Tiger(string name)
+            : base(name) { }
     }
 
-    public interface IDog : IAnimal
-    {
-    }
+    public interface IDog : IAnimal { }
 
     public class Dog : Animal, IDog
     {
         public Dog(string name)
-            : base(name)
-        {
-        }
+            : base(name) { }
     }
 
-    public interface IGermanShepherd : IDog
-    {
-    }
+    public interface IGermanShepherd : IDog { }
 
     public class GermanShepherd : Dog, IGermanShepherd
     {
         public GermanShepherd(string name)
-            : base(name)
-        {
-        }
+            : base(name) { }
     }
 
     public interface IIndexerSetupPoc

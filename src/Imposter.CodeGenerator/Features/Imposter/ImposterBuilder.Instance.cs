@@ -9,14 +9,19 @@ internal readonly partial struct ImposterBuilder
 {
     private static MethodDeclarationSyntax InstanceMethod(
         in ImposterGenerationContext imposterGenerationContext,
-        string imposterInstanceFieldName) =>
+        string imposterInstanceFieldName
+    ) =>
         new MethodDeclarationBuilder(
-                SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
-                "Instance")
+            SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
+            "Instance"
+        )
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(
-                    WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol))))
-            .WithBody(Block(
-                ReturnStatement(IdentifierName(imposterInstanceFieldName))))
+                    WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
+                        SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)
+                    )
+                )
+            )
+            .WithBody(Block(ReturnStatement(IdentifierName(imposterInstanceFieldName))))
             .Build();
 }

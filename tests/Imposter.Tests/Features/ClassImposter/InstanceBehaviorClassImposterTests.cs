@@ -23,7 +23,9 @@ namespace Imposter.Tests.Features.ClassImposter
             first.InvokeProtectedMethod(3).ShouldBe(42);
             second.InvokeProtectedMethod(3).ShouldBe(42);
 
-            Should.NotThrow(() => imposter.ProtectedVirtualMethod(Arg<int>.Is(3)).Called(Count.Exactly(2)));
+            Should.NotThrow(() =>
+                imposter.ProtectedVirtualMethod(Arg<int>.Is(3)).Called(Count.Exactly(2))
+            );
         }
 
         [Fact]

@@ -17,22 +17,31 @@ internal static partial class MethodImposterCollectionBuilder
 
         var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithTypeParameters(typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null)
+            .WithTypeParameters(
+                typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null
+            )
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
                         "imposter",
-                        method.MethodImposter.Syntax
-                            .New(
-                                ArgumentList(
-                                    SeparatedList<ArgumentSyntax>(
-                                        new SyntaxNodeOrToken[]
-                                        {
-                                            Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                                            Token(SyntaxKind.CommaToken),
-                                            Argument(IdentifierName("_invocationBehavior"))
-                                        })))),
+                        method.MethodImposter.Syntax.New(
+                            ArgumentList(
+                                SeparatedList<ArgumentSyntax>(
+                                    new SyntaxNodeOrToken[]
+                                    {
+                                        Argument(
+                                            IdentifierName(
+                                                method.InvocationHistory.Collection.AsField.Name
+                                            )
+                                        ),
+                                        Token(SyntaxKind.CommaToken),
+                                        Argument(IdentifierName("_invocationBehavior")),
+                                    }
+                                )
+                            )
+                        )
+                    ),
                     IdentifierName("_imposters")
                         .Dot(IdentifierName("Push"))
                         .Call(Argument(IdentifierName("imposter")).AsSingleArgumentListSyntax())

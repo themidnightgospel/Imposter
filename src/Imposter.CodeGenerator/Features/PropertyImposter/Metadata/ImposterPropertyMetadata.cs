@@ -33,23 +33,42 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
-    public ImposterPropertyMetadata(IPropertySymbol property, string uniqueName, NameSet memberNameSet)
+    public ImposterPropertyMetadata(
+        IPropertySymbol property,
+        string uniqueName,
+        NameSet memberNameSet
+    )
     {
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
-        DefaultPropertyBehaviourField = new FieldMetadata("_defaultPropertyBehaviour", DefaultPropertyBehaviour.TypeSyntax);
+        DefaultPropertyBehaviourField = new FieldMetadata(
+            "_defaultPropertyBehaviour",
+            DefaultPropertyBehaviour.TypeSyntax
+        );
         var propertyFieldBaseName = $"_{Core.UniqueName}PropertyBuilderField";
         AsField = new FieldMetadata(memberNameSet.Use(propertyFieldBaseName), Core.TypeSyntax);
 
         GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
-        GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(Core, DefaultPropertyBehaviourField);
+        GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(
+            Core,
+            DefaultPropertyBehaviourField
+        );
 
         SetterImposterBuilderInterface = new PropertySetterImposterBuilderInterfaceMetadata(Core);
         SetterImposter = new PropertySetterImposterMetadata(Core, DefaultPropertyBehaviourField);
 
-        ImposterBuilderInterface = new PropertyImposterBuilderInterfaceMetadata(Core, SetterImposterBuilderInterface, GetterImposterBuilderInterface);
-        ImposterBuilder = new PropertyImposterBuilderMetadata(Core, DefaultPropertyBehaviourField, SetterImposter, GetterImposterBuilder);
+        ImposterBuilderInterface = new PropertyImposterBuilderInterfaceMetadata(
+            Core,
+            SetterImposterBuilderInterface,
+            GetterImposterBuilderInterface
+        );
+        ImposterBuilder = new PropertyImposterBuilderMetadata(
+            Core,
+            DefaultPropertyBehaviourField,
+            SetterImposter,
+            GetterImposterBuilder
+        );
 
         ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property);
     }

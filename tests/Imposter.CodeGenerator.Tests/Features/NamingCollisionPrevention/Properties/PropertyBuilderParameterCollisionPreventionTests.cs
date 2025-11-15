@@ -3,12 +3,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Properties;
 
-public class PropertyBuilderParameterCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
+public class PropertyBuilderParameterCollisionPreventionTests
+    : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenBuilderParameterNamedProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -35,12 +37,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

@@ -24,13 +24,26 @@ internal readonly struct MethodImposterBuilderMetadata
         NameSyntax methodImposterCollectionSyntax,
         NameSyntax argumentCriteriaSyntax,
         NameSyntax invocationImposterGroupType,
-        NameSyntax methodInvocationImposterType)
+        NameSyntax methodInvocationImposterType
+    )
     {
-        Syntax = SyntaxFactory.QualifiedName(methodImposterSyntax, SyntaxFactory.IdentifierName("Builder"));
-        ImposterCollectionField = new FieldMetadata("_imposterCollection", methodImposterCollectionSyntax);
+        Syntax = SyntaxFactory.QualifiedName(
+            methodImposterSyntax,
+            SyntaxFactory.IdentifierName("Builder")
+        );
+        ImposterCollectionField = new FieldMetadata(
+            "_imposterCollection",
+            methodImposterCollectionSyntax
+        );
         MethodImposterField = new FieldMetadata("_imposter", methodImposterSyntax);
         ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", argumentCriteriaSyntax);
-        InvocationImposterGroupField = new FieldMetadata("_invocationImposterGroup", invocationImposterGroupType);
-        CurrentInvocationImposterField = new FieldMetadata("_currentInvocationImposter", methodInvocationImposterType);
+        InvocationImposterGroupField = new FieldMetadata(
+            "_invocationImposterGroup",
+            invocationImposterGroupType
+        );
+        CurrentInvocationImposterField = new FieldMetadata(
+            "_currentInvocationImposter",
+            methodInvocationImposterType
+        );
     }
 }

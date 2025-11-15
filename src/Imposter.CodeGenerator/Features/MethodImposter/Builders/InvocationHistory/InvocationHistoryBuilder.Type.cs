@@ -14,7 +14,10 @@ internal static partial class InvocationHistoryBuilder
     {
         var fields = GetFields(method).ToArray();
 
-        return new ClassDeclarationBuilder(method.InvocationHistory.Name, method.GenericTypeParameterListSyntax)
+        return new ClassDeclarationBuilder(
+            method.InvocationHistory.Name,
+            method.GenericTypeParameterListSyntax
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
             .AddMembers(fields)
@@ -22,19 +25,26 @@ internal static partial class InvocationHistoryBuilder
             .AddMember(BuildMatchesMethod(method))
             .Build();
 
-        static ConstructorDeclarationSyntax BuildConstructor(in string className, IReadOnlyList<FieldDeclarationSyntax> fields) =>
+        static ConstructorDeclarationSyntax BuildConstructor(
+            in string className,
+            IReadOnlyList<FieldDeclarationSyntax> fields
+        ) =>
             new ConstructorBuilder(className)
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                .AddParameters(fields
-                    .Select(field =>
+                .AddParameters(
+                    fields.Select(field =>
                         Parameter(Identifier(field.Declaration.Variables[0].Identifier.Text))
                             .WithType(field.Declaration.Type)
-                    ))
-                .WithBody(Block(fields
-                        .Select(field =>
+                    )
+                )
+                .WithBody(
+                    Block(
+                        fields.Select(field =>
                             ThisExpression()
                                 .Dot(IdentifierName(field.Declaration.Variables[0].Identifier.Text))
-                                .Assign(IdentifierName(field.Declaration.Variables[0].Identifier.Text))
+                                .Assign(
+                                    IdentifierName(field.Declaration.Variables[0].Identifier.Text)
+                                )
                                 .ToStatementSyntax()
                         )
                     )

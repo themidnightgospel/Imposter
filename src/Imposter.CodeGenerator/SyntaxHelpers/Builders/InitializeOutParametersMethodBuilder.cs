@@ -13,27 +13,29 @@ internal static class InitializeOutParametersMethodBuilder
     private const string Name = "InitializeOutParametersWithDefaultValues";
 
     internal static ExpressionStatementSyntax? Invoke(in ImposterTargetMethodMetadata method) =>
-        method.Parameters.HasOutputParameters
-            ? Invoke(method.Parameters.OutputParameters)
-            : null;
+        method.Parameters.HasOutputParameters ? Invoke(method.Parameters.OutputParameters) : null;
 
     private static ExpressionStatementSyntax Invoke(IReadOnlyList<IParameterSymbol> parameters) =>
         IdentifierName(Name)
-            .Call(parameters
-                .Where(it => it.RefKind is RefKind.Out)
-                .Select(it => ArgumentSyntax(it)))
+            .Call(
+                parameters.Where(it => it.RefKind is RefKind.Out).Select(it => ArgumentSyntax(it))
+            )
             .ToStatementSyntax();
 
-    internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
-        => method.Parameters.HasOutputParameters ? Build(method.Parameters.OutputParameters) : null;
+    internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method) =>
+        method.Parameters.HasOutputParameters ? Build(method.Parameters.OutputParameters) : null;
 
     private static MethodDeclarationSyntax Build(IReadOnlyList<IParameterSymbol> parameters) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, Name)
             .AddParameters(parameters.Select(ParameterSyntax))
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithBody(Block(parameters
-                .Where(it => it.RefKind is RefKind.Out)
-                .Select(AssignDefaultValueStatementSyntax)))
+            .WithBody(
+                Block(
+                    parameters
+                        .Where(it => it.RefKind is RefKind.Out)
+                        .Select(AssignDefaultValueStatementSyntax)
+                )
+            )
             .Build();
 }

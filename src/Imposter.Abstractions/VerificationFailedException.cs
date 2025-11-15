@@ -15,6 +15,7 @@ public class VerificationFailedException : Exception
     /// <param name="expectedCount">The expected number of invocations.</param>
     /// <param name="actualCount">The actual number of invocations that occurred.</param>
     public VerificationFailedException(Count expectedCount, int actualCount)
-        : base($"Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.")
-    { }
+        : base(
+            $"Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times."
+        ) { }
 }

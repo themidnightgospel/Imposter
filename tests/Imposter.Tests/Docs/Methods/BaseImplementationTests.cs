@@ -11,7 +11,9 @@ namespace Imposter.Tests.Docs.Methods
     public class MyService
     {
         public virtual int Add(int a, int b) => a + b;
+
         public virtual Task ProcessAsync(string s) => Task.CompletedTask;
+
         public virtual int MightFail(int v) => throw new InvalidOperationException("fail");
     }
 
@@ -41,7 +43,7 @@ namespace Imposter.Tests.Docs.Methods
             // Only forward when the first value is positive (more specific rule)
             imp.Add(Arg<int>.Is(x => x > 0), Arg<int>.Any()).UseBaseImplementation();
 
-            svc.Add(2, 3).ShouldBe(5);   // base
+            svc.Add(2, 3).ShouldBe(5); // base
             svc.Add(-2, 3).ShouldBe(-1); // fallback
         }
 
@@ -51,12 +53,9 @@ namespace Imposter.Tests.Docs.Methods
             var imp = new MyServiceImposter();
             var svc = imp.Instance();
 
-            imp.Add(Arg<int>.Any(), Arg<int>.Any())
-               .UseBaseImplementation()
-               .Then()
-               .Returns(100);
+            imp.Add(Arg<int>.Any(), Arg<int>.Any()).UseBaseImplementation().Then().Returns(100);
 
-            svc.Add(1, 1).ShouldBe(2);   // base -> 2
+            svc.Add(1, 1).ShouldBe(2); // base -> 2
             svc.Add(1, 1).ShouldBe(100); // override after Then()
         }
 

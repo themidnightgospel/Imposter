@@ -15,15 +15,33 @@ internal static partial class InvocationHistoryBuilder
 
         if (method.Parameters.InputParameters.Count > 0)
         {
-            fields.Add(SingleVariableField(method.Arguments.Syntax, InvocationHistoryTypeMetadata.ArgumentsFieldName, TokenList(Token(SyntaxKind.InternalKeyword))));
+            fields.Add(
+                SingleVariableField(
+                    method.Arguments.Syntax,
+                    InvocationHistoryTypeMetadata.ArgumentsFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword))
+                )
+            );
         }
 
         if (method.HasReturnValue)
         {
-            fields.Add(SingleVariableField(method.ReturnType.TypeSymbolMetadata.NullableTypeSyntax, InvocationHistoryTypeMetadata.ResultFieldName, TokenList(Token(SyntaxKind.InternalKeyword))));
+            fields.Add(
+                SingleVariableField(
+                    method.ReturnType.TypeSymbolMetadata.NullableTypeSyntax,
+                    InvocationHistoryTypeMetadata.ResultFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword))
+                )
+            );
         }
 
-        fields.Add(SingleVariableField(WellKnownTypes.System.Exception.ToNullableType(), InvocationHistoryTypeMetadata.ExceptionFieldName, TokenList(Token(SyntaxKind.InternalKeyword))));
+        fields.Add(
+            SingleVariableField(
+                WellKnownTypes.System.Exception.ToNullableType(),
+                InvocationHistoryTypeMetadata.ExceptionFieldName,
+                TokenList(Token(SyntaxKind.InternalKeyword))
+            )
+        );
 
         return fields;
     }

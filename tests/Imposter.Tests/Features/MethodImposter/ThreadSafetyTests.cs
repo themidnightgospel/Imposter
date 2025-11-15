@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.MethodImposter
         private const int ThreadCount = 200;
         private readonly IMethodSetupFeatureSutImposter _sut =
 #if USE_CSHARP14
-            IMethodSetupFeatureSut.Imposter();
+        IMethodSetupFeatureSut.Imposter();
 #else
-            new IMethodSetupFeatureSutImposter();
+        new IMethodSetupFeatureSutImposter();
 #endif
 
         [Fact]
@@ -23,9 +23,10 @@ namespace Imposter.Tests.Features.MethodImposter
             for (int i = 0; i < ThreadCount; i++)
             {
                 var index = i;
-                threads[i] = index % 2 == 0
-                    ? new Thread(() => _sut.Instance().IntNoParams())
-                    : new Thread(() => _sut.Instance().VoidNoParams());
+                threads[i] =
+                    index % 2 == 0
+                        ? new Thread(() => _sut.Instance().IntNoParams())
+                        : new Thread(() => _sut.Instance().VoidNoParams());
             }
 
             foreach (var thread in threads)
@@ -54,7 +55,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             var results = new int[ThreadCount];
             var threads = new Thread[ThreadCount];
-            
+
             var startSignal = new ManualResetEventSlim(false);
             var readySignal = new CountdownEvent(ThreadCount);
 
@@ -65,7 +66,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 {
                     readySignal.Signal();
                     startSignal.Wait();
-                    
+
                     results[index] = _sut.Instance().IntNoParams();
                 });
             }
@@ -74,7 +75,7 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 thread.Start();
             }
-            
+
             readySignal.Wait();
             startSignal.Set();
 

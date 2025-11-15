@@ -3,12 +3,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Properties;
 
-public class PropertyClassTargetCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
+public class PropertyClassTargetCollisionPreventionTests
+    : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenClassTargetsWithUseBaseImplementationProperties_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -26,7 +28,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -34,7 +37,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenClassTargetCombiningThenAndUseBaseImplementation_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -53,12 +57,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-
-
-

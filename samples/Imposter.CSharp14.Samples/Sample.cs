@@ -14,9 +14,7 @@ public static class Sample
     {
         var imposter = ICalculator.Imposter();
 
-        imposter
-            .Add(Arg<int>.Any(), Arg<int>.Any())
-            .Returns(42);
+        imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
 
         return imposter.Instance().Add(20, 22);
     }

@@ -21,6 +21,7 @@ internal readonly struct SetMethodMetadata
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
             property.AsSystemActionType.ToNullableType(),
-            Null);
+            Null
+        );
     }
 }

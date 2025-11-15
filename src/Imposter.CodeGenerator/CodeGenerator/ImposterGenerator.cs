@@ -7,9 +7,6 @@ using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
-#if ROSLYN4_14_OR_GREATER
-using Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
-#endif
 using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Delegates;
@@ -32,28 +29,34 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+#if ROSLYN4_14_OR_GREATER
+using Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
+#endif
 
 namespace Imposter.CodeGenerator.CodeGenerator;
 
 [Generator]
 public sealed class ImposterGenerator : IIncrementalGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context) => InitializeCore(in context);
+    public void Initialize(IncrementalGeneratorInitializationContext context) =>
+        InitializeCore(in context);
 
     private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
 
-        context.RegisterSourceOutput(context
-                .GetGenerateImposterDeclarations()
-                .Combine(context.GetCompilationContext()),
-            (sourceProductionContext, contexts) => GenerateImposter(sourceProductionContext, contexts.Left, contexts.Right));
+        context.RegisterSourceOutput(
+            context.GetGenerateImposterDeclarations().Combine(context.GetCompilationContext()),
+            (sourceProductionContext, contexts) =>
+                GenerateImposter(sourceProductionContext, contexts.Left, contexts.Right)
+        );
     }
 
     private static void GenerateImposter(
         in SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration generateImposterDeclaration,
-        in CompilationContext compilationContext)
+        in CompilationContext compilationContext
+    )
     {
         if (sourceProductionContext.CancellationToken.IsCancellationRequested)
         {
@@ -67,9 +70,18 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var supportedCSharpFeatures = new SupportedCSharpFeatures(compilationContext.Compilation);
-            var logger = GeneratorLoggerFactory.Create(sourceProductionContext, compilationContext.IsLoggingEnabled);
-            var imposterGenerationContext = new ImposterGenerationContext(generateImposterDeclaration, supportedCSharpFeatures, logger);
+            var supportedCSharpFeatures = new SupportedCSharpFeatures(
+                compilationContext.Compilation
+            );
+            var logger = GeneratorLoggerFactory.Create(
+                sourceProductionContext,
+                compilationContext.IsLoggingEnabled
+            );
+            var imposterGenerationContext = new ImposterGenerationContext(
+                generateImposterDeclaration,
+                supportedCSharpFeatures,
+                logger
+            );
 
             logger.LogSupportedCSharpFeatures(supportedCSharpFeatures);
             logger.LogCompilation(compilationContext.Compilation);
@@ -78,8 +90,15 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
                 // NOTE: NormalizeWhitespace has a performance impact.
                 SourceText.From(
-                    BuildImposter(imposterGenerationContext, sourceProductionContext.CancellationToken).NormalizeWhitespace().ToFullString(),
-                    Encoding.UTF8));
+                    BuildImposter(
+                            imposterGenerationContext,
+                            sourceProductionContext.CancellationToken
+                        )
+                        .NormalizeWhitespace()
+                        .ToFullString(),
+                    Encoding.UTF8
+                )
+            );
         }
         catch (Exception ex)
         {
@@ -92,7 +111,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static CompilationUnitSyntax BuildImposter(
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken)
+        in CancellationToken cancellationToken
+    )
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
 
@@ -101,38 +121,45 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         BuildEventImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
 
-        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(imposterGenerationContext.ImposterNamespaceName);
+        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
+            imposterGenerationContext.ImposterNamespaceName
+        );
 
         imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
 
 #if ROSLYN4_14_OR_GREATER
         if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
         {
-            imposterNamespaceBuilder.AddMember(ImposterExtensionsBuilder.Build(
-                imposterGenerationContext,
-                imposterGenerationContext.ImposterNamespaceName));
+            imposterNamespaceBuilder.AddMember(
+                ImposterExtensionsBuilder.Build(
+                    imposterGenerationContext,
+                    imposterGenerationContext.ImposterNamespaceName
+                )
+            );
 
             imposterGenerationContext.Logger.Log("Generated imposter extensions.");
         }
         else
         {
-            imposterGenerationContext.Logger.Log("Skipping generation of Imposter Extensions because the current C# version does not support type extensions.");
+            imposterGenerationContext.Logger.Log(
+                "Skipping generation of Imposter Extensions because the current C# version does not support type extensions."
+            );
         }
 #else
-    imposterGenerationContext.Logger.Log("Skipping generation of Imposter Extensions because it requires ROSLYN 4.14 or greater.");
+        imposterGenerationContext.Logger.Log(
+            "Skipping generation of Imposter Extensions because it requires ROSLYN 4.14 or greater."
+        );
 #endif
 
-        var imposterNamespace = imposterNamespaceBuilder
-            .Build();
+        var imposterNamespace = imposterNamespaceBuilder.Build();
 
         var compilationUnit = CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
-            usings: List(UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)),
+            usings: List(
+                UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)
+            ),
             attributeLists: List<AttributeListSyntax>(),
-            members: List<MemberDeclarationSyntax>([
-                    imposterNamespace
-                ]
-            )
+            members: List<MemberDeclarationSyntax>([imposterNamespace])
         );
 
         return compilationUnit
@@ -142,24 +169,30 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     CarriageReturnLineFeed,
                     Trivia(SyntaxFactoryHelper.EnableNullableTrivia()),
                     Trivia(SyntaxFactoryHelper.DisableCS8608())
-                ))
+                )
+            )
             .WithTrailingTrivia(
                 TriviaList(
                     Trivia(SyntaxFactoryHelper.RestoreNullableTrivia()),
                     Trivia(SyntaxFactoryHelper.RestoreCS8608())
-                ));
+                )
+            );
     }
 
     private static void BuildMethodImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken)
+        in CancellationToken cancellationToken
+    )
     {
-        foreach (var method in imposterGenerationContext
-                     .Imposter
-                     .Methods
-                     .OrderBy(method => method.Symbol.MetadataName, StringComparer.Ordinal)
-                     .ThenBy(method => method.DisplayName, StringComparer.Ordinal))
+        foreach (
+            var method in imposterGenerationContext
+                .Imposter.Methods.OrderBy(
+                    method => method.Symbol.MetadataName,
+                    StringComparer.Ordinal
+                )
+                .ThenBy(method => method.DisplayName, StringComparer.Ordinal)
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -184,17 +217,27 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildPropertyImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken)
+        in CancellationToken cancellationToken
+    )
     {
-        foreach (var propertySymbol in imposterGenerationContext
-                     .Imposter
-                     .PropertySymbols
-                     .OrderBy(property => property.MetadataName, StringComparer.Ordinal)
-                     .ThenBy(property => property.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
+        foreach (
+            var propertySymbol in imposterGenerationContext
+                .Imposter.PropertySymbols.OrderBy(
+                    property => property.MetadataName,
+                    StringComparer.Ordinal
+                )
+                .ThenBy(
+                    property => property.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    StringComparer.Ordinal
+                )
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(propertySymbol, imposterBuilder.MemberNameSet);
+            var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(
+                propertySymbol,
+                imposterBuilder.MemberNameSet
+            );
 
             imposterBuilder
                 .AddPropertyImposter(property)
@@ -208,13 +251,20 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildEventImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken)
+        in CancellationToken cancellationToken
+    )
     {
-        foreach (var eventSymbol in imposterGenerationContext
-                     .Imposter
-                     .EventSymbols
-                     .OrderBy(@event => @event.MetadataName, StringComparer.Ordinal)
-                     .ThenBy(@event => @event.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
+        foreach (
+            var eventSymbol in imposterGenerationContext
+                .Imposter.EventSymbols.OrderBy(
+                    @event => @event.MetadataName,
+                    StringComparer.Ordinal
+                )
+                .ThenBy(
+                    @event => @event.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    StringComparer.Ordinal
+                )
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -230,13 +280,20 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void BuildIndexerImposter(
         ImposterBuilder imposterBuilder,
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken)
+        in CancellationToken cancellationToken
+    )
     {
-        foreach (var indexerSymbol in imposterGenerationContext
-                     .Imposter
-                     .IndexerSymbols
-                     .OrderBy(indexer => indexer.MetadataName, StringComparer.Ordinal)
-                     .ThenBy(indexer => indexer.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StringComparer.Ordinal))
+        foreach (
+            var indexerSymbol in imposterGenerationContext
+                .Imposter.IndexerSymbols.OrderBy(
+                    indexer => indexer.MetadataName,
+                    StringComparer.Ordinal
+                )
+                .ThenBy(
+                    indexer => indexer.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    StringComparer.Ordinal
+                )
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
 

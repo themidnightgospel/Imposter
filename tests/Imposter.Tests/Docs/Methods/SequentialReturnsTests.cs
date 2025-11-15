@@ -22,10 +22,7 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumber()
-                .Returns(1)
-                .Then().Returns(2)
-                .Then().Returns(3);
+            imposter.GetNumber().Returns(1).Then().Returns(2).Then().Returns(3);
 
             service.GetNumber().ShouldBe(1);
             service.GetNumber().ShouldBe(2);
@@ -38,9 +35,7 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumber()
-                .Returns(() => 1)
-                .Then().Returns(() => 2);
+            imposter.GetNumber().Returns(() => 1).Then().Returns(() => 2);
 
             service.GetNumber().ShouldBe(1);
             service.GetNumber().ShouldBe(2);
@@ -52,9 +47,7 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumberAsync()
-                .ReturnsAsync(1)
-                .Then().Returns(() => Task.FromResult(2));
+            imposter.GetNumberAsync().ReturnsAsync(1).Then().Returns(() => Task.FromResult(2));
 
             (await service.GetNumberAsync()).ShouldBe(1);
             (await service.GetNumberAsync()).ShouldBe(2);
@@ -66,10 +59,13 @@ namespace Imposter.Tests.Docs.Methods
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
 
-            imposter.GetNumber()
+            imposter
+                .GetNumber()
                 .Returns(1)
-                .Then().Throws<InvalidOperationException>()
-                .Then().Returns(2);
+                .Then()
+                .Throws<InvalidOperationException>()
+                .Then()
+                .Returns(2);
 
             service.GetNumber().ShouldBe(1);
             Should.Throw<InvalidOperationException>(() => service.GetNumber());

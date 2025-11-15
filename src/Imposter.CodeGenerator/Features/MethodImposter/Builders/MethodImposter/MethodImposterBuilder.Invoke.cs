@@ -11,86 +11,123 @@ namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter
 internal partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
-        new MethodDeclarationBuilder(method.ReturnTypeSyntax, MethodImposterInvokeMethodMetadata.Name)
+        new MethodDeclarationBuilder(
+            method.ReturnTypeSyntax,
+            MethodImposterInvokeMethodMetadata.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(BuildMethodParameters(method))
-            .WithBody(new BlockBuilder()
-                .AddStatement(DeclareAndInitializeArgumentsVariable(method))
-                .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
-                .AddStatement(EnsureMatchingInvocationImposterGroup(method))
-                .AddStatement(TryStatement(
-                        new BlockBuilder()
-                            .AddStatement(InvokeMatchingSetup(method))
-                            .AddStatement(AddToInvocationHistoryCollection(method, threwException: false))
-                            .AddStatement(ReturnResultStatement(method))
-                            .Build(),
-                        SingletonList(
-                            CatchClause(
-                                CatchDeclaration(
-                                    WellKnownTypes.System.Exception,
-                                    Identifier(method.MethodImposter.InvokeMethod.ExceptionVariableName)),
-                                null,
-                                new BlockBuilder()
-                                    .AddStatement(AddToInvocationHistoryCollection(method, threwException: true))
-                                    .AddStatement(ThrowStatement())
-                                    .Build()
-                            )
-                        ),
-                        default!
+            .WithBody(
+                new BlockBuilder()
+                    .AddStatement(DeclareAndInitializeArgumentsVariable(method))
+                    .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
+                    .AddStatement(EnsureMatchingInvocationImposterGroup(method))
+                    .AddStatement(
+                        TryStatement(
+                            new BlockBuilder()
+                                .AddStatement(InvokeMatchingSetup(method))
+                                .AddStatement(
+                                    AddToInvocationHistoryCollection(method, threwException: false)
+                                )
+                                .AddStatement(ReturnResultStatement(method))
+                                .Build(),
+                            SingletonList(
+                                CatchClause(
+                                    CatchDeclaration(
+                                        WellKnownTypes.System.Exception,
+                                        Identifier(
+                                            method.MethodImposter.InvokeMethod.ExceptionVariableName
+                                        )
+                                    ),
+                                    null,
+                                    new BlockBuilder()
+                                        .AddStatement(
+                                            AddToInvocationHistoryCollection(
+                                                method,
+                                                threwException: true
+                                            )
+                                        )
+                                        .AddStatement(ThrowStatement())
+                                        .Build()
+                                )
+                            ),
+                            default!
+                        )
                     )
-                )
-                .Build())
+                    .Build()
+            )
             .Build();
 
-    private static ReturnStatementSyntax? ReturnResultStatement(in ImposterTargetMethodMetadata method)
+    private static ReturnStatementSyntax? ReturnResultStatement(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        return method.HasReturnValue ? ReturnStatement(IdentifierName(method.MethodImposter.InvokeMethod.ResultVariableName)) : null;
+        return method.HasReturnValue
+            ? ReturnStatement(IdentifierName(method.MethodImposter.InvokeMethod.ResultVariableName))
+            : null;
     }
 
-    private static LocalDeclarationStatementSyntax? DeclareAndInitializeArgumentsVariable(in ImposterTargetMethodMetadata method) =>
+    private static LocalDeclarationStatementSyntax? DeclareAndInitializeArgumentsVariable(
+        in ImposterTargetMethodMetadata method
+    ) =>
         method.Parameters.HasInputParameters
             ? LocalVariableDeclarationSyntax(
                 typeSyntax: Var,
                 name: method.MethodImposter.InvokeMethod.ArgumentsVariableName,
-                initializer: method.Arguments.Syntax.New(method.Parameters.InputParametersAsArgumentListSyntaxWithoutRef))
+                initializer: method.Arguments.Syntax.New(
+                    method.Parameters.InputParametersAsArgumentListSyntaxWithoutRef
+                )
+            )
             : null;
 
-    private static ExpressionStatementSyntax AddToInvocationHistoryCollection(in ImposterTargetMethodMetadata method, bool threwException)
+    private static ExpressionStatementSyntax AddToInvocationHistoryCollection(
+        in ImposterTargetMethodMetadata method,
+        bool threwException
+    )
     {
-    return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-        .Dot(IdentifierName("Add"))
-        .Call(
-            method
-                .InvocationHistory
-                .Syntax
-                .New(ArgumentListSyntax(GetArguments(method, threwException)))
-                .ToSingleArgumentList()
-        )
-        .ToStatementSyntax();
+        return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+            .Dot(IdentifierName("Add"))
+            .Call(
+                method
+                    .InvocationHistory.Syntax.New(
+                        ArgumentListSyntax(GetArguments(method, threwException))
+                    )
+                    .ToSingleArgumentList()
+            )
+            .ToStatementSyntax();
 
-        static IReadOnlyList<ArgumentSyntax> GetArguments(in ImposterTargetMethodMetadata method, bool threwException)
+        static IReadOnlyList<ArgumentSyntax> GetArguments(
+            in ImposterTargetMethodMetadata method,
+            bool threwException
+        )
         {
             List<ArgumentSyntax> arguments = [];
 
             if (method.Parameters.HasInputParameters)
             {
-                arguments.Add(method.MethodImposter.InvokeMethod.ArgumentsVariableName.ToArgument());
+                arguments.Add(
+                    method.MethodImposter.InvokeMethod.ArgumentsVariableName.ToArgument()
+                );
             }
 
             if (method.HasReturnValue)
             {
-                arguments
-                    .Add(threwException ? Argument(Default) : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument());
+                arguments.Add(
+                    threwException
+                        ? Argument(Default)
+                        : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument()
+                );
             }
 
-            arguments.Add(threwException
-                ? method.MethodImposter.InvokeMethod.ExceptionVariableName.ToArgument()
-                : Argument(Default));
+            arguments.Add(
+                threwException
+                    ? method.MethodImposter.InvokeMethod.ExceptionVariableName.ToArgument()
+                    : Argument(Default)
+            );
 
             return arguments;
         }
     }
-
 
     private static ParameterListSyntax BuildMethodParameters(in ImposterTargetMethodMetadata method)
     {
@@ -99,9 +136,12 @@ internal partial class MethodImposterBuilder
         if (method.SupportsBaseImplementation)
         {
             parameterList = parameterList.AddParameters(
-                Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                Parameter(
+                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                    )
                     .WithType(method.Delegate.Syntax.ToNullableType())
-                    .WithDefault(EqualsValueClause(Null)));
+                    .WithDefault(EqualsValueClause(Null))
+            );
         }
 
         return parameterList;
@@ -112,16 +152,24 @@ internal partial class MethodImposterBuilder
         var invokeArguments = new List<ArgumentSyntax>
         {
             Argument(IdentifierName("_invocationBehavior")),
-            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
+            Argument(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName))
+            ),
         };
         invokeArguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
 
         if (method.SupportsBaseImplementation)
         {
-            invokeArguments.Add(Argument(IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)));
+            invokeArguments.Add(
+                Argument(
+                    IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                )
+            );
         }
 
-        var invokeExpression = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName)
+        var invokeExpression = IdentifierName(
+                method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
+            )
             .Dot(IdentifierName("Invoke"))
             .Call(ArgumentList(SeparatedList(invokeArguments)));
 
@@ -130,22 +178,42 @@ internal partial class MethodImposterBuilder
             return invokeExpression.ToStatementSyntax();
         }
 
-        return LocalVariableDeclarationSyntax(Var, method.MethodImposter.InvokeMethod.ResultVariableName, invokeExpression);
+        return LocalVariableDeclarationSyntax(
+            Var,
+            method.MethodImposter.InvokeMethod.ResultVariableName,
+            invokeExpression
+        );
     }
 
-    private static LocalDeclarationStatementSyntax DeclareMatchingInvocationImposterGroupVariable(in ImposterTargetMethodMetadata method) =>
+    private static LocalDeclarationStatementSyntax DeclareMatchingInvocationImposterGroupVariable(
+        in ImposterTargetMethodMetadata method
+    ) =>
         LocalVariableDeclarationSyntax(
             Var,
             method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName,
             IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
-                .Call(method.Parameters.HasInputParameters
-                    ? Argument(IdentifierName(method.MethodImposter.InvokeMethod.ArgumentsVariableName)).ToSingleArgumentList()
-                    : ArgumentList()));
+                .Call(
+                    method.Parameters.HasInputParameters
+                        ? Argument(
+                                IdentifierName(
+                                    method.MethodImposter.InvokeMethod.ArgumentsVariableName
+                                )
+                            )
+                            .ToSingleArgumentList()
+                        : ArgumentList()
+                )
+        );
 
-    private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(in ImposterTargetMethodMetadata method)
+    private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var matchingIdentifier = IdentifierName(method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName);
-        var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(IdentifierName(method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name));
+        var matchingIdentifier = IdentifierName(
+            method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
+        );
+        var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(
+            IdentifierName(method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name)
+        );
 
         return IfStatement(
             BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Default),
@@ -156,13 +224,28 @@ internal partial class MethodImposterBuilder
                         IdentifierName("_invocationBehavior"),
                         QualifiedName(
                             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                            IdentifierName("Explicit"))),
+                            IdentifierName("Explicit")
+                        )
+                    ),
                     Block(
                         ThrowStatement(
-                            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
+                            ObjectCreationExpression(
+                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
+                                )
                                 .WithArgumentList(
-                                    Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName)))
-                                        .AsSingleArgumentListSyntax())))),
-                    matchingIdentifier.Assign(defaultGroup).ToStatementSyntax()));
+                                    Argument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(method.DisplayName)
+                                            )
+                                        )
+                                        .AsSingleArgumentListSyntax()
+                                )
+                        )
+                    )
+                ),
+                matchingIdentifier.Assign(defaultGroup).ToStatementSyntax()
+            )
+        );
     }
 }

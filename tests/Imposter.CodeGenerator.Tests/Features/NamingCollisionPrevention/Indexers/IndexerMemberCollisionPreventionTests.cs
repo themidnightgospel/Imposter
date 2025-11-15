@@ -8,7 +8,8 @@ public class IndexerMemberCollisionPreventionTests : IndexerNamingCollisionPreve
     [Fact]
     public async Task GivenIndexerCoexistingWithTypeLevelMembers_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -38,7 +39,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -46,7 +48,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenMultipleIndexersAndCommonMemberNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -66,7 +69,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -74,7 +78,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenClassIndexerWithInternalImposterField_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -90,10 +95,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-

@@ -9,6 +9,7 @@ namespace Imposter.Tests.Docs.Methods.Protected
     public class MyService
     {
         protected virtual int ProtectedAdd(int value) => value * 2;
+
         public virtual int InvokeProtected(int value) => ProtectedAdd(value);
     }
 

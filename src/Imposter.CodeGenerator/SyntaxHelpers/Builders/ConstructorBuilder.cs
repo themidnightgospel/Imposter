@@ -38,7 +38,6 @@ internal struct ConstructorBuilder(string name)
         return this;
     }
 
-
     internal ConstructorBuilder WithBody(BlockSyntax body)
     {
         _body = body;

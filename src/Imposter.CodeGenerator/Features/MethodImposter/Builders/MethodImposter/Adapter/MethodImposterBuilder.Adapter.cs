@@ -21,25 +21,39 @@ internal static class MethodImposterAdapterBuilder
         var adapterNames = new AdapterNames(method);
         var adapterBaseType = SimpleBaseType(
             GenericName(method.MethodImposter.Interface.Name)
-                .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))));
+                .WithTypeArgumentList(
+                    TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
+                )
+        );
 
-        var adapterClass = new ClassDeclarationBuilder("Adapter", TypeParameterListSyntax(method.TargetGenericTypeArguments))
+        var adapterClass = new ClassDeclarationBuilder(
+            "Adapter",
+            TypeParameterListSyntax(method.TargetGenericTypeArguments)
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddBaseType(adapterBaseType)
             .AddMember(
                 SinglePrivateReadonlyVariableField(
                     method.MethodImposter.Syntax,
-                    adapterNames.TargetFieldName))
+                    adapterNames.TargetFieldName
+                )
+            )
             .AddMember(
                 new ConstructorBuilder("Adapter")
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .AddParameter(Parameter(Identifier(adapterNames.TargetConstructorParameterName)).WithType(method.MethodImposter.Syntax))
-                    .WithBody(Block(
-                        IdentifierName(adapterNames.TargetFieldName)
-                            .Assign(IdentifierName(adapterNames.TargetConstructorParameterName))
-                            .ToStatementSyntax()
-                    ))
-                    .Build())
+                    .AddParameter(
+                        Parameter(Identifier(adapterNames.TargetConstructorParameterName))
+                            .WithType(method.MethodImposter.Syntax)
+                    )
+                    .WithBody(
+                        Block(
+                            IdentifierName(adapterNames.TargetFieldName)
+                                .Assign(IdentifierName(adapterNames.TargetConstructorParameterName))
+                                .ToStatementSyntax()
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(BuildAdapterInvokeMethod(method, adapterNames))
             .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
@@ -48,13 +62,19 @@ internal static class MethodImposterAdapterBuilder
         return adapterClass;
     }
 
-    private static MethodDeclarationSyntax BuildAdapterInvokeMethod(in ImposterTargetMethodMetadata method, in AdapterNames adapterNames)
+    private static MethodDeclarationSyntax BuildAdapterInvokeMethod(
+        in ImposterTargetMethodMetadata method,
+        in AdapterNames adapterNames
+    )
     {
         var body = new List<StatementSyntax>();
         var invokeArguments = new List<ArgumentSyntax>();
         var postInvokeActions = new List<StatementSyntax>();
 
-        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
+        var typeParamRenamer = new TypeParameterRenamer(
+            method.Symbol.TypeParameters,
+            method.TargetGenericTypeArguments
+        );
         var parameterList = method.Symbol.Parameters.ToParameterListSyntax();
         parameterList = (ParameterListSyntax)typeParamRenamer.Visit(parameterList);
 
@@ -71,46 +91,84 @@ internal static class MethodImposterAdapterBuilder
                         LocalVariableDeclarationSyntax(
                             pType,
                             pAdaptedName.Text,
-                            TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
-                    invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword)));
-                    postInvokeActions.Add(
-                    IdentifierName(p.Name)
-                        .Assign(
-                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
+                            TypeCasterSyntaxHelper.CastExpression(
+                                p.Name,
+                                (TypeSyntax)pTargetType,
+                                pType
+                            )
                         )
-                        .ToStatementSyntax());
+                    );
+                    invokeArguments.Add(
+                        Argument(IdentifierName(pAdaptedName))
+                            .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
+                    );
+                    postInvokeActions.Add(
+                        IdentifierName(p.Name)
+                            .Assign(
+                                TypeCasterSyntaxHelper.CastExpression(
+                                    pAdaptedName.Text,
+                                    pType,
+                                    (TypeSyntax)pTargetType
+                                )
+                            )
+                            .ToStatementSyntax()
+                    );
                     break;
                 case RefKind.Out:
                     body.Add(LocalVariableDeclarationSyntax(pType, pAdaptedName.Text));
-                    invokeArguments.Add(Argument(IdentifierName(pAdaptedName)).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)));
+                    invokeArguments.Add(
+                        Argument(IdentifierName(pAdaptedName))
+                            .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
+                    );
                     postInvokeActions.Add(
-                    IdentifierName(p.Name)
-                        .Assign(
-                            TypeCasterSyntaxHelper.CastExpression(pAdaptedName.Text, pType, (TypeSyntax)pTargetType)
-                        )
-                        .ToStatementSyntax());
+                        IdentifierName(p.Name)
+                            .Assign(
+                                TypeCasterSyntaxHelper.CastExpression(
+                                    pAdaptedName.Text,
+                                    pType,
+                                    (TypeSyntax)pTargetType
+                                )
+                            )
+                            .ToStatementSyntax()
+                    );
                     break;
                 default:
-                    invokeArguments.Add(Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType)));
+                    invokeArguments.Add(
+                        Argument(
+                            TypeCasterSyntaxHelper.CastExpression(
+                                p.Name,
+                                (TypeSyntax)pTargetType,
+                                pType
+                            )
+                        )
+                    );
                     break;
             }
         }
 
         if (method.SupportsBaseImplementation)
         {
-            var baseImplementationParameterType = (TypeSyntax)typeParamRenamer.Visit(method.Delegate.Syntax);
-            var baseImplementationParameterTypeNullable = baseImplementationParameterType.ToNullableType();
+            var baseImplementationParameterType = (TypeSyntax)
+                typeParamRenamer.Visit(method.Delegate.Syntax);
+            var baseImplementationParameterTypeNullable =
+                baseImplementationParameterType.ToNullableType();
             parameterList = parameterList.AddParameters(
-                Parameter(Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName))
+                Parameter(
+                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                    )
                     .WithType(baseImplementationParameterTypeNullable)
-                    .WithDefault(EqualsValueClause(Null)));
+                    .WithDefault(EqualsValueClause(Null))
+            );
 
             invokeArguments.Add(
                 Argument(
                     TypeCasterSyntaxHelper.CastExpression(
                         method.MethodImposter.InvokeMethod.BaseInvocationParameterName,
                         baseImplementationParameterTypeNullable,
-                        method.Delegate.Syntax)));
+                        method.Delegate.Syntax
+                    )
+                )
+            );
         }
 
         var invokeExpression = IdentifierName(adapterNames.TargetFieldName)
@@ -123,7 +181,8 @@ internal static class MethodImposterAdapterBuilder
                 LocalVariableDeclarationSyntax(
                     IdentifierName("var"),
                     adapterNames.InvokeResultVariableName,
-                    invokeExpression)
+                    invokeExpression
+                )
             );
             body.AddRange(postInvokeActions);
 
@@ -134,7 +193,10 @@ internal static class MethodImposterAdapterBuilder
                     TypeCasterSyntaxHelper.CastExpression(
                         adapterNames.InvokeResultVariableName,
                         returnType,
-                        (TypeSyntax)returnTargetType)));
+                        (TypeSyntax)returnTargetType
+                    )
+                )
+            );
         }
         else
         {
@@ -143,60 +205,96 @@ internal static class MethodImposterAdapterBuilder
         }
 
         return new MethodDeclarationBuilder(
-                (TypeSyntax)typeParamRenamer.Visit(TypeSyntax(method.Symbol.ReturnType)),
-                "Invoke")
+            (TypeSyntax)typeParamRenamer.Visit(TypeSyntax(method.Symbol.ReturnType)),
+            "Invoke"
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
             .WithBody(Block(body))
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildAdapterHasMatchingInvocationImposterGroupMethod(in ImposterTargetMethodMetadata method, in AdapterNames adapterNames)
+    private static MethodDeclarationSyntax BuildAdapterHasMatchingInvocationImposterGroupMethod(
+        in ImposterTargetMethodMetadata method,
+        in AdapterNames adapterNames
+    )
     {
-        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
+        var typeParamRenamer = new TypeParameterRenamer(
+            method.Symbol.TypeParameters,
+            method.TargetGenericTypeArguments
+        );
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var argumentsTypeWithTarget = (TypeSyntax)typeParamRenamer.Visit(method.Arguments.Syntax);
-        var argumentsParameterName = adapterNames.HasMatchingInvocationImposterGroupArgumentsParameterName;
+        var argumentsParameterName =
+            adapterNames.HasMatchingInvocationImposterGroupArgumentsParameterName;
 
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameterIf(
                 method.Parameters.HasInputParameters,
-                () => Parameter(Identifier(argumentsParameterName)).WithType(argumentsTypeWithTarget))
-            .WithBody(Block(
-                ReturnStatement(
-                    IdentifierName(adapterNames.TargetFieldName)
-                        .Dot(IdentifierName(hasMatchingMethod.Name))
-                        .Call(
-                            method.Parameters.HasInputParameters
-                                ? Argument(
-                                        IdentifierName(argumentsParameterName)
-                                            .Dot(GenericName("As").WithTypeArgumentList(TypeArgumentList(SeparatedList(method.GenericTypeArguments.Cast<TypeSyntax>()))))
-                                            .Call()
-                                    )
-                                    .ToSingleArgumentList()
-                                : ArgumentList()
-                        )
+                () =>
+                    Parameter(Identifier(argumentsParameterName)).WithType(argumentsTypeWithTarget)
+            )
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IdentifierName(adapterNames.TargetFieldName)
+                            .Dot(IdentifierName(hasMatchingMethod.Name))
+                            .Call(
+                                method.Parameters.HasInputParameters
+                                    ? Argument(
+                                            IdentifierName(argumentsParameterName)
+                                                .Dot(
+                                                    GenericName("As")
+                                                        .WithTypeArgumentList(
+                                                            TypeArgumentList(
+                                                                SeparatedList(
+                                                                    method.GenericTypeArguments.Cast<TypeSyntax>()
+                                                                )
+                                                            )
+                                                        )
+                                                )
+                                                .Call()
+                                        )
+                                        .ToSingleArgumentList()
+                                    : ArgumentList()
+                            )
+                    )
                 )
-            ))
+            )
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildAdapterAsMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildAdapterAsMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        var asMethodTypeParams = method.Symbol.TypeParameters.Select(p => TypeParameter(p.Name + "Target1")).ToArray();
-        var targetTypeArgs = method.Symbol.TypeParameters.Select(p => IdentifierName(p.Name + "Target1")).Cast<TypeSyntax>().ToArray();
+        var asMethodTypeParams = method
+            .Symbol.TypeParameters.Select(p => TypeParameter(p.Name + "Target1"))
+            .ToArray();
+        var targetTypeArgs = method
+            .Symbol.TypeParameters.Select(p => IdentifierName(p.Name + "Target1"))
+            .Cast<TypeSyntax>()
+            .ToArray();
         var genericImposterInterface = GenericName(method.MethodImposter.Interface.Name)
             .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
 
-        return new MethodDeclarationBuilder(
-                NullableType(genericImposterInterface),
-                "As")
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax))
+        return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
+            )
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(Block(ThrowStatement(ObjectCreationExpression(IdentifierName("NotImplementedException")).WithArgumentList(ArgumentList()))))
+            .WithBody(
+                Block(
+                    ThrowStatement(
+                        ObjectCreationExpression(IdentifierName("NotImplementedException"))
+                            .WithArgumentList(ArgumentList())
+                    )
+                )
+            )
             .Build();
     }
+
     private readonly struct AdapterNames
     {
         internal readonly string TargetFieldName;

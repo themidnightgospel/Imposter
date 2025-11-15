@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Imposter.Abstractions;
 using Imposter.CodeGenerator.Tests.Features.PropertySetup;
 using Shouldly;
@@ -42,7 +41,8 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ValueShouldNotBeSet()
         {
-            _sut.Age.Setter(Arg<int>.Any()).Callback(_ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.Setter(Arg<int>.Any())
+                .Callback(_ => throw new InvalidOperationException("Callback error"));
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
             _sut.Instance().Age.ShouldBe(default);
@@ -51,7 +51,8 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
         [Fact]
         public void GivenCallbackThatThrows_WhenPropertyIsSet_ShouldTrackSetHistory()
         {
-            _sut.Age.Setter(Arg<int>.Any()).Callback(_ => throw new InvalidOperationException("Callback error"));
+            _sut.Age.Setter(Arg<int>.Any())
+                .Callback(_ => throw new InvalidOperationException("Callback error"));
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age = 42);
 
@@ -61,7 +62,8 @@ namespace Imposter.Ideation.PropertySetupPoc.V2.Tests
         [Fact]
         public void GivenGetterCallbackThatThrows_WhenPropertyIsAccessed_ShouldTrackGetHistory()
         {
-            _sut.Age.Getter().Callback(() => throw new InvalidOperationException("Getter callback error"));
+            _sut.Age.Getter()
+                .Callback(() => throw new InvalidOperationException("Getter callback error"));
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().Age);
 

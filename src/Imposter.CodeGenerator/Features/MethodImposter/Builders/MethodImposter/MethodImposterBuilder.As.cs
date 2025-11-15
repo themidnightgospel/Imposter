@@ -5,28 +5,37 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter;
 
 internal static partial class MethodImposterBuilder
 {
-    internal static MemberDeclarationSyntax? BuildAsMethodForGenericImposter(in ImposterTargetMethodMetadata method)
+    internal static MemberDeclarationSyntax? BuildAsMethodForGenericImposter(
+        in ImposterTargetMethodMetadata method
+    )
     {
         if (!method.Symbol.IsGenericMethod)
         {
             return null;
         }
-        
-        var typeParamRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.TargetGenericTypeArguments);
+
+        var typeParamRenamer = new TypeParameterRenamer(
+            method.Symbol.TypeParameters,
+            method.TargetGenericTypeArguments
+        );
 
         var conditions = new List<ExpressionSyntax>();
 
         foreach (var parameterSymbol in method.Symbol.Parameters)
         {
             var parameterSymbolType = parameterSymbol.Type;
-            if (!method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(parameterSymbolType, tp)))
+            if (
+                !method.Symbol.TypeParameters.Any(tp =>
+                    ContainsTypeParameter(parameterSymbolType, tp)
+                )
+            )
             {
                 continue;
             }
@@ -40,7 +49,9 @@ internal static partial class MethodImposterBuilder
             switch (parameterSymbol.RefKind)
             {
                 case RefKind.Ref:
-                    conditions.Add(BinaryExpression(SyntaxKind.EqualsExpression, targetTypeOf, sourceTypeOf));
+                    conditions.Add(
+                        BinaryExpression(SyntaxKind.EqualsExpression, targetTypeOf, sourceTypeOf)
+                    );
                     break;
                 case RefKind.Out:
                     conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
@@ -66,43 +77,65 @@ internal static partial class MethodImposterBuilder
             }
         }
 
-        var condition = conditions.Count > 0
-            ? conditions.Aggregate((current, next) => current.And(next))
-            : True;
+        var condition =
+            conditions.Count > 0
+                ? conditions.Aggregate((current, next) => current.And(next))
+                : True;
 
-        var asMethodTypeParams = method.TargetGenericTypeParameterListSyntax
+        var asMethodTypeParams =
+            method.TargetGenericTypeParameterListSyntax
             ?? TypeParameterList(
                 SeparatedList(
-                    method.Symbol.TypeParameters.Select(p => TypeParameter(Identifier(p.Name + "Target")))
-                ));
+                    method.Symbol.TypeParameters.Select(p =>
+                        TypeParameter(Identifier(p.Name + "Target"))
+                    )
+                )
+            );
 
         var genericImposterInterfaceWithTargets = GenericName(method.MethodImposter.Interface.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments)));
+            .WithTypeArgumentList(
+                TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
+            );
 
-        return new MethodDeclarationBuilder(
-                NullableType(genericImposterInterfaceWithTargets),
-                "As")
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax))
+        return new MethodDeclarationBuilder(NullableType(genericImposterInterfaceWithTargets), "As")
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
+            )
             .WithTypeParameters(asMethodTypeParams)
-            .WithBody(Block(
-                IfStatement(
-                    condition,
-                    Block(
-                        ReturnStatement(
-                            ObjectCreationExpression(
-                                    GenericName("Adapter")
-                                        .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments)))
-                                )
-                                .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(ThisExpression()))))
+            .WithBody(
+                Block(
+                    IfStatement(
+                        condition,
+                        Block(
+                            ReturnStatement(
+                                ObjectCreationExpression(
+                                        GenericName("Adapter")
+                                            .WithTypeArgumentList(
+                                                TypeArgumentList(
+                                                    SeparatedList<TypeSyntax>(
+                                                        method.TargetGenericTypeArguments
+                                                    )
+                                                )
+                                            )
+                                    )
+                                    .WithArgumentList(
+                                        ArgumentList(
+                                            SingletonSeparatedList(Argument(ThisExpression()))
+                                        )
+                                    )
+                            )
                         )
-                    )
-                ),
-                ReturnStatement(Null)
-            ))
+                    ),
+                    ReturnStatement(Null)
+                )
+            )
             .Build();
     }
 
-    private static bool ContainsTypeParameter(ITypeSymbol typeSymbol, ITypeParameterSymbol typeParameter)
+    private static bool ContainsTypeParameter(
+        ITypeSymbol typeSymbol,
+        ITypeParameterSymbol typeParameter
+    )
     {
         if (SymbolEqualityComparer.Default.Equals(typeSymbol, typeParameter))
         {
@@ -111,7 +144,9 @@ internal static partial class MethodImposterBuilder
 
         if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
         {
-            return namedTypeSymbol.TypeArguments.Any(typeArgument => ContainsTypeParameter(typeArgument, typeParameter));
+            return namedTypeSymbol.TypeArguments.Any(typeArgument =>
+                ContainsTypeParameter(typeArgument, typeParameter)
+            );
         }
 
         if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)

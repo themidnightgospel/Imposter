@@ -9,9 +9,9 @@ namespace Imposter.Tests.Features.IndexerImposter
     {
         private readonly IIndexerSetupSutImposter _sut =
 #if USE_CSHARP14
-            IIndexerSetupSut.Imposter();
+        IIndexerSetupSut.Imposter();
 #else
-            new IIndexerSetupSutImposter();
+        new IIndexerSetupSutImposter();
 #endif
 
         [Fact]
@@ -21,12 +21,14 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             _sut[Arg<int>.Is(x => x == 5), Arg<string>.Any(), Arg<object>.Any()]
                 .Setter()
-                .Callback((key1, key2, key3, value) =>
-                {
-                    callbackCount++;
-                    key1.ShouldBe(5);
-                    value.ShouldBe(99);
-                });
+                .Callback(
+                    (key1, key2, key3, value) =>
+                    {
+                        callbackCount++;
+                        key1.ShouldBe(5);
+                        value.ShouldBe(99);
+                    }
+                );
 
             _sut.Instance()[5, "match", new object()] = 99;
             _sut.Instance()[6, "miss", new object()] = 123;
@@ -46,15 +48,14 @@ namespace Imposter.Tests.Features.IndexerImposter
             Should.NotThrow(() =>
                 _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                     .Setter()
-                    .Called(Count.Exactly(3)));
+                    .Called(Count.Exactly(3))
+            );
         }
 
         [Fact]
         public void GivenGetterInteractions_WhenVerifyingCalled_ThenCountsInvocations()
         {
-            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter()
-                .Returns(1);
+            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(1);
 
             var instance = _sut.Instance();
             _ = instance[9, "times", new object()];
@@ -63,14 +64,14 @@ namespace Imposter.Tests.Features.IndexerImposter
             Should.NotThrow(() =>
                 _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                     .Getter()
-                    .Called(Count.Exactly(2)));
+                    .Called(Count.Exactly(2))
+            );
         }
 
         [Fact]
         public void GivenSetterInteractionCount_WhenVerificationMismatched_ThenCalledFails()
         {
-            var setter = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Setter();
+            var setter = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
             _sut.Instance()[1, "one", new object()] = 1;
 
@@ -93,8 +94,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSetterCountThreshold_WhenVerifyingAtLeast_ThenPassesAtThreshold()
         {
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Setter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
             var instance = _sut.Instance();
             instance[1, "foo", new object()] = 5;
@@ -106,8 +106,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSetterCountThreshold_WhenVerifyingAtMost_ThenPassesBelowThreshold()
         {
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Setter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
             _sut.Instance()[9, "bar", new object()] = 10;
 
@@ -141,22 +140,25 @@ namespace Imposter.Tests.Features.IndexerImposter
             var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
 
             Should.Throw<MissingImposterException>(() =>
-                sut.Instance()[1, "value", new object()] = 5);
+                sut.Instance()[1, "value", new object()] = 5
+            );
         }
-        
+
         [Fact]
         public void GivenSetterOnlyIndexer_WhenConfiguringCallbacks_ThenSupportsCallbacks()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter();
             var called = false;
-            
+
             sut[Arg<int>.Any()]
                 .Setter()
-                .Callback((key, value) =>
-                {
-                    called = true;
-                    value.ShouldBe(50);
-                });
+                .Callback(
+                    (key, value) =>
+                    {
+                        called = true;
+                        value.ShouldBe(50);
+                    }
+                );
 
             sut.Instance()[42] = 50;
 
@@ -194,28 +196,29 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var callbackHits = 0;
 
-            var builder = _sut[Arg<int>.Is(x => x == 15)]
-                .Setter();
+            var builder = _sut[Arg<int>.Is(x => x == 15)].Setter();
 
-            builder.Callback((key, value) =>
+            builder.Callback(
+                (key, value) =>
                 {
                     callbackHits++;
                     key.ShouldBe(15);
                     value.ShouldBe(99);
-                });
+                }
+            );
 
             _sut.Instance()[15] = 99;
 
             callbackHits.ShouldBe(1);
             Should.NotThrow(() => builder.Called(Count.Exactly(1)));
         }
+
         [Fact]
         public void GivenSetterOnlyIndexer_WhenVerifyingCalled_ThenVerificationWorks()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter();
 
-            var builder = sut[Arg<int>.Any()]
-                .Setter();
+            var builder = sut[Arg<int>.Any()].Setter();
 
             sut.Instance()[7] = 77;
 
@@ -227,8 +230,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
 
-            Should.Throw<MissingImposterException>(() =>
-                sut.Instance()[1] = 10);
+            Should.Throw<MissingImposterException>(() => sut.Instance()[1] = 10);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     public static readonly IdentifierNameSyntax Var = IdentifierName("var");
-    
+
     public static readonly IdentifierNameSyntax It = IdentifierName("it");
 }

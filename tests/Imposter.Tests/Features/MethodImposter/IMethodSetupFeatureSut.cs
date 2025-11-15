@@ -26,7 +26,13 @@ namespace Imposter.Tests.Features.MethodImposter
 
         int IntInParam(in string inStringValue);
 
-        int IntAllRefKinds(out int value, ref int refValue, in int inValue, string valueAsString, params string[] paramsStrings);
+        int IntAllRefKinds(
+            out int value,
+            ref int refValue,
+            in int inValue,
+            string valueAsString,
+            params string[] paramsStrings
+        );
 
         void GenericSingleParam<TValue>(TValue value);
 
@@ -48,7 +54,8 @@ namespace Imposter.Tests.Features.MethodImposter
             out TOut outValue,
             ref TRef refValue,
             in TIn inValue,
-            params TParams[] paramsValues);
+            params TParams[] paramsValues
+        );
 
         Task<int> AsyncTaskIntNoParams();
 

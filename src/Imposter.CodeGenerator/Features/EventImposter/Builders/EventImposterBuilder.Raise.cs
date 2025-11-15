@@ -17,7 +17,8 @@ internal static partial class EventImposterBuilder
         var methodBuilder = ExplicitInterfaceMethod(
                 @event.BuilderInterface.SetupInterfaceTypeSyntax,
                 @event.BuilderInterface.RaiseMethodReturnType,
-                @event.BuilderInterface.RaiseMethodName)
+                @event.BuilderInterface.RaiseMethodName
+            )
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax));
 
         if (@event.Core.IsAsync)
@@ -28,7 +29,8 @@ internal static partial class EventImposterBuilder
                     new BlockBuilder()
                         .AddStatement(BuildAwaitRaiseAsyncStatement(@event))
                         .AddStatement(ReturnStatement(ThisExpression()))
-                        .Build())
+                        .Build()
+                )
                 .Build();
         }
 
@@ -37,21 +39,33 @@ internal static partial class EventImposterBuilder
                 new BlockBuilder()
                     .AddExpression(
                         IdentifierName(@event.Builder.Methods.RaiseInternalName)
-                            .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))))
+                            .Call(
+                                @event.Core.Parameters.Select(parameter =>
+                                    Argument(IdentifierName(parameter.Name))
+                                )
+                            )
+                    )
                     .AddStatement(ReturnStatement(ThisExpression()))
-                    .Build())
+                    .Build()
+            )
             .Build();
     }
 
-    private static ExpressionStatementSyntax BuildAwaitRaiseAsyncStatement(in ImposterEventMetadata @event) =>
+    private static ExpressionStatementSyntax BuildAwaitRaiseAsyncStatement(
+        in ImposterEventMetadata @event
+    ) =>
         IdentifierName(@event.Builder.Methods.RaiseCoreAsyncName)
-            .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))
+            .Call(
+                @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
+            )
             .Dot(IdentifierName("ConfigureAwait"))
             .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))
             .Await()
             .ToStatementSyntax();
 
-    private static MethodDeclarationSyntax BuildRaiseInternalMethod(in ImposterEventMetadata @event) =>
+    private static MethodDeclarationSyntax BuildRaiseInternalMethod(
+        in ImposterEventMetadata @event
+    ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, @event.Builder.Methods.RaiseInternalName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
@@ -65,7 +79,8 @@ internal static partial class EventImposterBuilder
         blockBuilder.AddExpression(
             FieldIdentifier(fields.History)
                 .Dot(IdentifierName("Enqueue"))
-                .Call(Argument(BuildHistoryEntryExpression(@event))));
+                .Call(Argument(BuildHistoryEntryExpression(@event)))
+        );
 
         blockBuilder.AddStatement(ForEachInvocation(fields.Callbacks, @event));
         blockBuilder.AddStatement(ForEachHandlerInvocation(@event));
@@ -73,71 +88,80 @@ internal static partial class EventImposterBuilder
         return blockBuilder.Build();
     }
 
-    private static MethodDeclarationSyntax BuildRaiseCoreAsyncMethod(in ImposterEventMetadata @event)
+    private static MethodDeclarationSyntax BuildRaiseCoreAsyncMethod(
+        in ImposterEventMetadata @event
+    )
     {
         var taskType = WellKnownTypes.System.Threading.Tasks.Task;
         var taskListType = QualifiedName(
             WellKnownTypes.System.Collections.Generic.Namespace,
-            GenericName(Identifier("List"),
-                TypeArgumentList(SingletonSeparatedList(taskType))));
+            GenericName(Identifier("List"), TypeArgumentList(SingletonSeparatedList(taskType)))
+        );
 
         return new MethodDeclarationBuilder(taskType, @event.Builder.Methods.RaiseCoreAsyncName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.AsyncKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
-            .WithBody(
-                BuildRaiseCoreAsyncBody(@event, taskListType, taskType))
+            .WithBody(BuildRaiseCoreAsyncBody(@event, taskListType, taskType))
             .Build();
     }
 
     private static BlockSyntax BuildRaiseCoreAsyncBody(
         in ImposterEventMetadata @event,
         TypeSyntax taskListType,
-        TypeSyntax taskType)
+        TypeSyntax taskType
+    )
     {
         var blockBuilder = new BlockBuilder();
         var fields = @event.Builder.Fields;
         var usesValueTask = @event.Core.DelegateReturnTypeSymbol.IsWellKnownType(
             WellKnownTypes.System.Threading.Tasks.ValueTask,
-            WellKnownAssemblyNames.SystemAssemblies);
+            WellKnownAssemblyNames.SystemAssemblies
+        );
         blockBuilder.AddExpression(
             FieldIdentifier(fields.History)
                 .Dot(IdentifierName("Enqueue"))
-                .Call(Argument(BuildHistoryEntryExpression(@event))));
+                .Call(Argument(BuildHistoryEntryExpression(@event)))
+        );
 
         blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(
-                taskListType,
-                "pendingTasks",
-                taskListType.New()));
+            LocalVariableDeclarationSyntax(taskListType, "pendingTasks", taskListType.New())
+        );
 
         blockBuilder.AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask));
         blockBuilder.AddStatement(AwaitPendingTasksStatement());
         blockBuilder.AddStatement(
-            IdentifierName("pendingTasks")
-                .Dot(IdentifierName("Clear"))
-                .Call()
-                .ToStatementSyntax());
-        blockBuilder.AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask));
+            IdentifierName("pendingTasks").Dot(IdentifierName("Clear")).Call().ToStatementSyntax()
+        );
+        blockBuilder.AddStatement(
+            ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask)
+        );
         blockBuilder.AddStatement(AwaitPendingTasksStatement());
 
         return blockBuilder.Build();
     }
 
-    private static ExpressionSyntax ToTaskExpression(ExpressionSyntax taskExpression, bool usesValueTask) =>
-        usesValueTask
-            ? taskExpression.Dot(IdentifierName("AsTask")).Call()
-            : taskExpression;
+    private static ExpressionSyntax ToTaskExpression(
+        ExpressionSyntax taskExpression,
+        bool usesValueTask
+    ) => usesValueTask ? taskExpression.Dot(IdentifierName("AsTask")).Call() : taskExpression;
 
-    private static MethodDeclarationSyntax BuildEnumerateHandlersMethod(in ImposterEventMetadata @event)
+    private static MethodDeclarationSyntax BuildEnumerateHandlersMethod(
+        in ImposterEventMetadata @event
+    )
     {
         var enumerableType = QualifiedName(
             WellKnownTypes.System.Collections.Generic.Namespace,
             GenericName(
                 Identifier("IEnumerable"),
-                TypeArgumentList(SingletonSeparatedList(@event.Core.HandlerTypeSyntax))));
+                TypeArgumentList(SingletonSeparatedList(@event.Core.HandlerTypeSyntax))
+            )
+        );
 
-        return new MethodDeclarationBuilder(enumerableType, @event.Builder.Methods.EnumerateHandlersName)
+        return new MethodDeclarationBuilder(
+            enumerableType,
+            @event.Builder.Methods.EnumerateHandlersName
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(BuildEnumerateHandlersBody(@event))
             .Build();
@@ -148,7 +172,8 @@ internal static partial class EventImposterBuilder
         var blockBuilder = new BlockBuilder();
         var dictionaryType = WellKnownTypes.System.Collections.Generic.Dictionary(
             @event.Core.HandlerTypeSyntax,
-            WellKnownTypes.Int);
+            WellKnownTypes.Int
+        );
         var handlerCounts = FieldIdentifier(@event.Builder.Fields.HandlerCounts);
         var handlerOrder = FieldIdentifier(@event.Builder.Fields.HandlerOrder);
 
@@ -156,9 +181,9 @@ internal static partial class EventImposterBuilder
             LocalVariableDeclarationSyntax(
                 dictionaryType,
                 "budgets",
-                dictionaryType.New(
-                    ArgumentList(SingletonSeparatedList(
-                        Argument(handlerCounts))))));
+                dictionaryType.New(ArgumentList(SingletonSeparatedList(Argument(handlerCounts))))
+            )
+        );
 
         blockBuilder.AddStatement(
             ForEachStatement(
@@ -166,32 +191,63 @@ internal static partial class EventImposterBuilder
                 Identifier("handler"),
                 handlerOrder,
                 Block(
-                    LocalVariableDeclarationSyntax(
-                        WellKnownTypes.Int,
-                        "remaining"),
+                    LocalVariableDeclarationSyntax(WellKnownTypes.Int, "remaining"),
                     IfStatement(
                         IdentifierName("budgets")
                             .Dot(IdentifierName("TryGetValue"))
                             .Call(
-                                ArgumentList(SeparatedList([
-                                    Argument(IdentifierName("handler")),
-                                    Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("remaining"))
-                                ]))),
+                                ArgumentList(
+                                    SeparatedList([
+                                        Argument(IdentifierName("handler")),
+                                        Argument(
+                                            null,
+                                            Token(SyntaxKind.OutKeyword),
+                                            IdentifierName("remaining")
+                                        ),
+                                    ])
+                                )
+                            ),
                         Block(
                             IfStatement(
                                 BinaryExpression(
                                     SyntaxKind.GreaterThanExpression,
                                     IdentifierName("remaining"),
-                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
+                                    LiteralExpression(
+                                        SyntaxKind.NumericLiteralExpression,
+                                        Literal(0)
+                                    )
+                                ),
                                 Block(
-                                        ElementAccessExpression(IdentifierName("budgets"))
-                                            .WithArgumentList(BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("handler")))))
-                                            .Assign(
-                                                BinaryExpression(
-                                                    SyntaxKind.SubtractExpression,
-                                                    IdentifierName("remaining"),
-                                                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))).ToStatementSyntax(),
-                                    YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("handler")))))))));
+                                    ElementAccessExpression(IdentifierName("budgets"))
+                                        .WithArgumentList(
+                                            BracketedArgumentList(
+                                                SingletonSeparatedList(
+                                                    Argument(IdentifierName("handler"))
+                                                )
+                                            )
+                                        )
+                                        .Assign(
+                                            BinaryExpression(
+                                                SyntaxKind.SubtractExpression,
+                                                IdentifierName("remaining"),
+                                                LiteralExpression(
+                                                    SyntaxKind.NumericLiteralExpression,
+                                                    Literal(1)
+                                                )
+                                            )
+                                        )
+                                        .ToStatementSyntax(),
+                                    YieldStatement(
+                                        SyntaxKind.YieldReturnStatement,
+                                        IdentifierName("handler")
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
 
         return blockBuilder.Build();
     }
@@ -209,10 +265,16 @@ internal static partial class EventImposterBuilder
         }
 
         return TupleExpression(
-            SeparatedList(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))));
+            SeparatedList(
+                @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
+            )
+        );
     }
 
-    private static ExpressionSyntax BuildHandlerInvocationTuple(ExpressionSyntax handlerExpression, in ImposterEventMetadata @event)
+    private static ExpressionSyntax BuildHandlerInvocationTuple(
+        ExpressionSyntax handlerExpression,
+        in ImposterEventMetadata @event
+    )
     {
         if (@event.Core.Parameters.Length == 0)
         {
@@ -220,74 +282,124 @@ internal static partial class EventImposterBuilder
         }
 
         var arguments = new List<ArgumentSyntax> { Argument(handlerExpression) };
-        arguments.AddRange(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))));
+        arguments.AddRange(
+            @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
+        );
         return TupleExpression(SeparatedList(arguments));
     }
 
-    private static ForEachStatementSyntax ForEachInvocation(in FieldMetadata field, in ImposterEventMetadata @event) =>
+    private static ForEachStatementSyntax ForEachInvocation(
+        in FieldMetadata field,
+        in ImposterEventMetadata @event
+    ) =>
         ForEachStatement(
             Var,
             Identifier("callback"),
             FieldIdentifier(field),
             Block(
-                    IdentifierName("callback")
-                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))).ToStatementSyntax()));
+                IdentifierName("callback")
+                    .Call(
+                        @event.Core.Parameters.Select(parameter =>
+                            Argument(IdentifierName(parameter.Name))
+                        )
+                    )
+                    .ToStatementSyntax()
+            )
+        );
 
-    private static ForEachStatementSyntax ForEachHandlerInvocation(in ImposterEventMetadata @event) =>
+    private static ForEachStatementSyntax ForEachHandlerInvocation(
+        in ImposterEventMetadata @event
+    ) =>
         ForEachStatement(
             Var,
             Identifier("handler"),
             IdentifierName("EnumerateActiveHandlers").Call(),
             Block(
-                    FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                        .Dot(IdentifierName("Enqueue"))
-                        .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event))).ToStatementSyntax(),
-                    IdentifierName("handler")
-                        .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))).ToStatementSyntax()));
+                FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
+                    .Dot(IdentifierName("Enqueue"))
+                    .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))
+                    .ToStatementSyntax(),
+                IdentifierName("handler")
+                    .Call(
+                        @event.Core.Parameters.Select(parameter =>
+                            Argument(IdentifierName(parameter.Name))
+                        )
+                    )
+                    .ToStatementSyntax()
+            )
+        );
 
-    private static ForEachStatementSyntax ForEachAsyncInvocation(in FieldMetadata field, in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
+    private static ForEachStatementSyntax ForEachAsyncInvocation(
+        in FieldMetadata field,
+        in ImposterEventMetadata @event,
+        TypeSyntax taskType,
+        bool usesValueTask
+    )
     {
-        return
-            ForEachStatement(
-                Var,
-                Identifier("callback"),
-                FieldIdentifier(field),
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        "task",
-                        IdentifierName("callback")
-                            .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
-                    IfStatement(
-                        IdentifierName("task").IsNotDefault(),
-                        Block(
-                                IdentifierName("pendingTasks")
-                                    .Dot(IdentifierName("Add"))
-                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))).ToStatementSyntax()))));
+        return ForEachStatement(
+            Var,
+            Identifier("callback"),
+            FieldIdentifier(field),
+            Block(
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    "task",
+                    IdentifierName("callback")
+                        .Call(
+                            @event.Core.Parameters.Select(parameter =>
+                                Argument(IdentifierName(parameter.Name))
+                            )
+                        )
+                ),
+                IfStatement(
+                    IdentifierName("task").IsNotDefault(),
+                    Block(
+                        IdentifierName("pendingTasks")
+                            .Dot(IdentifierName("Add"))
+                            .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask)))
+                            .ToStatementSyntax()
+                    )
+                )
+            )
+        );
     }
 
-    private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(in ImposterEventMetadata @event, TypeSyntax taskType, bool usesValueTask)
+    private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(
+        in ImposterEventMetadata @event,
+        TypeSyntax taskType,
+        bool usesValueTask
+    )
     {
-        return
-            ForEachStatement(
-                Var,
-                Identifier("handler"),
-                IdentifierName("EnumerateActiveHandlers").Call(),
-                Block(
-                        FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                            .Dot(IdentifierName("Enqueue"))
-                            .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event))).ToStatementSyntax(),
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        "task",
-                        IdentifierName("handler")
-                            .Call(@event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name))))),
-                    IfStatement(
-                        IdentifierName("task").IsNotDefault(),
-                        Block(
-                                IdentifierName("pendingTasks")
-                                    .Dot(IdentifierName("Add"))
-                                    .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask))).ToStatementSyntax()))));
+        return ForEachStatement(
+            Var,
+            Identifier("handler"),
+            IdentifierName("EnumerateActiveHandlers").Call(),
+            Block(
+                FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
+                    .Dot(IdentifierName("Enqueue"))
+                    .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))
+                    .ToStatementSyntax(),
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    "task",
+                    IdentifierName("handler")
+                        .Call(
+                            @event.Core.Parameters.Select(parameter =>
+                                Argument(IdentifierName(parameter.Name))
+                            )
+                        )
+                ),
+                IfStatement(
+                    IdentifierName("task").IsNotDefault(),
+                    Block(
+                        IdentifierName("pendingTasks")
+                            .Dot(IdentifierName("Add"))
+                            .Call(Argument(ToTaskExpression(IdentifierName("task"), usesValueTask)))
+                            .ToStatementSyntax()
+                    )
+                )
+            )
+        );
     }
 
     private static IfStatementSyntax AwaitPendingTasksStatement() =>
@@ -295,10 +407,11 @@ internal static partial class EventImposterBuilder
             BinaryExpression(
                 SyntaxKind.GreaterThanExpression,
                 IdentifierName("pendingTasks").Dot(IdentifierName("Count")),
-                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))),
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+            ),
             Block(
-                WellKnownTypes.System.Threading.Tasks.Task
-                    .Dot(IdentifierName("WhenAll"))
+                WellKnownTypes
+                    .System.Threading.Tasks.Task.Dot(IdentifierName("WhenAll"))
                     .Call(Argument(IdentifierName("pendingTasks")))
                     .Dot(IdentifierName("ConfigureAwait"))
                     .Call(Argument(False))

@@ -35,23 +35,33 @@ internal readonly struct MethodImposterMetadata
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
 
         var methodImposterBuilderInterfaceName = $"I{Name}Builder";
-        BuilderInterface = TypeMetadataFactory.Create(methodImposterBuilderInterfaceName, method.GenericTypeArguments);
+        BuilderInterface = TypeMetadataFactory.Create(
+            methodImposterBuilderInterfaceName,
+            method.GenericTypeArguments
+        );
 
         var methodImposterInterfaceName = $"I{Name}";
         Interface = new TypeMetadata(methodImposterInterfaceName);
-        GenericInterface = new MethodImposterGenericTypeMetadata(methodImposterInterfaceName, method.GenericTypeArguments, method.TargetGenericTypeArguments);
+        GenericInterface = new MethodImposterGenericTypeMetadata(
+            methodImposterInterfaceName,
+            method.GenericTypeArguments,
+            method.TargetGenericTypeArguments
+        );
 
         Collection = new MethodImposterCollectionMetadata($"{Name}Collection");
         AsField = new FieldDeclarationMetadata(Name);
         InvokeMethod = new MethodImposterInvokeMethodMetadata(method);
-        FindMatchingInvocationImposterGroupMethod = new FindMatchingInvocationImposterGroupMethodMetadata(method);
-        HasMatchingInvocationImposterGroupMethod = new HasMatchingInvocationImposterGroupMethodMetadata(method);
+        FindMatchingInvocationImposterGroupMethod =
+            new FindMatchingInvocationImposterGroupMethodMetadata(method);
+        HasMatchingInvocationImposterGroupMethod =
+            new HasMatchingInvocationImposterGroupMethodMetadata(method);
         InvocationImpostersField = new InvocationImpostersFieldMetadata(method);
         Builder = new MethodImposterBuilderMetadata(
             Syntax,
             Collection.Syntax,
             method.ArgumentsCriteria.Syntax,
             method.MethodInvocationImposterGroup.Syntax,
-            method.MethodInvocationImposterGroup.MethodInvocationImposterSyntax);
+            method.MethodInvocationImposterGroup.MethodInvocationImposterSyntax
+        );
     }
 }

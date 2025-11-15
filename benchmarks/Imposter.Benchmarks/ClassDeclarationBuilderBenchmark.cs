@@ -50,14 +50,16 @@ public class ClassDeclarationBuilderBenchmark
 
         for (var i = 0; i < 10; i++)
         {
-            classDeclaration = classDeclaration
-                .AddMembers(PropertyDeclaration(IntType, Identifier("Property" + i)));
+            classDeclaration = classDeclaration.AddMembers(
+                PropertyDeclaration(IntType, Identifier("Property" + i))
+            );
         }
 
         for (var i = 0; i < 10; i++)
         {
-            classDeclaration = classDeclaration
-                .AddMembers(MethodDeclaration(IntType, Identifier("Method" + i)));
+            classDeclaration = classDeclaration.AddMembers(
+                MethodDeclaration(IntType, Identifier("Method" + i))
+            );
         }
     }
 }

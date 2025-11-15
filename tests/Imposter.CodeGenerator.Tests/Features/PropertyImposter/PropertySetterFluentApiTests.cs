@@ -8,7 +8,8 @@ namespace Imposter.CodeGenerator.Tests.Features.PropertyImposter;
 
 public class PropertySetterFluentApiTests
 {
-    private const string Source = /*lang=csharp*/"""
+    private const string Source = /*lang=csharp*/
+        """
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Sample.SampleService))]
@@ -37,7 +38,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetter_WhenCallingCalled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -49,7 +51,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -57,7 +60,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetter_WhenUsingPredicateArgForCalled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -69,7 +73,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -77,7 +82,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetter_WhenCallingCallback_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -89,7 +95,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -97,7 +104,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetter_WhenCallingReturnsValue_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -109,15 +117,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetter_WhenCallingReturnsGenerator_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -129,15 +143,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetter_WhenCallingThrowsInstance_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -149,15 +169,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetter_WhenCallingThrowsGeneric_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -169,15 +195,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterCallback_WhenChainingCallback_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -189,7 +221,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -197,7 +230,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetter_WhenCallingThen_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -209,7 +243,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -217,7 +252,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetterCallback_WhenCallingThen_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -229,7 +265,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -237,7 +274,8 @@ namespace Sample
     [Fact]
     public async Task GivenSetterCallback_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -249,15 +287,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterCallback_WhenCallingThenCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -269,15 +313,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterCallback_WhenCallingReturns_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -289,15 +339,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterCallback_WhenCallingThrows_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -309,15 +365,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterThen_WhenCallingCalled_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -329,15 +391,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenSetterCallbackChain_WhenCallingThenAndCallback_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -354,7 +422,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -362,7 +431,8 @@ namespace Sample
     [Fact]
     public async Task GivenOverrideableSetter_WhenCallingUseBaseImplementation_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -374,7 +444,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -382,7 +453,8 @@ namespace Sample
     [Fact]
     public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementation_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -398,7 +470,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -406,7 +479,8 @@ namespace Sample
     [Fact]
     public async Task GivenOverrideableSetter_WhenChainingAfterUseBaseImplementation_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -423,7 +497,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -431,7 +506,8 @@ namespace Sample
     [Fact]
     public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementationThenCallback_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -449,7 +525,8 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -457,7 +534,8 @@ namespace Sample
     [Fact]
     public async Task GivenOverrideableSetter_WhenCallbackThenUseBaseImplementationWithoutThen_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -469,15 +547,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenInterfaceSetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -489,15 +573,21 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     [Fact]
     public async Task GivenAbstractSetter_WhenCallingUseBaseImplementation_ShouldFail()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 namespace Sample
 {
     public static class Scenario
@@ -509,9 +599,14 @@ namespace Sample
         }
     }
 }
-""");
+"""
+        );
 
-        AssertSingleDiagnostic(diagnostics, WellKnownCsCompilerErrorCodes.MemberNotFound, expectedLine: 8);
+        AssertSingleDiagnostic(
+            diagnostics,
+            WellKnownCsCompilerErrorCodes.MemberNotFound,
+            expectedLine: 8
+        );
     }
 
     private const string BaseSourceFileName = "GeneratorInput.cs";
@@ -522,7 +617,8 @@ namespace Sample
             Source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
-            assemblyName: nameof(PropertySetterFluentApiTests));
+            assemblyName: nameof(PropertySetterFluentApiTests)
+        );
 
     private static async Task<ImmutableArray<Diagnostic>> CompileSnippet(string snippet)
     {
@@ -533,7 +629,15 @@ namespace Sample
     private static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics) =>
         GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
 
-    private static void AssertSingleDiagnostic(ImmutableArray<Diagnostic> diagnostics, string expectedId, int expectedLine) =>
-        GeneratorTestHelper.AssertSingleDiagnostic(diagnostics, expectedId, expectedLine, SnippetFileName);
+    private static void AssertSingleDiagnostic(
+        ImmutableArray<Diagnostic> diagnostics,
+        string expectedId,
+        int expectedLine
+    ) =>
+        GeneratorTestHelper.AssertSingleDiagnostic(
+            diagnostics,
+            expectedId,
+            expectedLine,
+            SnippetFileName
+        );
 }
-

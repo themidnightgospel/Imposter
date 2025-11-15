@@ -1,5 +1,5 @@
-using Microsoft.CodeAnalysis;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -65,57 +65,80 @@ internal readonly struct IndexerGetterImposterMetadata
         var returnHandlerType = BuildReturnHandlerType(indexer);
         ReturnHandlerType = returnHandlerType;
 
-        DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
+        DefaultBehaviourField = new FieldMetadata(
+            "_defaultBehaviour",
+            indexer.DefaultIndexerBehaviour.TypeSyntax
+        );
         SetupsField = new FieldMetadata(
             "_getterInvocationImposters",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(InvocationImposterTypeSyntax));
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+                InvocationImposterTypeSyntax
+            )
+        );
         SetupLookupField = new FieldMetadata(
             "_setupLookup",
             WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
                 indexer.ArgumentsCriteria.TypeSyntax,
-                InvocationImposterTypeSyntax));
+                InvocationImposterTypeSyntax
+            )
+        );
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax));
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax)
+        );
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode);
+            WellKnownTypes.Imposter.Abstractions.ImposterMode
+        );
         PropertyDisplayNameField = new FieldMetadata(
             "_propertyDisplayName",
-            PredefinedType(Token(SyntaxKind.StringKeyword)));
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
         HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
         Invocation = new GetterInvocationMetadata(indexer, returnGeneratorType, returnHandlerType);
     }
 
-    private static QualifiedNameSyntax BuildReturnGeneratorType(in ImposterIndexerMetadata indexer)
-        => QualifiedName(
+    private static QualifiedNameSyntax BuildReturnGeneratorType(
+        in ImposterIndexerMetadata indexer
+    ) =>
+        QualifiedName(
             WellKnownTypes.System.Namespace,
             GenericName(
                 Identifier("Func"),
                 TypeArgumentList(
-                    SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
-                    {
-                        indexer.Arguments.TypeSyntax,
-                        Token(SyntaxKind.CommaToken),
-                        indexer.Core.TypeSyntax
-                    }))));
+                    SeparatedList<TypeSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            indexer.Arguments.TypeSyntax,
+                            Token(SyntaxKind.CommaToken),
+                            indexer.Core.TypeSyntax,
+                        }
+                    )
+                )
+            )
+        );
 
-    private static QualifiedNameSyntax BuildReturnHandlerType(in ImposterIndexerMetadata indexer)
-        => QualifiedName(
+    private static QualifiedNameSyntax BuildReturnHandlerType(in ImposterIndexerMetadata indexer) =>
+        QualifiedName(
             WellKnownTypes.System.Namespace,
             GenericName(
                 Identifier("Func"),
                 TypeArgumentList(
-                    SeparatedList<TypeSyntax>(new SyntaxNodeOrToken[]
-                    {
-                        indexer.Arguments.TypeSyntax,
-                        Token(SyntaxKind.CommaToken),
-                        indexer.Core.AsSystemFuncType,
-                        Token(SyntaxKind.CommaToken),
-                        indexer.Core.TypeSyntax
-                    }))));
+                    SeparatedList<TypeSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            indexer.Arguments.TypeSyntax,
+                            Token(SyntaxKind.CommaToken),
+                            indexer.Core.AsSystemFuncType,
+                            Token(SyntaxKind.CommaToken),
+                            indexer.Core.TypeSyntax,
+                        }
+                    )
+                )
+            )
+        );
 
     internal readonly struct GetterBuilderMetadata
     {
@@ -161,23 +184,38 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly FieldMetadata CriteriaField;
 
-        internal GetterInvocationMetadata(in ImposterIndexerMetadata indexer, TypeSyntax returnGeneratorType, TypeSyntax returnHandlerType)
+        internal GetterInvocationMetadata(
+            in ImposterIndexerMetadata indexer,
+            TypeSyntax returnGeneratorType,
+            TypeSyntax returnHandlerType
+        )
         {
             Name = "GetterInvocationImposter";
             TypeSyntax = IdentifierName(Name);
             ParentField = new FieldMetadata("_parent", IdentifierName("GetterImposter"));
-            DefaultBehaviourField = new FieldMetadata("_defaultBehaviour", indexer.DefaultIndexerBehaviour.TypeSyntax);
+            DefaultBehaviourField = new FieldMetadata(
+                "_defaultBehaviour",
+                indexer.DefaultIndexerBehaviour.TypeSyntax
+            );
             ReturnValuesField = new FieldMetadata(
                 "_returnValues",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(returnHandlerType));
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(returnHandlerType)
+            );
             CallbacksField = new FieldMetadata(
                 "_callbacks",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(indexer.Delegates.GetterCallbackDelegateType));
-            LastReturnValueField = new FieldMetadata("_lastReturnValue", NullableType(returnHandlerType));
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+                    indexer.Delegates.GetterCallbackDelegateType
+                )
+            );
+            LastReturnValueField = new FieldMetadata(
+                "_lastReturnValue",
+                NullableType(returnHandlerType)
+            );
             InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",
-                PredefinedType(Token(SyntaxKind.StringKeyword)));
+                PredefinedType(Token(SyntaxKind.StringKeyword))
+            );
             CriteriaField = new FieldMetadata("Criteria", indexer.ArgumentsCriteria.TypeSyntax);
         }
     }

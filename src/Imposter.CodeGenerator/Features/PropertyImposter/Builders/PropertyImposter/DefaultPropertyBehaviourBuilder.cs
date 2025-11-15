@@ -9,11 +9,31 @@ namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImpo
 
 internal static class DefaultPropertyBehaviourBuilder
 {
-    internal static ClassDeclarationSyntax Build(in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour) =>
+    internal static ClassDeclarationSyntax Build(
+        in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour
+    ) =>
         new ClassDeclarationBuilder(defaultPropertyBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(SingleVariableField(defaultPropertyBehaviour.IsOnField, SyntaxKind.InternalKeyword, True))
-            .AddMember(SingleVariableField(defaultPropertyBehaviour.HasValueSetField, SyntaxKind.InternalKeyword, False))
-            .AddMember(SingleVariableField(defaultPropertyBehaviour.BackingField, SyntaxKind.InternalKeyword, Default))
+            .AddMember(
+                SingleVariableField(
+                    defaultPropertyBehaviour.IsOnField,
+                    SyntaxKind.InternalKeyword,
+                    True
+                )
+            )
+            .AddMember(
+                SingleVariableField(
+                    defaultPropertyBehaviour.HasValueSetField,
+                    SyntaxKind.InternalKeyword,
+                    False
+                )
+            )
+            .AddMember(
+                SingleVariableField(
+                    defaultPropertyBehaviour.BackingField,
+                    SyntaxKind.InternalKeyword,
+                    Default
+                )
+            )
             .Build();
 }

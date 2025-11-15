@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../Roslyn.Shared.props" />
 
-    <Import Project="../../Roslyn.Shared.props" />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    <LangVersion>12</LangVersion>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <LangVersion>12</LangVersion>
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
-
-    <Import Project="Imposter.Benchmarks.Roslyn$(ROSLYN_VERSION).props" />
+  <Import Project="Imposter.Benchmarks.Roslyn$(ROSLYN_VERSION).props" />
 
   <ItemGroup>
-        <PackageReference Include="Moq" Version="4.20.72"/>
-        <PackageReference Include="NSubstitute" Version="5.3.0"/>
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="NSubstitute" Version="5.3.0" />
   </ItemGroup>
 
   <!-- Write generated sources to disk for review -->
@@ -25,16 +24,22 @@
 
   <!-- Include but don't compile generated code. The system will already compile the code, but this will make it visible for reference.-->
   <ItemGroup>
-    <Compile Remove="GeneratedFiles\**"/>
-    <None Include="GeneratedFiles\**"/>
+    <Compile Remove="GeneratedFiles\**" />
+    <None Include="GeneratedFiles\**" />
   </ItemGroup>
-    <ItemGroup>
-        <!--  OutputItemType="Analyzer" is necessary for generator to access it during generation.
+  <ItemGroup>
+    <!--  OutputItemType="Analyzer" is necessary for generator to access it during generation.
           see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->
-        <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" OutputItemType="Analyzer"/>
-        <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-        <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"/>
-        <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj"/>
-    </ItemGroup>
-
+    <ProjectReference
+      Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"
+      OutputItemType="Analyzer"
+    />
+    <ProjectReference
+      Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
+    <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" />
+  </ItemGroup>
 </Project>

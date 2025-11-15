@@ -26,7 +26,7 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         _attributes.Add(attribute);
         return this;
     }
-    
+
     public MethodDeclarationBuilder AddModifierIf(bool condition, Func<SyntaxToken> modifierFactory)
     {
         if (condition)
@@ -84,7 +84,10 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     }
 
     // Those "if" fit better as extension methods
-    public MethodDeclarationBuilder AddParametersIf(bool condition, Func<IEnumerable<ParameterSyntax>> parameters)
+    public MethodDeclarationBuilder AddParametersIf(
+        bool condition,
+        Func<IEnumerable<ParameterSyntax>> parameters
+    )
     {
         if (condition)
         {
@@ -106,7 +109,9 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    public MethodDeclarationBuilder AddTypeParameters(IEnumerable<TypeParameterSyntax>? typeParameters)
+    public MethodDeclarationBuilder AddTypeParameters(
+        IEnumerable<TypeParameterSyntax>? typeParameters
+    )
     {
         if (typeParameters is not null)
         {
@@ -145,7 +150,9 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    public MethodDeclarationBuilder WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifierSyntax? specifier)
+    public MethodDeclarationBuilder WithExplicitInterfaceSpecifier(
+        ExplicitInterfaceSpecifierSyntax? specifier
+    )
     {
         _explicitInterfaceSpecifier = specifier;
         return this;
@@ -159,7 +166,12 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
             returnType,
             _explicitInterfaceSpecifier,
             Identifier(name),
-            _typeParameterList ?? (_typeParameters.Count > 0 ? TypeParameterList(SeparatedList(_typeParameters)) : null),
+            _typeParameterList
+                ?? (
+                    _typeParameters.Count > 0
+                        ? TypeParameterList(SeparatedList(_typeParameters))
+                        : null
+                ),
             _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
             _constraintClauses.Count > 0 ? List(_constraintClauses) : default,
             _body,

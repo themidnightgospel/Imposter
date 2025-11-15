@@ -3,12 +3,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events;
 
-public class EventCrossMemberStressCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
+public class EventCrossMemberStressCollisionPreventionTests
+    : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenCrossMemberCollisionNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
@@ -45,10 +47,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-

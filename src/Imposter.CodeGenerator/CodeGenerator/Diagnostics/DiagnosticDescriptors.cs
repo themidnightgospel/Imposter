@@ -5,11 +5,15 @@ namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 public static class DiagnosticDescriptors
 {
     // TODO Update links when docs page is added.
-    private const string LanguageSupportHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#c-language-version-support";
-    private const string TargetHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#valid-imposter-targets";
-    private const string AccessibleConstructorHelpUrl = "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#accessible-constructors";
-    private const string CrashIssueUrl = "https://github.com/themidnightgospel/Imposter/issues/new?labels=bug&title=Generator%20crash:%20IMP005";
-    
+    private const string LanguageSupportHelpUrl =
+        "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#c-language-version-support";
+    private const string TargetHelpUrl =
+        "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#valid-imposter-targets";
+    private const string AccessibleConstructorHelpUrl =
+        "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#accessible-constructors";
+    private const string CrashIssueUrl =
+        "https://github.com/themidnightgospel/Imposter/issues/new?labels=bug&title=Generator%20crash:%20IMP005";
+
     public static readonly DiagnosticDescriptor UnsupportedLanguage = new(
         "IMP001",
         "Unsupported language",

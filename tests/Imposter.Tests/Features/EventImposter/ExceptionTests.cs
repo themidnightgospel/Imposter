@@ -9,9 +9,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]
@@ -21,7 +21,8 @@ namespace Imposter.Tests.Features.EventImposter
             _sut.Instance().SomethingHappened += h;
 
             Should.Throw<InvalidOperationException>(() =>
-                _sut.SomethingHappened.Raise(this, EventArgs.Empty));
+                _sut.SomethingHappened.Raise(this, EventArgs.Empty)
+            );
 
             // Raised and invocation are recorded before throwing
             _sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.Once());

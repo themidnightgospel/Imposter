@@ -9,6 +9,9 @@ public static class DiagnosticReporter
         IncrementalValuesProvider<Diagnostic> diagnostic
     )
     {
-        context.RegisterSourceOutput(diagnostic, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
+        context.RegisterSourceOutput(
+            diagnostic,
+            static (context, diagnostic) => context.ReportDiagnostic(diagnostic)
+        );
     }
 }

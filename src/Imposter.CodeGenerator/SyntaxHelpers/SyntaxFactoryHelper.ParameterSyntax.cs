@@ -10,10 +10,18 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
-        => ArgumentListSyntax(SeparatedList(parameters.Select(it => ArgumentSyntax(it, includeRefKind))));
+    internal static ArgumentListSyntax ArgumentListSyntax(
+        IEnumerable<IParameterSymbol> parameters,
+        bool includeRefKind = true
+    ) =>
+        ArgumentListSyntax(
+            SeparatedList(parameters.Select(it => ArgumentSyntax(it, includeRefKind)))
+        );
 
-    internal static ArgumentSyntax ArgumentSyntax(IParameterSymbol parameter, bool includeRefKind = true)
+    internal static ArgumentSyntax ArgumentSyntax(
+        IParameterSymbol parameter,
+        bool includeRefKind = true
+    )
     {
         var refKindKeyword = (includeRefKind, parameter.RefKind) switch
         {
@@ -21,53 +29,76 @@ internal static partial class SyntaxFactoryHelper
             (_, RefKind.Ref) => SyntaxKind.RefKeyword,
             (_, RefKind.Out) => SyntaxKind.OutKeyword,
             (_, RefKind.In) => SyntaxKind.InKeyword,
-            _ => SyntaxKind.None
+            _ => SyntaxKind.None,
         };
 
-        return Argument(
-            null,
-            Token(refKindKeyword),
-            IdentifierName(parameter.Name)
-        );
+        return Argument(null, Token(refKindKeyword), IdentifierName(parameter.Name));
     }
 
-    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<IParameterSymbol> parameters, bool includeRefKind = true)
-        => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
+    internal static ParameterListSyntax ParameterListSyntax(
+        IEnumerable<IParameterSymbol> parameters,
+        bool includeRefKind = true
+    ) => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
 
-    internal static IEnumerable<ParameterSyntax> ParametersSyntax(IEnumerable<IParameterSymbol> parameters) => parameters.Select(ParameterSyntax);
+    internal static IEnumerable<ParameterSyntax> ParametersSyntax(
+        IEnumerable<IParameterSymbol> parameters
+    ) => parameters.Select(ParameterSyntax);
 
-    internal static ParameterListSyntax ParameterListSyntax(IEnumerable<ParameterSyntax> parameters) => ParameterList(SeparatedList(parameters));
+    internal static ParameterListSyntax ParameterListSyntax(
+        IEnumerable<ParameterSyntax> parameters
+    ) => ParameterList(SeparatedList(parameters));
 
-    internal static ParameterListSyntax ParameterListSyntax(ParameterSyntax parameter) => ParameterList(SingletonSeparatedList(parameter));
+    internal static ParameterListSyntax ParameterListSyntax(ParameterSyntax parameter) =>
+        ParameterList(SingletonSeparatedList(parameter));
 
-    internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(IEnumerable<IParameterSymbol> parameters) => parameters.Select(ParameterSyntax);
+    internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(
+        IEnumerable<IParameterSymbol> parameters
+    ) => parameters.Select(ParameterSyntax);
 
-    internal static IEnumerable<ParameterSyntax> ParameterSyntaxesIncludingNullable(IEnumerable<IParameterSymbol> parameters) =>
-        parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter));
+    internal static IEnumerable<ParameterSyntax> ParameterSyntaxesIncludingNullable(
+        IEnumerable<IParameterSymbol> parameters
+    ) => parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter));
 
-    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) => ParameterSyntax(parameter, includeRefKind: true);
+    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) =>
+        ParameterSyntax(parameter, includeRefKind: true);
 
-    internal static ParameterSyntax ParameterSyntaxIncludingNullable(IParameterSymbol parameter, bool includeRefKind = true) =>
-        ParameterSyntaxInternal(parameter, includeRefKind, includeNullableReferenceAnnotations: true);
+    internal static ParameterSyntax ParameterSyntaxIncludingNullable(
+        IParameterSymbol parameter,
+        bool includeRefKind = true
+    ) =>
+        ParameterSyntaxInternal(
+            parameter,
+            includeRefKind,
+            includeNullableReferenceAnnotations: true
+        );
 
-    internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name)
-        => new ParameterBuilder(type, name).Build();
+    internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name) =>
+        new ParameterBuilder(type, name).Build();
 
-    internal static ParameterSyntax ParameterSyntax(ParameterMetadata parameterMetadata)
-        => new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name)
+    internal static ParameterSyntax ParameterSyntax(ParameterMetadata parameterMetadata) =>
+        new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name)
             .WithDefaultValue(parameterMetadata.DefaultValue)
             .Build();
 
-    internal static ParameterListSyntax ToSingleParameterListSyntax(this ParameterSyntax parameterSyntax)
-        => ParameterList(SingletonSeparatedList(parameterSyntax));
+    internal static ParameterListSyntax ToSingleParameterListSyntax(
+        this ParameterSyntax parameterSyntax
+    ) => ParameterList(SingletonSeparatedList(parameterSyntax));
 
-    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter, bool includeRefKind) =>
-        ParameterSyntaxInternal(parameter, includeRefKind, includeNullableReferenceAnnotations: false);
+    internal static ParameterSyntax ParameterSyntax(
+        IParameterSymbol parameter,
+        bool includeRefKind
+    ) =>
+        ParameterSyntaxInternal(
+            parameter,
+            includeRefKind,
+            includeNullableReferenceAnnotations: false
+        );
 
     private static ParameterSyntax ParameterSyntaxInternal(
         IParameterSymbol parameter,
         bool includeRefKind,
-        bool includeNullableReferenceAnnotations)
+        bool includeNullableReferenceAnnotations
+    )
     {
         var parameterType = includeNullableReferenceAnnotations
             ? TypeSyntaxIncludingNullable(parameter.Type)
@@ -82,7 +113,7 @@ internal static partial class SyntaxFactoryHelper
                 RefKind.Ref => Token(SyntaxKind.RefKeyword),
                 RefKind.Out => Token(SyntaxKind.OutKeyword),
                 RefKind.In => Token(SyntaxKind.InKeyword),
-                _ => default
+                _ => default,
             };
 
             if (modifier != default)
@@ -93,9 +124,10 @@ internal static partial class SyntaxFactoryHelper
 
         if (parameter.HasExplicitDefaultValue)
         {
-            var defaultValue = parameter.ExplicitDefaultValue != null
-                ? ParseExpression(parameter.ExplicitDefaultValue.ToString())
-                : DefaultExpression(parameterType);
+            var defaultValue =
+                parameter.ExplicitDefaultValue != null
+                    ? ParseExpression(parameter.ExplicitDefaultValue.ToString())
+                    : DefaultExpression(parameterType);
 
             parameterBuilder.WithDefaultValue(defaultValue);
         }
@@ -104,23 +136,35 @@ internal static partial class SyntaxFactoryHelper
     }
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
-        IdentifierName(parameter.Name).Assign(DefaultExpression(TypeSyntax(parameter.Type))).ToStatementSyntax();
+        IdentifierName(parameter.Name)
+            .Assign(DefaultExpression(TypeSyntax(parameter.Type)))
+            .ToStatementSyntax();
 
-    internal static IEnumerable<TypeParameterSyntax> TypeParameters(IReadOnlyList<NameSyntax> genericArguments)
+    internal static IEnumerable<TypeParameterSyntax> TypeParameters(
+        IReadOnlyList<NameSyntax> genericArguments
+    )
     {
-        return genericArguments.Select(name => TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text)));
+        return genericArguments.Select(name =>
+            TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text))
+        );
     }
 
-    internal static TypeParameterListSyntax? TypeParameterListSyntax(IReadOnlyList<NameSyntax> genericArguments) =>
+    internal static TypeParameterListSyntax? TypeParameterListSyntax(
+        IReadOnlyList<NameSyntax> genericArguments
+    ) =>
         genericArguments.Count == 0
             ? null
             : TypeParameterList(
                 SeparatedList(
-                    genericArguments.Select(name => TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text)))
+                    genericArguments.Select(name =>
+                        TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text))
+                    )
                 )
             );
 
-    internal static TypeParameterListSyntax? TypeParameterListSyntax(IReadOnlyList<IdentifierNameSyntax> genericArguments) =>
+    internal static TypeParameterListSyntax? TypeParameterListSyntax(
+        IReadOnlyList<IdentifierNameSyntax> genericArguments
+    ) =>
         genericArguments.Count == 0
             ? default
             : TypeParameterList(
@@ -129,9 +173,11 @@ internal static partial class SyntaxFactoryHelper
                 )
             );
 
-
     // TODO Refactor
-    public static ParameterListSyntax ToParameterListSyntax(this IEnumerable<IParameterSymbol> parameters, bool appendTargetSuffix = false)
+    public static ParameterListSyntax ToParameterListSyntax(
+        this IEnumerable<IParameterSymbol> parameters,
+        bool appendTargetSuffix = false
+    )
     {
         return ParameterList(SeparatedList(parameters.Select(ToParameterSyntax)));
 
@@ -166,16 +212,18 @@ internal static partial class SyntaxFactoryHelper
 
             case GenericNameSyntax gen:
                 return gen.WithTypeArgumentList(
-                    TypeArgumentList(SeparatedList(
-                        gen.TypeArgumentList.Arguments.Select(AddTargetSuffixToType)
-                    ))
+                    TypeArgumentList(
+                        SeparatedList(gen.TypeArgumentList.Arguments.Select(AddTargetSuffixToType))
+                    )
                 );
 
             case ArrayTypeSyntax array:
                 return array.WithElementType(AddTargetSuffixToType(array.ElementType));
 
             case QualifiedNameSyntax qualified:
-                return qualified.WithRight((SimpleNameSyntax)AddTargetSuffixToType(qualified.Right));
+                return qualified.WithRight(
+                    (SimpleNameSyntax)AddTargetSuffixToType(qualified.Right)
+                );
 
             case NullableTypeSyntax nullable:
                 return nullable.WithElementType(AddTargetSuffixToType(nullable.ElementType));

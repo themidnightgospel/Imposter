@@ -10,17 +10,15 @@ namespace Imposter.Tests.Features.IndexerImposter
     {
         private readonly IIndexerSetupSutImposter _sut =
 #if USE_CSHARP14
-            IIndexerSetupSut.Imposter();
+        IIndexerSetupSut.Imposter();
 #else
-            new IIndexerSetupSutImposter();
+        new IIndexerSetupSutImposter();
 #endif
 
         [Fact]
         public void GivenConfiguredGetter_WhenAccessed_ThenReturnsConfiguredValue()
         {
-            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter()
-                .Returns(42);
+            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(42);
 
             var result = _sut.Instance()[1, "value", new object()];
 
@@ -66,8 +64,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSequentialGetterSetup_WhenAccessed_ThenReturnsInOrder()
         {
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
             builder
                 .Returns(10)
@@ -81,7 +78,8 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             instance[1, "bar", thirdArgument].ShouldBe(10);
             instance[1, "bar", thirdArgument].ShouldBe(20);
-            instance[1, "bar", thirdArgument].ShouldBe(1 + "bar".Length + thirdArgument.GetHashCode());
+            instance[1, "bar", thirdArgument]
+                .ShouldBe(1 + "bar".Length + thirdArgument.GetHashCode());
 
             Should.NotThrow(() => builder.Called(Count.Exactly(3)));
         }
@@ -105,8 +103,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSingleArgumentIndexer_WhenConfiguringGetter_ThenSupportsSetupsAndCallbacks()
         {
-            var builder = _sut[Arg<int>.Is(x => x == 8)]
-                .Getter();
+            var builder = _sut[Arg<int>.Is(x => x == 8)].Getter();
 
             builder.Callback(key => key.ShouldBe(8));
             builder.Returns(80);
@@ -119,13 +116,9 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSingleArgumentIndexer_WhenUsingSequentialGetter_ThenSupportsReturnsAndCalled()
         {
-            var builder = _sut[Arg<int>.Is(x => x > 0)]
-                .Getter();
+            var builder = _sut[Arg<int>.Is(x => x > 0)].Getter();
 
-            builder
-                .Returns(5)
-                .Then()
-                .Returns(() => 10);
+            builder.Returns(5).Then().Returns(() => 10);
 
             var instance = _sut.Instance();
             instance[1].ShouldBe(5);
@@ -164,9 +157,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenSingleArgumentIndexer_WhenConfigured_ThenDoesNotAffectThreeArgumentDefaults()
         {
-            _sut[Arg<int>.Is(x => x == 5)]
-                .Getter()
-                .Returns(50);
+            _sut[Arg<int>.Is(x => x == 5)].Getter().Returns(50);
 
             var instance = _sut.Instance();
             var arg3 = new object();
@@ -180,7 +171,10 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
 
-            var ex = Should.Throw<MissingImposterException>(() => { _ = sut.Instance()[7, "missing", new object()]; });
+            var ex = Should.Throw<MissingImposterException>(() =>
+            {
+                _ = sut.Instance()[7, "missing", new object()];
+            });
 
             ex.Message.ShouldContain("(getter)");
         }
@@ -188,16 +182,15 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenGetterCallCount_WhenVerificationMismatch_ThenCalledFails()
         {
-            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter()
-                .Returns(1);
+            _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(1);
 
             _sut.Instance()[1, "test", new object()].ShouldBe(1);
 
             Should.Throw<VerificationFailedException>(() =>
                 _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                     .Getter()
-                    .Called(Count.Exactly(2)));
+                    .Called(Count.Exactly(2))
+            );
         }
 
         [Fact]
@@ -218,8 +211,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenGetterCountThreshold_WhenVerifyingAtLeast_ThenPassesAtThreshold()
         {
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
             builder.Returns(2);
 
@@ -233,8 +225,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenGetterCountThreshold_WhenVerifyingAtMost_ThenPassesBelowThreshold()
         {
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
             builder.Returns(7);
 
@@ -250,9 +241,14 @@ namespace Imposter.Tests.Features.IndexerImposter
             var builder = _sut[Arg<int>.Is(x => x == 1), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter();
 
-            builder.Throws((key, name, payload) => new InvalidOperationException($"boom:{key}:{name}:{payload.GetHashCode()}"));
+            builder.Throws(
+                (key, name, payload) =>
+                    new InvalidOperationException($"boom:{key}:{name}:{payload.GetHashCode()}")
+            );
 
-            Should.Throw<InvalidOperationException>(() => _ = _sut.Instance()[1, "fail", new object()]);
+            Should.Throw<InvalidOperationException>(() =>
+                _ = _sut.Instance()[1, "fail", new object()]
+            );
 
             Should.NotThrow(() => builder.Called(Count.Exactly(1)));
         }
@@ -262,8 +258,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var visitedKeys = new List<int>();
 
-            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
-                .Getter();
+            var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
             builder.Callback((a, b, c) => visitedKeys.Add(a));
             builder.Returns((key1, key2, key3) => key1 + 1);
@@ -280,9 +275,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
 
-            sut[Arg<int>.Is(x => x == 42), Arg<string>.Any()]
-                .Getter()
-                .Returns(100);
+            sut[Arg<int>.Is(x => x == 42), Arg<string>.Any()].Getter().Returns(100);
 
             sut.Instance()[42, "anything"].ShouldBe(100);
         }
@@ -301,8 +294,7 @@ namespace Imposter.Tests.Features.IndexerImposter
             var sut = new IGetterOnlyIndexerSetupSutImposter();
             var visitedKeys = new List<int>();
 
-            var builder = sut[Arg<int>.Any(), Arg<string>.Any()]
-                .Getter();
+            var builder = sut[Arg<int>.Any(), Arg<string>.Any()].Getter();
 
             builder.Callback((key, _) => visitedKeys.Add(key));
             builder.Returns((key, _) => key * 2);
@@ -319,18 +311,15 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
 
-            sut[Arg<int>.Any(), Arg<string>.Any()]
-                .Getter()
-                .Returns(1);
+            sut[Arg<int>.Any(), Arg<string>.Any()].Getter().Returns(1);
 
             var instance = sut.Instance();
             _ = instance[9, "one"];
             _ = instance[10, "two"];
 
             Should.NotThrow(() =>
-                sut[Arg<int>.Any(), Arg<string>.Any()]
-                    .Getter()
-                    .Called(Count.Exactly(2)));
+                sut[Arg<int>.Any(), Arg<string>.Any()].Getter().Called(Count.Exactly(2))
+            );
         }
 
         [Fact]
@@ -342,7 +331,9 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             var instance = _sut.Instance();
 
-            var ex = Should.Throw<InvalidOperationException>(() => _ = instance[2, "err", new object()]);
+            var ex = Should.Throw<InvalidOperationException>(() =>
+                _ = instance[2, "err", new object()]
+            );
             ex.Message.ShouldBe("boom");
         }
 
@@ -361,9 +352,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         [Fact]
         public void GivenImplicitModeGetter_WhenCallUnmatched_ThenReturnsDefault()
         {
-            _sut[5, "configured", Arg<object>.Any()]
-                .Getter()
-                .Returns(500);
+            _sut[5, "configured", Arg<object>.Any()].Getter().Returns(500);
 
             var instance = _sut.Instance();
 
@@ -377,7 +366,10 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
-                .Throws((key1, key2, key3) => new InvalidOperationException($"{key1}:{key2}:{key3.GetHashCode()}"));
+                .Throws(
+                    (key1, key2, key3) =>
+                        new InvalidOperationException($"{key1}:{key2}:{key3.GetHashCode()}")
+                );
 
             var instance = _sut.Instance();
             var arg3 = new object();
@@ -391,11 +383,17 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var capture = new List<string>();
 
-            var builder = _sut[Arg<int>.Is(x => x == 9), Arg<string>.Is(s => s == "multi"), Arg<object>.Any()]
+            var builder = _sut[
+                Arg<int>.Is(x => x == 9),
+                Arg<string>.Is(s => s == "multi"),
+                Arg<object>.Any()
+            ]
                 .Getter();
 
             builder.Callback((key, name, obj) => capture.Add($"first:{key}:{name}"));
-            builder.Callback((key, name, obj) => capture.Add($"second:{key}:{name}:{obj.GetHashCode()}"));
+            builder.Callback(
+                (key, name, obj) => capture.Add($"second:{key}:{name}:{obj.GetHashCode()}")
+            );
             builder.Returns(900);
 
             var instance = _sut.Instance();
@@ -413,8 +411,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
 
-            Should.Throw<MissingImposterException>(() =>
-                _ = sut.Instance()[1, "missing"]);
+            Should.Throw<MissingImposterException>(() => _ = sut.Instance()[1, "missing"]);
         }
     }
 }

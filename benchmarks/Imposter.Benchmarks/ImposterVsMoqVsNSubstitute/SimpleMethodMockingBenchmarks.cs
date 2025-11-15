@@ -22,9 +22,7 @@ public class SimpleMethodMockingBenchmarks
         for (var i = 0; i < Iteration; i++)
         {
             var input = i;
-            calculatorMock
-                .Setup(it => it.Square(input))
-                .Returns(input * input);
+            calculatorMock.Setup(it => it.Square(input)).Returns(input * input);
         }
 
         var mockObject = calculatorMock.Object;

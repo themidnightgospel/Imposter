@@ -104,18 +104,16 @@ namespace Imposter.Tests.Features.ClassImposter
             var setter = imposter[Arg<int>.Is(11), Arg<string>.Is("callback")].Setter();
             var callbackArguments = new List<(int Row, string Column, int Value)>();
 
-            setter.UseBaseImplementation().Callback((row, column, value) => callbackArguments.Add((row, column, value)));
+            setter
+                .UseBaseImplementation()
+                .Callback((row, column, value) => callbackArguments.Add((row, column, value)));
 
             var instance = imposter.Instance();
 
             instance.WriteValue(11, "callback", 1111);
             instance.WriteValue(11, "callback", 2222);
 
-            callbackArguments.ShouldBe(new[]
-            {
-                (11, "callback", 1111),
-                (11, "callback", 2222)
-            });
+            callbackArguments.ShouldBe(new[] { (11, "callback", 1111), (11, "callback", 2222) });
 
             Should.NotThrow(() => setter.Called(Count.Exactly(2)));
             instance.ReadValue(11, "callback").ShouldBe(2222);
@@ -151,7 +149,9 @@ namespace Imposter.Tests.Features.ClassImposter
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var getter = imposter[Arg<int>.Is(9), Arg<string>.Is("precedence")].Getter();
             // since we're configuring getter, that disabled the "default bindexer behaviour"
-            imposter[Arg<int>.Is(9), Arg<string>.Is("precedence")].Setter().UseBaseImplementation();
+            imposter[Arg<int>.Is(9), Arg<string>.Is("precedence")]
+                .Setter()
+                .UseBaseImplementation();
             var instance = imposter.Instance();
 
             getter.Returns(100);
@@ -173,7 +173,9 @@ namespace Imposter.Tests.Features.ClassImposter
             imposter[Arg<int>.Is(4), Arg<string>.Is("callback")].Setter().UseBaseImplementation();
             var callbackArguments = new List<(int Row, string Column)>();
 
-            getter.UseBaseImplementation().Callback((row, column) => callbackArguments.Add((row, column)));
+            getter
+                .UseBaseImplementation()
+                .Callback((row, column) => callbackArguments.Add((row, column)));
 
             var instance = imposter.Instance();
             instance.WriteValue(4, "callback", 444);

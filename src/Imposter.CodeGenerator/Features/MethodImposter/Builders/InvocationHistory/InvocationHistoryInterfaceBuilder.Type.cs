@@ -14,9 +14,14 @@ public static class InvocationHistoryInterfaceBuilder
             .AddMember(BuildMatchesMethod(method))
             .Build();
 
-    private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildMatchesMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
-        return new MethodDeclarationBuilder(WellKnownTypes.Bool, InvocationHistoryMatchesMethodMetadata.Name)
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Bool,
+            InvocationHistoryMatchesMethodMetadata.Name
+        )
             .WithSemicolon()
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddParameter(GetParameter(method))
@@ -25,7 +30,10 @@ public static class InvocationHistoryInterfaceBuilder
         static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
         {
             return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments, InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName)
+                ? SyntaxFactoryHelper.ParameterSyntax(
+                    method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments,
+                    InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+                )
                 : null;
         }
     }

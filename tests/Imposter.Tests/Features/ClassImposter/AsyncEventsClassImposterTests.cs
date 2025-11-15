@@ -28,8 +28,15 @@ namespace Imposter.Tests.Features.ClassImposter
             await imposter.TaskBasedEvent.RaiseAsync(instance, EventArgs.Empty);
 
             handlerInvoked.ShouldBeTrue();
-            imposter.TaskBasedEvent.Raised(Arg<object>.Is(instance), Arg<EventArgs>.Any(), Count.Once());
-            imposter.TaskBasedEvent.HandlerInvoked(Arg<Func<object, EventArgs, Task>>.Is(h => h == handler), Count.Once());
+            imposter.TaskBasedEvent.Raised(
+                Arg<object>.Is(instance),
+                Arg<EventArgs>.Any(),
+                Count.Once()
+            );
+            imposter.TaskBasedEvent.HandlerInvoked(
+                Arg<Func<object, EventArgs, Task>>.Is(h => h == handler),
+                Count.Once()
+            );
         }
 
         [Fact]
@@ -50,8 +57,15 @@ namespace Imposter.Tests.Features.ClassImposter
             await imposter.ValueTaskBasedEvent.RaiseAsync(instance, EventArgs.Empty);
 
             handlerInvocationCount.ShouldBe(1);
-            imposter.ValueTaskBasedEvent.Raised(Arg<object>.Is(instance), Arg<EventArgs>.Any(), Count.Once());
-            imposter.ValueTaskBasedEvent.HandlerInvoked(Arg<Func<object, EventArgs, ValueTask>>.Is(h => h == handler), Count.Once());
+            imposter.ValueTaskBasedEvent.Raised(
+                Arg<object>.Is(instance),
+                Arg<EventArgs>.Any(),
+                Count.Once()
+            );
+            imposter.ValueTaskBasedEvent.HandlerInvoked(
+                Arg<Func<object, EventArgs, ValueTask>>.Is(h => h == handler),
+                Count.Once()
+            );
         }
 
         [Fact]
@@ -72,8 +86,15 @@ namespace Imposter.Tests.Features.ClassImposter
             await imposter.CustomAsyncEvent.RaiseAsync(instance, EventArgs.Empty);
 
             callbackCount.ShouldBe(1);
-            imposter.CustomAsyncEvent.Raised(Arg<object>.Is(instance), Arg<EventArgs>.Any(), Count.Once());
-            imposter.CustomAsyncEvent.HandlerInvoked(Arg<AsyncEventHandler<EventArgs>>.Is(h => h == handler), Count.Once());
+            imposter.CustomAsyncEvent.Raised(
+                Arg<object>.Is(instance),
+                Arg<EventArgs>.Any(),
+                Count.Once()
+            );
+            imposter.CustomAsyncEvent.HandlerInvoked(
+                Arg<AsyncEventHandler<EventArgs>>.Is(h => h == handler),
+                Count.Once()
+            );
         }
     }
 }

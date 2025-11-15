@@ -2,6 +2,20 @@
   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
   "tasks": [
     {
+      "name": "CSharpier",
+      "command": "dotnet",
+      "args": [
+        "csharpier",
+        "format",
+        "${staged}"
+      ],
+      "include": [
+        "**/*.cs",
+        "**/*.props",
+        "**/*.csproj"
+      ]
+    },
+    {
       "name": "Imposter.Abstractions.Tests",
       "command": "dotnet",
       "args": [
@@ -109,4 +123,3 @@
     }
   ]
 }
-

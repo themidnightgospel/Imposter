@@ -10,9 +10,9 @@ namespace Imposter.Tests.Features.EventImposter
     {
         private readonly IEventSetupSutImposter _sut =
 #if USE_CSHARP14
-            IEventSetupSut.Imposter();
+        IEventSetupSut.Imposter();
 #else
-            new IEventSetupSutImposter();
+        new IEventSetupSutImposter();
 #endif
 
         [Fact]
@@ -33,7 +33,8 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public void GivenMultipleCallbacks_WhenRaise_ShouldInvokeAllCallbacks()
         {
-            int c1 = 0, c2 = 0;
+            int c1 = 0,
+                c2 = 0;
             _sut.SomethingHappened.Callback((s, e) => c1++);
             _sut.SomethingHappened.Callback((s, e) => c2++);
 

@@ -7,9 +7,18 @@ using Imposter.Abstractions;
 namespace Imposter.Ideation.IndexerSetupPoc
 {
     public delegate int IndexerDelegate(int value1, string value2, object? value3);
-    public delegate Exception IndexerExceptionGeneratorDelegate(int value1, string value2, object? value3);
+    public delegate Exception IndexerExceptionGeneratorDelegate(
+        int value1,
+        string value2,
+        object? value3
+    );
     public delegate void IndexerGetterCallbackDelegate(int value1, string value2, object? value3);
-    public delegate void IndexerSetterCallbackDelegate(int value1, string value2, object? value3, int value);
+    public delegate void IndexerSetterCallbackDelegate(
+        int value1,
+        string value2,
+        object? value3,
+        int value
+    );
 
     public interface IIndexerSetupPocV2Sut
     {
@@ -33,7 +42,8 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
         IIndexerGetterImposterBuilder Throws(Exception exception);
 
-        IIndexerGetterImposterBuilder Throws<TException>() where TException : Exception, new();
+        IIndexerGetterImposterBuilder Throws<TException>()
+            where TException : Exception, new();
 
         IIndexerGetterImposterBuilder Throws(IndexerExceptionGeneratorDelegate exceptionGenerator);
 
@@ -55,7 +65,8 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
     public sealed class IndexerSetupPocImposter : IHaveImposterInstance<IIndexerSetupPocV2Sut>
     {
-        private const string IndexerSignature = "Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc.IIndexerSetupPocV2Sut.this[int value1, string value2, object value3]";
+        private const string IndexerSignature =
+            "Imposter.CodeGenerator.Tests.Features.IndexerSetupPoc.IIndexerSetupPocV2Sut.this[int value1, string value2, object value3]";
 
         private readonly IndexerImposterBuilder _indexer;
         private readonly IIndexerSetupPocV2Sut _instance;
@@ -66,15 +77,23 @@ namespace Imposter.Ideation.IndexerSetupPoc
             _instance = new ImposterTargetInstance(this);
         }
 
-        public IIndexerImposterBuilder this[Arg<int> value1, Arg<string> value2, Arg<object?> value3]
-            => new IndexerInvocationBuilder(_indexer, value1, value2, value3);
+        public IIndexerImposterBuilder this[
+            Arg<int> value1,
+            Arg<string> value2,
+            Arg<object?> value3
+        ] => new IndexerInvocationBuilder(_indexer, value1, value2, value3);
 
         private sealed class IndexerInvocationBuilder : IIndexerImposterBuilder
         {
             private readonly IndexerImposterBuilder _builder;
             private readonly IndexerArgumentsCriteria _criteria;
 
-            internal IndexerInvocationBuilder(IndexerImposterBuilder builder, Arg<int> value1, Arg<string> value2, Arg<object?> value3)
+            internal IndexerInvocationBuilder(
+                IndexerImposterBuilder builder,
+                Arg<int> value1,
+                Arg<string> value2,
+                Arg<object?> value3
+            )
             {
                 _builder = builder;
                 _criteria = new IndexerArgumentsCriteria(value1, value2, value3);
@@ -85,7 +104,8 @@ namespace Imposter.Ideation.IndexerSetupPoc
             public IIndexerSetterImposterBuilder Setter() => _builder.CreateSetter(_criteria);
         }
 
-        public IIndexerSetupPocV2Sut Instance() => ((IHaveImposterInstance<IIndexerSetupPocV2Sut>)this).Instance();
+        public IIndexerSetupPocV2Sut Instance() =>
+            ((IHaveImposterInstance<IIndexerSetupPocV2Sut>)this).Instance();
 
         IIndexerSetupPocV2Sut IHaveImposterInstance<IIndexerSetupPocV2Sut>.Instance() => _instance;
 
@@ -107,7 +127,8 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
         private sealed class IndexerImposterBuilder
         {
-            private readonly DefaultIndexerBehaviour _defaultBehaviour = new DefaultIndexerBehaviour();
+            private readonly DefaultIndexerBehaviour _defaultBehaviour =
+                new DefaultIndexerBehaviour();
             private readonly GetterImposter _getter;
             private readonly SetterImposter _setter;
 
@@ -126,14 +147,17 @@ namespace Imposter.Ideation.IndexerSetupPoc
                 return new SetterImposter.Builder(_setter, criteria);
             }
 
-            internal int Get(int value1, string value2, object value3) => _getter.Get(value1, value2, value3);
+            internal int Get(int value1, string value2, object value3) =>
+                _getter.Get(value1, value2, value3);
 
-            internal void Set(int value1, string value2, object value3, int value) => _setter.Set(value1, value2, value3, value);
+            internal void Set(int value1, string value2, object value3, int value) =>
+                _setter.Set(value1, value2, value3, value);
         }
 
         private sealed class DefaultIndexerBehaviour
         {
-            private readonly ConcurrentDictionary<IndexerArguments, int> _backingField = new ConcurrentDictionary<IndexerArguments, int>();
+            private readonly ConcurrentDictionary<IndexerArguments, int> _backingField =
+                new ConcurrentDictionary<IndexerArguments, int>();
             private bool _isOn = true;
 
             internal bool IsOn
@@ -142,9 +166,11 @@ namespace Imposter.Ideation.IndexerSetupPoc
                 set => Volatile.Write(ref _isOn, value);
             }
 
-            internal void Set(IndexerArguments arguments, int value) => _backingField[arguments] = value;
+            internal void Set(IndexerArguments arguments, int value) =>
+                _backingField[arguments] = value;
 
-            internal int Get(IndexerArguments arguments) => _backingField.TryGetValue(arguments, out var value) ? value : default;
+            internal int Get(IndexerArguments arguments) =>
+                _backingField.TryGetValue(arguments, out var value) ? value : default;
         }
 
         private readonly struct IndexerArguments : IEquatable<IndexerArguments>
@@ -161,11 +187,12 @@ namespace Imposter.Ideation.IndexerSetupPoc
             internal object? Value3 { get; }
 
             public bool Equals(IndexerArguments other) =>
-                Value1 == other.Value1 &&
-                string.Equals(Value2, other.Value2, StringComparison.Ordinal) &&
-                Equals(Value3, other.Value3);
+                Value1 == other.Value1
+                && string.Equals(Value2, other.Value2, StringComparison.Ordinal)
+                && Equals(Value3, other.Value3);
 
-            public override bool Equals(object? obj) => obj is IndexerArguments other && Equals(other);
+            public override bool Equals(object? obj) =>
+                obj is IndexerArguments other && Equals(other);
 
             public override int GetHashCode()
             {
@@ -183,7 +210,11 @@ namespace Imposter.Ideation.IndexerSetupPoc
             private readonly Arg<string> _value2;
             private readonly Arg<object?> _value3;
 
-            public IndexerArgumentsCriteria(Arg<int> value1, Arg<string> value2, Arg<object?> value3)
+            public IndexerArgumentsCriteria(
+                Arg<int> value1,
+                Arg<string> value2,
+                Arg<object?> value3
+            )
             {
                 _value1 = value1;
                 _value2 = value2;
@@ -191,22 +222,32 @@ namespace Imposter.Ideation.IndexerSetupPoc
             }
 
             public bool Matches(IndexerArguments arguments) =>
-                _value1.Matches(arguments.Value1) &&
-                _value2.Matches(arguments.Value2) &&
-                _value3.Matches(arguments.Value3);
+                _value1.Matches(arguments.Value1)
+                && _value2.Matches(arguments.Value2)
+                && _value3.Matches(arguments.Value3);
         }
 
         private sealed class GetterImposter
         {
             private readonly DefaultIndexerBehaviour _defaultBehaviour;
-            private readonly ConcurrentStack<GetterInvocationImposter> _setups = new ConcurrentStack<GetterInvocationImposter>();
-            private readonly ConcurrentDictionary<IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new ConcurrentDictionary<IndexerArgumentsCriteria, GetterInvocationImposter>();
-            private readonly ConcurrentBag<IndexerArguments> _invocationHistory = new ConcurrentBag<IndexerArguments>();
+            private readonly ConcurrentStack<GetterInvocationImposter> _setups =
+                new ConcurrentStack<GetterInvocationImposter>();
+            private readonly ConcurrentDictionary<
+                IndexerArgumentsCriteria,
+                GetterInvocationImposter
+            > _setupLookup =
+                new ConcurrentDictionary<IndexerArgumentsCriteria, GetterInvocationImposter>();
+            private readonly ConcurrentBag<IndexerArguments> _invocationHistory =
+                new ConcurrentBag<IndexerArguments>();
             private readonly ImposterMode _mode;
             private readonly string _propertyDisplayName;
             private bool _hasConfiguredReturn;
 
-            public GetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterMode mode, string propertyDisplayName)
+            public GetterImposter(
+                DefaultIndexerBehaviour defaultBehaviour,
+                ImposterMode mode,
+                string propertyDisplayName
+            )
             {
                 _defaultBehaviour = defaultBehaviour;
                 _mode = mode;
@@ -297,7 +338,8 @@ namespace Imposter.Ideation.IndexerSetupPoc
                     _criteria = criteria;
                 }
 
-                private GetterInvocationImposter InvocationImposter => _imposter.GetOrCreate(_criteria);
+                private GetterInvocationImposter InvocationImposter =>
+                    _imposter.GetOrCreate(_criteria);
 
                 public IIndexerGetterImposterBuilder Returns(int value)
                 {
@@ -313,7 +355,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
                 public IIndexerGetterImposterBuilder Returns(IndexerDelegate valueGenerator)
                 {
-                    InvocationImposter.AddReturnValue(args => valueGenerator(args.Value1, args.Value2, args.Value3));
+                    InvocationImposter.AddReturnValue(args =>
+                        valueGenerator(args.Value1, args.Value2, args.Value3)
+                    );
                     return this;
                 }
 
@@ -323,19 +367,26 @@ namespace Imposter.Ideation.IndexerSetupPoc
                     return this;
                 }
 
-                public IIndexerGetterImposterBuilder Throws<TException>() where TException : Exception, new()
+                public IIndexerGetterImposterBuilder Throws<TException>()
+                    where TException : Exception, new()
                 {
                     InvocationImposter.AddReturnValue(_ => throw new TException());
                     return this;
                 }
 
-                public IIndexerGetterImposterBuilder Throws(IndexerExceptionGeneratorDelegate exceptionGenerator)
+                public IIndexerGetterImposterBuilder Throws(
+                    IndexerExceptionGeneratorDelegate exceptionGenerator
+                )
                 {
-                    InvocationImposter.AddReturnValue(args => throw exceptionGenerator(args.Value1, args.Value2, args.Value3));
+                    InvocationImposter.AddReturnValue(args =>
+                        throw exceptionGenerator(args.Value1, args.Value2, args.Value3)
+                    );
                     return this;
                 }
 
-                public IIndexerGetterImposterBuilder Callback(IndexerGetterCallbackDelegate callback)
+                public IIndexerGetterImposterBuilder Callback(
+                    IndexerGetterCallbackDelegate callback
+                )
                 {
                     InvocationImposter.AddCallback(callback);
                     return this;
@@ -350,13 +401,19 @@ namespace Imposter.Ideation.IndexerSetupPoc
             {
                 private readonly GetterImposter _parent;
                 private readonly DefaultIndexerBehaviour _defaultBehaviour;
-                private readonly ConcurrentQueue<Func<IndexerArguments, int>> _returnValues = new ConcurrentQueue<Func<IndexerArguments, int>>();
-                private readonly ConcurrentQueue<IndexerGetterCallbackDelegate> _callbacks = new ConcurrentQueue<IndexerGetterCallbackDelegate>();
+                private readonly ConcurrentQueue<Func<IndexerArguments, int>> _returnValues =
+                    new ConcurrentQueue<Func<IndexerArguments, int>>();
+                private readonly ConcurrentQueue<IndexerGetterCallbackDelegate> _callbacks =
+                    new ConcurrentQueue<IndexerGetterCallbackDelegate>();
                 private Func<IndexerArguments, int>? _lastReturnValue;
                 private int _invocationCount;
                 private readonly string _propertyDisplayName;
 
-                public GetterInvocationImposter(GetterImposter parent, DefaultIndexerBehaviour defaultBehaviour, IndexerArgumentsCriteria criteria)
+                public GetterInvocationImposter(
+                    GetterImposter parent,
+                    DefaultIndexerBehaviour defaultBehaviour,
+                    IndexerArgumentsCriteria criteria
+                )
                 {
                     _parent = parent;
                     _defaultBehaviour = defaultBehaviour;
@@ -417,21 +474,33 @@ namespace Imposter.Ideation.IndexerSetupPoc
 
         private sealed class SetterImposter
         {
-            private readonly ConcurrentQueue<(IndexerArgumentsCriteria Criteria, IndexerSetterCallbackDelegate Callback)> _callbacks = new ConcurrentQueue<(IndexerArgumentsCriteria, IndexerSetterCallbackDelegate)>();
-            private readonly ConcurrentBag<IndexerArguments> _invocationHistory = new ConcurrentBag<IndexerArguments>();
+            private readonly ConcurrentQueue<(
+                IndexerArgumentsCriteria Criteria,
+                IndexerSetterCallbackDelegate Callback
+            )> _callbacks =
+                new ConcurrentQueue<(IndexerArgumentsCriteria, IndexerSetterCallbackDelegate)>();
+            private readonly ConcurrentBag<IndexerArguments> _invocationHistory =
+                new ConcurrentBag<IndexerArguments>();
             private readonly DefaultIndexerBehaviour _defaultBehaviour;
             private readonly ImposterMode _mode;
             private readonly string _propertyDisplayName;
             private bool _hasConfiguredSetter;
 
-            public SetterImposter(DefaultIndexerBehaviour defaultBehaviour, ImposterMode mode, string propertyDisplayName)
+            public SetterImposter(
+                DefaultIndexerBehaviour defaultBehaviour,
+                ImposterMode mode,
+                string propertyDisplayName
+            )
             {
                 _defaultBehaviour = defaultBehaviour;
                 _mode = mode;
                 _propertyDisplayName = propertyDisplayName;
             }
 
-            public void Callback(IndexerArgumentsCriteria criteria, IndexerSetterCallbackDelegate callback)
+            public void Callback(
+                IndexerArgumentsCriteria criteria,
+                IndexerSetterCallbackDelegate callback
+            )
             {
                 _callbacks.Enqueue((criteria, callback));
             }
@@ -490,7 +559,9 @@ namespace Imposter.Ideation.IndexerSetupPoc
                     _criteria = criteria;
                 }
 
-                public IIndexerSetterImposterBuilder Callback(IndexerSetterCallbackDelegate callback)
+                public IIndexerSetterImposterBuilder Callback(
+                    IndexerSetterCallbackDelegate callback
+                )
                 {
                     _setterImposter.Callback(_criteria, callback);
                     return this;

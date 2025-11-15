@@ -14,10 +14,11 @@ internal class ConstructorWithFieldInitializationBuilder
     {
         _constructorBuilder = new ConstructorBuilder(className);
     }
-    
+
     internal ConstructorWithFieldInitializationBuilder AddParameter(FieldMetadata fieldMetadata)
     {
-        _constructorBuilder.AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name));;
+        _constructorBuilder.AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name));
+        ;
         _bodyBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(fieldMetadata.Name))
@@ -27,7 +28,7 @@ internal class ConstructorWithFieldInitializationBuilder
         return this;
     }
 
-internal ConstructorWithFieldInitializationBuilder WithModifiers(in SyntaxToken modifier)
+    internal ConstructorWithFieldInitializationBuilder WithModifiers(in SyntaxToken modifier)
     {
         _constructorBuilder.WithModifiers(TokenList(modifier));
         return this;
@@ -35,8 +36,6 @@ internal ConstructorWithFieldInitializationBuilder WithModifiers(in SyntaxToken 
 
     internal ConstructorDeclarationSyntax Build()
     {
-        return _constructorBuilder
-            .WithBody(_bodyBuilder.Build())
-            .Build();
+        return _constructorBuilder.WithBody(_bodyBuilder.Build()).Build();
     }
 }

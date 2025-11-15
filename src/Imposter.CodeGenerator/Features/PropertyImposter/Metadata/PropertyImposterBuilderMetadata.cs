@@ -10,23 +10,27 @@ internal readonly struct PropertyImposterBuilderMetadata
     internal readonly string Name;
 
     internal readonly TypeSyntax Syntax;
-    
+
     internal readonly FieldMetadata DefaultPropertyBehaviourField;
-    
+
     internal readonly FieldMetadata SetterImposterField;
-    
+
     internal readonly FieldMetadata GetterImposterBuilderField;
 
     internal PropertyImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
         in FieldMetadata defaultPropertyBehaviourMetadata,
         in PropertySetterImposterMetadata setterImposter,
-        in PropertyGetterImposterBuilderMetadata getterImposterBuilder)
+        in PropertyGetterImposterBuilderMetadata getterImposterBuilder
+    )
     {
         Name = $"{property.UniqueName}PropertyBuilder";
         Syntax = SyntaxFactory.ParseName(Name);
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
         SetterImposterField = new FieldMetadata("_setterImposter", setterImposter.TypeSyntax);
-        GetterImposterBuilderField = new FieldMetadata("_getterImposterBuilder", getterImposterBuilder.TypeSyntax);
+        GetterImposterBuilderField = new FieldMetadata(
+            "_getterImposterBuilder",
+            getterImposterBuilder.TypeSyntax
+        );
     }
 }

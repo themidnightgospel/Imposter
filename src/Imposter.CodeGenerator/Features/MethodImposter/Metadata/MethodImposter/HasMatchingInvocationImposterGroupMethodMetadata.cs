@@ -11,7 +11,9 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
 
     internal readonly string ArgumentsParameterName;
 
-    public HasMatchingInvocationImposterGroupMethodMetadata(IParameterNameContextProvider parameterNameContextProvider)
+    public HasMatchingInvocationImposterGroupMethodMetadata(
+        IParameterNameContextProvider parameterNameContextProvider
+    )
     {
         ReturnType = WellKnownTypes.Bool;
         Name = "HasMatchingInvocationImposterGroup";

@@ -22,7 +22,9 @@ public static class ClassSymbolExtensions
         return methods;
     }
 
-    public static List<IPropertySymbol> GetAllOverridableProperties(this INamedTypeSymbol classSymbol)
+    public static List<IPropertySymbol> GetAllOverridableProperties(
+        this INamedTypeSymbol classSymbol
+    )
     {
         return GetOverridableProperties(classSymbol);
     }
@@ -54,7 +56,12 @@ public static class ClassSymbolExtensions
         var visitedTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
         var overriddenProperties = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
 
-        CollectOverridablePropertiesRecursive(classSymbol, properties, visitedTypes, overriddenProperties);
+        CollectOverridablePropertiesRecursive(
+            classSymbol,
+            properties,
+            visitedTypes,
+            overriddenProperties
+        );
 
         return properties;
     }
@@ -63,7 +70,8 @@ public static class ClassSymbolExtensions
         INamedTypeSymbol typeSymbol,
         ICollection<IMethodSymbol> methods,
         HashSet<INamedTypeSymbol> visitedTypes,
-        HashSet<IMethodSymbol> overriddenMembers)
+        HashSet<IMethodSymbol> overriddenMembers
+    )
     {
         if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
         {
@@ -93,7 +101,10 @@ public static class ClassSymbolExtensions
             methods.Add(method);
         }
 
-        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
+        if (
+            typeSymbol.BaseType is { } baseType
+            && baseType.SpecialType != SpecialType.System_Object
+        )
         {
             CollectOverridableMethodsRecursive(baseType, methods, visitedTypes, overriddenMembers);
         }
@@ -103,14 +114,20 @@ public static class ClassSymbolExtensions
         INamedTypeSymbol typeSymbol,
         ICollection<IPropertySymbol> properties,
         HashSet<INamedTypeSymbol> visitedTypes,
-        HashSet<IPropertySymbol> overriddenProperties)
+        HashSet<IPropertySymbol> overriddenProperties
+    )
     {
         if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
         {
             return;
         }
 
-        foreach (var property in typeSymbol.GetMembers().OfType<IPropertySymbol>().Where(IsOverridableProperty))
+        foreach (
+            var property in typeSymbol
+                .GetMembers()
+                .OfType<IPropertySymbol>()
+                .Where(IsOverridableProperty)
+        )
         {
             if (property.OverriddenProperty is { } overridden)
             {
@@ -125,9 +142,17 @@ public static class ClassSymbolExtensions
             properties.Add(property);
         }
 
-        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
+        if (
+            typeSymbol.BaseType is { } baseType
+            && baseType.SpecialType != SpecialType.System_Object
+        )
         {
-            CollectOverridablePropertiesRecursive(baseType, properties, visitedTypes, overriddenProperties);
+            CollectOverridablePropertiesRecursive(
+                baseType,
+                properties,
+                visitedTypes,
+                overriddenProperties
+            );
         }
     }
 
@@ -135,14 +160,17 @@ public static class ClassSymbolExtensions
         INamedTypeSymbol typeSymbol,
         ICollection<IEventSymbol> events,
         HashSet<INamedTypeSymbol> visitedTypes,
-        HashSet<IEventSymbol> overriddenEvents)
+        HashSet<IEventSymbol> overriddenEvents
+    )
     {
         if (typeSymbol is null || !visitedTypes.Add(typeSymbol))
         {
             return;
         }
 
-        foreach (var @event in typeSymbol.GetMembers().OfType<IEventSymbol>().Where(IsOverridableEvent))
+        foreach (
+            var @event in typeSymbol.GetMembers().OfType<IEventSymbol>().Where(IsOverridableEvent)
+        )
         {
             if (@event.OverriddenEvent is { } overridden)
             {
@@ -157,7 +185,10 @@ public static class ClassSymbolExtensions
             events.Add(@event);
         }
 
-        if (typeSymbol.BaseType is { } baseType && baseType.SpecialType != SpecialType.System_Object)
+        if (
+            typeSymbol.BaseType is { } baseType
+            && baseType.SpecialType != SpecialType.System_Object
+        )
         {
             CollectOverridableEventsRecursive(baseType, events, visitedTypes, overriddenEvents);
         }
@@ -185,7 +216,11 @@ public static class ClassSymbolExtensions
 
     private static bool IsOverridableProperty(IPropertySymbol property)
     {
-        if (property.IsStatic || property.DeclaredAccessibility == Accessibility.Private || property.IsSealed)
+        if (
+            property.IsStatic
+            || property.DeclaredAccessibility == Accessibility.Private
+            || property.IsSealed
+        )
         {
             return false;
         }
@@ -195,7 +230,8 @@ public static class ClassSymbolExtensions
             return true;
         }
 
-        return IsOverridableAccessor(property.GetMethod) || IsOverridableAccessor(property.SetMethod);
+        return IsOverridableAccessor(property.GetMethod)
+            || IsOverridableAccessor(property.SetMethod);
     }
 
     private static bool IsOverridableAccessor(IMethodSymbol? accessor)
@@ -205,7 +241,11 @@ public static class ClassSymbolExtensions
             return false;
         }
 
-        if (accessor.IsStatic || accessor.DeclaredAccessibility == Accessibility.Private || accessor.IsSealed)
+        if (
+            accessor.IsStatic
+            || accessor.DeclaredAccessibility == Accessibility.Private
+            || accessor.IsSealed
+        )
         {
             return false;
         }
@@ -215,7 +255,11 @@ public static class ClassSymbolExtensions
 
     private static bool IsOverridableEvent(IEventSymbol @event)
     {
-        if (@event.IsStatic || @event.DeclaredAccessibility == Accessibility.Private || @event.IsSealed)
+        if (
+            @event.IsStatic
+            || @event.DeclaredAccessibility == Accessibility.Private
+            || @event.IsSealed
+        )
         {
             return false;
         }
@@ -225,7 +269,8 @@ public static class ClassSymbolExtensions
             return true;
         }
 
-        return IsOverridableAccessor(@event.AddMethod) || IsOverridableAccessor(@event.RemoveMethod);
+        return IsOverridableAccessor(@event.AddMethod)
+            || IsOverridableAccessor(@event.RemoveMethod);
     }
 
     public static bool IsClass(this INamedTypeSymbol typeSymbol)

@@ -3,12 +3,14 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Indexers;
 
-public class IndexerBuilderOperationCollisionPreventionTests : IndexerNamingCollisionPreventionTestsBase
+public class IndexerBuilderOperationCollisionPreventionTests
+    : IndexerNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenIndexersMatchingBuilderOperationNames_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using System;
 using Imposter.Abstractions;
 using Sample.NamingCollision;
@@ -47,7 +49,8 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
@@ -55,7 +58,8 @@ namespace Sample.NamingCollisionUsage
     [Fact]
     public async Task GivenVirtualIndexersMatchingBaseImplementationOperations_WhenSnippetIsCompiled_ShouldCompile()
     {
-        var diagnostics = await CompileSnippet(/*lang=csharp*/"""
+        var diagnostics = await CompileSnippet( /*lang=csharp*/
+            """
 using Imposter.Abstractions;
 using Sample.NamingCollision;
 
@@ -80,10 +84,9 @@ namespace Sample.NamingCollisionUsage
         }
     }
 }
-""");
+"""
+        );
 
         AssertNoDiagnostics(diagnostics);
     }
 }
-
-

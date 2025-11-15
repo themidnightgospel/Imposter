@@ -4,8 +4,8 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
 
@@ -18,21 +18,21 @@ public static class ArgumentsCriteriaBuilder
             return null;
         }
 
-        var argumentsCriteriaClass = new ClassDeclarationBuilder(method.ArgumentsCriteria.Name, TypeParameterListSyntax(method.GenericTypeArguments))
+        var argumentsCriteriaClass = new ClassDeclarationBuilder(
+            method.ArgumentsCriteria.Name,
+            TypeParameterListSyntax(method.GenericTypeArguments)
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Symbol.Parameters.Select(ParameterAsArgProperty))
             .AddMember(
                 new ConstructorBuilder(method.ArgumentsCriteria.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .WithParameterList(
-                        ParameterList(
-                            SeparatedList(
-                                method.Symbol.Parameters.Select(ArgParameter)
-                            )
-                        )
+                        ParameterList(SeparatedList(method.Symbol.Parameters.Select(ArgParameter)))
                     )
-                    .WithBody(Block(method.Symbol.Parameters
-                            .Select(parameter =>
+                    .WithBody(
+                        Block(
+                            method.Symbol.Parameters.Select(parameter =>
                                 ThisExpression()
                                     .Dot(IdentifierName(parameter.Name))
                                     .Assign(IdentifierName(parameter.Name))
@@ -58,19 +58,18 @@ public static class ArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
         var returnType = BuildReturnType(method);
-        var typeParameterRenamer = new TypeParameterRenamer(method.Symbol.TypeParameters, method.ArgumentsCriteriaAsMethod.TargetTypeArguments);
+        var typeParameterRenamer = new TypeParameterRenamer(
+            method.Symbol.TypeParameters,
+            method.ArgumentsCriteriaAsMethod.TargetTypeArguments
+        );
         var constructorArgs = BuildConstructorArgs(method, typeParameterRenamer);
 
         return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithTypeParameters(TypeParameterList(SeparatedList(method.ArgumentsCriteriaAsMethod.TypeParameters)))
-            .WithBody(
-                Block(
-                    ReturnStatement(
-                        returnType.New(ArgumentList(constructorArgs))
-                    )
-                )
+            .WithTypeParameters(
+                TypeParameterList(SeparatedList(method.ArgumentsCriteriaAsMethod.TypeParameters))
             )
+            .WithBody(Block(ReturnStatement(returnType.New(ArgumentList(constructorArgs)))))
             .Build();
 
         static TypeSyntax BuildReturnType(in ImposterTargetMethodMetadata metadata) =>
@@ -85,12 +84,18 @@ public static class ArgumentsCriteriaBuilder
 
         static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(
             in ImposterTargetMethodMetadata metadata,
-            TypeParameterRenamer renamer) =>
+            TypeParameterRenamer renamer
+        ) =>
             SeparatedList(
-                metadata.Symbol.Parameters.Select(parameter => BuildArgForParameter(parameter, renamer))
+                metadata.Symbol.Parameters.Select(parameter =>
+                    BuildArgForParameter(parameter, renamer)
+                )
             );
 
-        static ArgumentSyntax BuildArgForParameter(IParameterSymbol parameter, TypeParameterRenamer renamer)
+        static ArgumentSyntax BuildArgForParameter(
+            IParameterSymbol parameter,
+            TypeParameterRenamer renamer
+        )
         {
             var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(parameter.Type));
 
@@ -109,18 +114,28 @@ public static class ArgumentsCriteriaBuilder
             return Argument(OutArgAny(targetType));
         }
 
-        static ArgumentSyntax BuildIsPredicateArg(IParameterSymbol parameter, TypeSyntax targetType, TypeSyntax sourceType)
+        static ArgumentSyntax BuildIsPredicateArg(
+            IParameterSymbol parameter,
+            TypeSyntax targetType,
+            TypeSyntax sourceType
+        )
         {
             var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
 
             return Argument(
-                WellKnownTypes.Imposter.Abstractions.Arg(targetType)
+                WellKnownTypes
+                    .Imposter.Abstractions.Arg(targetType)
                     .Dot(IdentifierName("Is"))
                     .Call(
                         ArgumentList(
                             SingletonSeparatedList(
                                 Argument(
-                                    BuildTryCastAndMatchLambda(parameter, targetType, sourceType, tryCastVarIdentifier)
+                                    BuildTryCastAndMatchLambda(
+                                        parameter,
+                                        targetType,
+                                        sourceType,
+                                        tryCastVarIdentifier
+                                    )
                                 )
                             )
                         )
@@ -132,42 +147,36 @@ public static class ArgumentsCriteriaBuilder
             IParameterSymbol parameter,
             TypeSyntax targetType,
             TypeSyntax sourceType,
-            SyntaxToken tryCastVarIdentifier)
+            SyntaxToken tryCastVarIdentifier
+        )
         {
-            var tryCastInvocation =
-                WellKnownTypes.Imposter.Abstractions.TypeCaster
-                    .Dot(
-                        GenericName("TryCast")
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SeparatedList<TypeSyntax>([targetType, sourceType])
-                                )
-                            )
-                    )
-                    .Call(
-                        ArgumentList(
-                            SeparatedList(
-                                [
-                                    Argument(It),
-                                    Argument(
-                                            DeclarationExpression(
-                                                sourceType,
-                                                SingleVariableDesignation(tryCastVarIdentifier)
-                                            )
-                                        )
-                                        .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
-                                ]
-                            )
+            var tryCastInvocation = WellKnownTypes
+                .Imposter.Abstractions.TypeCaster.Dot(
+                    GenericName("TryCast")
+                        .WithTypeArgumentList(
+                            TypeArgumentList(SeparatedList<TypeSyntax>([targetType, sourceType]))
                         )
-                    );
+                )
+                .Call(
+                    ArgumentList(
+                        SeparatedList([
+                            Argument(It),
+                            Argument(
+                                    DeclarationExpression(
+                                        sourceType,
+                                        SingleVariableDesignation(tryCastVarIdentifier)
+                                    )
+                                )
+                                .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)),
+                        ])
+                    )
+                );
 
             var matchesCall = IdentifierName(parameter.Name)
                 .Dot(IdentifierName("Matches"))
                 .Call(
                     ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(IdentifierName(tryCastVarIdentifier))
-                        )
+                        SingletonSeparatedList(Argument(IdentifierName(tryCastVarIdentifier)))
                     )
                 );
 
@@ -185,14 +194,14 @@ public static class ArgumentsCriteriaBuilder
         var matchesParameterExpression = IdentifierName(matchesParameterName);
 
         return new MethodDeclarationBuilder(
-                WellKnownTypes.Bool,
-                method.ArgumentsCriteria.MatchesMethod.Name)
+            WellKnownTypes.Bool,
+            method.ArgumentsCriteria.MatchesMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(
                 ParameterList(
                     SingletonSeparatedList(
-                        Parameter(matchesParameterIdentifier)
-                            .WithType(method.Arguments.Syntax)
+                        Parameter(matchesParameterIdentifier).WithType(method.Arguments.Syntax)
                     )
                 )
             )
@@ -204,13 +213,14 @@ public static class ArgumentsCriteriaBuilder
                             0 => True,
                             1 => InvokeMatches(method.Parameters.InputParameters[0]),
                             _ => method
-                                .Parameters
-                                .InputParameters
-                                .Skip(1)
+                                .Parameters.InputParameters.Skip(1)
                                 .Select(InvokeMatches)
                                 .Aggregate(
-                                    (ExpressionSyntax)InvokeMatches(method.Parameters.InputParameters[0]),
-                                    (left, right) => left.And(right))
+                                    (ExpressionSyntax)InvokeMatches(
+                                        method.Parameters.InputParameters[0]
+                                    ),
+                                    (left, right) => left.And(right)
+                                ),
                         }
                     )
                 )
@@ -220,15 +230,12 @@ public static class ArgumentsCriteriaBuilder
         InvocationExpressionSyntax InvokeMatches(IParameterSymbol p) =>
             IdentifierName(p.Name)
                 .Dot(IdentifierName("Matches"))
-                .Call(ArgumentList(
+                .Call(
+                    ArgumentList(
                         SingletonSeparatedList(
-                            Argument(
-                                matchesParameterExpression
-                                    .Dot(IdentifierName(p.Name))
-                            )
+                            Argument(matchesParameterExpression.Dot(IdentifierName(p.Name)))
                         )
                     )
                 );
     }
 }
-

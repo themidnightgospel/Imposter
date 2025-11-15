@@ -14,7 +14,8 @@ internal readonly struct ImposterTargetConstructorMetadata
         IMethodSymbol? symbol,
         Accessibility accessibility,
         ImmutableArray<IParameterSymbol> parameters,
-        bool isImplicit)
+        bool isImplicit
+    )
     {
         Symbol = symbol;
         Accessibility = accessibility;
@@ -22,17 +23,15 @@ internal readonly struct ImposterTargetConstructorMetadata
         IsImplicit = isImplicit;
     }
 
-    internal static ImposterTargetConstructorMetadata FromSymbol(IMethodSymbol constructorSymbol)
-        => new(
+    internal static ImposterTargetConstructorMetadata FromSymbol(IMethodSymbol constructorSymbol) =>
+        new(
             constructorSymbol,
             constructorSymbol.DeclaredAccessibility,
             constructorSymbol.Parameters,
-            constructorSymbol.IsImplicitlyDeclared);
+            constructorSymbol.IsImplicitlyDeclared
+        );
 
-    internal static ImposterTargetConstructorMetadata CreateImplicitParameterless(Accessibility accessibility)
-        => new(
-            null,
-            accessibility,
-            ImmutableArray<IParameterSymbol>.Empty,
-            true);
+    internal static ImposterTargetConstructorMetadata CreateImplicitParameterless(
+        Accessibility accessibility
+    ) => new(null, accessibility, ImmutableArray<IParameterSymbol>.Empty, true);
 }
