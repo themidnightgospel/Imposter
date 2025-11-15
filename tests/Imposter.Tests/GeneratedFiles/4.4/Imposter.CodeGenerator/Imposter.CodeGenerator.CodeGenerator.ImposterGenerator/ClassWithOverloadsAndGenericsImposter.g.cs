@@ -104,9 +104,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory
         {
             internal EchoArguments<T> Arguments;
-            internal T Result;
+            internal T? Result;
             internal global::System.Exception? Exception;
-            public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T Result, global::System.Exception? Exception)
+            public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -1346,9 +1346,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         internal class SelectFirstMethodInvocationHistory<TFirst, TSecond> : ISelectFirstMethodInvocationHistory
         {
             internal SelectFirstArguments<TFirst, TSecond> Arguments;
-            internal TFirst Result;
+            internal TFirst? Result;
             internal global::System.Exception? Exception;
-            public SelectFirstMethodInvocationHistory(SelectFirstArguments<TFirst, TSecond> Arguments, TFirst Result, global::System.Exception? Exception)
+            public SelectFirstMethodInvocationHistory(SelectFirstArguments<TFirst, TSecond> Arguments, TFirst? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

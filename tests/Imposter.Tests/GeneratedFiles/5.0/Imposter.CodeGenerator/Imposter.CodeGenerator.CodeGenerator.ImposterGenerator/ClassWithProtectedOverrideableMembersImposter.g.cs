@@ -145,7 +145,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class InvokeProtectedMethodMethodInvocationImposterGroup
         {
@@ -311,7 +310,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         public interface IInvokeProtectedMethodMethodImposterBuilder : IInvokeProtectedMethodMethodInvocationImposterGroup, IInvokeProtectedMethodMethodInvocationImposterGroupCallback, InvokeProtectedMethodInvocationVerifier
         {
         }
@@ -530,7 +528,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProtectedVirtualMethodMethodInvocationImposterGroup
         {
@@ -696,7 +693,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         public interface IProtectedVirtualMethodMethodImposterBuilder : IProtectedVirtualMethodMethodInvocationImposterGroup, IProtectedVirtualMethodMethodInvocationImposterGroupCallback, ProtectedVirtualMethodInvocationVerifier
         {
         }
@@ -886,7 +882,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedPropertyMethodInvocationImposterGroup
         {
@@ -1049,7 +1044,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         public interface IReadProtectedPropertyMethodImposterBuilder : IReadProtectedPropertyMethodInvocationImposterGroup, IReadProtectedPropertyMethodInvocationImposterGroupCallback, ReadProtectedPropertyInvocationVerifier
         {
         }
@@ -1262,7 +1256,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedValueMethodInvocationImposterGroup
         {
@@ -1428,7 +1421,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         public interface IReadProtectedValueMethodImposterBuilder : IReadProtectedValueMethodInvocationImposterGroup, IReadProtectedValueMethodInvocationImposterGroupCallback, ReadProtectedValueInvocationVerifier
         {
         }
@@ -1645,7 +1637,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SubscribeToProtectedEventMethodInvocationImposterGroup
         {
@@ -1791,7 +1782,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         public interface ISubscribeToProtectedEventMethodImposterBuilder : ISubscribeToProtectedEventMethodInvocationImposterGroup, ISubscribeToProtectedEventMethodInvocationImposterGroupCallback, SubscribeToProtectedEventInvocationVerifier
         {
         }
@@ -1995,7 +1985,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedPropertyMethodInvocationImposterGroup
         {
@@ -2141,7 +2130,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         public interface IWriteProtectedPropertyMethodImposterBuilder : IWriteProtectedPropertyMethodInvocationImposterGroup, IWriteProtectedPropertyMethodInvocationImposterGroupCallback, WriteProtectedPropertyInvocationVerifier
         {
         }
@@ -2349,7 +2337,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedValueMethodInvocationImposterGroup
         {
@@ -2495,7 +2482,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         public interface IWriteProtectedValueMethodImposterBuilder : IWriteProtectedValueMethodInvocationImposterGroup, IWriteProtectedValueMethodInvocationImposterGroupCallback, WriteProtectedValueInvocationVerifier
         {
         }
