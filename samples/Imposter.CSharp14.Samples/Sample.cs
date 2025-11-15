@@ -1,5 +1,6 @@
 using Imposter.Abstractions;
 using Imposter.CSharp14.Samples;
+using Shouldly;
 using Xunit;
 
 [assembly: GenerateImposter(typeof(ICalculator))]
@@ -12,13 +13,13 @@ namespace Imposter.CSharp14.Samples;
 public static class Sample
 {
     [Fact]
-    public static int ConfigureCalculatorImposter()
+    public static void ConfigureCalculatorImposter()
     {
-        var imposter = new ICalculatorImposter();
+        var imposter = ICalculator.Imposter();
 
         imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
 
-        return imposter.Instance().Add(20, 22);
+        imposter.Instance().Add(1, 2).ShouldBe(42);
     }
 }
 

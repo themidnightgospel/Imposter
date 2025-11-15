@@ -3,13 +3,13 @@
 </p>
 
 <p align="center">
-    Imposter - The Fastest and Most Memory-Efficient Mocking Library
+    The Fastest and Most Memory-Efficient Mocking Library
 </p>
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
 [![Nuget](https://img.shields.io/nuget/v/Imposter.svg)](https://www.nuget.org/packages/Imposter)
 
-Visit the https://themidnightgospel.github.io/Imposter/ for more information
+Visit the [Docs](https://themidnightgospel.github.io/Imposter/) for more information
 
 ## 🚀 Quick Start
 

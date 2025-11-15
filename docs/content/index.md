@@ -6,9 +6,25 @@ Imposter — The Fastest and Most Memory-Efficient Mocking Library
 
 Add the packages to your test or application project:
 
-```bash
-dotnet add package Imposter
-```
+=== "PackageReference"
+
+    ```xml
+    <ItemGroup>
+        <PackageReference Include="Imposter" Version="*" ExcludeAssets="runtime" PrivateAssets="all" />
+    </ItemGroup>
+    ```
+
+=== ".NET CLI"
+
+    ```bash
+    dotnet add package Imposter
+    ```
+
+=== "Package Manager"
+
+    ```powershell
+    Install-Package Imposter
+    ```
 
 This package includes both the source generator (analyzer) and the runtime abstractions.
 
