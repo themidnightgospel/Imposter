@@ -821,7 +821,9 @@ namespace Imposter.Tests.Features.MethodImposter
 
             var task = _sut.Instance().AsyncTaskIntNoParams();
 
+#pragma warning disable CS4014
             task.ShouldNotBeNull();
+#pragma warning restore CS4014
             task.IsCompleted.ShouldBeTrue(); // Task.FromResult creates a completed task
 
             var result = await task;

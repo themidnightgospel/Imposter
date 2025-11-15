@@ -8,16 +8,20 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers;
 
-//TODO: Not sure if it's the best way, leaving for now
-public class TypeParameterRenamer : CSharpSyntaxRewriter
+/// <summary>
+/// Rewrites identifier names that refer to a method's type parameters, either by appending a suffix
+/// or by replacing them with explicit target type argument syntax. Intended for use on syntax that
+/// originates from a single <see cref="IMethodSymbol"/> to avoid semantic mismatches.
+/// </summary>
+internal sealed class TypeParameterRenamer : CSharpSyntaxRewriter
 {
-    private readonly HashSet<string> _typeParameterNames;
-    private readonly Dictionary<string, string>? _nameMap;
+    private readonly HashSet<string>? _typeParameterNames;
+    private readonly Dictionary<string, NameSyntax>? _replacementMap;
     private readonly string? _suffix;
 
     public TypeParameterRenamer(IReadOnlyList<ITypeParameterSymbol> typeParameters, string suffix)
     {
-        _typeParameterNames = [.. typeParameters.Select(it => it.Name)];
+        _typeParameterNames = CreateTypeParameterNameSet(typeParameters);
         _suffix = suffix;
     }
 
@@ -26,8 +30,6 @@ public class TypeParameterRenamer : CSharpSyntaxRewriter
         IReadOnlyList<NameSyntax> replacementNames
     )
     {
-        _typeParameterNames = [.. typeParameters.Select(it => it.Name)];
-
         if (typeParameters.Count != replacementNames.Count)
         {
             throw new ArgumentException(
@@ -36,32 +38,36 @@ public class TypeParameterRenamer : CSharpSyntaxRewriter
             );
         }
 
-        _nameMap = typeParameters
-            .Select(
-                (tp, index) => (tp.Name, Replacement: ToIdentifierText(replacementNames[index]))
-            )
-            .ToDictionary(pair => pair.Name, pair => pair.Replacement);
+        _replacementMap = typeParameters
+            .Select((tp, index) => (Name: tp.Name, Replacement: replacementNames[index]))
+            .ToDictionary(pair => pair.Name, pair => pair.Replacement, StringComparer.Ordinal);
     }
 
     public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
     {
-        if (_typeParameterNames.Contains(node.Identifier.Text))
-        {
-            var replacement = _nameMap is not null
-                ? _nameMap[node.Identifier.Text]
-                : node.Identifier.Text + (_suffix ?? string.Empty);
+        var identifierValueText = node.Identifier.ValueText;
 
-            return IdentifierName(replacement);
+        if (
+            _replacementMap is not null
+            && _replacementMap.TryGetValue(identifierValueText, out var replacementName)
+        )
+        {
+            return replacementName.WithTriviaFrom(node);
+        }
+
+        if (
+            _suffix is not null
+            && _typeParameterNames is not null
+            && _typeParameterNames.Contains(identifierValueText)
+        )
+        {
+            return IdentifierName(identifierValueText + _suffix).WithTriviaFrom(node);
         }
 
         return base.VisitIdentifierName(node);
     }
 
-    private static string ToIdentifierText(NameSyntax nameSyntax) =>
-        nameSyntax switch
-        {
-            SimpleNameSyntax simpleName => simpleName.Identifier.Text,
-            QualifiedNameSyntax qualifiedName => qualifiedName.Right.Identifier.Text,
-            _ => nameSyntax.ToString(),
-        };
+    private static HashSet<string> CreateTypeParameterNameSet(
+        IReadOnlyList<ITypeParameterSymbol> typeParameters
+    ) => new(typeParameters.Select(tp => tp.Name), StringComparer.Ordinal);
 }

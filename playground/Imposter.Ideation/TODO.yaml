@@ -45,18 +45,18 @@ FEATURES:
       - enable TreatWarningsAsErrors in generator project.
       - Create syntax builder classes to avoid .With builder methods that has terribe performance (add tests for this too)
       - Need to make sure that every name in imposter class has unique name and does not collide with user provided names
+      - add benchmark results on readme
+      - enable TreatWarningsAsErrors on test projects.
     IN Progress:
       - Add Docs page
       - Add a sample project.
     NOT Started:
       - update links on readme.md under "Fully Featured"
       - organize Test according to features
-      - add benchmark results on readme
       - add build-and-test as PR check
       - fix TODOs in code
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
-      - enable TreatWarningsAsErrors on test projects.
       - UseBaseImplementation for interface members
       - AnalyzerReleases.Unshipped.md
       - refactor ImposterTargetMethodMetadata.IsMethodAsync method.

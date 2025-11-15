@@ -81,6 +81,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
             }
         }
 
+        // int IMyService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -227,6 +228,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMyService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -433,6 +435,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
             }
         }
 
+        // int IMyService.Increment(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -582,6 +585,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMyService.Increment(int value)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }

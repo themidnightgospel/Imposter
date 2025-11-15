@@ -18,7 +18,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             set { }
         }
 
+#pragma warning disable CS0067
         protected virtual event EventHandler? ProtectedVirtualEvent;
+#pragma warning disable CS0067
 
         public virtual int InvokeProtectedMethod(int value) => ProtectedVirtualMethod(value);
 

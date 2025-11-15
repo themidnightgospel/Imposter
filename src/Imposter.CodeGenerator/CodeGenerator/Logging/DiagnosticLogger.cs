@@ -9,7 +9,7 @@ internal readonly struct DiagnosticLogger : IGeneratorLogger
         title: "Imposter generator log",
         messageFormat: "{0}",
         category: Diagnostics.DiagnosticCategories.Imposter,
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         description: "Internal generator log message. Enable with IMPOSTER_LOG=true."
     );

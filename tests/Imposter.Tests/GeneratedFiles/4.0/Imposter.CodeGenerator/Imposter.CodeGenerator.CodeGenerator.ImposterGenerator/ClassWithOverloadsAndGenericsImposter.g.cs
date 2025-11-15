@@ -159,6 +159,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup<T>
         {
@@ -337,6 +338,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)
         public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>
         {
         }
@@ -592,6 +594,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class FormatMethodInvocationImposterGroup
         {
@@ -757,6 +760,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string ClassWithOverloadsAndGenerics.Format(int value)
         public interface IFormatMethodImposterBuilder : IFormatMethodInvocationImposterGroup, IFormatMethodInvocationImposterGroupCallback, FormatInvocationVerifier
         {
         }
@@ -979,6 +983,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class Format_1MethodInvocationImposterGroup
         {
@@ -1144,6 +1149,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)
         public interface IFormat_1MethodImposterBuilder : IFormat_1MethodInvocationImposterGroup, IFormat_1MethodInvocationImposterGroupCallback, Format_1InvocationVerifier
         {
         }
@@ -1401,6 +1407,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>
         {
@@ -1579,6 +1586,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
         public interface ISelectFirstMethodImposterBuilder<TFirst, TSecond> : ISelectFirstMethodInvocationImposterGroup<TFirst, TSecond>, ISelectFirstMethodInvocationImposterGroupCallback<TFirst, TSecond>, SelectFirstInvocationVerifier<TFirst, TSecond>
         {
         }

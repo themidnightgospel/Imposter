@@ -477,9 +477,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [Fact]
         public void GivenIntParamsMethod_WhenCalledWithNullValues_ThenVerifiesCorrectly()
         {
-            _sut.Instance().IntParams(42, null, new Regex("test"));
+            _sut.Instance().IntParams(42, null!, new Regex("test"));
 
-            _sut.IntParams(Arg<int>.Is(42), Arg<string>.Is((string)null), Arg<Regex>.Any())
+            _sut.IntParams(Arg<int>.Is(42), Arg<string>.Is(val => val == null!), Arg<Regex>.Any())
                 .Called(Count.Once());
             _sut.IntParams(Arg<int>.Any(), Arg<string>.Any(), Arg<Regex>.Any())
                 .Called(Count.Once());

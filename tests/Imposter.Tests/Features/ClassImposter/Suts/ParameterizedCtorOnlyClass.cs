@@ -34,6 +34,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         public int LastAssignedIndex { get; private set; }
 
+#pragma warning disable CS0067
         public virtual event EventHandler? SomethingHappened;
+#pragma warning restore CS0067
     }
 }
