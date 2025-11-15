@@ -38,19 +38,22 @@ FEATURES:
       - NOTE / To avoid naming collision, rename parameters in Invoke/Set methods instead of internal fields/methods
       - UseBaseImplementation at the property/indexer level (not only Getter/Setter level).
       - add test that with Property  with default behaviour uses initial value assigned to that property (for class imposters).
-    IN Progress:
-      - Add Docs page
       - Test nuget package for different versions of the Roslyn
       - make sure imposter builds properly for all the major Microsoft.CodeAnalysis.CSharp versions, ideally using automated tests. (Use conditinals for the target framework and language version, and CSharp package and run tests for all the combination)
-    NOT Started:
-      - fix TODOs in code
       - Setup github action to build, test and publish nuget packages
       - Publish as a nuget package from github actions
+      - enable TreatWarningsAsErrors in generator project.
+      - Create syntax builder classes to avoid .With builder methods that has terribe performance (add tests for this too)
+      - Need to make sure that every name in imposter class has unique name and does not collide with user provided names
+      IN Progress:
+      - Add Docs page
+      - Add a sample project.
+    NOT Started:
+      - fix TODOs in code
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
-      - Add a sample project.
+      - enable TreatWarningsAsErrors on test projects.
       - UseBaseImplementation for interface members
-      - enable TreatWarningsAsErrors in generator project.
       - AnalyzerReleases.Unshipped.md
       - refactor ImposterTargetMethodMetadata.IsMethodAsync method.
 
@@ -69,8 +72,6 @@ FEATURES:
         - Write a blog posts about the project
 
 OPTIMIZATIONS:
-  - Need to make sure that every name in imposter class has unique name and does not collide with user provided names 
-  - Create syntax builder classes to avoid .With builder methods that has terribe performance (add tests for this too)
   - Identify syntaxes that can be cached
   - Add benchamrks for the code generator itself.
   - Add benchamrks for syntax builder classes, showcase that it performs better than built-in .With methods.
@@ -80,4 +81,3 @@ OPTIMIZATIONS:
 MISSING FEATURES:
   - VerifyNoOtherCalls
   - Ordered verification, Substitute.InOrder. It can be achieved currently by setting up callbacks and storing some flags in a list.
-  - 
