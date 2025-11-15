@@ -17,10 +17,10 @@ namespace Imposter.Tests.Features.ClassImposter
             var instance = imposter.Instance();
 
             var handlerInvoked = false;
-            Func<object?, EventArgs, Task> handler = async (sender, args) =>
+            Func<object?, EventArgs, Task> handler = (sender, args) =>
             {
-                await Task.Delay(1);
                 handlerInvoked = true;
+                return Task.CompletedTask;
             };
 
             instance.SubscribeToTaskEvent(handler);

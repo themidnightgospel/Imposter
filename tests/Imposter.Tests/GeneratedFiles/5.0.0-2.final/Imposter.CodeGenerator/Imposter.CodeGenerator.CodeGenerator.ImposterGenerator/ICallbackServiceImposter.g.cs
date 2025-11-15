@@ -127,7 +127,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int ICallbackService.GenericAllRefKind(out int o, ref string r, in double d, bool[] args)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GenericAllRefKindMethodInvocationImposterGroup
         {
@@ -284,7 +283,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int ICallbackService.GenericAllRefKind(out int o, ref string r, in double d, bool[] args)
         public interface IGenericAllRefKindMethodImposterBuilder : IGenericAllRefKindMethodInvocationImposterGroup, IGenericAllRefKindMethodInvocationImposterGroupCallback, GenericAllRefKindInvocationVerifier
         {
         }
@@ -473,7 +471,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int ICallbackService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -620,7 +617,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int ICallbackService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -827,7 +823,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int ICallbackService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -977,7 +972,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int ICallbackService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }

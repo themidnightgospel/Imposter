@@ -103,7 +103,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
-        // virtual int MultiConstructorClass.Calculate(int input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CalculateMethodInvocationImposterGroup
         {
@@ -269,7 +268,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MultiConstructorClass.Calculate(int input)
         public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier
         {
         }

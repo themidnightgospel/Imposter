@@ -110,7 +110,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
             }
         }
 
-        // virtual int MyService.InvokeProtected(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class InvokeProtectedMethodInvocationImposterGroup
         {
@@ -276,7 +275,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MyService.InvokeProtected(int value)
         public interface IInvokeProtectedMethodImposterBuilder : IInvokeProtectedMethodInvocationImposterGroup, IInvokeProtectedMethodInvocationImposterGroupCallback, InvokeProtectedInvocationVerifier
         {
         }
@@ -495,7 +493,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
             }
         }
 
-        // virtual int MyService.ProtectedAdd(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProtectedAddMethodInvocationImposterGroup
         {
@@ -661,7 +658,6 @@ namespace Imposter.Tests.Docs.Methods.Protected
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MyService.ProtectedAdd(int value)
         public interface IProtectedAddMethodImposterBuilder : IProtectedAddMethodInvocationImposterGroup, IProtectedAddMethodInvocationImposterGroupCallback, ProtectedAddInvocationVerifier
         {
         }

@@ -114,7 +114,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IVerifyService.Combine(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CombineMethodInvocationImposterGroup
         {
@@ -264,7 +263,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IVerifyService.Combine(int a, int b)
         public interface ICombineMethodImposterBuilder : ICombineMethodInvocationImposterGroup, ICombineMethodInvocationImposterGroupCallback, CombineInvocationVerifier
         {
         }
@@ -475,7 +473,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // void IVerifyService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -607,7 +604,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IVerifyService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }

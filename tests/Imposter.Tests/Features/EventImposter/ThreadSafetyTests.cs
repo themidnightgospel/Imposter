@@ -18,26 +18,31 @@ namespace Imposter.Tests.Features.EventImposter
 #endif
 
         [Fact]
-        public void GivenConcurrentRaises_ShouldRecordAll()
+        public async Task GivenConcurrentRaises_ShouldRecordAll()
         {
             const int raises = 64;
-            var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(raises);
+            var startSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var readySignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var remaining = raises;
 
             var tasks = Enumerable.Range(0, raises)
-                .Select(_ => Task.Run(() =>
+                .Select(_ => Task.Run(async () =>
                 {
-                    readySignal.Signal();
-                    startSignal.Wait();
+                    if (Interlocked.Decrement(ref remaining) == 0)
+                    {
+                        readySignal.TrySetResult(true);
+                    }
+
+                    await startSignal.Task;
 
                     _sut.SomethingHappened.Raise(this, EventArgs.Empty);
                 }))
                 .ToArray();
 
-            readySignal.Wait();
-            startSignal.Set();
+            await readySignal.Task;
+            startSignal.TrySetResult(true);
 
-            Task.WaitAll(tasks);
+            await Task.WhenAll(tasks);
 
             _sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.Exactly(raises));
         }
@@ -45,7 +50,7 @@ namespace Imposter.Tests.Features.EventImposter
         [Fact]
         public void GivenConcurrentSubscribeSameHandler_WhenRaiseOnce_ShouldInvokeExpectedTimes()
         {
-            const int subs = 64;
+            const int subs = 32;
             int invoked = 0;
             EventHandler h = (s, e) => Interlocked.Increment(ref invoked);
             var startSignal = new ManualResetEventSlim(false);

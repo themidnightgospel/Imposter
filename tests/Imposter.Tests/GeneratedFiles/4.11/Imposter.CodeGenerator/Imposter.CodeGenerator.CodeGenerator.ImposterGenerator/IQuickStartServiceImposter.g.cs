@@ -142,7 +142,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.Combine(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CombineMethodInvocationImposterGroup
         {
@@ -292,7 +291,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.Combine(int a, int b)
         public interface ICombineMethodImposterBuilder : ICombineMethodInvocationImposterGroup, ICombineMethodInvocationImposterGroupCallback, CombineInvocationVerifier
         {
         }
@@ -476,7 +474,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // Task IQuickStartService.DoWorkAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DoWorkAsyncMethodInvocationImposterGroup
         {
@@ -632,7 +629,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task IQuickStartService.DoWorkAsync()
         public interface IDoWorkAsyncMethodImposterBuilder : IDoWorkAsyncMethodInvocationImposterGroup, IDoWorkAsyncMethodInvocationImposterGroupCallback, DoWorkAsyncInvocationVerifier
         {
         }
@@ -816,7 +812,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -963,7 +958,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -1141,7 +1135,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // Task<int> IQuickStartService.GetNumberAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberAsyncMethodInvocationImposterGroup
         {
@@ -1306,7 +1299,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task<int> IQuickStartService.GetNumberAsync()
         public interface IGetNumberAsyncMethodImposterBuilder : IGetNumberAsyncMethodInvocationImposterGroup, IGetNumberAsyncMethodInvocationImposterGroupCallback, GetNumberAsyncInvocationVerifier
         {
         }
@@ -1525,7 +1517,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.Increment(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IncrementMethodInvocationImposterGroup
         {
@@ -1675,7 +1666,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.Increment(int v)
         public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
         {
         }
@@ -1888,7 +1878,6 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // int IQuickStartService.VirtualCompute(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class VirtualComputeMethodInvocationImposterGroup
         {
@@ -2038,7 +2027,6 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // int IQuickStartService.VirtualCompute(int v)
         public interface IVirtualComputeMethodImposterBuilder : IVirtualComputeMethodInvocationImposterGroup, IVirtualComputeMethodInvocationImposterGroupCallback, VirtualComputeInvocationVerifier
         {
         }
