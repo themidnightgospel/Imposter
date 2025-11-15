@@ -1,15 +1,15 @@
-# Imposter
-
-<p align="center">
+<p style="text-align: center;">
   <img src="docs/imposter_logo.png" alt="Imposter logo" width="140" />
 </p>
 
-Imposter — The Fastest and Most Memory-Efficient Mocking Library
+<p style="text-align: center;">
+    The Fastest and Most Memory-Efficient Mocking Library
+</p>
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
 [![Nuget](https://img.shields.io/nuget/v/Imposter.svg)](https://www.nuget.org/packages/Imposter)
 
-Docs: https://themidnightgospel.github.io/Imposter/
+Visit the https://themidnightgospel.github.io/Imposter/ for more information
 
 ## 🚀 Quick Start
 

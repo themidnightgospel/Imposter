@@ -110,14 +110,14 @@
       ]
     },
     {
-      "name": "Imposter.Tests / Roslyn 5.0.0-2.final",
+      "name": "Imposter.Tests / Roslyn 5.0",
       "command": "dotnet",
       "args": [
         "test",
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=5.0.0-2.final",
+        "/p:ROSLYN_VERSION=5.0",
         "-p:IMPOSTER_LOG=true"
       ]
     }

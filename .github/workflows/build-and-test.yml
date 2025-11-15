@@ -56,18 +56,18 @@ jobs:
           - '4.7'
           - '4.11'
           - '4.14'
-          - '5.0.0-2.final'
+          - '5.0'
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup .NET 8 SDK
-        if: matrix.roslynVersion != '5.0.0-2.final'
+        if: matrix.roslynVersion != '5.0'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
       - name: Setup .NET 10 SDK
-        if: matrix.roslynVersion == '5.0.0-2.final'
+        if: matrix.roslynVersion == '5.0'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'

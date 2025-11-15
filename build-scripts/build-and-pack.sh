@@ -5,7 +5,7 @@ set -Eeuo pipefail
 # Derived from Mapperly's packaging script (https://github.com/riok/mapperly) under the MIT License.
 # Pack a nupkg for each Roslyn version supported by Imposter and merge them into a single multi-target package.
 
-roslyn_versions=('4.0' '4.4' '4.5' '4.7' '4.11' '4.14' '5.0.0-2.final')
+roslyn_versions=('4.0' '4.4' '4.5' '4.7' '4.11' '4.14' '5.0')
 
 RELEASE_VERSION=${RELEASE_VERSION:-"0.0.1-dev.$(date +%s)"}
 RELEASE_NOTES=${RELEASE_NOTES:-''}
