@@ -8,7 +8,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    // TODO incorporate in ConstructorWithFieldInitializationBuilder
     internal static ConstructorDeclarationSyntax BuildConstructorAndInitializeMembers(
         string className,
         IEnumerable<FieldDeclarationSyntax> fields

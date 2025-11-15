@@ -16,7 +16,6 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly ImposterTargetConstructorMetadata[] AccessibleConstructors;
 
-    // TODO this will make ImposterTargetMethodMetadata allocate on heap
     internal readonly List<ImposterTargetMethodMetadata> Methods;
 
     internal readonly IReadOnlyCollection<IPropertySymbol> PropertySymbols;
@@ -26,7 +25,6 @@ internal readonly struct ImposterTargetMetadata
     internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
 
     private readonly NameSet _symbolNameNamespace = new([]);
-    private readonly SupportedCSharpFeatures _supportedCSharpFeatures;
 
     internal ImposterTargetMetadata(
         INamedTypeSymbol targetSymbol,
@@ -34,8 +32,7 @@ internal readonly struct ImposterTargetMetadata
     )
     {
         Name = targetSymbol.Name + "Imposter";
-        _supportedCSharpFeatures = supportedCSharpFeatures;
-        Methods = GetMethods(targetSymbol, _symbolNameNamespace, _supportedCSharpFeatures);
+        Methods = GetMethods(targetSymbol, _symbolNameNamespace, supportedCSharpFeatures);
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
         AccessibleConstructors = GetAccessibleConstructors(targetSymbol);
 

@@ -75,7 +75,8 @@ internal static class MethodImposterAdapterBuilder
             method.Symbol.TypeParameters,
             method.TargetGenericTypeArguments
         );
-        var parameterList = method.Symbol.Parameters.ToParameterListSyntax();
+
+        var parameterList = ParameterListSyntax(method.Symbol.Parameters, true);
         parameterList = (ParameterListSyntax)typeParamRenamer.Visit(parameterList);
 
         foreach (var p in method.Symbol.Parameters)

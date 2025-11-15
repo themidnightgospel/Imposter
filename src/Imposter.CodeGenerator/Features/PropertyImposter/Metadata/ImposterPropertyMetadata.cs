@@ -24,7 +24,6 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly PropertySetterImposterMetadata SetterImposter;
 
-    // TODO move to imoster instance metadata
     internal readonly FieldMetadata AsField;
 
     internal readonly DefaultPropertyBehaviourMetadata DefaultPropertyBehaviour;
