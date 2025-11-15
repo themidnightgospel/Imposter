@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.ImposterModes;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IMyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IMyService>
+    public sealed class IMyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly GetNumberAsyncMethodImposter _getNumberAsyncMethodImposter;
@@ -32,7 +32,7 @@ namespace Imposter.Tests.Docs.Methods
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.IMyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IMyService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService>.Instance()
         {
             return _imposterInstance;
         }
@@ -722,7 +722,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IMyService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService
         {
             private readonly IMyServiceImposter _imposter;
             public ImposterTargetInstance(IMyServiceImposter _imposter)
@@ -745,9 +745,9 @@ namespace Imposter.Tests.Docs.Methods
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class IMyServiceImposterExtensions
     {
-        extension(global::Imposter.Tests.Docs.Methods.IMyService imposter)
+        extension(global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService imposter)
         {
-            public static global::Imposter.Tests.Docs.Methods.IMyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.IMyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter();
         }
     }
 }

@@ -9,127 +9,116 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class MyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.MyService>
+    public sealed class MyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService>
     {
-        private readonly AddMethodImposter _addMethodImposter;
-        private readonly ProcessAsyncMethodImposter _processAsyncMethodImposter;
-        private readonly MightFailMethodImposter _mightFailMethodImposter;
-        private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
-        private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection = new ProcessAsyncMethodInvocationHistoryCollection();
-        private readonly MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection = new MightFailMethodInvocationHistoryCollection();
-        public IAddMethodImposterBuilder Add(global::Imposter.Abstractions.Arg<int> a, global::Imposter.Abstractions.Arg<int> b)
+        private readonly ProtectedAddMethodImposter _protectedAddMethodImposter;
+        private readonly InvokeProtectedMethodImposter _invokeProtectedMethodImposter;
+        private readonly ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection = new ProtectedAddMethodInvocationHistoryCollection();
+        private readonly InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection = new InvokeProtectedMethodInvocationHistoryCollection();
+        public IProtectedAddMethodImposterBuilder ProtectedAdd(global::Imposter.Abstractions.Arg<int> value)
         {
-            return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(a, b));
+            return new ProtectedAddMethodImposter.Builder(_protectedAddMethodImposter, _protectedAddMethodInvocationHistoryCollection, new ProtectedAddArgumentsCriteria(value));
         }
 
-        public IProcessAsyncMethodImposterBuilder ProcessAsync(global::Imposter.Abstractions.Arg<string> s)
+        public IInvokeProtectedMethodImposterBuilder InvokeProtected(global::Imposter.Abstractions.Arg<int> value)
         {
-            return new ProcessAsyncMethodImposter.Builder(_processAsyncMethodImposter, _processAsyncMethodInvocationHistoryCollection, new ProcessAsyncArgumentsCriteria(s));
-        }
-
-        public IMightFailMethodImposterBuilder MightFail(global::Imposter.Abstractions.Arg<int> v)
-        {
-            return new MightFailMethodImposter.Builder(_mightFailMethodImposter, _mightFailMethodInvocationHistoryCollection, new MightFailArgumentsCriteria(v));
+            return new InvokeProtectedMethodImposter.Builder(_invokeProtectedMethodImposter, _invokeProtectedMethodInvocationHistoryCollection, new InvokeProtectedArgumentsCriteria(value));
         }
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.MyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.MyService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService>.Instance()
         {
             return _imposterInstance;
         }
 
-        // virtual int MyService.Add(int a, int b)
-        public delegate int AddDelegate(int a, int b);
-        // virtual int MyService.Add(int a, int b)
-        public delegate void AddCallbackDelegate(int a, int b);
-        // virtual int MyService.Add(int a, int b)
-        public delegate global::System.Exception AddExceptionGeneratorDelegate(int a, int b);
+        // virtual int MyService.InvokeProtected(int value)
+        public delegate int InvokeProtectedDelegate(int value);
+        // virtual int MyService.InvokeProtected(int value)
+        public delegate void InvokeProtectedCallbackDelegate(int value);
+        // virtual int MyService.InvokeProtected(int value)
+        public delegate global::System.Exception InvokeProtectedExceptionGeneratorDelegate(int value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class AddArguments
+        public class InvokeProtectedArguments
         {
-            public int a;
-            public int b;
-            internal AddArguments(int a, int b)
+            public int value;
+            internal InvokeProtectedArguments(int value)
             {
-                this.a = a;
-                this.b = b;
+                this.value = value;
             }
         }
 
-        // virtual int MyService.Add(int a, int b)
+        // virtual int MyService.InvokeProtected(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class AddArgumentsCriteria
+        public class InvokeProtectedArgumentsCriteria
         {
-            public global::Imposter.Abstractions.Arg<int> a { get; }
-            public global::Imposter.Abstractions.Arg<int> b { get; }
+            public global::Imposter.Abstractions.Arg<int> value { get; }
 
-            public AddArgumentsCriteria(global::Imposter.Abstractions.Arg<int> a, global::Imposter.Abstractions.Arg<int> b)
+            public InvokeProtectedArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value)
             {
-                this.a = a;
-                this.b = b;
+                this.value = value;
             }
 
-            public bool Matches(AddArguments arguments)
+            public bool Matches(InvokeProtectedArguments arguments)
             {
-                return a.Matches(arguments.a) && b.Matches(arguments.b);
+                return value.Matches(arguments.value);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IAddMethodInvocationHistory
+        public interface IInvokeProtectedMethodInvocationHistory
         {
-            bool Matches(AddArgumentsCriteria criteria);
+            bool Matches(InvokeProtectedArgumentsCriteria criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class AddMethodInvocationHistory : IAddMethodInvocationHistory
+        internal class InvokeProtectedMethodInvocationHistory : IInvokeProtectedMethodInvocationHistory
         {
-            internal AddArguments Arguments;
+            internal InvokeProtectedArguments Arguments;
             internal int? Result;
             internal global::System.Exception? Exception;
-            public AddMethodInvocationHistory(AddArguments Arguments, int? Result, global::System.Exception? Exception)
+            public InvokeProtectedMethodInvocationHistory(InvokeProtectedArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
                 this.Exception = Exception;
             }
 
-            public bool Matches(AddArgumentsCriteria criteria)
+            public bool Matches(InvokeProtectedArgumentsCriteria criteria)
             {
                 return criteria.Matches(Arguments);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class AddMethodInvocationHistoryCollection
+        internal class InvokeProtectedMethodInvocationHistoryCollection
         {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory>();
-            internal void Add(IAddMethodInvocationHistory invocationHistory)
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IInvokeProtectedMethodInvocationHistory>();
+            internal void Add(IInvokeProtectedMethodInvocationHistory invocationHistory)
             {
                 _invocationHistory.Push(invocationHistory);
             }
 
-            internal int Count(AddArgumentsCriteria argumentsCriteria)
+            internal int Count(InvokeProtectedArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class AddMethodInvocationImposterGroup
+        class InvokeProtectedMethodInvocationImposterGroup
         {
-            internal static AddMethodInvocationImposterGroup Default = new AddMethodInvocationImposterGroup(new AddArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
-            internal AddArgumentsCriteria ArgumentsCriteria { get; }
+            internal static InvokeProtectedMethodInvocationImposterGroup Default = new InvokeProtectedMethodInvocationImposterGroup(new InvokeProtectedArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal InvokeProtectedArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter? _lastestInvocationImposter;
-            public AddMethodInvocationImposterGroup(AddArgumentsCriteria argumentsCriteria)
+            public InvokeProtectedMethodInvocationImposterGroup(InvokeProtectedArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
             }
@@ -156,7 +145,7 @@ namespace Imposter.Tests.Docs.Methods
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int a, int b, AddDelegate? baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, InvokeProtectedDelegate? baseImplementation = null)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -169,7 +158,7 @@ namespace Imposter.Tests.Docs.Methods
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, a, b, baseImplementation);
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -182,12 +171,12 @@ namespace Imposter.Tests.Docs.Methods
                     Default.Returns(DefaultResultGenerator);
                 }
 
-                private AddDelegate? _resultGenerator;
-                private readonly global::System.Collections.Concurrent.ConcurrentQueue<AddCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<AddCallbackDelegate>();
+                private InvokeProtectedDelegate? _resultGenerator;
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<InvokeProtectedCallbackDelegate>();
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int a, int b, AddDelegate? baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, InvokeProtectedDelegate? baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
@@ -204,41 +193,41 @@ namespace Imposter.Tests.Docs.Methods
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    int result = _resultGenerator.Invoke(a, b);
+                    int result = _resultGenerator.Invoke(value);
                     foreach (var callback in _callbacks)
                     {
-                        callback(a, b);
+                        callback(value);
                     }
 
                     return result;
                 }
 
-                internal void Callback(AddCallbackDelegate callback)
+                internal void Callback(InvokeProtectedCallbackDelegate callback)
                 {
                     _callbacks.Enqueue(callback);
                 }
 
-                internal void Returns(AddDelegate resultGenerator)
+                internal void Returns(InvokeProtectedDelegate resultGenerator)
                 {
                     _useBaseImplementation = false;
                     _resultGenerator = resultGenerator;
                 }
 
-                internal void Returns(int value)
+                internal void Returns(int value_1)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int a, int b) =>
+                    _resultGenerator = (int value) =>
                     {
-                        return value;
+                        return value_1;
                     };
                 }
 
-                internal void Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+                internal void Throws(InvokeProtectedExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int a, int b) =>
+                    _resultGenerator = (int value) =>
                     {
-                        throw exceptionGenerator(a, b);
+                        throw exceptionGenerator(value);
                     };
                 }
 
@@ -248,7 +237,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int a, int b)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default !;
                 }
@@ -256,58 +245,58 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IAddMethodInvocationImposterGroupCallback
+        public interface IInvokeProtectedMethodInvocationImposterGroupCallback
         {
-            IAddMethodInvocationImposterGroupContinuation Callback(AddCallbackDelegate callback);
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Callback(InvokeProtectedCallbackDelegate callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IAddMethodInvocationImposterGroupContinuation : IAddMethodInvocationImposterGroupCallback
+        public interface IInvokeProtectedMethodInvocationImposterGroupContinuation : IInvokeProtectedMethodInvocationImposterGroupCallback
         {
-            IAddMethodInvocationImposterGroup Then();
+            IInvokeProtectedMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IAddMethodInvocationImposterGroup : IAddMethodInvocationImposterGroupCallback
+        public interface IInvokeProtectedMethodInvocationImposterGroup : IInvokeProtectedMethodInvocationImposterGroupCallback
         {
-            IAddMethodInvocationImposterGroupContinuation Throws<TException>()
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : global::System.Exception, new();
-            IAddMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
-            IAddMethodInvocationImposterGroupContinuation Throws(AddExceptionGeneratorDelegate exceptionGenerator);
-            IAddMethodInvocationImposterGroupContinuation Returns(AddDelegate resultGenerator);
-            IAddMethodInvocationImposterGroupContinuation Returns(int value);
-            IAddMethodInvocationImposterGroupContinuation UseBaseImplementation();
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Throws(InvokeProtectedExceptionGeneratorDelegate exceptionGenerator);
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Returns(InvokeProtectedDelegate resultGenerator);
+            IInvokeProtectedMethodInvocationImposterGroupContinuation Returns(int value);
+            IInvokeProtectedMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface AddInvocationVerifier
+        public interface InvokeProtectedInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, IAddMethodInvocationImposterGroupCallback, AddInvocationVerifier
+        public interface IInvokeProtectedMethodImposterBuilder : IInvokeProtectedMethodInvocationImposterGroup, IInvokeProtectedMethodInvocationImposterGroupCallback, InvokeProtectedInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class AddMethodImposter
+        internal class InvokeProtectedMethodImposter
         {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
-            private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodInvocationImposterGroup>();
+            private readonly InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection;
             private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-            public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+            public InvokeProtectedMethodImposter(InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
-                this._addMethodInvocationHistoryCollection = _addMethodInvocationHistoryCollection;
+                this._invokeProtectedMethodInvocationHistoryCollection = _invokeProtectedMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingInvocationImposterGroup(AddArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(InvokeProtectedArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(AddArguments arguments)
+            private InvokeProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InvokeProtectedArguments arguments)
             {
                 foreach (var invocationImposterGroup in _invocationImposters)
                 {
@@ -318,111 +307,111 @@ namespace Imposter.Tests.Docs.Methods
                 return null;
             }
 
-            public int Invoke(int a, int b, AddDelegate? baseImplementation = null)
+            public int Invoke(int value, InvokeProtectedDelegate? baseImplementation = null)
             {
-                var arguments = new AddArguments(a, b);
+                var arguments = new InvokeProtectedArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MyService.Add(int a, int b)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MyService.InvokeProtected(int value)");
                     }
 
-                    matchingInvocationImposterGroup = AddMethodInvocationImposterGroup.Default;
+                    matchingInvocationImposterGroup = InvokeProtectedMethodInvocationImposterGroup.Default;
                 }
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MyService.Add(int a, int b)", a, b, baseImplementation);
-                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, result, default));
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MyService.InvokeProtected(int value)", value, baseImplementation);
+                    _invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
                 catch (global::System.Exception ex)
                 {
-                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default, ex));
+                    _invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, default, ex));
                     throw;
                 }
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            internal class Builder : IAddMethodImposterBuilder, IAddMethodInvocationImposterGroupContinuation
+            internal class Builder : IInvokeProtectedMethodImposterBuilder, IInvokeProtectedMethodInvocationImposterGroupContinuation
             {
-                private readonly AddMethodImposter _imposter;
-                private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-                private readonly AddArgumentsCriteria _argumentsCriteria;
-                private readonly AddMethodInvocationImposterGroup _invocationImposterGroup;
-                private AddMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(AddMethodImposter _imposter, AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, AddArgumentsCriteria _argumentsCriteria)
+                private readonly InvokeProtectedMethodImposter _imposter;
+                private readonly InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection;
+                private readonly InvokeProtectedArgumentsCriteria _argumentsCriteria;
+                private readonly InvokeProtectedMethodInvocationImposterGroup _invocationImposterGroup;
+                private InvokeProtectedMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(InvokeProtectedMethodImposter _imposter, InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection, InvokeProtectedArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
-                    this._addMethodInvocationHistoryCollection = _addMethodInvocationHistoryCollection;
+                    this._invokeProtectedMethodInvocationHistoryCollection = _invokeProtectedMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new AddMethodInvocationImposterGroup(_argumentsCriteria);
+                    this._invocationImposterGroup = new InvokeProtectedMethodInvocationImposterGroup(_argumentsCriteria);
                     _imposter._invocationImposters.Push(_invocationImposterGroup);
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.Throws<TException>()
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.Throws<TException>()
                 {
-                    _currentInvocationImposter.Throws((int a, int b) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
                         throw new TException();
                     });
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.Throws(global::System.Exception exception)
                 {
-                    _currentInvocationImposter.Throws((int a, int b) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
                         throw exception;
                     });
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.Throws(InvokeProtectedExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    _currentInvocationImposter.Throws((int a, int b) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
-                        throw exceptionGenerator.Invoke(a, b);
+                        throw exceptionGenerator.Invoke(value);
                     });
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroupCallback.Callback(AddCallbackDelegate callback)
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroupCallback.Callback(InvokeProtectedCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.Returns(AddDelegate resultGenerator)
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.Returns(InvokeProtectedDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.Returns(int value)
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.Returns(int value_1)
                 {
-                    _currentInvocationImposter.Returns(value);
+                    _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroupContinuation IAddMethodInvocationImposterGroup.UseBaseImplementation()
+                IInvokeProtectedMethodInvocationImposterGroupContinuation IInvokeProtectedMethodInvocationImposterGroup.UseBaseImplementation()
                 {
                     _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
-                IAddMethodInvocationImposterGroup IAddMethodInvocationImposterGroupContinuation.Then()
+                IInvokeProtectedMethodInvocationImposterGroup IInvokeProtectedMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void AddInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                void InvokeProtectedInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
-                    var invocationCount = _addMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    var invocationCount = _invokeProtectedMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
@@ -431,88 +420,88 @@ namespace Imposter.Tests.Docs.Methods
             }
         }
 
-        // virtual int MyService.MightFail(int v)
-        public delegate int MightFailDelegate(int v);
-        // virtual int MyService.MightFail(int v)
-        public delegate void MightFailCallbackDelegate(int v);
-        // virtual int MyService.MightFail(int v)
-        public delegate global::System.Exception MightFailExceptionGeneratorDelegate(int v);
+        // virtual int MyService.ProtectedAdd(int value)
+        public delegate int ProtectedAddDelegate(int value);
+        // virtual int MyService.ProtectedAdd(int value)
+        public delegate void ProtectedAddCallbackDelegate(int value);
+        // virtual int MyService.ProtectedAdd(int value)
+        public delegate global::System.Exception ProtectedAddExceptionGeneratorDelegate(int value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class MightFailArguments
+        public class ProtectedAddArguments
         {
-            public int v;
-            internal MightFailArguments(int v)
+            public int value;
+            internal ProtectedAddArguments(int value)
             {
-                this.v = v;
+                this.value = value;
             }
         }
 
-        // virtual int MyService.MightFail(int v)
+        // virtual int MyService.ProtectedAdd(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class MightFailArgumentsCriteria
+        public class ProtectedAddArgumentsCriteria
         {
-            public global::Imposter.Abstractions.Arg<int> v { get; }
+            public global::Imposter.Abstractions.Arg<int> value { get; }
 
-            public MightFailArgumentsCriteria(global::Imposter.Abstractions.Arg<int> v)
+            public ProtectedAddArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value)
             {
-                this.v = v;
+                this.value = value;
             }
 
-            public bool Matches(MightFailArguments arguments)
+            public bool Matches(ProtectedAddArguments arguments)
             {
-                return v.Matches(arguments.v);
+                return value.Matches(arguments.value);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IMightFailMethodInvocationHistory
+        public interface IProtectedAddMethodInvocationHistory
         {
-            bool Matches(MightFailArgumentsCriteria criteria);
+            bool Matches(ProtectedAddArgumentsCriteria criteria);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class MightFailMethodInvocationHistory : IMightFailMethodInvocationHistory
+        internal class ProtectedAddMethodInvocationHistory : IProtectedAddMethodInvocationHistory
         {
-            internal MightFailArguments Arguments;
+            internal ProtectedAddArguments Arguments;
             internal int? Result;
             internal global::System.Exception? Exception;
-            public MightFailMethodInvocationHistory(MightFailArguments Arguments, int? Result, global::System.Exception? Exception)
+            public ProtectedAddMethodInvocationHistory(ProtectedAddArguments Arguments, int? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
                 this.Exception = Exception;
             }
 
-            public bool Matches(MightFailArgumentsCriteria criteria)
+            public bool Matches(ProtectedAddArgumentsCriteria criteria)
             {
                 return criteria.Matches(Arguments);
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class MightFailMethodInvocationHistoryCollection
+        internal class ProtectedAddMethodInvocationHistoryCollection
         {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<IMightFailMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IMightFailMethodInvocationHistory>();
-            internal void Add(IMightFailMethodInvocationHistory invocationHistory)
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<IProtectedAddMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IProtectedAddMethodInvocationHistory>();
+            internal void Add(IProtectedAddMethodInvocationHistory invocationHistory)
             {
                 _invocationHistory.Push(invocationHistory);
             }
 
-            internal int Count(MightFailArgumentsCriteria argumentsCriteria)
+            internal int Count(ProtectedAddArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
             }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class MightFailMethodInvocationImposterGroup
+        class ProtectedAddMethodInvocationImposterGroup
         {
-            internal static MightFailMethodInvocationImposterGroup Default = new MightFailMethodInvocationImposterGroup(new MightFailArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
-            internal MightFailArgumentsCriteria ArgumentsCriteria { get; }
+            internal static ProtectedAddMethodInvocationImposterGroup Default = new ProtectedAddMethodInvocationImposterGroup(new ProtectedAddArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+            internal ProtectedAddArgumentsCriteria ArgumentsCriteria { get; }
 
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
             private MethodInvocationImposter? _lastestInvocationImposter;
-            public MightFailMethodInvocationImposterGroup(MightFailArgumentsCriteria argumentsCriteria)
+            public ProtectedAddMethodInvocationImposterGroup(ProtectedAddArgumentsCriteria argumentsCriteria)
             {
                 ArgumentsCriteria = argumentsCriteria;
             }
@@ -539,7 +528,7 @@ namespace Imposter.Tests.Docs.Methods
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int v, MightFailDelegate? baseImplementation = null)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ProtectedAddDelegate? baseImplementation = null)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -552,7 +541,7 @@ namespace Imposter.Tests.Docs.Methods
                     invocationImposter = MethodInvocationImposter.Default;
                 }
 
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, v, baseImplementation);
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, baseImplementation);
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -565,12 +554,12 @@ namespace Imposter.Tests.Docs.Methods
                     Default.Returns(DefaultResultGenerator);
                 }
 
-                private MightFailDelegate? _resultGenerator;
-                private readonly global::System.Collections.Concurrent.ConcurrentQueue<MightFailCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<MightFailCallbackDelegate>();
+                private ProtectedAddDelegate? _resultGenerator;
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<ProtectedAddCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ProtectedAddCallbackDelegate>();
                 private bool _useBaseImplementation;
                 internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int v, MightFailDelegate? baseImplementation = null)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ProtectedAddDelegate? baseImplementation = null)
                 {
                     if (_useBaseImplementation)
                     {
@@ -587,41 +576,41 @@ namespace Imposter.Tests.Docs.Methods
                         _resultGenerator = DefaultResultGenerator;
                     }
 
-                    int result = _resultGenerator.Invoke(v);
+                    int result = _resultGenerator.Invoke(value);
                     foreach (var callback in _callbacks)
                     {
-                        callback(v);
+                        callback(value);
                     }
 
                     return result;
                 }
 
-                internal void Callback(MightFailCallbackDelegate callback)
+                internal void Callback(ProtectedAddCallbackDelegate callback)
                 {
                     _callbacks.Enqueue(callback);
                 }
 
-                internal void Returns(MightFailDelegate resultGenerator)
+                internal void Returns(ProtectedAddDelegate resultGenerator)
                 {
                     _useBaseImplementation = false;
                     _resultGenerator = resultGenerator;
                 }
 
-                internal void Returns(int value)
+                internal void Returns(int value_1)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int v) =>
+                    _resultGenerator = (int value) =>
                     {
-                        return value;
+                        return value_1;
                     };
                 }
 
-                internal void Throws(MightFailExceptionGeneratorDelegate exceptionGenerator)
+                internal void Throws(ProtectedAddExceptionGeneratorDelegate exceptionGenerator)
                 {
                     _useBaseImplementation = false;
-                    _resultGenerator = (int v) =>
+                    _resultGenerator = (int value) =>
                     {
-                        throw exceptionGenerator(v);
+                        throw exceptionGenerator(value);
                     };
                 }
 
@@ -631,7 +620,7 @@ namespace Imposter.Tests.Docs.Methods
                     _resultGenerator = null;
                 }
 
-                internal static int DefaultResultGenerator(int v)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default !;
                 }
@@ -639,58 +628,58 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IMightFailMethodInvocationImposterGroupCallback
+        public interface IProtectedAddMethodInvocationImposterGroupCallback
         {
-            IMightFailMethodInvocationImposterGroupContinuation Callback(MightFailCallbackDelegate callback);
+            IProtectedAddMethodInvocationImposterGroupContinuation Callback(ProtectedAddCallbackDelegate callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IMightFailMethodInvocationImposterGroupContinuation : IMightFailMethodInvocationImposterGroupCallback
+        public interface IProtectedAddMethodInvocationImposterGroupContinuation : IProtectedAddMethodInvocationImposterGroupCallback
         {
-            IMightFailMethodInvocationImposterGroup Then();
+            IProtectedAddMethodInvocationImposterGroup Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IMightFailMethodInvocationImposterGroup : IMightFailMethodInvocationImposterGroupCallback
+        public interface IProtectedAddMethodInvocationImposterGroup : IProtectedAddMethodInvocationImposterGroupCallback
         {
-            IMightFailMethodInvocationImposterGroupContinuation Throws<TException>()
+            IProtectedAddMethodInvocationImposterGroupContinuation Throws<TException>()
                 where TException : global::System.Exception, new();
-            IMightFailMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
-            IMightFailMethodInvocationImposterGroupContinuation Throws(MightFailExceptionGeneratorDelegate exceptionGenerator);
-            IMightFailMethodInvocationImposterGroupContinuation Returns(MightFailDelegate resultGenerator);
-            IMightFailMethodInvocationImposterGroupContinuation Returns(int value);
-            IMightFailMethodInvocationImposterGroupContinuation UseBaseImplementation();
+            IProtectedAddMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+            IProtectedAddMethodInvocationImposterGroupContinuation Throws(ProtectedAddExceptionGeneratorDelegate exceptionGenerator);
+            IProtectedAddMethodInvocationImposterGroupContinuation Returns(ProtectedAddDelegate resultGenerator);
+            IProtectedAddMethodInvocationImposterGroupContinuation Returns(int value);
+            IProtectedAddMethodInvocationImposterGroupContinuation UseBaseImplementation();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface MightFailInvocationVerifier
+        public interface ProtectedAddInvocationVerifier
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IMightFailMethodImposterBuilder : IMightFailMethodInvocationImposterGroup, IMightFailMethodInvocationImposterGroupCallback, MightFailInvocationVerifier
+        public interface IProtectedAddMethodImposterBuilder : IProtectedAddMethodInvocationImposterGroup, IProtectedAddMethodInvocationImposterGroupCallback, ProtectedAddInvocationVerifier
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class MightFailMethodImposter
+        internal class ProtectedAddMethodImposter
         {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<MightFailMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<MightFailMethodInvocationImposterGroup>();
-            private readonly MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection;
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<ProtectedAddMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProtectedAddMethodInvocationImposterGroup>();
+            private readonly ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection;
             private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-            public MightFailMethodImposter(MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+            public ProtectedAddMethodImposter(ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
             {
-                this._mightFailMethodInvocationHistoryCollection = _mightFailMethodInvocationHistoryCollection;
+                this._protectedAddMethodInvocationHistoryCollection = _protectedAddMethodInvocationHistoryCollection;
                 this._invocationBehavior = _invocationBehavior;
             }
 
-            public bool HasMatchingInvocationImposterGroup(MightFailArguments arguments)
+            public bool HasMatchingInvocationImposterGroup(ProtectedAddArguments arguments)
             {
                 return FindMatchingInvocationImposterGroup(arguments) != null;
             }
 
-            private MightFailMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(MightFailArguments arguments)
+            private ProtectedAddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedAddArguments arguments)
             {
                 foreach (var invocationImposterGroup in _invocationImposters)
                 {
@@ -701,510 +690,111 @@ namespace Imposter.Tests.Docs.Methods
                 return null;
             }
 
-            public int Invoke(int v, MightFailDelegate? baseImplementation = null)
+            public int Invoke(int value, ProtectedAddDelegate? baseImplementation = null)
             {
-                var arguments = new MightFailArguments(v);
+                var arguments = new ProtectedAddArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
                 if (matchingInvocationImposterGroup == default)
                 {
                     if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
                     {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MyService.MightFail(int v)");
+                        throw new global::Imposter.Abstractions.MissingImposterException("virtual int MyService.ProtectedAdd(int value)");
                     }
 
-                    matchingInvocationImposterGroup = MightFailMethodInvocationImposterGroup.Default;
+                    matchingInvocationImposterGroup = ProtectedAddMethodInvocationImposterGroup.Default;
                 }
 
                 try
                 {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MyService.MightFail(int v)", v, baseImplementation);
-                    _mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, result, default));
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MyService.ProtectedAdd(int value)", value, baseImplementation);
+                    _protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, result, default));
                     return result;
                 }
                 catch (global::System.Exception ex)
                 {
-                    _mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, default, ex));
+                    _protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, default, ex));
                     throw;
                 }
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            internal class Builder : IMightFailMethodImposterBuilder, IMightFailMethodInvocationImposterGroupContinuation
+            internal class Builder : IProtectedAddMethodImposterBuilder, IProtectedAddMethodInvocationImposterGroupContinuation
             {
-                private readonly MightFailMethodImposter _imposter;
-                private readonly MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection;
-                private readonly MightFailArgumentsCriteria _argumentsCriteria;
-                private readonly MightFailMethodInvocationImposterGroup _invocationImposterGroup;
-                private MightFailMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(MightFailMethodImposter _imposter, MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection, MightFailArgumentsCriteria _argumentsCriteria)
+                private readonly ProtectedAddMethodImposter _imposter;
+                private readonly ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection;
+                private readonly ProtectedAddArgumentsCriteria _argumentsCriteria;
+                private readonly ProtectedAddMethodInvocationImposterGroup _invocationImposterGroup;
+                private ProtectedAddMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(ProtectedAddMethodImposter _imposter, ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection, ProtectedAddArgumentsCriteria _argumentsCriteria)
                 {
                     this._imposter = _imposter;
-                    this._mightFailMethodInvocationHistoryCollection = _mightFailMethodInvocationHistoryCollection;
+                    this._protectedAddMethodInvocationHistoryCollection = _protectedAddMethodInvocationHistoryCollection;
                     this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new MightFailMethodInvocationImposterGroup(_argumentsCriteria);
+                    this._invocationImposterGroup = new ProtectedAddMethodInvocationImposterGroup(_argumentsCriteria);
                     _imposter._invocationImposters.Push(_invocationImposterGroup);
                     this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.Throws<TException>()
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.Throws<TException>()
                 {
-                    _currentInvocationImposter.Throws((int v) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
                         throw new TException();
                     });
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.Throws(global::System.Exception exception)
                 {
-                    _currentInvocationImposter.Throws((int v) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
                         throw exception;
                     });
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.Throws(MightFailExceptionGeneratorDelegate exceptionGenerator)
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.Throws(ProtectedAddExceptionGeneratorDelegate exceptionGenerator)
                 {
-                    _currentInvocationImposter.Throws((int v) =>
+                    _currentInvocationImposter.Throws((int value) =>
                     {
-                        throw exceptionGenerator.Invoke(v);
+                        throw exceptionGenerator.Invoke(value);
                     });
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroupCallback.Callback(MightFailCallbackDelegate callback)
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroupCallback.Callback(ProtectedAddCallbackDelegate callback)
                 {
                     _currentInvocationImposter.Callback(callback);
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.Returns(MightFailDelegate resultGenerator)
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.Returns(ProtectedAddDelegate resultGenerator)
                 {
                     _currentInvocationImposter.Returns(resultGenerator);
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.Returns(int value)
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.Returns(int value_1)
                 {
-                    _currentInvocationImposter.Returns(value);
+                    _currentInvocationImposter.Returns(value_1);
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroupContinuation IMightFailMethodInvocationImposterGroup.UseBaseImplementation()
+                IProtectedAddMethodInvocationImposterGroupContinuation IProtectedAddMethodInvocationImposterGroup.UseBaseImplementation()
                 {
                     _currentInvocationImposter.UseBaseImplementation();
                     return this;
                 }
 
-                IMightFailMethodInvocationImposterGroup IMightFailMethodInvocationImposterGroupContinuation.Then()
+                IProtectedAddMethodInvocationImposterGroup IProtectedAddMethodInvocationImposterGroupContinuation.Then()
                 {
                     this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
                     return this;
                 }
 
-                void MightFailInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                void ProtectedAddInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
                 {
-                    var invocationCount = _mightFailMethodInvocationHistoryCollection.Count(_argumentsCriteria);
-                    if (!count.Matches(invocationCount))
-                    {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
-                    }
-                }
-            }
-        }
-
-        // virtual Task MyService.ProcessAsync(string s)
-        public delegate global::System.Threading.Tasks.Task ProcessAsyncDelegate(string s);
-        // virtual Task MyService.ProcessAsync(string s)
-        public delegate global::System.Threading.Tasks.Task ProcessAsyncCallbackDelegate(string s);
-        // virtual Task MyService.ProcessAsync(string s)
-        public delegate global::System.Exception ProcessAsyncExceptionGeneratorDelegate(string s);
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class ProcessAsyncArguments
-        {
-            public string s;
-            internal ProcessAsyncArguments(string s)
-            {
-                this.s = s;
-            }
-        }
-
-        // virtual Task MyService.ProcessAsync(string s)
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public class ProcessAsyncArgumentsCriteria
-        {
-            public global::Imposter.Abstractions.Arg<string> s { get; }
-
-            public ProcessAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string> s)
-            {
-                this.s = s;
-            }
-
-            public bool Matches(ProcessAsyncArguments arguments)
-            {
-                return s.Matches(arguments.s);
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IProcessAsyncMethodInvocationHistory
-        {
-            bool Matches(ProcessAsyncArgumentsCriteria criteria);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class ProcessAsyncMethodInvocationHistory : IProcessAsyncMethodInvocationHistory
-        {
-            internal ProcessAsyncArguments Arguments;
-            internal global::System.Threading.Tasks.Task Result;
-            internal global::System.Exception? Exception;
-            public ProcessAsyncMethodInvocationHistory(ProcessAsyncArguments Arguments, global::System.Threading.Tasks.Task Result, global::System.Exception? Exception)
-            {
-                this.Arguments = Arguments;
-                this.Result = Result;
-                this.Exception = Exception;
-            }
-
-            public bool Matches(ProcessAsyncArgumentsCriteria criteria)
-            {
-                return criteria.Matches(Arguments);
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class ProcessAsyncMethodInvocationHistoryCollection
-        {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<IProcessAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IProcessAsyncMethodInvocationHistory>();
-            internal void Add(IProcessAsyncMethodInvocationHistory invocationHistory)
-            {
-                _invocationHistory.Push(invocationHistory);
-            }
-
-            internal int Count(ProcessAsyncArgumentsCriteria argumentsCriteria)
-            {
-                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ProcessAsyncMethodInvocationImposterGroup
-        {
-            internal static ProcessAsyncMethodInvocationImposterGroup Default = new ProcessAsyncMethodInvocationImposterGroup(new ProcessAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
-            internal ProcessAsyncArgumentsCriteria ArgumentsCriteria { get; }
-
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-            private MethodInvocationImposter? _lastestInvocationImposter;
-            public ProcessAsyncMethodInvocationImposterGroup(ProcessAsyncArgumentsCriteria argumentsCriteria)
-            {
-                ArgumentsCriteria = argumentsCriteria;
-            }
-
-            internal MethodInvocationImposter AddInvocationImposter()
-            {
-                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-                _invocationImposters.Enqueue(invocationImposter);
-                return invocationImposter;
-            }
-
-            private MethodInvocationImposter? GetInvocationImposter()
-            {
-                if (_invocationImposters.TryDequeue(out var invocationImposter))
-                {
-                    if (!invocationImposter.IsEmpty)
-                    {
-                        _lastestInvocationImposter = invocationImposter;
-                    }
-
-                    return invocationImposter;
-                }
-
-                return _lastestInvocationImposter;
-            }
-
-            public global::System.Threading.Tasks.Task Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string s, ProcessAsyncDelegate? baseImplementation = null)
-            {
-                var invocationImposter = GetInvocationImposter();
-                if (invocationImposter == null)
-                {
-                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-                    {
-                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                    }
-
-                    invocationImposter = MethodInvocationImposter.Default;
-                }
-
-                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, s, baseImplementation);
-            }
-
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            internal class MethodInvocationImposter
-            {
-                internal static MethodInvocationImposter Default;
-                static MethodInvocationImposter()
-                {
-                    Default = new MethodInvocationImposter();
-                    Default.Returns(DefaultResultGenerator);
-                }
-
-                private ProcessAsyncDelegate? _resultGenerator;
-                private readonly global::System.Collections.Concurrent.ConcurrentQueue<ProcessAsyncCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ProcessAsyncCallbackDelegate>();
-                private bool _useBaseImplementation;
-                internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
-                public global::System.Threading.Tasks.Task Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string s, ProcessAsyncDelegate? baseImplementation = null)
-                {
-                    if (_useBaseImplementation)
-                    {
-                        _resultGenerator = baseImplementation ?? throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                    }
-
-                    if (_resultGenerator == null)
-                    {
-                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-                        {
-                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
-                        }
-
-                        _resultGenerator = DefaultResultGenerator;
-                    }
-
-                    global::System.Threading.Tasks.Task result = _resultGenerator.Invoke(s);
-                    foreach (var callback in _callbacks)
-                    {
-                        callback(s);
-                    }
-
-                    return result;
-                }
-
-                internal void Callback(ProcessAsyncCallbackDelegate callback)
-                {
-                    _callbacks.Enqueue(callback);
-                }
-
-                internal void Returns(ProcessAsyncDelegate resultGenerator)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = resultGenerator;
-                }
-
-                internal void Returns(global::System.Threading.Tasks.Task value)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string s) =>
-                    {
-                        return value;
-                    };
-                }
-
-                internal void Throws(ProcessAsyncExceptionGeneratorDelegate exceptionGenerator)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = (string s) =>
-                    {
-                        throw exceptionGenerator(s);
-                    };
-                }
-
-                internal void ThrowsAsync(global::System.Exception exception)
-                {
-                    _useBaseImplementation = false;
-                    _resultGenerator = async (string s) =>
-                    {
-                        throw exception;
-                    };
-                }
-
-                internal void UseBaseImplementation()
-                {
-                    _useBaseImplementation = true;
-                    _resultGenerator = null;
-                }
-
-                internal static async global::System.Threading.Tasks.Task DefaultResultGenerator(string s)
-                {
-                    return;
-                }
-            }
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IProcessAsyncMethodInvocationImposterGroupCallback
-        {
-            IProcessAsyncMethodInvocationImposterGroupContinuation Callback(ProcessAsyncCallbackDelegate callback);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IProcessAsyncMethodInvocationImposterGroupContinuation : IProcessAsyncMethodInvocationImposterGroupCallback
-        {
-            IProcessAsyncMethodInvocationImposterGroup Then();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IProcessAsyncMethodInvocationImposterGroup : IProcessAsyncMethodInvocationImposterGroupCallback
-        {
-            IProcessAsyncMethodInvocationImposterGroupContinuation Throws<TException>()
-                where TException : global::System.Exception, new();
-            IProcessAsyncMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
-            IProcessAsyncMethodInvocationImposterGroupContinuation Throws(ProcessAsyncExceptionGeneratorDelegate exceptionGenerator);
-            IProcessAsyncMethodInvocationImposterGroupContinuation Returns(ProcessAsyncDelegate resultGenerator);
-            IProcessAsyncMethodInvocationImposterGroupContinuation Returns(global::System.Threading.Tasks.Task value);
-            IProcessAsyncMethodInvocationImposterGroupContinuation ThrowsAsync(global::System.Exception exception);
-            IProcessAsyncMethodInvocationImposterGroupContinuation UseBaseImplementation();
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ProcessAsyncInvocationVerifier
-        {
-            void Called(Count count);
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IProcessAsyncMethodImposterBuilder : IProcessAsyncMethodInvocationImposterGroup, IProcessAsyncMethodInvocationImposterGroupCallback, ProcessAsyncInvocationVerifier
-        {
-        }
-
-        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class ProcessAsyncMethodImposter
-        {
-            private readonly global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup>();
-            private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
-            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-            public ProcessAsyncMethodImposter(ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
-            {
-                this._processAsyncMethodInvocationHistoryCollection = _processAsyncMethodInvocationHistoryCollection;
-                this._invocationBehavior = _invocationBehavior;
-            }
-
-            public bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments arguments)
-            {
-                return FindMatchingInvocationImposterGroup(arguments) != null;
-            }
-
-            private ProcessAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProcessAsyncArguments arguments)
-            {
-                foreach (var invocationImposterGroup in _invocationImposters)
-                {
-                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-                        return invocationImposterGroup;
-                }
-
-                return null;
-            }
-
-            public global::System.Threading.Tasks.Task Invoke(string s, ProcessAsyncDelegate? baseImplementation = null)
-            {
-                var arguments = new ProcessAsyncArguments(s);
-                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-                if (matchingInvocationImposterGroup == default)
-                {
-                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-                    {
-                        throw new global::Imposter.Abstractions.MissingImposterException("virtual Task MyService.ProcessAsync(string s)");
-                    }
-
-                    matchingInvocationImposterGroup = ProcessAsyncMethodInvocationImposterGroup.Default;
-                }
-
-                try
-                {
-                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual Task MyService.ProcessAsync(string s)", s, baseImplementation);
-                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, result, default));
-                    return result;
-                }
-                catch (global::System.Exception ex)
-                {
-                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, default, ex));
-                    throw;
-                }
-            }
-
-            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            internal class Builder : IProcessAsyncMethodImposterBuilder, IProcessAsyncMethodInvocationImposterGroupContinuation
-            {
-                private readonly ProcessAsyncMethodImposter _imposter;
-                private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
-                private readonly ProcessAsyncArgumentsCriteria _argumentsCriteria;
-                private readonly ProcessAsyncMethodInvocationImposterGroup _invocationImposterGroup;
-                private ProcessAsyncMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
-                public Builder(ProcessAsyncMethodImposter _imposter, ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection, ProcessAsyncArgumentsCriteria _argumentsCriteria)
-                {
-                    this._imposter = _imposter;
-                    this._processAsyncMethodInvocationHistoryCollection = _processAsyncMethodInvocationHistoryCollection;
-                    this._argumentsCriteria = _argumentsCriteria;
-                    this._invocationImposterGroup = new ProcessAsyncMethodInvocationImposterGroup(_argumentsCriteria);
-                    _imposter._invocationImposters.Push(_invocationImposterGroup);
-                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.Throws<TException>()
-                {
-                    _currentInvocationImposter.Throws((string s) =>
-                    {
-                        throw new TException();
-                    });
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.Throws(global::System.Exception exception)
-                {
-                    _currentInvocationImposter.Throws((string s) =>
-                    {
-                        throw exception;
-                    });
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.Throws(ProcessAsyncExceptionGeneratorDelegate exceptionGenerator)
-                {
-                    _currentInvocationImposter.Throws((string s) =>
-                    {
-                        throw exceptionGenerator.Invoke(s);
-                    });
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroupCallback.Callback(ProcessAsyncCallbackDelegate callback)
-                {
-                    _currentInvocationImposter.Callback(callback);
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.Returns(ProcessAsyncDelegate resultGenerator)
-                {
-                    _currentInvocationImposter.Returns(resultGenerator);
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task value)
-                {
-                    _currentInvocationImposter.Returns(value);
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
-                {
-                    _currentInvocationImposter.ThrowsAsync(exception);
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroupContinuation IProcessAsyncMethodInvocationImposterGroup.UseBaseImplementation()
-                {
-                    _currentInvocationImposter.UseBaseImplementation();
-                    return this;
-                }
-
-                IProcessAsyncMethodInvocationImposterGroup IProcessAsyncMethodInvocationImposterGroupContinuation.Then()
-                {
-                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
-                    return this;
-                }
-
-                void ProcessAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
-                {
-                    var invocationCount = _processAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    var invocationCount = _protectedAddMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
                         throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
@@ -1215,15 +805,14 @@ namespace Imposter.Tests.Docs.Methods
 
         public MyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
-            this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-            this._processAsyncMethodImposter = new ProcessAsyncMethodImposter(_processAsyncMethodInvocationHistoryCollection, invocationBehavior);
-            this._mightFailMethodImposter = new MightFailMethodImposter(_mightFailMethodInvocationHistoryCollection, invocationBehavior);
+            this._protectedAddMethodImposter = new ProtectedAddMethodImposter(_protectedAddMethodInvocationHistoryCollection, invocationBehavior);
+            this._invokeProtectedMethodImposter = new InvokeProtectedMethodImposter(_invokeProtectedMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.MyService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService
         {
             private readonly MyServiceImposter _imposter;
             internal ImposterTargetInstance(MyServiceImposter _imposter) : base()
@@ -1231,19 +820,14 @@ namespace Imposter.Tests.Docs.Methods
                 this._imposter = _imposter;
             }
 
-            public override int Add(int a, int b)
+            protected override int ProtectedAdd(int value)
             {
-                return _imposter._addMethodImposter.Invoke(a, b, base.Add);
+                return _imposter._protectedAddMethodImposter.Invoke(value, base.ProtectedAdd);
             }
 
-            public override global::System.Threading.Tasks.Task ProcessAsync(string s)
+            public override int InvokeProtected(int value)
             {
-                return _imposter._processAsyncMethodImposter.Invoke(s, base.ProcessAsync);
-            }
-
-            public override int MightFail(int v)
-            {
-                return _imposter._mightFailMethodImposter.Invoke(v, base.MightFail);
+                return _imposter._invokeProtectedMethodImposter.Invoke(value, base.InvokeProtected);
             }
         }
     }
@@ -1251,10 +835,10 @@ namespace Imposter.Tests.Docs.Methods
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class MyServiceImposterExtensions
     {
-        extension(global::Imposter.Tests.Docs.Methods.MyService imposter)
+        extension(global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService imposter)
         {
-            public static global::Imposter.Tests.Docs.Methods.MyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.MyServiceImposter();
-            public static global::Imposter.Tests.Docs.Methods.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Docs.Methods.MyServiceImposter(invocationBehavior);
+            public static global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter(invocationBehavior);
         }
     }
 }

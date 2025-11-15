@@ -217,7 +217,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
                 internal static int DefaultResultGenerator(int input)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -401,7 +401,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.SimpleMethodMockingBenchmarks.ICalculator
         {
-            ICalculatorImposter _imposter;
+            private readonly ICalculatorImposter _imposter;
             public ImposterTargetInstance(ICalculatorImposter _imposter)
             {
                 this._imposter = _imposter;

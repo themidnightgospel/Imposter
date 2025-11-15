@@ -1,6 +1,6 @@
 # Getting Started
 
-Imposter — Source-generated test doubles/mocks/imposters, zero runtime overhead.
+Imposter — The Fastest and Most Memory-Efficient Mocking Library
 
 ## Installation
 

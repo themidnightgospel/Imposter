@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.Verification;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Verification
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IVerifyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IVerifyService>
+    public sealed class IVerifyServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService>
     {
         private readonly IncrementMethodImposter _incrementMethodImposter;
         private readonly CombineMethodImposter _combineMethodImposter;
@@ -32,7 +32,7 @@ namespace Imposter.Tests.Docs.Methods
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.IVerifyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IVerifyService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService>.Instance()
         {
             return _imposterInstance;
         }
@@ -739,7 +739,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IVerifyService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService
         {
             private readonly IVerifyServiceImposter _imposter;
             public ImposterTargetInstance(IVerifyServiceImposter _imposter)
@@ -762,9 +762,9 @@ namespace Imposter.Tests.Docs.Methods
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class IVerifyServiceImposterExtensions
     {
-        extension(global::Imposter.Tests.Docs.Methods.IVerifyService imposter)
+        extension(global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService imposter)
         {
-            public static global::Imposter.Tests.Docs.Methods.IVerifyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.IVerifyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter();
         }
     }
 }

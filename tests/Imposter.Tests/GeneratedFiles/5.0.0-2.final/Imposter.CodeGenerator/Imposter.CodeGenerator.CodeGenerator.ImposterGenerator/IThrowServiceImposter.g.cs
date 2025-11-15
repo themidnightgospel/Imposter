@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Docs.Methods;
+using global::Imposter.Tests.Features.Docs.Methods.Throw;
 
-namespace Imposter.Tests.Docs.Methods
+namespace Imposter.Tests.Features.Docs.Methods.Throw
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IThrowServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IThrowService>
+    public sealed class IThrowServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService>
     {
         private readonly GetNumberMethodImposter _getNumberMethodImposter;
         private readonly GetNumberAsyncMethodImposter _getNumberAsyncMethodImposter;
@@ -32,7 +32,7 @@ namespace Imposter.Tests.Docs.Methods
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Docs.Methods.IThrowService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.Methods.IThrowService>.Instance()
+        global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService>.Instance()
         {
             return _imposterInstance;
         }
@@ -722,7 +722,7 @@ namespace Imposter.Tests.Docs.Methods
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Docs.Methods.IThrowService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService
         {
             private readonly IThrowServiceImposter _imposter;
             public ImposterTargetInstance(IThrowServiceImposter _imposter)
@@ -745,9 +745,9 @@ namespace Imposter.Tests.Docs.Methods
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class IThrowServiceImposterExtensions
     {
-        extension(global::Imposter.Tests.Docs.Methods.IThrowService imposter)
+        extension(global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService imposter)
         {
-            public static global::Imposter.Tests.Docs.Methods.IThrowServiceImposter Imposter() => new global::Imposter.Tests.Docs.Methods.IThrowServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter();
         }
     }
 }

@@ -225,7 +225,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
 
                 internal static string DefaultResultGenerator(string route, int severity, global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ComplexMethodMockingBenchmark.OperationContext context)
                 {
-                    return default;
+                    return default !;
                 }
             }
         }
@@ -409,7 +409,7 @@ namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ImposterTargetInstance : global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ComplexMethodMockingBenchmark.IComplexService
         {
-            IComplexServiceImposter _imposter;
+            private readonly IComplexServiceImposter _imposter;
             public ImposterTargetInstance(IComplexServiceImposter _imposter)
             {
                 this._imposter = _imposter;

@@ -15,7 +15,7 @@ public class SimpleMethodMockingBenchmarks
     public int Iteration;
 
     [Benchmark]
-    public void Mock()
+    public void Moq()
     {
         var calculatorMock = new Mock<ICalculator>();
 
@@ -34,7 +34,7 @@ public class SimpleMethodMockingBenchmarks
     }
 
     [Benchmark]
-    public void NSub()
+    public void NSubstitute()
     {
         var calculatorMock = Substitute.For<ICalculator>();
 
