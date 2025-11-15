@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj" />
   </ItemGroup>
 

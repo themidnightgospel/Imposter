@@ -344,24 +344,9 @@ internal static partial class InvocationSetupBuilder
                         .ToStatementSyntax()))
             .Build();
 
-    private static ExpressionSyntax DefaultResultGeneratorDelegate(in ImposterTargetMethodMetadata method)
+    private static IdentifierNameSyntax DefaultResultGeneratorDelegate(in ImposterTargetMethodMetadata method)
     {
-        var defaultResultGenerator = IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name);
-        return defaultResultGenerator;
-
-        /*
-        if (!method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnsNullable)
-        {
-        }
-
-        var invocation = defaultResultGenerator.Call(ArgumentListSyntax(method.Symbol.Parameters));
-        var defaultValue = DefaultExpression(method.ReturnTypeSyntax);
-        var coalescedExpression = BinaryExpression(SyntaxKind.CoalesceExpression, invocation, defaultValue);
-
-        return ParenthesizedLambdaExpression()
-            .WithParameterList(method.Parameters.ParameterListSyntax)
-            .WithExpressionBody(coalescedExpression);
-    */
+        return IdentifierName(method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name);
     }
 
     private static MethodDeclarationSyntax ReturnsAsyncMethod(in ImposterTargetMethodMetadata method)

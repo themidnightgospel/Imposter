@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator", "src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj", "{EF3BF47E-BAF9-47DB-9AEA-884AB4AE1C17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Playground", "playground\Imposter.Playground\Imposter.Playground.csproj", "{93894BE6-9A1C-4D57-86B7-9E31D25C448E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Ideation", "playground\Imposter.Ideation\Imposter.Ideation.csproj", "{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Tests", "tests\Imposter.Tests\Imposter.Tests.csproj", "{33085C7F-CA21-48BF-A093-F95BC50225FB}"
@@ -26,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.Abstractions.Tests", "tests\Imposter.Abstractions.Tests\Imposter.Abstractions.Tests.csproj", "{E843F42C-80F8-427D-84DD-8FC0CF7AF995}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CodeGenerator.Tests", "tests\Imposter.CodeGenerator.Tests\Imposter.CodeGenerator.Tests.csproj", "{1C311BB1-125A-40D4-925E-6C3C7E9F523A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CSharp14.Samples", "samples\Imposter.CSharp14.Samples\Imposter.CSharp14.Samples.csproj", "{C80F7EB7-2958-4777-AD47-F74059666052}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2DAD5A1A-4D4A-4125-B213-E5EA5279C01B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,8 +45,6 @@ Global
 		{EF3BF47E-BAF9-47DB-9AEA-884AB4AE1C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF3BF47E-BAF9-47DB-9AEA-884AB4AE1C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF3BF47E-BAF9-47DB-9AEA-884AB4AE1C17}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93894BE6-9A1C-4D57-86B7-9E31D25C448E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93894BE6-9A1C-4D57-86B7-9E31D25C448E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33085C7F-CA21-48BF-A093-F95BC50225FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -59,6 +59,8 @@ Global
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80F7EB7-2958-4777-AD47-F74059666052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80F7EB7-2958-4777-AD47-F74059666052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,10 +72,10 @@ Global
 		{09E178CE-6ECB-43EB-BD48-BFC25B0CEA76} = {3C0D5BF1-EAD0-4CE6-9E8D-1A39A0869283}
 		{E084A4F8-97DD-4FEB-AD01-E391B5E2223A} = {B17741A2-7EB9-4988-B3E2-6ABF1F34DA40}
 		{EF3BF47E-BAF9-47DB-9AEA-884AB4AE1C17} = {B17741A2-7EB9-4988-B3E2-6ABF1F34DA40}
-		{93894BE6-9A1C-4D57-86B7-9E31D25C448E} = {2E4F8B6F-8C60-4E96-9EA5-39D6992A6B8E}
 		{EBE25245-37CD-4A0C-B595-D6DF8F1F0A89} = {2E4F8B6F-8C60-4E96-9EA5-39D6992A6B8E}
 		{33085C7F-CA21-48BF-A093-F95BC50225FB} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 		{E843F42C-80F8-427D-84DD-8FC0CF7AF995} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
 		{1C311BB1-125A-40D4-925E-6C3C7E9F523A} = {BA79763F-FA88-41A9-B516-70413B85D2AC}
+		{C80F7EB7-2958-4777-AD47-F74059666052} = {2DAD5A1A-4D4A-4125-B213-E5EA5279C01B}
 	EndGlobalSection
 EndGlobal

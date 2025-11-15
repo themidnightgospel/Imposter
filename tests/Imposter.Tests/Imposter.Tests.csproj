@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles\$(ROSLYN_VERSION)</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
