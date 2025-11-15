@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Imposter" Version="*" />
+    <PackageReference Include="Imposter" Version="0.0.18" />
   </ItemGroup>
 </Project>

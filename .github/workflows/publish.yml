@@ -88,5 +88,5 @@ jobs:
       contents: write
     uses: ./.github/workflows/docs.yml
     with:
-      version: ${{ needs.release.outputs.version }}
+      version: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
     secrets: inherit

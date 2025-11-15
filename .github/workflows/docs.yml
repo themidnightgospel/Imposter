@@ -45,5 +45,5 @@ jobs:
         env:
           DOCS_VERSION: ${{ inputs.version || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || 'dev' }}
         run: |
-          mike deploy -F docs/mkdocs.yml --push --remote origin --branch gh-pages --update-aliases ${DOCS_VERSION} latest
-          mike set-default -F docs/mkdocs.yml --push --remote origin --branch gh-pages latest
+          mike deploy -F docs/mkdocs.yml --push --remote origin --branch master --update-aliases ${DOCS_VERSION} latest
+          mike set-default -F docs/mkdocs.yml --push --remote origin --branch master latest
