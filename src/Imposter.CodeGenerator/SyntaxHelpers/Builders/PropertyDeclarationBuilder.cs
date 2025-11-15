@@ -74,7 +74,7 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
             _attributes.Count > 0 ? List(_attributes) : default,
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             typeSyntax,
-            explicitInterfaceSpecifier: null,
+            explicitInterfaceSpecifier: default!,
             Identifier(name),
             accessorList);
     }

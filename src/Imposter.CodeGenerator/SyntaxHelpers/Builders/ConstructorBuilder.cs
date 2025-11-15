@@ -64,7 +64,7 @@ internal struct ConstructorBuilder(string name)
             modifiers: _modifiers,
             identifier: Identifier(name),
             parameterList: _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
-            initializer: _initializers,
+            initializer: _initializers!,
             body: _body ?? Block()
         );
     }

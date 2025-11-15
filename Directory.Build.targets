@@ -1,0 +1,16 @@
+<Project>
+  <!-- Ensure Husky git hooks are installed on local developer machines -->
+  <Target Name="Husky"
+          BeforeTargets="Restore;CollectPackageReferences"
+          Condition="'$(HUSKY)' != 0 AND '$(CI)' == ''">
+    <Exec Command="dotnet tool restore"
+          StandardOutputImportance="Low"
+          StandardErrorImportance="High"
+          WorkingDirectory="$(MSBuildThisFileDirectory)" />
+    <Exec Command="dotnet husky install"
+          StandardOutputImportance="Low"
+          StandardErrorImportance="High"
+          WorkingDirectory="$(MSBuildThisFileDirectory)" />
+  </Target>
+</Project>
+

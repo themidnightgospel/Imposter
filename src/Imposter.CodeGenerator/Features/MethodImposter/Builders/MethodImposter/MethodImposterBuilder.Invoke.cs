@@ -36,7 +36,7 @@ internal partial class MethodImposterBuilder
                                     .Build()
                             )
                         ),
-                        null
+                        default!
                     )
                 )
                 .Build())

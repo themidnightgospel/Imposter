@@ -1,0 +1,97 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.0)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.0",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.4)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.4",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.5)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.5",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.7)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.7",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.11)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.11",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 4.14)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=4.14",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    },
+    {
+      "name": "Imposter.CodeGenerator.Tests (Roslyn 5.0.0-2.final)",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
+        "-c",
+        "Release",
+        "/p:ROSLYN_VERSION=5.0.0-2.final",
+        "-p:IMPOSTER_LOG=true",
+        "--list-tests"
+      ]
+    }
+  ]
+}
+
