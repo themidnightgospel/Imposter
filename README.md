@@ -46,7 +46,7 @@ imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
 imposter.Instance().Add(1, 2); // 42
 ```
 
-Learn more: https://themidnightgospel.github.io/Imposter/methods/explicit-vs-implicit/
+Learn more: https://themidnightgospel.github.io/Imposter/
 
 ## ✨ Fully Featured:
 
@@ -63,7 +63,7 @@ Learn more: https://themidnightgospel.github.io/Imposter/methods/explicit-vs-imp
 
 ## ⏱️ Benchmark
 
-We benchmarked the simple method-impersonation scenario: we set up a `Square` method to return input * input and ran it for 1, 10, 100, and 1000 iterations.
+We benchmarked the simple method-impersonation scenario: we set up a `Square` method to return `input * input` and ran it for 1, 10, 100, and 1000 iterations.
 
 ```csharp
 public interface ICalculator
@@ -76,17 +76,17 @@ Mean execution time
 
 | Method      | Iteration | Mean            |
 |-------------|---------- |----------------:|
-| Moq         | 1         | **69,346.1 ns** |  
-| NSubstitute | 1         | **1,976.2 ns** |   
+| Moq         | 1         | 69,346.1 ns |  
+| NSubstitute | 1         | 1,976.2 ns |   
 | Imposter    | 1         | **194.3 ns** |     
-| Moq        | 10        | **686,282.9 ns** |  
-| NSubstitute | 10        | **11,201.6 ns** |  
+| Moq        | 10        | 686,282.9 ns |  
+| NSubstitute | 10        | 11,201.6 ns |  
 | Imposter    | 10        | **1,896.7 ns** |   
-| Moq        | 100       | **6,804,897.3 ns** |
-| NSubstitute | 100       | **335,390.6 ns** | 
+| Moq        | 100       | 6,804,897.3 ns |
+| NSubstitute | 100       | 335,390.6 ns | 
 | Imposter    | 100       | **34,011.7 ns** |  
-| Moq        | 1000      | **99,710,929.5 ns** |
-| NSubstitute | 1000      | **26,986,939.0 ns** |
+| Moq        | 1000      | 99,710,929.5 ns |
+| NSubstitute | 1000      | 26,986,939.0 ns |
 | Imposter    | 1000      | **2,452,970.7 ns** |
 
 
@@ -94,17 +94,17 @@ Allocated Memory
 
 | Method      | Iteration | Allocated   |
 |-------------|---------- |------------:|
-| Moq         | 1        | **13.05 KB** |
-| NSubstitute | 1        | **7.84 KB** |
+| Moq         | 1        | 13.05 KB |
+| NSubstitute | 1        | 7.84 KB |
 | Imposter    | 1        | **2.4 KB** |
-| Moq        | 10        | **115.73 KB** |
-| NSubstitute | 10       | **29.29 KB** |
+| Moq        | 10        | 115.73 KB |
+| NSubstitute | 10       | 29.29 KB |
 | Imposter    | 10       | **22.37 KB** |
-| Moq        | 100       | **1416.91 KB** |
-| NSubstitute | 100      | **247.26 KB** |
+| Moq        | 100       | 1416.91 KB |
+| NSubstitute | 100      | 247.26 KB |
 | Imposter    | 100      | **222.05 KB** |
-| Moq        | 1000      | **42275.19 KB** |
-| NSubstitute | 1000      | **2420.82 KB** |
+| Moq        | 1000      | 42275.19 KB |
+| NSubstitute | 1000      | 2420.82 KB |
 | Imposter    | 1000      | **2218.93 KB** |
 
 
