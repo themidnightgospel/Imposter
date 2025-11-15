@@ -49,6 +49,7 @@ FEATURES:
       - Add Docs page
       - Add a sample project.
     NOT Started:
+      - update links on readme.md under "Fully Featured"
       - organize Test according to features
       - add benchmark results on readme
       - add build-and-test as PR check

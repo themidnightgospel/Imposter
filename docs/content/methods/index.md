@@ -1,9 +1,3 @@
-# Method Impersonation
-
-Here we'll cover returns, async, exceptions, callbacks, sequencing, argument matching, ref/out/in parameters, base forwarding, verification, and concurrency notes.
-
-## Overview
-
 Generated imposters expose fluent method builders you can use to:
 
 - Arrange outcomes: `Returns`, `ReturnsAsync`, `Throws`

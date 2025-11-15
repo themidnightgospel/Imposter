@@ -10,7 +10,7 @@ Add the packages to your test or application project:
 
     ```xml
     <ItemGroup>
-        <PackageReference Include="Imposter" Version="*" ExcludeAssets="runtime" PrivateAssets="all" />
+        <PackageReference Include="Imposter" Version="*" PrivateAssets="all" />
     </ItemGroup>
     ```
 
@@ -92,6 +92,8 @@ Generate imposter for classes
 
 !!! warning
     Only non-sealed classes can be impersonated.
+
+In the exact same fashion, you can generate imposter for classes.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L20"}
