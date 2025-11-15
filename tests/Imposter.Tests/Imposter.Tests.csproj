@@ -3,7 +3,15 @@
     <RootNamespace>Imposter.Tests</RootNamespace>
   </PropertyGroup>
 
-  <Import Project="Imposter.Tests.Roslyn$(ROSLYN_VERSION).props" />
+  <PropertyGroup Condition="'$(ROSLYN_VERSION)' != '5.0'">
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ROSLYN_VERSION)' == '5.0'">
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <DefineConstants>$(DefineConstants);USE_CSHARP14</DefineConstants>
+  </PropertyGroup>
 
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -17,7 +25,7 @@
 
   <ItemGroup>
     <!--  OutputItemType="Analyzer" is necessary for generator to access it during generation.
-          see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->
+              see https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-5786857-->
     <ProjectReference
       Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"
       OutputItemType="Analyzer"

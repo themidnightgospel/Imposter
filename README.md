@@ -1,9 +1,9 @@
-<p style="text-align: center;">
+<p align="center">
   <img src="docs/imposter_logo.png" alt="Imposter logo" width="140" />
 </p>
 
-<p style="text-align: center;">
-    The Fastest and Most Memory-Efficient Mocking Library
+<p align="center">
+    Imposter - The Fastest and Most Memory-Efficient Mocking Library
 </p>
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)

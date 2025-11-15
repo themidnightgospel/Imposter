@@ -3,7 +3,9 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <Import Project="../Roslyn.Shared.props" />
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
     <PackageReference Include="Shouldly" Version="4.3.0" />

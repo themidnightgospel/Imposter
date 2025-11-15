@@ -11,8 +11,15 @@
       Version="1.1.2"
     />
     <PackageReference
+      Condition="'$(ROSLYN_VERSION)' != '5.0'"
       Include="Microsoft.CodeAnalysis.CSharp.Workspaces"
       Version="$(ROSLYN_VERSION)"
+    />
+
+    <PackageReference
+      Condition="'$(ROSLYN_VERSION)' == '5.0'"
+      Include="Microsoft.CodeAnalysis.CSharp.Workspaces"
+      Version="5.0.0-2.final"
     />
   </ItemGroup>
 
