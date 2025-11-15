@@ -26,7 +26,7 @@ public sealed class SealedClass { }
     [Fact]
     public void GivenSealedClassTarget_WhenGeneratorRuns_ShouldReportIMP002()
     {
-        var compilation = CreateCompilation(LanguageVersion.CSharp8);
+        var compilation = CreateCompilation(LanguageVersion.CSharp9);
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
 
         var runResult = driver.RunGenerators(compilation).GetRunResult();

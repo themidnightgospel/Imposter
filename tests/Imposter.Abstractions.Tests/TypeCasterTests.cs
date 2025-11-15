@@ -15,90 +15,90 @@ public class TypeCasterTests
     private class Dog : Animal { }
 
     [Fact]
-    public void Cast_WhenUpcastingReferenceType_ShouldSucceed()
+    public void GivenReferenceTypeUpcast_WhenCasting_ShouldSucceed()
     {
         var dog = new Dog();
         TypeCaster.Cast<Dog, Animal>(dog).ShouldBeSameAs(dog);
     }
 
     [Fact]
-    public void Cast_WhenDowncastingValidReferenceType_ShouldSucceed()
+    public void GivenValidDowncast_WhenCasting_ShouldReturnSameInstance()
     {
         Animal animal = new Dog();
         TypeCaster.Cast<Animal, Dog>(animal).ShouldBeSameAs(animal);
     }
 
     [Fact]
-    public void Cast_ToInterface_ShouldSucceed()
+    public void GivenConcreteType_WhenCastingToInterface_ShouldSucceed()
     {
         var dog = new Dog();
         TypeCaster.Cast<Dog, IAnimal>(dog).ShouldBeSameAs(dog);
     }
 
     [Fact]
-    public void Cast_NullToReferenceType_ShouldReturnNull()
+    public void GivenNullReference_WhenCastingToReferenceType_ShouldReturnNull()
     {
         TypeCaster.Cast<string, object>(null!).ShouldBeNull();
     }
 
     [Fact]
-    public void Cast_NullToNullableValueType_ShouldReturnNull()
+    public void GivenNullValue_WhenCastingToNullableValueType_ShouldReturnNull()
     {
         TypeCaster.Cast<object, int?>(null!).ShouldBeNull();
     }
 
     [Fact]
-    public void Cast_StringToNumber_ShouldFail()
+    public void GivenStringToNumberCast_WhenCasting_ShouldThrowInvalidCast()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<string, int>("123"));
     }
 
     [Fact]
-    public void Cast_WideningNumericConversion_ShouldFail()
+    public void GivenWideningNumericConversion_WhenCasting_ShouldThrowInvalidCast()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<int, double>(42));
     }
 
     [Fact]
-    public void Cast_NarrowingNumericConversion_WhenValid_ShouldSucceed()
+    public void GivenNarrowingNumericConversion_WhenCasting_ShouldThrowInvalidCast()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<double, int>(42.0));
     }
 
     [Fact]
-    public void Cast_WhenDowncastingInvalidReferenceType_ShouldThrow()
+    public void GivenInvalidDowncast_WhenCasting_ShouldThrow()
     {
         Animal animal = new Animal();
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<Animal, Dog>(animal));
     }
 
     [Fact]
-    public void Cast_UnrelatedReferenceTypes_ShouldThrow()
+    public void GivenUnrelatedReferenceTypes_WhenCasting_ShouldThrow()
     {
         var list = new List<int>();
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<List<int>, Dog>(list));
     }
 
     [Fact]
-    public void Cast_InvalidStringToNumber_ShouldThrow()
+    public void GivenInvalidString_WhenCastingToNumber_ShouldThrow()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<string, int>("abc"));
     }
 
     [Fact]
-    public void Cast_NarrowingNumericConversion_WhenDataLoss_ShouldThrow()
+    public void GivenNarrowingConversionWithDataLoss_WhenCasting_ShouldThrow()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<double, int>(42.5));
     }
 
     [Fact]
-    public void Cast_NullToNonNullableValueType_ShouldThrow()
+    public void GivenNullValue_WhenCastingToNonNullableValueType_ShouldThrow()
     {
         Should.Throw<InvalidCastException>(() => TypeCaster.Cast<object, int>(null!));
     }
 
     [Fact]
-    public void TryCast_WhenUpcastingReferenceType_ShouldReturnTrue()
+    public void GivenReferenceTypeUpcast_WhenTryCasting_ShouldReturnTrue()
     {
         var dog = new Dog();
         TypeCaster.TryCast<Dog, Animal>(dog, out var result).ShouldBeTrue();
@@ -106,26 +106,26 @@ public class TypeCasterTests
     }
 
     [Fact]
-    public void TryCast_StringToNumber_ShouldReturnFalse()
+    public void GivenStringToNumber_WhenTryCasting_ShouldReturnFalse()
     {
         TypeCaster.TryCast("123", out int _).ShouldBeFalse();
     }
 
     [Fact]
-    public void TryCast_WideningNumericConversion_ShouldReturnTrue()
+    public void GivenWideningNumericConversion_WhenTryCasting_ShouldReturnFalse()
     {
         TypeCaster.TryCast(42, out double _).ShouldBeFalse();
     }
 
     [Fact]
-    public void TryCast_NullToNullableValueType_ShouldReturnTrue()
+    public void GivenNullValue_WhenTryCastingToNullableValueType_ShouldReturnTrue()
     {
         TypeCaster.TryCast<object, int?>(null!, out var result).ShouldBeTrue();
         result.ShouldBeNull();
     }
 
     [Fact]
-    public void TryCast_WhenDowncastingInvalidReferenceType_ShouldReturnFalse()
+    public void GivenInvalidDowncast_WhenTryCasting_ShouldReturnFalse()
     {
         Animal animal = new Animal();
         TypeCaster.TryCast<Animal, Dog>(animal, out var result).ShouldBeFalse();
@@ -133,28 +133,28 @@ public class TypeCasterTests
     }
 
     [Fact]
-    public void TryCast_InvalidStringToNumber_ShouldReturnFalse()
+    public void GivenInvalidString_WhenTryCastingToNumber_ShouldReturnFalse()
     {
         TypeCaster.TryCast("abc", out int result).ShouldBeFalse();
         result.ShouldBe(default);
     }
 
     [Fact]
-    public void TryCast_NarrowingNumericConversion_WhenDataLoss_ShouldReturnFalse()
+    public void GivenNarrowingConversionWithDataLoss_WhenTryCasting_ShouldReturnFalse()
     {
         TypeCaster.TryCast(42.5, out int result).ShouldBeFalse();
         result.ShouldBe(default);
     }
 
     [Fact]
-    public void TryCast_NullToNonNullableValueType_ShouldReturnFalse()
+    public void GivenNullValue_WhenTryCastingToNonNullableValueType_ShouldReturnFalse()
     {
         TypeCaster.TryCast<object, int>(null!, out var result).ShouldBeFalse();
         result.ShouldBe(default);
     }
 
     [Fact]
-    public void TryCast_UnrelatedTypes_ShouldReturnFalse()
+    public void GivenUnrelatedTypes_WhenTryCasting_ShouldReturnFalse()
     {
         var guid = Guid.NewGuid();
         TypeCaster.TryCast<Guid, DateTime>(guid, out var result).ShouldBeFalse();

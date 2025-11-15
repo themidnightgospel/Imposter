@@ -38,7 +38,7 @@ public interface ICalculator
 // c# 14
 var imposter = ICalculator.Imposter();
 
-// c# 8 - 13
+// c# 9 - 13
 // var imposter = new ICalculatorImposter();
 
 imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
@@ -48,7 +48,7 @@ imposter.Instance().Add(1, 2); // 42
 
 Learn more: https://themidnightgospel.github.io/Imposter/
 
-## ✨ Fully Featured:
+## ✨ Feature-Rich
 
 - [Method Impersonation](https://themidnightgospel.github.io/Imposter/methods/) 
 - [Property Impersonation](https://themidnightgospel.github.io/Imposter/properties/)

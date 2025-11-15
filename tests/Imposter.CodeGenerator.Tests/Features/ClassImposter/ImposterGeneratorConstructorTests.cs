@@ -30,7 +30,7 @@ public class PrivateOnlyClass
     [Fact]
     public void GivenClassWithOnlyPrivateConstructors_WhenGeneratorRuns_ShouldReportIMP004()
     {
-        var compilation = CreateCompilation(LanguageVersion.CSharp8);
+        var compilation = CreateCompilation(LanguageVersion.CSharp9);
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
 
         var runResult = driver.RunGenerators(compilation).GetRunResult();

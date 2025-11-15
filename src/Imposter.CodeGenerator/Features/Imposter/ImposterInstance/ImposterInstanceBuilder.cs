@@ -252,7 +252,7 @@ internal readonly ref struct ImposterInstanceBuilder
         var fields = GetFields(imposterGenerationContext, imposterFieldName);
 
         var imposterClassBuilder = new ClassDeclarationBuilder(name)
-            .AddBaseType(SimpleBaseType(TypeSyntax(imposterGenerationContext.TargetSymbol)))
+            .AddBaseType(SimpleBaseType(imposterGenerationContext.Imposter.TargetTypeSyntax))
             .AddMembers(fields);
 
         imposterClassBuilder = imposterGenerationContext.Imposter.IsClass
@@ -274,7 +274,7 @@ internal readonly ref struct ImposterInstanceBuilder
     ) =>
         [
             SinglePrivateReadonlyVariableField(
-                IdentifierName(imposterGenerationContext.Imposter.Name),
+                imposterGenerationContext.Imposter.ImposterTypeSyntax,
                 imposterFieldName
             ),
         ];
@@ -303,7 +303,7 @@ internal readonly ref struct ImposterInstanceBuilder
             return [];
         }
 
-        var imposterName = imposterGenerationContext.Imposter.Name;
+        var imposterTypeSyntax = imposterGenerationContext.Imposter.ImposterTypeSyntax;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
 
         return accessibleConstructors
@@ -313,7 +313,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     constructorMetadata.Parameters.Length + 1
                 )
                 {
-                    ParameterSyntax(IdentifierName(imposterName), imposterFieldName),
+                    ParameterSyntax(imposterTypeSyntax, imposterFieldName),
                 };
                 constructorParameters.AddRange(
                     constructorMetadata.Parameters.Select(parameter =>

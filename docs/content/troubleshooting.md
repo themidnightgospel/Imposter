@@ -10,7 +10,7 @@ Common issues and quick fixes.
 ```xml
 <PropertyGroup>
   <LangVersion>latest</LangVersion>
-  <!-- C# 14+ enables static type extensions; core functionality works on C# 8–13. -->
+  <!-- C# 14+ enables static type extensions; core functionality works on C# 9–13. -->
 </PropertyGroup>
 ```
 

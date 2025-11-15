@@ -110,6 +110,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // abstract int AbstractTelemetryService.Compute(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeMethodInvocationImposterGroup
         {
@@ -259,6 +260,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // abstract int AbstractTelemetryService.Compute(int value)
         public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
@@ -471,6 +473,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // abstract int? AbstractTelemetryService.ComputeNullable(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeNullableMethodInvocationImposterGroup
         {
@@ -620,6 +623,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // abstract int? AbstractTelemetryService.ComputeNullable(int value)
         public interface IComputeNullableMethodImposterBuilder : IComputeNullableMethodInvocationImposterGroup, IComputeNullableMethodInvocationImposterGroupCallback, ComputeNullableInvocationVerifier
         {
         }

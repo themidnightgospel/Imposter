@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>12</LangVersion>
+  </PropertyGroup>
+
+  <Import Project="..\..\Roslyn.Shared.props" />
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>GeneratedFiles\$(ROSLYN_VERSION)</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="GeneratedFiles\**" />
+    <None Include="GeneratedFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj"
+      OutputItemType="Analyzer"
+    />
+    <ProjectReference
+      Include="..\..\src\Imposter.CodeGenerator\Imposter.CodeGenerator.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
+    <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

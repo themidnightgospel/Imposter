@@ -8,7 +8,7 @@ namespace Imposter.CodeGenerator.Tests;
 public class ArgTests
 {
     [Fact]
-    public void Arg_Any_ShouldMatchAnyValue()
+    public void GivenAnyMatcher_WhenEvaluatingValueTypes_ShouldMatchAnyValue()
     {
         // Arrange
         var arg = Arg<int>.Any();
@@ -20,7 +20,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Any_ShouldMatchAnyReferenceValueIncludingNull()
+    public void GivenAnyMatcher_WhenEvaluatingReferenceTypes_ShouldMatchIncludingNull()
     {
         // Arrange
         var arg = Arg<string>.Any();
@@ -32,7 +32,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Is_Value_ShouldMatchEqualValue()
+    public void GivenIsMatcher_WhenValueEqualsTarget_ShouldMatchOnlyThatValue()
     {
         // Arrange
         var arg = Arg<int>.Is(42);
@@ -43,7 +43,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNot_Value_ShouldMatchAnythingExceptProvidedValue()
+    public void GivenIsNotMatcher_WhenValueEqualsTarget_ShouldRejectValue()
     {
         // Arrange
         var arg = Arg<int>.IsNot(42);
@@ -54,7 +54,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNot_Null_ShouldMatchNonNullReferencesOnly()
+    public void GivenIsNotMatcher_WhenReferenceIsNull_ShouldRejectNull()
     {
         // Arrange
         var arg = Arg<string>.IsNot((string?)null);
@@ -65,7 +65,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Is_WithCustomComparer_ShouldUseComparer()
+    public void GivenIsMatcher_WhenUsingCustomComparer_ShouldHonorComparer()
     {
         // Arrange
         var arg = Arg<string>.Is("foo", StringComparer.OrdinalIgnoreCase);
@@ -76,7 +76,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNot_WithCustomComparer_ShouldUseComparer()
+    public void GivenIsNotMatcher_WhenUsingCustomComparer_ShouldHonorComparer()
     {
         // Arrange
         var arg = Arg<string>.IsNot("foo", StringComparer.OrdinalIgnoreCase);
@@ -87,7 +87,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Is_Reference_ShouldMatchEqualReference()
+    public void GivenIsMatcher_WhenReferenceMatches_ShouldSucceed()
     {
         // Arrange
         var arg = Arg<string>.Is("test");
@@ -98,7 +98,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Is_Null_ShouldMatchNull()
+    public void GivenIsMatcher_WhenReferenceNullIsExpected_ShouldMatchNull()
     {
         // Arrange
         var arg = Arg<string>.Is((string?)null);
@@ -109,7 +109,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNot_Predicate_ShouldMatchWhenPredicateIsFalse()
+    public void GivenIsNotMatcher_WhenPredicateFails_ShouldRejectValue()
     {
         // Arrange
         var arg = Arg<int>.IsNot(x => x % 2 == 0);
@@ -120,7 +120,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_Is_Predicate_ShouldMatchBasedOnPredicate()
+    public void GivenIsMatcher_WhenPredicateIsUsed_ShouldHonorPredicate()
     {
         // Arrange
         var arg = Arg<int>.Is(i => i > 10);
@@ -132,7 +132,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsIn_ShouldMatchValuesPresentInCollection()
+    public void GivenIsInMatcher_WhenValueIsInCollection_ShouldMatchOnlyContainedValues()
     {
         // Arrange
         var arg = Arg<int>.IsIn(new[] { 1, 2, 3 });
@@ -143,7 +143,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsIn_WithCustomComparer_ShouldUseComparer()
+    public void GivenIsInMatcher_WhenUsingComparer_ShouldHonorComparer()
     {
         // Arrange
         var arg = Arg<string>.IsIn(new[] { "foo", "bar" }, StringComparer.OrdinalIgnoreCase);
@@ -154,7 +154,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNotIn_ShouldRejectValuesPresentInCollection()
+    public void GivenIsNotInMatcher_WhenValueInCollection_ShouldRejectIt()
     {
         // Arrange
         var forbidden = new[] { "alpha", "beta" };
@@ -166,7 +166,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsNotIn_WithCustomComparer_ShouldUseComparer()
+    public void GivenIsNotInMatcher_WhenUsingComparer_ShouldHonorComparer()
     {
         // Arrange
         var forbidden = new[] { "foo", "bar" };
@@ -178,7 +178,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsDefault_ShouldMatchDefaultValueType()
+    public void GivenIsDefaultMatcher_WhenValueTypeIsDefault_ShouldMatchDefault()
     {
         // Arrange
         var arg = Arg<int>.IsDefault();
@@ -189,7 +189,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsDefault_ShouldMatchDefaultReferenceType()
+    public void GivenIsDefaultMatcher_WhenReferenceTypeIsDefault_ShouldMatchDefault()
     {
         // Arrange
         var arg = Arg<string>.IsDefault();
@@ -200,7 +200,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void Arg_IsDefault_ShouldMatchDefaultStruct()
+    public void GivenIsDefaultMatcher_WhenStructIsDefault_ShouldMatchDefault()
     {
         // Arrange
         var arg = Arg<TestStruct>.IsDefault();
@@ -211,7 +211,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void OutArg_Any_ShouldAlwaysMatch()
+    public void GivenOutArgAnyMatcher_WhenAnyValueProvided_ShouldAlwaysMatch()
     {
         // Arrange
         var arg = OutArg<int>.Any();
@@ -224,7 +224,7 @@ public class ArgTests
     }
 
     [Fact]
-    public void OutArg_Any_ShouldAlwaysMatchForReferenceTypes()
+    public void GivenOutArgAnyMatcher_WhenReferenceValuesProvided_ShouldAlwaysMatch()
     {
         // Arrange
         var arg = OutArg<string>.Any();

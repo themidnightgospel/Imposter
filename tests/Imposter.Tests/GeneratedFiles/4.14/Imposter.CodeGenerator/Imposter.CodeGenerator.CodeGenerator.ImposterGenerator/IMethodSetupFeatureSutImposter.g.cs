@@ -932,9 +932,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodInvocationHistory
         {
             internal GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -3074,9 +3074,9 @@ namespace Imposter.Tests.Features.MethodImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal class GenericOutParamMethodInvocationHistory<TValue, TResult> : IGenericOutParamMethodInvocationHistory
         {
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericOutParamMethodInvocationHistory(TResult Result, global::System.Exception? Exception)
+            public GenericOutParamMethodInvocationHistory(TResult? Result, global::System.Exception? Exception)
             {
                 this.Result = Result;
                 this.Exception = Exception;
@@ -3524,9 +3524,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericParamsParamMethodInvocationHistory<TValue, TResult> : IGenericParamsParamMethodInvocationHistory
         {
             internal GenericParamsParamArguments<TValue, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericParamsParamMethodInvocationHistory(GenericParamsParamArguments<TValue, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericParamsParamMethodInvocationHistory(GenericParamsParamArguments<TValue, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;
@@ -3970,9 +3970,9 @@ namespace Imposter.Tests.Features.MethodImposter
         internal class GenericRefParamMethodInvocationHistory<TValue, TResult> : IGenericRefParamMethodInvocationHistory
         {
             internal GenericRefParamArguments<TValue, TResult> Arguments;
-            internal TResult Result;
+            internal TResult? Result;
             internal global::System.Exception? Exception;
-            public GenericRefParamMethodInvocationHistory(GenericRefParamArguments<TValue, TResult> Arguments, TResult Result, global::System.Exception? Exception)
+            public GenericRefParamMethodInvocationHistory(GenericRefParamArguments<TValue, TResult> Arguments, TResult? Result, global::System.Exception? Exception)
             {
                 this.Arguments = Arguments;
                 this.Result = Result;

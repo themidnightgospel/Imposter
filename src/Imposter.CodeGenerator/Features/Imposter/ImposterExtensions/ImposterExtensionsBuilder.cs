@@ -24,14 +24,16 @@ internal static class ImposterExtensionsBuilder
     {
         var extensionClassName =
             $"{imposterGenerationContext.TargetSymbol.Name}{MethodName}Extensions";
-        var targetType = SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol);
+        var targetType = imposterGenerationContext.Imposter.TargetTypeSyntax;
+
         var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(
             imposterNamespaceName,
-            imposterGenerationContext.Imposter.Name
+            imposterGenerationContext.Imposter.ImposterTypeSyntax.ToString()
         );
         var accessibilityModifiers = GetAccessibilityModifiers(
             imposterGenerationContext.TargetSymbol
         );
+        var targetTypeParameters = imposterGenerationContext.Imposter.TypeParameters;
 
         IEnumerable<MethodDeclarationSyntax> methodDeclarations = imposterGenerationContext
             .Imposter
@@ -56,6 +58,20 @@ internal static class ImposterExtensionsBuilder
             .WithMembers(List(methodDeclarations.Cast<MemberDeclarationSyntax>()))
             .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
             .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
+
+        if (targetTypeParameters.TypeParameterListSyntax is not null)
+        {
+            extensionDeclaration = extensionDeclaration.WithTypeParameterList(
+                targetTypeParameters.TypeParameterListSyntax
+            );
+        }
+
+        if (targetTypeParameters.ConstraintClauses.Count > 0)
+        {
+            extensionDeclaration = extensionDeclaration.WithConstraintClauses(
+                List(targetTypeParameters.ConstraintClauses)
+            );
+        }
 
         var classDeclarationBuilder = new ClassDeclarationBuilder(extensionClassName);
         foreach (var modifier in accessibilityModifiers)

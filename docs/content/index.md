@@ -76,7 +76,7 @@ After a build, use the generated type:
     service.GetNumber().ShouldBe(42);
     ```
 
-=== "C# 8-13"
+=== "C# 9-13"
 
     Use the generated imposter type directly:
 
@@ -119,7 +119,7 @@ After a build, use the generated type:
     service.GetNumber().ShouldBe(42);
     ```
 
-=== "C# 8-13"
+=== "C# 9-13"
 
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L51"}
     var imposter = new BaseServiceImposter();
@@ -133,7 +133,7 @@ After a build, use the generated type:
     For classes, only virtual or abstract members can be impersonated (mocked).
 
 !!! warning
-    Minimum supported C# version is 8.0
+    Minimum supported C# version is 9.0
 
 !!! info "Next steps"
 

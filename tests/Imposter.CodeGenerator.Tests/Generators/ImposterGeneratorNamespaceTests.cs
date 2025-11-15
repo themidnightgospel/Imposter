@@ -35,7 +35,7 @@ public interface IGeneric<TFirst, TSecond>
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorNamespaceTests),
-            languageVersion: LanguageVersion.CSharp8
+            languageVersion: LanguageVersion.CSharp9
         );
 
     [Fact]

@@ -65,7 +65,7 @@ internal static class GenerateImposterDeclarationsProvider
                 )
                 {
                     return new GenerateImposterDeclaration(
-                        imposterType,
+                        NormalizeImposterTarget(imposterType),
                         GetPutInTheSameNamespaceValue(a)
                     );
                 }
@@ -89,5 +89,12 @@ internal static class GenerateImposterDeclarationsProvider
     private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
         attributeData.ConstructorArguments.Length != 2
         || (bool)attributeData.ConstructorArguments[1].Value!;
+
+    private static INamedTypeSymbol NormalizeImposterTarget(INamedTypeSymbol imposterType)
+    {
+        return imposterType.IsUnboundGenericType
+            ? (INamedTypeSymbol)imposterType.OriginalDefinition
+            : imposterType;
+    }
 }
 #endif

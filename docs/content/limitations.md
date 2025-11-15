@@ -30,6 +30,6 @@ Imposter generates compile-time imposters. It does not alter existing types at r
 
 ## Language Version Considerations
 
-- Static type extensions (e.g., `IMyService.Imposter()`) require C# 14+. On C# 8–13, use the generated `IMyServiceImposter` type directly.
+- Static type extensions (e.g., `IMyService.Imposter()`) require C# 14+. On C# 9–13, use the generated `IMyServiceImposter` type directly.
 
 See also: [Troubleshooting](troubleshooting.md)

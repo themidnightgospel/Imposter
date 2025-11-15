@@ -49,7 +49,7 @@ Scope: These conventions apply to `tests/Imposter.Tests` and its subtree.
 
 ## Important
 - When writing code, coverage is critical; ensure all new features and edge cases are tested.
-- The language version of this project must remain at C# 8.0 to match the minimum supported language version by the Imposter generator.
+- The language version of this project must remain at C# 9.0 to match the minimum supported language version by the Imposter generator.
 - Test must be concise and focused; Avoid asserting multiple behaviors in a single test method. For example, if you're testing protected member imposters, have separate tests for methods, indexers, properties, etc. Instead of putting all of it in one test method.
 
 Notes

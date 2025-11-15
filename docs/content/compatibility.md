@@ -18,7 +18,7 @@ Minimum supported C# language version is 8.0 for all target frameworks. Static t
 
 ## Notes
 
-- Static type extensions are a compile-time feature. If your project compiles with C# 8–13, use the generated `FooImposter` type directly. With C# 14+, you can use `Foo.Imposter()`.
+- Static type extensions are a compile-time feature. If your project compiles with C# 9–13, use the generated `FooImposter` type directly. With C# 14+, you can use `Foo.Imposter()`.
 - The generator requires SDK-style projects so analyzers load during build.
 - The runtime library (`Imposter.Abstractions`) targets `netstandard2.0`, enabling broad runtime compatibility.
 - For older tooling or non-SDK projects, migrate to SDK-style to use source generators.

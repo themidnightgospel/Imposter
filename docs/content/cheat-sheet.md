@@ -9,7 +9,7 @@ Quick reference for common operations.
 var imp = IMyService.Imposter();
 var svc = imp.Instance();
 
-// C# 8–13
+// C# 9–13
 var imp2 = new IMyServiceImposter();
 var svc2 = imp2.Instance();
 ```

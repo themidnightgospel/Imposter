@@ -36,7 +36,7 @@ public interface IDuplicate
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(ImposterGeneratorDuplicateAttributeTests),
-            languageVersion: LanguageVersion.CSharp8
+            languageVersion: LanguageVersion.CSharp9
         );
 
     [Fact]

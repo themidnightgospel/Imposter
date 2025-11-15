@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Imposter.Playground": {
+      "commandName": "Project",
+      "dotnetRunMessages": true
+    }
+  }
+}
+

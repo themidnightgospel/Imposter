@@ -50,6 +50,7 @@ FEATURES:
     IN Progress:
       - Add Docs page
       - Add a sample project.
+      - Use nullable generics now that we use c# 9
     NOT Started:
       - update links on readme.md under "Fully Featured"
       - organize Test according to features

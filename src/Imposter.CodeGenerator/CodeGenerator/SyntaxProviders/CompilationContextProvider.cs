@@ -18,8 +18,15 @@ internal static class CompilationContextProvider
     {
         var loggingEnabledProvider = context.AnalyzerConfigOptionsProvider.Select(
             static (options, _) =>
-                options.GlobalOptions.TryGetValue("build_property.IMPOSTER_LOG", out var v)
-                && string.Equals(v?.Trim(), "true", System.StringComparison.OrdinalIgnoreCase)
+                options.GlobalOptions.TryGetValue(
+                    "build_property.IMPOSTER_LOG",
+                    out var imposterLogPoperty
+                )
+                && string.Equals(
+                    imposterLogPoperty.Trim(),
+                    "true",
+                    System.StringComparison.OrdinalIgnoreCase
+                )
         );
 
         return context
@@ -60,18 +67,18 @@ internal static class CompilationContextProvider
                 DiagnosticDescriptors.UnsupportedLanguage,
                 Location.None,
                 compilation.Language,
-                LanguageVersion.CSharp8.ToDisplayString()
+                LanguageVersion.CSharp9.ToDisplayString()
             );
             yield break;
         }
 
-        if (csCompilation.LanguageVersion < LanguageVersion.CSharp8)
+        if (csCompilation.LanguageVersion < LanguageVersion.CSharp9)
         {
             yield return Diagnostic.Create(
                 DiagnosticDescriptors.NotSupportedCSharpVersion,
                 Location.None,
                 csCompilation.LanguageVersion.ToDisplayString(),
-                LanguageVersion.CSharp8.ToDisplayString()
+                LanguageVersion.CSharp9.ToDisplayString()
             );
         }
     }

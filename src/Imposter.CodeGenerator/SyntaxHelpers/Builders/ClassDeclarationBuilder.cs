@@ -17,6 +17,7 @@ internal readonly struct ClassDeclarationBuilder(
     private readonly List<AttributeListSyntax> _attribute = [];
     private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
+    private readonly List<TypeParameterConstraintClauseSyntax> _typeParameterConstraintClauses = [];
 
     internal IReadOnlyList<MemberDeclarationSyntax> Members => _members;
 
@@ -67,15 +68,45 @@ internal readonly struct ClassDeclarationBuilder(
         return this;
     }
 
+    internal ClassDeclarationBuilder AddTypeParameterConstraintClause(
+        TypeParameterConstraintClauseSyntax clause
+    )
+    {
+        _typeParameterConstraintClauses.Add(clause);
+        return this;
+    }
+
+    internal ClassDeclarationBuilder WithTypeParameterConstraintClauses(
+        IEnumerable<TypeParameterConstraintClauseSyntax>? constraintClauses
+    )
+    {
+        if (constraintClauses is null)
+        {
+            return this;
+        }
+
+        foreach (var clause in constraintClauses)
+        {
+            AddTypeParameterConstraintClause(clause);
+        }
+
+        return this;
+    }
+
     public ClassDeclarationSyntax Build()
     {
+        var constraintClauses =
+            _typeParameterConstraintClauses.Count > 0
+                ? List(_typeParameterConstraintClauses)
+                : default;
+
         return ClassDeclaration(
             List(DefaultAttributes.DefaultTypeAttributes.Concat(_attribute)),
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
-            default,
+            constraintClauses,
             new SyntaxList<MemberDeclarationSyntax>(_members)
         );
     }

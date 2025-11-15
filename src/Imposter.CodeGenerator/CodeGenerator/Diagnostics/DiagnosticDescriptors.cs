@@ -45,7 +45,7 @@ public static class DiagnosticDescriptors
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
         true,
-        description: "The generator relies on C# 8.0 features. Update the consuming project to a supported language version.",
+        description: "The generator relies on C# 9.0 features. Update the consuming project to a supported language version.",
         helpLinkUri: LanguageSupportHelpUrl
     );
 

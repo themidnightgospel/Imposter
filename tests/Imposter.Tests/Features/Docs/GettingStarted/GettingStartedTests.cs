@@ -27,7 +27,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         [Fact]
         public void Interface_Generation_And_Usage()
         {
-            // C# 8-13 usage
+            // C# 9-13 usage
             var imposter = new IMyServiceImposter(); // default: Implicit behavior
             var service = imposter.Instance(); // user-facing instance
 
@@ -47,7 +47,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         [Fact]
         public void Class_Generation_And_Usage()
         {
-            // C# 8-13 usage
+            // C# 9-13 usage
             var imposter = new BaseServiceImposter();
             var service = imposter.Instance();
 

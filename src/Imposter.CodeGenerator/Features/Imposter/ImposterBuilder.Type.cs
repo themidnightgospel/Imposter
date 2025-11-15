@@ -215,11 +215,17 @@ internal readonly ref partial struct ImposterBuilder
 
     internal static ImposterBuilder Create(in ImposterGenerationContext imposterGenerationContext)
     {
-        var imposterBuilder = new ClassDeclarationBuilder(imposterGenerationContext.Imposter.Name)
+        var typeParameters = imposterGenerationContext.Imposter.TypeParameters;
+
+        var imposterBuilder = new ClassDeclarationBuilder(
+            imposterGenerationContext.Imposter.Name,
+            typeParameters.TypeParameterListSyntax
+        )
+            .WithTypeParameterConstraintClauses(typeParameters.ConstraintClauses)
             .AddBaseType(
                 SimpleBaseType(
                     WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
-                        SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)
+                        imposterGenerationContext.Imposter.TargetTypeSyntax
                     )
                 )
             )

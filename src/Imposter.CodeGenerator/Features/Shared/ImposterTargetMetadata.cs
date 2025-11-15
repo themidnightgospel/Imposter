@@ -4,13 +4,19 @@ using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct ImposterTargetMetadata
 {
     internal readonly string Name;
+
+    internal readonly NameSyntax ImposterTypeSyntax;
+
+    internal readonly TypeSyntax TargetTypeSyntax;
 
     internal readonly bool IsClass;
 
@@ -24,6 +30,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
 
+    internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
+
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(
@@ -32,6 +40,12 @@ internal readonly struct ImposterTargetMetadata
     )
     {
         Name = targetSymbol.Name + "Imposter";
+        TypeParameters = new ImposterTargetTypeParametersMetadata(targetSymbol);
+        ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
+            TypeParameters.TypeArguments,
+            Name
+        );
+        TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(targetSymbol);
         Methods = GetMethods(targetSymbol, _symbolNameNamespace, supportedCSharpFeatures);
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
         AccessibleConstructors = GetAccessibleConstructors(targetSymbol);

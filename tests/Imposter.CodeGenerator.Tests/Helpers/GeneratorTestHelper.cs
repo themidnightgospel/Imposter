@@ -23,7 +23,7 @@ internal static class GeneratorTestHelper
         string baseSourceFileName,
         string snippetFileName,
         string assemblyName,
-        LanguageVersion languageVersion = LanguageVersion.CSharp8
+        LanguageVersion languageVersion = LanguageVersion.CSharp9
     )
     {
         return new GeneratorTestContext(

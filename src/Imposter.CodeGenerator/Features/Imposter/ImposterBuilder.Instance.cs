@@ -12,13 +12,13 @@ internal readonly partial struct ImposterBuilder
         string imposterInstanceFieldName
     ) =>
         new MethodDeclarationBuilder(
-            SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol),
+            imposterGenerationContext.Imposter.TargetTypeSyntax,
             "Instance"
         )
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(
                     WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
-                        SyntaxFactoryHelper.TypeSyntax(imposterGenerationContext.TargetSymbol)
+                        imposterGenerationContext.Imposter.TargetTypeSyntax
                     )
                 )
             )
