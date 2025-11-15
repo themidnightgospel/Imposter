@@ -29,6 +29,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imposter.CSharp14.Samples",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2DAD5A1A-4D4A-4125-B213-E5EA5279C01B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{F6AB4F7F-D75D-48AC-BE4B-F8F5D853815B}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		Roslyn.Shared.props = Roslyn.Shared.props
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
