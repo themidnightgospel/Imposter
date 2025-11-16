@@ -129,9 +129,7 @@ internal static partial class SyntaxFactoryHelper
     }
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
-        IdentifierName(parameter.Name)
-            .Assign(DefaultExpression(TypeSyntax(parameter.Type)))
-            .ToStatementSyntax();
+        IdentifierName(parameter.Name).Assign(DefaultNonNullable).ToStatementSyntax();
 
     internal static TypeParameterListSyntax? TypeParameterListSyntax(
         IReadOnlyList<NameSyntax> genericArguments

@@ -60,11 +60,13 @@ internal static class SetterImposterBuilder
                 )
             )
             .AddMember(
-                SingleVariableField(
-                    WellKnownTypes.Bool,
-                    "_useBaseImplementation",
-                    SyntaxKind.PrivateKeyword
-                )
+                property.Core.SetterSupportsBaseImplementation
+                    ? SingleVariableField(
+                        WellKnownTypes.Bool,
+                        "_useBaseImplementation",
+                        SyntaxKind.PrivateKeyword
+                    )
+                    : null
             )
             .AddMember(BuildConstructor(property))
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
@@ -74,7 +76,13 @@ internal static class SetterImposterBuilder
                     ? BuildUseBaseImplementationMethod()
                     : null
             )
-            .AddMember(BuildSetMethod(property.SetterImposter, property.DefaultPropertyBehaviour))
+            .AddMember(
+                BuildSetMethod(
+                    property.SetterImposter,
+                    property.DefaultPropertyBehaviour,
+                    property.Core.SetterSupportsBaseImplementation
+                )
+            )
             .AddMember(BuildEnsureSetterConfiguredMethod())
             .AddMember(BuildMarkConfiguredMethod())
             .AddMember(SetterImposterBuilderBuilder.Build(property))
@@ -144,7 +152,8 @@ internal static class SetterImposterBuilder
 
     internal static MethodDeclarationSyntax BuildSetMethod(
         in PropertySetterImposterMetadata setterImposter,
-        in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour
+        in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
+        bool setterSupportsBaseImplementation
     )
     {
         var baseImplementationIdentifier = IdentifierName(
@@ -158,7 +167,12 @@ internal static class SetterImposterBuilder
         };
 
         bodyStatements.AddRange(
-            SetBackingField(setterImposter, defaultPropertyBehaviour, baseImplementationIdentifier)
+            SetBackingField(
+                setterImposter,
+                defaultPropertyBehaviour,
+                baseImplementationIdentifier,
+                setterSupportsBaseImplementation
+            )
         );
 
         return new MethodDeclarationBuilder(
@@ -174,37 +188,14 @@ internal static class SetterImposterBuilder
         static IEnumerable<StatementSyntax> SetBackingField(
             in PropertySetterImposterMetadata setterImposter,
             in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
-            ExpressionSyntax baseImplementationIdentifier
+            ExpressionSyntax baseImplementationIdentifier,
+            bool setterSupportsBaseImplementation
         )
         {
-            var baseImplementationCall = baseImplementationIdentifier.Call(
-                ArgumentList(
-                    SingletonSeparatedList(
-                        Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                    )
-                )
-            );
             var defaultBehaviourCheck = IdentifierName(
                     setterImposter.DefaultPropertyBehaviourField.Name
                 )
                 .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
-
-            var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
-            var missingBaseImplementation = ThrowStatement(
-                WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                    Argument(
-                            BinaryExpression(
-                                SyntaxKind.AddExpression,
-                                IdentifierName("_propertyDisplayName"),
-                                LiteralExpression(
-                                    SyntaxKind.StringLiteralExpression,
-                                    Literal(" (setter)")
-                                )
-                            )
-                        )
-                        .AsSingleArgumentListSyntax()
-                )
-            );
 
             StatementSyntax[] assignBackingFieldStatements =
             [
@@ -218,23 +209,55 @@ internal static class SetterImposterBuilder
                     .ToStatementSyntax(),
             ];
 
-            var baseImplementationPath = IfStatement(
-                useBaseImplementationCheck,
-                Block(
-                    IfStatement(
-                        baseImplementationIdentifier.IsNotNull(),
-                        Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
-                        ElseClause(missingBaseImplementation)
-                    )
-                )
-            );
-
             var defaultBehaviourPath = IfStatement(
                 defaultBehaviourCheck,
                 Block(assignBackingFieldStatements)
             );
 
-            return new StatementSyntax[] { baseImplementationPath, defaultBehaviourPath };
+            var statements = new List<StatementSyntax>();
+
+            if (setterSupportsBaseImplementation)
+            {
+                var baseImplementationCall = baseImplementationIdentifier.Call(
+                    ArgumentList(
+                        SingletonSeparatedList(
+                            Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
+                        )
+                    )
+                );
+                var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
+                var missingBaseImplementation = ThrowStatement(
+                    WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                        Argument(
+                                BinaryExpression(
+                                    SyntaxKind.AddExpression,
+                                    IdentifierName("_propertyDisplayName"),
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal(" (setter)")
+                                    )
+                                )
+                            )
+                            .AsSingleArgumentListSyntax()
+                    )
+                );
+                var baseImplementationPath = IfStatement(
+                    useBaseImplementationCheck,
+                    Block(
+                        IfStatement(
+                            baseImplementationIdentifier.IsNotNull(),
+                            Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
+                            ElseClause(missingBaseImplementation)
+                        )
+                    )
+                );
+
+                statements.Add(baseImplementationPath);
+            }
+
+            statements.Add(defaultBehaviourPath);
+
+            return statements;
         }
 
         static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)

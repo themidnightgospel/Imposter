@@ -112,12 +112,11 @@ namespace Imposter.Tests.Features.IndexerImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
                 internal int Get(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
                 {
-                    int value = default(int);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(int);
+                    return default !;
                 }
 
                 internal void Set(IndexerIndexerArguments arguments, int value, global::System.Action? baseImplementation = null)
@@ -215,7 +214,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                             }
                             else
                             {
-                                return default(int);
+                                return default !;
                             }
                         }
 
@@ -670,12 +669,11 @@ namespace Imposter.Tests.Features.IndexerImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int>();
                 internal int Get(Indexer_1IndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
                 {
-                    int value = default(int);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(int);
+                    return default !;
                 }
 
                 internal void Set(Indexer_1IndexerArguments arguments, int value, global::System.Action? baseImplementation = null)
@@ -773,7 +771,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                             }
                             else
                             {
-                                return default(int);
+                                return default !;
                             }
                         }
 

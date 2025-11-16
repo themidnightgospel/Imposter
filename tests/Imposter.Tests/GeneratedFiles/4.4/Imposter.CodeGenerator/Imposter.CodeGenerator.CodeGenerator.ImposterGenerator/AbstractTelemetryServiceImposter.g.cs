@@ -868,9 +868,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1240,9 +1240,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1760,12 +1760,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
                 internal int Get(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
                 {
-                    int value = default(int);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(int);
+                    return default !;
                 }
 
                 internal void Set(IndexerIndexerArguments arguments, int value, global::System.Action? baseImplementation = null)
@@ -1863,7 +1862,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             }
                             else
                             {
-                                return default(int);
+                                return default !;
                             }
                         }
 
@@ -2323,12 +2322,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int?> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int?>();
                 internal int? Get(Indexer_1IndexerArguments arguments, global::System.Func<int?>? baseImplementation = null)
                 {
-                    int? value = default(int? );
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(int? );
+                    return default !;
                 }
 
                 internal void Set(Indexer_1IndexerArguments arguments, int? value, global::System.Action? baseImplementation = null)
@@ -2426,7 +2424,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             }
                             else
                             {
-                                return default(int? );
+                                return default !;
                             }
                         }
 

@@ -912,9 +912,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal T BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal T BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1461,12 +1461,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, T> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, T>();
                 internal T Get(IndexerIndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
                 {
-                    T value = default(T);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(T);
+                    return default !;
                 }
 
                 internal void Set(IndexerIndexerArguments arguments, T value, global::System.Action? baseImplementation = null)
@@ -1564,7 +1563,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(T);
+                                return default !;
                             }
                         }
 
@@ -2061,12 +2060,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, T> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, T>();
                 internal T Get(Indexer_1IndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
                 {
-                    T value = default(T);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(T);
+                    return default !;
                 }
 
                 internal void Set(Indexer_1IndexerArguments arguments, T value, global::System.Action? baseImplementation = null)
@@ -2164,7 +2162,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(T);
+                                return default !;
                             }
                         }
 
