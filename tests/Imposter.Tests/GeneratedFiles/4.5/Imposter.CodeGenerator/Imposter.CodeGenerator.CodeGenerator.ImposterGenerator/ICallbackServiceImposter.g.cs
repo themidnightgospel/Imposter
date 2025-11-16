@@ -242,7 +242,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
                 private static void InitializeOutParametersWithDefaultValues(out int o)
                 {
-                    o = default(int);
+                    o = default !;
                 }
 
                 internal static int DefaultResultGenerator(out int o, ref string r, in double d, bool[] args)
@@ -301,7 +301,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
             private static void InitializeOutParametersWithDefaultValues(out int o)
             {
-                o = default(int);
+                o = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup(GenericAllRefKindArguments arguments)

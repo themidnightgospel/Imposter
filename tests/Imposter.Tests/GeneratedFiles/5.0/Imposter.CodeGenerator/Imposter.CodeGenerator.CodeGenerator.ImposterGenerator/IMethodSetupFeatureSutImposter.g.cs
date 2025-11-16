@@ -1102,7 +1102,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out TOut outValue)
                 {
-                    outValue = default(TOut);
+                    outValue = default !;
                 }
 
                 internal static TResult DefaultResultGenerator(out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues)
@@ -1214,7 +1214,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out TOut outValue)
             {
-                outValue = default(TOut);
+                outValue = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup(GenericAllRefKindArguments<TOut, TRef, TIn, TParams, TResult> arguments)
@@ -1522,7 +1522,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out global::System.Collections.Generic.List<TValue> value)
                 {
-                    value = default(global::System.Collections.Generic.List<TValue>);
+                    value = default !;
                 }
 
                 internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(out global::System.Collections.Generic.List<TValue> value)
@@ -1632,7 +1632,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out global::System.Collections.Generic.List<TValue> value)
             {
-                value = default(global::System.Collections.Generic.List<TValue>);
+                value = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup()
@@ -3240,7 +3240,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out TValue value)
                 {
-                    value = default(TValue);
+                    value = default !;
                 }
 
                 internal static TResult DefaultResultGenerator(out TValue value)
@@ -3350,7 +3350,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out TValue value)
             {
-                value = default(TValue);
+                value = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup()
@@ -4979,7 +4979,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out int value)
                 {
-                    value = default(int);
+                    value = default !;
                 }
 
                 internal static int DefaultResultGenerator(out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings)
@@ -5038,7 +5038,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out int value)
             {
-                value = default(int);
+                value = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup(IntAllRefKindsArguments arguments)
@@ -6004,7 +6004,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out int outValue)
                 {
-                    outValue = default(int);
+                    outValue = default !;
                 }
 
                 internal static int DefaultResultGenerator(out int outValue)
@@ -6063,7 +6063,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out int outValue)
             {
-                outValue = default(int);
+                outValue = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup()

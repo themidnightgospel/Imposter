@@ -40,7 +40,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         Name = property.Name;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
+        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(TypeSyntax);
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
         var containingType = property.ContainingType;

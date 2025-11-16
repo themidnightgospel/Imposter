@@ -1076,7 +1076,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
                 private static void InitializeOutParametersWithDefaultValues(out int doubled)
                 {
-                    doubled = default(int);
+                    doubled = default !;
                 }
 
                 internal static int DefaultResultGenerator(ref int seed, out int doubled, int[] adjustments)
@@ -1136,7 +1136,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
             private static void InitializeOutParametersWithDefaultValues(out int doubled)
             {
-                doubled = default(int);
+                doubled = default !;
             }
 
             public bool HasMatchingInvocationImposterGroup(RefOutWithParamsArguments arguments)

@@ -761,7 +761,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredSetter;
-                private bool _useBaseImplementation;
                 internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
                 {
                     this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
@@ -789,17 +788,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     {
                         if (criteria.Matches(value))
                             setterCallback(value);
-                    }
-
-                    if (_useBaseImplementation)
-                    {
-                        if (baseImplementation != null)
-                        {
-                            baseImplementation(value);
-                            return;
-                        }
-                        else
-                            throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
                     }
 
                     if (_defaultPropertyBehaviour.IsOn)

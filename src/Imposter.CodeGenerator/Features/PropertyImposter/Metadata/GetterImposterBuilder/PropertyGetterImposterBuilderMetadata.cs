@@ -33,7 +33,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         TypeSyntax = SyntaxFactory.ParseName(Name);
         var returnHandlerType = WellKnownTypes.System.Func(
             property.AsSystemFuncType.ToNullableType(),
-            property.TypeSyntax
+            property.NullableAwareTypeSyntax
         );
         ReturnValuesField = new ReturnValuesFieldMetadata(returnHandlerType);
         CallbacksField = new CallbacksFieldMetadata();
