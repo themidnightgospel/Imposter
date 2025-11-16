@@ -99,10 +99,7 @@ internal static partial class EventImposterBuilder
     {
         var blockBuilder = new BlockBuilder();
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var countIdentifier = IdentifierName(countParameterName);
-        var ensureCountMatchesIdentifier = IdentifierName(
-            @event.Builder.Methods.EnsureCountMatchesName
-        );
+        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatchesName;
         var eventName = @event.Core.Name;
         var parameters = @event.Core.Parameters;
 
@@ -115,29 +112,19 @@ internal static partial class EventImposterBuilder
 
         var predicate = BuildRaisedPredicate(@event);
 
-        blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(
-                WellKnownTypes.Int,
-                "actual",
-                FieldIdentifier(@event.Builder.Fields.History)
-                    .Dot(LinqSyntaxHelper.Count)
-                    .Call([Argument(predicate)])
+        AddEnsureCountMatchesStatements(
+            blockBuilder,
+            countParameterName,
+            ensureCountMatchesName,
+            FieldIdentifier(@event.Builder.Fields.History)
+                .Dot(LinqSyntaxHelper.Count)
+                .Call([Argument(predicate)]),
+            BuildRaisedPerformedInvocationsFactory(
+                @event.Builder.Fields.History,
+                eventName,
+                parameters,
+                GetPredicateBody(predicate)
             )
-        );
-
-        blockBuilder.AddExpression(
-            ensureCountMatchesIdentifier.Call([
-                Argument(IdentifierName("actual")),
-                Argument(countIdentifier),
-                Argument(
-                    BuildRaisedPerformedInvocationsFactory(
-                        @event.Builder.Fields.History,
-                        eventName,
-                        parameters,
-                        GetPredicateBody(predicate)
-                    )
-                ),
-            ])
         );
 
         blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
@@ -227,10 +214,7 @@ internal static partial class EventImposterBuilder
     )
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var countIdentifier = IdentifierName(countParameterName);
-        var ensureCountMatchesIdentifier = IdentifierName(
-            @event.Builder.Methods.EnsureCountMatchesName
-        );
+        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatchesName;
 
         var blockBuilder = new BlockBuilder()
             .AddExpression(ThrowIfNull(criteriaParameterName))
@@ -242,28 +226,18 @@ internal static partial class EventImposterBuilder
             predicateFactory(entryIdentifier)
         );
 
-        blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(
-                WellKnownTypes.Int,
-                "actual",
-                FieldIdentifier(historyField)
-                    .Dot(LinqSyntaxHelper.Count)
-                    .Call([Argument(predicateLambda)])
+        AddEnsureCountMatchesStatements(
+            blockBuilder,
+            countParameterName,
+            ensureCountMatchesName,
+            FieldIdentifier(historyField)
+                .Dot(LinqSyntaxHelper.Count)
+                .Call([Argument(predicateLambda)]),
+            BuildHistoryPerformedInvocationsFactory(
+                historyField,
+                descriptionFactory,
+                GetPredicateBody(predicateLambda)
             )
-        );
-
-        blockBuilder.AddExpression(
-            ensureCountMatchesIdentifier.Call([
-                Argument(IdentifierName("actual")),
-                Argument(countIdentifier),
-                Argument(
-                    BuildHistoryPerformedInvocationsFactory(
-                        historyField,
-                        descriptionFactory,
-                        GetPredicateBody(predicateLambda)
-                    )
-                ),
-            ])
         );
 
         blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
@@ -277,19 +251,12 @@ internal static partial class EventImposterBuilder
         new MethodDeclarationBuilder(WellKnownTypes.Void, methods.EnsureCountMatchesName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList([
-                        Parameter(Identifier("actual")).WithType(WellKnownTypes.Int),
-                        Parameter(Identifier("expected"))
-                            .WithType(WellKnownTypes.Imposter.Abstractions.Count),
-                        Parameter(Identifier("performedInvocationsFactory"))
-                            .WithType(
-                                WellKnownTypes.System.FuncOfT(
-                                    PredefinedType(Token(SyntaxKind.StringKeyword))
-                                )
-                            ),
-                    ])
+            .AddParameter(ParameterSyntax(WellKnownTypes.Int, "actual"))
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.Count, "expected"))
+            .AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.System.FuncOfT(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                    "performedInvocationsFactory"
                 )
             )
             .WithBody(
@@ -326,6 +293,28 @@ internal static partial class EventImposterBuilder
                 )
             )
             .Build();
+
+    private static void AddEnsureCountMatchesStatements(
+        BlockBuilder blockBuilder,
+        string countParameterName,
+        string ensureCountMatchesName,
+        ExpressionSyntax actualValueExpression,
+        ExpressionSyntax performedInvocationsFactoryExpression
+    )
+    {
+        blockBuilder.AddStatement(
+            LocalVariableDeclarationSyntax(WellKnownTypes.Int, "actual", actualValueExpression)
+        );
+
+        blockBuilder.AddExpression(
+            IdentifierName(ensureCountMatchesName)
+                .Call([
+                    Argument(IdentifierName("actual")),
+                    Argument(IdentifierName(countParameterName)),
+                    Argument(performedInvocationsFactoryExpression),
+                ])
+        );
+    }
 
     private static ParenthesizedLambdaExpressionSyntax BuildHistoryPerformedInvocationsFactory(
         in FieldMetadata historyField,
