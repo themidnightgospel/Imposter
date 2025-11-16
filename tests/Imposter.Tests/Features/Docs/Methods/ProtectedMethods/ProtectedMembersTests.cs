@@ -17,7 +17,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
     public class ProtectedMembersTests
     {
         [Fact]
-        public void Methods_ProtectedMembers_SetupAndInvokeViaWrapper()
+        public void GivenProtectedMembers_WhenSetupViaWrapper_ShouldInvokeThroughWrapper()
         {
             var imp = new MyServiceImposter();
 

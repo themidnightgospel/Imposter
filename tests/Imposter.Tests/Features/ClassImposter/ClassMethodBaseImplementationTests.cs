@@ -13,7 +13,7 @@ namespace Imposter.Tests.Features.ClassImposter
             new MethodSetupFeatureClassSutImposter();
 
         [Fact]
-        public void GivenClassMethodUseBaseImplementation_WhenInvoked_ThenReturnsBaseResult()
+        public void GivenClassMethodUseBaseImplementation_WhenInvoked_ShouldReturnBaseResult()
         {
             _classSut.IntSingleParam(Arg<int>.Is(4)).UseBaseImplementation();
 
@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenSpecificReturnSetup_WhenCombinedWithBaseImplementation_ThenSpecificWins()
+        public void GivenSpecificReturnSetup_WhenCombinedWithBaseImplementation_ShouldSpecificWin()
         {
             _classSut.IntSingleParam(Arg<int>.Any()).UseBaseImplementation();
             _classSut.IntSingleParam(Arg<int>.Is(7)).Returns(42);
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenVoidMethodUseBaseImplementation_WhenInvoked_ThenRunsBaseAndCallback()
+        public void GivenVoidMethodUseBaseImplementation_WhenInvoked_ShouldRunBaseAndCallback()
         {
             var callbackArgument = 0;
 
@@ -52,7 +52,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public async Task GivenAsyncUseBaseImplementation_WhenInvoked_ThenPropagatesBaseResults()
+        public async Task GivenAsyncUseBaseImplementation_WhenInvoked_ShouldPropagateBaseResults()
         {
             var sumCallback = 0;
             var labelCallback = string.Empty;
@@ -91,7 +91,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public async Task GivenValueTaskUseBaseImplementation_WhenInvoked_ThenReturnsBaseValueAndVerifiesCalls()
+        public async Task GivenValueTaskUseBaseImplementation_WhenInvoked_ShouldReturnBaseValueAndVerifyCalls()
         {
             var callbackCount = 0;
 
@@ -134,7 +134,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenRefOutMethodUseBaseImplementation_WhenInvoked_ThenPassesThroughAssignments()
+        public void GivenRefOutMethodUseBaseImplementation_WhenInvoked_ShouldPassThroughAssignments()
         {
             _classSut
                 .RefOutWithParams(Arg<int>.Any(), OutArg<int>.Any(), Arg<int[]>.Any())
@@ -152,7 +152,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenClassTargetUseBaseImplementation_WhenBaseAvailable_ThenDoesNotThrow()
+        public void GivenClassTargetUseBaseImplementation_WhenBaseAvailable_ShouldNotThrow()
         {
             _classSut.IntSingleParam(Arg<int>.Any()).UseBaseImplementation();
 

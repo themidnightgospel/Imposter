@@ -10,7 +10,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
     public class EventPerformedInvocationExceptionMessageTests
     {
         [Fact]
-        public void GivenEventRaisedTooFewTimes_ShouldListEachRaise()
+        public void GivenEventRaisedTooFewTimes_WhenVerificationFails_ShouldListEachRaise()
         {
             var sut = PerformedInvocationSutFactory.CreateEventSut();
             var firstSender = this;
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenHandlerVerificationFails_ShouldListEachHandlerInvocation()
+        public void GivenHandlerVerificationFails_WhenVerificationFails_ShouldListEachHandlerInvocation()
         {
             var sut = PerformedInvocationSutFactory.CreateEventSut();
             EventHandler handler = (s, e) => { };
@@ -63,7 +63,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenSubscriptionVerificationFails_ShouldIncludeAllSubscriptionActions()
+        public void GivenSubscriptionVerificationFails_WhenVerificationFails_ShouldIncludeAllSubscriptionActions()
         {
             var sut = PerformedInvocationSutFactory.CreateEventSut();
             EventHandler handler = (s, e) => { };
@@ -85,7 +85,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenUnsubscriptionVerificationFails_ShouldIncludeAllActions()
+        public void GivenUnsubscriptionVerificationFails_WhenVerificationFails_ShouldIncludeAllActions()
         {
             var sut = PerformedInvocationSutFactory.CreateEventSut();
             EventHandler handler = (s, e) => { };
@@ -108,7 +108,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public async Task GivenAsyncEventRaisedTooFewTimes_ShouldListEachAsyncRaise()
+        public async Task GivenAsyncEventRaisedTooFewTimes_WhenVerificationFails_ShouldListEachAsyncRaise()
         {
             var sut = PerformedInvocationSutFactory.CreateEventSut();
             var sender = this;

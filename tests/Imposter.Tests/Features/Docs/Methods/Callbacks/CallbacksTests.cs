@@ -19,7 +19,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
     public class CallbacksTests
     {
         [Fact]
-        public void Methods_Callbacks_Ordering_Relative_To_Results()
+        public void GivenMethodCallbacks_WhenChainedWithReturns_ShouldExecuteAfterResultsInOrder()
         {
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
@@ -41,7 +41,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
         }
 
         [Fact]
-        public void Methods_Callbacks_Parameterized()
+        public void GivenMethodCallbacks_WhenParameterized_ShouldReceiveArguments()
         {
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
@@ -54,7 +54,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
         }
 
         [Fact]
-        public void Methods_Callbacks_RefOutIn()
+        public void GivenMethodCallbacks_WhenUsingRefOutInParameters_ShouldRespectRefOutInBehavior()
         {
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
@@ -88,7 +88,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
         }
 
         [Fact]
-        public void Methods_Callbacks_Sequence_Local()
+        public void GivenMethodCallbacks_WhenSequencingLocally_ShouldInvokeCallbacksInSequence()
         {
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();
@@ -109,7 +109,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
         }
 
         [Fact]
-        public void Methods_Callbacks_That_Throw()
+        public void GivenMethodCallbacks_WhenCallbacksThrow_ShouldPropagateExceptionsAfterResults()
         {
             var imposter = new ICallbackServiceImposter();
             var service = imposter.Instance();

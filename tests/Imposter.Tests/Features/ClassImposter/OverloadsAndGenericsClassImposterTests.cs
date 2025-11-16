@@ -9,7 +9,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class OverloadsAndGenericsClassImposterTests
     {
         [Fact]
-        public void GivenOverloadedMethods_WhenConfigured_ThenEachOverloadMatchesIndependently()
+        public void GivenOverloadedMethods_WhenConfigured_ShouldMatchEachOverloadIndependently()
         {
             var imposter = new ClassWithOverloadsAndGenericsImposter();
 
@@ -29,7 +29,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenGenericMethod_WhenConfigured_ThenVerificationTracksByTypeArgument()
+        public void GivenGenericMethod_WhenConfigured_ShouldTrackVerificationByTypeArgument()
         {
             var imposter = new ClassWithOverloadsAndGenericsImposter();
 
@@ -50,7 +50,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiGenericMethod_WhenConfigured_ThenEachTypeCombinationIsTracked()
+        public void GivenMultiGenericMethod_WhenConfigured_ShouldTrackEachTypeCombination()
         {
             var imposter = new ClassWithOverloadsAndGenericsImposter();
 

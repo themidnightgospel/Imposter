@@ -18,7 +18,7 @@ namespace Imposter.Tests.Features.EventImposter
 #endif
 
         [Fact]
-        public async Task GivenConcurrentRaises_ShouldRecordAll()
+        public async Task GivenConcurrentRaises_WhenPerformed_ShouldRecordAll()
         {
             const int raises = 64;
             var startSignal = new TaskCompletionSource<bool>(
@@ -91,7 +91,7 @@ namespace Imposter.Tests.Features.EventImposter
         }
 
         [Fact]
-        public void GivenConcurrentSubscribeAndUnsubscribe_ShouldKeepCountsConsistent()
+        public void GivenConcurrentSubscribeAndUnsubscribe_WhenPerformed_ShouldKeepCountsConsistent()
         {
             const int iterations = 64;
             EventHandler h = (s, e) => { };
@@ -131,7 +131,7 @@ namespace Imposter.Tests.Features.EventImposter
         }
 
         [Fact]
-        public async Task GivenConcurrentRaiseAsync_ShouldRecordAll()
+        public async Task GivenConcurrentRaiseAsync_WhenPerformed_ShouldRecordAll()
         {
             const int raises = 64;
 

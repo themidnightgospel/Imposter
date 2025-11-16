@@ -18,7 +18,7 @@ namespace Imposter.Tests.Features.MethodImposter
 #endif
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenInvoked_ThenVerifiesAllInvocations()
+        public void GivenIntNoParamsMethod_WhenInvoked_ShouldVerifyAllInvocations()
         {
             _sut.IntNoParams().Returns(1);
 
@@ -30,7 +30,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenVoidNoParamsMethod_WhenCalled_ThenVerifiesCallCount()
+        public void GivenVoidNoParamsMethod_WhenCalled_ShouldVerifyCallCount()
         {
             _sut.Instance().VoidNoParams();
             _sut.Instance().VoidNoParams();
@@ -39,13 +39,13 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenVoidNoParamsMethod_WhenNotCalled_ThenVerifiesNever()
+        public void GivenVoidNoParamsMethod_WhenNotCalled_ShouldVerifyNever()
         {
             _sut.VoidNoParams().Called(Count.Never());
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenCalledOnce_ThenVerifiesOnce()
+        public void GivenIntNoParamsMethod_WhenCalledOnce_ShouldVerifyOnce()
         {
             _sut.Instance().IntNoParams();
 
@@ -53,13 +53,13 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenNotCalled_ThenVerifiesNever()
+        public void GivenIntNoParamsMethod_WhenNotCalled_ShouldVerifyNever()
         {
             _sut.IntNoParams().Called(Count.Never());
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenCalledMultipleTimes_ThenVerifiesAtLeast()
+        public void GivenIntNoParamsMethod_WhenCalledMultipleTimes_ShouldVerifyAtLeast()
         {
             _sut.Instance().IntNoParams();
             _sut.Instance().IntNoParams();
@@ -73,7 +73,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenCalledMultipleTimes_ThenVerifiesAtMost()
+        public void GivenIntNoParamsMethod_WhenCalledMultipleTimes_ShouldVerifyAtMost()
         {
             _sut.Instance().IntNoParams();
             _sut.Instance().IntNoParams();
@@ -86,7 +86,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public async Task GivenAsyncTaskIntNoParams_WhenAwaited_ThenVerifiesCallCount()
+        public async Task GivenAsyncTaskIntNoParams_WhenAwaited_ShouldVerifyCallCount()
         {
             _sut.AsyncTaskIntNoParams().Returns(() => Task.FromResult(5));
 
@@ -97,7 +97,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public async Task GivenAsyncTaskIntNoParams_WhenVerificationMismatch_ThenThrows()
+        public async Task GivenAsyncTaskIntNoParams_WhenVerificationMismatch_ShouldThrow()
         {
             _sut.AsyncTaskIntNoParams().Returns(() => Task.FromResult(1));
 
@@ -109,7 +109,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public async Task GivenAsyncTaskIntNoParams_WhenChainingThen_ThenVerifiesAcrossInvocations()
+        public async Task GivenAsyncTaskIntNoParams_WhenChainingThen_ShouldVerifyAcrossInvocations()
         {
             _sut.AsyncTaskIntNoParams()
                 .Returns(() => Task.FromResult(10))
@@ -127,7 +127,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public async Task GivenAsyncValueTaskIntNoParams_WhenAwaited_ThenVerifiesCallCount()
+        public async Task GivenAsyncValueTaskIntNoParams_WhenAwaited_ShouldVerifyCallCount()
         {
             _sut.AsyncValueTaskIntNoParams().ReturnsAsync(7);
 
@@ -139,7 +139,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntSingleParamMethod_WhenCalledWithDifferentValues_ThenMatchesArgs()
+        public void GivenIntSingleParamMethod_WhenCalledWithDifferentValues_ShouldMatchArgs()
         {
             _sut.Instance().IntSingleParam(42);
             _sut.Instance().IntSingleParam(43);
@@ -151,7 +151,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntSingleParamMethod_WhenUsingAnyMatcher_ThenVerifiesAnyArg()
+        public void GivenIntSingleParamMethod_WhenUsingAnyMatcher_ShouldVerifyAnyArg()
         {
             _sut.Instance().IntSingleParam(10);
             _sut.Instance().IntSingleParam(20);
@@ -161,7 +161,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntSingleParamMethod_WhenUsingPredicate_ThenMatchesPredicate()
+        public void GivenIntSingleParamMethod_WhenUsingPredicate_ShouldMatchPredicate()
         {
             _sut.Instance().IntSingleParam(15);
             _sut.Instance().IntSingleParam(25);
@@ -172,7 +172,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntParamsMethod_WhenCalledWithDifferentArgs_ThenVerifiesCorrectly()
+        public void GivenIntParamsMethod_WhenCalledWithDifferentArgs_ShouldVerifyCorrectly()
         {
             var regex1 = new Regex("test1");
             var regex2 = new Regex("test2");
@@ -190,7 +190,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntOutParamMethod_WhenCalled_ThenVerifiesCorrectly()
+        public void GivenIntOutParamMethod_WhenCalled_ShouldVerifyCorrectly()
         {
             _sut.Instance().IntOutParam(out var outVal1);
             _sut.Instance().IntOutParam(out var outVal2);
@@ -199,7 +199,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntRefParamMethod_WhenCalledWithDifferentValues_ThenVerifiesCorrectly()
+        public void GivenIntRefParamMethod_WhenCalledWithDifferentValues_ShouldVerifyCorrectly()
         {
             var refValue1 = 10;
             var refValue2 = 20;
@@ -215,7 +215,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntInParamMethod_WhenCalledWithDifferentValues_ThenVerifiesCorrectly()
+        public void GivenIntInParamMethod_WhenCalledWithDifferentValues_ShouldVerifyCorrectly()
         {
             _sut.Instance().IntInParam("hello");
             _sut.Instance().IntInParam("world");
@@ -227,7 +227,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntParamsParamMethod_WhenCalledWithDifferentArrays_ThenVerifiesCorrectly()
+        public void GivenIntParamsParamMethod_WhenCalledWithDifferentArrays_ShouldVerifyCorrectly()
         {
             _sut.Instance().IntParamsParam("a", "b");
             _sut.Instance().IntParamsParam("x", "y", "z");
@@ -239,7 +239,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntParamsParamMethod_WhenCalledWithSequence_ThenVerifiesExactMatch()
+        public void GivenIntParamsParamMethod_WhenCalledWithSequence_ShouldVerifyExactMatch()
         {
             _sut.Instance().IntParamsParam("alpha", "beta", "gamma");
 
@@ -250,7 +250,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntAllRefKindsMethod_WhenCalledWithComplexParameters_ThenVerifiesCorrectly()
+        public void GivenIntAllRefKindsMethod_WhenCalledWithComplexParameters_ShouldVerifyCorrectly()
         {
             var refValue1 = 100;
             var refValue2 = 200;
@@ -282,7 +282,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericSingleParamMethod_WhenCalledWithDifferentTypes_ThenVerifiesCorrectly()
+        public void GivenGenericSingleParamMethod_WhenCalledWithDifferentTypes_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericSingleParam<int>(42);
             _sut.Instance().GenericSingleParam<string>("hello");
@@ -294,7 +294,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericSingleParamMethod_WhenCalledWithSpecificValues_ThenVerifiesCorrectly()
+        public void GivenGenericSingleParamMethod_WhenCalledWithSpecificValues_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericSingleParam<int>(42);
             _sut.Instance().GenericSingleParam<int>(43);
@@ -306,7 +306,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericOutParamMethod_WhenCalled_ThenVerifiesCorrectly()
+        public void GivenGenericOutParamMethod_WhenCalled_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericOutParam<string, int>(out var outVal1);
             _sut.Instance().GenericOutParam<int, string>(out var outVal2);
@@ -318,7 +318,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericRefParamMethod_WhenCalledWithDifferentValues_ThenVerifiesCorrectly()
+        public void GivenGenericRefParamMethod_WhenCalledWithDifferentValues_ShouldVerifyCorrectly()
         {
             var refValue1 = "hello";
             var refValue2 = "world";
@@ -334,7 +334,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericParamsParamMethod_WhenCalledWithDifferentArrays_ThenVerifiesCorrectly()
+        public void GivenGenericParamsParamMethod_WhenCalledWithDifferentArrays_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericParamsParam<string, int>("a", "b");
             _sut.Instance().GenericParamsParam<int, string>(1, 2, 3);
@@ -347,7 +347,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericAllRefKindMethod_WhenCalledWithComplexParameters_ThenVerifiesCorrectly()
+        public void GivenGenericAllRefKindMethod_WhenCalledWithComplexParameters_ShouldVerifyCorrectly()
         {
             IAnimal refAnimal1 = new Cat("cat1");
             IAnimal refAnimal2 = new Dog("dog1");
@@ -389,7 +389,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericSingleParamMethod_WhenCalledWithInheritanceTypes_ThenVerifiesCorrectly()
+        public void GivenGenericSingleParamMethod_WhenCalledWithInheritanceTypes_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericSingleParam<IAnimal>(new Cat("fluffy"));
             _sut.Instance().GenericSingleParam<IAnimal>(new Dog("buddy"));
@@ -405,7 +405,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericOutParamMethod_WhenCalledWithInheritanceTypes_ThenVerifiesCorrectly()
+        public void GivenGenericOutParamMethod_WhenCalledWithInheritanceTypes_ShouldVerifyCorrectly()
         {
             _sut.Instance().GenericOutParam<Cat, int>(out Cat car);
             _sut.Instance().GenericOutParam<Dog, string>(out Dog dog);
@@ -423,7 +423,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntSingleParamMethod_WhenVerificationFails_ThenThrows()
+        public void GivenIntSingleParamMethod_WhenVerificationFails_ShouldThrow()
         {
             _sut.Instance().IntSingleParam(42);
 
@@ -433,7 +433,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenVoidNoParamsMethod_WhenVerificationFails_ThenThrows()
+        public void GivenVoidNoParamsMethod_WhenVerificationFails_ShouldThrow()
         {
             _sut.Instance().VoidNoParams();
 
@@ -443,7 +443,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenAtLeastVerificationFails_ThenThrows()
+        public void GivenIntNoParamsMethod_WhenAtLeastVerificationFails_ShouldThrow()
         {
             _sut.Instance().IntNoParams();
 
@@ -453,7 +453,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntNoParamsMethod_WhenAtMostVerificationFails_ThenThrows()
+        public void GivenIntNoParamsMethod_WhenAtMostVerificationFails_ShouldThrow()
         {
             _sut.Instance().IntNoParams();
             _sut.Instance().IntNoParams();
@@ -465,7 +465,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericSingleParamMethod_WhenVerificationFails_ThenThrows()
+        public void GivenGenericSingleParamMethod_WhenVerificationFails_ShouldThrow()
         {
             _sut.Instance().GenericSingleParam<string>("test");
 
@@ -475,7 +475,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntParamsMethod_WhenCalledWithNullValues_ThenVerifiesCorrectly()
+        public void GivenIntParamsMethod_WhenCalledWithNullValues_ShouldVerifyCorrectly()
         {
             _sut.Instance().IntParams(42, null!, new Regex("test"));
 
@@ -486,7 +486,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntParamsParamMethod_WhenCalledWithEmptyArray_ThenVerifiesCorrectly()
+        public void GivenIntParamsParamMethod_WhenCalledWithEmptyArray_ShouldVerifyCorrectly()
         {
             _sut.Instance().IntParamsParam(new string[0]);
 
@@ -495,7 +495,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenMultipleMethods_WhenVerifyingSeparately_ThenRemainIndependent()
+        public void GivenMultipleMethods_WhenVerifyingSeparately_ShouldRemainIndependent()
         {
             _sut.Instance().VoidNoParams();
             _sut.Instance().IntNoParams();
@@ -509,7 +509,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenIntSingleParamMethod_WhenConfiguredMultipleTimes_ThenVerifiesCorrectly()
+        public void GivenIntSingleParamMethod_WhenConfiguredMultipleTimes_ShouldVerifyCorrectly()
         {
             _sut.IntSingleParam(Arg<int>.Is(1)).Returns(10);
             _sut.IntSingleParam(Arg<int>.Is(2)).Returns(20);

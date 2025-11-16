@@ -18,7 +18,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
     public class SequentialReturnsTests
     {
         [Fact]
-        public void Methods_Sequential_Basic()
+        public void GivenSequentialReturns_WhenUsingBasicSequence_ShouldReturnValuesInOrder()
         {
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
         }
 
         [Fact]
-        public void Methods_Sequential_MixingDelegates()
+        public void GivenSequentialReturns_WhenMixingDelegates_ShouldRespectDelegateSequence()
         {
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
@@ -43,7 +43,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
         }
 
         [Fact]
-        public async Task Methods_Sequential_Async()
+        public async Task GivenSequentialReturns_WhenUsingAsyncSequence_ShouldReturnAsyncValuesInOrder()
         {
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();
@@ -55,7 +55,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
         }
 
         [Fact]
-        public void Methods_Sequential_Interleave_Exceptions()
+        public void GivenSequentialReturns_WhenInterleavingExceptions_ShouldAlternateBetweenResultsAndExceptions()
         {
             var imposter = new ISeqServiceImposter();
             var service = imposter.Instance();

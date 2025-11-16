@@ -45,7 +45,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [Fact]
-        public void GivenOpenGenericInterface_WhenOnNextIsCalled_ThenVerifiesCallCount()
+        public void GivenOpenGenericInterface_WhenOnNextIsCalled_ShouldVerifyCallCount()
         {
             var sut = CreateObservableImposter<string>();
 

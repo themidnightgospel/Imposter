@@ -65,7 +65,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenStringArgumentWithSpecialCharacters_ShouldKeepRawValue()
+        public void GivenStringArgumentWithSpecialCharacters_WhenVerificationFails_ShouldKeepRawValue()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var regex = new Regex("special");
@@ -94,7 +94,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenComplexArgument_ShouldUseCustomToString()
+        public void GivenComplexArgument_WhenVerificationFails_ShouldUseCustomToString()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var customValue = new CustomArgument(123);
@@ -111,7 +111,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenParameterlessMethodWithTooFewCalls_ShouldListEachInvocation()
+        public void GivenParameterlessMethodWithTooFewCalls_WhenVerificationFails_ShouldListEachInvocation()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var firstResult = sut.Instance().IntNoParams();
@@ -214,7 +214,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenMethodWithMultipleParameters_ShouldCaptureEachParameter()
+        public void GivenMethodWithMultipleParameters_WhenVerificationFails_ShouldCaptureEachParameter()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var firstRegex = new Regex("a");
@@ -254,7 +254,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenGenericMethodInvocations_ShouldDescribeEachTypeArgumentInvocation()
+        public void GivenGenericMethodInvocations_WhenVerificationFails_ShouldDescribeEachTypeArgumentInvocation()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var intValue = 1;
@@ -282,7 +282,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenBetweenCountMismatch_ShouldKeepAllPerformedInvocations()
+        public void GivenBetweenCountMismatch_WhenVerificationFails_ShouldKeepAllPerformedInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var result = sut.Instance().IntNoParams();

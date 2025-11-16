@@ -9,7 +9,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
     public class VerificationFailedExceptionTests
     {
         [Fact]
-        public void GivenVerificationFails_ShouldExposeCountsAndPerformedInvocations()
+        public void GivenVerificationFails_WhenExceptionIsCreated_ShouldExposeCountsAndPerformedInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreateMethodSut();
             var result = sut.Instance().IntNoParams();
@@ -24,7 +24,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenLegacyConstructorIsUsed_ShouldKeepPerformedInvocationsNull()
+        public void GivenLegacyConstructorIsUsed_WhenExceptionIsCreated_ShouldKeepPerformedInvocationsNull()
         {
             var expectedCount = Count.Once();
 
@@ -35,7 +35,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenExtendedConstructorIsUsed_ShouldIncludePerformedInvocationsInMessage()
+        public void GivenExtendedConstructorIsUsed_WhenExceptionIsCreated_ShouldIncludePerformedInvocationsInMessage()
         {
             var expectedCount = Count.AtLeast(2);
             var performedInvocations = string.Join(Environment.NewLine, new[] { "foo()", "bar()" });

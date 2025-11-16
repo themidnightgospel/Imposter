@@ -9,7 +9,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class MultiConstructorClassTests
     {
         [Fact]
-        public void GivenClassWithMultipleConstructors_WhenGeneratingImposter_ThenExposesAllConstructors()
+        public void GivenClassWithMultipleConstructors_WhenGeneratingImposter_ShouldExposeAllConstructors()
         {
             var defaultCtor = new MultiConstructorClassImposter();
             var parameterCtor = new MultiConstructorClassImposter(5, "alpha");
@@ -22,7 +22,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenImposterConstructors_WhenPassingInvocationBehavior_ThenAcceptBehavior()
+        public void GivenImposterConstructors_WhenPassingInvocationBehavior_ShouldAcceptBehavior()
         {
             var imposter = new MultiConstructorClassImposter(10, "beta", ImposterMode.Explicit);
 
@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenParameterlessConstruction_WhenNoBehaviorProvided_ThenDefaultsToImplicit()
+        public void GivenParameterlessConstruction_WhenNoBehaviorProvided_ShouldDefaultToImplicit()
         {
             var imposter = new MultiConstructorClassImposter();
 
@@ -44,7 +44,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenConstructorWithBehavior_WhenConstructed_ThenPreservesSelection()
+        public void GivenConstructorWithBehavior_WhenConstructed_ShouldPreserveSelection()
         {
             const int value = 8;
             const string label = "core";
@@ -58,7 +58,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenGeneratedInstanceMethods_WhenInspected_ThenRemainPublicOverrides()
+        public void GivenGeneratedInstanceMethods_WhenInspected_ShouldRemainPublicOverrides()
         {
             var imposter = new MultiConstructorClassImposter();
             imposter.Calculate(Arg<int>.Any()).Returns(88);
@@ -69,7 +69,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedConstructor_WhenGeneratingImposter_ThenConstructorIsExposed()
+        public void GivenProtectedConstructor_WhenGeneratingImposter_ShouldExposeConstructor()
         {
             var constructor = typeof(MultiConstructorClassImposter).GetConstructor(
                 new[] { typeof(bool), typeof(ImposterMode) }

@@ -16,7 +16,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 #endif
 
         [Fact]
-        public void GivenConfiguredGetter_WhenAccessed_ThenReturnsConfiguredValue()
+        public void GivenConfiguredGetter_WhenAccessed_ShouldReturnConfiguredValue()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(42);
 
@@ -26,7 +26,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenCriteriaSpecificGetterSetups_WhenConfigured_ThenRemainIsolated()
+        public void GivenCriteriaSpecificGetterSetups_WhenConfigured_ShouldRemainIsolated()
         {
             var alphaToken = new object();
             var betaToken = new object();
@@ -46,7 +46,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenRepeatedGetterSetup_WhenConfiguredAgain_ThenLatestWins()
+        public void GivenRepeatedGetterSetup_WhenConfiguredAgain_ShouldTreatLatestAsWinner()
         {
             _sut[Arg<int>.Is(x => x == 10), Arg<string>.Is(s => s == "dup"), Arg<object>.Any()]
                 .Getter()
@@ -62,7 +62,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSequentialGetterSetup_WhenAccessed_ThenReturnsInOrder()
+        public void GivenSequentialGetterSetup_WhenAccessed_ShouldReturnInOrder()
         {
             var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
@@ -85,7 +85,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSequentialGetterSetup_WhenDepleted_ThenRepeatsLastValue()
+        public void GivenSequentialGetterSetup_WhenDepleted_ShouldRepeatLastValue()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
@@ -101,7 +101,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSingleArgumentIndexer_WhenConfiguringGetter_ThenSupportsSetupsAndCallbacks()
+        public void GivenSingleArgumentIndexer_WhenConfiguringGetter_ShouldSupportSetupsAndCallbacks()
         {
             var builder = _sut[Arg<int>.Is(x => x == 8)].Getter();
 
@@ -114,7 +114,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSingleArgumentIndexer_WhenUsingSequentialGetter_ThenSupportsReturnsAndCalled()
+        public void GivenSingleArgumentIndexer_WhenUsingSequentialGetter_ShouldSupportReturnsAndCalled()
         {
             var builder = _sut[Arg<int>.Is(x => x > 0)].Getter();
 
@@ -129,7 +129,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenDefaultGetterBehaviour_WhenAccessed_ThenSharesSetterBackstore()
+        public void GivenDefaultGetterBehaviour_WhenAccessed_ShouldShareSetterBackstore()
         {
             var instance = _sut.Instance();
             var thirdArgument = new object();
@@ -142,7 +142,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenMultiArgumentIndexer_WhenConfigured_ThenDoesNotAffectSingleArgumentDefaults()
+        public void GivenMultiArgumentIndexer_WhenConfigured_ShouldNotAffectSingleArgumentDefaults()
         {
             _sut[Arg<int>.Is(x => x == 1), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
@@ -155,7 +155,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSingleArgumentIndexer_WhenConfigured_ThenDoesNotAffectThreeArgumentDefaults()
+        public void GivenSingleArgumentIndexer_WhenConfigured_ShouldNotAffectThreeArgumentDefaults()
         {
             _sut[Arg<int>.Is(x => x == 5)].Getter().Returns(50);
 
@@ -167,7 +167,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenExplicitModeGetter_WhenNotConfigured_ThenThrows()
+        public void GivenExplicitModeGetter_WhenNotConfigured_ShouldThrow()
         {
             var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
 
@@ -180,7 +180,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterCallCount_WhenVerificationMismatch_ThenCalledFails()
+        public void GivenGetterCallCount_WhenVerificationMismatch_ShouldFailCalledVerification()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(1);
 
@@ -194,7 +194,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenNoGetterCalls_WhenVerifyingNever_ThenVerificationPasses()
+        public void GivenNoGetterCalls_WhenVerifyingNever_ShouldPassVerification()
         {
             var builder = _sut[Arg<int>.Is(x => x == 3), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter();
@@ -209,7 +209,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterCountThreshold_WhenVerifyingAtLeast_ThenPassesAtThreshold()
+        public void GivenGetterCountThreshold_WhenVerifyingAtLeast_ShouldPassAtThreshold()
         {
             var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
@@ -223,7 +223,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterCountThreshold_WhenVerifyingAtMost_ThenPassesBelowThreshold()
+        public void GivenGetterCountThreshold_WhenVerifyingAtMost_ShouldPassBelowThreshold()
         {
             var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
 
@@ -236,7 +236,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenThrowingGetter_WhenCountingCalled_ThenIncludesExceptions()
+        public void GivenThrowingGetter_WhenCountingCalled_ShouldIncludeExceptions()
         {
             var builder = _sut[Arg<int>.Is(x => x == 1), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter();
@@ -254,7 +254,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterCallbacks_WhenInvoked_ThenFireBeforeValueResolution()
+        public void GivenGetterCallbacks_WhenInvoked_ShouldFireBeforeValueResolution()
         {
             var visitedKeys = new List<int>();
 
@@ -271,7 +271,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterOnlyIndexer_WhenConfigured_ThenSupportsSetups()
+        public void GivenGetterOnlyIndexer_WhenConfigured_ShouldSupportSetups()
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
 
@@ -281,7 +281,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterOnlyIndexer_WhenNotConfigured_ThenDefaultsToZero()
+        public void GivenGetterOnlyIndexer_WhenNotConfigured_ShouldDefaultToZero()
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
 
@@ -289,7 +289,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterOnlyIndexer_WhenRegisteringCallbacks_ThenCallbacksSupported()
+        public void GivenGetterOnlyIndexer_WhenRegisteringCallbacks_ShouldSupportCallbacks()
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
             var visitedKeys = new List<int>();
@@ -307,7 +307,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterOnlyIndexer_WhenVerifyingCalled_ThenVerificationWorks()
+        public void GivenGetterOnlyIndexer_WhenVerifyingCalled_ShouldWorkVerification()
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter();
 
@@ -323,7 +323,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterExceptionInstance_WhenConfigured_ThenThrowsSameInstance()
+        public void GivenGetterExceptionInstance_WhenConfigured_ShouldThrowSameInstance()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
@@ -338,7 +338,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterExceptionType_WhenConfigured_ThenThrowsNewInstance()
+        public void GivenGetterExceptionType_WhenConfigured_ShouldThrowNewInstance()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
@@ -350,7 +350,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenImplicitModeGetter_WhenCallUnmatched_ThenReturnsDefault()
+        public void GivenImplicitModeGetter_WhenCallUnmatched_ShouldReturnDefault()
         {
             _sut[5, "configured", Arg<object>.Any()].Getter().Returns(500);
 
@@ -362,7 +362,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterExceptionFactory_WhenInvoked_ThenThrowsGeneratedException()
+        public void GivenGetterExceptionFactory_WhenInvoked_ShouldThrowGeneratedException()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
                 .Getter()
@@ -379,7 +379,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenMultipleGetterCallbacks_WhenInvoked_ThenExecuteAll()
+        public void GivenMultipleGetterCallbacks_WhenInvoked_ShouldExecuteAll()
         {
             var capture = new List<string>();
 
@@ -407,7 +407,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterOnlyIndexerInExplicitMode_WhenNotConfigured_ThenThrows()
+        public void GivenGetterOnlyIndexerInExplicitMode_WhenNotConfigured_ShouldThrow()
         {
             var sut = new IGetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
 

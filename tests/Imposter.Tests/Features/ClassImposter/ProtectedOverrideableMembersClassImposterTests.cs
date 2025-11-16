@@ -11,7 +11,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class ProtectedOverrideableMembersClassImposterTests
     {
         [Fact]
-        public void GivenProtectedMethodOverride_WhenInvokedThroughPublicWrapper_ThenConfiguredResultIsReturned()
+        public void GivenProtectedMethodOverride_WhenInvokedThroughPublicWrapper_ShouldReturnConfiguredResult()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -24,7 +24,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedPropertyGetterOverride_WhenReadThroughPublicAccessor_ThenConfiguredValueIsReturned()
+        public void GivenProtectedPropertyGetterOverride_WhenReadThroughPublicAccessor_ShouldReturnConfiguredValue()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -37,7 +37,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedPropertySetter_WhenWrittenThroughPublicAccessor_ThenSetterInvocationIsTracked()
+        public void GivenProtectedPropertySetter_WhenWrittenThroughPublicAccessor_ShouldTrackSetterInvocation()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -51,7 +51,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedIndexerGetterOverride_WhenReadThroughPublicAccessor_ThenConfiguredValueIsReturned()
+        public void GivenProtectedIndexerGetterOverride_WhenReadThroughPublicAccessor_ShouldReturnConfiguredValue()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -64,7 +64,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedIndexerSetter_WhenWrittenThroughPublicAccessor_ThenSetterInvocationIsTracked()
+        public void GivenProtectedIndexerSetter_WhenWrittenThroughPublicAccessor_ShouldTrackSetterInvocation()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -78,7 +78,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedEvent_WhenRaised_ThenSubscribersAreInvoked()
+        public void GivenProtectedEvent_WhenRaised_ShouldInvokeSubscribers()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -94,7 +94,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedEventUseBaseImplementation_WhenSubscribed_ThenBaseEventReceivesHandler()
+        public void GivenProtectedEventUseBaseImplementation_WhenSubscribed_ShouldPassHandlerToBaseEvent()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
             imposter.ProtectedVirtualEvent.UseBaseImplementation();
@@ -117,7 +117,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenAsyncEventUseBaseImplementation_WhenUnsubscribed_ThenBaseEventIsCleared()
+        public void GivenAsyncEventUseBaseImplementation_WhenUnsubscribed_ShouldClearBaseEvent()
         {
             var imposter = new ClassWithAsyncEventsImposter();
             imposter.TaskBasedEvent.UseBaseImplementation();
@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedMethodUseBaseImplementation_WhenInvoked_ThenReturnsBaseResult()
+        public void GivenProtectedMethodUseBaseImplementation_WhenInvoked_ShouldReturnBaseResult()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
             var callbackCount = 0;
@@ -160,7 +160,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedPropertyUseBaseImplementation_WhenInvoked_ThenReadsAndWritesBaseValue()
+        public void GivenProtectedPropertyUseBaseImplementation_WhenInvoked_ShouldReadAndWriteBaseValue()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 
@@ -181,7 +181,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenProtectedIndexerUseBaseImplementation_WhenInvoked_ThenUsesBaseAccessors()
+        public void GivenProtectedIndexerUseBaseImplementation_WhenInvoked_ShouldUseBaseAccessors()
         {
             var imposter = new ClassWithProtectedOverrideableMembersImposter();
 

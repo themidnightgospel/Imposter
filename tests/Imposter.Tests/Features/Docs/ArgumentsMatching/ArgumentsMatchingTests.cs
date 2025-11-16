@@ -21,7 +21,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
     public class ArgumentsMatchingTests
     {
         [Fact]
-        public void Arguments_Basic_Equality_And_Implicit()
+        public void GivenArgumentMatchers_WhenUsingBasicEqualityAndImplicitMatchers_ShouldMatchConfiguredValues()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -42,7 +42,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Predicates_And_Ranges()
+        public void GivenArgumentMatchers_WhenUsingPredicatesAndRanges_ShouldPartitionInputsIntoBuckets()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -57,7 +57,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Negation_And_Defaults()
+        public void GivenArgumentMatchers_WhenUsingNegationAndDefaults_ShouldRespectNegationAndDefaults()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -73,7 +73,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Membership_And_Collections()
+        public void GivenArgumentMatchers_WhenUsingMembershipAndCollections_ShouldMatchMembershipCorrectly()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -87,7 +87,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Collections_Params_Arrays()
+        public void GivenArgumentMatchers_WhenUsingCollectionsParamsAndArrays_ShouldMatchOnArrayShape()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -103,7 +103,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_In_Parameter_Matching()
+        public void GivenArgumentMatchers_WhenMatchingInParameters_ShouldRespectInParameterSemantics()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -117,7 +117,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Ref_Parameter_Matching()
+        public void GivenArgumentMatchers_WhenMatchingRefParameters_ShouldAllowRefMutationAndMatch()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();
@@ -140,7 +140,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
         }
 
         [Fact]
-        public void Arguments_Out_Parameter_Matching()
+        public void GivenArgumentMatchers_WhenMatchingOutParameters_ShouldPopulateOutAndReturnStatus()
         {
             var imposter = new IArgumentMatchingServiceImposter();
             var service = imposter.Instance();

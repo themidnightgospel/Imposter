@@ -12,7 +12,7 @@ namespace Imposter.Tests.Features.ClassImposter
             BindingFlags.Instance | BindingFlags.Public;
 
         [Fact]
-        public void GivenNonVirtualMembers_WhenBuildingImposter_ThenMembersAreNotConfigurableAndBaseBehaviorRuns()
+        public void GivenNonVirtualMembers_WhenBuildingImposter_ShouldNotAllowConfigurationAndShouldRunBaseBehavior()
         {
             AssertNoBuilderMember(nameof(ClassWithNonVirtualAndSealedMembers.NonVirtualMethod));
             AssertNoBuilderMember(nameof(ClassWithNonVirtualAndSealedMembers.NonVirtualProperty));
@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenSealedOverrides_WhenBuildingImposter_ThenMembersAreNotConfigurableAndBaseBehaviorRuns()
+        public void GivenSealedOverrides_WhenBuildingImposter_ShouldNotAllowConfigurationAndShouldRunBaseBehavior()
         {
             AssertNoBuilderMember(nameof(ClassWithNonVirtualAndSealedMembers.VirtualMethod));
 

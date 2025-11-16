@@ -11,7 +11,7 @@ namespace Imposter.Tests.Features.ImposterStaticExtension
     public class ImposterStaticExtensionTests
     {
         [Fact]
-        public void GivenRoslyn5OrGreated_WhenImposterCalled_ThenImposterReturned()
+        public void GivenRoslyn5OrGreated_WhenImposterCalled_ShouldReturnImposter()
         {
             var imposter = IMammal.Imposter();
             imposter.ShouldNotBeNull();

@@ -21,7 +21,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
     public class UseBaseImplementationTests
     {
         [Fact]
-        public void Methods_BaseImplementation_BasicExample()
+        public void GivenBaseImplementationMode_WhenUsingBasicExample_ShouldCallBaseThenOverrides()
         {
             var imp = new MyServiceImposter();
             var svc = imp.Instance();
@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [Fact]
-        public void Methods_BaseImplementation_Matchers_And_Fallback()
+        public void GivenBaseImplementationMode_WhenUsingMatchersAndFallback_ShouldRouteToBaseOrSetup()
         {
             var imp = new MyServiceImposter();
             var svc = imp.Instance();
@@ -49,7 +49,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [Fact]
-        public void Methods_BaseImplementation_Sequence_With_Then()
+        public void GivenBaseImplementationMode_WhenSequencingWithThen_ShouldMixBaseAndConfiguredResults()
         {
             var imp = new MyServiceImposter();
             var svc = imp.Instance();
@@ -61,7 +61,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [Fact]
-        public async Task Methods_BaseImplementation_Async_And_ExceptionFlow()
+        public async Task GivenBaseImplementationMode_WhenUsingAsyncAndExceptions_ShouldPropagateBaseAndConfiguredExceptions()
         {
             var imp = new MyServiceImposter();
             var svc = imp.Instance();

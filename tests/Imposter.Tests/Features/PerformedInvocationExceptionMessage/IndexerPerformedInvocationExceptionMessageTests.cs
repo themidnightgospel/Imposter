@@ -10,7 +10,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
             "Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut.this[int key1, string key2, object key3]";
 
         [Fact]
-        public void GivenIndexerSetterCalls_ShouldRecordEachInvocation()
+        public void GivenIndexerSetterCalls_WhenVerificationFails_ShouldRecordEachInvocation()
         {
             var sut = PerformedInvocationSutFactory.CreateIndexerSut();
             var setter = sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
@@ -38,7 +38,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenIndexerGetterCalls_ShouldListEachAccess()
+        public void GivenIndexerGetterCalls_WhenVerificationFails_ShouldListEachAccess()
         {
             var sut = PerformedInvocationSutFactory.CreateIndexerSut();
             var getter = sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter();
@@ -65,7 +65,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenIndexerPredicateVerificationFails_ShouldTrackAllInvocations()
+        public void GivenIndexerPredicateVerificationFails_WhenVerificationFails_ShouldTrackAllInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreateIndexerSut();
             sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(0);

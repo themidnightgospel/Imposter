@@ -15,7 +15,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 #endif
 
         [Fact]
-        public void GivenMatchingSetterCriteria_WhenCallbacksConfigured_ThenCallbackFires()
+        public void GivenMatchingSetterCriteria_WhenCallbacksConfigured_ShouldFireCallback()
         {
             var callbackCount = 0;
 
@@ -37,7 +37,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterInteractions_WhenVerifyingCalled_ThenCountsInvocations()
+        public void GivenSetterInteractions_WhenVerifyingCalled_ShouldCountInvocations()
         {
             var instance = _sut.Instance();
 
@@ -53,7 +53,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenGetterInteractions_WhenVerifyingCalled_ThenCountsInvocations()
+        public void GivenGetterInteractions_WhenVerifyingCalled_ShouldCountInvocations()
         {
             _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().Returns(1);
 
@@ -69,7 +69,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterInteractionCount_WhenVerificationMismatched_ThenCalledFails()
+        public void GivenSetterInteractionCount_WhenVerificationMismatched_ShouldFailCalledVerification()
         {
             var setter = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
@@ -79,7 +79,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenNoSetterInvocations_WhenVerifyingNever_ThenVerificationPasses()
+        public void GivenNoSetterInvocations_WhenVerifyingNever_ShouldPassVerification()
         {
             var builder = _sut[Arg<int>.Is(x => x == 8), Arg<string>.Any(), Arg<object>.Any()]
                 .Setter();
@@ -92,7 +92,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterCountThreshold_WhenVerifyingAtLeast_ThenPassesAtThreshold()
+        public void GivenSetterCountThreshold_WhenVerifyingAtLeast_ShouldPassAtThreshold()
         {
             var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
@@ -104,7 +104,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterCountThreshold_WhenVerifyingAtMost_ThenPassesBelowThreshold()
+        public void GivenSetterCountThreshold_WhenVerifyingAtMost_ShouldPassBelowThreshold()
         {
             var builder = _sut[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter();
 
@@ -114,7 +114,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenMultipleSetterCriteria_WhenRegisteringCallbacks_ThenScopesDiffer()
+        public void GivenMultipleSetterCriteria_WhenRegisteringCallbacks_ShouldMaintainSeparateScopes()
         {
             var triggered = new List<int>();
 
@@ -135,7 +135,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenExplicitModeSetter_WhenNotConfigured_ThenThrows()
+        public void GivenExplicitModeSetter_WhenNotConfigured_ShouldThrow()
         {
             var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
 
@@ -145,7 +145,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterOnlyIndexer_WhenConfiguringCallbacks_ThenSupportsCallbacks()
+        public void GivenSetterOnlyIndexer_WhenConfiguringCallbacks_ShouldSupportCallbacks()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter();
             var called = false;
@@ -166,7 +166,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterOnlyIndexer_WhenChainingThen_ThenSupportsChaining()
+        public void GivenSetterOnlyIndexer_WhenChainingThen_ShouldSupportChaining()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter();
             var observed = new List<int>();
@@ -183,7 +183,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSingleArgumentIndexers_WhenSharingDefaults_ThenUseSameBackstore()
+        public void GivenSingleArgumentIndexers_WhenSharingDefaults_ShouldUseSameBackstore()
         {
             var instance = _sut.Instance();
 
@@ -192,7 +192,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSingleArgumentSetter_WhenUsingCallbacksAndCalled_ThenTheyWork()
+        public void GivenSingleArgumentSetter_WhenUsingCallbacksAndCalled_ShouldWork()
         {
             var callbackHits = 0;
 
@@ -214,7 +214,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterOnlyIndexer_WhenVerifyingCalled_ThenVerificationWorks()
+        public void GivenSetterOnlyIndexer_WhenVerifyingCalled_ShouldWorkVerification()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter();
 
@@ -226,7 +226,7 @@ namespace Imposter.Tests.Features.IndexerImposter
         }
 
         [Fact]
-        public void GivenSetterOnlyIndexerInExplicitMode_WhenNotConfigured_ThenThrows()
+        public void GivenSetterOnlyIndexerInExplicitMode_WhenNotConfigured_ShouldThrow()
         {
             var sut = new ISetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
 

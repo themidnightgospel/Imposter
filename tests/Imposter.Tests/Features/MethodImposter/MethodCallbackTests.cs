@@ -34,7 +34,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenCallbackWithoutExplicitReturn_ShouldStillExecuteAfterDefaultResult()
+        public void GivenCallbackWithoutExplicitReturn_WhenMethodIsInvoked_ShouldStillExecuteAfterDefaultResult()
         {
             var callbackInvocations = 0;
 

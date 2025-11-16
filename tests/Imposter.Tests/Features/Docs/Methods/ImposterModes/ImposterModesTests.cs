@@ -17,7 +17,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
     public class ImposterModesTests
     {
         [Fact]
-        public async Task Methods_BehaviorModes_Implicit()
+        public async Task GivenImposterModeImplicit_WhenInvokingMethods_ShouldUseConfiguredOrDefaultBehavior()
         {
             var imposter = new IMyServiceImposter(ImposterMode.Implicit);
             var service = imposter.Instance();
@@ -37,7 +37,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
         }
 
         [Fact]
-        public void Methods_BehaviorModes_Explicit()
+        public void GivenImposterModeExplicit_WhenNoSetup_ShouldThrowMissingImposterException()
         {
             var imposter = new IMyServiceImposter(ImposterMode.Explicit);
             var service = imposter.Instance();

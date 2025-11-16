@@ -22,7 +22,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
     public class OverviewTests
     {
         [Fact]
-        public async Task Methods_Index_Quick_Start_And_Samples()
+        public async Task GivenQuickStartService_WhenUsingImposterOverviewSamples_ShouldDemonstrateCoreScenarios()
         {
             var imposter = new IQuickStartServiceImposter();
             var service = imposter.Instance();

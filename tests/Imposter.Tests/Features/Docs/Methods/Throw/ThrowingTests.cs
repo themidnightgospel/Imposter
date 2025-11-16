@@ -18,7 +18,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Throw
     public class ThrowingTests
     {
         [Fact]
-        public void Methods_Throwing_Ways_To_Throw()
+        public void GivenThrowingSetups_WhenConfigured_ShouldSupportMultipleWaysToThrow()
         {
             var imposter = new IThrowServiceImposter();
             var service = imposter.Instance();
@@ -39,7 +39,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Throw
         }
 
         [Fact]
-        public void Methods_Throwing_Sequence_With_Returns()
+        public void GivenThrowingSetups_WhenSequencedWithReturns_ShouldRespectSequence()
         {
             var imposter = new IThrowServiceImposter();
             var service = imposter.Instance();
@@ -58,7 +58,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Throw
         }
 
         [Fact]
-        public async Task Methods_Throwing_Async()
+        public async Task GivenThrowingSetups_WhenUsingAsyncMethods_ShouldPropagateExceptions()
         {
             var imposter = new IThrowServiceImposter();
             var service = imposter.Instance();

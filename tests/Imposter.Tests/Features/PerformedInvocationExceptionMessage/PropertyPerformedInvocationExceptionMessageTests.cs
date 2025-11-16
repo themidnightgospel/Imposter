@@ -8,7 +8,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
     public class PropertyPerformedInvocationExceptionMessageTests
     {
         [Fact]
-        public void GivenPropertySetterCalledTooFewTimes_ShouldDescribePerformedInvocations()
+        public void GivenPropertySetterCalledTooFewTimes_WhenVerificationFails_ShouldDescribePerformedInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreatePropertySut();
             sut.Instance().Age = 30;
@@ -29,7 +29,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenMultiplePropertySetterCalls_ShouldKeepOrdering()
+        public void GivenMultiplePropertySetterCalls_WhenVerificationFails_ShouldKeepOrdering()
         {
             var sut = PerformedInvocationSutFactory.CreatePropertySut();
             sut.Instance().Age = 10;
@@ -56,7 +56,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenPropertySetterPredicateFails_ShouldListAllSetterInvocations()
+        public void GivenPropertySetterPredicateFails_WhenVerificationFails_ShouldListAllSetterInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreatePropertySut();
             sut.Instance().Age = 5;
@@ -82,7 +82,7 @@ namespace Imposter.Tests.Features.PerformedInvocationExceptionMessage
         }
 
         [Fact]
-        public void GivenGetterVerificationFails_ShouldNotPopulatePerformedInvocations()
+        public void GivenGetterVerificationFails_WhenVerificationFails_ShouldNotPopulatePerformedInvocations()
         {
             var sut = PerformedInvocationSutFactory.CreatePropertySut();
             _ = sut.Instance().Age;

@@ -9,7 +9,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class AbstractClassImposterTests
     {
         [Fact]
-        public void GivenAbstractClassMembers_WhenGenerated_ThenRemainOverridable()
+        public void GivenAbstractClassMembers_WhenGenerated_ShouldRemainOverridable()
         {
             var imposter = new AbstractTelemetryServiceImposter();
 

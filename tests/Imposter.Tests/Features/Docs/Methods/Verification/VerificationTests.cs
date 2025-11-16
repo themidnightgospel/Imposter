@@ -16,7 +16,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
     public class VerificationTests
     {
         [Fact]
-        public void Methods_Verification_Basic_Counts()
+        public void GivenVerificationScenarios_WhenCountingCalls_ShouldHonorBasicCounts()
         {
             var imposter = new IVerifyServiceImposter();
             var service = imposter.Instance();
@@ -29,7 +29,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
         }
 
         [Fact]
-        public void Methods_Verification_Matching_Arguments()
+        public void GivenVerificationScenarios_WhenMatchingArguments_ShouldRespectArgumentMatchers()
         {
             var imposter = new IVerifyServiceImposter();
             var service = imposter.Instance();
@@ -50,7 +50,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
         }
 
         [Fact]
-        public void Methods_Verification_Count_Basics()
+        public void GivenVerificationScenarios_WhenUsingCountHelpers_ShouldApplyCountConstraints()
         {
             var imposter = new IVerifyServiceImposter();
             var service = imposter.Instance();

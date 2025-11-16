@@ -53,7 +53,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [Fact]
-        public void GivenCallbackThatThrows_WhenPropertyIsSet_ValueShouldNotBeSet()
+        public void GivenCallbackThatThrows_WhenPropertyIsSet_ShouldNotSetValue()
         {
             _sut.Age.Setter(Arg<int>.Any())
                 .Callback(_ => throw new InvalidOperationException("Callback error"));

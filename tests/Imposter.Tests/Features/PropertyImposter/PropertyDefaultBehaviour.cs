@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [Fact]
-        public void GivenClassWithInitializer_WhenFirstRead_DefaultBehaviourReturnsInitialValue()
+        public void GivenClassWithInitializer_WhenFirstRead_ShouldReturnInitialValue()
         {
             var classSut = new ClassWithInitialValuePropertyImposter();
             var instance = classSut.Instance();
@@ -54,7 +54,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [Fact]
-        public void GivenClassWithInitializer_WhenSetBeforeAnyRead_DefaultBehaviourReturnsSetValueNotInitializer()
+        public void GivenClassWithInitializer_WhenSetBeforeAnyRead_ShouldReturnSetValueNotInitializer()
         {
             var classSut = new ClassWithInitialValuePropertyImposter();
             var instance = classSut.Instance();
@@ -74,7 +74,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [Fact]
-        public void GivenClassWithInitializerString_WhenFirstRead_DefaultBehaviourReturnsInitialString()
+        public void GivenClassWithInitializerString_WhenFirstRead_ShouldReturnInitialString()
         {
             var classSut = new ClassWithInitialValueStringPropertyImposter();
             var instance = classSut.Instance();

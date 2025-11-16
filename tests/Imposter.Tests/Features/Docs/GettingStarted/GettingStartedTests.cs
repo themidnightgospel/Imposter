@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
     public class GettingStartedTests
     {
         [Fact]
-        public void Interface_Generation_And_Usage()
+        public void GivenInterfaceImposter_WhenConfiguringMethods_ShouldUseConfiguredResults()
         {
             // C# 9-13 usage
             var imposter = new IMyServiceImposter(); // default: Implicit behavior
@@ -45,7 +45,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         }
 
         [Fact]
-        public void Class_Generation_And_Usage()
+        public void GivenClassImposter_WhenOverridingVirtualMembers_ShouldUseConfiguredResults()
         {
             // C# 9-13 usage
             var imposter = new BaseServiceImposter();
@@ -61,7 +61,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 
 #if ROSLYN_5_OR_GREATER
         [Fact]
-        public void Interface_And_Class_Usage_CSharp14()
+        public void GivenInterfaceAndClassImposters_WhenUsingCSharp14StaticApi_ShouldSupportStaticImposterFactory()
         {
             var imposter = IMyService.Imposter();
             var service = imposter.Instance();

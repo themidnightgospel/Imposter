@@ -10,7 +10,7 @@ namespace Imposter.Tests.Features.ClassImposter
     public class MultiParameterIndexerClassImposterTests
     {
         [Fact]
-        public void GivenMultiParameterIndexer_WhenConfigured_ThenReturnsConfiguredValue()
+        public void GivenMultiParameterIndexer_WhenConfigured_ShouldReturnConfiguredValue()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
 
@@ -22,7 +22,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexer_WhenUsingBaseBehavior_ThenStoresValues()
+        public void GivenMultiParameterIndexer_WhenUsingBaseBehavior_ShouldStoreValues()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var instance = imposter.Instance();
@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerUseBaseImplementation_WhenConfigured_ThenInvokesBaseAccessors()
+        public void GivenMultiParameterIndexerUseBaseImplementation_WhenConfigured_ShouldInvokeBaseAccessors()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
 
@@ -47,7 +47,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerSetter_WhenInvoked_ThenVerificationSucceeds()
+        public void GivenMultiParameterIndexerSetter_WhenInvoked_ShouldSucceedVerification()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var setter = imposter[Arg<int>.Is(7), Arg<string>.Is("verify")].Setter();
@@ -59,7 +59,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenCriteriaDiffer_ThenOnlyMatchingUsesBase()
+        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenCriteriaDiffer_ShouldUseBaseOnlyForMatching()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var baseSetter = imposter[Arg<int>.Is(2), Arg<string>.Is("base")].Setter();
@@ -80,7 +80,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenInvokedMultipleTimes_ThenPersistsAcrossCalls()
+        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenInvokedMultipleTimes_ShouldPersistAcrossCalls()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
 
@@ -98,7 +98,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenCallbackRegistered_ThenCallbackRunsAndCanBeVerified()
+        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenCallbackRegistered_ShouldRunCallbackAndAllowVerification()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var setter = imposter[Arg<int>.Is(11), Arg<string>.Is("callback")].Setter();
@@ -120,7 +120,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenMultipleCriteriaRegistered_ThenEachRoutesToBase()
+        public void GivenMultiParameterIndexerSetterUseBaseImplementation_WhenMultipleCriteriaRegistered_ShouldRouteEachToBase()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             imposter[Arg<int>.Any(), Arg<string>.Any()].Getter().UseBaseImplementation();
@@ -144,7 +144,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerGetter_WhenMixingOutcomesForSameCriteria_ThenLastCallWins()
+        public void GivenMultiParameterIndexerGetter_WhenMixingOutcomesForSameCriteria_ShouldTreatLastCallAsWinning()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var getter = imposter[Arg<int>.Is(9), Arg<string>.Is("precedence")].Getter();
@@ -166,7 +166,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerGetterUseBaseImplementation_WhenCallbackRegistered_ThenCallbackExecutesAndCanBeVerified()
+        public void GivenMultiParameterIndexerGetterUseBaseImplementation_WhenCallbackRegistered_ShouldExecuteCallbackAndAllowVerification()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var getter = imposter[Arg<int>.Is(4), Arg<string>.Is("callback")].Getter();
@@ -186,7 +186,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerGetter_WhenSequencingBaseReturnsBase_ThenInvocationsRunInOrder()
+        public void GivenMultiParameterIndexerGetter_WhenSequencingBaseReturnsBase_ShouldRunInvocationsInOrder()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             var getter = imposter[Arg<int>.Is(8), Arg<string>.Is("sequence")].Getter();
@@ -205,7 +205,7 @@ namespace Imposter.Tests.Features.ClassImposter
         }
 
         [Fact]
-        public void GivenMultiParameterIndexerGetterUseBaseImplementation_WhenCalledWithDifferentArguments_ThenBaseReceivesRuntimeIndices()
+        public void GivenMultiParameterIndexerGetterUseBaseImplementation_WhenCalledWithDifferentArguments_ShouldPassRuntimeIndicesToBase()
         {
             var imposter = new ClassWithMultiParameterIndexerImposter();
             imposter[Arg<int>.Any(), Arg<string>.Any()].Getter().UseBaseImplementation();

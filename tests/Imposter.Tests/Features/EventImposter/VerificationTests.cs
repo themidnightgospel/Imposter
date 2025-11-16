@@ -50,7 +50,7 @@ namespace Imposter.Tests.Features.EventImposter
         }
 
         [Fact]
-        public void GivenMismatchedVerification_ShouldThrowVerificationFailedException()
+        public void GivenMismatchedVerification_WhenVerificationIsPerformed_ShouldThrowVerificationFailedException()
         {
             _sut.SomethingHappened.Raise(this, EventArgs.Empty);
 
