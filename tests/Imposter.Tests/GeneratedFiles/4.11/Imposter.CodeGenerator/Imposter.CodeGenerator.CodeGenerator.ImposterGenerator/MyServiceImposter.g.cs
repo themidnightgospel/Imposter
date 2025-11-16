@@ -329,7 +329,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
                 }
                 catch (global::System.Exception ex)
                 {
-                    _invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, default, ex));
+                    _invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -712,7 +712,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
                 }
                 catch (global::System.Exception ex)
                 {
-                    _protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, default, ex));
+                    _protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

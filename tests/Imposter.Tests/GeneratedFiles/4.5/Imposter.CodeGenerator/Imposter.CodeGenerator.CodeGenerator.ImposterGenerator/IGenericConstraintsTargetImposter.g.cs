@@ -411,7 +411,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(arguments, default, ex));
+                    _cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1227,7 +1227,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _createInstanceMethodInvocationHistoryCollection.Add(new CreateInstanceMethodInvocationHistory<TArg>(default, ex));
+                    _createInstanceMethodInvocationHistoryCollection.Add(new CreateInstanceMethodInvocationHistory<TArg>(default !, ex));
                     throw;
                 }
             }

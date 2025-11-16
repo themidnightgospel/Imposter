@@ -43,6 +43,12 @@ internal static partial class SyntaxFactoryHelper
         );
 
     internal static FieldDeclarationSyntax SingleVariableField(
+        in FieldMetadata fieldMetadata,
+        in SyntaxTokenList modifiers,
+        ExpressionSyntax? initializer = null
+    ) => SingleVariableField(fieldMetadata.Type, fieldMetadata.Name, modifiers, initializer);
+
+    internal static FieldDeclarationSyntax SingleVariableField(
         TypeSyntax typeSyntax,
         string name,
         SyntaxKind modifier

@@ -96,18 +96,20 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddParameter(baseImplementationParam)
             .WithBody(
                 Block(
-                    LocalVariableDeclarationSyntax(
-                        indexer.Core.TypeSyntax,
-                        valueIdentifier.Identifier.Text,
-                        DefaultExpression(indexer.Core.TypeSyntax)
-                    ),
                     IfStatement(
                         IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
                             .Dot(IdentifierName("TryGetValue"))
                             .Call(
                                 ArgumentListSyntax([
                                     Argument(IdentifierName("arguments")),
-                                    Argument(null, Token(SyntaxKind.OutKeyword), valueIdentifier),
+                                    Argument(
+                                        null,
+                                        Token(SyntaxKind.OutKeyword),
+                                        DeclarationExpression(
+                                            Var,
+                                            SingleVariableDesignation(valueIdentifier.Identifier)
+                                        )
+                                    ),
                                 ])
                             ),
                         ReturnStatement(valueIdentifier)
@@ -119,7 +121,7 @@ internal static class DefaultIndexerBehaviourBuilder
                                 .Call(EmptyArgumentListSyntax)
                         )
                     ),
-                    ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax))
+                    ReturnStatement(DefaultNonNullable)
                 )
             )
             .Build();

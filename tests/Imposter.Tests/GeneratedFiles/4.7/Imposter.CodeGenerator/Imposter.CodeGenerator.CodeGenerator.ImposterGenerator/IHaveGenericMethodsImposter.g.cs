@@ -777,7 +777,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getValueMethodInvocationHistoryCollection.Add(new GetValueMethodInvocationHistory<TResult>(default, ex));
+                    _getValueMethodInvocationHistoryCollection.Add(new GetValueMethodInvocationHistory<TResult>(default !, ex));
                     throw;
                 }
             }
@@ -1239,7 +1239,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory<TItem>(arguments, default, ex));
+                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory<TItem>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1715,7 +1715,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _processComplexAsyncMethodInvocationHistoryCollection.Add(new ProcessComplexAsyncMethodInvocationHistory<TItem, TResult>(arguments, default, ex));
+                    _processComplexAsyncMethodInvocationHistoryCollection.Add(new ProcessComplexAsyncMethodInvocationHistory<TItem, TResult>(arguments, default !, ex));
                     throw;
                 }
             }

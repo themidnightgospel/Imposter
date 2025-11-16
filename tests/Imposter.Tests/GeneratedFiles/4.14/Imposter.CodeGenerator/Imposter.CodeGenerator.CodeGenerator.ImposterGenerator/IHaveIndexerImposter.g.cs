@@ -101,12 +101,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, T> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, T>();
                 internal T Get(IndexerIndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
                 {
-                    T value = default(T);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(T);
+                    return default !;
                 }
 
                 internal void Set(IndexerIndexerArguments arguments, T value, global::System.Action? baseImplementation = null)
@@ -204,7 +203,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(T);
+                                return default !;
                             }
                         }
 
@@ -659,12 +658,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, int>();
                 internal int Get(Indexer_1IndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
                 {
-                    int value = default(int);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(int);
+                    return default !;
                 }
 
                 internal void Set(Indexer_1IndexerArguments arguments, int value, global::System.Action? baseImplementation = null)
@@ -762,7 +760,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(int);
+                                return default !;
                             }
                         }
 
@@ -1222,12 +1220,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArguments, T> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArguments, T>();
                 internal T Get(Indexer_2IndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
                 {
-                    T value = default(T);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(T);
+                    return default !;
                 }
 
                 internal void Set(Indexer_2IndexerArguments arguments, T value, global::System.Action? baseImplementation = null)
@@ -1325,7 +1322,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(T);
+                                return default !;
                             }
                         }
 

@@ -381,7 +381,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, default, ex));
+                    _buildLabelAsyncMethodInvocationHistoryCollection.Add(new BuildLabelAsyncMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -776,7 +776,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, default, ex));
+                    _intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1177,7 +1177,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, default, ex));
+                    _refOutWithParamsMethodInvocationHistoryCollection.Add(new RefOutWithParamsMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1584,7 +1584,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _sumAsyncMethodInvocationHistoryCollection.Add(new SumAsyncMethodInvocationHistory(arguments, default, ex));
+                    _sumAsyncMethodInvocationHistoryCollection.Add(new SumAsyncMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1979,7 +1979,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _throwingCalculationMethodInvocationHistoryCollection.Add(new ThrowingCalculationMethodInvocationHistory(arguments, default, ex));
+                    _throwingCalculationMethodInvocationHistoryCollection.Add(new ThrowingCalculationMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

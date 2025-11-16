@@ -673,7 +673,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _countForMethodInvocationHistoryCollection.Add(new CountForMethodInvocationHistory(arguments, default, ex));
+                    _countForMethodInvocationHistoryCollection.Add(new CountForMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -998,7 +998,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNextMethodInvocationHistoryCollection.Add(new GetNextMethodInvocationHistory(default, ex));
+                    _getNextMethodInvocationHistoryCollection.Add(new GetNextMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1657,7 +1657,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _resilientFetchMethodInvocationHistoryCollection.Add(new ResilientFetchMethodInvocationHistory(default, ex));
+                    _resilientFetchMethodInvocationHistoryCollection.Add(new ResilientFetchMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -2016,7 +2016,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _tryAddMethodInvocationHistoryCollection.Add(new TryAddMethodInvocationHistory(arguments, default, ex));
+                    _tryAddMethodInvocationHistoryCollection.Add(new TryAddMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

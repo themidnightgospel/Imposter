@@ -277,7 +277,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default, ex));
+                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -618,7 +618,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberAsyncMethodInvocationHistoryCollection.Add(new GetNumberAsyncMethodInvocationHistory(default, ex));
+                    _getNumberAsyncMethodInvocationHistoryCollection.Add(new GetNumberAsyncMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }

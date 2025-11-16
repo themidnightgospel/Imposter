@@ -314,7 +314,7 @@ namespace Imposter.Tests.Shared
                 }
                 catch (global::System.Exception ex)
                 {
-                    _indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(arguments, default, ex));
+                    _indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

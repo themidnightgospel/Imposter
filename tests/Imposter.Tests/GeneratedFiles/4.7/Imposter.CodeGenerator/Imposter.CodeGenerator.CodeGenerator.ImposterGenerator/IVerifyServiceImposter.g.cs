@@ -317,7 +317,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
                 }
                 catch (global::System.Exception ex)
                 {
-                    _combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, default, ex));
+                    _combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

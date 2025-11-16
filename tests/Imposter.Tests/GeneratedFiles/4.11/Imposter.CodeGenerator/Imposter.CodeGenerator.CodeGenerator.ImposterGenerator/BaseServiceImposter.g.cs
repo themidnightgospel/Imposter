@@ -286,7 +286,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default, ex));
+                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }

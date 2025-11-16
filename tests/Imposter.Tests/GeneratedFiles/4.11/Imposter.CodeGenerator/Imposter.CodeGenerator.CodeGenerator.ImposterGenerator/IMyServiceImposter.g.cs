@@ -277,7 +277,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default, ex));
+                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -636,7 +636,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
                 }
                 catch (global::System.Exception ex)
                 {
-                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default, ex));
+                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1212,9 +1212,9 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
                 {
                     private readonly GetterImposter _parent;
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                    private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
+                    private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -1248,11 +1248,11 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
                             callback(arguments.key);
                         }
 
-                        global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int> generator = ResolveNextGenerator(arguments);
+                        global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
                         return generator(arguments, baseImplementation);
                     }
 
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
+                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
                     {
                         if (_defaultBehaviour.IsOn)
                         {

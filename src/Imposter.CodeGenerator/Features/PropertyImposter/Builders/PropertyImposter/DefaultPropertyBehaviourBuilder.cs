@@ -17,14 +17,14 @@ internal static class DefaultPropertyBehaviourBuilder
             .AddMember(
                 SingleVariableField(
                     defaultPropertyBehaviour.IsOnField,
-                    SyntaxKind.InternalKeyword,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword)),
                     True
                 )
             )
             .AddMember(
                 SingleVariableField(
                     defaultPropertyBehaviour.HasValueSetField,
-                    SyntaxKind.InternalKeyword,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword)),
                     False
                 )
             )
@@ -32,7 +32,7 @@ internal static class DefaultPropertyBehaviourBuilder
                 SingleVariableField(
                     defaultPropertyBehaviour.BackingField,
                     SyntaxKind.InternalKeyword,
-                    Default
+                    DefaultNonNullable
                 )
             )
             .Build();

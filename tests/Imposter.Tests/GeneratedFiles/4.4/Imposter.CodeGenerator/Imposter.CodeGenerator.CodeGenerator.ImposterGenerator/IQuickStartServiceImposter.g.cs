@@ -345,7 +345,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, default, ex));
+                    _combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -679,7 +679,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _doWorkAsyncMethodInvocationHistoryCollection.Add(new DoWorkAsyncMethodInvocationHistory(default, ex));
+                    _doWorkAsyncMethodInvocationHistoryCollection.Add(new DoWorkAsyncMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1008,7 +1008,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default, ex));
+                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1349,7 +1349,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberAsyncMethodInvocationHistoryCollection.Add(new GetNumberAsyncMethodInvocationHistory(default, ex));
+                    _getNumberAsyncMethodInvocationHistoryCollection.Add(new GetNumberAsyncMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1720,7 +1720,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default, ex));
+                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -2081,7 +2081,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 }
                 catch (global::System.Exception ex)
                 {
-                    _virtualComputeMethodInvocationHistoryCollection.Add(new VirtualComputeMethodInvocationHistory(arguments, default, ex));
+                    _virtualComputeMethodInvocationHistoryCollection.Add(new VirtualComputeMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

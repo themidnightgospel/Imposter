@@ -364,7 +364,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, default, ex));
+                    _invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -747,7 +747,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, default, ex));
+                    _protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1094,7 +1094,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(default, ex));
+                    _readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1475,7 +1475,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, default, ex));
+                    _readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -2841,10 +2841,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    _returnValues.TryDequeue(out var returnValue);
-                    var nextReturnValue = returnValue ?? _lastReturnValue;
-                    if (nextReturnValue != null)
-                        _lastReturnValue = nextReturnValue;
+                    var nextReturnValue = _lastReturnValue;
+                    if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+                    {
+                        nextReturnValue = returnValue;
+                        _lastReturnValue = returnValue;
+                    }
+
                     return nextReturnValue(baseImplementation);
                 }
 
@@ -3509,9 +3512,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 {
                     private readonly GetterImposter _parent;
                     private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-                    private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>>();
+                    private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
                     private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
-                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int>? _lastReturnValue;
+                    private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
                     private int _invocationCount;
                     private string _propertyDisplayName;
                     internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -3545,11 +3548,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                             callback(arguments.index);
                         }
 
-                        global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int> generator = ResolveNextGenerator(arguments);
+                        global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
                         return generator(arguments, baseImplementation);
                     }
 
-                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
+                    private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
                     {
                         if (_defaultBehaviour.IsOn)
                         {

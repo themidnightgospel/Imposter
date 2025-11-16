@@ -816,7 +816,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _mapMethodInvocationHistoryCollection.Add(new MapMethodInvocationHistory<TSource, TResult>(arguments, default, ex));
+                    _mapMethodInvocationHistoryCollection.Add(new MapMethodInvocationHistory<TSource, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1262,7 +1262,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<TArg>(arguments, default, ex));
+                    _transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<TArg>(arguments, default !, ex));
                     throw;
                 }
             }

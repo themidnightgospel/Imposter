@@ -94,9 +94,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -301,9 +301,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -500,9 +500,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -756,9 +756,9 @@ namespace Imposter.Tests.Features.PropertyImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal string BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal string BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

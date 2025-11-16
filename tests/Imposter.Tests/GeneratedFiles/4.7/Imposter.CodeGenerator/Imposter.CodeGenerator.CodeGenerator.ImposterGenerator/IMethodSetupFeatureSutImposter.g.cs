@@ -421,7 +421,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _asyncTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncTaskIntNoParamsMethodInvocationHistory(default, ex));
+                    _asyncTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncTaskIntNoParamsMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -774,7 +774,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(default, ex));
+                    _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1255,7 +1255,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, default, ex));
+                    _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1669,7 +1669,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericInnerOutParamMethodInvocationHistoryCollection.Add(new GenericInnerOutParamMethodInvocationHistory<TValue, TResult>(default, ex));
+                    _genericInnerOutParamMethodInvocationHistoryCollection.Add(new GenericInnerOutParamMethodInvocationHistory<TValue, TResult>(default !, ex));
                     throw;
                 }
             }
@@ -2113,7 +2113,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericInnerParamsParamMethodInvocationHistoryCollection.Add(new GenericInnerParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default, ex));
+                    _genericInnerParamsParamMethodInvocationHistoryCollection.Add(new GenericInnerParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -2561,7 +2561,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericInnerRefParamMethodInvocationHistoryCollection.Add(new GenericInnerRefParamMethodInvocationHistory<TValue, TResult>(arguments, default, ex));
+                    _genericInnerRefParamMethodInvocationHistoryCollection.Add(new GenericInnerRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -3387,7 +3387,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericOutParamMethodInvocationHistoryCollection.Add(new GenericOutParamMethodInvocationHistory<TValue, TResult>(default, ex));
+                    _genericOutParamMethodInvocationHistoryCollection.Add(new GenericOutParamMethodInvocationHistory<TValue, TResult>(default !, ex));
                     throw;
                 }
             }
@@ -3831,7 +3831,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericParamsParamMethodInvocationHistoryCollection.Add(new GenericParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default, ex));
+                    _genericParamsParamMethodInvocationHistoryCollection.Add(new GenericParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -4279,7 +4279,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericRefParamMethodInvocationHistoryCollection.Add(new GenericRefParamMethodInvocationHistory<TValue, TResult>(arguments, default, ex));
+                    _genericRefParamMethodInvocationHistoryCollection.Add(new GenericRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -5079,7 +5079,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intAllRefKindsMethodInvocationHistoryCollection.Add(new IntAllRefKindsMethodInvocationHistory(arguments, default, ex));
+                    _intAllRefKindsMethodInvocationHistoryCollection.Add(new IntAllRefKindsMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -5440,7 +5440,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intInParamMethodInvocationHistoryCollection.Add(new IntInParamMethodInvocationHistory(arguments, default, ex));
+                    _intInParamMethodInvocationHistoryCollection.Add(new IntInParamMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -5765,7 +5765,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intNoParamsMethodInvocationHistoryCollection.Add(new IntNoParamsMethodInvocationHistory(default, ex));
+                    _intNoParamsMethodInvocationHistoryCollection.Add(new IntNoParamsMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -6100,7 +6100,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intOutParamMethodInvocationHistoryCollection.Add(new IntOutParamMethodInvocationHistory(default, ex));
+                    _intOutParamMethodInvocationHistoryCollection.Add(new IntOutParamMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -6467,7 +6467,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intParamsMethodInvocationHistoryCollection.Add(new IntParamsMethodInvocationHistory(arguments, default, ex));
+                    _intParamsMethodInvocationHistoryCollection.Add(new IntParamsMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -6828,7 +6828,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intParamsParamMethodInvocationHistoryCollection.Add(new IntParamsParamMethodInvocationHistory(arguments, default, ex));
+                    _intParamsParamMethodInvocationHistoryCollection.Add(new IntParamsParamMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -7189,7 +7189,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intRefParamMethodInvocationHistoryCollection.Add(new IntRefParamMethodInvocationHistory(arguments, default, ex));
+                    _intRefParamMethodInvocationHistoryCollection.Add(new IntRefParamMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -7550,7 +7550,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, default, ex));
+                    _intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

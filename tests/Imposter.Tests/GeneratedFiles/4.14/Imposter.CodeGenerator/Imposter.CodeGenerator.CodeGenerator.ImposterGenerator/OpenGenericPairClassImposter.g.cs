@@ -919,9 +919,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class DefaultPropertyBehaviour
             {
-                internal bool IsOn = true;
-                internal bool HasValueSet = false;
-                internal global::System.Collections.Generic.KeyValuePair<TKey, TValue> BackingField = default;
+                internal volatile bool IsOn = true;
+                internal volatile bool HasValueSet = false;
+                internal global::System.Collections.Generic.KeyValuePair<TKey, TValue> BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1261,12 +1261,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, TValue> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, TValue>();
                 internal TValue Get(IndexerIndexerArguments arguments, global::System.Func<TValue>? baseImplementation = null)
                 {
-                    TValue value = default(TValue);
-                    if (BackingField.TryGetValue(arguments, out value))
+                    if (BackingField.TryGetValue(arguments, out var value))
                         return value;
                     if (baseImplementation != null)
                         return baseImplementation();
-                    return default(TValue);
+                    return default !;
                 }
 
                 internal void Set(IndexerIndexerArguments arguments, TValue value, global::System.Action? baseImplementation = null)
@@ -1364,7 +1363,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                             }
                             else
                             {
-                                return default(TValue);
+                                return default !;
                             }
                         }
 

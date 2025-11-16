@@ -340,7 +340,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
                 }
                 catch (global::System.Exception ex)
                 {
-                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default, ex));
+                    _addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -723,7 +723,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
                 }
                 catch (global::System.Exception ex)
                 {
-                    _mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, default, ex));
+                    _mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1116,7 +1116,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
                 }
                 catch (global::System.Exception ex)
                 {
-                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, default, ex));
+                    _processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

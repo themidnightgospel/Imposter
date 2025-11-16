@@ -427,7 +427,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default, ex));
+                    _echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default !, ex));
                     throw;
                 }
             }
@@ -811,7 +811,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(arguments, default, ex));
+                    _formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1198,7 +1198,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _format_1MethodInvocationHistoryCollection.Add(new Format_1MethodInvocationHistory(arguments, default, ex));
+                    _format_1MethodInvocationHistoryCollection.Add(new Format_1MethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -1669,7 +1669,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _selectFirstMethodInvocationHistoryCollection.Add(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(arguments, default, ex));
+                    _selectFirstMethodInvocationHistoryCollection.Add(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(arguments, default !, ex));
                     throw;
                 }
             }

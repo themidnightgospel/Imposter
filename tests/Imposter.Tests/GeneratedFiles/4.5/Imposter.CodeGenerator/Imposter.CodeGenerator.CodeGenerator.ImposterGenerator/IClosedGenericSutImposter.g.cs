@@ -306,7 +306,7 @@ namespace Imposter.Tests.Features.MethodImposter
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(arguments, default, ex));
+                    _genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

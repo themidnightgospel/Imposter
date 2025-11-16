@@ -250,10 +250,13 @@ namespace Imposter.Tests.Features.PropertyImposter
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    _returnValues.TryDequeue(out var returnValue);
-                    var nextReturnValue = returnValue ?? _lastReturnValue;
-                    if (nextReturnValue != null)
-                        _lastReturnValue = nextReturnValue;
+                    var nextReturnValue = _lastReturnValue;
+                    if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+                    {
+                        nextReturnValue = returnValue;
+                        _lastReturnValue = returnValue;
+                    }
+
                     return nextReturnValue(baseImplementation);
                 }
 
@@ -619,10 +622,13 @@ namespace Imposter.Tests.Features.PropertyImposter
                         return _defaultPropertyBehaviour.BackingField;
                     }
 
-                    _returnValues.TryDequeue(out var returnValue);
-                    var nextReturnValue = returnValue ?? _lastReturnValue;
-                    if (nextReturnValue != null)
-                        _lastReturnValue = nextReturnValue;
+                    var nextReturnValue = _lastReturnValue;
+                    if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+                    {
+                        nextReturnValue = returnValue;
+                        _lastReturnValue = returnValue;
+                    }
+
                     return nextReturnValue(baseImplementation);
                 }
 

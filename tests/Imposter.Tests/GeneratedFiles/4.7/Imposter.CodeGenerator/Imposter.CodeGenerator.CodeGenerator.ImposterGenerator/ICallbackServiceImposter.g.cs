@@ -342,7 +342,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
                 }
                 catch (global::System.Exception ex)
                 {
-                    _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(arguments, default, ex));
+                    _genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
@@ -667,7 +667,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
                 }
                 catch (global::System.Exception ex)
                 {
-                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default, ex));
+                    _getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
                     throw;
                 }
             }
@@ -1026,7 +1026,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
                 }
                 catch (global::System.Exception ex)
                 {
-                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default, ex));
+                    _incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }

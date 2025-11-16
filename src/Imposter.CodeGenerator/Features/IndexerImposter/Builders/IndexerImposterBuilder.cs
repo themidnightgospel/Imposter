@@ -2153,9 +2153,7 @@ internal static class IndexerImposterBuilder
                                 indexer.GetterImplementation.GetterSuffix
                             )
                         ),
-                        ElseClause(
-                            Block(ReturnStatement(DefaultExpression(indexer.Core.TypeSyntax)))
-                        )
+                        ElseClause(Block(ReturnStatement(DefaultNonNullable)))
                     )
                 )
             ),

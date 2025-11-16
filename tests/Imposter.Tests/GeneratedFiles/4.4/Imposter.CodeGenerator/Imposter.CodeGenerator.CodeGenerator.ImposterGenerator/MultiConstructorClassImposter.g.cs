@@ -322,7 +322,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
                 catch (global::System.Exception ex)
                 {
-                    _calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(arguments, default, ex));
+                    _calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(arguments, default !, ex));
                     throw;
                 }
             }
