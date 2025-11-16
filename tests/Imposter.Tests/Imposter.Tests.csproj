@@ -37,4 +37,8 @@
     />
     <ProjectReference Include="..\..\src\Imposter.Abstractions\Imposter.Abstractions.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\VerificationExceptionMessage\" />
+  </ItemGroup>
 </Project>

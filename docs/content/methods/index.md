@@ -1,22 +1,4 @@
-Generated imposters expose fluent method builders you can use to:
-
-- Arrange outcomes: `Returns`, `ReturnsAsync`, `Throws`
-- Add side effects: `Callback`
-- Sequence behaviors: `Then`
-- Verify invocations: `Called(Count.*)`
-
-Invocation modes:
-
-- `Implicit` (default): missing setups return default values and do nothing for void methods.
-- `Explicit`: missing setups throw `MissingImposterException`.
-
-!!! tip "Pro tip"
-    Use `Explicit` mode for strict unit tests to fail fast on unintended calls. Keep `Implicit` for exploratory tests where defaults are acceptable.
-
-!!! info "Imposter Modes"
-    See a deeper dive with examples in [Imposter Modes](explicit-vs-implicit.md).
-
-## Quick Start
+## Creating an imposter
 
 Define the target interface and enable generation:
 
@@ -29,62 +11,71 @@ Define the target interface and enable generation:
     public interface IQuickStartService
     {
         int GetNumber();
+
         int Increment(int v);
+
         System.Threading.Tasks.Task<int> GetNumberAsync();
+
         System.Threading.Tasks.Task DoWorkAsync();
+
         int Combine(int a, int b);
+
         int VirtualCompute(int v);
     }
     ```
 
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L26"}
-    var imposter = new IQuickStartServiceImposter();
-    var service = imposter.Instance();
-
-    imposter.GetNumber().Returns(42);
-    service.GetNumber(); // 42
-
-    imposter.Increment(Arg<int>.Any()).Returns(0);
-    imposter.Increment(Arg<int>.Is(x => x > 0)).Returns(v => v + 2);
-    imposter.Increment(5).Returns(50);          // exact match (implicit Arg<int>)
-    ```
-
-## Arranging Returns
+## Setup Return values
 
  - Return a constant value:
   
 !!! example
        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L43"}
        imposter.GetNumber().Returns(1);
+
+       imposter.Instance().GetNumber(); // returns 1
        ```
  - Return via a delegate (captures inputs):
   
 !!! example
        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L34"}
        imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
+
+       imposter.Instance().Increment(10); // returns 12;
        ```
  - Sequence multiple outcomes with `Then()`:
   
 !!! example
        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L42"}
-       imposter.GetNumber()
-           .Returns(1)
-           .Then().Returns(() => 2)
-           .Then().Returns(3);
+       imposter
+            .Increment(Arg<int>.Any())
+            .Returns(v => v + 2)
+            .Then()
+            .Returns(v => v + 3)
+            .Then()
+            .Returns(v => v + 4);
+
+        imposter.Instance().Increment(10); // returns 12
+        imposter.Instance().Increment(10); // returns 13
+        imposter.Instance().Increment(10); // returns 14
+
+        // sequence is exhausetd, last outcome repeats
+        imposter.Instance().Increment(10); // returns 14
        ```
 
 !!! note
-    - Use `Then()` to set up sequence.
-    - After a sequence is exhausted, the last outcome repeats (when applicable).
+    - Use `Then()` to set up sequence
+    - After a sequence is exhausted, the last outcome repeats
 
 ## Async Methods
+
+With async methods, imposter provides some handy methods to simplify setup:
 
  - Task<T> and ValueTask<T> methods:
 !!! example
        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L51"}
        imposter.GetNumberAsync().ReturnsAsync(42);
-       imposter.GetNumberAsync().Returns(() => Task.FromResult(1));
+  
+       await imposter.Instance().GetNumberAsync(); // returns 41
        ```
  - Task-returning (no result):
 !!! example
@@ -102,75 +93,8 @@ Define the target interface and enable generation:
 !!! tip "Pro tip"
     Prefer `ReturnsAsync` for Task/ValueTask methods. It reads cleaner and avoids accidental sync-over-async in factories.
 
-## Exceptions
-
-Arrange exceptions instead of return values:
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L64"}
-    imposter.GetNumber().Throws<InvalidOperationException>();
-    imposter.GetNumber().Throws(new Exception("boom"));
-    imposter.GetNumber().Throws(() => new Exception("deferred"));
-    ```
-
-Mix with returns using `Then()`:
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L75"}
-    imposter.GetNumber()
-        .Returns(1)
-        .Then().Throws<InvalidOperationException>()
-        .Then().Returns(2);
-    ```
-
-## Callbacks
-
-Callbacks run after an outcome is produced (or after the default result for missing returns in Implicit mode):
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L84"}
-    var stages = new List<string>();
-
-    imposter.GetNumber()
-        .Returns(() => { stages.Add("return"); return 42; })
-        .Callback(() => stages.Add("first"))
-        .Callback(() => stages.Add("second"));
-    ```
-
-Parameterized callbacks capture inputs:
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L91"}
-    imposter.Increment(Arg<int>.Any()).Callback(v => /* observe v */);
-    ```
-
-Sequence-local callbacks:
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L93"}
-    imposter.Increment(Arg<int>.Any())
-        .Returns(_ => 10)
-        .Callback(_ => Log("first"))
-        .Then()
-        .Returns(_ => 20)
-        .Callback(_ => Log("second"));
-    ```
-
-## Argument Matching
-
-Use precise values or matchers per parameter:
-- Exact value (implicit `Arg<T>`): `imposter.Increment(5)`
-- Any value: `Arg<T>.Any()`
-- Predicate: `Arg<T>.Is(x => x > 10)` / negation: `Arg<T>.IsNot(...)`
-- Membership: `Arg<T>.IsIn(collection)` / `IsNotIn(collection)`
-- Default: `Arg<T>.IsDefault()`
-
-Combine for multi-parameter methods:
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L103"}
-    imposter.Combine(
-        Arg<int>.Is(x => x > 0),
-        Arg<int>.Is(y => y < 10))
-      .Returns(42);
-    ```
-
-!!! tip "Pro tip"
-    Start with precise matchers (e.g., `Is(...)`) before adding broad `Any()` fallbacks. This reduces ambiguity between overlapping setups.
+!!! warning
+    Async methods without setup return `default`, which in case of `Task` is `null`.
 
 ## Ref/Out/In Parameters
 

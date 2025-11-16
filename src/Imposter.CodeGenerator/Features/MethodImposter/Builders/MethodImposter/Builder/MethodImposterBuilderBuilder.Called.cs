@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -47,13 +47,18 @@ internal static partial class MethodImposterBuilderBuilder
                                     : EmptyArgumentListSyntax
                             )
                     ),
-                    ThrowIfCountDoesNotMatch()
+                    ThrowIfCountDoesNotMatch(method)
                 )
             )
             .Build();
 
-        IfStatementSyntax ThrowIfCountDoesNotMatch() =>
-            IfStatement(
+        static IfStatementSyntax ThrowIfCountDoesNotMatch(in ImposterTargetMethodMetadata method)
+        {
+            var invocationHistoryIdentifier = IdentifierName(
+                method.InvocationHistory.Collection.AsField.Name
+            );
+
+            return IfStatement(
                 Not(
                     IdentifierName("count")
                         .Dot(IdentifierName("Matches"))
@@ -70,11 +75,17 @@ internal static partial class MethodImposterBuilderBuilder
                                 SeparatedList<ArgumentSyntax>([
                                     Argument(IdentifierName("count")),
                                     Argument(IdentifierName("invocationCount")),
+                                    Argument(
+                                        invocationHistoryIdentifier
+                                            .Dot(IdentifierName("ToString"))
+                                            .Call()
+                                    ),
                                 ])
                             )
                         )
                     )
                 )
             );
+        }
     }
 }

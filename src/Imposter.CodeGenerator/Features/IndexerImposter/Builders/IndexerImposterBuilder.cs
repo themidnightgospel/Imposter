@@ -48,7 +48,8 @@ internal static class IndexerImposterBuilder
             .AddMember(indexer.Core.HasGetter ? BuildGetForwarder(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildSetForwarder(indexer) : null)
             .AddMember(indexer.Core.HasGetter ? BuildGetterImposter(indexer) : null)
-            .AddMember(indexer.Core.HasSetter ? BuildSetterImposter(indexer) : null);
+            .AddMember(indexer.Core.HasSetter ? BuildSetterImposter(indexer) : null)
+            .AddMember(BuildFormatValueMethod());
 
         return classBuilder.Build();
     }
@@ -1496,15 +1497,28 @@ internal static class IndexerImposterBuilder
         var countParameter = ParameterSyntax(
             indexer.SetterBuilderInterface.CalledMethod.CountParameter
         );
+        var invocationHistoryIdentifier = IdentifierName(setter.InvocationHistoryField.Name);
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             "invocationCount",
-            IdentifierName(setter.InvocationHistoryField.Name)
+            invocationHistoryIdentifier
                 .Dot(IdentifierName("Count"))
                 .Call(
                     Argument(
-                        IdentifierName(setter.CriteriaParameterName).Dot(IdentifierName("Matches"))
+                        SimpleLambdaExpression(
+                            Parameter(Identifier("entry")),
+                            IdentifierName(setter.CriteriaParameterName)
+                                .Dot(IdentifierName("Matches"))
+                                .Call(
+                                    Argument(
+                                        IdentifierName("entry").Dot(IdentifierName("Arguments"))
+                                    )
+                                )
+                        )
                     )
                 )
         );
@@ -1515,24 +1529,6 @@ internal static class IndexerImposterBuilder
                 .Call(Argument(IdentifierName("invocationCount")))
         );
 
-        var throwStatement = ThrowStatement(
-            ObjectCreationExpression(
-                    WellKnownTypes.Imposter.Abstractions.VerificationFailedException
-                )
-                .WithArgumentList(
-                    ArgumentList(
-                        SeparatedList<ArgumentSyntax>(
-                            new SyntaxNodeOrToken[]
-                            {
-                                Argument(IdentifierName(countParameter.Identifier)),
-                                Token(SyntaxKind.CommaToken),
-                                Argument(IdentifierName("invocationCount")),
-                            }
-                        )
-                    )
-                )
-        );
-
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
@@ -1541,9 +1537,176 @@ internal static class IndexerImposterBuilder
             )
             .AddParameter(countParameter)
             .WithBody(
-                Block(invocationCountDeclaration, IfStatement(condition, Block(throwStatement)))
+                Block(
+                    invocationCountDeclaration,
+                    IfStatement(
+                        condition,
+                        Block(
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                "performedInvocations",
+                                stringListType.New()
+                            ),
+                            ForEachStatement(
+                                Var,
+                                Identifier("entry"),
+                                invocationHistoryIdentifier,
+                                Block(
+                                    IdentifierName("performedInvocations")
+                                        .Dot(IdentifierName("Add"))
+                                        .Call(
+                                            Argument(
+                                                BuildSetterInvocationDescription(
+                                                    indexer,
+                                                    IdentifierName("entry")
+                                                )
+                                            )
+                                        )
+                                        .ToStatementSyntax()
+                                )
+                            ),
+                            ThrowStatement(
+                                ObjectCreationExpression(
+                                        WellKnownTypes
+                                            .Imposter
+                                            .Abstractions
+                                            .VerificationFailedException
+                                    )
+                                    .WithArgumentList(
+                                        ArgumentList(
+                                            SeparatedList<ArgumentSyntax>(
+                                                new SyntaxNodeOrToken[]
+                                                {
+                                                    Argument(
+                                                        IdentifierName(countParameter.Identifier)
+                                                    ),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(IdentifierName("invocationCount")),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(
+                                                        IdentifierName("string")
+                                                            .Dot(IdentifierName("Join"))
+                                                            .Call(
+                                                                ArgumentList(
+                                                                    SeparatedList<ArgumentSyntax>(
+                                                                        new SyntaxNodeOrToken[]
+                                                                        {
+                                                                            Argument(
+                                                                                IdentifierName(
+                                                                                        "Environment"
+                                                                                    )
+                                                                                    .Dot(
+                                                                                        IdentifierName(
+                                                                                            "NewLine"
+                                                                                        )
+                                                                                    )
+                                                                            ),
+                                                                            Token(
+                                                                                SyntaxKind.CommaToken
+                                                                            ),
+                                                                            Argument(
+                                                                                IdentifierName(
+                                                                                    "performedInvocations"
+                                                                                )
+                                                                            ),
+                                                                        }
+                                                                    )
+                                                                )
+                                                            )
+                                                    ),
+                                                }
+                                            )
+                                        )
+                                    )
+                            )
+                        )
+                    )
+                )
             )
             .Build();
+
+        ExpressionSyntax BuildSetterInvocationDescription(
+            in ImposterIndexerMetadata indexer,
+            IdentifierNameSyntax entryIdentifier
+        )
+        {
+            var prefix = AddStrings(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("set ")),
+                IdentifierName("_propertyDisplayName")
+            );
+
+            var argumentsIdentifier = entryIdentifier.Dot(IdentifierName("Arguments"));
+            var indices = BuildIndices(indexer, argumentsIdentifier);
+            var withIndices = AddStrings(prefix, indices);
+            var assignment = AddStrings(
+                withIndices,
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" = "))
+            );
+
+            return AddStrings(
+                assignment,
+                IdentifierName("FormatValue")
+                    .Call(Argument(entryIdentifier.Dot(IdentifierName("Value"))))
+            );
+        }
+
+        static ExpressionSyntax BuildIndices(
+            in ImposterIndexerMetadata indexer,
+            ExpressionSyntax argumentsIdentifier
+        )
+        {
+            var formattedValues = IdentifierName("string")
+                .Dot(IdentifierName("Join"))
+                .Call(
+                    ArgumentList(
+                        SeparatedList<ArgumentSyntax>(
+                            new SyntaxNodeOrToken[]
+                            {
+                                Argument(
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal(", ")
+                                    )
+                                ),
+                                Token(SyntaxKind.CommaToken),
+                                Argument(
+                                    ImplicitArrayCreationExpression(
+                                        InitializerExpression(
+                                            SyntaxKind.ArrayInitializerExpression,
+                                            SeparatedList(
+                                                indexer.Core.Parameters.Select(
+                                                    ExpressionSyntax (parameter) =>
+                                                        IdentifierName("FormatValue")
+                                                            .Call(
+                                                                Argument(
+                                                                    argumentsIdentifier.Dot(
+                                                                        IdentifierName(
+                                                                            parameter.Name
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                            }
+                        )
+                    )
+                );
+
+            return AddStrings(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("[")),
+                AddStrings(
+                    formattedValues,
+                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("]"))
+                )
+            );
+        }
+
+        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
+            BinaryExpression(SyntaxKind.AddExpression, left, right);
     }
 
     private static MethodDeclarationSyntax BuildSetterUseBaseImplementationMethod(
@@ -1687,7 +1850,20 @@ internal static class IndexerImposterBuilder
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
                     .Dot(IdentifierName("Add"))
-                    .Call(Argument(argumentsVariable))
+                    .Call(
+                        Argument(
+                            TupleExpression(
+                                SeparatedList<ArgumentSyntax>(
+                                    new SyntaxNodeOrToken[]
+                                    {
+                                        Argument(argumentsVariable),
+                                        Token(SyntaxKind.CommaToken),
+                                        Argument(IdentifierName(setter.ValueParameterName)),
+                                    }
+                                )
+                            )
+                        )
+                    )
                     .ToStatementSyntax()
             )
             .AddStatement(
@@ -2329,10 +2505,17 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer
     )
     {
+        var invocationHistoryIdentifier = IdentifierName(
+            indexer.GetterImplementation.InvocationHistoryField.Name
+        );
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
+
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             "invocationCount",
-            IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
+            invocationHistoryIdentifier
                 .Dot(IdentifierName("Count"))
                 .Call(
                     ArgumentList(
@@ -2356,26 +2539,6 @@ internal static class IndexerImposterBuilder
                 )
         );
 
-        var throwStatement = ThrowStatement(
-            ObjectCreationExpression(
-                    WellKnownTypes.Imposter.Abstractions.VerificationFailedException
-                )
-                .WithArgumentList(
-                    ArgumentList(
-                        SeparatedList<ArgumentSyntax>(
-                            new SyntaxNodeOrToken[]
-                            {
-                                Argument(
-                                    IdentifierName(indexer.GetterImplementation.CountParameterName)
-                                ),
-                                Token(SyntaxKind.CommaToken),
-                                Argument(IdentifierName("invocationCount")),
-                            }
-                        )
-                    )
-                )
-        );
-
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
@@ -2387,9 +2550,169 @@ internal static class IndexerImposterBuilder
                     .WithType(WellKnownTypes.Imposter.Abstractions.Count)
             )
             .WithBody(
-                Block(invocationCountDeclaration, IfStatement(condition, Block(throwStatement)))
+                Block(
+                    invocationCountDeclaration,
+                    IfStatement(
+                        condition,
+                        Block(
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                "performedInvocations",
+                                stringListType.New()
+                            ),
+                            ForEachStatement(
+                                Var,
+                                Identifier("entry"),
+                                invocationHistoryIdentifier,
+                                Block(
+                                    IdentifierName("performedInvocations")
+                                        .Dot(IdentifierName("Add"))
+                                        .Call(
+                                            Argument(
+                                                BuildGetterInvocationDescription(
+                                                    indexer,
+                                                    IdentifierName("entry")
+                                                )
+                                            )
+                                        )
+                                        .ToStatementSyntax()
+                                )
+                            ),
+                            ThrowStatement(
+                                ObjectCreationExpression(
+                                        WellKnownTypes
+                                            .Imposter
+                                            .Abstractions
+                                            .VerificationFailedException
+                                    )
+                                    .WithArgumentList(
+                                        ArgumentList(
+                                            SeparatedList<ArgumentSyntax>(
+                                                new SyntaxNodeOrToken[]
+                                                {
+                                                    Argument(
+                                                        IdentifierName(
+                                                            indexer
+                                                                .GetterImplementation
+                                                                .CountParameterName
+                                                        )
+                                                    ),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(IdentifierName("invocationCount")),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(
+                                                        IdentifierName("string")
+                                                            .Dot(IdentifierName("Join"))
+                                                            .Call(
+                                                                ArgumentList(
+                                                                    SeparatedList<ArgumentSyntax>(
+                                                                        new SyntaxNodeOrToken[]
+                                                                        {
+                                                                            Argument(
+                                                                                IdentifierName(
+                                                                                        "Environment"
+                                                                                    )
+                                                                                    .Dot(
+                                                                                        IdentifierName(
+                                                                                            "NewLine"
+                                                                                        )
+                                                                                    )
+                                                                            ),
+                                                                            Token(
+                                                                                SyntaxKind.CommaToken
+                                                                            ),
+                                                                            Argument(
+                                                                                IdentifierName(
+                                                                                    "performedInvocations"
+                                                                                )
+                                                                            ),
+                                                                        }
+                                                                    )
+                                                                )
+                                                            )
+                                                    ),
+                                                }
+                                            )
+                                        )
+                                    )
+                            )
+                        )
+                    )
+                )
             )
             .Build();
+
+        ExpressionSyntax BuildGetterInvocationDescription(
+            in ImposterIndexerMetadata indexer,
+            ExpressionSyntax entryIdentifier
+        )
+        {
+            var prefix = AddStrings(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("get ")),
+                IdentifierName("_propertyDisplayName")
+            );
+            var indices = BuildIndices(indexer, entryIdentifier);
+
+            return AddStrings(prefix, indices);
+        }
+
+        ExpressionSyntax BuildIndices(
+            in ImposterIndexerMetadata indexer,
+            ExpressionSyntax entryIdentifier
+        )
+        {
+            var joined = IdentifierName("string")
+                .Dot(IdentifierName("Join"))
+                .Call(
+                    ArgumentList(
+                        SeparatedList<ArgumentSyntax>(
+                            new SyntaxNodeOrToken[]
+                            {
+                                Argument(
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal(", ")
+                                    )
+                                ),
+                                Token(SyntaxKind.CommaToken),
+                                Argument(
+                                    ImplicitArrayCreationExpression(
+                                        InitializerExpression(
+                                            SyntaxKind.ArrayInitializerExpression,
+                                            SeparatedList(
+                                                indexer.Core.Parameters.Select(
+                                                    ExpressionSyntax (parameter) =>
+                                                        IdentifierName("FormatValue")
+                                                            .Call(
+                                                                Argument(
+                                                                    entryIdentifier.Dot(
+                                                                        IdentifierName(
+                                                                            parameter.Name
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                            }
+                        )
+                    )
+                );
+
+            return AddStrings(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("[")),
+                AddStrings(
+                    joined,
+                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("]"))
+                )
+            );
+        }
+
+        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
+            BinaryExpression(SyntaxKind.AddExpression, left, right);
     }
 
     private static MethodDeclarationSyntax BuildMarkReturnConfiguredMethod(
@@ -2471,4 +2794,41 @@ internal static class IndexerImposterBuilder
             )
             .Build();
     }
+
+    private static MethodDeclarationSyntax BuildFormatValueMethod() =>
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "FormatValue")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
+            .AddParameter(
+                Parameter(Identifier("value"))
+                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+            )
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        BinaryExpression(
+                            SyntaxKind.AddExpression,
+                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("<")),
+                            BinaryExpression(
+                                SyntaxKind.AddExpression,
+                                BinaryExpression(
+                                    SyntaxKind.CoalesceExpression,
+                                    ConditionalAccessExpression(
+                                        IdentifierName("value"),
+                                        InvocationExpression(
+                                            MemberBindingExpression(IdentifierName("ToString"))
+                                        )
+                                    ),
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal("null")
+                                    )
+                                ),
+                                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(">"))
+                            )
+                        )
+                    )
+                )
+            )
+            .Build();
 }

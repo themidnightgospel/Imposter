@@ -142,3 +142,9 @@
 .md-typeset .md-clipboard .material-icons { font-size: 1.35rem !important; }
 /* Some theme versions render the icon via ::before on the button */
 .md-typeset .md-clipboard::before { font-size: 1.35rem !important; }
+
+/* Make text inside admonition boxes slightly larger for readability */
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 0.98rem;
+}

@@ -60,7 +60,7 @@ extra_javascript:
 
 nav:
   - Getting Started: index.md
-  - Methods:
+  - Method Impersonation:
       - Overview: methods/index.md
       - Sequential Returns: methods/sequential-returns.md
       - Throwing Exceptions: methods/throwing.md
@@ -69,7 +69,8 @@ nav:
       - Protected Methods: methods/protected-members.md
       - Imposter Modes: methods/explicit-vs-implicit.md
       - Base Implementation: methods/base-implementation.md
-  - Properties:
+  - Arguments Matching: arguments-matching.md
+  - Property Impersonation:
       - Overview: properties/index.md
       - Sequential Returns: properties/sequential-returns.md
       - Callbacks: properties/callbacks.md
@@ -78,7 +79,7 @@ nav:
       - Base Implementation: properties/base-implementation.md
       - Protected Properties: properties/protected-members.md
       - Imposter Modes: properties/imposter-modes.md
-  - Indexers:
+  - Indexer Impersonation:
       - Overview: indexers/index.md
       - Imposter Modes: indexers/imposter-modes.md
       - Protected Indexers: indexers/protected-members.md
@@ -86,7 +87,7 @@ nav:
       - Setter: indexers/setter.md
       - Base Implementation: indexers/base-implementation.md
       - Verification: indexers/verification.md
-  - Events:
+  - Event Impersonation:
       - Overview: events/index.md
       - Subscriptions: events/subscriptions.md
       - Raising: events/raising.md

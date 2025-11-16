@@ -4,8 +4,6 @@ Imposter — The Fastest and Most Memory-Efficient Mocking Library
 
 ## Installation
 
-Add the packages to your test or application project:
-
 === "PackageReference"
 
     ```xml
@@ -45,7 +43,7 @@ This package includes both the source generator (analyzer) and the runtime abstr
 
     ```
 
-## Generate an Imposter
+## Generate an imposter for an interface
 
 Annotate the target type with the assembly level attribute and build. The generator produces a `<TypeName>Imposter` you can new up in code.
 
@@ -57,10 +55,7 @@ Annotate the target type with the assembly level attribute and build. The genera
 
     public interface IMyService
     {
-        int GetNumber();
         int Increment(int value);
-        event EventHandler SomethingHappened;
-        int this[int key] { get; set; }
     }
     ```
 
@@ -70,10 +65,10 @@ After a build, use the generated type:
 
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L66"}
     var imposter = IMyService.Imposter();
-    imposter.GetNumber().Returns(42);
+    imposter.Increment(Arg<int>.Any()).Returns(3);
 
     var service = imposter.Instance();
-    service.GetNumber().ShouldBe(42);
+    service.Increment(1).ShouldBe(3);
     ```
 
 === "C# 9-13"
@@ -88,7 +83,7 @@ After a build, use the generated type:
     service.GetNumber().ShouldBe(42);
     ```
 
-Generate imposter for classes
+Generate imposter for c classe
 
 !!! warning
     Only non-sealed classes can be impersonated.

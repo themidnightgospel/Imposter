@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -29,6 +30,63 @@ internal static partial class InvocationHistoryCollectionBuilder
             )
             .AddMember(BuildAddMethod(method))
             .AddMember(BuildCountMethod(method))
+            .AddMember(BuildToStringMethod(method))
             .Build();
     }
+
+    private static MethodDeclarationSyntax BuildToStringMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "ToString")
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.OverrideKeyword))
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IdentifierName("string")
+                            .Dot(IdentifierName("Join"))
+                            .Call(
+                                ArgumentList(
+                                    SeparatedList<ArgumentSyntax>(
+                                        new SyntaxNodeOrToken[]
+                                        {
+                                            Argument(
+                                                IdentifierName("Environment")
+                                                    .Dot(IdentifierName("NewLine"))
+                                            ),
+                                            Token(SyntaxKind.CommaToken),
+                                            Argument(
+                                                IdentifierName(
+                                                        InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+                                                    )
+                                                    .Dot(IdentifierName("Select"))
+                                                    .Call(
+                                                        ArgumentList(
+                                                            SingletonSeparatedList(
+                                                                Argument(
+                                                                    SimpleLambdaExpression(
+                                                                        Parameter(
+                                                                            Identifier("invocation")
+                                                                        ),
+                                                                        IdentifierName("invocation")
+                                                                            .Dot(
+                                                                                IdentifierName(
+                                                                                    "ToString"
+                                                                                )
+                                                                            )
+                                                                            .Call()
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                            ),
+                                        }
+                                    )
+                                )
+                            )
+                    )
+                )
+            )
+            .Build();
 }

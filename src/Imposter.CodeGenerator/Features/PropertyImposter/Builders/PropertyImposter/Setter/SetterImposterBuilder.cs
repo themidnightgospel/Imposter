@@ -85,6 +85,7 @@ internal static class SetterImposterBuilder
             )
             .AddMember(BuildEnsureSetterConfiguredMethod())
             .AddMember(BuildMarkConfiguredMethod())
+            .AddMember(BuildFormatValueMethod())
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
     }
@@ -311,8 +312,16 @@ internal static class SetterImposterBuilder
 
     internal static MethodDeclarationSyntax BuildSetterCalledMethod(
         in PropertySetterImposterMetadata setterImposter
-    ) =>
-        new MethodDeclarationBuilder(
+    )
+    {
+        var invocationHistoryIdentifier = IdentifierName(
+            setterImposter.InvocationHistoryField.Name
+        );
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
+
+        return new MethodDeclarationBuilder(
             setterImposter.CalledMethod.ReturnType,
             setterImposter.CalledMethod.Name
         )
@@ -323,7 +332,7 @@ internal static class SetterImposterBuilder
                     LocalVariableDeclarationSyntax(
                         Var,
                         setterImposter.CalledMethod.InvocationCountVariableName,
-                        IdentifierName(setterImposter.InvocationHistoryField.Name)
+                        invocationHistoryIdentifier
                             .Dot(IdentifierName("Count"))
                             .Call(
                                 Argument(
@@ -346,23 +355,74 @@ internal static class SetterImposterBuilder
                                     )
                                 )
                         ),
-                        ThrowStatement(
-                            WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                                ArgumentList(
-                                    SeparatedList([
-                                        Argument(
-                                            IdentifierName(
-                                                setterImposter.CalledMethod.CountParameter.Name
+                        Block(
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                "performedInvocations",
+                                stringListType.New()
+                            ),
+                            ForEachStatement(
+                                Var,
+                                Identifier("value"),
+                                invocationHistoryIdentifier,
+                                Block(
+                                    IdentifierName("performedInvocations")
+                                        .Dot(IdentifierName("Add"))
+                                        .Call(
+                                            Argument(
+                                                BuildInvocationDescription(IdentifierName("value"))
                                             )
-                                        ),
-                                        Argument(
-                                            IdentifierName(
-                                                setterImposter
-                                                    .CalledMethod
-                                                    .InvocationCountVariableName
-                                            )
-                                        ),
-                                    ])
+                                        )
+                                        .ToStatementSyntax()
+                                )
+                            ),
+                            ThrowStatement(
+                                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
+                                    ArgumentList(
+                                        SeparatedList([
+                                            Argument(
+                                                IdentifierName(
+                                                    setterImposter.CalledMethod.CountParameter.Name
+                                                )
+                                            ),
+                                            Argument(
+                                                IdentifierName(
+                                                    setterImposter
+                                                        .CalledMethod
+                                                        .InvocationCountVariableName
+                                                )
+                                            ),
+                                            Argument(
+                                                IdentifierName("string")
+                                                    .Dot(IdentifierName("Join"))
+                                                    .Call(
+                                                        ArgumentList(
+                                                            SeparatedList<ArgumentSyntax>(
+                                                                new SyntaxNodeOrToken[]
+                                                                {
+                                                                    Argument(
+                                                                        IdentifierName(
+                                                                                "Environment"
+                                                                            )
+                                                                            .Dot(
+                                                                                IdentifierName(
+                                                                                    "NewLine"
+                                                                                )
+                                                                            )
+                                                                    ),
+                                                                    Token(SyntaxKind.CommaToken),
+                                                                    Argument(
+                                                                        IdentifierName(
+                                                                            "performedInvocations"
+                                                                        )
+                                                                    ),
+                                                                }
+                                                            )
+                                                        )
+                                                    )
+                                            ),
+                                        ])
+                                    )
                                 )
                             )
                         )
@@ -370,6 +430,28 @@ internal static class SetterImposterBuilder
                 )
             )
             .Build();
+
+        ExpressionSyntax BuildInvocationDescription(IdentifierNameSyntax valueIdentifier)
+        {
+            var prefix = AddStrings(
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("set ")),
+                IdentifierName("_propertyDisplayName")
+            );
+
+            var assignment = AddStrings(
+                prefix,
+                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" = "))
+            );
+
+            return AddStrings(
+                assignment,
+                IdentifierName("FormatValue").Call(Argument(valueIdentifier))
+            );
+        }
+
+        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
+            BinaryExpression(SyntaxKind.AddExpression, left, right);
+    }
 
     internal static MethodDeclarationSyntax? BuildSetterCallbackMethod(
         in PropertySetterImposterMetadata setterImposter
@@ -463,6 +545,43 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(IdentifierName("_hasConfiguredSetter").Assign(True).ToStatementSyntax())
+            )
+            .Build();
+
+    private static MethodDeclarationSyntax BuildFormatValueMethod() =>
+        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "FormatValue")
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddModifier(Token(SyntaxKind.StaticKeyword))
+            .AddParameter(
+                Parameter(Identifier("value"))
+                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+            )
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        BinaryExpression(
+                            SyntaxKind.AddExpression,
+                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("<")),
+                            BinaryExpression(
+                                SyntaxKind.AddExpression,
+                                BinaryExpression(
+                                    SyntaxKind.CoalesceExpression,
+                                    ConditionalAccessExpression(
+                                        IdentifierName("value"),
+                                        InvocationExpression(
+                                            MemberBindingExpression(IdentifierName("ToString"))
+                                        )
+                                    ),
+                                    LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        Literal("null")
+                                    )
+                                ),
+                                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(">"))
+                            )
+                        )
+                    )
+                )
             )
             .Build();
 }

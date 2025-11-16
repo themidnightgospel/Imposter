@@ -25,6 +25,8 @@ internal static class WellKnownTypes
             IdentifierName("Exception")
         );
 
+        internal static TypeSyntax String = QualifiedName(Namespace, IdentifierName("String"));
+
         internal static TypeSyntax Action = QualifiedName(Namespace, IdentifierName("Action"));
 
         internal static TypeSyntax ActionOfT(TypeSyntax typeArgument) =>
@@ -164,6 +166,15 @@ internal static class WellKnownTypes
                     WellKnownTypes.System.Collections.Namespace,
                     IdentifierName("Generic")
                 );
+
+                internal static TypeSyntax List(TypeSyntax typeArgument) =>
+                    QualifiedName(
+                        Namespace,
+                        GenericName(
+                            Identifier("List"),
+                            TypeArgumentList(SingletonSeparatedList(typeArgument))
+                        )
+                    );
 
                 internal static TypeSyntax Dictionary(TypeSyntax keyType, TypeSyntax valueType) =>
                     QualifiedName(
