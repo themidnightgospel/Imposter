@@ -131,7 +131,7 @@ internal readonly struct IndexerGetterImposterMetadata
                         {
                             indexer.Arguments.TypeSyntax,
                             Token(SyntaxKind.CommaToken),
-                            indexer.Core.AsSystemFuncType,
+                            indexer.Core.AsSystemFuncType.ToNullableType(),
                             Token(SyntaxKind.CommaToken),
                             indexer.Core.TypeSyntax,
                         }

@@ -589,13 +589,12 @@ internal static class GetterImposterBuilderBuilder
                         defaultPropertyBehaviour,
                         baseImplementationIdentifier
                     ),
-                    DequeNextGetterReturnValue(builder, ReturnValueVariableName),
-                    DeclareNextGetterReturnValue(
+                    DeclareNextGetterReturnValue(builder, NextReturnValueVariableName),
+                    UpdateNextGetterReturnValueFromDequeuedValue(
                         builder,
                         ReturnValueVariableName,
                         NextReturnValueVariableName
                     ),
-                    UpdateLastGetterReturnValue(builder, NextReturnValueVariableName),
                     ReturnNextGetterReturnValue(
                         NextReturnValueVariableName,
                         baseImplementationIdentifier
@@ -604,45 +603,43 @@ internal static class GetterImposterBuilderBuilder
             )
             .Build();
 
-        static StatementSyntax DequeNextGetterReturnValue(
-            in PropertyGetterImposterBuilderMetadata builder,
-            string variableName
-        ) =>
-            IdentifierName(builder.ReturnValuesField.Name)
-                .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                .Call(
-                    Argument(
-                        null,
-                        Token(SyntaxKind.OutKeyword),
-                        DeclarationExpression(
-                            Var,
-                            SingleVariableDesignation(Identifier(variableName))
-                        )
-                    )
-                )
-                .ToStatementSyntax();
-
         static LocalDeclarationStatementSyntax DeclareNextGetterReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,
-            string returnValueVariableName,
             string nextVariableName
         ) =>
             LocalVariableDeclarationSyntax(
                 Var,
                 nextVariableName,
-                IdentifierName(returnValueVariableName)
-                    .Coalesce(IdentifierName(builder.LastReturnValueField.Name))
+                IdentifierName(builder.LastReturnValueField.Name)
             );
 
-        static StatementSyntax UpdateLastGetterReturnValue(
+        static StatementSyntax UpdateNextGetterReturnValueFromDequeuedValue(
             in PropertyGetterImposterBuilderMetadata builder,
+            string returnValueVariableName,
             string nextVariableName
         ) =>
             IfStatement(
-                IdentifierName(nextVariableName).IsNotNull(),
-                IdentifierName(builder.LastReturnValueField.Name)
-                    .Assign(IdentifierName(nextVariableName))
-                    .ToStatementSyntax()
+                IdentifierName(builder.ReturnValuesField.Name)
+                    .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
+                    .Call(
+                        Argument(
+                            null,
+                            Token(SyntaxKind.OutKeyword),
+                            DeclarationExpression(
+                                Var,
+                                SingleVariableDesignation(Identifier(returnValueVariableName))
+                            )
+                        )
+                    )
+                    .And(IdentifierName(returnValueVariableName).IsNotNull()),
+                Block(
+                    IdentifierName(nextVariableName)
+                        .Assign(IdentifierName(returnValueVariableName))
+                        .ToStatementSyntax(),
+                    IdentifierName(builder.LastReturnValueField.Name)
+                        .Assign(IdentifierName(returnValueVariableName))
+                        .ToStatementSyntax()
+                )
             );
 
         static StatementSyntax ReturnNextGetterReturnValue(

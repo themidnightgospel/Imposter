@@ -2,8 +2,6 @@
   <PropertyGroup>
     <ROSLYN_VERSION Condition="'$(ROSLYN_VERSION)' == ''">4.14</ROSLYN_VERSION>
 
-    <_RoslynVersionNormalized>$([System.String]::Copy('$(ROSLYN_VERSION)').Split('-')[0])</_RoslynVersionNormalized>
-
     <DefineConstants
       Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(ROSLYN_VERSION)', '4.4'))"
       >$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants

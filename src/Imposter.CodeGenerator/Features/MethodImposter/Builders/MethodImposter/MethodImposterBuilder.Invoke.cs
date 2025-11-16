@@ -114,7 +114,7 @@ internal partial class MethodImposterBuilder
             {
                 arguments.Add(
                     threwException
-                        ? Argument(Default)
+                        ? Argument(DefaultNonNullable)
                         : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument()
                 );
             }
