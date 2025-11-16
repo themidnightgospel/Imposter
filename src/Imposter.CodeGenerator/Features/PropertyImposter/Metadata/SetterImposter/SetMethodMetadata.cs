@@ -17,7 +17,7 @@ internal readonly struct SetMethodMetadata
     internal SetMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
         ReturnType = WellKnownTypes.Void;
-        ValueParameter = new ParameterMetadata("value", property.TypeSyntax);
+        ValueParameter = new ParameterMetadata("value", property.NullableAwareTypeSyntax);
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
             property.AsSystemActionType.ToNullableType(),

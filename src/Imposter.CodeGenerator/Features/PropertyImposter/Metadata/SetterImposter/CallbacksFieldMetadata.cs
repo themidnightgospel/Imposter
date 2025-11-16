@@ -16,7 +16,7 @@ internal readonly struct CallbacksFieldMetadata
         Type = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
             TupleTypeSyntax = WellKnownTypes.System.Tuple(
                 property.AsArgType,
-                WellKnownTypes.System.ActionOfT(property.TypeSyntax)
+                property.AsSystemActionType
             )
         );
     }

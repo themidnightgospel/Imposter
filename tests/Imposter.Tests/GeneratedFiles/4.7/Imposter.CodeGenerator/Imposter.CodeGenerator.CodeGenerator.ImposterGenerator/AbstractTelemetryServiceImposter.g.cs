@@ -1138,7 +1138,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         public interface INameNullablePropertyGetterOutcomeBuilder
         {
             INameNullablePropertyGetterContinuationBuilder Returns(string value);
-            INameNullablePropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
+            INameNullablePropertyGetterContinuationBuilder Returns(global::System.Func<string?> valueGenerator);
             INameNullablePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
             INameNullablePropertyGetterContinuationBuilder Throws<TException>()
                 where TException : Exception, new();
@@ -1242,15 +1242,15 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 internal volatile bool IsOn = true;
                 internal volatile bool HasValueSet = false;
-                internal string BackingField = default !;
+                internal string? BackingField = default !;
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
             internal class GetterImposterBuilder : INameNullablePropertyGetterBuilder, INameNullablePropertyGetterFluentBuilder, INameNullablePropertyGetterUseBaseImplementationBuilder
             {
-                private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string?>?, string?>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string?>?, string?>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default !;
+                private volatile global::System.Func<global::System.Func<string?>?, string?> _lastReturnValue = _ => default !;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1263,7 +1263,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     this._propertyDisplayName = propertyDisplayName;
                 }
 
-                private void AddReturnValue(global::System.Func<global::System.Func<string>?, string> valueGenerator)
+                private void AddReturnValue(global::System.Func<global::System.Func<string?>?, string?> valueGenerator)
                 {
                     _defaultPropertyBehaviour.IsOn = false;
                     _returnValues.Enqueue(valueGenerator);
@@ -1276,7 +1276,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return this;
                 }
 
-                INameNullablePropertyGetterContinuationBuilder INameNullablePropertyGetterOutcomeBuilder.Returns(global::System.Func<string> valueGenerator)
+                INameNullablePropertyGetterContinuationBuilder INameNullablePropertyGetterOutcomeBuilder.Returns(global::System.Func<string?> valueGenerator)
                 {
                     AddReturnValue((_) => valueGenerator());
                     return this;
@@ -1318,7 +1318,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
                 internal void EnableBaseImplementation()
                 {
-                    AddReturnValue((global::System.Func<string>? baseImplementation) =>
+                    AddReturnValue((global::System.Func<string?>? baseImplementation) =>
                     {
                         if (baseImplementation != null)
                             return baseImplementation();
@@ -1339,7 +1339,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     return this;
                 }
 
-                internal string Get(global::System.Func<string>? baseImplementation = null)
+                internal string? Get(global::System.Func<string?>? baseImplementation = null)
                 {
                     EnsureGetterConfigured();
                     global::System.Threading.Interlocked.Increment(ref _invocationCount);
