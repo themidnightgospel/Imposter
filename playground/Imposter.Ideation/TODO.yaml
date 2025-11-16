@@ -50,6 +50,7 @@ FEATURES:
       - Use nullable generics now that we use c# 9
       - fix TODOs in code
       - AnalyzerReleases.Unshipped.md
+      - refactor ImposterTargetMethodMetadata.IsMethodAsync method.
     IN Progress:
       - Add Docs page
       - Add a sample project.
@@ -60,7 +61,6 @@ FEATURES:
       - Review entire codebase and refactor
       - "VerifyNoOtherCalls" verifier
       - UseBaseImplementation for interface members
-      - refactor ImposterTargetMethodMetadata.IsMethodAsync method.
       - When verification fails, include "performed invocations in the message" makes it easier to debug.
 
   MEDIUM:

@@ -136,6 +136,19 @@ internal static class TypeSymbolExtensions
         return new TypeSymbolMetadata(typeSyntax, isGenericType, nullableTypeSyntax);
     }
 
+    internal static bool IsMethodAsync(this IMethodSymbol methodSymbol)
+    {
+        if (
+            !methodSymbol.ReturnsVoid
+            && methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface()
+        )
+        {
+            return true;
+        }
+
+        return methodSymbol.ReturnType.IsAwaitable();
+    }
+
     internal static bool ImplementsAsyncStateMachineInterface(this ITypeSymbol? symbol)
     {
         if (symbol is null)

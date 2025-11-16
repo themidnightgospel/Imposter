@@ -87,7 +87,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         SupportsBaseImplementation =
             Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
         SupportsNullableGenericType = supportsNullableGenericType;
-        IsAsync = IsMethodAsync(symbol);
+        IsAsync = symbol.IsMethodAsync();
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
         GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
@@ -148,19 +148,6 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         };
 
         return new NameSet(names);
-    }
-
-    private static bool IsMethodAsync(IMethodSymbol methodSymbol)
-    {
-        if (
-            methodSymbol.ReturnsVoid == false
-            && methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface()
-        )
-        {
-            return true;
-        }
-
-        return methodSymbol.ReturnType.IsAwaitable();
     }
 
     internal readonly struct AsMethodMetadata
