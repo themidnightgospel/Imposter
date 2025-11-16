@@ -112,33 +112,32 @@ internal static partial class EventImposterBuilder
         TypeSyntax taskType
     )
     {
-        var blockBuilder = new BlockBuilder();
         var fields = @event.Builder.Fields;
         var usesValueTask = @event.Core.DelegateReturnTypeSymbol.IsWellKnownType(
             WellKnownTypes.System.Threading.Tasks.ValueTask,
             WellKnownAssemblyNames.SystemAssemblies
         );
-        blockBuilder.AddExpression(
-            FieldIdentifier(fields.History)
-                .Dot(IdentifierName("Enqueue"))
-                .Call(Argument(BuildHistoryEntryExpression(@event)))
-        );
 
-        blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(taskListType, "pendingTasks", taskListType.New())
-        );
-
-        blockBuilder.AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask));
-        blockBuilder.AddStatement(AwaitPendingTasksStatement());
-        blockBuilder.AddStatement(
-            IdentifierName("pendingTasks").Dot(IdentifierName("Clear")).Call().ToStatementSyntax()
-        );
-        blockBuilder.AddStatement(
-            ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask)
-        );
-        blockBuilder.AddStatement(AwaitPendingTasksStatement());
-
-        return blockBuilder.Build();
+        return new BlockBuilder()
+            .AddExpression(
+                FieldIdentifier(fields.History)
+                    .Dot(IdentifierName("Enqueue"))
+                    .Call(Argument(BuildHistoryEntryExpression(@event)))
+            )
+            .AddStatement(
+                LocalVariableDeclarationSyntax(taskListType, "pendingTasks", taskListType.New())
+            )
+            .AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask))
+            .AddStatement(AwaitPendingTasksStatement())
+            .AddStatement(
+                IdentifierName("pendingTasks")
+                    .Dot(IdentifierName("Clear"))
+                    .Call()
+                    .ToStatementSyntax()
+            )
+            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask))
+            .AddStatement(AwaitPendingTasksStatement())
+            .Build();
     }
 
     private static ExpressionSyntax ToTaskExpression(
