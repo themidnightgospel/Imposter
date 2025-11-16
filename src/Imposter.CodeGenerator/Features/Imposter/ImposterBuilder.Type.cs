@@ -131,10 +131,7 @@ internal readonly ref partial struct ImposterBuilder
 
     internal ImposterBuilder AddIndexerImposter(in ImposterIndexerMetadata indexer)
     {
-        var propertyDisplayLiteral = LiteralExpression(
-            SyntaxKind.StringLiteralExpression,
-            Literal(indexer.Core.DisplayName)
-        );
+        var propertyDisplayLiteral = indexer.Core.DisplayName.StringLiteral();
 
         _imposterBuilder.AddMember(
             SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(

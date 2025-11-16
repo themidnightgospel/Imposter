@@ -54,12 +54,12 @@ Learn more: https://themidnightgospel.github.io/Imposter/
 - [Property Impersonation](https://themidnightgospel.github.io/Imposter/properties/)
 - [Indexer Impersonation](https://themidnightgospel.github.io/Imposter/indexers/)
 - [Event Impersonation](https://themidnightgospel.github.io/Imposter/events/)
-- [Class Impersonation](https://themidnightgospel.github.io/Imposter/events/)
-- [Generics](https://themidnightgospel.github.io/Imposter/events/)
-- [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/methods/explicit-vs-implicit/)
-- [Use Base implementation](https://themidnightgospel.github.io/Imposter/methods/base-implementation/)
-- [Async Support](https://themidnightgospel.github.io/Imposter/methods/base-implementation/)
-- [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/methods/base-implementation/)
+- [Class Impersonation](https://themidnightgospel.github.io/Imposter/base-implementation/)
+- [Generics](https://themidnightgospel.github.io/Imposter/methods/)
+- [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/implicit-vs-explicit/)
+- [Use Base implementation](https://themidnightgospel.github.io/Imposter/base-implementation/)
+- [Async Support](https://themidnightgospel.github.io/Imposter/methods/#async-methods)
+- [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/methods/protected-members/)
 
 ## ⏱️ Benchmark
 
@@ -126,3 +126,4 @@ Docs: https://themidnightgospel.github.io/Imposter/
 ## License
 
 Licensed under the MIT License. See LICENSE.txt for details.
+

@@ -63,48 +63,36 @@ nav:
   - Method Impersonation:
       - Overview: methods/index.md
       - Sequential Returns: methods/sequential-returns.md
-      - Throwing Exceptions: methods/throwing.md
+      - Throw: methods/throwing.md
       - Verification: methods/verification.md
       - Callbacks: methods/callbacks.md
       - Protected Methods: methods/protected-members.md
-      - Imposter Modes: methods/explicit-vs-implicit.md
-      - Base Implementation: methods/base-implementation.md
-  - Arguments Matching: arguments-matching.md
   - Property Impersonation:
       - Overview: properties/index.md
       - Sequential Returns: properties/sequential-returns.md
       - Callbacks: properties/callbacks.md
-      - Throwing Exceptions: properties/throwing.md
+      - Throw: properties/throwing.md
       - Verification: properties/verification.md
-      - Base Implementation: properties/base-implementation.md
       - Protected Properties: properties/protected-members.md
-      - Imposter Modes: properties/imposter-modes.md
   - Indexer Impersonation:
       - Overview: indexers/index.md
-      - Imposter Modes: indexers/imposter-modes.md
+      - Throw: indexers/throwing.md
       - Protected Indexers: indexers/protected-members.md
-      - Getter: indexers/getter.md
-      - Setter: indexers/setter.md
-      - Base Implementation: indexers/base-implementation.md
       - Verification: indexers/verification.md
   - Event Impersonation:
       - Overview: events/index.md
-      - Subscriptions: events/subscriptions.md
-      - Raising: events/raising.md
-      - Callbacks & Ordering: events/callbacks-ordering.md
       - Verification: events/verification.md
-      - Exceptions: events/exceptions.md
+      - Throw : events/exceptions.md
       - Protected Events: events/protected-members.md
-      - Base Implementation: events/base-implementation.md
-      - Imposter Modes: events/imposter-modes.md
+  - Arguments Matching: arguments-matching.md
+  - Verification: verification.md
+  - Implicit vs Explicit: implicit-vs-explicit.md
+  - Base Implementation: base-implementation.md
+  - Generics: generics.md
   - Reference:
       - Benchmarks: benchmarks.md
       - Cheat Sheet: cheat-sheet.md
       - Key API Reference: key-api-reference.md
-      - Compatibility: compatibility.md
-      - Limitations: limitations.md
-      - Troubleshooting: troubleshooting.md
-      - Why Imposter?: why-imposter.md
 
 plugins:
   - search

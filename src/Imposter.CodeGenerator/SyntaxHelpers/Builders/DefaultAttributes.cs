@@ -31,18 +31,10 @@ internal static class DefaultAttributes
                         SeparatedList<AttributeArgumentSyntax>(
                             new SyntaxNodeOrToken[]
                             {
-                                AttributeArgument(
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal(ImposterGeneratorAssembly.Name)
-                                    )
-                                ),
+                                AttributeArgument(ImposterGeneratorAssembly.Name.StringLiteral()),
                                 Token(SyntaxKind.CommaToken),
                                 AttributeArgument(
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal(ImposterGeneratorAssembly.Version.ToString())
-                                    )
+                                    ImposterGeneratorAssembly.Version.ToString().StringLiteral()
                                 ),
                             }
                         )

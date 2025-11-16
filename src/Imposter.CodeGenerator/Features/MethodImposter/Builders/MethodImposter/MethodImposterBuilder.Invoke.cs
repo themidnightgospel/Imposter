@@ -152,9 +152,7 @@ internal partial class MethodImposterBuilder
         var invokeArguments = new List<ArgumentSyntax>
         {
             Argument(IdentifierName("_invocationBehavior")),
-            Argument(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(method.DisplayName))
-            ),
+            Argument(method.DisplayName.StringLiteral()),
         };
         invokeArguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
 
@@ -233,12 +231,7 @@ internal partial class MethodImposterBuilder
                                     WellKnownTypes.Imposter.Abstractions.MissingImposterException
                                 )
                                 .WithArgumentList(
-                                    Argument(
-                                            LiteralExpression(
-                                                SyntaxKind.StringLiteralExpression,
-                                                Literal(method.DisplayName)
-                                            )
-                                        )
+                                    Argument(method.DisplayName.StringLiteral())
                                         .AsSingleArgumentListSyntax()
                                 )
                         )

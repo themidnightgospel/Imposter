@@ -114,7 +114,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("DiagnosticPayloadPublished subscribed " + FormatValue("DiagnosticPayloadPublished") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -123,7 +135,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("DiagnosticPayloadPublished unsubscribed " + FormatValue("DiagnosticPayloadPublished") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -147,7 +171,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+                        {
+                            performedInvocations.Add("DiagnosticPayloadPublished raised " + FormatValue("DiagnosticPayloadPublished") + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -156,7 +192,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("DiagnosticPayloadPublished handler invoked " + FormatValue("DiagnosticPayloadPublished") + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -192,12 +240,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -292,7 +345,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("LegacyPayloadAvailable subscribed " + FormatValue("LegacyPayloadAvailable") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -301,7 +366,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("LegacyPayloadAvailable unsubscribed " + FormatValue("LegacyPayloadAvailable") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -325,7 +402,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+                        {
+                            performedInvocations.Add("LegacyPayloadAvailable raised " + FormatValue("LegacyPayloadAvailable") + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -334,7 +423,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("LegacyPayloadAvailable handler invoked " + FormatValue("LegacyPayloadAvailable") + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -370,12 +471,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -470,7 +576,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("PayloadAvailable subscribed " + FormatValue("PayloadAvailable") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -479,7 +597,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("PayloadAvailable unsubscribed " + FormatValue("PayloadAvailable") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -503,7 +633,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+                        {
+                            performedInvocations.Add("PayloadAvailable raised " + FormatValue("PayloadAvailable") + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -512,7 +654,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("PayloadAvailable handler invoked " + FormatValue("PayloadAvailable") + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -548,12 +702,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

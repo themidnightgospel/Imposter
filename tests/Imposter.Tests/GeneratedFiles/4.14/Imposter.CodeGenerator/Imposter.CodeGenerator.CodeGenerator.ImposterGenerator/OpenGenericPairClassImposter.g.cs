@@ -100,12 +100,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -502,12 +502,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "defaultValue: " + FormatValue(Arguments.defaultValue) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "defaultValue: " + FormatValue(Arguments.defaultValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1089,7 +1089,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>, global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>, global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>>>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -1131,7 +1131,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal void Set(global::System.Collections.Generic.KeyValuePair<TKey, TValue> value, global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>? baseImplementation = null)
                 {
                     EnsureSetterConfigured();
-                    _invocationHistory.Add(value);
+                    _invocationHistory.Push(value);
                     foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
@@ -1169,7 +1169,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
                 private static string FormatValue(object? value)
                 {
-                    return "<" + value?.ToString() ?? "null" + ">";
+                    return "<" + (value?.ToString() ?? "null") + ">";
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1379,7 +1379,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -1415,7 +1415,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -1630,7 +1630,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, TValue Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, TValue Value)>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, TValue Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, TValue Value)>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria> _baseCriteria = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1667,7 +1667,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
-                    _invocationHistory.Add((arguments, value));
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -1756,7 +1756,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

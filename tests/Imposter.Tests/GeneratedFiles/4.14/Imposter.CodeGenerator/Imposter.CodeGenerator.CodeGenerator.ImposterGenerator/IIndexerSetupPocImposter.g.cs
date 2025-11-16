@@ -97,12 +97,12 @@ namespace Imposter.Tests.Shared
 
             public override string ToString()
             {
-                return "IndexerMethod(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(Arguments.name), "lastname: " + FormatValue(Arguments.lastname), "dog: " + FormatValue(Arguments.dog) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IndexerMethod(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(Arguments.name), "lastname: " + FormatValue(Arguments.lastname), "dog: " + FormatValue(Arguments.dog) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

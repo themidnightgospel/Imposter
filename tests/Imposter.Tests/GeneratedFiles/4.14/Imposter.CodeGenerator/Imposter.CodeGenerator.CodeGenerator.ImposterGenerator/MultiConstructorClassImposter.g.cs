@@ -89,12 +89,12 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
             public override string ToString()
             {
-                return "Calculate(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Calculate(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

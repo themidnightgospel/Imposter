@@ -73,8 +73,8 @@ namespace Imposter.Tests.Features.EventImposter
             _sut.Instance().SomethingHappened += h2;
 
             intercepted.ShouldBe(new[] { h1, h2 });
-            _sut.SomethingHappened.Subscribed(Arg<EventHandler>.Is(h1), Count.Once());
-            _sut.SomethingHappened.Subscribed(Arg<EventHandler>.Is(h2), Count.Once());
+            _sut.SomethingHappened.Subscribed(h1, Count.Once());
+            _sut.SomethingHappened.Subscribed(h2, Count.Once());
         }
 
         [Fact]

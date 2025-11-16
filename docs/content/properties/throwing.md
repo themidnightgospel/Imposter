@@ -1,13 +1,31 @@
 # Property Throwing
 
-In Explicit mode or when desired, configure getters to throw.
+In Explicit mode or when desired, configure getters to throw. For setters, prefer verification via `Called(Count...)` and callbacks.
 
-```csharp
-imposter.Age.Getter().Throws<InvalidOperationException>();
+## Getter throwing
 
-// Or use a factory
-imposter.Age.Getter().Throws(() => new Exception("boom"));
-```
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ThrowsTests.cs#L27"}
+    imposter.Age.Getter().Throws<InvalidOperationException>();
 
-Setter validations typically use `Called(Count.…)`; prefer throws on getter for read-time failures.
+    var service = imposter.Instance();
+
+    // Read throws the configured exception
+    Should.Throw<InvalidOperationException>(() => service.Age);
+    ```
+
+## Setter validation with throwing callbacks
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ThrowsTests.cs#L65"}
+    imposter.Age.Setter(Arg<int>.Any())
+        .Callback(_ => throw new InvalidOperationException("Callback error"));
+
+    var service = imposter.Instance();
+
+    // Setter callback throws, but the attempted value is still tracked
+    Should.Throw<InvalidOperationException>(() => service.Age = 42);
+
+    imposter.Age.Setter(Arg<int>.Is(v => v == 42)).Called(Count.Exactly(1));
+    ```
 

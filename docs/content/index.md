@@ -125,7 +125,7 @@ After a build, use the generated type:
     ```
 
 !!! note
-    For classes, only virtual or abstract members can be impersonated (mocked).
+    For classes, only virtual or abstract members can be impersonated.
 
 !!! warning
     Minimum supported C# version is 9.0
@@ -137,5 +137,3 @@ After a build, use the generated type:
       - [Indexers](indexers/index.md)
       - [Events](events/index.md)
       - [Key API Reference](key-api-reference.md)
-      - [Compatibility](compatibility.md)
-      - [Limitations](limitations.md)

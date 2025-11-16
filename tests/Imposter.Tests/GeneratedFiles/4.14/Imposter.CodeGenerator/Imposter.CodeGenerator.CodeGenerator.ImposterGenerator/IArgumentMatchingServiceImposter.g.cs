@@ -135,12 +135,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "Add(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Add(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -515,12 +515,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "Format(" + global::System.String.Join(", ", new[] { "template: " + FormatValue(Arguments.template), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Format(" + global::System.String.Join(", ", new[] { "template: " + FormatValue(Arguments.template), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -891,12 +891,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "InOnly(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "InOnly(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1267,12 +1267,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "Increment(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Increment(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1614,12 +1614,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "OutOnly(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "OutOnly(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1993,12 +1993,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "RefOnly(" + global::System.String.Join(", ", new[] { "state: " + FormatValue(Arguments.state) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "RefOnly(" + global::System.String.Join(", ", new[] { "state: " + FormatValue(Arguments.state) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -2369,12 +2369,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
             public override string ToString()
             {
-                return "Sum(" + global::System.String.Join(", ", new[] { "values: " + FormatValue(Arguments.values) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Sum(" + global::System.String.Join(", ", new[] { "values: " + FormatValue(Arguments.values) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

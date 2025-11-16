@@ -189,6 +189,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "AsyncTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -203,6 +213,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -509,7 +524,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _asyncTaskIntNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _asyncTaskIntNoParamsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -542,6 +557,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "AsyncValueTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -556,6 +581,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -862,7 +892,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -944,6 +974,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return (((((typeof(TOutTarget) == typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && (typeof(TInTarget) == typeof(TIn))) && (typeof(TParamsTarget[]) == typeof(TParams[]))) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TOut, TRef, TIn, TParams, TResult>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "paramsValues: " + FormatValue(Arguments.paramsValues) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -958,6 +998,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TOut, TRef, TIn, TParams, TResult>(GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TOut, TRef, TIn, TParams, TResult>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -1334,7 +1379,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericAllRefKindMethodInvocationHistoryCollection.Count<TOut, TRef, TIn, TParams, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericAllRefKindMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -1367,6 +1412,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return (typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>));
             }
+
+            public override string ToString()
+            {
+                return "GenericInnerOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1381,6 +1436,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>()
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -1746,7 +1806,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericInnerOutParamMethodInvocationHistoryCollection.Count<TValue, TResult>();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericInnerOutParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -1818,6 +1878,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return ((typeof(global::System.Collections.Generic.List<TValueTarget>[]) == typeof(global::System.Collections.Generic.List<TValue>[])) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>))) && criteria.As<TValue, TResult>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericInnerParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1832,6 +1902,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>(GenericInnerParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -2192,7 +2267,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericInnerParamsParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericInnerParamsParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -2264,6 +2339,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>))) && criteria.As<TValue, TResult>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericInnerRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2278,6 +2363,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>(GenericInnerRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -2640,7 +2730,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericInnerRefParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericInnerRefParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -2710,6 +2800,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return (typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && criteria.As<TValue>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericInnerSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2724,6 +2824,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue>(GenericInnerSingleParamArgumentsCriteria<TValue> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -3052,7 +3157,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericInnerSingleParamMethodInvocationHistoryCollection.Count<TValue>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericInnerSingleParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -3085,6 +3190,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return (typeof(TValueTarget) == typeof(TValue)) && (typeof(TResult) == typeof(TResultTarget));
             }
+
+            public override string ToString()
+            {
+                return "GenericOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3099,6 +3214,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>()
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -3464,7 +3584,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericOutParamMethodInvocationHistoryCollection.Count<TValue, TResult>();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericOutParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -3536,6 +3656,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return ((typeof(TValueTarget[]) == typeof(TValue[])) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TValue, TResult>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3550,6 +3680,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>(GenericParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -3910,7 +4045,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericParamsParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericParamsParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -3982,6 +4117,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TValue, TResult>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3996,6 +4141,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue, TResult>(GenericRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue, TResult>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -4358,7 +4508,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericRefParamMethodInvocationHistoryCollection.Count<TValue, TResult>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericRefParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -4428,6 +4578,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return (typeof(TValueTarget) == typeof(TValue)) && criteria.As<TValue>().Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "GenericSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4442,6 +4602,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count<TValue>(GenericSingleParamArgumentsCriteria<TValue> argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches<TValue>(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -4770,7 +4935,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _genericSingleParamMethodInvocationHistoryCollection.Count<TValue>(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _genericSingleParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -4846,6 +5011,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntAllRefKinds(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "valueAsString: " + FormatValue(Arguments.valueAsString), "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4860,6 +5035,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntAllRefKindsArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -5157,7 +5337,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intAllRefKindsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intAllRefKindsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -5219,6 +5399,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntInParam(" + global::System.String.Join(", ", new[] { "inStringValue: " + FormatValue(Arguments.inStringValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5233,6 +5423,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntInParamArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -5518,7 +5713,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intInParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intInParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -5551,6 +5746,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "IntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5565,6 +5770,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -5841,7 +6051,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intNoParamsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -5874,6 +6084,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "IntOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5888,6 +6108,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -6176,7 +6401,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intOutParamMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intOutParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -6246,6 +6471,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntParams(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age), "name: " + FormatValue(Arguments.name), "regex: " + FormatValue(Arguments.regex) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -6260,6 +6495,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntParamsArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -6545,7 +6785,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intParamsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -6607,6 +6847,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntParamsParam(" + global::System.String.Join(", ", new[] { "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -6621,6 +6871,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntParamsParamArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -6906,7 +7161,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intParamsParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intParamsParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -6968,6 +7223,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntRefParam(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -6982,6 +7247,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntRefParamArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -7267,7 +7537,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intRefParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intRefParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -7329,6 +7599,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IntSingleParam(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -7343,6 +7623,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count(IntSingleParamArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -7628,7 +7913,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _intSingleParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _intSingleParamMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -7659,6 +7944,16 @@ namespace Imposter.Tests.Features.MethodImposter
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "VoidNoParams(" + "" + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -7673,6 +7968,11 @@ namespace Imposter.Tests.Features.MethodImposter
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -7918,7 +8218,7 @@ namespace Imposter.Tests.Features.MethodImposter
                     var invocationCount = _voidNoParamsMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _voidNoParamsMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }

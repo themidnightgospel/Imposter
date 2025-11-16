@@ -163,7 +163,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -199,7 +199,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -406,7 +406,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

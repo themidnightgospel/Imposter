@@ -534,11 +534,8 @@ internal static class GetterImposterBuilderBuilder
         var baseImplementationParameter = Parameter(Identifier(BaseImplementationParameterName))
             .WithType(property.Core.AsSystemFuncType.ToNullableType());
         var baseImplementationIdentifier = IdentifierName(BaseImplementationParameterName);
-        var messageExpression = BinaryExpression(
-            SyntaxKind.AddExpression,
-            IdentifierName("_propertyDisplayName"),
-            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" (getter)"))
-        );
+        var messageExpression = IdentifierName("_propertyDisplayName")
+            .Add(" (getter)".StringLiteral());
 
         return ParenthesizedLambdaExpression()
             .WithParameterList(ParameterList(SingletonSeparatedList(baseImplementationParameter)))
@@ -735,14 +732,8 @@ internal static class GetterImposterBuilderBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            BinaryExpression(
-                                                SyntaxKind.AddExpression,
-                                                IdentifierName("_propertyDisplayName"),
-                                                LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    Literal(" (getter)")
-                                                )
-                                            )
+                                            IdentifierName("_propertyDisplayName")
+                                                .Add(" (getter)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()
                                 )

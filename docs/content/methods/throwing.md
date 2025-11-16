@@ -21,30 +21,40 @@ Target type used in examples:
 
 - Generic type:
 !!! example
-      ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L26"}
-      imposter.GetNumber().Throws<InvalidOperationException>();
-      ```
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L26"}
+    imposter.GetNumber().Throws<InvalidOperationException>();
+
+    service.GetNumber(); // throws InvalidOperationException
+    ```
 - Specific instance:
 !!! example
-      ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L30"}
-      imposter.GetNumber().Throws(new Exception("boom"));
-      ```
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L32"}
+    imposter.GetNumber().Throws(new Exception("boom"));
+
+    service.GetNumber(); // throws Exception("boom")
+    ```
 - Factory delegate:
 !!! example
-      ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L35"}
-      imposter.GetNumber().Throws(() => new Exception("deferred"));
-      ```
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L40"}
+    imposter.GetNumber().Throws(() => new Exception("deferred"));
+
+    service.GetNumber(); // throws Exception("deferred")
+    ```
 
 ## Sequencing with returns
 
 Mix `Throws` with `Returns` using `Then()`:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L48"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ThrowingTests.cs#L52"}
     imposter.GetNumber()
         .Returns(1)
         .Then().Throws<InvalidOperationException>()
         .Then().Returns(2);
+
+    service.GetNumber(); // 1
+    service.GetNumber(); // throws InvalidOperationException
+    service.GetNumber(); // 2
     ```
 
 ## Async methods
@@ -57,13 +67,7 @@ For Task/Task<T> or ValueTask/ValueTask<T>, `Throws` raises the exception when t
     await Assert.ThrowsAsync<TimeoutException>(() => service.GetNumberAsync());
     ```
 See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ThrowTests.cs).
-## Interactions with Explicit mode
 
-In `ImposterMode.Explicit`, a missing setup already throws `MissingImposterException`. Prefer arranging `Throws` when you need a specific exception type or message rather than a generic missing-setup exception.
-
-## Troubleshooting
-
-- Repeating `Throws` without `Then()` is invalid; separate distinct throwing steps with `Then()`.
-- When combining callbacks, callbacks execute after the exception is produced.
-
+!!! note
+    - Repeating `Throws` without `Then()` is invalid; separate distinct throwing steps with `Then()`.
 

@@ -89,12 +89,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericMethod(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericMethod(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

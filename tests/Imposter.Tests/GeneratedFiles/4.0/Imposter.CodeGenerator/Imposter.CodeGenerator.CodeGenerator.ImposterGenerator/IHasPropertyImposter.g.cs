@@ -755,7 +755,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<T> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<T>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<T> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<T>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -776,13 +776,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     var invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    {
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var value in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+                    }
                 }
 
                 internal void Set(T value, global::System.Action<T>? baseImplementation = null)
                 {
                     EnsureSetterConfigured();
-                    _invocationHistory.Add(value);
+                    _invocationHistory.Push(value);
                     foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
@@ -805,6 +813,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 internal void MarkConfigured()
                 {
                     _hasConfiguredSetter = true;
+                }
+
+                private static string FormatValue(object? value)
+                {
+                    return "<" + (value?.ToString() ?? "null") + ">";
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

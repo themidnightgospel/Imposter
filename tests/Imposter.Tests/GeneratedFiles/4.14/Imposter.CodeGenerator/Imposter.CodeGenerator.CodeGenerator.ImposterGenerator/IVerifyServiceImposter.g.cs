@@ -100,12 +100,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 
             public override string ToString()
             {
-                return "Combine(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Combine(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -474,12 +474,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 
             public override string ToString()
             {
-                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

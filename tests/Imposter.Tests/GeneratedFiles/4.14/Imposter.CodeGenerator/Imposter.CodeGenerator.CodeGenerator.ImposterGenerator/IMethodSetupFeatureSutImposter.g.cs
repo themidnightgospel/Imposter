@@ -193,12 +193,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "AsyncTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "AsyncTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -561,12 +561,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "AsyncValueTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "AsyncValueTaskIntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -978,12 +978,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "paramsValues: " + FormatValue(Arguments.paramsValues) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "paramsValues: " + FormatValue(Arguments.paramsValues) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1416,12 +1416,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericInnerOutParam(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericInnerOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1882,12 +1882,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericInnerParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericInnerParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -2343,12 +2343,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericInnerRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericInnerRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -2804,12 +2804,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericInnerSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericInnerSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -3194,12 +3194,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericOutParam(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -3660,12 +3660,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericParamsParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -4121,12 +4121,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericRefParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -4582,12 +4582,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "GenericSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericSingleParam(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -5015,12 +5015,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntAllRefKinds(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "valueAsString: " + FormatValue(Arguments.valueAsString), "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntAllRefKinds(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue), "inValue: " + FormatValue(Arguments.inValue), "valueAsString: " + FormatValue(Arguments.valueAsString), "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -5403,12 +5403,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntInParam(" + global::System.String.Join(", ", new[] { "inStringValue: " + FormatValue(Arguments.inStringValue) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntInParam(" + global::System.String.Join(", ", new[] { "inStringValue: " + FormatValue(Arguments.inStringValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -5750,12 +5750,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntNoParams(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntNoParams(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -6088,12 +6088,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntOutParam(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntOutParam(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -6475,12 +6475,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntParams(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age), "name: " + FormatValue(Arguments.name), "regex: " + FormatValue(Arguments.regex) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntParams(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age), "name: " + FormatValue(Arguments.name), "regex: " + FormatValue(Arguments.regex) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -6851,12 +6851,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntParamsParam(" + global::System.String.Join(", ", new[] { "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntParamsParam(" + global::System.String.Join(", ", new[] { "paramsStrings: " + FormatValue(Arguments.paramsStrings) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -7227,12 +7227,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntRefParam(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntRefParam(" + global::System.String.Join(", ", new[] { "refValue: " + FormatValue(Arguments.refValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -7603,12 +7603,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "IntSingleParam(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "IntSingleParam(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(Arguments.age) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -7948,12 +7948,12 @@ namespace Imposter.Tests.Features.MethodImposter
 
             public override string ToString()
             {
-                return "VoidNoParams(" + "" + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "VoidNoParams(" + "" + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

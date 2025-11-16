@@ -84,6 +84,16 @@ namespace Imposter.Playground
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -98,6 +108,11 @@ namespace Imposter.Playground
             internal int Count(OnNextArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -352,7 +367,7 @@ namespace Imposter.Playground
                     var invocationCount = _onNextMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _onNextMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }

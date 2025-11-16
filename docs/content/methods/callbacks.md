@@ -89,10 +89,3 @@ If a callback throws, the exception is propagated to the caller after the result
 
     // service.GetNumber() returns 1, then throws InvalidOperationException
     ```
-
-## Tips
-
-- Prefer small, deterministic callbacks; reserve complex state changes for your SUT or helpers.
-- When mixing `Returns` and `Callback`, callbacks always run last for that sequence step.
-
-

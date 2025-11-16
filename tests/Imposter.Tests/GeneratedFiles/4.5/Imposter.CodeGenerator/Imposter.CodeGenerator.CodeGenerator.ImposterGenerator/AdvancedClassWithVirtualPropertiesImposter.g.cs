@@ -310,7 +310,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<string> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<string>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<string> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<string>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -332,7 +332,15 @@ namespace Imposter.Tests.Features.PropertyImposter
                 {
                     var invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    {
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var value in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+                    }
                 }
 
                 internal void UseBaseImplementation()
@@ -344,7 +352,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal void Set(string value, global::System.Action<string>? baseImplementation = null)
                 {
                     EnsureSetterConfigured();
-                    _invocationHistory.Add(value);
+                    _invocationHistory.Push(value);
                     foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
@@ -378,6 +386,11 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal void MarkConfigured()
                 {
                     _hasConfiguredSetter = true;
+                }
+
+                private static string FormatValue(object? value)
+                {
+                    return "<" + (value?.ToString() ?? "null") + ">";
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -895,7 +908,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<string> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<string>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<string> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<string>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -917,7 +930,15 @@ namespace Imposter.Tests.Features.PropertyImposter
                 {
                     var invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                    {
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var value in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+                    }
                 }
 
                 internal void UseBaseImplementation()
@@ -929,7 +950,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal void Set(string value, global::System.Action<string>? baseImplementation = null)
                 {
                     EnsureSetterConfigured();
-                    _invocationHistory.Add(value);
+                    _invocationHistory.Push(value);
                     foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
@@ -963,6 +984,11 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal void MarkConfigured()
                 {
                     _hasConfiguredSetter = true;
+                }
+
+                private static string FormatValue(object? value)
+                {
+                    return "<" + (value?.ToString() ?? "null") + ">";
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

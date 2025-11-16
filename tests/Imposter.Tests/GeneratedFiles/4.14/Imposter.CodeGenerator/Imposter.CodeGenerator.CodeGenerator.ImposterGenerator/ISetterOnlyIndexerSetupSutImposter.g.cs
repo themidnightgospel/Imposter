@@ -157,7 +157,7 @@ namespace Imposter.Tests.Features.IndexerImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, int Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, int Value)>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, int Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, int Value)>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -193,7 +193,7 @@ namespace Imposter.Tests.Features.IndexerImposter
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
-                    _invocationHistory.Add((arguments, value));
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -254,7 +254,7 @@ namespace Imposter.Tests.Features.IndexerImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

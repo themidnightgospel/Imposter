@@ -126,12 +126,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "Add(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item), "index: " + FormatValue(Arguments.index) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Add(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item), "index: " + FormatValue(Arguments.index) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -471,12 +471,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "CountFor(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "CountFor(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -818,12 +818,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "GetNext(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GetNext(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1191,12 +1191,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "Publish(" + global::System.String.Join(", ", new[] { "payload: " + FormatValue(Arguments.payload), "category: " + FormatValue(Arguments.category), "priority: " + FormatValue(Arguments.priority) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Publish(" + global::System.String.Join(", ", new[] { "payload: " + FormatValue(Arguments.payload), "category: " + FormatValue(Arguments.category), "priority: " + FormatValue(Arguments.priority) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1507,12 +1507,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "ResilientFetch(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "ResilientFetch(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1874,12 +1874,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "TryAdd(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "TryAdd(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

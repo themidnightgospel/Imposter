@@ -271,7 +271,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             internal class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<int> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<int>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<int> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<int>();
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -313,7 +313,7 @@ namespace Imposter.Tests.Features.PropertyImposter
                 internal void Set(int value, global::System.Action<int>? baseImplementation = null)
                 {
                     EnsureSetterConfigured();
-                    _invocationHistory.Add(value);
+                    _invocationHistory.Push(value);
                     foreach (var(criteria, setterCallback)in _callbacks)
                     {
                         if (criteria.Matches(value))
@@ -351,7 +351,7 @@ namespace Imposter.Tests.Features.PropertyImposter
 
                 private static string FormatValue(object? value)
                 {
-                    return "<" + value?.ToString() ?? "null" + ">";
+                    return "<" + (value?.ToString() ?? "null") + ">";
                 }
 
                 [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

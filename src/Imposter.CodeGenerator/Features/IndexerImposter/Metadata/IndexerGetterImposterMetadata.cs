@@ -84,7 +84,9 @@ internal readonly struct IndexerGetterImposterMetadata
         );
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax)
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+                indexer.Arguments.TypeSyntax
+            )
         );
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",

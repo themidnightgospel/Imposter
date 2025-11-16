@@ -217,14 +217,8 @@ internal static partial class EventImposterBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            BinaryExpression(
-                                                SyntaxKind.AddExpression,
-                                                IdentifierName("_eventDisplayName"),
-                                                LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    Literal(" (event)")
-                                                )
-                                            )
+                                            IdentifierName("_eventDisplayName")
+                                                .Add(" (event)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()
                                 )

@@ -3,8 +3,10 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.EventImposter.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -18,6 +20,7 @@ internal static partial class EventImposterBuilder
     {
         var method = @event.Builder.Methods.Subscribed;
         var criteriaName = method.CriteriaParameter.Name;
+        var eventName = @event.Core.Name;
 
         return ExplicitInterfaceMethod(
                 @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -35,7 +38,8 @@ internal static partial class EventImposterBuilder
                         IdentifierName(criteriaName)
                             .Dot(IdentifierName("Matches"))
                             .Call(Argument(handler)),
-                    action: "subscribed"
+                    descriptionFactory: handler =>
+                        BuildSubscriptionDescription(eventName, "subscribed", handler)
                 )
             )
             .Build();
@@ -47,6 +51,7 @@ internal static partial class EventImposterBuilder
     {
         var method = @event.Builder.Methods.Unsubscribed;
         var criteriaName = method.CriteriaParameter.Name;
+        var eventName = @event.Core.Name;
 
         return ExplicitInterfaceMethod(
                 @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -64,7 +69,8 @@ internal static partial class EventImposterBuilder
                         IdentifierName(criteriaName)
                             .Dot(IdentifierName("Matches"))
                             .Call(Argument(handler)),
-                    action: "unsubscribed"
+                    descriptionFactory: handler =>
+                        BuildSubscriptionDescription(eventName, "unsubscribed", handler)
                 )
             )
             .Build();
@@ -97,8 +103,10 @@ internal static partial class EventImposterBuilder
         var ensureCountMatchesIdentifier = IdentifierName(
             @event.Builder.Methods.EnsureCountMatchesName
         );
+        var eventName = @event.Core.Name;
+        var parameters = @event.Core.Parameters;
 
-        foreach (var parameter in @event.Core.Parameters)
+        foreach (var parameter in parameters)
         {
             blockBuilder.AddExpression(ThrowIfNull($"{parameter.Name}Criteria"));
         }
@@ -121,7 +129,14 @@ internal static partial class EventImposterBuilder
             ensureCountMatchesIdentifier.Call([
                 Argument(IdentifierName("actual")),
                 Argument(countIdentifier),
-                Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("raised"))),
+                Argument(
+                    BuildRaisedPerformedInvocationsFactory(
+                        @event.Builder.Fields.History,
+                        eventName,
+                        parameters,
+                        GetPredicateBody(predicate)
+                    )
+                ),
             ])
         );
 
@@ -169,6 +184,8 @@ internal static partial class EventImposterBuilder
     {
         var method = @event.Builder.Methods.HandlerInvoked;
         var criteriaName = method.HandlerCriteriaParameter.Name;
+        var eventName = @event.Core.Name;
+        var parameters = @event.Core.Parameters;
 
         Func<ExpressionSyntax, ExpressionSyntax> predicateFactory =
             @event.Core.Parameters.Length == 0
@@ -194,7 +211,8 @@ internal static partial class EventImposterBuilder
                     historyField: @event.Builder.Fields.HandlerInvocations,
                     criteriaParameterName: criteriaName,
                     predicateFactory: predicateFactory,
-                    action: "invoked"
+                    descriptionFactory: entry =>
+                        BuildHandlerInvocationDescription(eventName, parameters, entry)
                 )
             )
             .Build();
@@ -205,7 +223,7 @@ internal static partial class EventImposterBuilder
         in FieldMetadata historyField,
         string criteriaParameterName,
         Func<ExpressionSyntax, ExpressionSyntax> predicateFactory,
-        string action
+        Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory
     )
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
@@ -218,20 +236,19 @@ internal static partial class EventImposterBuilder
             .AddExpression(ThrowIfNull(criteriaParameterName))
             .AddExpression(ThrowIfNull(countParameterName));
 
+        var entryIdentifier = IdentifierName("entry");
+        var predicateLambda = SimpleLambdaExpression(
+            Parameter(Identifier("entry")),
+            predicateFactory(entryIdentifier)
+        );
+
         blockBuilder.AddStatement(
             LocalVariableDeclarationSyntax(
                 WellKnownTypes.Int,
                 "actual",
                 FieldIdentifier(historyField)
                     .Dot(LinqSyntaxHelper.Count)
-                    .Call([
-                        Argument(
-                            SimpleLambdaExpression(
-                                Parameter(Identifier("entry")),
-                                predicateFactory(IdentifierName("entry"))
-                            )
-                        ),
-                    ])
+                    .Call([Argument(predicateLambda)])
             )
         );
 
@@ -239,7 +256,13 @@ internal static partial class EventImposterBuilder
             ensureCountMatchesIdentifier.Call([
                 Argument(IdentifierName("actual")),
                 Argument(countIdentifier),
-                Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(action))),
+                Argument(
+                    BuildHistoryPerformedInvocationsFactory(
+                        historyField,
+                        descriptionFactory,
+                        GetPredicateBody(predicateLambda)
+                    )
+                ),
             ])
         );
 
@@ -260,8 +283,12 @@ internal static partial class EventImposterBuilder
                         Parameter(Identifier("actual")).WithType(WellKnownTypes.Int),
                         Parameter(Identifier("expected"))
                             .WithType(WellKnownTypes.Imposter.Abstractions.Count),
-                        Parameter(Identifier("action"))
-                            .WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                        Parameter(Identifier("performedInvocationsFactory"))
+                            .WithType(
+                                WellKnownTypes.System.FuncOfT(
+                                    PredefinedType(Token(SyntaxKind.StringKeyword))
+                                )
+                            ),
                     ])
                 )
             )
@@ -286,6 +313,10 @@ internal static partial class EventImposterBuilder
                                             SeparatedList([
                                                 Argument(IdentifierName("expected")),
                                                 Argument(IdentifierName("actual")),
+                                                Argument(
+                                                    IdentifierName("performedInvocationsFactory")
+                                                        .Call()
+                                                ),
                                             ])
                                         )
                                     )
@@ -295,6 +326,160 @@ internal static partial class EventImposterBuilder
                 )
             )
             .Build();
+
+    private static ParenthesizedLambdaExpressionSyntax BuildHistoryPerformedInvocationsFactory(
+        in FieldMetadata historyField,
+        Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory,
+        ExpressionSyntax predicateBody
+    )
+    {
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(
+            PredefinedType(Token(SyntaxKind.StringKeyword))
+        );
+        var entryIdentifier = IdentifierName("entry");
+
+        return ParenthesizedLambdaExpression()
+            .WithParameterList(ParameterList())
+            .WithBlock(
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        "performedInvocations",
+                        stringListType.New()
+                    ),
+                    ForEachStatement(
+                        Var,
+                        Identifier("entry"),
+                        FieldIdentifier(historyField),
+                        Block(
+                            IfStatement(
+                                predicateBody,
+                                Block(
+                                    IdentifierName("performedInvocations")
+                                        .Dot(IdentifierName("Add"))
+                                        .Call(Argument(descriptionFactory(entryIdentifier)))
+                                        .ToStatementSyntax()
+                                )
+                            )
+                        )
+                    ),
+                    ReturnStatement(JoinWithNewLines(IdentifierName("performedInvocations")))
+                )
+            );
+    }
+
+    private static ParenthesizedLambdaExpressionSyntax BuildRaisedPerformedInvocationsFactory(
+        in FieldMetadata historyField,
+        string eventName,
+        EventParameterMetadata[] parameters,
+        ExpressionSyntax predicateBody
+    ) =>
+        BuildHistoryPerformedInvocationsFactory(
+            historyField,
+            entry => BuildRaisedDescription(eventName, parameters, entry),
+            predicateBody
+        );
+
+    private static BinaryExpressionSyntax BuildSubscriptionDescription(
+        string eventName,
+        string action,
+        ExpressionSyntax handlerExpression
+    )
+    {
+        var description = BuildActionDescription(eventName, action);
+        return AppendDetail(description, "handler", handlerExpression);
+    }
+
+    private static BinaryExpressionSyntax BuildHandlerInvocationDescription(
+        string eventName,
+        EventParameterMetadata[] parameters,
+        ExpressionSyntax entry
+    )
+    {
+        var description = BuildActionDescription(eventName, "handler invoked");
+        var handlerExpression =
+            parameters.Length == 0 ? entry : entry.Dot(IdentifierName("Handler"));
+
+        description = AppendDetail(description, "handler", handlerExpression);
+
+        foreach (var parameter in parameters)
+        {
+            description = AppendDetail(
+                description,
+                parameter.Name,
+                entry.Dot(IdentifierName(parameter.Name))
+            );
+        }
+
+        return description;
+    }
+
+    private static BinaryExpressionSyntax BuildRaisedDescription(
+        string eventName,
+        EventParameterMetadata[] parameters,
+        ExpressionSyntax entry
+    )
+    {
+        var description = BuildActionDescription(eventName, "raised");
+
+        if (parameters.Length == 0)
+        {
+            return description;
+        }
+
+        if (parameters.Length == 1)
+        {
+            return AppendDetail(description, parameters[0].Name, entry);
+        }
+
+        foreach (var parameter in parameters)
+        {
+            description = AppendDetail(
+                description,
+                parameter.Name,
+                entry.Dot(IdentifierName(parameter.Name))
+            );
+        }
+
+        return description;
+    }
+
+    private static BinaryExpressionSyntax BuildActionDescription(string eventName, string action)
+    {
+        var actionText = $"{eventName} {action} ".StringLiteral();
+
+        return AddStrings(actionText, Invocation(eventName.StringLiteral()));
+    }
+
+    private static BinaryExpressionSyntax AppendDetail(
+        ExpressionSyntax description,
+        string label,
+        ExpressionSyntax valueExpression
+    ) =>
+        AddStrings(
+            description,
+            AddStrings($" {label}: ".StringLiteral(), Invocation(valueExpression))
+        );
+
+    private static InvocationExpressionSyntax JoinWithNewLines(ExpressionSyntax values) =>
+        IdentifierName("string")
+            .Dot(IdentifierName("Join"))
+            .Call(
+                ArgumentList(
+                    SeparatedList<ArgumentSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            Argument(IdentifierName("Environment").Dot(IdentifierName("NewLine"))),
+                            Token(SyntaxKind.CommaToken),
+                            Argument(values),
+                        }
+                    )
+                )
+            );
+
+    private static ExpressionSyntax GetPredicateBody(SimpleLambdaExpressionSyntax predicate) =>
+        predicate.Body as ExpressionSyntax
+        ?? throw new InvalidOperationException("Predicate body must be an expression.");
 
     private static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
         ParameterSyntax(@event.Builder.Methods.CountParameter);

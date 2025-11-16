@@ -1,6 +1,6 @@
 # Protected Methods
 
-Overrideable protected members of the class can be mocked just like other overridable class members.
+Overrideable protected members of the class can be impersonated just like other overridable class members.
 
 Target type used in examples:
 
@@ -24,25 +24,22 @@ Target type used in examples:
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/ProtectedMembersTests.cs#L20"}
-// Class target with a protected virtual method and a public wrapper that calls it
-[assembly: GenerateImposter(typeof(MyService))]
+    // Class target with a protected virtual method and a public wrapper that calls it
+    [assembly: GenerateImposter(typeof(MyService))]
 
-public class MyService
-{
-    protected virtual int ProtectedAdd(int value) => value * 2;
-    public virtual int InvokeProtected(int value) => ProtectedAdd(value);
-}
+    public class MyService
+    {
+        protected virtual int ProtectedAdd(int value) => value * 2;
+        public virtual int InvokeProtected(int value) => ProtectedAdd(value);
+    }
 
-var imp = new MyServiceImposter();
+    var imposter = new MyServiceImposter();
 
-// Arrange the protected method directly on the imposter
-imp.ProtectedAdd(Arg<int>.Is(5)).Returns(42);
+    // Arrange the protected method directly on the imposter
+    imposter.ProtectedAdd(Arg<int>.Is(5)).Returns(42);
 
-// Forward the public wrapper to the real implementation so it calls the protected member
-imp.InvokeProtected(Arg<int>.Any()).UseBaseImplementation();
-
-var svc = imp.Instance();
-svc.InvokeProtected(5).ShouldBe(42);
+    var service = imposter.Instance();
+    service.InvokeProtected(5).ShouldBe(42);
     ```
 
 See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/ClassImposter/ProtectedOverrideableMembersClassImposterTests.cs).

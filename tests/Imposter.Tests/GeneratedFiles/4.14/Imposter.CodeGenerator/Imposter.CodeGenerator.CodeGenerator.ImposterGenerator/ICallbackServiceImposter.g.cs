@@ -113,12 +113,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
             public override string ToString()
             {
-                return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "r: " + FormatValue(Arguments.r), "d: " + FormatValue(Arguments.d), "args: " + FormatValue(Arguments.args) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "r: " + FormatValue(Arguments.r), "d: " + FormatValue(Arguments.d), "args: " + FormatValue(Arguments.args) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -472,12 +472,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
             public override string ToString()
             {
-                return "GetNumber(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GetNumber(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -839,12 +839,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
             public override string ToString()
             {
-                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

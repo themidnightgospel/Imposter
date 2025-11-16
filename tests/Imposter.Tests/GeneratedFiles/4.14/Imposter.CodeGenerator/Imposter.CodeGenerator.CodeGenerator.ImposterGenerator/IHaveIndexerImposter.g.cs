@@ -176,7 +176,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -212,7 +212,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -421,7 +421,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<(IndexerIndexerArguments Arguments, T Value)>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, T Value)>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -457,7 +457,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
-                    _invocationHistory.Add((arguments, value));
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -518,7 +518,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -750,7 +750,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -786,7 +786,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -995,7 +995,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<(Indexer_1IndexerArguments Arguments, int Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<(Indexer_1IndexerArguments Arguments, int Value)>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, int Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, int Value)>();
                 private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -1031,7 +1031,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(key);
-                    _invocationHistory.Add((arguments, value));
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -1092,7 +1092,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1329,7 +1329,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -1365,7 +1365,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -1574,7 +1574,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_2IndexerArgumentsCriteria Criteria, Indexer_2IndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_2IndexerArgumentsCriteria Criteria, Indexer_2IndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<(Indexer_2IndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<(Indexer_2IndexerArguments Arguments, T Value)>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(Indexer_2IndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(Indexer_2IndexerArguments Arguments, T Value)>();
                 private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -1610,7 +1610,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     Indexer_2IndexerArguments arguments = new Indexer_2IndexerArguments(key, index);
-                    _invocationHistory.Add((arguments, value));
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -1671,7 +1671,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

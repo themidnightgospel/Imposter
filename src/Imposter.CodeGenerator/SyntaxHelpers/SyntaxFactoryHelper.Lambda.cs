@@ -59,11 +59,8 @@ internal static partial class SyntaxFactoryHelper
                 )
             )
             .WithExpressionBody(
-                BinaryExpression(
-                    SyntaxKind.AddExpression,
-                    IdentifierName(counterParameterName),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))
-                )
+                IdentifierName(counterParameterName)
+                    .Add(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1)))
             );
 
     public static ParenthesizedLambdaExpressionSyntax CounterDecrementLambda(

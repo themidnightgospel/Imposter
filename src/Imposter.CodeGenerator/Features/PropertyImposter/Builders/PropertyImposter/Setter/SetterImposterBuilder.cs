@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -85,7 +87,7 @@ internal static class SetterImposterBuilder
             )
             .AddMember(BuildEnsureSetterConfiguredMethod())
             .AddMember(BuildMarkConfiguredMethod())
-            .AddMember(BuildFormatValueMethod())
+            .AddMember(FormatValueMethodBuilder.Build())
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
     }
@@ -230,14 +232,8 @@ internal static class SetterImposterBuilder
                 var missingBaseImplementation = ThrowStatement(
                     WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
                         Argument(
-                                BinaryExpression(
-                                    SyntaxKind.AddExpression,
-                                    IdentifierName("_propertyDisplayName"),
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal(" (setter)")
-                                    )
-                                )
+                                IdentifierName("_propertyDisplayName")
+                                    .Add(" (setter)".StringLiteral())
                             )
                             .AsSingleArgumentListSyntax()
                     )
@@ -305,7 +301,7 @@ internal static class SetterImposterBuilder
             in PropertySetterImposterMetadata setterImposter
         ) =>
             IdentifierName(setterImposter.InvocationHistoryField.Name)
-                .Dot(IdentifierName("Add"))
+                .Dot(IdentifierName("Push"))
                 .Call(Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name)))
                 .ToStatementSyntax();
     }
@@ -433,24 +429,15 @@ internal static class SetterImposterBuilder
 
         ExpressionSyntax BuildInvocationDescription(IdentifierNameSyntax valueIdentifier)
         {
-            var prefix = AddStrings(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("set ")),
-                IdentifierName("_propertyDisplayName")
-            );
+            var prefix = AddStrings("set ".StringLiteral(), IdentifierName("_propertyDisplayName"));
 
-            var assignment = AddStrings(
-                prefix,
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" = "))
-            );
+            var assignment = AddStrings(prefix, " = ".StringLiteral());
 
             return AddStrings(
                 assignment,
                 IdentifierName("FormatValue").Call(Argument(valueIdentifier))
             );
         }
-
-        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
-            BinaryExpression(SyntaxKind.AddExpression, left, right);
     }
 
     internal static MethodDeclarationSyntax? BuildSetterCallbackMethod(
@@ -522,14 +509,8 @@ internal static class SetterImposterBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            BinaryExpression(
-                                                SyntaxKind.AddExpression,
-                                                IdentifierName("_propertyDisplayName"),
-                                                LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    Literal(" (setter)")
-                                                )
-                                            )
+                                            IdentifierName("_propertyDisplayName")
+                                                .Add(" (setter)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()
                                 )
@@ -545,43 +526,6 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(IdentifierName("_hasConfiguredSetter").Assign(True).ToStatementSyntax())
-            )
-            .Build();
-
-    private static MethodDeclarationSyntax BuildFormatValueMethod() =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "FormatValue")
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddParameter(
-                Parameter(Identifier("value"))
-                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
-            )
-            .WithBody(
-                Block(
-                    ReturnStatement(
-                        BinaryExpression(
-                            SyntaxKind.AddExpression,
-                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("<")),
-                            BinaryExpression(
-                                SyntaxKind.AddExpression,
-                                BinaryExpression(
-                                    SyntaxKind.CoalesceExpression,
-                                    ConditionalAccessExpression(
-                                        IdentifierName("value"),
-                                        InvocationExpression(
-                                            MemberBindingExpression(IdentifierName("ToString"))
-                                        )
-                                    ),
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal("null")
-                                    )
-                                ),
-                                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(">"))
-                            )
-                        )
-                    )
-                )
             )
             .Build();
 }

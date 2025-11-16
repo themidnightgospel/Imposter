@@ -63,6 +63,16 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "GetNumber(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -77,6 +87,11 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -353,7 +368,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
                     var invocationCount = _getNumberMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _getNumberMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
@@ -386,6 +401,16 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
             {
                 return true;
             }
+
+            public override string ToString()
+            {
+                return "GetNumberAsync(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -400,6 +425,11 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
             internal int Count()
             {
                 return _invocationHistory.Count(it => it.Matches());
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -706,7 +736,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
                     var invocationCount = _getNumberAsyncMethodInvocationHistoryCollection.Count();
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _getNumberAsyncMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }

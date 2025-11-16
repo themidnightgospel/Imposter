@@ -175,7 +175,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -211,7 +211,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -244,7 +244,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     int invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.index) }) + "]");
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -414,7 +420,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<IndexerIndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, T Value)>();
                 private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -433,10 +439,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
                 public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
                 {
-                    int invocationCount = _invocationHistory.Count(criteria.Matches);
+                    int invocationCount = _invocationHistory.Count(entry => criteria.Matches(entry.Arguments));
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.index) }) + "]" + " = " + FormatValue(entry.Value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -444,7 +456,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
-                    _invocationHistory.Add(arguments);
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -501,6 +513,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                         return this;
                     }
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -732,7 +749,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -768,7 +785,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -801,7 +818,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     int invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -971,7 +994,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_1IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, int Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, int Value)>();
                 private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -990,10 +1013,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
                 public void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
                 {
-                    int invocationCount = _invocationHistory.Count(criteria.Matches);
+                    int invocationCount = _invocationHistory.Count(entry => criteria.Matches(entry.Arguments));
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -1001,7 +1030,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(key);
-                    _invocationHistory.Add(arguments);
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -1058,6 +1087,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                         return this;
                     }
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1294,7 +1328,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
                 private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
                 private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments>();
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
                 private bool _hasConfiguredReturn;
@@ -1330,7 +1364,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     }
                     finally
                     {
-                        _invocationHistory.Add(arguments);
+                        _invocationHistory.Push(arguments);
                     }
                 }
 
@@ -1363,7 +1397,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     int invocationCount = _invocationHistory.Count(criteria.Matches);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key), FormatValue(entry.index) }) + "]");
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -1533,7 +1573,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             private sealed class SetterImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_2IndexerArgumentsCriteria Criteria, Indexer_2IndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_2IndexerArgumentsCriteria Criteria, Indexer_2IndexerSetterCallback Callback)>();
-                private readonly global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentBag<Indexer_2IndexerArguments>();
+                private readonly global::System.Collections.Concurrent.ConcurrentStack<(Indexer_2IndexerArguments Arguments, T Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(Indexer_2IndexerArguments Arguments, T Value)>();
                 private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
                 private readonly string _propertyDisplayName;
@@ -1552,10 +1592,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
                 public void Called(Indexer_2IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
                 {
-                    int invocationCount = _invocationHistory.Count(criteria.Matches);
+                    int invocationCount = _invocationHistory.Count(entry => criteria.Matches(entry.Arguments));
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        var performedInvocations = new global::System.Collections.Generic.List<string>();
+                        foreach (var entry in _invocationHistory)
+                        {
+                            performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key), FormatValue(entry.Arguments.index) }) + "]" + " = " + FormatValue(entry.Value));
+                        }
+
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
                     }
                 }
 
@@ -1563,7 +1609,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 {
                     EnsureSetterConfigured();
                     Indexer_2IndexerArguments arguments = new Indexer_2IndexerArguments(key, index);
-                    _invocationHistory.Add(arguments);
+                    _invocationHistory.Push((arguments, value));
                     bool matchedCallback = false;
                     foreach (var registration in _callbacks)
                     {
@@ -1620,6 +1666,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                         return this;
                     }
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

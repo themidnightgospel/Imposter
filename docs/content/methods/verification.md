@@ -17,16 +17,6 @@ Target type used in examples:
     }
     ```
 
-## Semantics
-
-- `Called(Count)` counts only invocations that match the builder’s argument matchers.
-- `Count.Once()` is an alias for `Count.Exactly(1)`.
-- `Count.Exactly(n)` requires the matching call count to equal `n`.
-- `Count.AtLeast(n)` requires the count to be `>= n`.
-- `Count.AtMost(n)` requires the count to be `<= n`.
-- `Count.Never()` requires zero matching calls.
-- `Count.Any` imposes no constraint and always succeeds.
-
 ## Basic counts
 
 !!! example
@@ -37,15 +27,6 @@ Target type used in examples:
     imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
     imposter.Increment(2).Called(Count.Once());
     ```
-
-## Count helpers
-
-- `Count.Exactly(n)` — exactly n times
-- `Count.AtLeast(n)` — n or more times
-- `Count.AtMost(n)` — n or fewer times
-- `Count.Once()` — exactly once
-- `Count.Never()` — zero times
-- `Count.Any` — any number of times
 
 ## Matching arguments
 
@@ -60,32 +41,14 @@ Verification respects the same argument matching rules used for arrangements:
 
 ## Failures
 
-When verification fails, `VerificationFailedException` is thrown. Message format:
+When verification fails, `VerificationFailedException` is thrown. The message includes both the expected/actual counts and, when available, a textual list of performed invocations:
 
 ```
 Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
+Performed invocations:
+{invocation1}
+{invocation2}
+...
 ```
 
-Examples:
-
-```csharp
-// Expected at least 2, only 1 occurred
-service.Increment(1);
-imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
-// throws VerificationFailedException with:
-// "Invocation was expected to be performed at least 2 time(s) but instead was performed 1 times."
-
-// Expected exactly 3, got 2
-service.Increment(10);
-service.Increment(11);
-imposter.Increment(Arg<int>.Is(x => x > 5)).Called(Count.Exactly(3));
-// throws VerificationFailedException with:
-// "Invocation was expected to be performed exactly 3 time(s) but instead was performed 2 times."
-```
-
-## Tips
-
-- Prefer verifying behavior at the boundary of your SUT rather than implementation details.
-- Verification can be chained after prior setups via `Then()`, but is typically run after exercising your SUT.
-
-
+Use this list to quickly see which calls were actually made and why the verification did not match your expectations.

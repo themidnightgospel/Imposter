@@ -87,12 +87,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

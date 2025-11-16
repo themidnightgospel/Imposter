@@ -1,33 +1,43 @@
 # Indexer Verification
 
-Use `Called` with `Count` to verify setter usage; combine getters with callbacks or count reads where applicable.
+## Setter verification
 
-## Semantics
+!!! example
+    ```csharp
+    service[1] = 10;
+    service[2] = 20;
 
-- `imposter[...].Setter().Called(Count)` counts writes for indexers whose indices (and optional value matcher) satisfy the provided matchers.
-- `imposter[...].Getter().Called(Count)` counts reads for indexers whose indices satisfy the matchers.
-- Count helpers have identical meaning as for methods/properties.
+    imposter[Arg<int>.Any()].Setter().Called(Count.AtLeast(2));
+    imposter[Arg<int>.Is(2)].Setter().Called(Count.Once());
+    ```
 
-```csharp
-service[1] = 10;
-service[2] = 20;
+## Getter verification
 
-imposter[Arg<int>.Any()].Setter().Called(Count.AtLeast(2));
-imposter[Arg<int>.Is(2)].Setter().Called(Count.Once());
-```
+!!! example
+    ```csharp
+    var _ = service[1];
+    imposter[Arg<int>.Any()].Getter().Called(Count.Once());
+    ```
 
 ## Failures
 
 When verification fails, `VerificationFailedException` is thrown with the message:
 
-```
-Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
-```
+!!! example
+    ```
+    Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
+    ```
 
-Example:
+Examples:
 
-```csharp
-// Expected a single write to index 2, but none occurred
-imposter[Arg<int>.Is(2)].Setter().Called(Count.Once());
-// throws: "Invocation was expected to be performed exactly 1 time(s) but instead was performed 0 times."
-```
+!!! example
+    ```csharp
+    // Setter expected once for index 2, but no matching write occurred
+    imposter[Arg<int>.Is(2)].Setter().Called(Count.Once());
+    // throws: "Invocation was expected to be performed exactly 1 time(s) but instead was performed 0 times."
+
+    // Getter expected at least 2 reads, but only 1
+    var _ = service[1];
+    imposter[Arg<int>.Any()].Getter().Called(Count.AtLeast(2));
+    // throws: "Invocation was expected to be performed at least 2 time(s) but instead was performed 1 times."
+    ```

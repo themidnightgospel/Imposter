@@ -35,7 +35,7 @@ internal readonly struct PropertySetterImposterMetadata
         CallbacksField = new CallbacksFieldMetadata(property);
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
                 property.NullableAwareTypeSyntax
             )
         );

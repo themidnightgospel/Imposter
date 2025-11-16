@@ -128,12 +128,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "Combine(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Combine(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -475,12 +475,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "DoWorkAsync(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "DoWorkAsync(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -828,12 +828,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "GetNumber(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GetNumber(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1166,12 +1166,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "GetNumberAsync(" + "" + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "GetNumberAsync(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1563,12 +1563,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1939,12 +1939,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             public override string ToString()
             {
-                return "VirtualCompute(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "VirtualCompute(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

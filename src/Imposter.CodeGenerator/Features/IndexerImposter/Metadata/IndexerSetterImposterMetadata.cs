@@ -65,7 +65,7 @@ internal readonly struct IndexerSetterImposterMetadata
         );
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(InvocationHistoryEntryType)
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(InvocationHistoryEntryType)
         );
         DefaultBehaviourField = new FieldMetadata(
             "_defaultBehaviour",

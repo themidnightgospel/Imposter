@@ -111,12 +111,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "DoSomething(" + global::System.String.Join(", ", new[] { "arg: " + FormatValue(Arguments.arg) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "DoSomething(" + global::System.String.Join(", ", new[] { "arg: " + FormatValue(Arguments.arg) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -540,12 +540,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "Map(" + global::System.String.Join(", ", new[] { "source: " + FormatValue(Arguments.source) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Map(" + global::System.String.Join(", ", new[] { "source: " + FormatValue(Arguments.source) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 
@@ -1001,12 +1001,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             public override string ToString()
             {
-                return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
             {
-                return "<" + value?.ToString() ?? "null" + ">";
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
         }
 

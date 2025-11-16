@@ -176,10 +176,7 @@ internal static class PropertyImposterBuilder
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
             "invocationBehavior"
         );
-        var propertyDisplayLiteral = LiteralExpression(
-            SyntaxKind.StringLiteralExpression,
-            Literal(property.Core.DisplayName)
-        );
+        var propertyDisplayLiteral = property.Core.DisplayName.StringLiteral();
 
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))

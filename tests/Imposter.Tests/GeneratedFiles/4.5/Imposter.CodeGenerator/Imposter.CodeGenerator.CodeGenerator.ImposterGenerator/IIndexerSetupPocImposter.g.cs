@@ -93,6 +93,16 @@ namespace Imposter.Tests.Shared
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "IndexerMethod(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(Arguments.name), "lastname: " + FormatValue(Arguments.lastname), "dog: " + FormatValue(Arguments.dog) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -107,6 +117,11 @@ namespace Imposter.Tests.Shared
             internal int Count(IndexerMethodArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -392,7 +407,7 @@ namespace Imposter.Tests.Shared
                     var invocationCount = _indexerMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _indexerMethodMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }

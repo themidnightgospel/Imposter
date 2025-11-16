@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.EventImposter.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -35,6 +36,7 @@ internal static partial class EventImposterBuilder
             .AddMember(@event.Core.IsAsync ? BuildRaiseCoreAsyncMethod(@event) : null)
             .AddMember(BuildEnumerateHandlersMethod(@event))
             .AddMember(BuildEnsureCountMatchesMethod(@event.Builder.Methods))
+            .AddMember(FormatValueMethodBuilder.Build())
             .AddMember(BuildUseBaseImplementationMethod(@event))
             .Build();
 
@@ -88,10 +90,7 @@ internal static partial class EventImposterBuilder
                     PredefinedType(Token(SyntaxKind.StringKeyword)),
                     "_eventDisplayName",
                     TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-                    LiteralExpression(
-                        SyntaxKind.StringLiteralExpression,
-                        Literal(@event.Core.DisplayName)
-                    )
+                    @event.Core.DisplayName.StringLiteral()
                 )
             );
         }

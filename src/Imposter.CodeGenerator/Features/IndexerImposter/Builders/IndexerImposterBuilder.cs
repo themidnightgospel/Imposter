@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using GetterReturnsMetadata = Imposter.CodeGenerator.Features.IndexerImposter.Metadata.GetterImposterBuilderInterface.ReturnsMethodMetadata;
@@ -49,7 +51,7 @@ internal static class IndexerImposterBuilder
             .AddMember(indexer.Core.HasSetter ? BuildSetForwarder(indexer) : null)
             .AddMember(indexer.Core.HasGetter ? BuildGetterImposter(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildSetterImposter(indexer) : null)
-            .AddMember(BuildFormatValueMethod());
+            .AddMember(FormatValueMethodBuilder.Build());
 
         return classBuilder.Build();
     }
@@ -407,12 +409,12 @@ internal static class IndexerImposterBuilder
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
-                    WellKnownTypes.System.Collections.Concurrent.ConcurrentBag(
+                    WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
                         indexer.Arguments.TypeSyntax
                     ),
                     indexer.GetterImplementation.InvocationHistoryField.Name,
                     WellKnownTypes
-                        .System.Collections.Concurrent.ConcurrentBag(indexer.Arguments.TypeSyntax)
+                        .System.Collections.Concurrent.ConcurrentStack(indexer.Arguments.TypeSyntax)
                         .New()
                 )
             )
@@ -1268,14 +1270,8 @@ internal static class IndexerImposterBuilder
     )
     {
         var invocationMetadata = indexer.GetterImplementation.Invocation;
-        var messageExpression = BinaryExpression(
-            SyntaxKind.AddExpression,
-            IdentifierName(invocationMetadata.PropertyDisplayNameField.Name),
-            LiteralExpression(
-                SyntaxKind.StringLiteralExpression,
-                Literal(indexer.GetterImplementation.GetterSuffix)
-            )
-        );
+        var messageExpression = IdentifierName(invocationMetadata.PropertyDisplayNameField.Name)
+            .Add(indexer.GetterImplementation.GetterSuffix.StringLiteral());
 
         var handlerLambda = ParenthesizedLambdaExpression()
             .WithParameterList(
@@ -1630,18 +1626,12 @@ internal static class IndexerImposterBuilder
             IdentifierNameSyntax entryIdentifier
         )
         {
-            var prefix = AddStrings(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("set ")),
-                IdentifierName("_propertyDisplayName")
-            );
+            var prefix = AddStrings("set ".StringLiteral(), IdentifierName("_propertyDisplayName"));
 
             var argumentsIdentifier = entryIdentifier.Dot(IdentifierName("Arguments"));
             var indices = BuildIndices(indexer, argumentsIdentifier);
             var withIndices = AddStrings(prefix, indices);
-            var assignment = AddStrings(
-                withIndices,
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(" = "))
-            );
+            var assignment = AddStrings(withIndices, " = ".StringLiteral());
 
             return AddStrings(
                 assignment,
@@ -1662,12 +1652,7 @@ internal static class IndexerImposterBuilder
                         SeparatedList<ArgumentSyntax>(
                             new SyntaxNodeOrToken[]
                             {
-                                Argument(
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal(", ")
-                                    )
-                                ),
+                                Argument(", ".StringLiteral()),
                                 Token(SyntaxKind.CommaToken),
                                 Argument(
                                     ImplicitArrayCreationExpression(
@@ -1697,16 +1682,10 @@ internal static class IndexerImposterBuilder
                 );
 
             return AddStrings(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("[")),
-                AddStrings(
-                    formattedValues,
-                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("]"))
-                )
+                "[".StringLiteral(),
+                AddStrings(formattedValues, "]".StringLiteral())
             );
         }
-
-        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
-            BinaryExpression(SyntaxKind.AddExpression, left, right);
     }
 
     private static MethodDeclarationSyntax BuildSetterUseBaseImplementationMethod(
@@ -1849,7 +1828,7 @@ internal static class IndexerImposterBuilder
             .AddStatement(CreateArgumentsDeclaration(indexer))
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
-                    .Dot(IdentifierName("Add"))
+                    .Dot(IdentifierName("Push"))
                     .Call(
                         Argument(
                             TupleExpression(
@@ -2190,11 +2169,8 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer,
         string suffix
     ) =>
-        BinaryExpression(
-            SyntaxKind.AddExpression,
-            IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name),
-            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(suffix))
-        );
+        IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name)
+            .Add(suffix.StringLiteral());
 
     private static ThrowStatementSyntax BuildMissingImposterThrow(
         in ImposterIndexerMetadata indexer,
@@ -2348,7 +2324,7 @@ internal static class IndexerImposterBuilder
         var finallyClause = FinallyClause(
             Block(
                 IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
-                    .Dot(IdentifierName("Add"))
+                    .Dot(IdentifierName("Push"))
                     .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))
                     .ToStatementSyntax()
             )
@@ -2647,10 +2623,7 @@ internal static class IndexerImposterBuilder
             ExpressionSyntax entryIdentifier
         )
         {
-            var prefix = AddStrings(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("get ")),
-                IdentifierName("_propertyDisplayName")
-            );
+            var prefix = AddStrings("get ".StringLiteral(), IdentifierName("_propertyDisplayName"));
             var indices = BuildIndices(indexer, entryIdentifier);
 
             return AddStrings(prefix, indices);
@@ -2668,12 +2641,7 @@ internal static class IndexerImposterBuilder
                         SeparatedList<ArgumentSyntax>(
                             new SyntaxNodeOrToken[]
                             {
-                                Argument(
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal(", ")
-                                    )
-                                ),
+                                Argument(", ".StringLiteral()),
                                 Token(SyntaxKind.CommaToken),
                                 Argument(
                                     ImplicitArrayCreationExpression(
@@ -2702,17 +2670,8 @@ internal static class IndexerImposterBuilder
                     )
                 );
 
-            return AddStrings(
-                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("[")),
-                AddStrings(
-                    joined,
-                    LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("]"))
-                )
-            );
+            return AddStrings("[".StringLiteral(), AddStrings(joined, "]".StringLiteral()));
         }
-
-        static ExpressionSyntax AddStrings(ExpressionSyntax left, ExpressionSyntax right) =>
-            BinaryExpression(SyntaxKind.AddExpression, left, right);
     }
 
     private static MethodDeclarationSyntax BuildMarkReturnConfiguredMethod(
@@ -2794,41 +2753,4 @@ internal static class IndexerImposterBuilder
             )
             .Build();
     }
-
-    private static MethodDeclarationSyntax BuildFormatValueMethod() =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "FormatValue")
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddParameter(
-                Parameter(Identifier("value"))
-                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
-            )
-            .WithBody(
-                Block(
-                    ReturnStatement(
-                        BinaryExpression(
-                            SyntaxKind.AddExpression,
-                            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("<")),
-                            BinaryExpression(
-                                SyntaxKind.AddExpression,
-                                BinaryExpression(
-                                    SyntaxKind.CoalesceExpression,
-                                    ConditionalAccessExpression(
-                                        IdentifierName("value"),
-                                        InvocationExpression(
-                                            MemberBindingExpression(IdentifierName("ToString"))
-                                        )
-                                    ),
-                                    LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        Literal("null")
-                                    )
-                                ),
-                                LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(">"))
-                            )
-                        )
-                    )
-                )
-            )
-            .Build();
 }

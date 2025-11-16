@@ -137,7 +137,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("CustomAsyncEvent subscribed " + FormatValue("CustomAsyncEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -146,7 +158,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("CustomAsyncEvent unsubscribed " + FormatValue("CustomAsyncEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -170,7 +194,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(argsCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args))
+                        {
+                            performedInvocations.Add("CustomAsyncEvent raised " + FormatValue("CustomAsyncEvent") + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -179,7 +215,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("CustomAsyncEvent handler invoked " + FormatValue("CustomAsyncEvent") + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -235,12 +283,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
 
             ICustomAsyncEventEventImposterBuilder ICustomAsyncEventEventImposterBuilder.UseBaseImplementation()
@@ -364,7 +417,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("TaskBasedEvent subscribed " + FormatValue("TaskBasedEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -373,7 +438,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("TaskBasedEvent unsubscribed " + FormatValue("TaskBasedEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -397,7 +474,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(arg2Criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+                        {
+                            performedInvocations.Add("TaskBasedEvent raised " + FormatValue("TaskBasedEvent") + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -406,7 +495,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("TaskBasedEvent handler invoked " + FormatValue("TaskBasedEvent") + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -462,12 +563,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
 
             ITaskBasedEventEventImposterBuilder ITaskBasedEventEventImposterBuilder.UseBaseImplementation()
@@ -591,7 +697,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "subscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _subscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("ValueTaskBasedEvent subscribed " + FormatValue("ValueTaskBasedEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -600,7 +718,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-                EnsureCountMatches(actual, count, "unsubscribed");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _unsubscribeHistory)
+                    {
+                        if (criteria.Matches(entry))
+                        {
+                            performedInvocations.Add("ValueTaskBasedEvent unsubscribed " + FormatValue("ValueTaskBasedEvent") + " handler: " + FormatValue(entry));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -624,7 +754,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(arg2Criteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _history.Count(entry => arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2));
-                EnsureCountMatches(actual, count, "raised");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _history)
+                    {
+                        if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+                        {
+                            performedInvocations.Add("ValueTaskBasedEvent raised " + FormatValue("ValueTaskBasedEvent") + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -633,7 +775,19 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
                 int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-                EnsureCountMatches(actual, count, "invoked");
+                EnsureCountMatches(actual, count, () =>
+                {
+                    var performedInvocations = new global::System.Collections.Generic.List<string>();
+                    foreach (var entry in _handlerInvocations)
+                    {
+                        if (handlerCriteria.Matches(entry.Handler))
+                        {
+                            performedInvocations.Add("ValueTaskBasedEvent handler invoked " + FormatValue("ValueTaskBasedEvent") + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+                        }
+                    }
+
+                    return string.Join(Environment.NewLine, performedInvocations);
+                });
                 return this;
             }
 
@@ -689,12 +843,17 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)
+            private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
             {
                 if (!expected.Matches(actual))
                 {
-                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual);
+                    throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
                 }
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
             }
 
             IValueTaskBasedEventEventImposterBuilder IValueTaskBasedEventEventImposterBuilder.UseBaseImplementation()

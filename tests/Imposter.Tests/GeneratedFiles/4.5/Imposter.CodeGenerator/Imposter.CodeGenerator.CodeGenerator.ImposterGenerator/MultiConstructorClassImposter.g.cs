@@ -85,6 +85,16 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 return criteria.Matches(Arguments);
             }
+
+            public override string ToString()
+            {
+                return "Calculate(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -99,6 +109,11 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             internal int Count(CalculateArgumentsCriteria argumentsCriteria)
             {
                 return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
             }
         }
 
@@ -406,7 +421,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                     var invocationCount = _calculateMethodInvocationHistoryCollection.Count(_argumentsCriteria);
                     if (!count.Matches(invocationCount))
                     {
-                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount);
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _calculateMethodInvocationHistoryCollection.ToString());
                     }
                 }
             }
