@@ -74,6 +74,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
             }
         }
 
+        // virtual int BaseService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -236,6 +237,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int BaseService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }

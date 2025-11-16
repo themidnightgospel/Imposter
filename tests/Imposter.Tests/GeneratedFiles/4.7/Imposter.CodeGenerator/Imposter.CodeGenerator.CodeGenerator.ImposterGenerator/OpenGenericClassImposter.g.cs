@@ -110,6 +110,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // virtual string OpenGenericClass<T>.Describe(T value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DescribeMethodInvocationImposterGroup
         {
@@ -275,6 +276,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string OpenGenericClass<T>.Describe(T value)
         public interface IDescribeMethodImposterBuilder : IDescribeMethodInvocationImposterGroup, IDescribeMethodInvocationImposterGroupCallback, DescribeInvocationVerifier
         {
         }
@@ -493,6 +495,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // virtual T OpenGenericClass<T>.Echo(T value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup
         {
@@ -658,6 +661,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual T OpenGenericClass<T>.Echo(T value)
         public interface IEchoMethodImposterBuilder : IEchoMethodInvocationImposterGroup, IEchoMethodInvocationImposterGroupCallback, EchoInvocationVerifier
         {
         }
@@ -1285,7 +1289,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_subscribeHistory, entry => criteria.Matches(entry));
+                int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "subscribed");
                 return this;
             }
@@ -1294,7 +1298,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_unsubscribeHistory, entry => criteria.Matches(entry));
+                int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "unsubscribed");
                 return this;
             }
@@ -1318,7 +1322,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_history, entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
+                int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
                 EnsureCountMatches(actual, count, "raised");
                 return this;
             }
@@ -1327,7 +1331,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry.Handler));
+                int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
                 EnsureCountMatches(actual, count, "invoked");
                 return this;
             }
@@ -1362,20 +1366,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                         }
                     }
                 }
-            }
-
-            private static int CountMatches<T>(global::System.Collections.Generic.IEnumerable<T> source, global::System.Func<T, bool> predicate)
-            {
-                int count = 0;
-                foreach (var item in source)
-                {
-                    if (predicate(item))
-                    {
-                        count++;
-                    }
-                }
-
-                return count;
             }
 
             private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)

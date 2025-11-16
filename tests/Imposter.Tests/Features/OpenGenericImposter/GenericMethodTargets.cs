@@ -5,7 +5,7 @@ using Imposter.Abstractions;
 using Imposter.Tests.Features.OpenGenericImposter;
 
 [assembly: GenerateImposter(typeof(IOpenGenericWithMethodGenerics<>))]
-[assembly: GenerateImposter(typeof(IHasGenericMethods))]
+[assembly: GenerateImposter(typeof(IHaveGenericMethods))]
 [assembly: GenerateImposter(typeof(IGenericConstraintsTarget))]
 
 namespace Imposter.Tests.Features.OpenGenericImposter
@@ -19,7 +19,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         TResult Map<TSource, TResult>(TSource source);
     }
 
-    public interface IHasGenericMethods
+    public interface IHaveGenericMethods
     {
         TResult GetValue<TResult>();
 

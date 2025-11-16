@@ -13,19 +13,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 #if USE_CSHARP14
             yield return new object[]
             {
-                (Func<IHasIndexerImposter<string>>)(() => IHasIndexer<string>.Imposter()),
+                (Func<IHaveIndexerImposter<string>>)(() => IHaveIndexer<string>.Imposter()),
             };
 #endif
             yield return new object[]
             {
-                (Func<IHasIndexerImposter<string>>)(() => new IHasIndexerImposter<string>()),
+                (Func<IHaveIndexerImposter<string>>)(() => new IHaveIndexerImposter<string>()),
             };
         }
 
         [Theory]
         [MemberData(nameof(IndexerImposterFactories))]
         public void GivenIntIndexerOfGenericType_WhenConfigured_ShouldReturnAndVerify(
-            Func<IHasIndexerImposter<string>> factory
+            Func<IHaveIndexerImposter<string>> factory
         )
         {
             var sut = factory();
@@ -76,7 +76,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [Theory]
         [MemberData(nameof(IndexerImposterFactories))]
         public void GivenCompositeIndexer_WhenUsingFactories_ShouldRespectMatchers(
-            Func<IHasIndexerImposter<string>> factory
+            Func<IHaveIndexerImposter<string>> factory
         )
         {
             var sut = factory();
@@ -132,12 +132,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             Should.NotThrow(() => payloadGetter.Called(Count.Once()));
         }
 
-        private static IHasIndexerImposter<T> CreateIndexerImposter<T>()
+        private static IHaveIndexerImposter<T> CreateIndexerImposter<T>()
             where T : class =>
 #if USE_CSHARP14
-            IHasIndexer<T>.Imposter();
+            IHaveIndexer<T>.Imposter();
 #else
-            new IHasIndexerImposter<T>();
+            new IHaveIndexerImposter<T>();
 #endif
 
         private sealed class IndexerPayload

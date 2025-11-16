@@ -32,12 +32,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 #if USE_CSHARP14
             yield return new object[]
             {
-                (Func<IHasGenericMethodsImposter>)(() => IHasGenericMethods.Imposter()),
+                (Func<IHaveGenericMethodsImposter>)(() => IHaveGenericMethods.Imposter()),
             };
 #endif
             yield return new object[]
             {
-                (Func<IHasGenericMethodsImposter>)(() => new IHasGenericMethodsImposter()),
+                (Func<IHaveGenericMethodsImposter>)(() => new IHaveGenericMethodsImposter()),
             };
         }
 
@@ -125,7 +125,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [Theory]
         [MemberData(nameof(NonGenericGenericMethodFactories))]
         public async Task GivenComplexGenericMethodOnNonGenericInterface_WhenFactoriesUsed_ShouldReturnPerCombination(
-            Func<IHasGenericMethodsImposter> factory
+            Func<IHaveGenericMethodsImposter> factory
         )
         {
             var sut = factory();
@@ -222,11 +222,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             new IOpenGenericWithMethodGenericsImposter<T>();
 #endif
 
-        private static IHasGenericMethodsImposter CreateNonGenericGenericMethodImposter() =>
+        private static IHaveGenericMethodsImposter CreateNonGenericGenericMethodImposter() =>
 #if USE_CSHARP14
-            IHasGenericMethods.Imposter();
+            IHaveGenericMethods.Imposter();
 #else
-            new IHasGenericMethodsImposter();
+            new IHaveGenericMethodsImposter();
 #endif
 
         private static IGenericConstraintsTargetImposter CreateConstraintImposter() =>

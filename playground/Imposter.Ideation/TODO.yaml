@@ -61,6 +61,7 @@ FEATURES:
       - UseBaseImplementation for interface members
       - AnalyzerReleases.Unshipped.md
       - refactor ImposterTargetMethodMetadata.IsMethodAsync method.
+      - When verification fails, include "performned invocations in the message" makes it easier to debug.
 
   MEDIUM:
     - NOT Started:
@@ -68,6 +69,7 @@ FEATURES:
         - Add support for open generic imposters. Example, `[GenerateImposter(typeof(IGenericSut<,>))]`
         - Proper diagnostics
         - Remove InitializeImposter method from ImposterTargetInstance and instead add imposter as the first parameter.
+        - See if we can make generator allocation free
 
   LOW:
     - NOT Started:
@@ -75,6 +77,7 @@ FEATURES:
         - Add unit tests for InterfaceSymbolExtensions
         - Chaining event raise to method, property and indexer. Can be achieved with Method.Callback + Event.Raise, so probably not important.
         - Write a blog posts about the project
+        - add more benchmarks
 
 OPTIMIZATIONS:
   - Identify syntaxes that can be cached

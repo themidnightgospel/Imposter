@@ -145,6 +145,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class InvokeProtectedMethodMethodInvocationImposterGroup
         {
@@ -310,6 +311,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.InvokeProtectedMethod(int value)
         public interface IInvokeProtectedMethodMethodImposterBuilder : IInvokeProtectedMethodMethodInvocationImposterGroup, IInvokeProtectedMethodMethodInvocationImposterGroupCallback, InvokeProtectedMethodInvocationVerifier
         {
         }
@@ -528,6 +530,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProtectedVirtualMethodMethodInvocationImposterGroup
         {
@@ -693,6 +696,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.ProtectedVirtualMethod(int value)
         public interface IProtectedVirtualMethodMethodImposterBuilder : IProtectedVirtualMethodMethodInvocationImposterGroup, IProtectedVirtualMethodMethodInvocationImposterGroupCallback, ProtectedVirtualMethodInvocationVerifier
         {
         }
@@ -882,6 +886,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedPropertyMethodInvocationImposterGroup
         {
@@ -1044,6 +1049,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string ClassWithProtectedOverrideableMembers.ReadProtectedProperty()
         public interface IReadProtectedPropertyMethodImposterBuilder : IReadProtectedPropertyMethodInvocationImposterGroup, IReadProtectedPropertyMethodInvocationImposterGroupCallback, ReadProtectedPropertyInvocationVerifier
         {
         }
@@ -1256,6 +1262,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ReadProtectedValueMethodInvocationImposterGroup
         {
@@ -1421,6 +1428,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int ClassWithProtectedOverrideableMembers.ReadProtectedValue(int index)
         public interface IReadProtectedValueMethodImposterBuilder : IReadProtectedValueMethodInvocationImposterGroup, IReadProtectedValueMethodInvocationImposterGroupCallback, ReadProtectedValueInvocationVerifier
         {
         }
@@ -1637,6 +1645,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SubscribeToProtectedEventMethodInvocationImposterGroup
         {
@@ -1782,6 +1791,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)
         public interface ISubscribeToProtectedEventMethodImposterBuilder : ISubscribeToProtectedEventMethodInvocationImposterGroup, ISubscribeToProtectedEventMethodInvocationImposterGroupCallback, SubscribeToProtectedEventInvocationVerifier
         {
         }
@@ -1985,6 +1995,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedPropertyMethodInvocationImposterGroup
         {
@@ -2130,6 +2141,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)
         public interface IWriteProtectedPropertyMethodImposterBuilder : IWriteProtectedPropertyMethodInvocationImposterGroup, IWriteProtectedPropertyMethodInvocationImposterGroupCallback, WriteProtectedPropertyInvocationVerifier
         {
         }
@@ -2337,6 +2349,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class WriteProtectedValueMethodInvocationImposterGroup
         {
@@ -2482,6 +2495,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)
         public interface IWriteProtectedValueMethodImposterBuilder : IWriteProtectedValueMethodInvocationImposterGroup, IWriteProtectedValueMethodInvocationImposterGroupCallback, WriteProtectedValueInvocationVerifier
         {
         }
@@ -3096,7 +3110,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_subscribeHistory, entry => criteria.Matches(entry));
+                int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "subscribed");
                 return this;
             }
@@ -3105,7 +3119,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_unsubscribeHistory, entry => criteria.Matches(entry));
+                int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "unsubscribed");
                 return this;
             }
@@ -3129,7 +3143,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_history, entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
+                int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
                 EnsureCountMatches(actual, count, "raised");
                 return this;
             }
@@ -3138,7 +3152,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry.Handler));
+                int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
                 EnsureCountMatches(actual, count, "invoked");
                 return this;
             }
@@ -3173,20 +3187,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         }
                     }
                 }
-            }
-
-            private static int CountMatches<T>(global::System.Collections.Generic.IEnumerable<T> source, global::System.Func<T, bool> predicate)
-            {
-                int count = 0;
-                foreach (var item in source)
-                {
-                    if (predicate(item))
-                    {
-                        count++;
-                    }
-                }
-
-                return count;
             }
 
             private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)

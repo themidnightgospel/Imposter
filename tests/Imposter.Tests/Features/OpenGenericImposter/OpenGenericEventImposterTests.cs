@@ -13,19 +13,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 #if USE_CSHARP14
             yield return new object[]
             {
-                (Func<IHasEventsImposter<string>>)(() => IHasEvents<string>.Imposter()),
+                (Func<IHaveEventsImposter<string>>)(() => IHaveEvents<string>.Imposter()),
             };
 #endif
             yield return new object[]
             {
-                (Func<IHasEventsImposter<string>>)(() => new IHasEventsImposter<string>()),
+                (Func<IHaveEventsImposter<string>>)(() => new IHaveEventsImposter<string>()),
             };
         }
 
         [Theory]
         [MemberData(nameof(EventImposterFactories))]
         public void GivenGenericEvent_WhenRaised_ShouldDeliverPayload(
-            Func<IHasEventsImposter<string>> factory
+            Func<IHaveEventsImposter<string>> factory
         )
         {
             var sut = factory();
@@ -88,7 +88,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [Theory]
         [MemberData(nameof(EventImposterFactories))]
         public void GivenEventVerification_WhenPayloadPredicateDoesNotMatch_ShouldThrow(
-            Func<IHasEventsImposter<string>> factory
+            Func<IHaveEventsImposter<string>> factory
         )
         {
             var sut = factory();
@@ -155,12 +155,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             );
         }
 
-        private static IHasEventsImposter<T> CreateEventImposter<T>()
+        private static IHaveEventsImposter<T> CreateEventImposter<T>()
             where T : class =>
 #if USE_CSHARP14
-            IHasEvents<T>.Imposter();
+            IHaveEvents<T>.Imposter();
 #else
-            new IHasEventsImposter<T>();
+            new IHaveEventsImposter<T>();
 #endif
 
         private sealed class EventPayload

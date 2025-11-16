@@ -121,6 +121,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
             }
         }
 
+        // virtual int MyService.Add(int a, int b)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AddMethodInvocationImposterGroup
         {
@@ -286,6 +287,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int MyService.Add(int a, int b)
         public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, IAddMethodInvocationImposterGroupCallback, AddInvocationVerifier
         {
         }
@@ -504,6 +506,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
             }
         }
 
+        // virtual int MyService.MightFail(int v)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class MightFailMethodInvocationImposterGroup
         {
@@ -669,6 +672,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int MyService.MightFail(int v)
         public interface IMightFailMethodImposterBuilder : IMightFailMethodInvocationImposterGroup, IMightFailMethodInvocationImposterGroupCallback, MightFailInvocationVerifier
         {
         }
@@ -887,6 +891,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
             }
         }
 
+        // virtual Task MyService.ProcessAsync(string s)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProcessAsyncMethodInvocationImposterGroup
         {
@@ -1062,6 +1067,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual Task MyService.ProcessAsync(string s)
         public interface IProcessAsyncMethodImposterBuilder : IProcessAsyncMethodInvocationImposterGroup, IProcessAsyncMethodInvocationImposterGroupCallback, ProcessAsyncInvocationVerifier
         {
         }

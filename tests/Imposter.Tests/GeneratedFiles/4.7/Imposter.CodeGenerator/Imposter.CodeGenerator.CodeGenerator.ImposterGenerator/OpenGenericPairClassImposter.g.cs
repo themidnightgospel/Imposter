@@ -114,6 +114,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DescribePairMethodInvocationImposterGroup
         {
@@ -279,6 +280,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)
         public interface IDescribePairMethodImposterBuilder : IDescribePairMethodInvocationImposterGroup, IDescribePairMethodInvocationImposterGroupCallback, DescribePairInvocationVerifier
         {
         }
@@ -501,6 +503,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ResolveMethodInvocationImposterGroup
         {
@@ -666,6 +669,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)
         public interface IResolveMethodImposterBuilder : IResolveMethodInvocationImposterGroup, IResolveMethodInvocationImposterGroupCallback, ResolveInvocationVerifier
         {
         }

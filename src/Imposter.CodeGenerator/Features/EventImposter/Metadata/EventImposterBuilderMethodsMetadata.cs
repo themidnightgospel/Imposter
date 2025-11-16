@@ -32,8 +32,6 @@ internal readonly struct EventImposterBuilderMethodsMetadata
 
     internal readonly string EnumerateHandlersName;
 
-    internal readonly string CountMatchesName;
-
     internal readonly string EnsureCountMatchesName;
 
     internal readonly string RaisedVerificationName;
@@ -60,7 +58,6 @@ internal readonly struct EventImposterBuilderMethodsMetadata
         RaiseInternalName = "RaiseInternal";
         RaiseCoreAsyncName = "RaiseCoreAsync";
         EnumerateHandlersName = "EnumerateActiveHandlers";
-        CountMatchesName = "CountMatches";
         EnsureCountMatchesName = "EnsureCountMatches";
         RaisedVerificationName = "Raised";
     }

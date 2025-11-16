@@ -94,7 +94,6 @@ internal static partial class EventImposterBuilder
         var blockBuilder = new BlockBuilder();
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
         var countIdentifier = IdentifierName(countParameterName);
-        var countMatchesIdentifier = IdentifierName(@event.Builder.Methods.CountMatchesName);
         var ensureCountMatchesIdentifier = IdentifierName(
             @event.Builder.Methods.EnsureCountMatchesName
         );
@@ -112,10 +111,9 @@ internal static partial class EventImposterBuilder
             LocalVariableDeclarationSyntax(
                 WellKnownTypes.Int,
                 "actual",
-                countMatchesIdentifier.Call([
-                    Argument(FieldIdentifier(@event.Builder.Fields.History)),
-                    Argument(predicate),
-                ])
+                FieldIdentifier(@event.Builder.Fields.History)
+                    .Dot(LinqSyntaxHelper.Count)
+                    .Call([Argument(predicate)])
             )
         );
 
@@ -212,7 +210,6 @@ internal static partial class EventImposterBuilder
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
         var countIdentifier = IdentifierName(countParameterName);
-        var countMatchesIdentifier = IdentifierName(@event.Builder.Methods.CountMatchesName);
         var ensureCountMatchesIdentifier = IdentifierName(
             @event.Builder.Methods.EnsureCountMatchesName
         );
@@ -225,15 +222,16 @@ internal static partial class EventImposterBuilder
             LocalVariableDeclarationSyntax(
                 WellKnownTypes.Int,
                 "actual",
-                countMatchesIdentifier.Call([
-                    Argument(FieldIdentifier(historyField)),
-                    Argument(
-                        SimpleLambdaExpression(
-                            Parameter(Identifier("entry")),
-                            predicateFactory(IdentifierName("entry"))
-                        )
-                    ),
-                ])
+                FieldIdentifier(historyField)
+                    .Dot(LinqSyntaxHelper.Count)
+                    .Call([
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(Identifier("entry")),
+                                predicateFactory(IdentifierName("entry"))
+                            )
+                        ),
+                    ])
             )
         );
 
@@ -248,75 +246,6 @@ internal static partial class EventImposterBuilder
         blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
 
         return blockBuilder.Build();
-    }
-
-    private static MethodDeclarationSyntax BuildCountMatchesMethod(
-        in EventImposterBuilderMethodsMetadata methods
-    )
-    {
-        var enumerableType = QualifiedName(
-            WellKnownTypes.System.Collections.Generic.Namespace,
-            GenericName(
-                Identifier("IEnumerable"),
-                TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("T")))
-            )
-        );
-
-        var funcType = QualifiedName(
-            WellKnownTypes.System.Namespace,
-            GenericName(
-                Identifier("Func"),
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>([IdentifierName("T"), WellKnownTypes.Bool])
-                )
-            )
-        );
-
-        return new MethodDeclarationBuilder(WellKnownTypes.Int, methods.CountMatchesName)
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithTypeParameters(TypeParameterList(SingletonSeparatedList(TypeParameter("T"))))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList([
-                        Parameter(Identifier("source")).WithType(enumerableType),
-                        Parameter(Identifier("predicate")).WithType(funcType),
-                    ])
-                )
-            )
-            .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        WellKnownTypes.Int,
-                        "count",
-                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-                    ),
-                    ForEachStatement(
-                        Var,
-                        Identifier("item"),
-                        IdentifierName("source"),
-                        Block(
-                            IfStatement(
-                                IdentifierName("predicate")
-                                    .Call(
-                                        ArgumentList(
-                                            SingletonSeparatedList(Argument(IdentifierName("item")))
-                                        )
-                                    ),
-                                Block(
-                                    PostfixUnaryExpression(
-                                            SyntaxKind.PostIncrementExpression,
-                                            IdentifierName("count")
-                                        )
-                                        .ToStatementSyntax()
-                                )
-                            )
-                        )
-                    ),
-                    ReturnStatement(IdentifierName("count"))
-                )
-            )
-            .Build();
     }
 
     private static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(

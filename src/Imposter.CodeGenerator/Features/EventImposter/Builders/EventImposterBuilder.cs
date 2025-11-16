@@ -34,7 +34,6 @@ internal static partial class EventImposterBuilder
             .AddMember(@event.Core.IsAsync ? null : BuildRaiseInternalMethod(@event))
             .AddMember(@event.Core.IsAsync ? BuildRaiseCoreAsyncMethod(@event) : null)
             .AddMember(BuildEnumerateHandlersMethod(@event))
-            .AddMember(BuildCountMatchesMethod(@event.Builder.Methods))
             .AddMember(BuildEnsureCountMatchesMethod(@event.Builder.Methods))
             .AddMember(BuildUseBaseImplementationMethod(@event))
             .Build();

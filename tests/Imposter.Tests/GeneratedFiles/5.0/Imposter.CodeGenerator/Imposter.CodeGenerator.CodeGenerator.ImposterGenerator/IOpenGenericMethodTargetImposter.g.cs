@@ -140,6 +140,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // void IOpenGenericMethodTarget<T>.Add(T item, int index)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AddMethodInvocationImposterGroup
         {
@@ -271,6 +272,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IOpenGenericMethodTarget<T>.Add(T item, int index)
         public interface IAddMethodImposterBuilder : IAddMethodInvocationImposterGroup, IAddMethodInvocationImposterGroupCallback, AddInvocationVerifier
         {
         }
@@ -470,6 +472,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // int IOpenGenericMethodTarget<T>.CountFor(T item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CountForMethodInvocationImposterGroup
         {
@@ -619,6 +622,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IOpenGenericMethodTarget<T>.CountFor(T item)
         public interface ICountForMethodImposterBuilder : ICountForMethodInvocationImposterGroup, ICountForMethodInvocationImposterGroupCallback, CountForInvocationVerifier
         {
         }
@@ -802,6 +806,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // T IOpenGenericMethodTarget<T>.GetNext()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNextMethodInvocationImposterGroup
         {
@@ -948,6 +953,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // T IOpenGenericMethodTarget<T>.GetNext()
         public interface IGetNextMethodImposterBuilder : IGetNextMethodInvocationImposterGroup, IGetNextMethodInvocationImposterGroupCallback, GetNextInvocationVerifier
         {
         }
@@ -1160,6 +1166,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // void IOpenGenericMethodTarget<T>.Publish(T payload, string category, int priority)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class PublishMethodInvocationImposterGroup
         {
@@ -1291,6 +1298,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IOpenGenericMethodTarget<T>.Publish(T payload, string category, int priority)
         public interface IPublishMethodImposterBuilder : IPublishMethodInvocationImposterGroup, IPublishMethodInvocationImposterGroupCallback, PublishInvocationVerifier
         {
         }
@@ -1461,6 +1469,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // T IOpenGenericMethodTarget<T>.ResilientFetch()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ResilientFetchMethodInvocationImposterGroup
         {
@@ -1607,6 +1616,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // T IOpenGenericMethodTarget<T>.ResilientFetch()
         public interface IResilientFetchMethodImposterBuilder : IResilientFetchMethodInvocationImposterGroup, IResilientFetchMethodInvocationImposterGroupCallback, ResilientFetchInvocationVerifier
         {
         }
@@ -1813,6 +1823,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // bool IOpenGenericMethodTarget<T>.TryAdd(T value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class TryAddMethodInvocationImposterGroup
         {
@@ -1962,6 +1973,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // bool IOpenGenericMethodTarget<T>.TryAdd(T value)
         public interface ITryAddMethodImposterBuilder : ITryAddMethodInvocationImposterGroup, ITryAddMethodInvocationImposterGroupCallback, TryAddInvocationVerifier
         {
         }

@@ -103,6 +103,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             }
         }
 
+        // virtual int ParameterizedCtorOnlyClass.Compute(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ComputeMethodInvocationImposterGroup
         {
@@ -268,6 +269,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // virtual int ParameterizedCtorOnlyClass.Compute(int value)
         public interface IComputeMethodImposterBuilder : IComputeMethodInvocationImposterGroup, IComputeMethodInvocationImposterGroupCallback, ComputeInvocationVerifier
         {
         }
@@ -895,7 +897,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_subscribeHistory, entry => criteria.Matches(entry));
+                int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "subscribed");
                 return this;
             }
@@ -904,7 +906,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_unsubscribeHistory, entry => criteria.Matches(entry));
+                int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
                 EnsureCountMatches(actual, count, "unsubscribed");
                 return this;
             }
@@ -928,7 +930,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 ArgumentNullException.ThrowIfNull(senderCriteria);
                 ArgumentNullException.ThrowIfNull(eCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_history, entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
+                int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
                 EnsureCountMatches(actual, count, "raised");
                 return this;
             }
@@ -937,7 +939,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
-                int actual = CountMatches(_handlerInvocations, entry => handlerCriteria.Matches(entry.Handler));
+                int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
                 EnsureCountMatches(actual, count, "invoked");
                 return this;
             }
@@ -972,20 +974,6 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                         }
                     }
                 }
-            }
-
-            private static int CountMatches<T>(global::System.Collections.Generic.IEnumerable<T> source, global::System.Func<T, bool> predicate)
-            {
-                int count = 0;
-                foreach (var item in source)
-                {
-                    if (predicate(item))
-                    {
-                        count++;
-                    }
-                }
-
-                return count;
             }
 
             private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, string action)

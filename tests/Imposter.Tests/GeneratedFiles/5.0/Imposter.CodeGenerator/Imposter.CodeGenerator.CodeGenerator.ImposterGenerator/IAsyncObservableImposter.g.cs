@@ -101,6 +101,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
+        // void IAsyncObservable<T>.OnNext(T item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class OnNextMethodInvocationImposterGroup
         {
@@ -232,6 +233,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IAsyncObservable<T>.OnNext(T item)
         public interface IOnNextMethodImposterBuilder : IOnNextMethodInvocationImposterGroup, IOnNextMethodInvocationImposterGroupCallback, OnNextInvocationVerifier
         {
         }

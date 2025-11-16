@@ -81,6 +81,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
             }
         }
 
+        // int IMyService.GetNumber()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberMethodInvocationImposterGroup
         {
@@ -227,6 +228,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // int IMyService.GetNumber()
         public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
         {
         }
@@ -404,6 +406,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
             }
         }
 
+        // Task<int> IMyService.GetNumberAsync()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetNumberAsyncMethodInvocationImposterGroup
         {
@@ -568,6 +571,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // Task<int> IMyService.GetNumberAsync()
         public interface IGetNumberAsyncMethodImposterBuilder : IGetNumberAsyncMethodInvocationImposterGroup, IGetNumberAsyncMethodInvocationImposterGroupCallback, GetNumberAsyncInvocationVerifier
         {
         }
