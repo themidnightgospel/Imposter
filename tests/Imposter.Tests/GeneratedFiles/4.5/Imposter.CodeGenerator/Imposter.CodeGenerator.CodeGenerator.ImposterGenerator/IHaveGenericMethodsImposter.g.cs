@@ -157,7 +157,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // void IHaveGenericMethods.AddItem<TItem>(TItem item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class AddItemMethodInvocationImposterGroup<TItem>
         {
@@ -302,7 +301,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IHaveGenericMethods.AddItem<TItem>(TItem item)
         public interface IAddItemMethodImposterBuilder<TItem> : IAddItemMethodInvocationImposterGroup<TItem>, IAddItemMethodInvocationImposterGroupCallback<TItem>, AddItemInvocationVerifier<TItem>
         {
         }
@@ -534,7 +532,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // TResult IHaveGenericMethods.GetValue<TResult>()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class GetValueMethodInvocationImposterGroup<TResult>
         {
@@ -694,7 +691,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // TResult IHaveGenericMethods.GetValue<TResult>()
         public interface IGetValueMethodImposterBuilder<TResult> : IGetValueMethodInvocationImposterGroup<TResult>, IGetValueMethodInvocationImposterGroupCallback<TResult>, GetValueInvocationVerifier<TResult>
         {
         }
@@ -973,7 +969,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // Task<TItem> IHaveGenericMethods.ProcessAsync<TItem>(IEnumerable<TItem> items)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProcessAsyncMethodInvocationImposterGroup<TItem>
         {
@@ -1154,7 +1149,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task<TItem> IHaveGenericMethods.ProcessAsync<TItem>(IEnumerable<TItem> items)
         public interface IProcessAsyncMethodImposterBuilder<TItem> : IProcessAsyncMethodInvocationImposterGroup<TItem>, IProcessAsyncMethodInvocationImposterGroupCallback<TItem>, ProcessAsyncInvocationVerifier<TItem>
         {
         }
@@ -1451,7 +1445,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // Task<TResult> IHaveGenericMethods.ProcessComplexAsync<TItem, TResult>(IEnumerable<TItem> items)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>
         {
@@ -1632,7 +1625,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // Task<TResult> IHaveGenericMethods.ProcessComplexAsync<TItem, TResult>(IEnumerable<TItem> items)
         public interface IProcessComplexAsyncMethodImposterBuilder<TItem, TResult> : IProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>, IProcessComplexAsyncMethodInvocationImposterGroupCallback<TItem, TResult>, ProcessComplexAsyncInvocationVerifier<TItem, TResult>
         {
         }

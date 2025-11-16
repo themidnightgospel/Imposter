@@ -159,7 +159,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // TArg IGenericConstraintsTarget.CloneStruct<TArg>(TArg value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CloneStructMethodInvocationImposterGroup<TArg>
         {
@@ -322,7 +321,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // TArg IGenericConstraintsTarget.CloneStruct<TArg>(TArg value)
         public interface ICloneStructMethodImposterBuilder<TArg> : ICloneStructMethodInvocationImposterGroup<TArg>, ICloneStructMethodInvocationImposterGroupCallback<TArg>, CloneStructInvocationVerifier<TArg>
         {
         }
@@ -609,7 +607,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // void IGenericConstraintsTarget.CompareValues<TArg>(TArg left, TArg right)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CompareValuesMethodInvocationImposterGroup<TArg>
         {
@@ -754,7 +751,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IGenericConstraintsTarget.CompareValues<TArg>(TArg left, TArg right)
         public interface ICompareValuesMethodImposterBuilder<TArg> : ICompareValuesMethodInvocationImposterGroup<TArg>, ICompareValuesMethodInvocationImposterGroupCallback<TArg>, CompareValuesInvocationVerifier<TArg>
         {
         }
@@ -986,7 +982,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // TArg IGenericConstraintsTarget.CreateInstance<TArg>()
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CreateInstanceMethodInvocationImposterGroup<TArg>
         {
@@ -1146,7 +1141,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // TArg IGenericConstraintsTarget.CreateInstance<TArg>()
         public interface ICreateInstanceMethodImposterBuilder<TArg> : ICreateInstanceMethodInvocationImposterGroup<TArg>, ICreateInstanceMethodInvocationImposterGroupCallback<TArg>, CreateInstanceInvocationVerifier<TArg>
         {
         }
@@ -1423,7 +1417,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // void IGenericConstraintsTarget.HandleReference<TArg>(TArg value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class HandleReferenceMethodInvocationImposterGroup<TArg>
         {
@@ -1568,7 +1561,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IGenericConstraintsTarget.HandleReference<TArg>(TArg value)
         public interface IHandleReferenceMethodImposterBuilder<TArg> : IHandleReferenceMethodInvocationImposterGroup<TArg>, IHandleReferenceMethodInvocationImposterGroupCallback<TArg>, HandleReferenceInvocationVerifier<TArg>
         {
         }

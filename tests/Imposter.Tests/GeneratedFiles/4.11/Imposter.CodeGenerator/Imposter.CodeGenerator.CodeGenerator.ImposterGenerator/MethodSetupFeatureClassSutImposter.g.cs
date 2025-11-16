@@ -142,7 +142,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class BuildLabelAsyncMethodInvocationImposterGroup
         {
@@ -328,7 +327,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual ValueTask<string> MethodSetupFeatureClassSut.BuildLabelAsync(string prefix, string suffix)
         public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier
         {
         }
@@ -559,7 +557,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class IntSingleParamMethodInvocationImposterGroup
         {
@@ -725,7 +722,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MethodSetupFeatureClassSut.IntSingleParam(int age)
         public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier
         {
         }
@@ -950,7 +946,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class RefOutWithParamsMethodInvocationImposterGroup
         {
@@ -1123,7 +1118,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MethodSetupFeatureClassSut.RefOutWithParams(ref int seed, out int doubled, params int[] adjustments)
         public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier
         {
         }
@@ -1351,7 +1345,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual Task<int> MethodSetupFeatureClassSut.SumAsync(int left, int right)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class SumAsyncMethodInvocationImposterGroup
         {
@@ -1537,7 +1530,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual Task<int> MethodSetupFeatureClassSut.SumAsync(int left, int right)
         public interface ISumAsyncMethodImposterBuilder : ISumAsyncMethodInvocationImposterGroup, ISumAsyncMethodInvocationImposterGroupCallback, SumAsyncInvocationVerifier
         {
         }
@@ -1768,7 +1760,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class ThrowingCalculationMethodInvocationImposterGroup
         {
@@ -1934,7 +1925,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual int MethodSetupFeatureClassSut.ThrowingCalculation(int value)
         public interface IThrowingCalculationMethodImposterBuilder : IThrowingCalculationMethodInvocationImposterGroup, IThrowingCalculationMethodInvocationImposterGroupCallback, ThrowingCalculationInvocationVerifier
         {
         }
@@ -2151,7 +2141,6 @@ namespace Imposter.Tests.Features.MethodImposter
             }
         }
 
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class VoidWithSideEffectMethodInvocationImposterGroup
         {
@@ -2297,7 +2286,6 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual void MethodSetupFeatureClassSut.VoidWithSideEffect(int delta)
         public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier
         {
         }

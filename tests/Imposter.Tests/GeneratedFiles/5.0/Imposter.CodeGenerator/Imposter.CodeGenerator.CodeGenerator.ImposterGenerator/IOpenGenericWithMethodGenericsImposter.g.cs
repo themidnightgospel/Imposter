@@ -150,7 +150,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DoSomethingMethodInvocationImposterGroup<TArg>
         {
@@ -295,7 +294,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)
         public interface IDoSomethingMethodImposterBuilder<TArg> : IDoSomethingMethodInvocationImposterGroup<TArg>, IDoSomethingMethodInvocationImposterGroupCallback<TArg>, DoSomethingInvocationVerifier<TArg>
         {
         }
@@ -566,7 +564,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // TResult IOpenGenericWithMethodGenerics<T>.Map<TSource, TResult>(TSource source)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class MapMethodInvocationImposterGroup<TSource, TResult>
         {
@@ -729,7 +726,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // TResult IOpenGenericWithMethodGenerics<T>.Map<TSource, TResult>(TSource source)
         public interface IMapMethodImposterBuilder<TSource, TResult> : IMapMethodInvocationImposterGroup<TSource, TResult>, IMapMethodInvocationImposterGroupCallback<TSource, TResult>, MapInvocationVerifier<TSource, TResult>
         {
         }
@@ -1014,7 +1010,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // TArg IOpenGenericWithMethodGenerics<T>.Transform<TArg>(T input)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class TransformMethodInvocationImposterGroup<TArg>
         {
@@ -1177,7 +1172,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // TArg IOpenGenericWithMethodGenerics<T>.Transform<TArg>(T input)
         public interface ITransformMethodImposterBuilder<TArg> : ITransformMethodInvocationImposterGroup<TArg>, ITransformMethodInvocationImposterGroupCallback<TArg>, TransformInvocationVerifier<TArg>
         {
         }

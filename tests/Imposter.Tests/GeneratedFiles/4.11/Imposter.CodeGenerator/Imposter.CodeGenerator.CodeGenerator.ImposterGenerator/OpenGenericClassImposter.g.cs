@@ -110,7 +110,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // virtual string OpenGenericClass<T>.Describe(T value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class DescribeMethodInvocationImposterGroup
         {
@@ -276,7 +275,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual string OpenGenericClass<T>.Describe(T value)
         public interface IDescribeMethodImposterBuilder : IDescribeMethodInvocationImposterGroup, IDescribeMethodInvocationImposterGroupCallback, DescribeInvocationVerifier
         {
         }
@@ -495,7 +493,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        // virtual T OpenGenericClass<T>.Echo(T value)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup
         {
@@ -661,7 +658,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        // virtual T OpenGenericClass<T>.Echo(T value)
         public interface IEchoMethodImposterBuilder : IEchoMethodInvocationImposterGroup, IEchoMethodInvocationImposterGroupCallback, EchoInvocationVerifier
         {
         }
