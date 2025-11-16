@@ -105,7 +105,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default !;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -508,7 +508,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default !;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -761,7 +761,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string>?, string>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<string>?, string> _lastReturnValue = _ => default !;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;

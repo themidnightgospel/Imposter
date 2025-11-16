@@ -5,21 +5,20 @@
     <_RoslynVersionNormalized>$([System.String]::Copy('$(ROSLYN_VERSION)').Split('-')[0])</_RoslynVersionNormalized>
 
     <DefineConstants
-      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(_RoslynVersionNormalized)', '4.4'))"
+      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(ROSLYN_VERSION)', '4.4'))"
       >$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants
     >
     <DefineConstants
-      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(_RoslynVersionNormalized)', '4.14'))"
+      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(ROSLYN_VERSION)', '4.14'))"
       >$(DefineConstants);ROSLYN4_14_OR_GREATER</DefineConstants
     >
     <DefineConstants
-      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(_RoslynVersionNormalized)', '5.0'))"
+      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(ROSLYN_VERSION)', '5.0'))"
       >$(DefineConstants);ROSLYN_5_OR_GREATER</DefineConstants
     >
   </PropertyGroup>
   <Target Name="ShowRoslynVersion" AfterTargets="Build">
-    <Message Text=">> Roslyn raw: $(ROSLYN_VERSION)" Importance="High" />
-    <Message Text=">> Roslyn normalized: $(_RoslynVersionNormalized)" Importance="High" />
-    <Message Text=">> DefineConstants: $(DefineConstants)" Importance="High" />
+    <Message Text="Roslyn Version: $(ROSLYN_VERSION)" Importance="High" />
+    <Message Text="DefineConstants: $(DefineConstants)" Importance="High" />
   </Target>
 </Project>

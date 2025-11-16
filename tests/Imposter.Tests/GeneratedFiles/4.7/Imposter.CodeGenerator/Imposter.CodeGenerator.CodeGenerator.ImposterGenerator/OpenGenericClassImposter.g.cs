@@ -922,7 +922,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             {
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>>();
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-                private volatile global::System.Func<global::System.Func<T>?, T> _lastReturnValue = _ => default;
+                private volatile global::System.Func<global::System.Func<T>?, T> _lastReturnValue = _ => default !;
                 private int _invocationCount;
                 private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
                 private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
