@@ -197,18 +197,15 @@ public static class UseOriginalStatics
             .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(
-                new[]
-                {
-                    MetadataReference.CreateFromFile(
-                        typeof(GenerateImposterAttribute).Assembly.Location
-                    ),
-                }
-            );
+            .Concat([
+                MetadataReference.CreateFromFile(
+                    typeof(GenerateImposterAttribute).Assembly.Location
+                ),
+            ]);
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterStaticMembersTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(source, parseOptions) },
+            syntaxTrees: [CSharpSyntaxTree.ParseText(source, parseOptions)],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );

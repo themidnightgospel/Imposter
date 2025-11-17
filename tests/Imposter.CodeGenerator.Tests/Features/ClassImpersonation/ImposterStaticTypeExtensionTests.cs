@@ -260,7 +260,7 @@ public static class InterfaceUsage
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorExtensionsTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(source, parseOptions) },
+            syntaxTrees: [CSharpSyntaxTree.ParseText(source, parseOptions)],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );

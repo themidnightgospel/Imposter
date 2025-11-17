@@ -14,18 +14,21 @@ namespace Imposter.CodeGenerator.Tests.Features.ClassImpersonation;
 public class ImposterGeneratorConstructorTests
 {
     private const string Source =
-        @"using Imposter.Abstractions;
+        /*lang=csharp*/
+        """
+            using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(Sample.PrivateOnlyClass))]
+            [assembly: GenerateImposter(typeof(Sample.PrivateOnlyClass))]
 
-namespace Sample;
+            namespace Sample;
 
-public class PrivateOnlyClass
-{
-    private PrivateOnlyClass() { }
-    private PrivateOnlyClass(int value) { }
-}
-";
+            public class PrivateOnlyClass
+            {
+                private PrivateOnlyClass() { }
+                private PrivateOnlyClass(int value) { }
+            }
+
+            """;
 
     [Fact]
     public void GivenClassWithOnlyPrivateConstructors_WhenGeneratorRuns_ShouldReportIMP004()
@@ -49,18 +52,15 @@ public class PrivateOnlyClass
             .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(
-                new[]
-                {
-                    MetadataReference.CreateFromFile(
-                        typeof(GenerateImposterAttribute).Assembly.Location
-                    ),
-                }
-            );
+            .Concat([
+                MetadataReference.CreateFromFile(
+                    typeof(GenerateImposterAttribute).Assembly.Location
+                ),
+            ]);
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorConstructorTests",
-            syntaxTrees: new[] { CSharpSyntaxTree.ParseText(Source, parseOptions) },
+            syntaxTrees: [CSharpSyntaxTree.ParseText(Source, parseOptions)],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
