@@ -1,7 +1,7 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilderInterface;
+﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.ImposterBuilderInterface;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBuilderInterface;
 
 internal readonly struct GetterMethodMetadata
 {

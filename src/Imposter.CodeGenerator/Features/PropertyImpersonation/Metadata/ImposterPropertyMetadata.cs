@@ -1,12 +1,12 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilderInterface;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.ImposterBuilderInterface;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposterBuilderInterface;
+﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 
 internal readonly ref struct ImposterPropertyMetadata
 {

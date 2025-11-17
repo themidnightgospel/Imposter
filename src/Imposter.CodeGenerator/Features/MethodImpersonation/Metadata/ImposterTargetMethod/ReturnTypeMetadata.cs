@@ -2,7 +2,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.ImposterTargetMethod;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 
 internal readonly struct ReturnTypeMetadata
 {

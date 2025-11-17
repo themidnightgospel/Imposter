@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Setter;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 
 internal static class PropertySetterImposterBuilderInterfaceBuilder
 {

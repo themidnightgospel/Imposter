@@ -1,7 +1,8 @@
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.MethodImposter;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
 internal readonly struct MethodImposterMetadata
 {

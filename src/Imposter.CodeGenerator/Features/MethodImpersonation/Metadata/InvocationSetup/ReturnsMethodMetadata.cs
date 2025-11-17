@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
 internal readonly struct ReturnsMethodMetadata
 {

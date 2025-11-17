@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter.Builder;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter.Builder;
 
 internal readonly struct PropertySetterImposterBuilderMetadata
 {

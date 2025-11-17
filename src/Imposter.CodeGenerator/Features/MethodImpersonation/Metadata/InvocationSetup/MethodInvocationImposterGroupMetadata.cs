@@ -1,8 +1,9 @@
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
 internal readonly record struct MethodInvocationImposterGroupMetadata
 {

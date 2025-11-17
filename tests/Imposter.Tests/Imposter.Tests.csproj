@@ -39,6 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\PerformedInvocationExceptionMessage\" />
+    <Folder Include="Features\Verification\" />
   </ItemGroup>
 </Project>

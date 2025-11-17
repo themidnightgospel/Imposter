@@ -1,10 +1,11 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationSetup;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationSetup;
 
 internal static partial class InvocationSetupBuilder
 {

@@ -6,10 +6,10 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
@@ -250,9 +250,9 @@ internal static class EventImposterVerificationBuilder
         in EventImposterBuilderMethodsMetadata methods
     ) =>
         new MethodDeclarationBuilder(
-                methods.EnsureCountMatches.ReturnType,
-                methods.EnsureCountMatches.Name
-            )
+            methods.EnsureCountMatches.ReturnType,
+            methods.EnsureCountMatches.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddParameter(ParameterSyntax(WellKnownTypes.Int, "actual"))

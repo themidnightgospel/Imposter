@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposter;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -11,7 +11,7 @@ using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBu
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Setter;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 
 internal static class SetterImposterBuilder
 {

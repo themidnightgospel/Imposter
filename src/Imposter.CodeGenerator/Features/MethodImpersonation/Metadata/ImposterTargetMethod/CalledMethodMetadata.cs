@@ -1,6 +1,6 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.ImposterTargetMethod;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 
 internal readonly struct CalledMethodMetadata
 {

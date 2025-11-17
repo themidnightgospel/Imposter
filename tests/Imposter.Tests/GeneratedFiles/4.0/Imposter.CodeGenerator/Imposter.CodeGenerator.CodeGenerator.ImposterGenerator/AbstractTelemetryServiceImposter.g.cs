@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>
+    public sealed class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService>
     {
         private readonly ComputeMethodImposter _computeMethodImposter;
         private readonly ComputeNullableMethodImposter _computeNullableMethodImposter;
@@ -32,7 +32,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService>.Instance()
         {
             return _imposterInstance;
         }
@@ -891,8 +891,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.Name");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.Name");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.Name");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.Name");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1276,8 +1276,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.NameNullable");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.NameNullable");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.NameNullable");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.NameNullable");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2950,14 +2950,14 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._NameNullablePropertyBuilderField = new NameNullablePropertyBuilder(invocationBehavior);
             this._StreamAdvanced = new StreamAdvancedEventImposterBuilder();
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.this[int index]");
-            this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService.this[int index, int indexNullable]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index]");
+            this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index, int indexNullable]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.AbstractTelemetryService
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService
         {
             private readonly AbstractTelemetryServiceImposter _imposter;
             internal ImposterTargetInstance(AbstractTelemetryServiceImposter _imposter) : base()

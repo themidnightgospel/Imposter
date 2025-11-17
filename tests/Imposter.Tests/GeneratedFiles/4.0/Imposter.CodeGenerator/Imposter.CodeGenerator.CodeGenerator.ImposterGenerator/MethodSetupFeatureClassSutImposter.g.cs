@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.MethodImposter;
+using global::Imposter.Tests.Features.MethodImpersonation;
 
-namespace Imposter.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>
+    public sealed class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut>
     {
         private readonly IntSingleParamMethodImposter _intSingleParamMethodImposter;
         private readonly VoidWithSideEffectMethodImposter _voidWithSideEffectMethodImposter;
@@ -60,7 +60,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut>.Instance()
+        global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -2521,7 +2521,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.MethodSetupFeatureClassSut
+        class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut
         {
             private readonly MethodSetupFeatureClassSutImposter _imposter;
             internal ImposterTargetInstance(MethodSetupFeatureClassSutImposter _imposter) : base()

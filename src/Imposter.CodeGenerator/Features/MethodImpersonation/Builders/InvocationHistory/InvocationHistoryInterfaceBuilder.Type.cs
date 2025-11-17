@@ -1,10 +1,12 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.InvocationHistory;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationHistory;
 
 public static class InvocationHistoryInterfaceBuilder
 {

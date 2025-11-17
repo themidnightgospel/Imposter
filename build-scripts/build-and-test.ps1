@@ -20,6 +20,60 @@ function Invoke-Task {
     }
 }
 
+function Get-StagedFiles {
+    $staged = @()
+    try {
+        $staged = & git diff --cached --name-only --diff-filter=ACMRTUXB
+    }
+    catch {
+        Write-Warning "Unable to determine staged files via git. CSharpier step will be skipped."
+        return @()
+    }
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning "git diff --cached returned exit code $LASTEXITCODE. CSharpier step will be skipped."
+        return @()
+    }
+
+    return $staged | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+}
+
+function Get-CSharpierTargets {
+    $includeExtensions = @(".cs", ".props", ".csproj")
+    $stagedFiles = Get-StagedFiles
+    if (-not $stagedFiles) {
+        return @()
+    }
+
+    $targets = foreach ($file in $stagedFiles) {
+        $extension = [System.IO.Path]::GetExtension($file)
+        if ($includeExtensions -notcontains $extension) {
+            continue
+        }
+
+        if ($file.EndsWith(".g.cs")) {
+            continue
+        }
+
+        if ($file -like "*GeneratedFiles/*" -or $file -like "*GeneratedFiles\*") {
+            continue
+        }
+
+        $file
+    }
+
+    return $targets | Sort-Object -Unique
+}
+
+$csharpierTargets = Get-CSharpierTargets
+if ($csharpierTargets.Count -gt 0) {
+    $csharpierArgs = @("csharpier", "format") + $csharpierTargets
+    Invoke-Task -Name "CSharpier" -Command "dotnet" -Args $csharpierArgs
+}
+else {
+    Write-Host "Skipping CSharpier run because no staged files match include/exclude rules." -ForegroundColor Yellow
+}
+
 Invoke-Task -Name "Imposter.Abstractions.Tests" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj",

@@ -2,7 +2,7 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
 internal static class TypeMetadataFactory
 {

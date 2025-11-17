@@ -1,5 +1,5 @@
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;

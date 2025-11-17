@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
 
 internal readonly struct GetMethodMetadata
 {

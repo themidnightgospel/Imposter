@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 
 internal readonly ref struct ImposterPropertyCoreMetadata
 {

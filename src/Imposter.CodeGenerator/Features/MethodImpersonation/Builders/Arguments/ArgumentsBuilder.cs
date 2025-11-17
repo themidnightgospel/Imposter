@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Arguments;
 
 internal static class ArgumentsBuilder
 {

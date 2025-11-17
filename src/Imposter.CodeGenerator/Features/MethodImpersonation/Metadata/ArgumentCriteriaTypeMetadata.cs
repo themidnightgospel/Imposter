@@ -1,9 +1,10 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
 internal readonly record struct ArgumentCriteriaTypeMetadata
 {

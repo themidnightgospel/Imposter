@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Helpers;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -6,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 #endif
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.ImposterBuilderInterface;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.ImposterBuilderInterface;
 
 internal static class MethodImposterBuilderInterfaceBuilder
 {

@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationHistory;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 
 internal readonly record struct InvocationHistoryCollectionMetadata
 {

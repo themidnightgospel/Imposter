@@ -3,7 +3,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata.InvocationSetup;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
 internal readonly struct ThrowsMethodMetadata
 {

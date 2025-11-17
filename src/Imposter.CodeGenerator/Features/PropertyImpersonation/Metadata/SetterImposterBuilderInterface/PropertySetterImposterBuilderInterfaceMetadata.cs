@@ -1,8 +1,8 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PropertySetterThenMethodMetadata = Imposter.CodeGenerator.Features.PropertyImposter.Metadata.Common.ThenMethodMetadata;
+using PropertySetterThenMethodMetadata = Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.Common.ThenMethodMetadata;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Metadata.SetterImposterBuilderInterface;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
 
 internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 {

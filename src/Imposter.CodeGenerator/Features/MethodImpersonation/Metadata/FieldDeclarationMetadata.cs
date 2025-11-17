@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
 internal readonly record struct FieldDeclarationMetadata
 {

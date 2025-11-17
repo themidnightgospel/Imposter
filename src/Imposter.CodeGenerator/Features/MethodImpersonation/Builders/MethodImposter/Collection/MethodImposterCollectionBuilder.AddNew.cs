@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -7,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Collection;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Collection;
 
 internal static partial class MethodImposterCollectionBuilder
 {

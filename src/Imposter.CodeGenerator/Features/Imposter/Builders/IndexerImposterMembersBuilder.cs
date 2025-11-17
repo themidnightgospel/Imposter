@@ -1,6 +1,6 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
-using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
+using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;

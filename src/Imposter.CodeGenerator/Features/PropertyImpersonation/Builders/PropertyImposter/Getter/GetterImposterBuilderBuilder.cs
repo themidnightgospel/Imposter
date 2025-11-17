@@ -1,6 +1,6 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilder;
-using Imposter.CodeGenerator.Features.PropertyImposter.Metadata.GetterImposterBuilderInterface;
+﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter.Getter;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 
 internal static class GetterImposterBuilderBuilder
 {

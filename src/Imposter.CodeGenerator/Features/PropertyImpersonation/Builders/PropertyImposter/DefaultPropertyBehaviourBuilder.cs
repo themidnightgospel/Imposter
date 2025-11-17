@@ -1,11 +1,11 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;
+﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.PropertyImposter.Builders.PropertyImposter;
+namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 
 internal static class DefaultPropertyBehaviourBuilder
 {

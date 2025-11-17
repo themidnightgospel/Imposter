@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 
-namespace Imposter.CodeGenerator.Features.MethodImposter.Builders.MethodImposter.Builder;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Builder;
 
 internal static partial class MethodImposterBuilderBuilder
 {
