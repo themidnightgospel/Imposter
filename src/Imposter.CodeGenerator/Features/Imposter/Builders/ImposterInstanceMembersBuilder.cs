@@ -1,13 +1,13 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.Imposter;
+namespace Imposter.CodeGenerator.Features.Imposter.Builders;
 
-internal readonly partial struct ImposterBuilder
+internal static class ImposterInstanceMembersBuilder
 {
-    private static MethodDeclarationSyntax InstanceMethod(
+    internal static MethodDeclarationSyntax InstanceMethod(
         in ImposterGenerationContext imposterGenerationContext,
         string imposterInstanceFieldName
     ) =>

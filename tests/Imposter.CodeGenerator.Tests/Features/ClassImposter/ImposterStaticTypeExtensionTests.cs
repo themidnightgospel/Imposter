@@ -252,14 +252,11 @@ public static class InterfaceUsage
             .Net.Net90.ResolveAsync(null, CancellationToken.None)
             .GetAwaiter()
             .GetResult()
-            .Concat(
-                new[]
-                {
-                    MetadataReference.CreateFromFile(
-                        typeof(GenerateImposterAttribute).Assembly.Location
-                    ),
-                }
-            );
+            .Concat([
+                MetadataReference.CreateFromFile(
+                    typeof(GenerateImposterAttribute).Assembly.Location
+                ),
+            ]);
 
         return CSharpCompilation.Create(
             assemblyName: "ImposterGeneratorExtensionsTests",

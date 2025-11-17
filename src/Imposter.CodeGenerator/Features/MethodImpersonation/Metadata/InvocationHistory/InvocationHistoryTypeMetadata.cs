@@ -21,7 +21,7 @@ internal readonly record struct InvocationHistoryTypeMetadata
 
     internal readonly NameSyntax Syntax;
 
-    public InvocationHistoryTypeMetadata(ImposterTargetMethodMetadata method)
+    public InvocationHistoryTypeMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodInvocationHistory";
         Interface = new TypeMetadata($"I{Name}");

@@ -17,7 +17,7 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
 
     internal readonly MatchesMethodMetadata MatchesMethod;
 
-    public ArgumentCriteriaTypeMetadata(ImposterTargetMethodMetadata method)
+    public ArgumentCriteriaTypeMetadata(in ImposterTargetMethodMetadata method)
     {
         var argumentsCriteriaName = $"{method.UniqueName}ArgumentsCriteria";
         Name = argumentsCriteriaName;

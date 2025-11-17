@@ -68,7 +68,7 @@ internal static partial class SyntaxFactoryHelper
     internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name) =>
         new ParameterBuilder(type, name).Build();
 
-    internal static ParameterSyntax ParameterSyntax(ParameterMetadata parameterMetadata) =>
+    internal static ParameterSyntax ParameterSyntax(in ParameterMetadata parameterMetadata) =>
         new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name)
             .WithDefaultValue(parameterMetadata.DefaultValue)
             .Build();

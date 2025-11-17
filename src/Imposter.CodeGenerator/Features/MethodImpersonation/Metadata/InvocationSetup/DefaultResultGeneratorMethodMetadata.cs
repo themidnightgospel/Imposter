@@ -8,7 +8,7 @@ internal readonly struct DefaultResultGeneratorMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal DefaultResultGeneratorMethodMetadata(ReturnTypeMetadata methodReturnType)
+    internal DefaultResultGeneratorMethodMetadata(in ReturnTypeMetadata methodReturnType)
     {
         ReturnType = methodReturnType.TypeSymbolMetadata.TypeSyntax;
     }

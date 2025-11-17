@@ -73,7 +73,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Build solution (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -p:IMPOSTER_LOG=true
+        run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -p:IMPOSTER_LOG=true -p:DefineConstants="KEEP_WARNINGS_IN_GENERATED_FILES"
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
         run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --list-tests

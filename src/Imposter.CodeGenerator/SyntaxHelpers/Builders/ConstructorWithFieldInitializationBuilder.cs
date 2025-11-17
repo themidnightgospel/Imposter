@@ -15,7 +15,7 @@ internal class ConstructorWithFieldInitializationBuilder
         _constructorBuilder = new ConstructorBuilder(className);
     }
 
-    internal ConstructorWithFieldInitializationBuilder AddParameter(FieldMetadata fieldMetadata)
+    internal ConstructorWithFieldInitializationBuilder AddParameter(in FieldMetadata fieldMetadata)
     {
         _constructorBuilder.AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name));
         ;

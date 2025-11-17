@@ -26,18 +26,26 @@ internal static class IndexerImposterBuilderInterfaceBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildGetterMethod(GetterMethodMetadata getterMethod) =>
+    private static MethodDeclarationSyntax BuildGetterMethod(
+        in GetterMethodMetadata getterMethod
+    ) =>
         new MethodDeclarationBuilder(getterMethod.ReturnType, getterMethod.Name)
             .AddParameters(
-                getterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray()
+                getterMethod
+                    .Parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it))
+                    .ToArray()
             )
             .WithSemicolon()
             .Build();
 
-    private static MethodDeclarationSyntax BuildSetterMethod(SetterMethodMetadata setterMethod) =>
+    private static MethodDeclarationSyntax BuildSetterMethod(
+        in SetterMethodMetadata setterMethod
+    ) =>
         new MethodDeclarationBuilder(setterMethod.ReturnType, setterMethod.Name)
             .AddParameters(
-                setterMethod.Parameters.Select(SyntaxFactoryHelper.ParameterSyntax).ToArray()
+                setterMethod
+                    .Parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it))
+                    .ToArray()
             )
             .WithSemicolon()
             .Build();

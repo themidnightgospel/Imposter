@@ -26,8 +26,7 @@
         "test",
         "tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj",
         "-c",
-        "Release",
-        "-p:IMPOSTER_LOG=true"
+        "Release"
       ]
     },
     {
@@ -37,8 +36,7 @@
         "test",
         "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
         "-c",
-        "Release",
-        "-p:IMPOSTER_LOG=true"
+        "Release"
       ]
     },
     {
@@ -49,9 +47,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.0",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.0"
       ]
     },
     {
@@ -62,9 +58,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.4",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.4"
       ]
     },
     {
@@ -75,9 +69,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.5",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.5"
       ]
     },
     {
@@ -88,9 +80,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.7",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.7"
       ]
     },
     {
@@ -101,9 +91,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.11",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.11"
       ]
     },
     {
@@ -114,9 +102,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=4.14",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=4.14"
       ]
     },
     {
@@ -127,9 +113,7 @@
         "tests/Imposter.Tests/Imposter.Tests.csproj",
         "-c",
         "Release",
-        "/p:ROSLYN_VERSION=5.0",
-        "-p:IMPOSTER_LOG=true",
-        "-p:DefineConstants=\"KEEP_WARNINGS_IN_GENERATED_FILES\""
+        "/p:ROSLYN_VERSION=5.0"
       ]
     }
   ]
