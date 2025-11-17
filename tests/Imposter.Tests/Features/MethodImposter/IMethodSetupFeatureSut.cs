@@ -36,6 +36,8 @@ namespace Imposter.Tests.Features.MethodImposter
 
         void GenericSingleParam<TValue>(TValue value);
 
+        void GenericSingleRefParam<TValue>(ref TValue value);
+
         void GenericInnerSingleParam<TValue>(List<TValue> value);
 
         TResult GenericOutParam<TValue, TResult>(out TValue value);

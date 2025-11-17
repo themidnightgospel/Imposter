@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Imposter.CodeGenerator.Features.EventImposter.Metadata;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -9,12 +9,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Builders;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
-internal static partial class EventImposterBuilder
+internal static class EventImposterVerificationBuilder
 {
-    private static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
+    internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
         in ImposterEventMetadata @event
     )
     {
@@ -45,7 +46,7 @@ internal static partial class EventImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildUnsubscribedVerificationMethod(
+    internal static MethodDeclarationSyntax BuildUnsubscribedVerificationMethod(
         in ImposterEventMetadata @event
     )
     {
@@ -76,14 +77,14 @@ internal static partial class EventImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildRaisedVerificationMethod(
+    internal static MethodDeclarationSyntax BuildRaisedVerificationMethod(
         in ImposterEventMetadata @event
     )
     {
         var methodBuilder = ExplicitInterfaceMethod(
                 @event.BuilderInterface.VerificationInterfaceTypeSyntax,
                 @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.Builder.Methods.RaisedVerificationName
+                @event.Builder.Methods.RaisedVerification.Name
             )
             .AddParameters(
                 @event.Core.Parameters.Select(parameter =>
@@ -99,7 +100,7 @@ internal static partial class EventImposterBuilder
     {
         var blockBuilder = new BlockBuilder();
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatchesName;
+        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
         var eventName = @event.Core.Name;
         var parameters = @event.Core.Parameters;
 
@@ -165,7 +166,7 @@ internal static partial class EventImposterBuilder
         return SimpleLambdaExpression(Parameter(Identifier("entry")), predicateBody!);
     }
 
-    private static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
+    internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
         in ImposterEventMetadata @event
     )
     {
@@ -214,7 +215,7 @@ internal static partial class EventImposterBuilder
     )
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatchesName;
+        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
 
         var blockBuilder = new BlockBuilder()
             .AddExpression(ThrowIfNull(criteriaParameterName))
@@ -245,10 +246,13 @@ internal static partial class EventImposterBuilder
         return blockBuilder.Build();
     }
 
-    private static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(
+    internal static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(
         in EventImposterBuilderMethodsMetadata methods
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, methods.EnsureCountMatchesName)
+        new MethodDeclarationBuilder(
+                methods.EnsureCountMatches.ReturnType,
+                methods.EnsureCountMatches.Name
+            )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddParameter(ParameterSyntax(WellKnownTypes.Int, "actual"))
@@ -470,6 +474,6 @@ internal static partial class EventImposterBuilder
         predicate.Body as ExpressionSyntax
         ?? throw new InvalidOperationException("Predicate body must be an expression.");
 
-    private static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
+    internal static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
         ParameterSyntax(@event.Builder.Methods.CountParameter);
 }

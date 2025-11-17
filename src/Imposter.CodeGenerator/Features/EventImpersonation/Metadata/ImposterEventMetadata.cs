@@ -1,7 +1,7 @@
 using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly ref struct ImposterEventMetadata
 {

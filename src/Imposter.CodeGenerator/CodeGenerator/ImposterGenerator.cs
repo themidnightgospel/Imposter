@@ -5,7 +5,7 @@ using System.Threading;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
-using Imposter.CodeGenerator.Features.EventImposter.Builders;
+using Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 using Imposter.CodeGenerator.Features.Imposter;
 using Imposter.CodeGenerator.Features.IndexerImposter.Builders;
 using Imposter.CodeGenerator.Features.MethodImposter.Builders.Arguments;

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct EventImposterBuilderFieldsMetadata
 {
@@ -26,6 +27,10 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
     internal readonly FieldMetadata HandlerInvocations;
 
+    internal readonly FieldMetadata UseBaseImplementation;
+
+    internal readonly FieldMetadata EventDisplayName;
+
     internal EventImposterBuilderFieldsMetadata(in ImposterEventCoreMetadata core)
     {
         var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
@@ -45,18 +50,79 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax)
         );
 
-        HandlerOrder = new FieldMetadata("_handlerOrder", handlerQueueType);
-        HandlerCounts = new FieldMetadata("_handlerCounts", handlerCountsType);
-        Callbacks = new FieldMetadata("_callbacks", handlerQueueType);
-        History = new FieldMetadata("_history", historyQueueType);
-        SubscribeHistory = new FieldMetadata("_subscribeHistory", handlerQueueType);
-        UnsubscribeHistory = new FieldMetadata("_unsubscribeHistory", handlerQueueType);
-        SubscribeInterceptors = new FieldMetadata("_subscribeInterceptors", interceptorQueueType);
+        var privateReadonlyModifiers = TokenList(
+            Token(SyntaxKind.PrivateKeyword),
+            Token(SyntaxKind.ReadOnlyKeyword)
+        );
+
+        HandlerOrder = new FieldMetadata(
+            "_handlerOrder",
+            handlerQueueType,
+            privateReadonlyModifiers,
+            handlerQueueType.New()
+        );
+        HandlerCounts = new FieldMetadata(
+            "_handlerCounts",
+            handlerCountsType,
+            privateReadonlyModifiers,
+            handlerCountsType.New()
+        );
+        Callbacks = new FieldMetadata(
+            "_callbacks",
+            handlerQueueType,
+            privateReadonlyModifiers,
+            handlerQueueType.New()
+        );
+        History = new FieldMetadata(
+            "_history",
+            historyQueueType,
+            privateReadonlyModifiers,
+            historyQueueType.New()
+        );
+        SubscribeHistory = new FieldMetadata(
+            "_subscribeHistory",
+            handlerQueueType,
+            privateReadonlyModifiers,
+            handlerQueueType.New()
+        );
+        UnsubscribeHistory = new FieldMetadata(
+            "_unsubscribeHistory",
+            handlerQueueType,
+            privateReadonlyModifiers,
+            handlerQueueType.New()
+        );
+        SubscribeInterceptors = new FieldMetadata(
+            "_subscribeInterceptors",
+            interceptorQueueType,
+            privateReadonlyModifiers,
+            interceptorQueueType.New()
+        );
         UnsubscribeInterceptors = new FieldMetadata(
             "_unsubscribeInterceptors",
-            interceptorQueueType
+            interceptorQueueType,
+            privateReadonlyModifiers,
+            interceptorQueueType.New()
         );
-        HandlerInvocations = new FieldMetadata("_handlerInvocations", handlerInvocationType);
+        HandlerInvocations = new FieldMetadata(
+            "_handlerInvocations",
+            handlerInvocationType,
+            privateReadonlyModifiers,
+            handlerInvocationType.New()
+        );
+
+        UseBaseImplementation = new FieldMetadata(
+            "_useBaseImplementation",
+            WellKnownTypes.Bool,
+            TokenList(Token(SyntaxKind.PrivateKeyword)),
+            null
+        );
+
+        EventDisplayName = new FieldMetadata(
+            "_eventDisplayName",
+            PredefinedType(Token(SyntaxKind.StringKeyword)),
+            privateReadonlyModifiers,
+            core.DisplayName.StringLiteral()
+        );
     }
 
     private static TypeSyntax BuildHistoryEntryType(in ImposterEventCoreMetadata core)

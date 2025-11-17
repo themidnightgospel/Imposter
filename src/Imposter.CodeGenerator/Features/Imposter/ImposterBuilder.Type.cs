@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Imposter.CodeGenerator.Features.EventImposter.Metadata;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.Features.IndexerImposter.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImposter.Metadata;

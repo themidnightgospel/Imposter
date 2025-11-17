@@ -209,7 +209,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericParamsParamMethodSetup_WhenMethodIsInvokedWithDerivedType_ShouldReturnValue()
+        public void GivenInputParameterSetupOnBaseType_WhenMethodIsInvokedWithDerivedType_ShouldInvoke()
         {
             _sut.GenericParamsParam<IAnimal, bool>(Arg<IAnimal[]>.Any()).Returns(true);
 
@@ -217,6 +217,52 @@ namespace Imposter.Tests.Features.MethodImposter
             var result = _sut.Instance().GenericParamsParam<Cat, bool>(cats);
 
             result.ShouldBe(true);
+        }
+
+        [Fact]
+        public void GivenGenericSingleParamSetupForIAnimal_WhenInvokedWithCat_ShouldInvokeCallback()
+        {
+            IAnimal? capturedAnimal = null;
+
+            _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Any())
+                .Callback(animal =>
+                {
+                    capturedAnimal = animal;
+                });
+
+            var cat = new Cat("mittens");
+            _sut.Instance().GenericSingleParam(cat);
+
+            capturedAnimal.ShouldNotBeNull();
+            capturedAnimal.ShouldBe(cat);
+        }
+
+        [Fact]
+        public void GivenRefParameterSetupOnBaseType_WhenInvokedWithDerivedType_ShouldNotInvoke()
+        {
+            var animalCallback = false;
+
+            _sut.GenericSingleRefParam<IAnimal>(Arg<IAnimal>.Any())
+                .Callback((ref IAnimal _) => animalCallback = true);
+
+            var cat = new Cat("mittens");
+            _sut.Instance().GenericSingleRefParam(ref cat);
+
+            animalCallback.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenRefParameterSetup_WhenInvokedWithSameType_ShouldInvoke()
+        {
+            var dogCallbackInvoked = false;
+
+            _sut.GenericSingleRefParam<Dog>(Arg<Dog>.Any())
+                .Callback((ref Dog _) => dogCallbackInvoked = true);
+
+            var dog = new Dog("buddy");
+            _sut.Instance().GenericSingleRefParam(ref dog);
+
+            dogCallbackInvoked.ShouldBeTrue();
         }
 
         [Fact]

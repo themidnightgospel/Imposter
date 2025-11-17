@@ -2,7 +2,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct EventImposterBuilderInterfaceMetadata
 {
@@ -18,9 +18,7 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax VerificationInterfaceTypeSyntax;
 
-    internal readonly string RaiseMethodName;
-
-    internal readonly TypeSyntax RaiseMethodReturnType;
+    internal readonly MethodMetadata RaiseMethod;
 
     internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
 
@@ -32,10 +30,13 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
         SetupInterfaceTypeSyntax = IdentifierName(SetupInterfaceName);
         VerificationInterfaceName = $"I{core.UniqueName}EventImposterVerificationBuilder";
         VerificationInterfaceTypeSyntax = IdentifierName(VerificationInterfaceName);
-        RaiseMethodName = core.IsAsync ? "RaiseAsync" : "Raise";
-        RaiseMethodReturnType = core.IsAsync
+
+        var raiseMethodName = core.IsAsync ? "RaiseAsync" : "Raise";
+        var raiseMethodReturnType = core.IsAsync
             ? WellKnownTypes.System.Threading.Tasks.TaskOfT(SetupInterfaceTypeSyntax)
             : SetupInterfaceTypeSyntax;
+
+        RaiseMethod = new MethodMetadata(raiseMethodName, raiseMethodReturnType);
         UseBaseImplementationMethod = core.SupportsBaseImplementation
             ? new UseBaseImplementationMethodMetadata(TypeSyntax)
             : null;

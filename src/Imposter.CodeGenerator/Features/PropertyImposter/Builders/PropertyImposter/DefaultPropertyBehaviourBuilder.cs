@@ -14,20 +14,8 @@ internal static class DefaultPropertyBehaviourBuilder
     ) =>
         new ClassDeclarationBuilder(defaultPropertyBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(
-                SingleVariableField(
-                    defaultPropertyBehaviour.IsOnField,
-                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword)),
-                    True
-                )
-            )
-            .AddMember(
-                SingleVariableField(
-                    defaultPropertyBehaviour.HasValueSetField,
-                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword)),
-                    False
-                )
-            )
+            .AddMember(SingleVariableField(defaultPropertyBehaviour.IsOnField))
+            .AddMember(SingleVariableField(defaultPropertyBehaviour.HasValueSetField))
             .AddMember(
                 SingleVariableField(
                     defaultPropertyBehaviour.BackingField,

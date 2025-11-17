@@ -137,25 +137,36 @@ Open generic classes with virtual members can be impersonated the same way as in
 
 ## Type Matching
 
-When you impersonate generic members, Imposter matches calls using both the concrete type arguments and the runtime argument values.
+When you impersonate generic members, Imposter matches calls using both the concrete type arguments and the runtime argument values. In practice:
 
-From a user perspective this means:
+- Each closed set of method type arguments gets its own setups, return sequence, and verification; calls with `TArg = string` never satisfy setups for `TArg = int`.
 
-- Each distinct set of method type arguments has its own setups, return sequences, and verification. Calls made with `TArg = string` never satisfy setups or verifications declared for `TArg = int`, even when the method name is the same.
-- For generic methods on a generic interface or class, all type arguments are part of the matching key. `IOpenGenericWithMethodGenerics<string>.DoSomething<string>(...)` and `IOpenGenericWithMethodGenerics<string>.DoSomething<int>(...)` are tracked independently, and they are also isolated from `IOpenGenericWithMethodGenerics<int>.DoSomething<string>(...)`.
-- Argument matchers remain strongly typed. A setup that uses `Arg<string>` only participates in matching for calls where the argument is a `string`; a setup using `Arg<int>` never matches a `string` argument.
-- Generic constraints (`where T : class`, `where TArg : IComparable<TArg>`, `where TStruct : struct`, `where TNew : new()`) only restrict which type arguments you are allowed to call the method with. Once the call compiles, matching still happens purely on the concrete type arguments and argument values.
-- For params arrays and array-typed arguments, Imposter looks at the resulting array type. A setup that uses `Arg<IAnimal[]>` can match a `params` call whose element type is `Cat` when `Cat : IAnimal`, because the runtime argument is a `Cat[]` that is assignable to `IAnimal[]` (see `GivenGenericParamsParamMethodSetup_WhenMethodIsInvokedWithDerivedType_ShouldReturnValue` in `tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs`, line 212 — https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L212).
-- When you configure multiple setups for a generic method with different type combinations (for example, `GenericOutParam<string, int>`, `GenericOutParam<int, string>`, and `GenericOutParam<double, int>`), each closed combination is matched independently. A call to `GenericOutParam<string, int>` only ever uses the `<string, int>` setup and ignores the others (see `GivenMultipleGenericOutParamSetups_WhenMethodIsInvokedWithMatchingType_ShouldInvokeMatchingSetup`, line 418 — https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L418).
-- In more complex signatures that mix `out`, `ref`, `in`, `params`, and multiple generic parameters (such as `GenericAllRefKind<TOut, TRef, TIn, TParams, TResult>`), Imposter still matches based on the concrete generic arguments and argument types, not on parameter position alone. You can configure a setup where the `out` generic type is a more specific implementation and then call the method with a more general `out` type (for example, setup with `TOut = Cat` and call with `TOut = IAnimal`), and the setup will be used as long as the actual values are assignable and the call compiles (see `GivenGenericAllRefKindMethodSetupWithComplexDelegate_WhenMethodIsInvoked_ShouldModifyAllParameters`, line 475 — https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L475).
-- Nullable generic arguments are matched using the same rules: a setup such as `GenericRefParam<string?, string?>(Arg<string?>.Any()).Returns((string?)null);` applies both to `null` and non-null string values as long as the static type is `string?` (see `GivenGenericRefParamMethodSetupWithNullValue_WhenMethodIsInvoked_ShouldReturnNull`, line 452 — https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L452).
+!!! example
+    === "C# 14"
 
-You can see these rules in the examples below:
+        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/OpenGenericGenericMethodImposterTests.cs#L113"}
+        var imposter = IHaveGenericMethods.Imposter();
+        imposter.GetValue<int>().Returns(5);
+        imposter.GetValue<string>().Returns("value");
 
-- In the `IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>` example, calling `service.DoSomething("alpha")` followed by `service.DoSomething(42)` on `IOpenGenericWithMethodGenerics<string>` produces two separate tracks of calls. The verification `imposter.DoSomething<string>(Arg<string>.Any()).Called(Count.Once())` only counts the `string` call, and `imposter.DoSomething<int>(Arg<int>.Any()).Called(Count.Once())` only counts the `int` call. If you only called `DoSomething(42)` and then verified `DoSomething<string>(...)`, the verification would fail because those calls live in different generic buckets.
-- In the `IHaveGenericMethods.AddItem<TItem>` example, `var stringVerifier = imposter.AddItem<string>(Arg<string>.Is(s => s == "alpha"));` only observes `AddItem("alpha")` calls, while `var intVerifier = imposter.AddItem<int>(Arg<int>.Is(i => i == 7));` only observes `AddItem(7)` calls. Each verifier is scoped to its own `TItem`, so string calls do not satisfy the `int` verifier and vice versa.
-- In the `IGenericConstraintsTarget.CompareValues<TArg>` example, the verifier `imposter.CompareValues<ComparablePayload>(Arg<ComparablePayload>.Is(left => left.Score == 5), Arg<ComparablePayload>.Any())` is satisfied only by calls where both arguments are `ComparablePayload` and the first argument matches the predicate. A call that uses a different `TArg`, or a `ComparablePayload` where `Score != 5`, does not count toward this verifier.
-- For methods with multiple type arguments (such as a `Map<TFrom, TTo>` pattern), each closed pair `<TFrom, TTo>` is treated as its own lane. A configuration for `<string, int>` affects only `Map<string, int>(...)` calls, and a configuration for `<int, string>` affects only `Map<int, string>(...)`; the two do not share setups, results, or verification.
+        var service = imposter.Instance();
+        service.GetValue<int>().ShouldBe(5);
+        service.GetValue<string>().ShouldBe("value");
+        ```
+
+    === "C# 9-13"
+
+        ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/OpenGenericGenericMethodImposterTests.cs#L113"}
+        var imposter = new IHaveGenericMethodsImposter();
+        imposter.GetValue<int>().Returns(5);
+        imposter.GetValue<string>().Returns("value");
+
+        var service = imposter.Instance();
+        service.GetValue<int>().ShouldBe(5);
+        service.GetValue<string>().ShouldBe("value");
+        ```
+
+- For generic methods on generic interfaces/classes, all type arguments are part of the key, so different `<TArg>` or `<TFrom, TTo>` combinations are tracked independently and never cross-satisfy.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/GenericMethodTargets.cs#L13"}
@@ -184,6 +195,8 @@ You can see these rules in the examples below:
     imposter.DoSomething<string>(Arg<string>.Any()).Called(Count.Once());
     imposter.DoSomething<int>(Arg<int>.Any()).Called(Count.Once());
     ```
+
+- Argument matchers remain strongly typed; a setup using `Arg<string>` only matches `string` arguments, and `Arg<int>` never matches a `string`.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/GenericMethodTargets.cs#L22"}
@@ -215,6 +228,8 @@ You can see these rules in the examples below:
     intVerifier.Called(Count.Once());
     ```
 
+- Generic constraints (`where T : class`, `where TArg : IComparable<TArg>`, `where TStruct : struct`, `where TNew : new()`) only gate which type arguments compile; once they do, matching still follows the same rules.
+
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/GenericMethodTargets.cs#L33"}
     using System;
@@ -244,6 +259,125 @@ You can see these rules in the examples below:
     service.CompareValues(new ComparablePayload(5), new ComparablePayload(10));
 
     verifier.Called(Count.Once());
+    ```
+
+- Imposter uses normal C# assignability (inheritance and variance) when comparing setup parameter types to argument types.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L210"}
+    _sut.GenericParamsParam<IAnimal, bool>(Arg<IAnimal[]>.Any()).Returns(true);
+
+    var cats = new[] { new Cat("cat1"), new Cat("cat2") };
+
+    var result = _sut.Instance().GenericParamsParam<Cat, bool>(cats);
+
+    result.ShouldBe(true);
+    ```
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L595"}
+    _sut.GenericAllRefKind<Cat, Dog, IAnimal, IAnimal, bool>(
+            OutArg<Cat>.Any(),
+            Arg<Dog>.Any(),
+            Arg<IAnimal>.Any(),
+            Arg<IAnimal[]>.Any())
+        .Returns(true);
+
+    var refAnimal = new Dog("ref-dog");
+    var inAnimal = new Tiger("in-tiger");
+    var paramsAnimals = new Tiger[] { new Tiger("tiger1") };
+
+    var result = _sut.Instance().GenericAllRefKind(ref refAnimal, inAnimal, paramsAnimals);
+
+    result.ShouldBe(true);
+    ```
+
+- Multiple setups for different generic combinations on the same method are matched independently; a call only ever uses the setup for its exact closed generic pair.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L418"}
+    _sut.GenericOutParam<string, int>(OutArg<string>.Any()).Returns(123);
+    _sut.GenericOutParam<int, string>(OutArg<int>.Any()).Returns("hello");
+    _sut.GenericOutParam<double, int>(OutArg<double>.Any()).Returns(321);
+
+    var result = _sut.Instance().GenericOutParam<string, int>(out var outValue);
+
+    result.ShouldBe(123);
+    outValue.ShouldBe(default);
+    ```
+
+- Complex signatures that mix `out`, `ref`, `in`, `params`, and multiple generic parameters still match purely on the concrete generic arguments and argument types, not parameter position alone.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L475"}
+    _sut.GenericAllRefKind<Cat, IAnimal, Dog, IAnimal, string>(
+            OutArg<Cat>.Any(),
+            Arg<IAnimal>.Any(),
+            Arg<Dog>.Any(),
+            Arg<IAnimal[]>.Any())
+        .Returns(
+            (out Cat outValue,
+             ref IAnimal refValue,
+             in Dog inValue,
+             IAnimal[] paramsValues) =>
+            {
+                outValue = new Cat("out-cat");
+                refValue = new Dog("ref-dog");
+                paramsValues[0] = new Tiger("tiger-from-params");
+                return "updated";
+            });
+
+    var refAnimal = (IAnimal)new Dog("initial-ref");
+    var inAnimal = new Dog("in-dog");
+    var paramsAnimals = new IAnimal[] { new Tiger("initial-tiger") };
+
+    var result = _sut.Instance().GenericAllRefKind(ref refAnimal, inAnimal, paramsAnimals);
+
+    result.ShouldBe("updated");
+    ```
+
+- For `ref` parameters, setups are matched by the exact static parameter type: a setup using a base type like `IAnimal` does not match a `ref` argument of a derived type like `Cat`, but a setup on `Dog` will match a `ref Dog` argument.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L235"}
+    var animalCallback = false;
+
+    _sut.GenericSingleRefParam<IAnimal>(Arg<IAnimal>.Any())
+        .Callback((ref IAnimal _) => animalCallback = true);
+
+    var cat = new Cat("mittens");
+
+    _sut.Instance().GenericSingleRefParam(ref cat);
+
+    animalCallback.ShouldBeFalse();
+    ```
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L249"}
+    var dogCallbackInvoked = false;
+
+    _sut.GenericSingleRefParam<Dog>(Arg<Dog>.Any())
+        .Callback((ref Dog _) => dogCallbackInvoked = true);
+
+    var dog = new Dog("buddy");
+
+    _sut.Instance().GenericSingleRefParam(ref dog);
+
+    dogCallbackInvoked.ShouldBeTrue();
+    ```
+
+- Nullable generic arguments follow the same rules; a setup for `string?` can match both null and non-null values as long as the static type is `string?`.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L452"}
+    _sut.GenericRefParam<string?, string?>(Arg<string?>.Any()).Returns((string?)null);
+
+    var refValue = "test";
+
+    var result = _sut.Instance().GenericRefParam<string?, string?>(ref refValue);
+
+    result.ShouldBeNull();
+    refValue.ShouldBe("test");
     ```
 
 ## Open Generics

@@ -1,13 +1,12 @@
-using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Features.EventImposter.Metadata;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Builders;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
 internal static class EventImposterBuilderInterfaceBuilder
 {
@@ -51,18 +50,21 @@ internal static class EventImposterBuilderInterfaceBuilder
             .Build();
 
     private static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event) =>
-        new MethodDeclarationBuilder(@event.BuilderInterface.SetupInterfaceTypeSyntax, "Callback")
+        new MethodDeclarationBuilder(
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.Builder.Methods.Callback.Name
+            )
             .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(@event.Core.HandlerTypeSyntax, "callback")
+                SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.Callback.CallbackParameter)
             )
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildRaiseMethod(in ImposterEventMetadata @event) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.RaiseMethodReturnType,
-            @event.BuilderInterface.RaiseMethodName
-        )
+                @event.BuilderInterface.RaiseMethod.ReturnType,
+                @event.BuilderInterface.RaiseMethod.Name
+            )
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
             .WithSemicolon()
             .Build();
@@ -71,14 +73,11 @@ internal static class EventImposterBuilderInterfaceBuilder
         in ImposterEventMetadata @event
     ) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.SetupInterfaceTypeSyntax,
-            "OnSubscribe"
-        )
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.Builder.Methods.OnSubscribe.Name
+            )
             .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    WellKnownTypes.System.ActionOfT(@event.Core.HandlerTypeSyntax),
-                    "interceptor"
-                )
+                SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.OnSubscribe.InterceptorParameter)
             )
             .WithSemicolon()
             .Build();
@@ -87,24 +86,21 @@ internal static class EventImposterBuilderInterfaceBuilder
         in ImposterEventMetadata @event
     ) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.SetupInterfaceTypeSyntax,
-            "OnUnsubscribe"
-        )
+                @event.BuilderInterface.SetupInterfaceTypeSyntax,
+                @event.Builder.Methods.OnUnsubscribe.Name
+            )
             .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    WellKnownTypes.System.ActionOfT(@event.Core.HandlerTypeSyntax),
-                    "interceptor"
-                )
+                SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.OnUnsubscribe.InterceptorParameter)
             )
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildSubscribedMethod(in ImposterEventMetadata @event) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            "Subscribed"
-        )
-            .AddParameter(HandlerCriteriaParameter("criteria", @event))
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.Builder.Methods.Subscribed.Name
+            )
+            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.Subscribed.CriteriaParameter))
             .AddParameter(CountParameter())
             .WithSemicolon()
             .Build();
@@ -113,20 +109,22 @@ internal static class EventImposterBuilderInterfaceBuilder
         in ImposterEventMetadata @event
     ) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            "Unsubscribed"
-        )
-            .AddParameter(HandlerCriteriaParameter("criteria", @event))
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.Builder.Methods.Unsubscribed.Name
+            )
+            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.Unsubscribed.CriteriaParameter))
             .AddParameter(CountParameter())
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildRaisedMethod(in ImposterEventMetadata @event) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            "Raised"
-        )
-            .AddParameters(ParameterCriteria(@event))
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.Builder.Methods.RaisedVerification.Name
+            )
+            .AddParameters(
+                @event.Builder.Methods.RaisedCriteriaParameters.Select(SyntaxFactoryHelper.ParameterSyntax)
+            )
             .AddParameter(CountParameter())
             .WithSemicolon()
             .Build();
@@ -135,10 +133,10 @@ internal static class EventImposterBuilderInterfaceBuilder
         in ImposterEventMetadata @event
     ) =>
         new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            "HandlerInvoked"
-        )
-            .AddParameter(HandlerCriteriaParameter("handlerCriteria", @event))
+                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+                @event.Builder.Methods.HandlerInvoked.Name
+            )
+            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(@event.Builder.Methods.HandlerInvoked.HandlerCriteriaParameter))
             .AddParameter(CountParameter())
             .WithSemicolon()
             .Build();
@@ -156,21 +154,6 @@ internal static class EventImposterBuilderInterfaceBuilder
             .WithSemicolon()
             .Build();
     }
-
-    private static IEnumerable<ParameterSyntax> ParameterCriteria(
-        in ImposterEventMetadata @event
-    ) =>
-        @event.Core.Parameters.Select(parameter =>
-            SyntaxFactoryHelper.ParameterSyntax(
-                parameter.ArgTypeSyntax,
-                $"{parameter.Name}Criteria"
-            )
-        );
-
-    private static ParameterSyntax HandlerCriteriaParameter(
-        string name,
-        in ImposterEventMetadata @event
-    ) => SyntaxFactoryHelper.ParameterSyntax(@event.Core.HandlerArgTypeSyntax, name);
 
     private static ParameterSyntax CountParameter() =>
         SyntaxFactoryHelper.ParameterSyntax(WellKnownTypes.Imposter.Abstractions.Count, "count");

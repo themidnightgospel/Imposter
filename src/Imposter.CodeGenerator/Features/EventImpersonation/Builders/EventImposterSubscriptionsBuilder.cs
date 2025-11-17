@@ -1,16 +1,32 @@
-using Imposter.CodeGenerator.Features.EventImposter.Metadata;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Builders;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
-internal static partial class EventImposterBuilder
+internal static class EventImposterSubscriptionsBuilder
 {
-    private static MethodDeclarationSyntax BuildSubscribeMethod(in ImposterEventMetadata @event)
+    internal static MemberDeclarationSyntax[] BuildFields(in ImposterEventMetadata @event)
+    {
+        var fields = @event.Builder.Fields;
+
+        return
+        [
+            SingleVariableField(fields.HandlerOrder),
+            SingleVariableField(fields.HandlerCounts),
+            SingleVariableField(fields.SubscribeHistory),
+            SingleVariableField(fields.UnsubscribeHistory),
+            SingleVariableField(fields.SubscribeInterceptors),
+            SingleVariableField(fields.UnsubscribeInterceptors)
+        ];
+    }
+
+    internal static MethodDeclarationSyntax BuildSubscribeMethod(in ImposterEventMetadata @event)
     {
         var fields = @event.Builder.Fields;
         var method = @event.Builder.Methods.Subscribe;
@@ -54,6 +70,7 @@ internal static partial class EventImposterBuilder
         {
             blockBuilder.AddStatement(
                 BuildBaseImplementationInvocation(
+                    @event,
                     IdentifierName(subscribeBaseImplementationParameter.Name)
                 )
             );
@@ -62,7 +79,7 @@ internal static partial class EventImposterBuilder
         return methodBuilder.WithBody(blockBuilder.Build()).Build();
     }
 
-    private static MethodDeclarationSyntax BuildUnsubscribeMethod(in ImposterEventMetadata @event)
+    internal static MethodDeclarationSyntax BuildUnsubscribeMethod(in ImposterEventMetadata @event)
     {
         var method = @event.Builder.Methods.Unsubscribe;
         var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
@@ -107,6 +124,7 @@ internal static partial class EventImposterBuilder
         {
             unsubscribeBlockBuilder.AddStatement(
                 BuildBaseImplementationInvocation(
+                    @event,
                     IdentifierName(unsubscribeBaseImplementationParameter.Name)
                 )
             );
@@ -115,7 +133,7 @@ internal static partial class EventImposterBuilder
         return unsubscribeBuilder.WithBody(unsubscribeBlockBuilder.Build()).Build();
     }
 
-    private static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
+    internal static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
     {
         var method = @event.Builder.Methods.Callback;
         var callbackIdentifier = IdentifierName(method.CallbackParameter.Name);
@@ -140,7 +158,7 @@ internal static partial class EventImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildOnSubscribeMethod(
+    internal static MethodDeclarationSyntax BuildOnSubscribeMethod(
         in ImposterEventMetadata @event
     ) =>
         BuildInterceptorRegistrationMethod(
@@ -149,7 +167,7 @@ internal static partial class EventImposterBuilder
             @event.Builder.Fields.SubscribeInterceptors
         );
 
-    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(
+    internal static MethodDeclarationSyntax BuildOnUnsubscribeMethod(
         in ImposterEventMetadata @event
     ) =>
         BuildInterceptorRegistrationMethod(
@@ -175,7 +193,7 @@ internal static partial class EventImposterBuilder
 
     private static MethodDeclarationSyntax BuildInterceptorRegistrationMethod(
         in ImposterEventMetadata @event,
-        in EventImposterBuilderMethodsMetadata.InterceptorMethodMetadata method,
+        in InterceptorMethodMetadata method,
         in FieldMetadata interceptorsField
     )
     {
@@ -202,10 +220,11 @@ internal static partial class EventImposterBuilder
     }
 
     private static IfStatementSyntax BuildBaseImplementationInvocation(
+        in ImposterEventMetadata @event,
         IdentifierNameSyntax baseImplementationIdentifier
     ) =>
         IfStatement(
-            IdentifierName("_useBaseImplementation"),
+            FieldIdentifier(@event.Builder.Fields.UseBaseImplementation),
             Block(
                 IfStatement(
                     baseImplementationIdentifier.IsNotNull(),
@@ -217,7 +236,7 @@ internal static partial class EventImposterBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            IdentifierName("_eventDisplayName")
+                                            FieldIdentifier(@event.Builder.Fields.EventDisplayName)
                                                 .Add(" (event)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()

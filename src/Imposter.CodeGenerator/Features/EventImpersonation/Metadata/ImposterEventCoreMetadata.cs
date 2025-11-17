@@ -4,7 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.EventImposter.Metadata;
+namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly ref struct ImposterEventCoreMetadata
 {
