@@ -41,25 +41,31 @@ var imposter = ICalculator.Imposter();
 // c# 9 - 13
 // var imposter = new ICalculatorImposter();
 
-imposter.Add(Arg<int>.Any(), Arg<int>.Any()).Returns(42);
+imposter.Add(Arg<int>.Any(), Arg<int>.Any())
+    .Returns(1)
+    .Then()
+    .Returns(2);
 
-imposter.Instance().Add(1, 2); // 42
+var calculator = imposter.Instance();
+
+calculator.Add(1, 2); // 1
+calculator.Add(1, 2); // 2
 ```
 
 Learn more: https://themidnightgospel.github.io/Imposter/
 
 ## ✨ Feature-Rich
 
-- [Method Impersonation](https://themidnightgospel.github.io/Imposter/methods/) 
-- [Property Impersonation](https://themidnightgospel.github.io/Imposter/properties/)
-- [Indexer Impersonation](https://themidnightgospel.github.io/Imposter/indexers/)
-- [Event Impersonation](https://themidnightgospel.github.io/Imposter/events/)
-- [Class Impersonation](https://themidnightgospel.github.io/Imposter/base-implementation/)
-- [Generics](https://themidnightgospel.github.io/Imposter/generics/)
-- [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/implicit-vs-explicit/)
-- [Use Base implementation](https://themidnightgospel.github.io/Imposter/base-implementation/)
-- [Async Support](https://themidnightgospel.github.io/Imposter/methods/#async-methods)
-- [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/methods/protected-members/)
+ - [Method Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/) 
+ - [Property Impersonation](https://themidnightgospel.github.io/Imposter/latest/properties/)
+ - [Indexer Impersonation](https://themidnightgospel.github.io/Imposter/latest/indexers/)
+ - [Event Impersonation](https://themidnightgospel.github.io/Imposter/latest/events/)
+ - [Class Impersonation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
+ - [Generics](https://themidnightgospel.github.io/Imposter/latest/generics/)
+ - [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/latest/implicit-vs-explicit/)
+ - [Use Base implementation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
+ - [Async Support](https://themidnightgospel.github.io/Imposter/latest/methods/#async-methods)
+ - [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/protected-members/)
 
 ## ⏱️ Benchmark
 
