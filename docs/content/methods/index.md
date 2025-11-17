@@ -115,7 +115,7 @@ Returns and callbacks can specify `out/ref/in` in the delegate signature:
 ## Base Implementation (Class Targets)
 
 !!! info
-    `UseBaseImplementation()` applies only to non-abstract, virtual class members. It is not available for interfaces. See the dedicated page: [Base Implementation](base-implementation.md).
+    `UseBaseImplementation()` applies only to non-abstract, virtual class members. It is not available for interfaces. See the dedicated page: [Base Implementation](../base-implementation.md).
 
 ## Verification
 
@@ -141,9 +141,9 @@ If verification fails, a `VerificationFailedException` is thrown with a clear me
       - [Throwing Exceptions](throwing.md)
       - [Verification](verification.md)
       - [Callbacks](callbacks.md)
-      - [Base Implementation](base-implementation.md)
+      - [Base Implementation](../base-implementation.md)
       - [Protected Methods](protected-members.md)
-      - [Imposter Modes](explicit-vs-implicit.md)
+      - [Imposter Modes](../implicit-vs-explicit.md)
 
 ## Concurrency Notes
 
