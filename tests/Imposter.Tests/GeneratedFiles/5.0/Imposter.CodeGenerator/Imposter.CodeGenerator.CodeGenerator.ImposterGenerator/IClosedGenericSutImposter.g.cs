@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.MethodImposter;
+using global::Imposter.Tests.Features.MethodImpersonation;
 
-namespace Imposter.Tests.Features.MethodImposter
+namespace Imposter.Tests.Features.MethodImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>
+    public sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>
     {
         private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
         private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.MethodImposter
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>>.Instance()
+        global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>.Instance()
         {
             return _imposterInstance;
         }
@@ -414,7 +414,7 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string>
+        class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>
         {
             private readonly IClosedGenericSutImposter<TInput, TOutput> _imposter;
             public ImposterTargetInstance(IClosedGenericSutImposter<TInput, TOutput> _imposter)
@@ -432,9 +432,9 @@ namespace Imposter.Tests.Features.MethodImposter
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     internal static class IClosedGenericSutImposterExtensions
     {
-        extension<TInput, TOutput>(global::Imposter.Tests.Features.MethodImposter.IClosedGenericSut<int, string> imposter)
+        extension<TInput, TOutput>(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string> imposter)
         {
-            internal static global::Imposter.Tests.Features.MethodImposter.IClosedGenericSutImposter<TInput, TOutput> Imposter() => new global::Imposter.Tests.Features.MethodImposter.IClosedGenericSutImposter<TInput, TOutput>();
+            internal static global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput> Imposter() => new global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput>();
         }
     }
 }

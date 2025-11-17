@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ParameterizedCtorOnlyClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass>
+    public sealed class ParameterizedCtorOnlyClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass>
     {
         private readonly ComputeMethodImposter _computeMethodImposter;
         private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection = new ComputeMethodInvocationHistoryCollection();
@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass>.Instance()
         {
             return _imposterInstance;
         }
@@ -530,8 +530,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.Name");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.Name");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass.Name");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass.Name");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -853,7 +853,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
             private bool _useBaseImplementation;
-            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.SomethingHappened";
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass.SomethingHappened";
             internal SomethingHappenedEventImposterBuilder()
             {
             }
@@ -1689,13 +1689,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, invocationBehavior);
             this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
             this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass.this[int index]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass.this[int index]");
             this._imposterInstance = new ImposterTargetInstance(this, seed, name);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass
         {
             private readonly ParameterizedCtorOnlyClassImposter _imposter;
             internal ImposterTargetInstance(ParameterizedCtorOnlyClassImposter _imposter, int seed, string name) : base(seed, name)
@@ -1766,9 +1766,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class ParameterizedCtorOnlyClassImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClass imposter)
+        extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClass imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClassImposter Imposter(int seed, string name, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ParameterizedCtorOnlyClassImposter(seed, name, invocationBehavior);
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClassImposter Imposter(int seed, string name, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ParameterizedCtorOnlyClassImposter(seed, name, invocationBehavior);
         }
     }
 }

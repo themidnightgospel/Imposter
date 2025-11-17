@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithAsyncEventsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>
+    public sealed class ClassWithAsyncEventsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents>.Instance()
         {
             return _imposterInstance;
         }
@@ -35,40 +35,40 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICustomAsyncEventEventImposterSetupBuilder
         {
-            ICustomAsyncEventEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> callback);
+            ICustomAsyncEventEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> callback);
             global::System.Threading.Tasks.Task<ICustomAsyncEventEventImposterSetupBuilder> RaiseAsync(object sender, global::System.EventArgs args);
-            ICustomAsyncEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor);
-            ICustomAsyncEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor);
+            ICustomAsyncEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor);
+            ICustomAsyncEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICustomAsyncEventEventImposterVerificationBuilder
         {
-            ICustomAsyncEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
-            ICustomAsyncEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
+            ICustomAsyncEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
+            ICustomAsyncEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
             ICustomAsyncEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count);
-            ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
+            ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal sealed class CustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterBuilder, ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
         {
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>();
-            private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>, int>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs args)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs args)>();
-            private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)>();
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)>();
             private bool _useBaseImplementation;
-            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
             internal CustomAsyncEventEventImposterBuilder()
             {
             }
 
-            internal void Subscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler, global::System.Action? baseImplementation = null)
+            internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler, global::System.Action? baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerOrder.Enqueue(handler);
@@ -90,7 +90,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            internal void Unsubscribe(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> handler, global::System.Action? baseImplementation = null)
+            internal void Unsubscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler, global::System.Action? baseImplementation = null)
             {
                 ArgumentNullException.ThrowIfNull(handler);
                 _handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
@@ -119,7 +119,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.Callback(global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs> callback)
+            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.Callback(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> callback)
             {
                 ArgumentNullException.ThrowIfNull(callback);
                 _callbacks.Enqueue(callback);
@@ -132,7 +132,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return this;
             }
 
-            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
+            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -153,7 +153,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return this;
             }
 
-            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
+            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(criteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -174,14 +174,14 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return this;
             }
 
-            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor)
+            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor)
             {
                 ArgumentNullException.ThrowIfNull(interceptor);
                 _subscribeInterceptors.Enqueue(interceptor);
                 return this;
             }
 
-            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> interceptor)
+            ICustomAsyncEventEventImposterSetupBuilder ICustomAsyncEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor)
             {
                 ArgumentNullException.ThrowIfNull(interceptor);
                 _unsubscribeInterceptors.Enqueue(interceptor);
@@ -210,7 +210,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 return this;
             }
 
-            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count)
+            ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count)
             {
                 ArgumentNullException.ThrowIfNull(handlerCriteria);
                 ArgumentNullException.ThrowIfNull(count);
@@ -266,9 +266,9 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 }
             }
 
-            private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>> EnumerateActiveHandlers()
+            private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> EnumerateActiveHandlers()
             {
-                global::System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int> budgets = new global::System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>, int>(_handlerCounts);
+                global::System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>, int> budgets = new global::System.Collections.Generic.Dictionary<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>, int>(_handlerCounts);
                 foreach (var handler in _handlerOrder)
                 {
                     int remaining;
@@ -343,7 +343,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)>();
             private bool _useBaseImplementation;
-            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.TaskBasedEvent";
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.TaskBasedEvent";
             internal TaskBasedEventEventImposterBuilder()
             {
             }
@@ -623,7 +623,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)>();
             private bool _useBaseImplementation;
-            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
             internal ValueTaskBasedEventEventImposterBuilder()
             {
             }
@@ -873,7 +873,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithAsyncEvents
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents
         {
             private readonly ClassWithAsyncEventsImposter _imposter;
             internal ImposterTargetInstance(ClassWithAsyncEventsImposter _imposter) : base()
@@ -881,7 +881,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
                 this._imposter = _imposter;
             }
 
-            protected override event global::Imposter.Tests.Features.EventImposter.AsyncEventHandler<global::System.EventArgs>? CustomAsyncEvent
+            protected override event global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>? CustomAsyncEvent
             {
                 add
                 {

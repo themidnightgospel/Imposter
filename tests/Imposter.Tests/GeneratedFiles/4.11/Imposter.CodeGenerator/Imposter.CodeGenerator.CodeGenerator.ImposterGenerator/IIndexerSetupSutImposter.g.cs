@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.IndexerImposter;
+using global::Imposter.Tests.Features.IndexerImpersonation;
 
-namespace Imposter.Tests.Features.IndexerImposter
+namespace Imposter.Tests.Features.IndexerImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut>
+    public sealed class IIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut>.Instance()
+        global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -1183,14 +1183,14 @@ namespace Imposter.Tests.Features.IndexerImposter
 
         public IIndexerSetupSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut.this[int key1, string key2, object key3]");
-            this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut.this[int key1]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut.this[int key1, string key2, object key3]");
+            this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut.this[int key1]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.IndexerImposter.IIndexerSetupSut
+        class ImposterTargetInstance : global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut
         {
             private readonly IIndexerSetupSutImposter _imposter;
             public ImposterTargetInstance(IIndexerSetupSutImposter _imposter)

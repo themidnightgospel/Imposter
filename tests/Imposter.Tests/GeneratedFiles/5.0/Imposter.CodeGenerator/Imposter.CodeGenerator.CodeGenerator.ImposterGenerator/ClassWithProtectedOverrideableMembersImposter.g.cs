@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>
+    public sealed class ClassWithProtectedOverrideableMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers>
     {
         private readonly ProtectedVirtualMethodMethodImposter _protectedVirtualMethodMethodImposter;
         private readonly InvokeProtectedMethodMethodImposter _invokeProtectedMethodMethodImposter;
@@ -67,7 +67,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers>.Instance()
         {
             return _imposterInstance;
         }
@@ -2821,8 +2821,8 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3144,7 +3144,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
             private bool _useBaseImplementation;
-            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualEvent";
+            private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers.ProtectedVirtualEvent";
             internal ProtectedVirtualEventEventImposterBuilder()
             {
             }
@@ -3986,13 +3986,13 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
             this._subscribeToProtectedEventMethodImposter = new SubscribeToProtectedEventMethodImposter(_subscribeToProtectedEventMethodInvocationHistoryCollection, invocationBehavior);
             this._ProtectedVirtualPropertyPropertyBuilderField = new ProtectedVirtualPropertyPropertyBuilder(invocationBehavior);
             this._ProtectedVirtualEvent = new ProtectedVirtualEventEventImposterBuilder();
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers.this[int index]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers.this[int index]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers
         {
             private readonly ClassWithProtectedOverrideableMembersImposter _imposter;
             internal ImposterTargetInstance(ClassWithProtectedOverrideableMembersImposter _imposter) : base()
@@ -4093,10 +4093,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class ClassWithProtectedOverrideableMembersImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembers imposter)
+        extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembersImposter();
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithProtectedOverrideableMembersImposter(invocationBehavior);
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter();
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter(invocationBehavior);
         }
     }
 }

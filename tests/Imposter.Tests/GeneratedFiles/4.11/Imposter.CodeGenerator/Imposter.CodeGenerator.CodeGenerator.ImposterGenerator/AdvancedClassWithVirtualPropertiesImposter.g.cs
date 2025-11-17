@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.PropertyImposter;
+using global::Imposter.Tests.Features.PropertyImpersonation;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.PropertyImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class AdvancedClassWithVirtualPropertiesImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties>
+    public sealed class AdvancedClassWithVirtualPropertiesImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties>.Instance()
+        global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties>.Instance()
         {
             return _imposterInstance;
         }
@@ -89,7 +89,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties.GetterOnlyVirtualProperty");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties.GetterOnlyVirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -296,7 +296,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties.SetterOnlyVirtualProperty");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties.SetterOnlyVirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -508,7 +508,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties.ThrowingGetterVirtualProperty");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties.ThrowingGetterVirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -763,8 +763,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties.ThrowingSetterVirtualProperty");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties.ThrowingSetterVirtualProperty");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties.ThrowingSetterVirtualProperty");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties.ThrowingSetterVirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1057,7 +1057,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.AdvancedClassWithVirtualProperties
+        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties
         {
             private readonly AdvancedClassWithVirtualPropertiesImposter _imposter;
             internal ImposterTargetInstance(AdvancedClassWithVirtualPropertiesImposter _imposter) : base()

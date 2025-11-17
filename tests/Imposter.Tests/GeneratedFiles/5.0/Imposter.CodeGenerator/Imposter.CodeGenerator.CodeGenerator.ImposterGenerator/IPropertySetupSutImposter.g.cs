@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.PropertyImposter;
+using global::Imposter.Tests.Features.PropertyImpersonation;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.PropertyImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IPropertySetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut>
+    public sealed class IPropertySetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut>.Instance()
+        global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -110,8 +110,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.IPropertySetupSut.Age");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.IPropertySetupSut.Age");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Age");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Age");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -381,7 +381,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.IPropertySetupSut.LastName");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.LastName");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -554,7 +554,7 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.IPropertySetupSut.Name");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Name");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -683,7 +683,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut
+        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut
         {
             private readonly IPropertySetupSutImposter _imposter;
             public ImposterTargetInstance(IPropertySetupSutImposter _imposter)
@@ -725,9 +725,9 @@ namespace Imposter.Tests.Features.PropertyImposter
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class IPropertySetupSutImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSut imposter)
+        extension(global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSutImposter Imposter() => new global::Imposter.Tests.Features.PropertyImposter.IPropertySetupSutImposter();
+            public static global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter Imposter() => new global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter();
         }
     }
 }

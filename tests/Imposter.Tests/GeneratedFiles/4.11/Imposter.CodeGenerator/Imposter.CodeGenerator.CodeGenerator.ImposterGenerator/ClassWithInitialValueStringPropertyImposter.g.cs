@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.PropertyImposter;
+using global::Imposter.Tests.Features.PropertyImpersonation;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.PropertyImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithInitialValueStringPropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty>
+    public sealed class ClassWithInitialValueStringPropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty>.Instance()
+        global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty>.Instance()
         {
             return _imposterInstance;
         }
@@ -125,8 +125,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty.S");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty.S");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty.S");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty.S");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -416,7 +416,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithInitialValueStringProperty
+        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty
         {
             private readonly ClassWithInitialValueStringPropertyImposter _imposter;
             internal ImposterTargetInstance(ClassWithInitialValueStringPropertyImposter _imposter) : base()

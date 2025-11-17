@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.IndexerImposter;
+using global::Imposter.Tests.Features.IndexerImpersonation;
 
-namespace Imposter.Tests.Features.IndexerImposter
+namespace Imposter.Tests.Features.IndexerImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IGetterOnlyIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut>
+    public sealed class IGetterOnlyIndexerSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut>.Instance()
+        global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut>.Instance()
         {
             return _imposterInstance;
         }
@@ -458,13 +458,13 @@ namespace Imposter.Tests.Features.IndexerImposter
 
         public IGetterOnlyIndexerSetupSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
-            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut.this[int key, string name]");
+            this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut.this[int key, string name]");
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut
+        class ImposterTargetInstance : global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut
         {
             private readonly IGetterOnlyIndexerSetupSutImposter _imposter;
             public ImposterTargetInstance(IGetterOnlyIndexerSetupSutImposter _imposter)
@@ -485,9 +485,9 @@ namespace Imposter.Tests.Features.IndexerImposter
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class IGetterOnlyIndexerSetupSutImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSut imposter)
+        extension(global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImposter.IGetterOnlyIndexerSetupSutImposter();
+            public static global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter();
         }
     }
 }

@@ -9,12 +9,12 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>
+    public sealed class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics>
     {
         private readonly FormatMethodImposter _formatMethodImposter;
         private readonly Format_1MethodImposter _format_1MethodImposter;
@@ -46,7 +46,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
 
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics>.Instance()
         {
             return _imposterInstance;
         }
@@ -1832,7 +1832,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics
         {
             private readonly ClassWithOverloadsAndGenericsImposter _imposter;
             internal ImposterTargetInstance(ClassWithOverloadsAndGenericsImposter _imposter) : base()
@@ -1866,10 +1866,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class ClassWithOverloadsAndGenericsImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenerics imposter)
+        extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter();
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithOverloadsAndGenericsImposter(invocationBehavior);
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter();
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter(invocationBehavior);
         }
     }
 }

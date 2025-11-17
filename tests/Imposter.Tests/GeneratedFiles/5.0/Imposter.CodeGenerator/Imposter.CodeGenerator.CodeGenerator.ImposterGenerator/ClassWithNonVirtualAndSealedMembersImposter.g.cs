@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.ClassImposter.Suts;
+using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 
-namespace Imposter.Tests.Features.ClassImposter.Suts
+namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithNonVirtualAndSealedMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembers>
+    public sealed class ClassWithNonVirtualAndSealedMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembers>.Instance()
+        global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers>.Instance()
         {
             return _imposterInstance;
         }
@@ -30,7 +30,7 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembers
+        class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers
         {
             private readonly ClassWithNonVirtualAndSealedMembersImposter _imposter;
             internal ImposterTargetInstance(ClassWithNonVirtualAndSealedMembersImposter _imposter) : base()
@@ -43,10 +43,10 @@ namespace Imposter.Tests.Features.ClassImposter.Suts
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class ClassWithNonVirtualAndSealedMembersImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembers imposter)
+        extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembersImposter();
-            public static global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImposter.Suts.ClassWithNonVirtualAndSealedMembersImposter(invocationBehavior);
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter();
+            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter(invocationBehavior);
         }
     }
 }

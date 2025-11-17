@@ -9,16 +9,16 @@ using global::System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using global::Imposter.Abstractions;
 using global::System.Collections.Concurrent;
-using global::Imposter.Tests.Features.PropertyImposter;
+using global::Imposter.Tests.Features.PropertyImpersonation;
 
-namespace Imposter.Tests.Features.PropertyImposter
+namespace Imposter.Tests.Features.PropertyImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class ClassWithVirtualPropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty>
+    public sealed class ClassWithVirtualPropertyImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty>
     {
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
-        global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty>.Instance()
+        global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty>.Instance()
         {
             return _imposterInstance;
         }
@@ -125,8 +125,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty.VirtualProperty");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty.VirtualProperty");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty.VirtualProperty");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty.VirtualProperty");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -510,8 +510,8 @@ namespace Imposter.Tests.Features.PropertyImposter
             {
                 _defaultPropertyBehaviour = new DefaultPropertyBehaviour();
                 _invocationBehavior = invocationBehavior;
-                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty.VirtualPropertyWithInitializer");
-                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty.VirtualPropertyWithInitializer");
+                _getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty.VirtualPropertyWithInitializer");
+                _setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty.VirtualPropertyWithInitializer");
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -802,7 +802,7 @@ namespace Imposter.Tests.Features.PropertyImposter
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty
+        class ImposterTargetInstance : global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty
         {
             private readonly ClassWithVirtualPropertyImposter _imposter;
             internal ImposterTargetInstance(ClassWithVirtualPropertyImposter _imposter) : base()
@@ -847,10 +847,10 @@ namespace Imposter.Tests.Features.PropertyImposter
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
     public static class ClassWithVirtualPropertyImposterExtensions
     {
-        extension(global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualProperty imposter)
+        extension(global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualProperty imposter)
         {
-            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter Imposter() => new global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter();
-            public static global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImposter.ClassWithVirtualPropertyImposter(invocationBehavior);
+            public static global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualPropertyImposter Imposter() => new global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualPropertyImposter();
+            public static global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualPropertyImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImpersonation.ClassWithVirtualPropertyImposter(invocationBehavior);
         }
     }
 }
