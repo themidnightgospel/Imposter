@@ -326,7 +326,7 @@ internal static partial class InvocationSetupBuilder
             .WithBody(
                 Block(
                     IdentifierName("_callbacks")
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(
                             Argument(
                                 IdentifierName(

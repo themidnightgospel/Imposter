@@ -50,7 +50,7 @@ Generic methods (with their own `<T>` parameters) are treated like independent o
         service.GetValue<string>().ShouldBe("value");
         ```
 
-## Generic Interfaces
+## Generic types
 
 Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter per closed type argument. Each closed generic interface tracks its own setups, calls, and verification.
 
@@ -93,76 +93,157 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
         service.GetNext().ShouldBe("beta");
         ```
 
-## Generic Classes
-
-Open generic classes with virtual members can be impersonated the same way as interfaces. You can configure methods, properties, indexers, and events on a closed generic imposter.
+## Type Matching
 
 
-
-- For `ref` parameters, setups are matched by the exact static parameter type: a setup using a base type like `IAnimal` does not match a `ref` argument of a derived type like `Cat`, but a setup on `Dog` will match a `ref Dog` argument.
+- For **input parameters**, setups declared on a generic argument type (like `Animal`) match calls made with either that type itself or any derived type (like `Cat`);
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L235"}
-    var animalCallback = false;
-
-    _sut.GenericSingleRefParam<IAnimal>(Arg<IAnimal>.Any())
-        .Callback((ref IAnimal _) => animalCallback = true);
-
-    var cat = new Cat("mittens");
-
-    _sut.Instance().GenericSingleRefParam(ref cat);
-
-    animalCallback.ShouldBeFalse();
-    ```
-
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L249"}
-    var dogCallbackInvoked = false;
-
-    _sut.GenericSingleRefParam<Dog>(Arg<Dog>.Any())
-        .Callback((ref Dog _) => dogCallbackInvoked = true);
-
-    var dog = new Dog("buddy");
-
-    _sut.Instance().GenericSingleRefParam(ref dog);
-
-    dogCallbackInvoked.ShouldBeTrue();
-    ```
-
-- Nullable generic arguments follow the same rules; a setup for `string?` can match both null and non-null values as long as the static type is `string?`.
-
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L452"}
-    _sut.GenericRefParam<string?, string?>(Arg<string?>.Any()).Returns((string?)null);
-
-    var refValue = "test";
-
-    var result = _sut.Instance().GenericRefParam<string?, string?>(ref refValue);
-
-    result.ShouldBeNull();
-    refValue.ShouldBe("test");
-    ```
-
-- Generic constraints (`where T : class`, `where TArg : IComparable<TArg>`, `where TStruct : struct`, `where TNew : new()`) only gate which type arguments compile; once they do, matching still follows the same rules.
-
-!!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/GenericMethodTargets.cs#L33"}
-    using System;
-    using Imposter.Abstractions;
-    using Imposter.Tests.Features.OpenGenericImposter;
-
-    [assembly: GenerateImposter(typeof(IGenericConstraintsTarget))]
-
-    namespace Imposter.Tests.Features.OpenGenericImposter
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L223"}
+    public void GivenInputParameterSetup_WhenInvokedWithDerivedOrSameType_ShouldInvoke()
     {
-        public interface IGenericConstraintsTarget
-        {
-            void CompareValues<TArg>(TArg left, TArg right)
-                where TArg : IComparable<TArg>;
-        }
+        var capturedAnimals = new List<IAnimal>();
+
+        _sut.GenericSingleParam<Animal>(Arg<Animal>.Any())
+            .Callback(animal =>
+            {
+                capturedAnimals.Add(animal);
+            });
+
+        var animal = new Animal("mittens");
+        _sut.Instance().GenericSingleParam(animal);
+        
+        var cat = new Cat("mittens");
+        _sut.Instance().GenericSingleParam(cat);
+
+        capturedAnimals.Count.ShouldBe(2);
+        capturedAnimals[0].ShouldBe(animal);
+        capturedAnimals[1].ShouldBe(cat);
     }
     ```
 
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L246"}
+    public void GivenInputParameterSetup_WhenInvokedWithBase_ShouldNotInvoke()
+    {
+        Cat? capturedAnimal = null;
+
+        _sut.GenericSingleParam<Cat>(Arg<Cat>.Any())
+            .Callback(animal =>
+            {
+                capturedAnimal = animal;
+            });
+
+        var animal = new Animal("mittens");
+        _sut.Instance().GenericSingleParam(animal);
+
+        capturedAnimal.ShouldBeNull();
+    }
+    ```
+
+- For **output parameters**, setups declared on a derived generic argument type (like `Cat`) can be invoked even when the method is called using a base type (like `IAnimal`) as the output parameter; the provided value is assigned and observed through the base-typed variable.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L263"}
+    public void GivenOutputParameterSetupOnDerivedType_WhenMethodIsInvokedWithBaseType_ShouldInvoke()
+    {
+        Cat? providedCat = null;
+
+        _sut.GenericSingleOutParam<Cat>(OutArg<Cat>.Any())
+            .Callback((out Cat value) =>
+            {
+                providedCat = new Cat("mittens");
+                value = providedCat;
+            });
+
+        _sut.Instance().GenericSingleOutParam<IAnimal>(out var impersonatedAnimal);
+
+        providedCat.ShouldNotBeNull();
+        impersonatedAnimal.ShouldBe(providedCat);
+    }
+    ```
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L281"}
+    public void GivenOutputParameterSetupOnBase_WhenMethodIsInvokedWithDerivedType_ShouldNotInvoke()
+    {
+        var baseCallbackInvoked = false;
+
+        _sut.GenericSingleOutParam<IAnimal>(OutArg<IAnimal>.Any())
+            .Callback((out IAnimal value) =>
+            {
+                baseCallbackInvoked = true;
+                value = new Animal("base");
+            });
+
+        _sut.Instance().GenericSingleOutParam<Cat>(out Cat? cat);
+
+        baseCallbackInvoked.ShouldBeFalse();
+        cat.ShouldBeNull();
+    }
+    ```
+
+- For **ref parameters**, setups are matched by the exact static generic argument: a setup declared on a base type (like `IAnimal`) does not match when the method is invoked with a `ref` argument of a derived type (like `Cat`), but a setup declared on `Dog` matches a `ref Dog` argument.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L321"}
+    public void GivenRefParameterSetupOnBase_WhenInvokedWithDerivedType_ShouldNotInvoke()
+    {
+        var animalCallback = false;
+
+        _sut.GenericSingleRefParam<IAnimal>(Arg<IAnimal>.Any())
+            .Callback((ref IAnimal _) => animalCallback = true);
+
+        var cat = new Cat("mittens");
+        _sut.Instance().GenericSingleRefParam(ref cat);
+
+        animalCallback.ShouldBeFalse();
+    }
+    ```
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L335"}
+    public void GivenRefParameterSetup_WhenInvokedWithSameType_ShouldInvoke()
+    {
+        var dogCallbackInvoked = false;
+
+        _sut.GenericSingleRefParam<Dog>(Arg<Dog>.Any())
+            .Callback((ref Dog _) => dogCallbackInvoked = true);
+
+        var dog = new Dog("buddy");
+        _sut.Instance().GenericSingleRefParam(ref dog);
+
+        dogCallbackInvoked.ShouldBeTrue();
+    }
+    ```
+
+- For **generic return types**, setups declared for a more specific derived type (like `Cat`) can be used when the method is invoked with a base return type (like `IAnimal`), but setups declared for a base type (like `IAnimal`) are not used when the method is invoked with a more specific derived return type (like `Cat`), so the call returns the default value instead.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L299"}
+    public void GivenGenericReturnTypeSetupForDerived_WhenInvokedAsBase_ShouldReturnDerivedInstance()
+    {
+        var providedCat = new Cat("mittens");
+
+        _sut.GenericReturnType<Cat>().Returns(providedCat);
+
+        var impersonatedAnimal = _sut.Instance().GenericReturnType<IAnimal>();
+
+        impersonatedAnimal.ShouldBe(providedCat);
+    }
+    ```
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImposter/ReturnValueSetupTests.cs#L311"}
+    public void GivenGenericReturnTypeSetupForBase_WhenInvokedAsDerived_ShouldReturnDefault()
+    {
+        _sut.GenericReturnType<IAnimal>().Returns(new Animal("base"));
+
+        var result = _sut.Instance().GenericReturnType<Cat>();
+
+        result.ShouldBeNull();
+    }
+    ```
 
 ## Open Generics
 

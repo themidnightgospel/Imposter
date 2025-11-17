@@ -5,9 +5,9 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
@@ -21,7 +21,7 @@ internal static class EventImposterRaiseBuilder
         [
             SingleVariableField(fields.Callbacks),
             SingleVariableField(fields.History),
-            SingleVariableField(fields.HandlerInvocations)
+            SingleVariableField(fields.HandlerInvocations),
         ];
     }
 
@@ -80,9 +80,9 @@ internal static class EventImposterRaiseBuilder
         in ImposterEventMetadata @event
     ) =>
         new MethodDeclarationBuilder(
-                @event.Builder.Methods.RaiseInternal.ReturnType,
-                @event.Builder.Methods.RaiseInternal.Name
-            )
+            @event.Builder.Methods.RaiseInternal.ReturnType,
+            @event.Builder.Methods.RaiseInternal.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
             .WithBody(BuildRaiseInternalBody(@event))
@@ -94,7 +94,7 @@ internal static class EventImposterRaiseBuilder
         var fields = @event.Builder.Fields;
         blockBuilder.AddExpression(
             FieldIdentifier(fields.History)
-                .Dot(IdentifierName("Enqueue"))
+                .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                 .Call(Argument(BuildHistoryEntryExpression(@event)))
         );
 
@@ -115,9 +115,9 @@ internal static class EventImposterRaiseBuilder
         );
 
         return new MethodDeclarationBuilder(
-                @event.Builder.Methods.RaiseCoreAsync.ReturnType,
-                @event.Builder.Methods.RaiseCoreAsync.Name
-            )
+            @event.Builder.Methods.RaiseCoreAsync.ReturnType,
+            @event.Builder.Methods.RaiseCoreAsync.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.AsyncKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
@@ -140,7 +140,7 @@ internal static class EventImposterRaiseBuilder
         return new BlockBuilder()
             .AddExpression(
                 FieldIdentifier(fields.History)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(BuildHistoryEntryExpression(@event)))
             )
             .AddStatement(
@@ -177,9 +177,9 @@ internal static class EventImposterRaiseBuilder
         );
 
         return new MethodDeclarationBuilder(
-                enumerableType,
-                @event.Builder.Methods.EnumerateHandlers.Name
-            )
+            enumerableType,
+            @event.Builder.Methods.EnumerateHandlers.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(BuildEnumerateHandlersBody(@event))
             .Build();
@@ -334,7 +334,7 @@ internal static class EventImposterRaiseBuilder
             IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
             Block(
                 FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))
                     .ToStatementSyntax(),
                 IdentifierName("handler")
@@ -394,7 +394,7 @@ internal static class EventImposterRaiseBuilder
             IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
             Block(
                 FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))
                     .ToStatementSyntax(),
                 LocalVariableDeclarationSyntax(

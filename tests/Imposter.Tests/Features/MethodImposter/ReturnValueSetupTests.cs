@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -220,25 +221,108 @@ namespace Imposter.Tests.Features.MethodImposter
         }
 
         [Fact]
-        public void GivenGenericSingleParamSetupForIAnimal_WhenInvokedWithCat_ShouldInvokeCallback()
+        public void GivenInputParameterSetup_WhenInvokedWithDerivedOrSameType_ShouldInvoke()
         {
-            IAnimal? capturedAnimal = null;
+            var capturedAnimals = new List<IAnimal>();
 
-            _sut.GenericSingleParam<IAnimal>(Arg<IAnimal>.Any())
+            _sut.GenericSingleParam<Animal>(Arg<Animal>.Any())
+                .Callback(animal =>
+                {
+                    capturedAnimals.Add(animal);
+                });
+
+            var animal = new Animal("mittens");
+            _sut.Instance().GenericSingleParam(animal);
+
+            var cat = new Cat("mittens");
+            _sut.Instance().GenericSingleParam(cat);
+
+            capturedAnimals.Count.ShouldBe(2);
+            capturedAnimals[0].ShouldBe(animal);
+            capturedAnimals[1].ShouldBe(cat);
+        }
+
+        [Fact]
+        public void GivenInputParameterSetup_WhenInvokedWithBase_ShouldNotInvoke()
+        {
+            Cat? capturedAnimal = null;
+
+            _sut.GenericSingleParam<Cat>(Arg<Cat>.Any())
                 .Callback(animal =>
                 {
                     capturedAnimal = animal;
                 });
 
-            var cat = new Cat("mittens");
-            _sut.Instance().GenericSingleParam(cat);
+            var animal = new Animal("mittens");
+            _sut.Instance().GenericSingleParam(animal);
 
-            capturedAnimal.ShouldNotBeNull();
-            capturedAnimal.ShouldBe(cat);
+            capturedAnimal.ShouldBeNull();
         }
 
         [Fact]
-        public void GivenRefParameterSetupOnBaseType_WhenInvokedWithDerivedType_ShouldNotInvoke()
+        public void GivenOutputParameterSetupOnDerivedType_WhenMethodIsInvokedWithBaseType_ShouldInvoke()
+        {
+            Cat? providedCat = null;
+
+            _sut.GenericSingleOutParam<Cat>(OutArg<Cat>.Any())
+                .Callback(
+                    (out Cat value) =>
+                    {
+                        providedCat = new Cat("mittens");
+                        value = providedCat;
+                    }
+                );
+
+            _sut.Instance().GenericSingleOutParam<IAnimal>(out var impersonatedAnimal);
+
+            providedCat.ShouldNotBeNull();
+            impersonatedAnimal.ShouldBe(providedCat);
+        }
+
+        [Fact]
+        public void GivenOutputParameterSetupOnBase_WhenMethodIsInvokedWithDerivedType_ShouldNotInvoke()
+        {
+            var baseCallbackInvoked = false;
+
+            _sut.GenericSingleOutParam<IAnimal>(OutArg<IAnimal>.Any())
+                .Callback(
+                    (out IAnimal value) =>
+                    {
+                        baseCallbackInvoked = true;
+                        value = new Animal("base");
+                    }
+                );
+
+            _sut.Instance().GenericSingleOutParam<Cat>(out Cat? cat);
+
+            baseCallbackInvoked.ShouldBeFalse();
+            cat.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenGenericReturnTypeSetupForDerived_WhenInvokedAsBase_ShouldReturnDerivedInstance()
+        {
+            var providedCat = new Cat("mittens");
+
+            _sut.GenericReturnType<Cat>().Returns(providedCat);
+
+            var impersonatedAnimal = _sut.Instance().GenericReturnType<IAnimal>();
+
+            impersonatedAnimal.ShouldBe(providedCat);
+        }
+
+        [Fact]
+        public void GivenGenericReturnTypeSetupForBase_WhenInvokedAsDerived_ShouldReturnDefault()
+        {
+            _sut.GenericReturnType<IAnimal>().Returns(new Animal("base"));
+
+            var result = _sut.Instance().GenericReturnType<Cat>();
+
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenRefParameterSetupOnBase_WhenInvokedWithDerivedType_ShouldNotInvoke()
         {
             var animalCallback = false;
 

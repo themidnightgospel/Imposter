@@ -1046,7 +1046,7 @@ internal static class IndexerImposterBuilder
                         .Assign(False)
                         .ToStatementSyntax(),
                     IdentifierName(invocationMetadata.ReturnValuesField.Name)
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(handlerLambda))
                         .ToStatementSyntax(),
                     IdentifierName(invocationMetadata.ParentField.Name)
@@ -1073,7 +1073,7 @@ internal static class IndexerImposterBuilder
             .WithBody(
                 Block(
                     IdentifierName(invocationMetadata.CallbacksField.Name)
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(IdentifierName(parameter.Identifier)))
                         .ToStatementSyntax()
                 )
@@ -1338,7 +1338,7 @@ internal static class IndexerImposterBuilder
                         .Assign(False)
                         .ToStatementSyntax(),
                     IdentifierName(invocationMetadata.ReturnValuesField.Name)
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(handlerLambda))
                         .ToStatementSyntax(),
                     IdentifierName(invocationMetadata.LastReturnValueField.Name)
@@ -1477,7 +1477,7 @@ internal static class IndexerImposterBuilder
             .WithBody(
                 Block(
                     IdentifierName(setter.CallbacksField.Name)
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(tupleExpression))
                         .ToStatementSyntax()
                 )
@@ -1703,7 +1703,7 @@ internal static class IndexerImposterBuilder
             .WithBody(
                 Block(
                     IdentifierName(setter.BaseImplementationCriteriaField!.Value.Name)
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
                         .ToStatementSyntax(),
                     IdentifierName("MarkConfigured").Call().ToStatementSyntax()

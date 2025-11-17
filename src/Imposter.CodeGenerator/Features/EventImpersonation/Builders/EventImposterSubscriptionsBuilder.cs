@@ -3,9 +3,9 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
@@ -22,7 +22,7 @@ internal static class EventImposterSubscriptionsBuilder
             SingleVariableField(fields.SubscribeHistory),
             SingleVariableField(fields.UnsubscribeHistory),
             SingleVariableField(fields.SubscribeInterceptors),
-            SingleVariableField(fields.UnsubscribeInterceptors)
+            SingleVariableField(fields.UnsubscribeInterceptors),
         ];
     }
 
@@ -53,13 +53,13 @@ internal static class EventImposterSubscriptionsBuilder
             .AddExpression(ThrowIfNull(method.HandlerParameter.Name))
             .AddExpression(
                 FieldIdentifier(fields.HandlerOrder)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(handlerIdentifier))
             )
             .AddExpression(addOrUpdateExpression)
             .AddExpression(
                 FieldIdentifier(fields.SubscribeHistory)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(handlerIdentifier))
             )
             .AddStatement(
@@ -110,7 +110,7 @@ internal static class EventImposterSubscriptionsBuilder
             )
             .AddExpression(
                 FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
-                    .Dot(IdentifierName("Enqueue"))
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(handlerIdentifier))
             )
             .AddStatement(
@@ -149,7 +149,7 @@ internal static class EventImposterSubscriptionsBuilder
                     .AddExpression(ThrowIfNull(method.CallbackParameter.Name))
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.Callbacks)
-                            .Dot(IdentifierName("Enqueue"))
+                            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                             .Call(Argument(callbackIdentifier))
                     )
                     .AddStatement(ReturnStatement(ThisExpression()))
@@ -210,7 +210,7 @@ internal static class EventImposterSubscriptionsBuilder
                     .AddExpression(ThrowIfNull(method.InterceptorParameter.Name))
                     .AddExpression(
                         FieldIdentifier(interceptorsField)
-                            .Dot(IdentifierName("Enqueue"))
+                            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                             .Call(Argument(interceptorIdentifier))
                     )
                     .AddStatement(ReturnStatement(ThisExpression()))

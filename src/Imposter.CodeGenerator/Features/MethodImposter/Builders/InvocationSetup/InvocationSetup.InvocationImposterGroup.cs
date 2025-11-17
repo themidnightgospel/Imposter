@@ -55,7 +55,7 @@ internal static partial class InvocationSetupBuilder
                         invocationImposterType.New(ArgumentList())
                     ),
                     IdentifierName("_invocationImposters")
-                        .Dot(IdentifierName("Enqueue"))
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(
                             ArgumentList(
                                 SingletonSeparatedList(
