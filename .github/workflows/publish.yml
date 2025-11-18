@@ -1,4 +1,4 @@
-# Derived from Mapperly's packaging script (https://github.com/riok/mapperly) under the MIT License.
+# Derived from Mapperly's packaging script (https://github.com/riok/mapperly) under the Apache-2.0 license.
 
 name: release
 

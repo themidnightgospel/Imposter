@@ -59,6 +59,9 @@ Annotate the target type with the assembly level attribute and build. The genera
     }
     ```
 
+!!! note
+    Imposter and the imposter target (type that you generate an impsoter for) **does not** have to live in the same assembly. You can generate imposters for types in referenced assemblies.
+
 After a build, use the generated type:
 
 === "C# 14"
@@ -83,7 +86,7 @@ After a build, use the generated type:
     service.GetNumber().ShouldBe(42);
     ```
 
-Generate imposter for c classe
+Generate imposter for a class
 
 !!! warning
     Only non-sealed classes can be impersonated.
