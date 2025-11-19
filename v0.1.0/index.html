@@ -881,10 +881,10 @@
 <div class="tabbed-block">
 <p>Use the generated imposter type directly:</p>
 <div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L31"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">imposter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IMyServiceImposter</span><span class="p">();</span>
-<span class="n">imposter</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">Returns</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="n">imposter</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="n">Arg</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Any</span><span class="p">()).</span><span class="n">Returns</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">imposter</span><span class="p">.</span><span class="n">Instance</span><span class="p">();</span>
-<span class="n">service</span><span class="p">.</span><span class="n">GetNumber</span><span class="p">().</span><span class="n">ShouldBe</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="n">service</span><span class="p">.</span><span class="n">Increment</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">ShouldBe</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 </code></pre></div>
 </div>
 </div>
