@@ -80,10 +80,10 @@ After a build, use the generated type:
 
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/GettingStarted/GettingStartedTests.cs#L31"}
     var imposter = new IMyServiceImposter();
-    imposter.GetNumber().Returns(42);
+    imposter.Increment(Arg<int>.Any()).Returns(3);
 
     var service = imposter.Instance();
-    service.GetNumber().ShouldBe(42);
+    service.Increment(1).ShouldBe(3);
     ```
 
 Generate imposter for a class
