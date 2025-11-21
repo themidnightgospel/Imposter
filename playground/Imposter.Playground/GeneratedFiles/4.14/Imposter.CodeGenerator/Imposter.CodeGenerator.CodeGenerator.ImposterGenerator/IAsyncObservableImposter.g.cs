@@ -87,7 +87,7 @@ namespace Imposter.Playground
 
             public override string ToString()
             {
-                return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + Exception == null ? "" : " threw " + FormatValue(Exception);
+                return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
             }
 
             private static string FormatValue(object? value)
@@ -116,6 +116,7 @@ namespace Imposter.Playground
             }
         }
 
+        // void IAsyncObservable<T>.OnNext(T item)
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class OnNextMethodInvocationImposterGroup
         {
@@ -247,6 +248,7 @@ namespace Imposter.Playground
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        // void IAsyncObservable<T>.OnNext(T item)
         public interface IOnNextMethodImposterBuilder : IOnNextMethodInvocationImposterGroup, IOnNextMethodInvocationImposterGroupCallback, OnNextInvocationVerifier
         {
         }
