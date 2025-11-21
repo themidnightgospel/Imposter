@@ -151,3 +151,14 @@ Target type used in examples:
     int result;
     service.OutOnly(out result); // result == 42
     ```
+
+## Arg API reference
+
+- `Arg<T>.Any()` — wildcard that matches any value of `T`.
+- `Arg<T>.Is(T value)` / `Arg<T>.Is(T value, IEqualityComparer<T> comparer)` — matches when the argument equals the provided value (optionally using a custom comparer).
+- `Arg<T>.Is(Func<T, bool> predicate)` — matches when the predicate returns `true`.
+- `Arg<T>.IsNot(T value)` / `Arg<T>.IsNot(T value, IEqualityComparer<T> comparer)` — matches when the argument is not equal to the provided value (with optional comparer).
+- `Arg<T>.IsNot(Func<T, bool> predicate)` — matches when the predicate returns `false`.
+- `Arg<T>.IsDefault()` — matches `default(T)`.
+- `Arg<T>.IsIn(IEnumerable<T> values)` / `Arg<T>.IsIn(IEnumerable<T> values, IEqualityComparer<T> comparer)` — matches when the argument is contained in the supplied set.
+- `Arg<T>.IsNotIn(IEnumerable<T> values)` / `Arg<T>.IsNotIn(IEnumerable<T> values, IEqualityComparer<T> comparer)` — matches when the argument is not contained in the supplied set.

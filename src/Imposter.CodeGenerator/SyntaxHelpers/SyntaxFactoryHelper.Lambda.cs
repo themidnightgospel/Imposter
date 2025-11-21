@@ -11,7 +11,7 @@ internal static partial class SyntaxFactoryHelper
     public static ParenthesizedLambdaExpressionSyntax Lambda(
         IEnumerable<IParameterSymbol> parameters,
         BlockSyntax body
-    ) => ParenthesizedLambdaExpression(ParameterListSyntax(parameters), body);
+    ) => ParenthesizedLambdaExpression(ParameterListSyntaxWithoutDefaultValues(parameters), body);
 
     public static ParenthesizedLambdaExpressionSyntax AsyncLambda(
         IEnumerable<IParameterSymbol> parameters,
@@ -20,7 +20,7 @@ internal static partial class SyntaxFactoryHelper
     {
         return ParenthesizedLambdaExpression(
             asyncKeyword: Token(SyntaxKind.AsyncKeyword),
-            parameterList: ParameterListSyntax(parameters),
+            parameterList: ParameterListSyntaxWithoutDefaultValues(parameters),
             arrowToken: Token(SyntaxKind.EqualsGreaterThanToken),
             body: body
         );

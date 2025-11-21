@@ -40,6 +40,18 @@ internal static partial class SyntaxFactoryHelper
         bool includeRefKind = true
     ) => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
 
+    internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
+        IEnumerable<IParameterSymbol> parameters,
+        bool includeRefKind = true
+    ) =>
+        ParameterList(
+            SeparatedList(
+                parameters.Select(parameter =>
+                    ParameterSyntaxWithoutDefaultValue(parameter, includeRefKind)
+                )
+            )
+        );
+
     internal static ParameterListSyntax ParameterListSyntax(
         IEnumerable<ParameterSyntax> parameters
     ) => ParameterList(SeparatedList(parameters));
@@ -55,6 +67,17 @@ internal static partial class SyntaxFactoryHelper
     internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) =>
         ParameterSyntax(parameter, includeRefKind: true);
 
+    internal static ParameterSyntax ParameterSyntaxWithoutDefaultValue(
+        IParameterSymbol parameter,
+        bool includeRefKind = true
+    ) =>
+        ParameterSyntaxInternal(
+            parameter,
+            includeRefKind,
+            includeNullableReferenceAnnotations: false,
+            includeDefaultValue: false
+        );
+
     internal static ParameterSyntax ParameterSyntaxIncludingNullable(
         IParameterSymbol parameter,
         bool includeRefKind = true
@@ -62,7 +85,8 @@ internal static partial class SyntaxFactoryHelper
         ParameterSyntaxInternal(
             parameter,
             includeRefKind,
-            includeNullableReferenceAnnotations: true
+            includeNullableReferenceAnnotations: true,
+            includeDefaultValue: true
         );
 
     internal static ParameterSyntax ParameterSyntax(TypeSyntax type, string name) =>
@@ -84,13 +108,15 @@ internal static partial class SyntaxFactoryHelper
         ParameterSyntaxInternal(
             parameter,
             includeRefKind,
-            includeNullableReferenceAnnotations: false
+            includeNullableReferenceAnnotations: false,
+            includeDefaultValue: true
         );
 
     private static ParameterSyntax ParameterSyntaxInternal(
         IParameterSymbol parameter,
         bool includeRefKind,
-        bool includeNullableReferenceAnnotations
+        bool includeNullableReferenceAnnotations,
+        bool includeDefaultValue
     )
     {
         var parameterType = includeNullableReferenceAnnotations
@@ -115,17 +141,60 @@ internal static partial class SyntaxFactoryHelper
             }
         }
 
-        if (parameter.HasExplicitDefaultValue)
+        if (includeDefaultValue && parameter.HasExplicitDefaultValue)
         {
-            var defaultValue =
-                parameter.ExplicitDefaultValue != null
-                    ? ParseExpression(parameter.ExplicitDefaultValue.ToString())
-                    : DefaultExpression(parameterType);
-
-            parameterBuilder.WithDefaultValue(defaultValue);
+            var explicitDefaultValue = parameter.ExplicitDefaultValue;
+            if (explicitDefaultValue is not null)
+            {
+                var defaultValue = GetDefaultValue(parameter, explicitDefaultValue);
+                if (defaultValue is not null)
+                {
+                    parameterBuilder.WithDefaultValue(defaultValue);
+                }
+            }
+            else
+            {
+                parameterBuilder.WithDefaultValue(DefaultExpression(parameterType));
+            }
         }
 
         return parameterBuilder.Build();
+
+        static ExpressionSyntax? GetDefaultValue(
+            IParameterSymbol parameter,
+            object explicitDefaultValue
+        )
+        {
+            var defaultValueText = SymbolDisplay.FormatPrimitive(
+                explicitDefaultValue,
+                quoteStrings: true,
+                useHexadecimalNumbers: false
+            );
+
+            if (defaultValueText is null)
+            {
+                return null;
+            }
+
+            return parameter.Type.TypeKind == TypeKind.Enum
+                ? EnumDefaultExpression(parameter, defaultValueText)
+                : parameter.Type.SpecialType switch
+                {
+                    SpecialType.System_Decimal => LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        Literal((decimal)explicitDefaultValue)
+                    ),
+                    SpecialType.System_Single => LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        Literal((float)explicitDefaultValue)
+                    ),
+                    SpecialType.System_Double => LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        Literal((double)explicitDefaultValue)
+                    ),
+                    _ => ParseExpression(defaultValueText),
+                };
+        }
     }
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
@@ -143,4 +212,9 @@ internal static partial class SyntaxFactoryHelper
                     )
                 )
             );
+
+    private static CastExpressionSyntax EnumDefaultExpression(
+        IParameterSymbol parameter,
+        string defaultValueText
+    ) => CastExpression(TypeSyntax(parameter.Type), ParseExpression(defaultValueText));
 }
