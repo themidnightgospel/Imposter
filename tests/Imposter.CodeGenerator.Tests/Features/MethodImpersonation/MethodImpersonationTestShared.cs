@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
-public abstract class MethodImposterFluentApiTestsBase
+internal static class MethodImpersonationTestShared
 {
     internal const string Source = /*lang=csharp*/
         """
@@ -60,7 +60,7 @@ public abstract class MethodImposterFluentApiTestsBase
             Source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
-            assemblyName: nameof(MethodImposterFluentApiTestsBase)
+            assemblyName: nameof(MethodImpersonationTestShared)
         );
 
     internal static async Task<ImmutableArray<Diagnostic>> CompileSnippet(string snippet)

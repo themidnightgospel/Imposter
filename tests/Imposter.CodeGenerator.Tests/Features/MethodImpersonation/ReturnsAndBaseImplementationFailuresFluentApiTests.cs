@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.MethodImpersonation.MethodImpersonationTestShared;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
-public class ReturnsAndBaseImplementationFailuresFluentApiTests : MethodImposterFluentApiTestsBase
+public class ReturnsAndBaseImplementationFailuresFluentApiTests
 {
     [Fact]
     public async Task GivenVoidMethod_WhenReturning_ShouldFail()

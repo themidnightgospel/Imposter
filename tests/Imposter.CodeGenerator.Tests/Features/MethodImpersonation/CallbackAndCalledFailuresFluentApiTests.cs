@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.MethodImpersonation.MethodImpersonationTestShared;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
-public class CallbackAndCalledFailuresFluentApiTests : MethodImposterFluentApiTestsBase
+public class CallbackAndCalledFailuresFluentApiTests
 {
     [Fact]
     public async Task GivenMethod_WhenCallingThen_ShouldFail()
