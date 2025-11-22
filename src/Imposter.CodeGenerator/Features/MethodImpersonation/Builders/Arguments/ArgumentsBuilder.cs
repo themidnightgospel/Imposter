@@ -24,11 +24,17 @@ internal static class ArgumentsBuilder
             SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
         )
             .AddPublicModifier()
-            .AddMembers(inputParameters.Select(SyntaxFactoryHelper.ParameterAsReadonlyField))
+            .AddMembers(
+                inputParameters.Select(
+                    SyntaxFactoryHelper.ParameterAsReadonlyFieldIncludingNullable
+                )
+            )
             .AddMember(
                 new ConstructorBuilder(method.Arguments.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .WithParameterList(method.Parameters.InputParameterWithoutRefKindListSyntax)
+                    .WithParameterList(
+                        method.Parameters.InputParameterWithoutRefKindListSyntaxIncludingNullable
+                    )
                     .WithBody(
                         Block(
                             inputParameters.Select(parameter =>

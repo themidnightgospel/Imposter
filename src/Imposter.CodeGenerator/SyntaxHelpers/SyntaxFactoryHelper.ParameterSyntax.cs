@@ -56,6 +56,16 @@ internal static partial class SyntaxFactoryHelper
         IEnumerable<ParameterSyntax> parameters
     ) => ParameterList(SeparatedList(parameters));
 
+    internal static ParameterListSyntax ParameterListSyntaxIncludingNullable(
+        IEnumerable<IParameterSymbol> parameters,
+        bool includeRefKind = true
+    ) =>
+        ParameterList(
+            SeparatedList(
+                parameters.Select(it => ParameterSyntaxIncludingNullable(it, includeRefKind))
+            )
+        );
+
     internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(
         IEnumerable<IParameterSymbol> parameters
     ) => parameters.Select(ParameterSyntax);
@@ -74,7 +84,7 @@ internal static partial class SyntaxFactoryHelper
         ParameterSyntaxInternal(
             parameter,
             includeRefKind,
-            includeNullableReferenceAnnotations: false,
+            includeNullableReferenceAnnotations: true,
             includeDefaultValue: false
         );
 

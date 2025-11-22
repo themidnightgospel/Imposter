@@ -14,15 +14,11 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal IReadOnlyList<IParameterSymbol> OutputParameters { get; }
 
-    internal readonly ParameterListSyntax ParameterListSyntax;
+    internal readonly ParameterListSyntax ParameterListSyntaxIncludingNullable;
 
-    internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntax;
+    internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntaxIncludingNullable;
 
     internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithoutRef;
-
-    internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithRef;
-
-    internal readonly ArgumentListSyntax ParametersAsArgumentListSyntaxWithRef;
 
     internal bool HasInputParameters => InputParameters.Count > 0;
 
@@ -35,23 +31,17 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         OutputParameters = symbolParameters.Where(it => it.RefKind is RefKind.Out).ToArray();
         HasOutputParameters = OutputParameters.Count > 0;
 
-        ParameterListSyntax = SyntaxFactoryHelper.ParameterListSyntax(symbolParameters);
-        InputParameterWithoutRefKindListSyntax = SyntaxFactoryHelper.ParameterListSyntax(
-            InputParameters,
-            includeRefKind: false
-        );
+        ParameterListSyntaxIncludingNullable =
+            SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(symbolParameters);
+        InputParameterWithoutRefKindListSyntaxIncludingNullable =
+            SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(
+                InputParameters,
+                includeRefKind: false
+            );
 
         InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(
             InputParameters,
             includeRefKind: false
-        );
-        InputParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(
-            InputParameters,
-            includeRefKind: true
-        );
-        ParametersAsArgumentListSyntaxWithRef = SyntaxFactoryHelper.ArgumentListSyntax(
-            Parameters,
-            includeRefKind: true
         );
     }
 }

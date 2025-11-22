@@ -133,7 +133,7 @@ internal partial class MethodImposterBuilder
 
     private static ParameterListSyntax BuildMethodParameters(in ImposterTargetMethodMetadata method)
     {
-        var parameterList = method.Parameters.ParameterListSyntax;
+        var parameterList = method.Parameters.ParameterListSyntaxIncludingNullable;
 
         if (method.SupportsBaseImplementation)
         {

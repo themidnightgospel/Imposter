@@ -10,10 +10,14 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax ArgType(IParameterSymbol parameter) =>
-        parameter.RefKind == RefKind.Out
-            ? WellKnownTypes.Imposter.Abstractions.OutArg(TypeSyntax(parameter.Type))
-            : WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax(parameter.Type));
+    internal static TypeSyntax ArgType(IParameterSymbol parameter)
+    {
+        var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
+
+        return parameter.RefKind == RefKind.Out
+            ? WellKnownTypes.Imposter.Abstractions.OutArg(parameterType)
+            : WellKnownTypes.Imposter.Abstractions.Arg(parameterType);
+    }
 
     internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
         TypeSyntax argArgumentTypeSyntax

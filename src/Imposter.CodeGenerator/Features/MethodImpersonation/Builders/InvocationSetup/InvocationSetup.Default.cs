@@ -40,7 +40,7 @@ internal static partial class InvocationSetupBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddModifierIf(method.IsAsync, () => Token(SyntaxKind.AsyncKeyword))
-            .WithParameterList(method.Parameters.ParameterListSyntax)
+            .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
             .WithBody(
                 new BlockBuilder()
                     .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))

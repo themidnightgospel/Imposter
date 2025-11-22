@@ -65,7 +65,7 @@ function Get-CSharpierTargets {
     return $targets | Sort-Object -Unique
 }
 
-$csharpierTargets = Get-CSharpierTargets
+$csharpierTargets = @(Get-CSharpierTargets)
 if ($csharpierTargets.Count -gt 0) {
     $csharpierArgs = @("csharpier", "format") + $csharpierTargets
     Invoke-Task -Name "CSharpier" -Command "dotnet" -Args $csharpierArgs
@@ -77,62 +77,71 @@ else {
 Invoke-Task -Name "Imposter.Abstractions.Tests" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj",
-    "-c", "Release"
+    "-c", "Release",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.CodeGenerator.Tests" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj",
-    "-c", "Release"
+    "-c", "Release",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.0" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.0"
+    "/p:ROSLYN_VERSION=4.0",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.4" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.4"
+    "/p:ROSLYN_VERSION=4.4",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.5" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.5"
+    "/p:ROSLYN_VERSION=4.5",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.7" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.7"
+    "/p:ROSLYN_VERSION=4.7",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.11" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.11"
+    "/p:ROSLYN_VERSION=4.11",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.14" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=4.14"
+    "/p:ROSLYN_VERSION=4.14",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Invoke-Task -Name "Imposter.Tests / Roslyn 5.0" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
     "-c", "Release",
-    "/p:ROSLYN_VERSION=5.0"
+    "/p:ROSLYN_VERSION=5.0",
+    "/p:VERIFICATION_BUILD=true"
 )
 
 Write-Host "All tasks completed successfully." -ForegroundColor Cyan

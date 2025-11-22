@@ -4,7 +4,6 @@ namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 
 public static class DiagnosticDescriptors
 {
-    // TODO Update links when docs page is added.
     private const string LanguageSupportHelpUrl =
         "https://themidnightgospel.github.io/Imposter/latest/";
 

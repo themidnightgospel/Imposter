@@ -50,8 +50,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenNullableDefaultOptional_WhenInvoked_ShouldRespectDefaultValue()
         {
-            _sut.NullableDefault(Arg<string>.Is(val => val == null)).Returns(11);
-            _sut.NullableDefault(Arg<string>.Is("value")).Returns(22);
+            _sut.NullableDefault(Arg<string?>.Is(val => val == null)).Returns(11);
+            _sut.NullableDefault(Arg<string?>.Is("value")).Returns(22);
 
             _sut.Instance().NullableDefault().ShouldBe(11);
             _sut.Instance().NullableDefault("value").ShouldBe(22);
@@ -106,20 +106,73 @@ namespace Imposter.Tests.Features.MethodImpersonation
             _sut.Instance().NameDefault().ShouldBe(100);
             _sut.Instance().NameDefault("other").ShouldBe(200);
         }
+
+        [Fact]
+        public void GivenNullableRefAndOutParameters_WhenInvoked_ShouldNotAssignDefaultValues()
+        {
+            _sut.NullableRef(Arg<string?>.Is("input")).Returns(6);
+            _sut.NullableOut(OutArg<string?>.Any()).Returns(7);
+
+            var refValue = "input";
+            _sut.Instance().NullableRef(ref refValue).ShouldBe(6);
+            refValue.ShouldBe("input");
+
+            _sut.Instance().NullableOut(out var outValue).ShouldBe(7);
+            outValue.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenNullableInParameter_WhenInvoked_ShouldNotAssignDefaultValue()
+        {
+            _sut.NullableIn(Arg<string?>.Is("input")).Returns(8);
+
+            var value = "input";
+            _sut.Instance().NullableIn(in value).ShouldBe(8);
+        }
+
+        [Fact]
+        public void GivenNullableParamsParameter_WhenInvoked_ShouldNotAssignDefaultValue()
+        {
+            _sut.NullableParams(Arg<string?[]>.Is(values => values.Length == 0)).Returns(9);
+            _sut.NullableParams(
+                    Arg<string?[]>.Is(values =>
+                        values.Length == 2 && values[0] == "a" && values[1] == null
+                    )
+                )
+                .Returns(10);
+
+            _sut.Instance().NullableParams().ShouldBe(9);
+            _sut.Instance().NullableParams("a", null).ShouldBe(10);
+        }
     }
 
     public interface IMethodParametersWithDefaultSut
     {
         int BoolDefault(bool flag = true);
+
         int IntDefault(int value = 5);
+
         int DoubleDefault(double value = 2.5);
+
         int NullableDefault(string? text = null);
+
         int FloatDefault(float value = 1.25f);
+
         int DecimalDefault(decimal value = 12.5m);
+
         int CharDefault(char value = 'Z');
+
         int EnumDefault(Issue2Enum mode = Issue2Enum.Second);
 
         int NameDefault(string name = nameof(IMethodParametersWithDefaultSut));
+
+        int NullableRef(ref string? text);
+
+        int NullableOut(out string? text);
+
+        int NullableIn(in string? text);
+
+        int NullableParams(params string?[] values);
     }
 
     public enum Issue2Enum

@@ -93,9 +93,11 @@ internal static partial class SyntaxFactoryHelper
             VariableDeclarationSyntax(typeSyntax: typeSyntax, name: name, initializer: initializer)
         );
 
-    internal static FieldDeclarationSyntax ParameterAsReadonlyField(IParameterSymbol parameter) =>
+    internal static FieldDeclarationSyntax ParameterAsReadonlyFieldIncludingNullable(
+        IParameterSymbol parameter
+    ) =>
         SingleVariableField(
-            TypeSyntax(parameter.Type),
+            TypeSyntaxIncludingNullable(parameter.Type),
             parameter.Name,
             TokenList(Token(SyntaxKind.PublicKeyword))
         );

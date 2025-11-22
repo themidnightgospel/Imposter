@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -298,7 +300,28 @@ internal static partial class InvocationSetupBuilder
             ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName"),
         };
 
-        parameters.AddRange(method.Parameters.ParameterListSyntax.Parameters);
+        parameters.AddRange(
+            method.Parameters.ParameterListSyntaxIncludingNullable.Parameters.Select(parameter =>
+            {
+                if (
+                    parameter.Default is null
+                    && parameter.Type is NullableTypeSyntax
+                    && !parameter.Modifiers.Any(modifier =>
+                        modifier.IsKind(SyntaxKind.RefKeyword)
+                        || modifier.IsKind(SyntaxKind.OutKeyword)
+                        || modifier.IsKind(SyntaxKind.InKeyword)
+                    )
+                )
+                {
+                    return parameter.WithDefault(
+                        EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))
+                    );
+                }
+
+                return parameter;
+            })
+        );
+
         if (method.SupportsBaseImplementation)
         {
             parameters.Add(

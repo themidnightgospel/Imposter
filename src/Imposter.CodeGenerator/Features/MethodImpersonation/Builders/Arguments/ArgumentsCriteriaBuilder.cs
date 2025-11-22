@@ -52,7 +52,9 @@ public static class ArgumentsCriteriaBuilder
 
         return argumentsCriteriaClass
             .Build()
+#if DEBUG
             .WithLeadingTriviaComment(method.DisplayName)
+#endif
             .WithTrailingTrivia(CarriageReturnLineFeed);
     }
 

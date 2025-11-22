@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Condition="'$(VERIFICATION_BUILD)' == 'true'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants>$(DefineConstants);KEEP_WARNINGS_IN_GENERATED_FILES</DefineConstants>
+    <IMPOSTER_LOG>true</IMPOSTER_LOG>
+  </PropertyGroup>
+</Project>

@@ -55,8 +55,13 @@ internal static class MethodDelegateTypeBuilder
                 typeParameterList: method.GenericTypeArguments.Count > 0
                     ? SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
                     : default,
-                parameterList: SyntaxFactoryHelper.ParameterListSyntax(method.Symbol.Parameters),
+                parameterList: SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(
+                    method.Symbol.Parameters
+                ),
                 constraintClauses: List<TypeParameterConstraintClauseSyntax>()
             )
-            .WithLeadingTriviaComment(method.DisplayName);
+#if DEBUG
+            .WithLeadingTriviaComment(method.DisplayName)
+#endif
+    ;
 }
