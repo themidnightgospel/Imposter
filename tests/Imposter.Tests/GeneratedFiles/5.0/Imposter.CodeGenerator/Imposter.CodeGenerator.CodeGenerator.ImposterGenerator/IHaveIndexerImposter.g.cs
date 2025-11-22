@@ -1814,7 +1814,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T> imposter)
             where T : class
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexerImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexerImposter<T>();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexerImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexerImposter<T>(invocationBehavior);
         }
     }
 }

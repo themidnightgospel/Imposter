@@ -2804,7 +2804,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericClass<T> imposter)
             where T : class
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericClassImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericClassImposter<T>();
             public static global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericClassImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericClassImposter<T>(invocationBehavior);
         }
     }

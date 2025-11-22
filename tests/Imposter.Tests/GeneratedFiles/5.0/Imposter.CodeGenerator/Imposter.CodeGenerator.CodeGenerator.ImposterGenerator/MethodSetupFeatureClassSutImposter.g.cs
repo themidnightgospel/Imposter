@@ -2541,7 +2541,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
     {
         extension(global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut imposter)
         {
-            public static global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSutImposter Imposter() => new global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSutImposter();
             public static global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSutImposter(invocationBehavior);
         }
     }

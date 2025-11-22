@@ -1114,7 +1114,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
     {
         extension(global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties imposter)
         {
-            public static global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualPropertiesImposter Imposter() => new global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualPropertiesImposter();
             public static global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualPropertiesImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualPropertiesImposter(invocationBehavior);
         }
     }

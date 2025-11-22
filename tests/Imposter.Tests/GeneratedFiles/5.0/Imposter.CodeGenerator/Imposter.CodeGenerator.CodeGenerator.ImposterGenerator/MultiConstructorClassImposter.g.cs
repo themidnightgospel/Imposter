@@ -487,7 +487,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClass imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter(invocationBehavior);
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter Imposter(int value, string label, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter(value, label, invocationBehavior);
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter Imposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClassImposter(correlationId, invocationBehavior);

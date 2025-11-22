@@ -44,7 +44,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembers imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembersImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembersImposter(invocationBehavior);
         }
     }

@@ -786,7 +786,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T> imposter)
             where T : class
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveEventsImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveEventsImposter<T>();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveEventsImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveEventsImposter<T>(invocationBehavior);
         }
     }
 }

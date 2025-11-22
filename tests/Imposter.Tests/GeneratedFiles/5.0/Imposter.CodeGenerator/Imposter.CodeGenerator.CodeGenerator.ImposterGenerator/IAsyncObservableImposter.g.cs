@@ -396,7 +396,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
     {
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservable<T> imposter)
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservableImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservableImposter<T>();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservableImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservableImposter<T>(invocationBehavior);
         }
     }
 }

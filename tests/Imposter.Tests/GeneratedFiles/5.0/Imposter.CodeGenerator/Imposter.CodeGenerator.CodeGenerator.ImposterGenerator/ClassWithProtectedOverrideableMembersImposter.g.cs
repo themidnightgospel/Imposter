@@ -4067,7 +4067,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembers imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithProtectedOverrideableMembersImposter(invocationBehavior);
         }
     }

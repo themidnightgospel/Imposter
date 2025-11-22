@@ -5024,7 +5024,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
     {
         extension(global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut imposter)
         {
-            public static global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSutImposter Imposter() => new global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSutImposter();
+            public static global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSutImposter(invocationBehavior);
         }
     }
 }

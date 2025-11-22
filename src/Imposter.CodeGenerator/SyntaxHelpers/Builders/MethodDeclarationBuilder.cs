@@ -83,20 +83,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
-    // Those "if" fit better as extension methods
-    public MethodDeclarationBuilder AddParametersIf(
-        bool condition,
-        Func<IEnumerable<ParameterSyntax>> parameters
-    )
-    {
-        if (condition)
-        {
-            _parameters.AddRange(parameters());
-        }
-
-        return this;
-    }
-
     public MethodDeclarationBuilder AddParameters(IEnumerable<ParameterSyntax> parameters)
     {
         _parameters.AddRange(parameters);

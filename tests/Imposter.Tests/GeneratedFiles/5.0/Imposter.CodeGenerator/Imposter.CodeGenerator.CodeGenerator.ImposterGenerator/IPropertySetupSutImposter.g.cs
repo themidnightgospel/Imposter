@@ -726,7 +726,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
     {
         extension(global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter Imposter() => new global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter();
+            public static global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSutImposter(invocationBehavior);
         }
     }
 }

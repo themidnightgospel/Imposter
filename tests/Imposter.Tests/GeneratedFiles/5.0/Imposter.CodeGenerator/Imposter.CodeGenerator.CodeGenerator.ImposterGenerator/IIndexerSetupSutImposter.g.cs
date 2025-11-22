@@ -1230,7 +1230,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
     {
         extension(global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSutImposter();
+            public static global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.IndexerImpersonation.IIndexerSetupSutImposter(invocationBehavior);
         }
     }
 }

@@ -3046,7 +3046,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryServiceImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryServiceImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryServiceImposter(invocationBehavior);
         }
     }

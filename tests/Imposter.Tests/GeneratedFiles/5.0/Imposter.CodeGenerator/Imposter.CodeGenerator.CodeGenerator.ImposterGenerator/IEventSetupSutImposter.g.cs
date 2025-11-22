@@ -1092,7 +1092,7 @@ namespace Imposter.Tests.Features.EventImpersonation
     {
         extension(global::Imposter.Tests.Features.EventImpersonation.IEventSetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.EventImpersonation.IEventSetupSutImposter Imposter() => new global::Imposter.Tests.Features.EventImpersonation.IEventSetupSutImposter();
+            public static global::Imposter.Tests.Features.EventImpersonation.IEventSetupSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.EventImpersonation.IEventSetupSutImposter(invocationBehavior);
         }
     }
 }

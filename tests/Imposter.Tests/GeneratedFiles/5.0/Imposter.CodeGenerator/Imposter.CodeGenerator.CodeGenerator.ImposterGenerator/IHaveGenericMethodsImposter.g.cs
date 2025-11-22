@@ -1903,7 +1903,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
     {
         extension(global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethods imposter)
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethodsImposter Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethodsImposter();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethodsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethodsImposter(invocationBehavior);
         }
     }
 }

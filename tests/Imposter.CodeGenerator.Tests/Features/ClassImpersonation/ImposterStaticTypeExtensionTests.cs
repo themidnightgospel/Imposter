@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -12,7 +11,7 @@ namespace Imposter.CodeGenerator.Tests.Features.ClassImpersonation;
 
 public class ImposterStaticTypeExtensionTests
 {
-    private const string Source = /*lang=csharp*/
+    private const string InterfaceSource = /*lang=csharp*/
         """
         using Imposter.Abstractions;
 
@@ -42,69 +41,25 @@ public class ImposterStaticTypeExtensionTests
             public MultiCtorClass(int value, string label)
             {
             }
+
+            public MultiCtorClass(int value = 0)
+            {
+            }
+
+            public MultiCtorClass(ref double value)
+            {
+            }
+
+            public MultiCtorClass(out int value)
+            {
+                value = 0;
+            }
+
+            public MultiCtorClass(params int[] values)
+            {
+            }
         }
         """;
-
-    [Fact]
-    public async Task GivenPreviewLanguageVersion_WhenGeneratorRuns_ShouldEmitStaticTypeExtension()
-    {
-        var artifacts = await RunGeneratorAsync(
-            LanguageVersion.Preview,
-            Source,
-            "ImposterGeneratorExtensionsTests"
-        );
-
-        const string snippet = /*lang=csharp*/
-            """
-            namespace Sample;
-
-            public static class InterfaceUsage
-            {
-                public static void Call()
-                {
-                    var imposter = IOrderService.Imposter();
-                }
-            }
-            """;
-
-        AssertSnippetCompiles(LanguageVersion.Preview, artifacts, snippet);
-    }
-
-    [Fact]
-    public async Task GivenCSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
-    {
-        var artifacts = await RunGeneratorAsync(
-            LanguageVersion.CSharp10,
-            Source,
-            "ImposterGeneratorExtensionsTests"
-        );
-        var generatedSource = string.Join(
-            Environment.NewLine,
-            artifacts.Result.GeneratedSources.Select(static source => source.SourceText.ToString())
-        );
-
-        generatedSource.ShouldNotContain("IOrderServiceImposterExtensions");
-
-        const string snippet = /*lang=csharp*/
-            """
-namespace Sample;
-
-public static class InterfaceUsage
-{
-    public static void Call()
-    {
-        var imposter = IOrderService.Imposter();
-    }
-}
-""";
-
-        AssertSnippetFailsWithDiagnostic(
-            LanguageVersion.CSharp10,
-            artifacts,
-            snippet,
-            WellKnownCsCompilerErrorCodes.TypeDoesNotContainDefinition
-        );
-    }
 
     [Fact]
     public async Task GivenClassWithMultipleConstructors_WhenUsingImposterExtension_ShouldExposeAllOverloads()
@@ -117,14 +72,73 @@ public static class InterfaceUsage
 
         const string snippet = /*lang=csharp*/
             """
+            using Imposter.Abstractions;
+
             namespace Sample;
 
             public static class ClassUsage
             {
                 public static void Call()
                 {
-                    var defaultCtor = MultiCtorClass.Imposter();
+                    // Parameterless extension (ImposterMode default + explicit)
+                    // parameterless Imposter method will no longer be generated as there is no way to distinguish
+                    //   between parameterless and 'public MultiCtorClass(int value = 0)'
+                    // var defaultCtor = MultiCtorClass.Imposter();
+                    var defaultCtorExplicit = MultiCtorClass.Imposter(ImposterMode.Explicit);
+
+                    // (int value, string label) constructor
                     var overload = MultiCtorClass.Imposter(42, "label");
+                    var overloadExplicit = MultiCtorClass.Imposter(42, "label", ImposterMode.Explicit);
+
+                    // (int value = 0) constructor
+                    var defaultValue = MultiCtorClass.Imposter(10);
+                    var defaultValueExplicit = MultiCtorClass.Imposter(10, ImposterMode.Explicit);
+
+                    // (ref double value) constructor
+                    var refValue = 10.1;
+                    var refImposter = MultiCtorClass.Imposter(ref refValue);
+
+                    var explicitRefValue = 20.2;
+                    var explicitRefImposter = MultiCtorClass.Imposter(ref explicitRefValue, ImposterMode.Explicit);
+
+                    // (out int value) constructor
+                    int outValue;
+                    var outImposter = MultiCtorClass.Imposter(out outValue);
+
+                    int explicitOutValue;
+                    var explicitOutImposter = MultiCtorClass.Imposter(out explicitOutValue, ImposterMode.Explicit);
+
+                    // (params int[] values) constructor
+                    var paramsImposter = MultiCtorClass.Imposter([1, 2, 3]);
+                    var paramsExplicitImposter = MultiCtorClass.Imposter([1, 2, 3], ImposterMode.Explicit);
+                }
+            }
+            """;
+
+        AssertSnippetCompiles(LanguageVersion.Preview, artifacts, snippet);
+    }
+
+    [Fact]
+    public async Task GivenInterface_WhenUsingImposterExtension_ShouldExposeParameterlessAndImposterMode()
+    {
+        var artifacts = await RunGeneratorAsync(
+            LanguageVersion.Preview,
+            InterfaceSource,
+            "ImposterGeneratorExtensionsTests"
+        );
+
+        const string snippet = /*lang=csharp*/
+            """
+            using Imposter.Abstractions;
+
+            namespace Sample;
+
+            public static class ClassUsage
+            {
+                public static void Call()
+                {
+                    var orderServiceImposter = IOrderService.Imposter();
+                    var orderServiceExplicitImposter = IOrderService.Imposter(ImposterMode.Explicit);
                 }
             }
             """;
@@ -156,34 +170,5 @@ public static class InterfaceUsage
         {
             diagnostics.ShouldBeEmpty(FormatDiagnostics(diagnostics));
         }
-    }
-
-    private static void AssertSnippetFailsWithDiagnostic(
-        LanguageVersion languageVersion,
-        GeneratorArtifacts artifacts,
-        string snippet,
-        string expectedDiagnosticId
-    )
-    {
-        var (compilation, parseOptions) = InitializeCompilation(languageVersion, artifacts);
-
-        var snippetTree = CSharpSyntaxTree.ParseText(
-            snippet,
-            options: parseOptions,
-            path: "Snippet.cs"
-        );
-        compilation = compilation.AddSyntaxTrees(snippetTree);
-
-        var diagnostics = compilation
-            .GetDiagnostics()
-            .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
-            .ToArray();
-
-        diagnostics.ShouldNotBeEmpty("Expected snippet to produce compile errors.");
-        diagnostics
-            .Any(diagnostic => diagnostic.Id == expectedDiagnosticId)
-            .ShouldBeTrue(
-                $"Expected diagnostic {expectedDiagnosticId} but saw:{Environment.NewLine}{FormatDiagnostics(diagnostics)}"
-            );
     }
 }

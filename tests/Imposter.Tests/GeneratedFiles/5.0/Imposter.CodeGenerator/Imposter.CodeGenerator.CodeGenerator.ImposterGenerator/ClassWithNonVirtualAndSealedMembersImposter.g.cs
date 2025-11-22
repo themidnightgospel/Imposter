@@ -44,7 +44,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembers imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithNonVirtualAndSealedMembersImposter(invocationBehavior);
         }
     }

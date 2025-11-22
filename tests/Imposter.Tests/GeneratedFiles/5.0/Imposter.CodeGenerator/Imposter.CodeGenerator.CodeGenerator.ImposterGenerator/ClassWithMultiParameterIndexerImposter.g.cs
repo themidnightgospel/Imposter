@@ -677,7 +677,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexerImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexerImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexerImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexerImposter(invocationBehavior);
         }
     }

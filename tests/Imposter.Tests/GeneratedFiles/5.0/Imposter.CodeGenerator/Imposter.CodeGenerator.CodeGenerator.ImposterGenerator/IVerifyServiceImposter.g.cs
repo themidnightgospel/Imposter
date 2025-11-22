@@ -785,7 +785,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyServiceImposter(invocationBehavior);
         }
     }
 }

@@ -2292,7 +2292,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartServiceImposter(invocationBehavior);
         }
     }
 }

@@ -414,7 +414,6 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
     {
         extension(global::Imposter.Tests.Features.Docs.GettingStarted.BaseService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.GettingStarted.BaseServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.GettingStarted.BaseServiceImposter();
             public static global::Imposter.Tests.Features.Docs.GettingStarted.BaseServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.GettingStarted.BaseServiceImposter(invocationBehavior);
         }
     }

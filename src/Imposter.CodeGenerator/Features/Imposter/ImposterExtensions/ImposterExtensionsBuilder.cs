@@ -99,7 +99,7 @@ internal static class ImposterExtensionsBuilder
             methods.Add(BuildParameterlessMethod(imposterType, accessibilityModifiers));
         }
 
-        foreach (var constructor in constructors)
+        foreach (var constructor in constructors.Where(it => it.Parameters.Length > 0))
         {
             methods.Add(
                 BuildConstructorOverload(imposterType, accessibilityModifiers, constructor)
@@ -116,7 +116,12 @@ internal static class ImposterExtensionsBuilder
         new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifiers(accessibilityModifiers)
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithExpressionBody(ArrowExpressionClause(imposterType.New()))
+            .WithExpressionBody(
+                ArrowExpressionClause(
+                    imposterType.New(ImposterModeArgument().AsSingleArgumentListSyntax())
+                )
+            )
+            .AddParameter(CreateInvocationBehaviorParameter())
             .WithSemicolon()
             .Build();
 
@@ -126,23 +131,21 @@ internal static class ImposterExtensionsBuilder
         in ImposterTargetConstructorMetadata constructorMetadata
     )
     {
-        var parameters = SyntaxFactoryHelper
-            .ParameterSyntaxes(constructorMetadata.Parameters)
-            .ToList();
-        parameters.Add(CreateInvocationBehaviorParameter());
-
-        var arguments = new List<ArgumentSyntax>();
-
-        if (constructorMetadata.Parameters.Length > 0)
+        var parameters = new List<ParameterSyntax>(
+            SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
+        )
         {
-            arguments.AddRange(
-                constructorMetadata.Parameters.Select(parameter =>
-                    SyntaxFactoryHelper.ArgumentSyntax(parameter)
-                )
-            );
-        }
+            CreateInvocationBehaviorParameter(),
+        };
 
-        arguments.Add(Argument(IdentifierName(InvocationBehaviorParameterName)));
+        var arguments = new List<ArgumentSyntax>(
+            constructorMetadata.Parameters.Select(parameter =>
+                SyntaxFactoryHelper.ArgumentSyntax(parameter)
+            )
+        )
+        {
+            ImposterModeArgument(),
+        };
 
         return new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifiers(accessibilityModifiers)
@@ -155,6 +158,11 @@ internal static class ImposterExtensionsBuilder
             )
             .WithSemicolon()
             .Build();
+    }
+
+    private static ArgumentSyntax ImposterModeArgument()
+    {
+        return Argument(IdentifierName(InvocationBehaviorParameterName));
     }
 
     private static ParameterSyntax CreateInvocationBehaviorParameter() =>

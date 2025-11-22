@@ -429,7 +429,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
     {
         extension<TInput, TOutput>(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string> imposter)
         {
-            internal static global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput> Imposter() => new global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput>();
+            internal static global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput>(invocationBehavior);
         }
     }
 }

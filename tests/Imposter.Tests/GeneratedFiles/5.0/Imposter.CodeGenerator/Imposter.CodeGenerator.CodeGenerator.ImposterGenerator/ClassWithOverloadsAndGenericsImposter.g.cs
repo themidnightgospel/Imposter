@@ -1851,7 +1851,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenericsImposter(invocationBehavior);
         }
     }

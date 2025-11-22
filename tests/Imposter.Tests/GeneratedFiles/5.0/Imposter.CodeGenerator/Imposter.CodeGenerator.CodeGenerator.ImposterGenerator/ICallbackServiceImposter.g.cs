@@ -1184,7 +1184,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackServiceImposter(invocationBehavior);
         }
     }
 }

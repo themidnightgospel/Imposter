@@ -1897,7 +1897,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         extension<TKey, TValue>(global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue> imposter)
             where TKey : class where TValue : class
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClassImposter<TKey, TValue> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClassImposter<TKey, TValue>();
             public static global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClassImposter<TKey, TValue> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClassImposter<TKey, TValue>(invocationBehavior);
         }
     }

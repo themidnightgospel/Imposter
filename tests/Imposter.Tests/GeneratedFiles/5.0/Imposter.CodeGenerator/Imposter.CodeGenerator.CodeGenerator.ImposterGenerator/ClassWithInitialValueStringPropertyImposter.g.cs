@@ -446,7 +446,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
     {
         extension(global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringProperty imposter)
         {
-            public static global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringPropertyImposter Imposter() => new global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringPropertyImposter();
             public static global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringPropertyImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.PropertyImpersonation.ClassWithInitialValueStringPropertyImposter(invocationBehavior);
         }
     }

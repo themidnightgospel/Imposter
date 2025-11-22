@@ -770,7 +770,7 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.SequentialReturns.ISeqService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.SequentialReturns.ISeqServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.SequentialReturns.ISeqServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.SequentialReturns.ISeqServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.SequentialReturns.ISeqServiceImposter(invocationBehavior);
         }
     }
 }

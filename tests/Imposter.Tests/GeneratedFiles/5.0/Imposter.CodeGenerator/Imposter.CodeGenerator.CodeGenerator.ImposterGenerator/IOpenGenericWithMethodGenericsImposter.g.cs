@@ -1420,7 +1420,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
     {
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T> imposter)
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenericsImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenericsImposter<T>();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenericsImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenericsImposter<T>(invocationBehavior);
         }
     }
 }

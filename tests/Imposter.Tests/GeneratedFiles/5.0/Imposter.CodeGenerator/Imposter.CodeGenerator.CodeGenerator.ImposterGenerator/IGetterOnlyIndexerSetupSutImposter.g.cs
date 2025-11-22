@@ -486,7 +486,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
     {
         extension(global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSut imposter)
         {
-            public static global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter Imposter() => new global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter();
+            public static global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.IndexerImpersonation.IGetterOnlyIndexerSetupSutImposter(invocationBehavior);
         }
     }
 }

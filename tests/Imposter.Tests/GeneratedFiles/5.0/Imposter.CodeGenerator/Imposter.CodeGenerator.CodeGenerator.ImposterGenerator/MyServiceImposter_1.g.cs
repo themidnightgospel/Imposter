@@ -858,7 +858,6 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter();
             public static global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyServiceImposter(invocationBehavior);
         }
     }

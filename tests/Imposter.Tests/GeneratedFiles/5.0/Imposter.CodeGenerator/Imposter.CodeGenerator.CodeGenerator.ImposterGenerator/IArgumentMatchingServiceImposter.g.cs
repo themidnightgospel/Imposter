@@ -2722,7 +2722,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
     {
         extension(global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingServiceImposter(invocationBehavior);
         }
     }
 }

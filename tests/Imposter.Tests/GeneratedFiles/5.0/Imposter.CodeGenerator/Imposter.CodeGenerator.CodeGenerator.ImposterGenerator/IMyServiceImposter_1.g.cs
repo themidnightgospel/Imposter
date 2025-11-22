@@ -770,7 +770,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.ImposterModes.IMyServiceImposter(invocationBehavior);
         }
     }
 }

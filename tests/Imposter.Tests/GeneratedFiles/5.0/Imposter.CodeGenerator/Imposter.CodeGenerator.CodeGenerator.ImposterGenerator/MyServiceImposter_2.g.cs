@@ -1285,7 +1285,6 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyServiceImposter();
             public static global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyServiceImposter(invocationBehavior);
         }
     }

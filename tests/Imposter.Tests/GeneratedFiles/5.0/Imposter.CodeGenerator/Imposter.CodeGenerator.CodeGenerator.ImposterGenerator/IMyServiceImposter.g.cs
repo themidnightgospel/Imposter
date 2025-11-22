@@ -1612,7 +1612,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
     {
         extension(global::Imposter.Tests.Features.Docs.GettingStarted.IMyService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.GettingStarted.IMyServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.GettingStarted.IMyServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.GettingStarted.IMyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.GettingStarted.IMyServiceImposter(invocationBehavior);
         }
     }
 }

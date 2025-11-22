@@ -1188,7 +1188,6 @@ namespace Imposter.Tests.Docs.Properties
     {
         extension(global::Imposter.Tests.Docs.Properties.MyService imposter)
         {
-            public static global::Imposter.Tests.Docs.Properties.MyServiceImposter Imposter() => new global::Imposter.Tests.Docs.Properties.MyServiceImposter();
             public static global::Imposter.Tests.Docs.Properties.MyServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Docs.Properties.MyServiceImposter(invocationBehavior);
         }
     }

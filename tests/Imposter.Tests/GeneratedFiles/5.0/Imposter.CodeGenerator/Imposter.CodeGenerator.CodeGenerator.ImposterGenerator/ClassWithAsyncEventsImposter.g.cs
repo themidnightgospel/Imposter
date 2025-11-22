@@ -950,7 +950,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         extension(global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents imposter)
         {
-            public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEventsImposter Imposter() => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEventsImposter();
             public static global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEventsImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEventsImposter(invocationBehavior);
         }
     }

@@ -770,7 +770,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Throw
     {
         extension(global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowService imposter)
         {
-            public static global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter Imposter() => new global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter();
+            public static global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.Docs.Methods.Throw.IThrowServiceImposter(invocationBehavior);
         }
     }
 }

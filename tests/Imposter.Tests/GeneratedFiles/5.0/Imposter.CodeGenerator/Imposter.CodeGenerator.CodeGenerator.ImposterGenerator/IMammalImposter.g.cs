@@ -44,7 +44,7 @@ namespace Imposter.Tests.Shared
     {
         extension(global::Imposter.Tests.Shared.IMammal imposter)
         {
-            public static global::Imposter.Tests.Shared.IMammalImposter Imposter() => new global::Imposter.Tests.Shared.IMammalImposter();
+            public static global::Imposter.Tests.Shared.IMammalImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Shared.IMammalImposter(invocationBehavior);
         }
     }
 }

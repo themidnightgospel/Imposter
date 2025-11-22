@@ -1817,7 +1817,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
     {
         extension(global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTarget imposter)
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTargetImposter Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTargetImposter();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTargetImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTargetImposter(invocationBehavior);
         }
     }
 }

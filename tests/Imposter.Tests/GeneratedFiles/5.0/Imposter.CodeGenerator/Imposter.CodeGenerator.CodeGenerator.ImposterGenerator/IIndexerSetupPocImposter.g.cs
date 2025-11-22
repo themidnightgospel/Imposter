@@ -437,7 +437,7 @@ namespace Imposter.Tests.Shared
     {
         extension(global::Imposter.Tests.Shared.IIndexerSetupPoc imposter)
         {
-            public static global::Imposter.Tests.Shared.IIndexerSetupPocImposter Imposter() => new global::Imposter.Tests.Shared.IIndexerSetupPocImposter();
+            public static global::Imposter.Tests.Shared.IIndexerSetupPocImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Shared.IIndexerSetupPocImposter(invocationBehavior);
         }
     }
 }

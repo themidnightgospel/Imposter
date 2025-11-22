@@ -925,7 +925,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         extension<T>(global::Imposter.Tests.Features.OpenGenericImposter.IHasProperty<T> imposter)
             where T : class
         {
-            public static global::Imposter.Tests.Features.OpenGenericImposter.IHasPropertyImposter<T> Imposter() => new global::Imposter.Tests.Features.OpenGenericImposter.IHasPropertyImposter<T>();
+            public static global::Imposter.Tests.Features.OpenGenericImposter.IHasPropertyImposter<T> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.OpenGenericImposter.IHasPropertyImposter<T>(invocationBehavior);
         }
     }
 }
