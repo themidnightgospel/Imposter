@@ -17,7 +17,7 @@ jobs:
   generator-tests:
     name: Imposter.CodeGenerator Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET 8 SDK
@@ -26,7 +26,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Test Imposter.CodeGenerator.Tests
-        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true --logger "console;verbosity=detailed"
         
   abstractions-tests:
     name: Imposter.Abstractions Tests
@@ -40,7 +40,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Test Imposter.Abstractions.Tests
-        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true
+        run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true --logger "console;verbosity=detailed"
          
   roslyn-matrix:
     timeout-minutes: 10
@@ -76,5 +76,5 @@ jobs:
         run: dotnet build Imposter.sln -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -p:VERIFICATION_BUILD=true
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
-        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build
+        run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed"
 
