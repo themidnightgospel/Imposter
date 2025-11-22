@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
-using System.Threading;
-using Imposter.Abstractions;
-using Imposter.CodeGenerator.CodeGenerator;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Testing;
 using Shouldly;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.ClassImpersonation.ClassImpersonationTestShared;
+using GeneratorArtifacts = Imposter.CodeGenerator.Tests.Features.ClassImpersonation.ClassImpersonationTestShared.GeneratorArtifacts;
 
 namespace Imposter.CodeGenerator.Tests.Features.ClassImpersonation;
 
@@ -46,15 +45,14 @@ public class ImposterStaticTypeExtensionTests
         }
         """;
 
-    private sealed record GeneratorArtifacts(
-        GeneratorRunResult Result,
-        CSharpCompilation Compilation
-    );
-
     [Fact]
-    public void GivenPreviewLanguageVersion_WhenGeneratorRuns_ShouldEmitStaticTypeExtension()
+    public async Task GivenPreviewLanguageVersion_WhenGeneratorRuns_ShouldEmitStaticTypeExtension()
     {
-        var artifacts = RunGenerator(LanguageVersion.Preview);
+        var artifacts = await RunGeneratorAsync(
+            LanguageVersion.Preview,
+            Source,
+            "ImposterGeneratorExtensionsTests"
+        );
 
         const string snippet = /*lang=csharp*/
             """
@@ -73,9 +71,13 @@ public class ImposterStaticTypeExtensionTests
     }
 
     [Fact]
-    public void GivenCSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
+    public async Task GivenCSharpThirteen_WhenGeneratorRuns_ShouldNotEmitStaticTypeExtension()
     {
-        var artifacts = RunGenerator(LanguageVersion.CSharp10);
+        var artifacts = await RunGeneratorAsync(
+            LanguageVersion.CSharp10,
+            Source,
+            "ImposterGeneratorExtensionsTests"
+        );
         var generatedSource = string.Join(
             Environment.NewLine,
             artifacts.Result.GeneratedSources.Select(static source => source.SourceText.ToString())
@@ -105,9 +107,13 @@ public static class InterfaceUsage
     }
 
     [Fact]
-    public void GivenClassWithMultipleConstructors_WhenUsingImposterExtension_ShouldExposeAllOverloads()
+    public async Task GivenClassWithMultipleConstructors_WhenUsingImposterExtension_ShouldExposeAllOverloads()
     {
-        var artifacts = RunGenerator(LanguageVersion.Preview, ClassSource);
+        var artifacts = await RunGeneratorAsync(
+            LanguageVersion.Preview,
+            ClassSource,
+            "ImposterGeneratorExtensionsTests"
+        );
 
         const string snippet = /*lang=csharp*/
             """
@@ -179,90 +185,5 @@ public static class InterfaceUsage
             .ShouldBeTrue(
                 $"Expected diagnostic {expectedDiagnosticId} but saw:{Environment.NewLine}{FormatDiagnostics(diagnostics)}"
             );
-    }
-
-    private static (
-        CSharpCompilation Compilation,
-        CSharpParseOptions ParseOptions
-    ) InitializeCompilation(LanguageVersion languageVersion, GeneratorArtifacts artifacts)
-    {
-        var parseOptions = new CSharpParseOptions(languageVersion);
-        var compilation = artifacts.Compilation;
-
-        var baseDiagnostics = compilation
-            .GetDiagnostics()
-            .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
-            .ToArray();
-
-        if (baseDiagnostics.Length > 0)
-        {
-            baseDiagnostics.ShouldBeEmpty(FormatDiagnostics(baseDiagnostics));
-        }
-
-        return (compilation, parseOptions);
-    }
-
-    private static string FormatDiagnostics(Diagnostic[] diagnostics)
-    {
-        return string.Join(
-            Environment.NewLine,
-            diagnostics.Select(diagnostic =>
-            {
-                var span = diagnostic.Location.GetLineSpan();
-                return $"{diagnostic.Id}: {diagnostic.GetMessage()} ({span.Path}:{span.StartLinePosition.Line + 1},{span.StartLinePosition.Character + 1})";
-            })
-        );
-    }
-
-    private static GeneratorArtifacts RunGenerator(
-        LanguageVersion languageVersion,
-        string source = Source
-    )
-    {
-        var compilation = CreateCompilation(languageVersion, source);
-        var parseOptions = new CSharpParseOptions(languageVersion);
-        var driver = CSharpGeneratorDriver
-            .Create(new ImposterGenerator())
-            .WithUpdatedParseOptions(parseOptions);
-
-        var updatedDriver = driver.RunGeneratorsAndUpdateCompilation(
-            compilation,
-            out var updatedCompilation,
-            out var diagnostics
-        );
-        diagnostics.ShouldBeEmpty();
-
-        var runResult = updatedDriver.GetRunResult();
-        var generatorResult = runResult.Results.Single();
-
-        runResult.Diagnostics.ShouldBeEmpty();
-        generatorResult.Exception.ShouldBeNull();
-
-        return new GeneratorArtifacts(generatorResult, (CSharpCompilation)updatedCompilation);
-    }
-
-    private static CSharpCompilation CreateCompilation(
-        LanguageVersion languageVersion,
-        string source
-    )
-    {
-        var parseOptions = new CSharpParseOptions(languageVersion);
-
-        var references = ReferenceAssemblies
-            .Net.Net90.ResolveAsync(null, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult()
-            .Concat([
-                MetadataReference.CreateFromFile(
-                    typeof(GenerateImposterAttribute).Assembly.Location
-                ),
-            ]);
-
-        return CSharpCompilation.Create(
-            assemblyName: "ImposterGeneratorExtensionsTests",
-            syntaxTrees: [CSharpSyntaxTree.ParseText(source, parseOptions)],
-            references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        );
     }
 }

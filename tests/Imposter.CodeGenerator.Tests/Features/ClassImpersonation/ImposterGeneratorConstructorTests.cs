@@ -1,13 +1,10 @@
-using System.Linq;
-using System.Threading;
-using Imposter.Abstractions;
+using System.Threading.Tasks;
 using Imposter.CodeGenerator.CodeGenerator;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Testing;
 using Shouldly;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.ClassImpersonation.ClassImpersonationTestShared;
 
 namespace Imposter.CodeGenerator.Tests.Features.ClassImpersonation;
 
@@ -31,9 +28,13 @@ public class ImposterGeneratorConstructorTests
             """;
 
     [Fact]
-    public void GivenClassWithOnlyPrivateConstructors_WhenGeneratorRuns_ShouldReportIMP004()
+    public async Task GivenClassWithOnlyPrivateConstructors_WhenGeneratorRuns_ShouldReportIMP004()
     {
-        var compilation = CreateCompilation(LanguageVersion.CSharp9);
+        var compilation = await CreateCompilationAsync(
+            LanguageVersion.CSharp9,
+            Source,
+            "ImposterGeneratorConstructorTests"
+        );
         var driver = CSharpGeneratorDriver.Create(new ImposterGenerator());
 
         var runResult = driver.RunGenerators(compilation).GetRunResult();
@@ -43,26 +44,5 @@ public class ImposterGeneratorConstructorTests
             DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id
         );
         diagnostic.GetMessage().ShouldContain("Sample.PrivateOnlyClass");
-    }
-
-    private static CSharpCompilation CreateCompilation(LanguageVersion languageVersion)
-    {
-        var parseOptions = new CSharpParseOptions(languageVersion);
-        var references = ReferenceAssemblies
-            .Net.Net90.ResolveAsync(null, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult()
-            .Concat([
-                MetadataReference.CreateFromFile(
-                    typeof(GenerateImposterAttribute).Assembly.Location
-                ),
-            ]);
-
-        return CSharpCompilation.Create(
-            assemblyName: "ImposterGeneratorConstructorTests",
-            syntaxTrees: [CSharpSyntaxTree.ParseText(Source, parseOptions)],
-            references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        );
     }
 }

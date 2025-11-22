@@ -26,7 +26,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Test Imposter.CodeGenerator.Tests
-        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true --logger "console;verbosity=detailed"
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true --logger "console;verbosity=detailed" --blame-hang --blame-hang-timeou 5m
         
   abstractions-tests:
     name: Imposter.Abstractions Tests
