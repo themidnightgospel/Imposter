@@ -1,32 +1,49 @@
-using System.Collections.Immutable;
+using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Shouldly;
 using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Issues.Issue7;
 
 public class AssemblyAttributeWithGlobalInterfaceTests
 {
-    private const string Source =
+    private const string ITest = "ITest";
+
+    private const string SourceSameNamespace =
         /*lang=csharp*/
-        """
-            using Imposter.Abstractions;
+        $@"using Imposter.Abstractions;
 
-            [assembly: GenerateImposter(typeof(ITest))]
+[assembly: GenerateImposter(typeof({ITest}), true)]
 
-            interface ITest
-            {
-            }
-            """;
+public interface {ITest}
+{{
+    void Gronkulate(int value);
+}}
+";
 
-    private const string BaseSourceFileName =
-        "Issue7.AssemblyAttributeWithGlobalInterface.Source.cs";
-    private const string SnippetFileName = "Issue7.AssemblyAttributeWithGlobalInterface.Snippet.cs";
+    private const string SourceDedicatedNamespace =
+        /*lang=csharp*/
+        $@"using Imposter.Abstractions;
 
-    private static readonly Task<GeneratorTestContext> TestContextTask =
+[assembly: GenerateImposter(typeof({ITest}), false)]
+
+public interface {ITest}
+{{
+    void Gronkulate(int value);
+}}
+";
+
+    private const string BaseSourceFileName = "GeneratorInput.cs";
+    private const string SnippetFileName = "Snippet.cs";
+
+    private static Task<GeneratorTestContext> TestContextTask(string source) =>
         GeneratorTestHelper.CreateContext(
-            Source,
+            source,
             baseSourceFileName: BaseSourceFileName,
             snippetFileName: SnippetFileName,
             assemblyName: nameof(AssemblyAttributeWithGlobalInterfaceTests),
@@ -34,33 +51,45 @@ public class AssemblyAttributeWithGlobalInterfaceTests
         );
 
     [Fact]
-    public async Task GivenAssemblyAttributeWithGlobalInterface_WhenImposterIsGenerated_ShouldBeAccessible()
+    public async Task GivenTargetInGlobalNamespaceWithSameNamespace_WhenGeneratorRuns_ShouldGenerateImposterInGlobalNamespace()
     {
-        var diagnostics = await CompileSnippet(
-            /*lang=csharp*/
-            """
-            using Imposter.Abstractions;
-            using Imposters.ITest;
+        var testContext = await TestContextTask(SourceSameNamespace).ConfigureAwait(false);
+        var result = testContext.RunGenerator();
+        var compilation = testContext.Compilation;
 
-            public static class Scenario
-            {
-                public static void Execute()
-                {
-                    var imposter = new ITestImposter();
-                    var instance = imposter.Instance();
-                }
-            }
-            """
+        var imposterSource = result.GeneratedSources.Single(source =>
+            source.HintName == $"{ITest}Imposter.g.cs"
         );
 
-        GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
+        var namespaceLine = imposterSource
+            .SourceText.ToString()
+            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            .FirstOrDefault(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal));
+
+        namespaceLine.ShouldBeNull();
     }
 
-    private static async Task<ImmutableArray<Microsoft.CodeAnalysis.Diagnostic>> CompileSnippet(
-        string snippet
-    )
+    [Fact]
+    public async Task GivenTargetInGlobalNamespaceWithDedicatedNamespace_WhenGeneratorRuns_ShouldGenerateImposterInGlobalNamespace()
     {
-        var context = await TestContextTask.ConfigureAwait(false);
-        return context.CompileSnippet(snippet);
+        var testContext = await TestContextTask(SourceDedicatedNamespace).ConfigureAwait(false);
+        var result = testContext.RunGenerator();
+        var compilation = testContext.Compilation;
+
+        var imposterSource = result.GeneratedSources.Single(source =>
+            source.HintName == $"{ITest}Imposter.g.cs"
+        );
+
+        var namespaceLine = imposterSource
+            .SourceText.ToString()
+            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
+            .Trim();
+
+        var expectedNamespace = $"namespace Imposters.{ITest}";
+
+        namespaceLine.ShouldBe(expectedNamespace);
+        namespaceLine.ShouldNotContain("<");
+        namespaceLine.ShouldNotContain(">");
     }
 }
