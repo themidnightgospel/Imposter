@@ -144,7 +144,7 @@ internal static partial class SyntaxFactoryHelper
             _ => IdentifierName(nameSyntax.ToString()),
         };
 
-    internal static NameSyntax GlobalQualifiedName(string @namespace, string type)
+    internal static NameSyntax GlobalQualifiedName(string? @namespace, string type)
     {
         return ParseName(
             string.IsNullOrWhiteSpace(@namespace)

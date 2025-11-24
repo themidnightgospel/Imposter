@@ -19,7 +19,7 @@ internal static class ImposterExtensionsBuilder
 
     internal static ClassDeclarationSyntax Build(
         in ImposterGenerationContext imposterGenerationContext,
-        string imposterNamespaceName
+        string? imposterNamespaceName
     )
     {
         var extensionClassName =

@@ -120,16 +120,32 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         BuildEventImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
 
-        var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
-            imposterGenerationContext.ImposterNamespaceName
-        );
+        Action<MemberDeclarationSyntax> AddMember;
+        Func<MemberDeclarationSyntax[]> GetTopLevelMembers;
 
-        imposterNamespaceBuilder.AddMember(imposterBuilder.Build());
+        if (imposterGenerationContext.ImposterNamespaceName is null)
+        {
+            var globalMembers = new System.Collections.Generic.List<MemberDeclarationSyntax>();
+
+            AddMember = globalMembers.Add;
+            GetTopLevelMembers = globalMembers.ToArray;
+        }
+        else
+        {
+            var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
+                imposterGenerationContext.ImposterNamespaceName
+            );
+
+            AddMember = syntax => imposterNamespaceBuilder.AddMember(syntax);
+            GetTopLevelMembers = () => [imposterNamespaceBuilder.Build()];
+        }
+
+        AddMember(imposterBuilder.Build());
 
 #if ROSLYN4_14_OR_GREATER
         if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
         {
-            imposterNamespaceBuilder.AddMember(
+            AddMember(
                 ImposterExtensionsBuilder.Build(
                     imposterGenerationContext,
                     imposterGenerationContext.ImposterNamespaceName
@@ -150,15 +166,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         );
 #endif
 
-        var imposterNamespace = imposterNamespaceBuilder.Build();
-
         var compilationUnit = CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
             usings: List(
                 UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)
             ),
             attributeLists: List<AttributeListSyntax>(),
-            members: List<MemberDeclarationSyntax>([imposterNamespace])
+            members: List<MemberDeclarationSyntax>(GetTopLevelMembers())
         );
 
         return compilationUnit
