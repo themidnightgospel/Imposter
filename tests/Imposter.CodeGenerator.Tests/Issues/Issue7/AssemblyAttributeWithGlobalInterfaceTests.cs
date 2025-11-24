@@ -12,28 +12,30 @@ namespace Imposter.CodeGenerator.Tests.Issues.Issue7;
 
 public class AssemblyAttributeWithGlobalInterfaceTests
 {
+    private const string ITest = "ITest";
+
     private const string SourceSameNamespace =
         /*lang=csharp*/
-        @"using Imposter.Abstractions;
+        $@"using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(IGeneric<int, string>), true)]
+[assembly: GenerateImposter(typeof({ITest}), true)]
 
-public interface IGeneric<TFirst, TSecond>
-{
-    TFirst Convert(TSecond value);
-}
+public interface {ITest}
+{{
+    void Gronkulate(int value);
+}}
 ";
 
     private const string SourceDedicatedNamespace =
         /*lang=csharp*/
-        @"using Imposter.Abstractions;
+        $@"using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(IGeneric<int, string>), false)]
+[assembly: GenerateImposter(typeof({ITest}), false)]
 
-public interface IGeneric<TFirst, TSecond>
-{
-    TFirst Convert(TSecond value);
-}
+public interface {ITest}
+{{
+    void Gronkulate(int value);
+}}
 ";
 
     private const string BaseSourceFileName = "GeneratorInput.cs";
@@ -56,15 +58,13 @@ public interface IGeneric<TFirst, TSecond>
         var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
-            source.HintName == "IGenericImposter.g.cs"
+            source.HintName == $"{ITest}Imposter.g.cs"
         );
 
         var namespaceLine = imposterSource
             .SourceText.ToString()
             .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(line =>
-                line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal)
-            );
+            .FirstOrDefault(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal));
 
         namespaceLine.ShouldBeNull();
     }
@@ -77,7 +77,7 @@ public interface IGeneric<TFirst, TSecond>
         var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
-            source.HintName == "IGenericImposter.g.cs"
+            source.HintName == $"{ITest}Imposter.g.cs"
         );
 
         var namespaceLine = imposterSource
@@ -86,34 +86,10 @@ public interface IGeneric<TFirst, TSecond>
             .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
             .Trim();
 
-        var expectedNamespace = $"namespace Imposters.{BuildSanitizedSuffix(compilation)}";
+        var expectedNamespace = $"namespace Imposters.{ITest}";
 
         namespaceLine.ShouldBe(expectedNamespace);
         namespaceLine.ShouldNotContain("<");
         namespaceLine.ShouldNotContain(">");
-    }
-
-    private static string BuildSanitizedSuffix(CSharpCompilation compilation)
-    {
-        var interfaceSymbol = compilation.GetTypeByMetadataName("IGeneric`2")!;
-        var constructed = interfaceSymbol.Construct(
-            compilation.GetSpecialType(SpecialType.System_Int32),
-            compilation.GetSpecialType(SpecialType.System_String)
-        );
-
-        var display = constructed.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        const string globalPrefix = "global::";
-        if (display.StartsWith(globalPrefix, StringComparison.Ordinal))
-        {
-            display = display.Substring(globalPrefix.Length);
-        }
-
-        var builder = new StringBuilder(display.Length);
-        foreach (var ch in display)
-        {
-            builder.Append(char.IsLetterOrDigit(ch) || ch == '_' || ch == '.' ? ch : '_');
-        }
-
-        return builder.ToString();
     }
 }
