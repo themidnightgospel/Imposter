@@ -5,7 +5,7 @@ Verify that methods were invoked the expected number of times with specific argu
 Target type used in examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L5"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Verification/VerificationTests.cs#L5"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IVerifyService))]
@@ -20,7 +20,7 @@ Target type used in examples:
 ## Basic counts
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L26"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Verification/VerificationTests.cs#L26"}
     service.Increment(1);
     service.Increment(2);
 
@@ -33,7 +33,7 @@ Target type used in examples:
 Verification respects the same argument matching rules used for arrangements:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L41"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Verification/VerificationTests.cs#L41"}
     // See more examples in repo tests
     imposter.Increment(Arg<int>.Is(x => x > 10)).Called(Count.Exactly(3));
     imposter.Combine(Arg<int>.Is(x => x > 0), Arg<int>.Is(y => y < 10)).Called(Count.Once());

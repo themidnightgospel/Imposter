@@ -95,7 +95,7 @@ Sequence with `Then()` if you need to call base once and then switch behavior:
 For class targets with virtual properties, you can forward getters and setters to the base implementation.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/PropertyUseBaseImplementationTests.cs#L17"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/PropertyUseBaseImplementationTests.cs#L17"}
     var imposter = new ClassWithVirtualPropertyImposter();
     imposter.VirtualProperty.Getter().UseBaseImplementation();
 
@@ -104,7 +104,7 @@ For class targets with virtual properties, you can forward getters and setters t
     ```
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/PropertyUseBaseImplementationTests.cs#L57"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/PropertyUseBaseImplementationTests.cs#L57"}
     var imposter = new ClassWithVirtualPropertyImposter();
     imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
 
@@ -119,7 +119,7 @@ This is useful when you want imposters to preserve class invariants or initializ
 Class targets with virtual indexers also support `UseBaseImplementation()` on getter and setter builders.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImposter/GetterTests.cs#L18"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/GetterTests.cs#L18"}
     var imposter = new IIndexerSetupSutImposter();
     imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Getter().UseBaseImplementation();
 
@@ -128,7 +128,7 @@ Class targets with virtual indexers also support `UseBaseImplementation()` on ge
     ```
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImposter/SetterTests.cs#L17"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/SetterTests.cs#L17"}
     var imposter = new IIndexerSetupSutImposter();
     imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()].Setter().UseBaseImplementation();
 

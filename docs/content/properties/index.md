@@ -7,9 +7,9 @@ Configure getters and setters, verify writes, and forward to base implementation
 Define the target interface and enable generation:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/IPropertySetupSut.cs#L1"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/IPropertySetupSut.cs#L1"}
     using Imposter.Abstractions;
-    using Imposter.Tests.Features.PropertyImposter;
+    using Imposter.Tests.Features.PropertyImpersonation;
 
     [assembly: GenerateImposter(typeof(IPropertySetupSut))]
 
@@ -26,7 +26,7 @@ Define the target interface and enable generation:
 ## Getter
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ReturnTests.cs#L80"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/ReturnTests.cs#L80"}
     imposter.Age.Getter().Returns(33);
     var value = service.Age; // 33
 
@@ -40,7 +40,7 @@ Define the target interface and enable generation:
 ## Setter
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/CallbackTests.cs#L17"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/CallbackTests.cs#L17"}
     // Observe writes
     imposter.Age.Setter(Arg<int>.Any()).Callback(v => { /* side-effects */ });
 
@@ -58,7 +58,7 @@ Define the target interface and enable generation:
 Forward to the base implementation for overridable class members:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/PropertyUseBaseImplementationTests.cs#L15"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/PropertyUseBaseImplementationTests.cs#L15"}
     imposter.Age.Getter().UseBaseImplementation();
     imposter.Age.Setter(Arg<int>.Any()).UseBaseImplementation();
 

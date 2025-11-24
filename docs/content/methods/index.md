@@ -3,7 +3,7 @@
 Define the target interface and enable generation:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L7"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L7"}
     using Imposter.Abstractions;
 
     [assembly: GenerateImposter(typeof(Imposter.Tests.Docs.Methods.IQuickStartService))]
@@ -29,7 +29,7 @@ Define the target interface and enable generation:
  - Return a constant value:
   
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L43"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L43"}
        imposter.GetNumber().Returns(1);
 
        imposter.Instance().GetNumber(); // returns 1
@@ -37,7 +37,7 @@ Define the target interface and enable generation:
  - Return via a delegate (captures inputs):
   
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L34"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L34"}
        imposter.Increment(Arg<int>.Any()).Returns(v => v + 2);
 
        imposter.Instance().Increment(10); // returns 12;
@@ -45,7 +45,7 @@ Define the target interface and enable generation:
  - Sequence multiple outcomes with `Then()`:
   
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L42"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L42"}
        imposter
             .Increment(Arg<int>.Any())
             .Returns(v => v + 2)
@@ -72,19 +72,19 @@ With async methods, imposter provides some handy methods to simplify setup:
 
  - Task<T> and ValueTask<T> methods:
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L51"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L51"}
        imposter.GetNumberAsync().ReturnsAsync(42);
   
        await imposter.Instance().GetNumberAsync(); // returns 41
        ```
  - Task-returning (no result):
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L54"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L54"}
        imposter.DoWorkAsync().Returns(Task.CompletedTask);
        ```
  - Sequencing remains the same:
 !!! example
-       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/OverviewTests.cs#L56"}
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L56"}
        imposter.GetNumberAsync()
            .ReturnsAsync(1)
            .Then().Returns(() => Task.FromResult(2));
@@ -102,7 +102,7 @@ Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref` and `in`.
 
 Returns and callbacks can specify `out/ref/in` in the delegate signature:
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/CallbacksTests.cs#L56"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L56"}
     imposter.GenericAllRefKind<int, string, double, bool, int>(
             OutArg<int>.Any(),
             Arg<string>.Any(),
@@ -121,12 +121,12 @@ Returns and callbacks can specify `out/ref/in` in the delegate signature:
 
 Use `Called(Count.*)` on the method to assert invocation counts:
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Methods/VerificationTests.cs#L26"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Verification/VerificationTests.cs#L26"}
     // After calling service methods
     imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
     imposter.Increment(2).Called(Count.Once());
     ```
-See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/tree/main/tests/Imposter.Tests/Features/MethodImposter).
+See more examples on [GitHub](https://github.com/themidnightgospel/Imposter/tree/main/tests/Imposter.Tests/Features/MethodImpersonation).
 `Count` options:
 - `Exactly(n)`, `AtLeast(n)`, `AtMost(n)`, `Once()`, `Never()`, `Any`
 

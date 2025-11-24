@@ -19,21 +19,29 @@ Add nuget package reference:
 dotnet add package Imposter
 ```
 
-Includes the source generator (analyzer) and runtime abstractions in a single package.
-
-Use `[GenerateImposter]` attribute to generate an imposter
+To generate an imposter for the blow interface
 
 ```csharp
-using System.Threading.Tasks;
-using Imposter.Abstractions;
 
-[assembly: GenerateImposter(typeof(ICalculator))]
+namespace Application.Domain;
 
 public interface ICalculator
 {
     int Add(int a, int b);
 }
+```
 
+Use `[GenerateImposter]` attribute in your test project
+
+```csharp
+[assembly: GenerateImposter(typeof(Application.Domain.ICalculator))]
+```
+
+Then use the generated imposter in your tests
+
+```csharp
+using System.Threading.Tasks;
+using Imposter.Abstractions;
 
 // c# 14
 var imposter = ICalculator.Imposter();

@@ -3,7 +3,7 @@
 Return a sequence of values on successive reads.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ReturnTests.cs#L72"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/ReturnTests.cs#L72"}
     imposter.Age.Getter()
         .Returns(10)
         .Then().Returns(20)
@@ -18,7 +18,7 @@ Return a sequence of values on successive reads.
 Combine sequencing with callbacks if you need to record read order or side effects:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/CallbackTests.cs#L68"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/CallbackTests.cs#L68"}
     var firstSeen = 0;
     var secondSeen = 0;
 

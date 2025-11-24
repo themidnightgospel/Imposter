@@ -5,7 +5,7 @@ In Explicit mode or when desired, configure indexer getters to throw. For setter
 ## Getter throwing
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImposter/GetterTests.cs#L341"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/GetterTests.cs#L341"}
     imposter[Arg<int>.Any(), Arg<string>.Any(), Arg<object>.Any()]
         .Getter()
         .Throws<InvalidOperationException>();
@@ -24,4 +24,3 @@ In Explicit mode or when desired, configure indexer getters to throw. For setter
             => throw new InvalidOperationException("Callback error"));
     Should.Throw<InvalidOperationException>(() => service[42] = 10);
     ```
-

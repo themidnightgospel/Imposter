@@ -17,7 +17,7 @@ Use the generated imposter type for your indexer-bearing interface or class and 
 ## Getter
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImposter/GetterTests.cs#L103"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/GetterTests.cs#L103"}
     var imposter = IMyServiceSut.Imposter();
     imposter[Arg<int>.Is(k => k > 0)].Getter().Returns(10);
 
@@ -28,7 +28,7 @@ Use the generated imposter type for your indexer-bearing interface or class and 
 ## Setter
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImposter/SetterTests.cs#L147"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/SetterTests.cs#L147"}
     // Observe writes
     imposter[Arg<int>.Any()].Setter().Callback((key, value) => 
             { 

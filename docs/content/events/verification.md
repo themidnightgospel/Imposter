@@ -5,7 +5,7 @@ Verify handler subscriptions and invocations.
 ## Subscribed verification
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImposter/VerificationTests.cs#L17"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImpersonation/VerificationTests.cs#L17"}
     EventHandler h = (s, e) => { };
 
     service.SomethingHappened += h;
@@ -19,7 +19,7 @@ Verify handler subscriptions and invocations.
 ## HandlerInvoked verification
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImposter/VerificationTests.cs#L66"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImpersonation/VerificationTests.cs#L66"}
     int count = 0;
     EventHandler h = (s, e) => count++;
     service.SomethingHappened += h;

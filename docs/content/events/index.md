@@ -5,11 +5,11 @@
 Define the target interface and enable generation:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImposter/IEventSetupSut.cs#L1"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImpersonation/IEventSetupSut.cs#L1"}
     using System;
     using System.Threading.Tasks;
     using Imposter.Abstractions;
-    using Imposter.Tests.Features.EventImposter;
+    using Imposter.Tests.Features.EventImpersonation;
 
     [assembly: GenerateImposter(typeof(IEventSetupSut))]
 

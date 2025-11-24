@@ -3,7 +3,7 @@
 ## Setter verification
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/VerificationTests.cs#L39"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/VerificationTests.cs#L39"}
     service.Age = 33;
     service.Age = 34;
 
@@ -14,7 +14,7 @@
 ## Getter verification
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/VerificationTests.cs#L17"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/VerificationTests.cs#L17"}
     var _ = service.Age;
     imposter.Age.Getter().Called(Count.Once());
     ```
@@ -30,7 +30,7 @@ Invocation was expected to be performed {expectedCount} but instead was performe
 Examples:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/VerificationTests.cs#L26"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/VerificationTests.cs#L26"}
     // Setter expected once for value 34, but no matching write occurred
     imposter.Age.Setter(Arg<int>.Is(34)).Called(Count.Once());
     // throws: "Invocation was expected to be performed exactly 1 time(s) but instead was performed 0 times."

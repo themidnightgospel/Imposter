@@ -5,7 +5,7 @@ In Explicit mode or when desired, configure getters to throw. For setters, prefe
 ## Getter throwing
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ThrowsTests.cs#L27"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/ThrowsTests.cs#L27"}
     imposter.Age.Getter().Throws<InvalidOperationException>();
 
     var service = imposter.Instance();
@@ -17,7 +17,7 @@ In Explicit mode or when desired, configure getters to throw. For setters, prefe
 ## Setter validation with throwing callbacks
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImposter/ThrowsTests.cs#L65"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/ThrowsTests.cs#L65"}
     imposter.Age.Setter(Arg<int>.Any())
         .Callback(_ => throw new InvalidOperationException("Callback error"));
 
@@ -28,4 +28,3 @@ In Explicit mode or when desired, configure getters to throw. For setters, prefe
 
     imposter.Age.Setter(Arg<int>.Is(v => v == 42)).Called(Count.Exactly(1));
     ```
-
