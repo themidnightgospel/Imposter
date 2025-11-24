@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>.net8.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Imposter.CodeGenerator.Tests</RootNamespace>
     <LangVersion>12</LangVersion>
   </PropertyGroup>
