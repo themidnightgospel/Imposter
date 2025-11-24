@@ -19,7 +19,9 @@ Add nuget package reference:
 dotnet add package Imposter
 ```
 
-To generate an imposter for the blow interface
+Pick an interface or non-sealed class that you would like to generate an imposter for.
+
+Say we have a below interface
 
 ```csharp
 
@@ -31,13 +33,13 @@ public interface ICalculator
 }
 ```
 
-Use `[GenerateImposter]` attribute in your test project
+Use `[GenerateImposter]` attribute in your **tests** project, this will generate an imoster
 
 ```csharp
 [assembly: GenerateImposter(typeof(Application.Domain.ICalculator))]
 ```
 
-Then use the generated imposter in your tests
+Then use can use the generated imposter in your tests
 
 ```csharp
 using System.Threading.Tasks;
