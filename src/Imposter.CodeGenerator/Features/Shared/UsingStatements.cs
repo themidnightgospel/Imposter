@@ -23,21 +23,21 @@ internal static class UsingStatements
 
     internal static List<UsingDirectiveSyntax> Build(INamespaceSymbol imposterTargetNamespace)
     {
-        if (!imposterTargetNamespace.ContainingNamespace.IsGlobalNamespace)
+        if (imposterTargetNamespace.IsGlobalNamespace)
         {
-            return DefaultUsings
-                .Concat([
-                    UsingDirective(
-                        ParseName(
-                            imposterTargetNamespace.ToDisplayString(
-                                SymbolDisplayFormat.FullyQualifiedFormat
-                            )
-                        )
-                    ),
-                ])
-                .ToList();
+            return DefaultUsings;
         }
 
-        return DefaultUsings;
+        return DefaultUsings
+            .Concat([
+                UsingDirective(
+                    ParseName(
+                        imposterTargetNamespace.ToDisplayString(
+                            SymbolDisplayFormat.FullyQualifiedFormat
+                        )
+                    )
+                ),
+            ])
+            .ToList();
     }
 }
