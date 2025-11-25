@@ -301,25 +301,7 @@ internal static partial class InvocationSetupBuilder
         };
 
         parameters.AddRange(
-            method.Parameters.ParameterListSyntaxIncludingNullable.Parameters.Select(parameter =>
-            {
-                if (
-                    parameter.Default is null
-                    && parameter.Type is NullableTypeSyntax
-                    && !parameter.Modifiers.Any(modifier =>
-                        modifier.IsKind(SyntaxKind.RefKeyword)
-                        || modifier.IsKind(SyntaxKind.OutKeyword)
-                        || modifier.IsKind(SyntaxKind.InKeyword)
-                    )
-                )
-                {
-                    return parameter.WithDefault(
-                        EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))
-                    );
-                }
-
-                return parameter;
-            })
+            method.Parameters.ParameterListSyntaxIncludingNullable.Parameters
         );
 
         if (method.SupportsBaseImplementation)
