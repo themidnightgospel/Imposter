@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
+using FakeItEasy;
 using Imposter.Abstractions;
 using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 using Moq;
@@ -47,6 +48,23 @@ public class SimpleMethodMockingBenchmarks
         for (var i = 0; i < Iteration; i++)
         {
             calculatorMock.Square(i);
+        }
+    }
+
+    [Benchmark]
+    public void FakeItEasy()
+    {
+        var calculatorFake = A.Fake<ICalculator>();
+
+        for (var i = 0; i < Iteration; i++)
+        {
+            var input = i;
+            A.CallTo(() => calculatorFake.Square(input)).Returns(input * input);
+        }
+
+        for (var i = 0; i < Iteration; i++)
+        {
+            calculatorFake.Square(i);
         }
     }
 
