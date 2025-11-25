@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    The Fastest and Most Memory-Efficient Mocking Library
+    Fast and Memory-Efficient Mocking Library
 </p>
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
