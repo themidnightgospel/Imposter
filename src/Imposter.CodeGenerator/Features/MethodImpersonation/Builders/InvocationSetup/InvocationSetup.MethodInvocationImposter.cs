@@ -291,18 +291,15 @@ internal static partial class InvocationSetupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var parameters = new List<ParameterSyntax>
-        {
+        List<ParameterSyntax> parameters =
+        [
             ParameterSyntax(
                 WellKnownTypes.Imposter.Abstractions.ImposterMode,
                 "invocationBehavior"
             ),
             ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName"),
-        };
-
-        parameters.AddRange(
-            method.Parameters.ParameterListSyntaxIncludingNullable.Parameters
-        );
+            .. method.Parameters.ParameterListSyntaxIncludingNullable.Parameters
+        ];
 
         if (method.SupportsBaseImplementation)
         {
