@@ -9,6 +9,8 @@
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
 [![Nuget](https://img.shields.io/nuget/v/Imposter.svg)](https://www.nuget.org/packages/Imposter)
 
+Imposter is a mocking library that's using roslyn source generators to achieve high performance and low memory footprint.
+
 Visit the [Docs](https://themidnightgospel.github.io/Imposter/) for more information
 
 ## 🚀 Quick Start
