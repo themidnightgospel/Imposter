@@ -1,6 +1,6 @@
 # Getting Started
 
-Imposter — The Fastest and Most Memory-Efficient Mocking Library
+Imposter is a mocking library that's using roslyn source generators to achieve high performance and low memory footprint.
 
 ## Installation
 

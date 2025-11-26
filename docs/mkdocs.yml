@@ -1,5 +1,5 @@
 site_name: Imposter
-site_description: Imposter — The Fastest and Most Memory-Efficient Mocking Library
+site_description: Imposter — Mocking library that's using roslyn source generators to achieve high performance and low memory footprint
 site_url: https://themidnightgospel.github.io/Imposter/
 repo_url: https://github.com/themidnightgospel/Imposter
 repo_name: themidnightgospel/Imposter
