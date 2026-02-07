@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using Xunit;
@@ -64,7 +62,9 @@ public interface {ITest}
         var namespaceLine = imposterSource
             .SourceText.ToString()
             .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal));
+            .FirstOrDefault(line =>
+                line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal)
+            );
 
         namespaceLine.ShouldBeNull();
     }
