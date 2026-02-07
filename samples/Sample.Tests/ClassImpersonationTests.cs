@@ -1,3 +1,4 @@
+using System.Globalization;
 using Imposter.Abstractions;
 using Sample.Services;
 using Shouldly;
@@ -34,9 +35,9 @@ public class ClassImpersonationTests
 
         gateway
             .Charge("ORD-DECLINE", 40m)
-            .ShouldBe(new PaymentResult(true, "Authorized ORD-DECLINE for 40.00"));
+            .ShouldBe(new PaymentResult(true, "Authorized ORD-DECLINE for 40.00".ToString(CultureInfo.InvariantCulture)));
         gateway
             .Charge("ORD-DECLINE", 40m)
-            .ShouldBe(new PaymentResult(false, "Declined by fraud rules"));
+            .ShouldBe(new PaymentResult(false, "Declined by fraud rules".ToString(CultureInfo.InvariantCulture)));
     }
 }
