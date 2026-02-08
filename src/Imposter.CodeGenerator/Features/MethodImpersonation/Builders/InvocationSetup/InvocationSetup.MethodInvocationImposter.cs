@@ -296,7 +296,7 @@ internal static partial class InvocationSetupBuilder
                 "invocationBehavior"
             ),
             ParameterSyntax(PredefinedType(Token(SyntaxKind.StringKeyword)), "methodDisplayName"),
-            .. method.Parameters.ParameterListSyntaxIncludingNullable.Parameters
+            .. method.Parameters.ParameterListSyntaxIncludingNullable.Parameters,
         ];
 
         if (method.SupportsBaseImplementation)
