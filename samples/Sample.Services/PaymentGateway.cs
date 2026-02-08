@@ -11,13 +11,19 @@ public class PaymentGateway
             return new PaymentResult(false, "Amount must be positive");
         }
 
-        string message = string.Create( CultureInfo.InvariantCulture, $"Authorized {orderId} for {amount:F2}");
+        var message = string.Create(
+            CultureInfo.InvariantCulture,
+            $"Authorized {orderId} for {amount:F2}"
+        );
         return new PaymentResult(true, message);
     }
 
     public virtual PaymentResult Refund(string orderId, decimal amount)
     {
-        string message = string.Create( CultureInfo.InvariantCulture, $"Refunded {amount:F2} for {orderId}");
+        var message = string.Create(
+            CultureInfo.InvariantCulture,
+            $"Refunded {amount:F2} for {orderId}"
+        );
         return new PaymentResult(true, message);
     }
 }
