@@ -1,4 +1,3 @@
-using System.Globalization;
 using Imposter.Abstractions;
 using Sample.Services;
 using Shouldly;
