@@ -35,7 +35,7 @@ public interface ICalculator
 }
 ```
 
-Use `[GenerateImposter]` attribute in your **tests** project, this will generate an imoster
+Use `[GenerateImposter]` attribute in your **tests** project, this will generate an imposter
 
 ```csharp
 [assembly: GenerateImposter(typeof(Application.Domain.ICalculator))]
