@@ -24,21 +24,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         private readonly CompareValuesMethodInvocationHistoryCollection _compareValuesMethodInvocationHistoryCollection = new CompareValuesMethodInvocationHistoryCollection();
         private readonly CreateInstanceMethodInvocationHistoryCollection _createInstanceMethodInvocationHistoryCollection = new CreateInstanceMethodInvocationHistoryCollection();
         public IHandleReferenceMethodImposterBuilder<TArg> HandleReference<TArg>(global::Imposter.Abstractions.Arg<TArg> value)
+            where TArg : class, new()
         {
             return new HandleReferenceMethodImposter<TArg>.Builder(_handleReferenceMethodImposterCollection, _handleReferenceMethodInvocationHistoryCollection, new HandleReferenceArgumentsCriteria<TArg>(value));
         }
 
         public ICloneStructMethodImposterBuilder<TArg> CloneStruct<TArg>(global::Imposter.Abstractions.Arg<TArg> value)
+            where TArg : struct
         {
             return new CloneStructMethodImposter<TArg>.Builder(_cloneStructMethodImposterCollection, _cloneStructMethodInvocationHistoryCollection, new CloneStructArgumentsCriteria<TArg>(value));
         }
 
         public ICompareValuesMethodImposterBuilder<TArg> CompareValues<TArg>(global::Imposter.Abstractions.Arg<TArg> left, global::Imposter.Abstractions.Arg<TArg> right)
+            where TArg : global::System.IComparable<TArg>
         {
             return new CompareValuesMethodImposter<TArg>.Builder(_compareValuesMethodImposterCollection, _compareValuesMethodInvocationHistoryCollection, new CompareValuesArgumentsCriteria<TArg>(left, right));
         }
 
         public ICreateInstanceMethodImposterBuilder<TArg> CreateInstance<TArg>()
+            where TArg : new()
         {
             return new CreateInstanceMethodImposter<TArg>.Builder(_createInstanceMethodImposterCollection, _createInstanceMethodInvocationHistoryCollection);
         }
@@ -50,11 +54,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             return _imposterInstance;
         }
 
-        public delegate TArg CloneStructDelegate<TArg>(TArg value);
-        public delegate void CloneStructCallbackDelegate<TArg>(TArg value);
-        public delegate global::System.Exception CloneStructExceptionGeneratorDelegate<TArg>(TArg value);
+        public delegate TArg CloneStructDelegate<TArg>(TArg value)
+            where TArg : struct;
+        public delegate void CloneStructCallbackDelegate<TArg>(TArg value)
+            where TArg : struct;
+        public delegate global::System.Exception CloneStructExceptionGeneratorDelegate<TArg>(TArg value)
+            where TArg : struct;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CloneStructArguments<TArg>
+            where TArg : struct
         {
             public TArg value;
             internal CloneStructArguments(TArg value)
@@ -63,6 +71,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public CloneStructArguments<TArgTarget> As<TArgTarget>()
+                where TArgTarget : struct
             {
                 return new CloneStructArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(value));
             }
@@ -70,6 +79,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CloneStructArgumentsCriteria<TArg>
+            where TArg : struct
         {
             public global::Imposter.Abstractions.Arg<TArg> value { get; }
 
@@ -84,6 +94,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public CloneStructArgumentsCriteria<TArgTarget> As<TArgTarget>()
+                where TArgTarget : struct
             {
                 return new CloneStructArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg valueTarget) && value.Matches(valueTarget)));
             }
@@ -92,11 +103,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICloneStructMethodInvocationHistory
         {
-            bool Matches<TArgTarget>(CloneStructArgumentsCriteria<TArgTarget> criteria);
+            bool Matches<TArgTarget>(CloneStructArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : struct;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CloneStructMethodInvocationHistory<TArg> : ICloneStructMethodInvocationHistory
+        internal class CloneStructMethodInvocationHistory<TArg> : ICloneStructMethodInvocationHistory where TArg : struct
         {
             internal CloneStructArguments<TArg> Arguments;
             internal TArg? Result;
@@ -109,6 +121,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public bool Matches<TArgTarget>(CloneStructArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : struct
             {
                 return ((typeof(TArgTarget) == typeof(TArg)) && (typeof(TArg) == typeof(TArgTarget))) && criteria.As<TArg>().Matches(Arguments);
             }
@@ -134,6 +147,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal int Count<TArg>(CloneStructArgumentsCriteria<TArg> argumentsCriteria)
+                where TArg : struct
             {
                 return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
             }
@@ -157,6 +171,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ICloneStructMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ICloneStructMethodImposter>();
             internal CloneStructMethodImposter<TArg> AddNew<TArg>()
+                where TArg : struct
             {
                 var imposter = new CloneStructMethodImposter<TArg>(_cloneStructMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
@@ -164,6 +179,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal ICloneStructMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CloneStructArguments<TArg> arguments)
+                where TArg : struct
             {
                 return _imposters.Select(it => it.As<TArg>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<TArg>();
             }
@@ -171,6 +187,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CloneStructMethodInvocationImposterGroup<TArg>
+            where TArg : struct
         {
             internal static CloneStructMethodInvocationImposterGroup<TArg> Default = new CloneStructMethodInvocationImposterGroup<TArg>(new CloneStructArgumentsCriteria<TArg>(global::Imposter.Abstractions.Arg<TArg>.Any()));
             internal CloneStructArgumentsCriteria<TArg> ArgumentsCriteria { get; }
@@ -290,18 +307,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICloneStructMethodInvocationImposterGroupCallback<TArg>
+            where TArg : struct
         {
             ICloneStructMethodInvocationImposterGroupContinuation<TArg> Callback(CloneStructCallbackDelegate<TArg> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICloneStructMethodInvocationImposterGroupContinuation<TArg> : ICloneStructMethodInvocationImposterGroupCallback<TArg>
+        public interface ICloneStructMethodInvocationImposterGroupContinuation<TArg> : ICloneStructMethodInvocationImposterGroupCallback<TArg> where TArg : struct
         {
             ICloneStructMethodInvocationImposterGroup<TArg> Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICloneStructMethodInvocationImposterGroup<TArg> : ICloneStructMethodInvocationImposterGroupCallback<TArg>
+        public interface ICloneStructMethodInvocationImposterGroup<TArg> : ICloneStructMethodInvocationImposterGroupCallback<TArg> where TArg : struct
         {
             ICloneStructMethodInvocationImposterGroupContinuation<TArg> Throws<TException>()
                 where TException : global::System.Exception, new();
@@ -314,11 +332,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface ICloneStructMethodImposter
         {
-            ICloneStructMethodImposter<TArgTarget>? As<TArgTarget>();
+            ICloneStructMethodImposter<TArgTarget>? As<TArgTarget>()
+                where TArgTarget : struct;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal interface ICloneStructMethodImposter<TArg> : ICloneStructMethodImposter
+        internal interface ICloneStructMethodImposter<TArg> : ICloneStructMethodImposter where TArg : struct
         {
             TArg Invoke(TArg value);
             bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments);
@@ -326,17 +345,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface CloneStructInvocationVerifier<TArg>
+            where TArg : struct
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICloneStructMethodImposterBuilder<TArg> : ICloneStructMethodInvocationImposterGroup<TArg>, ICloneStructMethodInvocationImposterGroupCallback<TArg>, CloneStructInvocationVerifier<TArg>
+        public interface ICloneStructMethodImposterBuilder<TArg> : ICloneStructMethodInvocationImposterGroup<TArg>, ICloneStructMethodInvocationImposterGroupCallback<TArg>, CloneStructInvocationVerifier<TArg> where TArg : struct
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CloneStructMethodImposter<TArg> : ICloneStructMethodImposter<TArg>
+        internal class CloneStructMethodImposter<TArg> : ICloneStructMethodImposter<TArg> where TArg : struct
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<CloneStructMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CloneStructMethodInvocationImposterGroup<TArg>>();
             private readonly CloneStructMethodInvocationHistoryCollection _cloneStructMethodInvocationHistoryCollection;
@@ -358,7 +378,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            private class Adapter<TArgTarget> : ICloneStructMethodImposter<TArgTarget>
+            private class Adapter<TArgTarget> : ICloneStructMethodImposter<TArgTarget> where TArgTarget : struct
             {
                 private readonly CloneStructMethodImposter<TArg> _target;
                 public Adapter(CloneStructMethodImposter<TArg> target)
@@ -507,11 +527,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        public delegate void CompareValuesDelegate<TArg>(TArg left, TArg right);
-        public delegate void CompareValuesCallbackDelegate<TArg>(TArg left, TArg right);
-        public delegate global::System.Exception CompareValuesExceptionGeneratorDelegate<TArg>(TArg left, TArg right);
+        public delegate void CompareValuesDelegate<TArg>(TArg left, TArg right)
+            where TArg : global::System.IComparable<TArg>;
+        public delegate void CompareValuesCallbackDelegate<TArg>(TArg left, TArg right)
+            where TArg : global::System.IComparable<TArg>;
+        public delegate global::System.Exception CompareValuesExceptionGeneratorDelegate<TArg>(TArg left, TArg right)
+            where TArg : global::System.IComparable<TArg>;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CompareValuesArguments<TArg>
+            where TArg : global::System.IComparable<TArg>
         {
             public TArg left;
             public TArg right;
@@ -522,6 +546,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public CompareValuesArguments<TArgTarget> As<TArgTarget>()
+                where TArgTarget : global::System.IComparable<TArgTarget>
             {
                 return new CompareValuesArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(left), TypeCaster.Cast<TArg, TArgTarget>(right));
             }
@@ -529,6 +554,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CompareValuesArgumentsCriteria<TArg>
+            where TArg : global::System.IComparable<TArg>
         {
             public global::Imposter.Abstractions.Arg<TArg> left { get; }
             public global::Imposter.Abstractions.Arg<TArg> right { get; }
@@ -545,6 +571,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public CompareValuesArgumentsCriteria<TArgTarget> As<TArgTarget>()
+                where TArgTarget : global::System.IComparable<TArgTarget>
             {
                 return new CompareValuesArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg leftTarget) && left.Matches(leftTarget)), global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg rightTarget) && right.Matches(rightTarget)));
             }
@@ -553,11 +580,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICompareValuesMethodInvocationHistory
         {
-            bool Matches<TArgTarget>(CompareValuesArgumentsCriteria<TArgTarget> criteria);
+            bool Matches<TArgTarget>(CompareValuesArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : global::System.IComparable<TArgTarget>;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CompareValuesMethodInvocationHistory<TArg> : ICompareValuesMethodInvocationHistory
+        internal class CompareValuesMethodInvocationHistory<TArg> : ICompareValuesMethodInvocationHistory where TArg : global::System.IComparable<TArg>
         {
             internal CompareValuesArguments<TArg> Arguments;
             internal global::System.Exception? Exception;
@@ -568,6 +596,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public bool Matches<TArgTarget>(CompareValuesArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : global::System.IComparable<TArgTarget>
             {
                 return ((typeof(TArgTarget) == typeof(TArg)) && (typeof(TArgTarget) == typeof(TArg))) && criteria.As<TArg>().Matches(Arguments);
             }
@@ -593,6 +622,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal int Count<TArg>(CompareValuesArgumentsCriteria<TArg> argumentsCriteria)
+                where TArg : global::System.IComparable<TArg>
             {
                 return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
             }
@@ -616,6 +646,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ICompareValuesMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ICompareValuesMethodImposter>();
             internal CompareValuesMethodImposter<TArg> AddNew<TArg>()
+                where TArg : global::System.IComparable<TArg>
             {
                 var imposter = new CompareValuesMethodImposter<TArg>(_compareValuesMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
@@ -623,6 +654,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal ICompareValuesMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CompareValuesArguments<TArg> arguments)
+                where TArg : global::System.IComparable<TArg>
             {
                 return _imposters.Select(it => it.As<TArg>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<TArg>();
             }
@@ -630,6 +662,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CompareValuesMethodInvocationImposterGroup<TArg>
+            where TArg : global::System.IComparable<TArg>
         {
             internal static CompareValuesMethodInvocationImposterGroup<TArg> Default = new CompareValuesMethodInvocationImposterGroup<TArg>(new CompareValuesArgumentsCriteria<TArg>(global::Imposter.Abstractions.Arg<TArg>.Any(), global::Imposter.Abstractions.Arg<TArg>.Any()));
             internal CompareValuesArgumentsCriteria<TArg> ArgumentsCriteria { get; }
@@ -733,18 +766,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICompareValuesMethodInvocationImposterGroupCallback<TArg>
+            where TArg : global::System.IComparable<TArg>
         {
             ICompareValuesMethodInvocationImposterGroupContinuation<TArg> Callback(CompareValuesCallbackDelegate<TArg> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICompareValuesMethodInvocationImposterGroupContinuation<TArg> : ICompareValuesMethodInvocationImposterGroupCallback<TArg>
+        public interface ICompareValuesMethodInvocationImposterGroupContinuation<TArg> : ICompareValuesMethodInvocationImposterGroupCallback<TArg> where TArg : global::System.IComparable<TArg>
         {
             ICompareValuesMethodInvocationImposterGroup<TArg> Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICompareValuesMethodInvocationImposterGroup<TArg> : ICompareValuesMethodInvocationImposterGroupCallback<TArg>
+        public interface ICompareValuesMethodInvocationImposterGroup<TArg> : ICompareValuesMethodInvocationImposterGroupCallback<TArg> where TArg : global::System.IComparable<TArg>
         {
             ICompareValuesMethodInvocationImposterGroupContinuation<TArg> Throws<TException>()
                 where TException : global::System.Exception, new();
@@ -755,11 +789,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface ICompareValuesMethodImposter
         {
-            ICompareValuesMethodImposter<TArgTarget>? As<TArgTarget>();
+            ICompareValuesMethodImposter<TArgTarget>? As<TArgTarget>()
+                where TArgTarget : global::System.IComparable<TArgTarget>;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal interface ICompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter
+        internal interface ICompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter where TArg : global::System.IComparable<TArg>
         {
             void Invoke(TArg left, TArg right);
             bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments);
@@ -767,17 +802,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface CompareValuesInvocationVerifier<TArg>
+            where TArg : global::System.IComparable<TArg>
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICompareValuesMethodImposterBuilder<TArg> : ICompareValuesMethodInvocationImposterGroup<TArg>, ICompareValuesMethodInvocationImposterGroupCallback<TArg>, CompareValuesInvocationVerifier<TArg>
+        public interface ICompareValuesMethodImposterBuilder<TArg> : ICompareValuesMethodInvocationImposterGroup<TArg>, ICompareValuesMethodInvocationImposterGroupCallback<TArg>, CompareValuesInvocationVerifier<TArg> where TArg : global::System.IComparable<TArg>
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter<TArg>
+        internal class CompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter<TArg> where TArg : global::System.IComparable<TArg>
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<CompareValuesMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CompareValuesMethodInvocationImposterGroup<TArg>>();
             private readonly CompareValuesMethodInvocationHistoryCollection _compareValuesMethodInvocationHistoryCollection;
@@ -799,7 +835,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            private class Adapter<TArgTarget> : ICompareValuesMethodImposter<TArgTarget>
+            private class Adapter<TArgTarget> : ICompareValuesMethodImposter<TArgTarget> where TArgTarget : global::System.IComparable<TArgTarget>
             {
                 private readonly CompareValuesMethodImposter<TArg> _target;
                 public Adapter(CompareValuesMethodImposter<TArg> target)
@@ -934,17 +970,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        public delegate TArg CreateInstanceDelegate<TArg>();
-        public delegate void CreateInstanceCallbackDelegate<TArg>();
-        public delegate global::System.Exception CreateInstanceExceptionGeneratorDelegate<TArg>();
+        public delegate TArg CreateInstanceDelegate<TArg>()
+            where TArg : new();
+        public delegate void CreateInstanceCallbackDelegate<TArg>()
+            where TArg : new();
+        public delegate global::System.Exception CreateInstanceExceptionGeneratorDelegate<TArg>()
+            where TArg : new();
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICreateInstanceMethodInvocationHistory
         {
-            bool Matches<TArgTarget>();
+            bool Matches<TArgTarget>()
+                where TArgTarget : new();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CreateInstanceMethodInvocationHistory<TArg> : ICreateInstanceMethodInvocationHistory
+        internal class CreateInstanceMethodInvocationHistory<TArg> : ICreateInstanceMethodInvocationHistory where TArg : new()
         {
             internal TArg? Result;
             internal global::System.Exception? Exception;
@@ -955,6 +995,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public bool Matches<TArgTarget>()
+                where TArgTarget : new()
             {
                 return typeof(TArg) == typeof(TArgTarget);
             }
@@ -980,6 +1021,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal int Count<TArg>()
+                where TArg : new()
             {
                 return _invocationHistory.Count(it => it.Matches<TArg>());
             }
@@ -1003,6 +1045,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private readonly global::System.Collections.Concurrent.ConcurrentStack<ICreateInstanceMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ICreateInstanceMethodImposter>();
             internal CreateInstanceMethodImposter<TArg> AddNew<TArg>()
+                where TArg : new()
             {
                 var imposter = new CreateInstanceMethodImposter<TArg>(_createInstanceMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
@@ -1010,6 +1053,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal ICreateInstanceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>()
+                where TArg : new()
             {
                 return _imposters.Select(it => it.As<TArg>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup()) ?? AddNew<TArg>();
             }
@@ -1017,6 +1061,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class CreateInstanceMethodInvocationImposterGroup<TArg>
+            where TArg : new()
         {
             internal static CreateInstanceMethodInvocationImposterGroup<TArg> Default = new CreateInstanceMethodInvocationImposterGroup<TArg>();
             private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -1133,18 +1178,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface ICreateInstanceMethodInvocationImposterGroupCallback<TArg>
+            where TArg : new()
         {
             ICreateInstanceMethodInvocationImposterGroupContinuation<TArg> Callback(CreateInstanceCallbackDelegate<TArg> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICreateInstanceMethodInvocationImposterGroupContinuation<TArg> : ICreateInstanceMethodInvocationImposterGroupCallback<TArg>
+        public interface ICreateInstanceMethodInvocationImposterGroupContinuation<TArg> : ICreateInstanceMethodInvocationImposterGroupCallback<TArg> where TArg : new()
         {
             ICreateInstanceMethodInvocationImposterGroup<TArg> Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICreateInstanceMethodInvocationImposterGroup<TArg> : ICreateInstanceMethodInvocationImposterGroupCallback<TArg>
+        public interface ICreateInstanceMethodInvocationImposterGroup<TArg> : ICreateInstanceMethodInvocationImposterGroupCallback<TArg> where TArg : new()
         {
             ICreateInstanceMethodInvocationImposterGroupContinuation<TArg> Throws<TException>()
                 where TException : global::System.Exception, new();
@@ -1157,11 +1203,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface ICreateInstanceMethodImposter
         {
-            ICreateInstanceMethodImposter<TArgTarget>? As<TArgTarget>();
+            ICreateInstanceMethodImposter<TArgTarget>? As<TArgTarget>()
+                where TArgTarget : new();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal interface ICreateInstanceMethodImposter<TArg> : ICreateInstanceMethodImposter
+        internal interface ICreateInstanceMethodImposter<TArg> : ICreateInstanceMethodImposter where TArg : new()
         {
             TArg Invoke();
             bool HasMatchingInvocationImposterGroup();
@@ -1169,17 +1216,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface CreateInstanceInvocationVerifier<TArg>
+            where TArg : new()
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface ICreateInstanceMethodImposterBuilder<TArg> : ICreateInstanceMethodInvocationImposterGroup<TArg>, ICreateInstanceMethodInvocationImposterGroupCallback<TArg>, CreateInstanceInvocationVerifier<TArg>
+        public interface ICreateInstanceMethodImposterBuilder<TArg> : ICreateInstanceMethodInvocationImposterGroup<TArg>, ICreateInstanceMethodInvocationImposterGroupCallback<TArg>, CreateInstanceInvocationVerifier<TArg> where TArg : new()
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class CreateInstanceMethodImposter<TArg> : ICreateInstanceMethodImposter<TArg>
+        internal class CreateInstanceMethodImposter<TArg> : ICreateInstanceMethodImposter<TArg> where TArg : new()
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<CreateInstanceMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CreateInstanceMethodInvocationImposterGroup<TArg>>();
             private readonly CreateInstanceMethodInvocationHistoryCollection _createInstanceMethodInvocationHistoryCollection;
@@ -1201,7 +1249,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            private class Adapter<TArgTarget> : ICreateInstanceMethodImposter<TArgTarget>
+            private class Adapter<TArgTarget> : ICreateInstanceMethodImposter<TArgTarget> where TArgTarget : new()
             {
                 private readonly CreateInstanceMethodImposter<TArg> _target;
                 public Adapter(CreateInstanceMethodImposter<TArg> target)
@@ -1344,11 +1392,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
         }
 
-        public delegate void HandleReferenceDelegate<TArg>(TArg value);
-        public delegate void HandleReferenceCallbackDelegate<TArg>(TArg value);
-        public delegate global::System.Exception HandleReferenceExceptionGeneratorDelegate<TArg>(TArg value);
+        public delegate void HandleReferenceDelegate<TArg>(TArg value)
+            where TArg : class, new();
+        public delegate void HandleReferenceCallbackDelegate<TArg>(TArg value)
+            where TArg : class, new();
+        public delegate global::System.Exception HandleReferenceExceptionGeneratorDelegate<TArg>(TArg value)
+            where TArg : class, new();
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class HandleReferenceArguments<TArg>
+            where TArg : class, new()
         {
             public TArg value;
             internal HandleReferenceArguments(TArg value)
@@ -1357,6 +1409,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public HandleReferenceArguments<TArgTarget> As<TArgTarget>()
+                where TArgTarget : class, new()
             {
                 return new HandleReferenceArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(value));
             }
@@ -1364,6 +1417,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class HandleReferenceArgumentsCriteria<TArg>
+            where TArg : class, new()
         {
             public global::Imposter.Abstractions.Arg<TArg> value { get; }
 
@@ -1378,6 +1432,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public HandleReferenceArgumentsCriteria<TArgTarget> As<TArgTarget>()
+                where TArgTarget : class, new()
             {
                 return new HandleReferenceArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg valueTarget) && value.Matches(valueTarget)));
             }
@@ -1386,11 +1441,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IHandleReferenceMethodInvocationHistory
         {
-            bool Matches<TArgTarget>(HandleReferenceArgumentsCriteria<TArgTarget> criteria);
+            bool Matches<TArgTarget>(HandleReferenceArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : class, new();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class HandleReferenceMethodInvocationHistory<TArg> : IHandleReferenceMethodInvocationHistory
+        internal class HandleReferenceMethodInvocationHistory<TArg> : IHandleReferenceMethodInvocationHistory where TArg : class, new()
         {
             internal HandleReferenceArguments<TArg> Arguments;
             internal global::System.Exception? Exception;
@@ -1401,6 +1457,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             public bool Matches<TArgTarget>(HandleReferenceArgumentsCriteria<TArgTarget> criteria)
+                where TArgTarget : class, new()
             {
                 return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
             }
@@ -1426,6 +1483,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal int Count<TArg>(HandleReferenceArgumentsCriteria<TArg> argumentsCriteria)
+                where TArg : class, new()
             {
                 return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
             }
@@ -1449,6 +1507,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IHandleReferenceMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IHandleReferenceMethodImposter>();
             internal HandleReferenceMethodImposter<TArg> AddNew<TArg>()
+                where TArg : class, new()
             {
                 var imposter = new HandleReferenceMethodImposter<TArg>(_handleReferenceMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
@@ -1456,6 +1515,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             internal IHandleReferenceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(HandleReferenceArguments<TArg> arguments)
+                where TArg : class, new()
             {
                 return _imposters.Select(it => it.As<TArg>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<TArg>();
             }
@@ -1463,6 +1523,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class HandleReferenceMethodInvocationImposterGroup<TArg>
+            where TArg : class, new()
         {
             internal static HandleReferenceMethodInvocationImposterGroup<TArg> Default = new HandleReferenceMethodInvocationImposterGroup<TArg>(new HandleReferenceArgumentsCriteria<TArg>(global::Imposter.Abstractions.Arg<TArg>.Any()));
             internal HandleReferenceArgumentsCriteria<TArg> ArgumentsCriteria { get; }
@@ -1566,18 +1627,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IHandleReferenceMethodInvocationImposterGroupCallback<TArg>
+            where TArg : class, new()
         {
             IHandleReferenceMethodInvocationImposterGroupContinuation<TArg> Callback(HandleReferenceCallbackDelegate<TArg> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IHandleReferenceMethodInvocationImposterGroupContinuation<TArg> : IHandleReferenceMethodInvocationImposterGroupCallback<TArg>
+        public interface IHandleReferenceMethodInvocationImposterGroupContinuation<TArg> : IHandleReferenceMethodInvocationImposterGroupCallback<TArg> where TArg : class, new()
         {
             IHandleReferenceMethodInvocationImposterGroup<TArg> Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IHandleReferenceMethodInvocationImposterGroup<TArg> : IHandleReferenceMethodInvocationImposterGroupCallback<TArg>
+        public interface IHandleReferenceMethodInvocationImposterGroup<TArg> : IHandleReferenceMethodInvocationImposterGroupCallback<TArg> where TArg : class, new()
         {
             IHandleReferenceMethodInvocationImposterGroupContinuation<TArg> Throws<TException>()
                 where TException : global::System.Exception, new();
@@ -1588,11 +1650,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IHandleReferenceMethodImposter
         {
-            IHandleReferenceMethodImposter<TArgTarget>? As<TArgTarget>();
+            IHandleReferenceMethodImposter<TArgTarget>? As<TArgTarget>()
+                where TArgTarget : class, new();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal interface IHandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter
+        internal interface IHandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter where TArg : class, new()
         {
             void Invoke(TArg value);
             bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments);
@@ -1600,17 +1663,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface HandleReferenceInvocationVerifier<TArg>
+            where TArg : class, new()
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IHandleReferenceMethodImposterBuilder<TArg> : IHandleReferenceMethodInvocationImposterGroup<TArg>, IHandleReferenceMethodInvocationImposterGroupCallback<TArg>, HandleReferenceInvocationVerifier<TArg>
+        public interface IHandleReferenceMethodImposterBuilder<TArg> : IHandleReferenceMethodInvocationImposterGroup<TArg>, IHandleReferenceMethodInvocationImposterGroupCallback<TArg>, HandleReferenceInvocationVerifier<TArg> where TArg : class, new()
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class HandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter<TArg>
+        internal class HandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter<TArg> where TArg : class, new()
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<HandleReferenceMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<HandleReferenceMethodInvocationImposterGroup<TArg>>();
             private readonly HandleReferenceMethodInvocationHistoryCollection _handleReferenceMethodInvocationHistoryCollection;
@@ -1632,7 +1696,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            private class Adapter<TArgTarget> : IHandleReferenceMethodImposter<TArgTarget>
+            private class Adapter<TArgTarget> : IHandleReferenceMethodImposter<TArgTarget> where TArgTarget : class, new()
             {
                 private readonly HandleReferenceMethodImposter<TArg> _target;
                 public Adapter(HandleReferenceMethodImposter<TArg> target)

@@ -58,7 +58,7 @@ internal static class MethodDelegateTypeBuilder
                 parameterList: SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(
                     method.Symbol.Parameters
                 ),
-                constraintClauses: List<TypeParameterConstraintClauseSyntax>()
+                constraintClauses: List(method.GenericTypeConstraintClauses)
             )
 #if DEBUG
             .WithLeadingTriviaComment(method.DisplayName)

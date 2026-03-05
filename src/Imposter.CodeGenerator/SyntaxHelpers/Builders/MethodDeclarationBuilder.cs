@@ -113,6 +113,17 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
         return this;
     }
 
+    public MethodDeclarationBuilder AddConstraintClauses(
+        IReadOnlyList<TypeParameterConstraintClauseSyntax> clauses
+    )
+    {
+        foreach (var clause in clauses)
+        {
+            _constraintClauses.Add(clause);
+        }
+        return this;
+    }
+
     public MethodDeclarationBuilder WithBody(BlockSyntax body)
     {
         _body = body;

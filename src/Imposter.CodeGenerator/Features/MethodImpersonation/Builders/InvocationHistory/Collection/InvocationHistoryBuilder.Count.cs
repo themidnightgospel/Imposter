@@ -18,6 +18,7 @@ internal static partial class InvocationHistoryCollectionBuilder
             InvocationHistoryCollectionCountMethodMetadata.Name
         )
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(GetParameter(method))
             .WithBody(

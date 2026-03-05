@@ -25,6 +25,7 @@ internal static partial class MethodImposterCollectionBuilder
             .AddParameter(GetParameter(method, parameterName))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddTypeParameters(TypeParametersSyntax(method.Symbol).ToArray())
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(
                     ReturnStatement(

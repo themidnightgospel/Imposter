@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using Xunit;
@@ -55,7 +53,6 @@ public interface {ITest}
     {
         var testContext = await TestContextTask(SourceSameNamespace).ConfigureAwait(false);
         var result = testContext.RunGenerator();
-        var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
             source.HintName == $"{ITest}Imposter.g.cs"
@@ -64,7 +61,9 @@ public interface {ITest}
         var namespaceLine = imposterSource
             .SourceText.ToString()
             .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal));
+            .FirstOrDefault(line =>
+                line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal)
+            );
 
         namespaceLine.ShouldBeNull();
     }
@@ -74,7 +73,6 @@ public interface {ITest}
     {
         var testContext = await TestContextTask(SourceDedicatedNamespace).ConfigureAwait(false);
         var result = testContext.RunGenerator();
-        var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
             source.HintName == $"{ITest}Imposter.g.cs"

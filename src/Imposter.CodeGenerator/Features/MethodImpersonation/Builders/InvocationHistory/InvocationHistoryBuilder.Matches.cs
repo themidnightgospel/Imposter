@@ -20,6 +20,7 @@ internal static partial class InvocationHistoryBuilder
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
+            .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .AddParameter(GetParameter(method))
             .WithBody(Block(ReturnStatement(CallMatchesMethod(method))))
             .Build();

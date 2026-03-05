@@ -47,6 +47,7 @@ internal static class MethodImposterMembersBuilder
                 method.Symbol.Name
             )
                 .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
+                .AddConstraintClauses(method.GenericTypeConstraintClauses)
                 .WithParameterList(SyntaxFactoryHelper.ArgParameters(method.Symbol.Parameters))
                 .WithBody(
                     Block(

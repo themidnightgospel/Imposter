@@ -31,6 +31,7 @@ internal static class MethodImposterAdapterBuilder
             "Adapter",
             TypeParameterListSyntax(method.TargetGenericTypeArguments)
         )
+            .WithTypeParameterConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddBaseType(adapterBaseType)
             .AddMember(

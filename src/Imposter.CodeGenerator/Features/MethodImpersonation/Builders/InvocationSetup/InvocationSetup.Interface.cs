@@ -255,11 +255,4 @@ internal static partial class InvocationSetupBuilder
         ParameterMetadata metadata,
         string interfaceName
     ) => new(interfaceName, metadata.Type, metadata.DefaultValue);
-
-    /*
-    private static SyntaxList<TypeParameterConstraintClauseSyntax> GetTypeParameterConstraintClauses(in ImposterTargetMethodMetadata method) =>
-        SyntaxFactoryHelper.AddOrReplaceConstraintClause(
-            method.GenericTypeConstraintClauses,
-            method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceTypeParameterConstraintClause);
-*/
 }

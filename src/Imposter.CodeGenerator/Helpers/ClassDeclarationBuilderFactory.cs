@@ -8,6 +8,9 @@ internal static class ClassDeclarationBuilderFactory
 {
     internal static ClassDeclarationBuilder CreateForMethod(IMethodSymbol method, string name)
     {
-        return new ClassDeclarationBuilder(name, TypeParameterListSyntax(method));
+        return new ClassDeclarationBuilder(
+            name,
+            TypeParameterListSyntax(method)
+        ).WithTypeParameterConstraintClauses(TypeParameterConstraintClauses(method.TypeParameters));
     }
 }

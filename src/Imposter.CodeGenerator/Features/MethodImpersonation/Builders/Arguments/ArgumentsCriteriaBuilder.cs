@@ -23,6 +23,7 @@ public static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.Name,
             TypeParameterListSyntax(method.GenericTypeArguments)
         )
+            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Symbol.Parameters.Select(ParameterAsArgProperty))
             .AddMember(
@@ -72,6 +73,7 @@ public static class ArgumentsCriteriaBuilder
             .WithTypeParameters(
                 TypeParameterList(SeparatedList(method.ArgumentsCriteriaAsMethod.TypeParameters))
             )
+            .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(Block(ReturnStatement(returnType.New(ArgumentList(constructorArgs)))))
             .Build();
 

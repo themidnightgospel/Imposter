@@ -34,6 +34,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
         }
 
         public IEchoMethodImposterBuilder<T> Echo<T>(global::Imposter.Abstractions.Arg<T> item)
+            where T : class
         {
             return new EchoMethodImposter<T>.Builder(_echoMethodImposterCollection, _echoMethodInvocationHistoryCollection, new EchoArgumentsCriteria<T>(item));
         }
@@ -50,11 +51,15 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             return _imposterInstance;
         }
 
-        public delegate T EchoDelegate<T>(T item);
-        public delegate void EchoCallbackDelegate<T>(T item);
-        public delegate global::System.Exception EchoExceptionGeneratorDelegate<T>(T item);
+        public delegate T EchoDelegate<T>(T item)
+            where T : class;
+        public delegate void EchoCallbackDelegate<T>(T item)
+            where T : class;
+        public delegate global::System.Exception EchoExceptionGeneratorDelegate<T>(T item)
+            where T : class;
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class EchoArguments<T>
+            where T : class
         {
             public T item;
             internal EchoArguments(T item)
@@ -63,6 +68,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             public EchoArguments<TTarget> As<TTarget>()
+                where TTarget : class
             {
                 return new EchoArguments<TTarget>(TypeCaster.Cast<T, TTarget>(item));
             }
@@ -70,6 +76,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class EchoArgumentsCriteria<T>
+            where T : class
         {
             public global::Imposter.Abstractions.Arg<T> item { get; }
 
@@ -84,6 +91,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             public EchoArgumentsCriteria<TTarget> As<TTarget>()
+                where TTarget : class
             {
                 return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)));
             }
@@ -92,11 +100,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationHistory
         {
-            bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria);
+            bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
+                where TTarget : class;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory
+        internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory where T : class
         {
             internal EchoArguments<T> Arguments;
             internal T? Result;
@@ -109,6 +118,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
+                where TTarget : class
             {
                 return ((typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
             }
@@ -134,6 +144,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
+                where T : class
             {
                 return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
             }
@@ -157,6 +168,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
             private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter>();
             internal EchoMethodImposter<T> AddNew<T>()
+                where T : class
             {
                 var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
                 _imposters.Push(imposter);
@@ -164,6 +176,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
+                where T : class
             {
                 return _imposters.Select(it => it.As<T>()).Where(it => it != null).Select(it => it!).FirstOrDefault(it => it.HasMatchingInvocationImposterGroup(arguments)) ?? AddNew<T>();
             }
@@ -171,6 +184,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         class EchoMethodInvocationImposterGroup<T>
+            where T : class
         {
             internal static EchoMethodInvocationImposterGroup<T> Default = new EchoMethodInvocationImposterGroup<T>(new EchoArgumentsCriteria<T>(global::Imposter.Abstractions.Arg<T>.Any()));
             internal EchoArgumentsCriteria<T> ArgumentsCriteria { get; }
@@ -305,18 +319,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface IEchoMethodInvocationImposterGroupCallback<T>
+            where T : class
         {
             IEchoMethodInvocationImposterGroupContinuation<T> Callback(EchoCallbackDelegate<T> callback);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IEchoMethodInvocationImposterGroupContinuation<T> : IEchoMethodInvocationImposterGroupCallback<T>
+        public interface IEchoMethodInvocationImposterGroupContinuation<T> : IEchoMethodInvocationImposterGroupCallback<T> where T : class
         {
             IEchoMethodInvocationImposterGroup<T> Then();
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IEchoMethodInvocationImposterGroup<T> : IEchoMethodInvocationImposterGroupCallback<T>
+        public interface IEchoMethodInvocationImposterGroup<T> : IEchoMethodInvocationImposterGroupCallback<T> where T : class
         {
             IEchoMethodInvocationImposterGroupContinuation<T> Throws<TException>()
                 where TException : global::System.Exception, new();
@@ -330,11 +345,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         internal interface IEchoMethodImposter
         {
-            IEchoMethodImposter<TTarget>? As<TTarget>();
+            IEchoMethodImposter<TTarget>? As<TTarget>()
+                where TTarget : class;
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal interface IEchoMethodImposter<T> : IEchoMethodImposter
+        internal interface IEchoMethodImposter<T> : IEchoMethodImposter where T : class
         {
             T Invoke(T item, EchoDelegate<T>? baseImplementation = null);
             bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
@@ -342,17 +358,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public interface EchoInvocationVerifier<T>
+            where T : class
         {
             void Called(Count count);
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>
+        public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T> where T : class
         {
         }
 
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-        internal class EchoMethodImposter<T> : IEchoMethodImposter<T>
+        internal class EchoMethodImposter<T> : IEchoMethodImposter<T> where T : class
         {
             private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>>();
             private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
@@ -374,7 +391,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             }
 
             [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-            private class Adapter<TTarget> : IEchoMethodImposter<TTarget>
+            private class Adapter<TTarget> : IEchoMethodImposter<TTarget> where TTarget : class
             {
                 private readonly EchoMethodImposter<T> _target;
                 public Adapter(EchoMethodImposter<T> target)

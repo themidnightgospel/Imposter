@@ -26,6 +26,7 @@ public static class InvocationHistoryInterfaceBuilder
         )
             .WithSemicolon()
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
+            .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .AddParameter(GetParameter(method))
             .Build();
 
