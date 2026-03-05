@@ -43,7 +43,7 @@ public class InternalTargetDoesNotCompile
         );
 
     [Fact]
-    public async Task GivenMethodWithOptionalBool_WhenSnippetIsCompiled_ShouldCompile()
+    public async Task CreateNewTestImposter_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/
             """

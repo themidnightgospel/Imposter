@@ -32,9 +32,9 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         HasOutputParameters = OutputParameters.Count > 0;
 
         ParameterListSyntaxIncludingNullable =
-            SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(symbolParameters);
+            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(symbolParameters);
         InputParameterWithoutRefKindListSyntaxIncludingNullable =
-            SyntaxFactoryHelper.ParameterListSyntaxIncludingNullable(
+            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(
                 InputParameters,
                 includeRefKind: false
             );

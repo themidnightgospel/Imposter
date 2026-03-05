@@ -377,7 +377,11 @@ internal readonly ref struct ImposterInstanceBuilder
                 imposterMethod.Symbol.Name
             )
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
-                .AddParameters(ParameterSyntaxesIncludingNullable(imposterMethod.Symbol.Parameters))
+                .AddParameters(
+                    imposterMethod.Symbol.Parameters.Select(p =>
+                        ParameterSyntaxWithoutDefaultValue(p)
+                    )
+                )
                 .WithBody(
                     Block(
                         imposterMethod.HasReturnValue

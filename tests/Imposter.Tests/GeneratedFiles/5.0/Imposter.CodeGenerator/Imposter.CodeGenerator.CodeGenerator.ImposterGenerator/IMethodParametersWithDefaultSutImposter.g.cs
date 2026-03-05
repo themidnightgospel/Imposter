@@ -28,6 +28,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
         private readonly NullableOutMethodImposter _nullableOutMethodImposter;
         private readonly NullableInMethodImposter _nullableInMethodImposter;
         private readonly NullableParamsMethodImposter _nullableParamsMethodImposter;
+        private readonly RequiredThenOptionalMethodImposter _requiredThenOptionalMethodImposter;
+        private readonly OptionalThenParamsMethodImposter _optionalThenParamsMethodImposter;
+        private readonly MultipleOptionalsMethodImposter _multipleOptionalsMethodImposter;
         private readonly BoolDefaultMethodInvocationHistoryCollection _boolDefaultMethodInvocationHistoryCollection = new BoolDefaultMethodInvocationHistoryCollection();
         private readonly IntDefaultMethodInvocationHistoryCollection _intDefaultMethodInvocationHistoryCollection = new IntDefaultMethodInvocationHistoryCollection();
         private readonly DoubleDefaultMethodInvocationHistoryCollection _doubleDefaultMethodInvocationHistoryCollection = new DoubleDefaultMethodInvocationHistoryCollection();
@@ -41,6 +44,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
         private readonly NullableOutMethodInvocationHistoryCollection _nullableOutMethodInvocationHistoryCollection = new NullableOutMethodInvocationHistoryCollection();
         private readonly NullableInMethodInvocationHistoryCollection _nullableInMethodInvocationHistoryCollection = new NullableInMethodInvocationHistoryCollection();
         private readonly NullableParamsMethodInvocationHistoryCollection _nullableParamsMethodInvocationHistoryCollection = new NullableParamsMethodInvocationHistoryCollection();
+        private readonly RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection = new RequiredThenOptionalMethodInvocationHistoryCollection();
+        private readonly OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection = new OptionalThenParamsMethodInvocationHistoryCollection();
+        private readonly MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection = new MultipleOptionalsMethodInvocationHistoryCollection();
         public IBoolDefaultMethodImposterBuilder BoolDefault(global::Imposter.Abstractions.Arg<bool> flag)
         {
             return new BoolDefaultMethodImposter.Builder(_boolDefaultMethodImposter, _boolDefaultMethodInvocationHistoryCollection, new BoolDefaultArgumentsCriteria(flag));
@@ -106,6 +112,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
             return new NullableParamsMethodImposter.Builder(_nullableParamsMethodImposter, _nullableParamsMethodInvocationHistoryCollection, new NullableParamsArgumentsCriteria(values));
         }
 
+        public IRequiredThenOptionalMethodImposterBuilder RequiredThenOptional(global::Imposter.Abstractions.Arg<string> data, global::Imposter.Abstractions.Arg<bool> validate)
+        {
+            return new RequiredThenOptionalMethodImposter.Builder(_requiredThenOptionalMethodImposter, _requiredThenOptionalMethodInvocationHistoryCollection, new RequiredThenOptionalArgumentsCriteria(data, validate));
+        }
+
+        public IOptionalThenParamsMethodImposterBuilder OptionalThenParams(global::Imposter.Abstractions.Arg<int> value, global::Imposter.Abstractions.Arg<string?> option, global::Imposter.Abstractions.Arg<int[]> extras)
+        {
+            return new OptionalThenParamsMethodImposter.Builder(_optionalThenParamsMethodImposter, _optionalThenParamsMethodInvocationHistoryCollection, new OptionalThenParamsArgumentsCriteria(value, option, extras));
+        }
+
+        public IMultipleOptionalsMethodImposterBuilder MultipleOptionals(global::Imposter.Abstractions.Arg<string> command, global::Imposter.Abstractions.Arg<bool> validate, global::Imposter.Abstractions.Arg<int> timeout)
+        {
+            return new MultipleOptionalsMethodImposter.Builder(_multipleOptionalsMethodImposter, _multipleOptionalsMethodInvocationHistoryCollection, new MultipleOptionalsArgumentsCriteria(command, validate, timeout));
+        }
+
         private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
         private ImposterTargetInstance _imposterInstance;
         global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut>.Instance()
@@ -113,14 +134,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             return _imposterInstance;
         }
 
-        public delegate int BoolDefaultDelegate(bool flag = true);
-        public delegate void BoolDefaultCallbackDelegate(bool flag = true);
-        public delegate global::System.Exception BoolDefaultExceptionGeneratorDelegate(bool flag = true);
+        public delegate int BoolDefaultDelegate(bool flag);
+        public delegate void BoolDefaultCallbackDelegate(bool flag);
+        public delegate global::System.Exception BoolDefaultExceptionGeneratorDelegate(bool flag);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class BoolDefaultArguments
         {
             public bool flag;
-            internal BoolDefaultArguments(bool flag = true)
+            internal BoolDefaultArguments(bool flag)
             {
                 this.flag = flag;
             }
@@ -232,7 +253,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool flag = true)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool flag)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -262,7 +283,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<BoolDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<BoolDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool flag = true)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool flag)
                 {
                     if (_resultGenerator == null)
                     {
@@ -309,7 +330,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(bool flag = true)
+                internal static int DefaultResultGenerator(bool flag)
                 {
                     return default !;
                 }
@@ -378,7 +399,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(bool flag = true)
+            public int Invoke(bool flag)
             {
                 var arguments = new BoolDefaultArguments(flag);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -485,14 +506,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int CharDefaultDelegate(char value = 'Z');
-        public delegate void CharDefaultCallbackDelegate(char value = 'Z');
-        public delegate global::System.Exception CharDefaultExceptionGeneratorDelegate(char value = 'Z');
+        public delegate int CharDefaultDelegate(char value);
+        public delegate void CharDefaultCallbackDelegate(char value);
+        public delegate global::System.Exception CharDefaultExceptionGeneratorDelegate(char value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class CharDefaultArguments
         {
             public char value;
-            internal CharDefaultArguments(char value = 'Z')
+            internal CharDefaultArguments(char value)
             {
                 this.value = value;
             }
@@ -604,7 +625,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, char value = 'Z')
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, char value)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -634,7 +655,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<CharDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<CharDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, char value = 'Z')
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, char value)
                 {
                     if (_resultGenerator == null)
                     {
@@ -681,7 +702,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(char value = 'Z')
+                internal static int DefaultResultGenerator(char value)
                 {
                     return default !;
                 }
@@ -750,7 +771,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(char value = 'Z')
+            public int Invoke(char value)
             {
                 var arguments = new CharDefaultArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -857,14 +878,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int DecimalDefaultDelegate(decimal value = 12.5M);
-        public delegate void DecimalDefaultCallbackDelegate(decimal value = 12.5M);
-        public delegate global::System.Exception DecimalDefaultExceptionGeneratorDelegate(decimal value = 12.5M);
+        public delegate int DecimalDefaultDelegate(decimal value);
+        public delegate void DecimalDefaultCallbackDelegate(decimal value);
+        public delegate global::System.Exception DecimalDefaultExceptionGeneratorDelegate(decimal value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class DecimalDefaultArguments
         {
             public decimal value;
-            internal DecimalDefaultArguments(decimal value = 12.5M)
+            internal DecimalDefaultArguments(decimal value)
             {
                 this.value = value;
             }
@@ -976,7 +997,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, decimal value = 12.5M)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, decimal value)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -1006,7 +1027,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<DecimalDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DecimalDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, decimal value = 12.5M)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, decimal value)
                 {
                     if (_resultGenerator == null)
                     {
@@ -1053,7 +1074,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(decimal value = 12.5M)
+                internal static int DefaultResultGenerator(decimal value)
                 {
                     return default !;
                 }
@@ -1122,7 +1143,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(decimal value = 12.5M)
+            public int Invoke(decimal value)
             {
                 var arguments = new DecimalDefaultArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -1229,14 +1250,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int DoubleDefaultDelegate(double value = 2.5);
-        public delegate void DoubleDefaultCallbackDelegate(double value = 2.5);
-        public delegate global::System.Exception DoubleDefaultExceptionGeneratorDelegate(double value = 2.5);
+        public delegate int DoubleDefaultDelegate(double value);
+        public delegate void DoubleDefaultCallbackDelegate(double value);
+        public delegate global::System.Exception DoubleDefaultExceptionGeneratorDelegate(double value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class DoubleDefaultArguments
         {
             public double value;
-            internal DoubleDefaultArguments(double value = 2.5)
+            internal DoubleDefaultArguments(double value)
             {
                 this.value = value;
             }
@@ -1348,7 +1369,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, double value = 2.5)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, double value)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -1378,7 +1399,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<DoubleDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DoubleDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, double value = 2.5)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, double value)
                 {
                     if (_resultGenerator == null)
                     {
@@ -1425,7 +1446,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(double value = 2.5)
+                internal static int DefaultResultGenerator(double value)
                 {
                     return default !;
                 }
@@ -1494,7 +1515,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(double value = 2.5)
+            public int Invoke(double value)
             {
                 var arguments = new DoubleDefaultArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -1601,14 +1622,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int EnumDefaultDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1);
-        public delegate void EnumDefaultCallbackDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1);
-        public delegate global::System.Exception EnumDefaultExceptionGeneratorDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1);
+        public delegate int EnumDefaultDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode);
+        public delegate void EnumDefaultCallbackDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode);
+        public delegate global::System.Exception EnumDefaultExceptionGeneratorDelegate(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class EnumDefaultArguments
         {
             public global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode;
-            internal EnumDefaultArguments(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+            internal EnumDefaultArguments(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
             {
                 this.mode = mode;
             }
@@ -1720,7 +1741,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -1750,7 +1771,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<EnumDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<EnumDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
                 {
                     if (_resultGenerator == null)
                     {
@@ -1797,7 +1818,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+                internal static int DefaultResultGenerator(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
                 {
                     return default !;
                 }
@@ -1866,7 +1887,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+            public int Invoke(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
             {
                 var arguments = new EnumDefaultArguments(mode);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -1973,14 +1994,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int FloatDefaultDelegate(float value = 1.25F);
-        public delegate void FloatDefaultCallbackDelegate(float value = 1.25F);
-        public delegate global::System.Exception FloatDefaultExceptionGeneratorDelegate(float value = 1.25F);
+        public delegate int FloatDefaultDelegate(float value);
+        public delegate void FloatDefaultCallbackDelegate(float value);
+        public delegate global::System.Exception FloatDefaultExceptionGeneratorDelegate(float value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class FloatDefaultArguments
         {
             public float value;
-            internal FloatDefaultArguments(float value = 1.25F)
+            internal FloatDefaultArguments(float value)
             {
                 this.value = value;
             }
@@ -2092,7 +2113,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, float value = 1.25F)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, float value)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -2122,7 +2143,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<FloatDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<FloatDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, float value = 1.25F)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, float value)
                 {
                     if (_resultGenerator == null)
                     {
@@ -2169,7 +2190,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(float value = 1.25F)
+                internal static int DefaultResultGenerator(float value)
                 {
                     return default !;
                 }
@@ -2238,7 +2259,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(float value = 1.25F)
+            public int Invoke(float value)
             {
                 var arguments = new FloatDefaultArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -2345,14 +2366,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int IntDefaultDelegate(int value = 5);
-        public delegate void IntDefaultCallbackDelegate(int value = 5);
-        public delegate global::System.Exception IntDefaultExceptionGeneratorDelegate(int value = 5);
+        public delegate int IntDefaultDelegate(int value);
+        public delegate void IntDefaultCallbackDelegate(int value);
+        public delegate global::System.Exception IntDefaultExceptionGeneratorDelegate(int value);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class IntDefaultArguments
         {
             public int value;
-            internal IntDefaultArguments(int value = 5)
+            internal IntDefaultArguments(int value)
             {
                 this.value = value;
             }
@@ -2464,7 +2485,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value = 5)
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -2494,7 +2515,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<IntDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IntDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value = 5)
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value)
                 {
                     if (_resultGenerator == null)
                     {
@@ -2541,7 +2562,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(int value = 5)
+                internal static int DefaultResultGenerator(int value)
                 {
                     return default !;
                 }
@@ -2610,7 +2631,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(int value = 5)
+            public int Invoke(int value)
             {
                 var arguments = new IntDefaultArguments(value);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -2717,14 +2738,394 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int NameDefaultDelegate(string name = "IMethodParametersWithDefaultSut");
-        public delegate void NameDefaultCallbackDelegate(string name = "IMethodParametersWithDefaultSut");
-        public delegate global::System.Exception NameDefaultExceptionGeneratorDelegate(string name = "IMethodParametersWithDefaultSut");
+        public delegate int MultipleOptionalsDelegate(string command, bool validate, int timeout);
+        public delegate void MultipleOptionalsCallbackDelegate(string command, bool validate, int timeout);
+        public delegate global::System.Exception MultipleOptionalsExceptionGeneratorDelegate(string command, bool validate, int timeout);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class MultipleOptionalsArguments
+        {
+            public string command;
+            public bool validate;
+            public int timeout;
+            internal MultipleOptionalsArguments(string command, bool validate, int timeout)
+            {
+                this.command = command;
+                this.validate = validate;
+                this.timeout = timeout;
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class MultipleOptionalsArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<string> command { get; }
+            public global::Imposter.Abstractions.Arg<bool> validate { get; }
+            public global::Imposter.Abstractions.Arg<int> timeout { get; }
+
+            public MultipleOptionalsArgumentsCriteria(global::Imposter.Abstractions.Arg<string> command, global::Imposter.Abstractions.Arg<bool> validate, global::Imposter.Abstractions.Arg<int> timeout)
+            {
+                this.command = command;
+                this.validate = validate;
+                this.timeout = timeout;
+            }
+
+            public bool Matches(MultipleOptionalsArguments arguments)
+            {
+                return (command.Matches(arguments.command) && validate.Matches(arguments.validate)) && timeout.Matches(arguments.timeout);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IMultipleOptionalsMethodInvocationHistory
+        {
+            bool Matches(MultipleOptionalsArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class MultipleOptionalsMethodInvocationHistory : IMultipleOptionalsMethodInvocationHistory
+        {
+            internal MultipleOptionalsArguments Arguments;
+            internal int? Result;
+            internal global::System.Exception? Exception;
+            public MultipleOptionalsMethodInvocationHistory(MultipleOptionalsArguments Arguments, int? Result, global::System.Exception? Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(MultipleOptionalsArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+
+            public override string ToString()
+            {
+                return "MultipleOptionals(" + global::System.String.Join(", ", new[] { "command: " + FormatValue(Arguments.command), "validate: " + FormatValue(Arguments.validate), "timeout: " + FormatValue(Arguments.timeout) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class MultipleOptionalsMethodInvocationHistoryCollection
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<IMultipleOptionalsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IMultipleOptionalsMethodInvocationHistory>();
+            internal void Add(IMultipleOptionalsMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(MultipleOptionalsArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        class MultipleOptionalsMethodInvocationImposterGroup
+        {
+            internal static MultipleOptionalsMethodInvocationImposterGroup Default = new MultipleOptionalsMethodInvocationImposterGroup(new MultipleOptionalsArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<bool>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
+            internal MultipleOptionalsArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter? _lastestInvocationImposter;
+            public MultipleOptionalsMethodInvocationImposterGroup(MultipleOptionalsArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                if (_invocationImposters.TryDequeue(out var invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+
+                    return invocationImposter;
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string command, bool validate, int timeout)
+            {
+                var invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, command, validate, timeout);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private MultipleOptionalsDelegate? _resultGenerator;
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<MultipleOptionalsCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<MultipleOptionalsCallbackDelegate>();
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
+
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string command, bool validate, int timeout)
+                {
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(command, validate, timeout);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(command, validate, timeout);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(MultipleOptionalsCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(MultipleOptionalsDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (string command, bool validate, int timeout) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(MultipleOptionalsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (string command, bool validate, int timeout) =>
+                    {
+                        throw exceptionGenerator(command, validate, timeout);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(string command, bool validate, int timeout)
+                {
+                    return default !;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IMultipleOptionalsMethodInvocationImposterGroupCallback
+        {
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Callback(MultipleOptionalsCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IMultipleOptionalsMethodInvocationImposterGroupContinuation : IMultipleOptionalsMethodInvocationImposterGroupCallback
+        {
+            IMultipleOptionalsMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IMultipleOptionalsMethodInvocationImposterGroup : IMultipleOptionalsMethodInvocationImposterGroupCallback
+        {
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : global::System.Exception, new();
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Throws(MultipleOptionalsExceptionGeneratorDelegate exceptionGenerator);
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Returns(MultipleOptionalsDelegate resultGenerator);
+            IMultipleOptionalsMethodInvocationImposterGroupContinuation Returns(int value);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface MultipleOptionalsInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IMultipleOptionalsMethodImposterBuilder : IMultipleOptionalsMethodInvocationImposterGroup, IMultipleOptionalsMethodInvocationImposterGroupCallback, MultipleOptionalsInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class MultipleOptionalsMethodImposter
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<MultipleOptionalsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<MultipleOptionalsMethodInvocationImposterGroup>();
+            private readonly MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public MultipleOptionalsMethodImposter(MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+            {
+                this._multipleOptionalsMethodInvocationHistoryCollection = _multipleOptionalsMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingInvocationImposterGroup(MultipleOptionalsArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private MultipleOptionalsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(MultipleOptionalsArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(string command, bool validate, int timeout)
+            {
+                var arguments = new MultipleOptionalsArguments(command, validate, timeout);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("int IMethodParametersWithDefaultSut.MultipleOptionals(string command, bool validate = false, int timeout = 30)");
+                    }
+
+                    matchingInvocationImposterGroup = MultipleOptionalsMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IMethodParametersWithDefaultSut.MultipleOptionals(string command, bool validate = false, int timeout = 30)", command, validate, timeout);
+                    _multipleOptionalsMethodInvocationHistoryCollection.Add(new MultipleOptionalsMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (global::System.Exception ex)
+                {
+                    _multipleOptionalsMethodInvocationHistoryCollection.Add(new MultipleOptionalsMethodInvocationHistory(arguments, default !, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class Builder : IMultipleOptionalsMethodImposterBuilder, IMultipleOptionalsMethodInvocationImposterGroupContinuation
+            {
+                private readonly MultipleOptionalsMethodImposter _imposter;
+                private readonly MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection;
+                private readonly MultipleOptionalsArgumentsCriteria _argumentsCriteria;
+                private readonly MultipleOptionalsMethodInvocationImposterGroup _invocationImposterGroup;
+                private MultipleOptionalsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(MultipleOptionalsMethodImposter _imposter, MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection, MultipleOptionalsArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._multipleOptionalsMethodInvocationHistoryCollection = _multipleOptionalsMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new MultipleOptionalsMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((string command, bool validate, int timeout) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((string command, bool validate, int timeout) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroup.Throws(MultipleOptionalsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((string command, bool validate, int timeout) =>
+                    {
+                        throw exceptionGenerator.Invoke(command, validate, timeout);
+                    });
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroupCallback.Callback(MultipleOptionalsCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroup.Returns(MultipleOptionalsDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroupContinuation IMultipleOptionalsMethodInvocationImposterGroup.Returns(int value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IMultipleOptionalsMethodInvocationImposterGroup IMultipleOptionalsMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void MultipleOptionalsInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _multipleOptionalsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _multipleOptionalsMethodInvocationHistoryCollection.ToString());
+                    }
+                }
+            }
+        }
+
+        public delegate int NameDefaultDelegate(string name);
+        public delegate void NameDefaultCallbackDelegate(string name);
+        public delegate global::System.Exception NameDefaultExceptionGeneratorDelegate(string name);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class NameDefaultArguments
         {
             public string name;
-            internal NameDefaultArguments(string name = "IMethodParametersWithDefaultSut")
+            internal NameDefaultArguments(string name)
             {
                 this.name = name;
             }
@@ -2836,7 +3237,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string name = "IMethodParametersWithDefaultSut")
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string name)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -2866,7 +3267,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<NameDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<NameDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string name = "IMethodParametersWithDefaultSut")
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string name)
                 {
                     if (_resultGenerator == null)
                     {
@@ -2913,7 +3314,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(string name = "IMethodParametersWithDefaultSut")
+                internal static int DefaultResultGenerator(string name)
                 {
                     return default !;
                 }
@@ -2982,7 +3383,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(string name = "IMethodParametersWithDefaultSut")
+            public int Invoke(string name)
             {
                 var arguments = new NameDefaultArguments(name);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -3089,14 +3490,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
-        public delegate int NullableDefaultDelegate(string? text = default(string? ));
-        public delegate void NullableDefaultCallbackDelegate(string? text = default(string? ));
-        public delegate global::System.Exception NullableDefaultExceptionGeneratorDelegate(string? text = default(string? ));
+        public delegate int NullableDefaultDelegate(string? text);
+        public delegate void NullableDefaultCallbackDelegate(string? text);
+        public delegate global::System.Exception NullableDefaultExceptionGeneratorDelegate(string? text);
         [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
         public class NullableDefaultArguments
         {
             public string? text;
-            internal NullableDefaultArguments(string? text = default(string? ))
+            internal NullableDefaultArguments(string? text)
             {
                 this.text = text;
             }
@@ -3208,7 +3609,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return _lastestInvocationImposter;
             }
 
-            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? text = default(string? ))
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? text)
             {
                 var invocationImposter = GetInvocationImposter();
                 if (invocationImposter == null)
@@ -3238,7 +3639,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 private readonly global::System.Collections.Concurrent.ConcurrentQueue<NullableDefaultCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<NullableDefaultCallbackDelegate>();
                 internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? text = default(string? ))
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? text)
                 {
                     if (_resultGenerator == null)
                     {
@@ -3285,7 +3686,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     };
                 }
 
-                internal static int DefaultResultGenerator(string? text = default(string? ))
+                internal static int DefaultResultGenerator(string? text)
                 {
                     return default !;
                 }
@@ -3354,7 +3755,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 return null;
             }
 
-            public int Invoke(string? text = default(string? ))
+            public int Invoke(string? text)
             {
                 var arguments = new NullableDefaultArguments(text);
                 var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -4924,6 +5325,762 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
 
+        public delegate int OptionalThenParamsDelegate(int value, string? option, int[] extras);
+        public delegate void OptionalThenParamsCallbackDelegate(int value, string? option, int[] extras);
+        public delegate global::System.Exception OptionalThenParamsExceptionGeneratorDelegate(int value, string? option, int[] extras);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class OptionalThenParamsArguments
+        {
+            public int value;
+            public string? option;
+            public int[] extras;
+            internal OptionalThenParamsArguments(int value, string? option, int[] extras)
+            {
+                this.value = value;
+                this.option = option;
+                this.extras = extras;
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class OptionalThenParamsArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<int> value { get; }
+            public global::Imposter.Abstractions.Arg<string?> option { get; }
+            public global::Imposter.Abstractions.Arg<int[]> extras { get; }
+
+            public OptionalThenParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int> value, global::Imposter.Abstractions.Arg<string?> option, global::Imposter.Abstractions.Arg<int[]> extras)
+            {
+                this.value = value;
+                this.option = option;
+                this.extras = extras;
+            }
+
+            public bool Matches(OptionalThenParamsArguments arguments)
+            {
+                return (value.Matches(arguments.value) && option.Matches(arguments.option)) && extras.Matches(arguments.extras);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IOptionalThenParamsMethodInvocationHistory
+        {
+            bool Matches(OptionalThenParamsArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class OptionalThenParamsMethodInvocationHistory : IOptionalThenParamsMethodInvocationHistory
+        {
+            internal OptionalThenParamsArguments Arguments;
+            internal int? Result;
+            internal global::System.Exception? Exception;
+            public OptionalThenParamsMethodInvocationHistory(OptionalThenParamsArguments Arguments, int? Result, global::System.Exception? Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(OptionalThenParamsArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+
+            public override string ToString()
+            {
+                return "OptionalThenParams(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value), "option: " + FormatValue(Arguments.option), "extras: " + FormatValue(Arguments.extras) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class OptionalThenParamsMethodInvocationHistoryCollection
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<IOptionalThenParamsMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IOptionalThenParamsMethodInvocationHistory>();
+            internal void Add(IOptionalThenParamsMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(OptionalThenParamsArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        class OptionalThenParamsMethodInvocationImposterGroup
+        {
+            internal static OptionalThenParamsMethodInvocationImposterGroup Default = new OptionalThenParamsMethodInvocationImposterGroup(new OptionalThenParamsArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string?>.Any(), global::Imposter.Abstractions.Arg<int[]>.Any()));
+            internal OptionalThenParamsArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter? _lastestInvocationImposter;
+            public OptionalThenParamsMethodInvocationImposterGroup(OptionalThenParamsArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                if (_invocationImposters.TryDequeue(out var invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+
+                    return invocationImposter;
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, string? option, int[] extras)
+            {
+                var invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value, option, extras);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private OptionalThenParamsDelegate? _resultGenerator;
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<OptionalThenParamsCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<OptionalThenParamsCallbackDelegate>();
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
+
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, string? option, int[] extras)
+                {
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(value, option, extras);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(value, option, extras);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(OptionalThenParamsCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(OptionalThenParamsDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value_1)
+                {
+                    _resultGenerator = (int value, string? option, int[] extras) =>
+                    {
+                        return value_1;
+                    };
+                }
+
+                internal void Throws(OptionalThenParamsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (int value, string? option, int[] extras) =>
+                    {
+                        throw exceptionGenerator(value, option, extras);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(int value, string? option, int[] extras)
+                {
+                    return default !;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IOptionalThenParamsMethodInvocationImposterGroupCallback
+        {
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Callback(OptionalThenParamsCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IOptionalThenParamsMethodInvocationImposterGroupContinuation : IOptionalThenParamsMethodInvocationImposterGroupCallback
+        {
+            IOptionalThenParamsMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IOptionalThenParamsMethodInvocationImposterGroup : IOptionalThenParamsMethodInvocationImposterGroupCallback
+        {
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : global::System.Exception, new();
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Throws(OptionalThenParamsExceptionGeneratorDelegate exceptionGenerator);
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Returns(OptionalThenParamsDelegate resultGenerator);
+            IOptionalThenParamsMethodInvocationImposterGroupContinuation Returns(int value);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface OptionalThenParamsInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IOptionalThenParamsMethodImposterBuilder : IOptionalThenParamsMethodInvocationImposterGroup, IOptionalThenParamsMethodInvocationImposterGroupCallback, OptionalThenParamsInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class OptionalThenParamsMethodImposter
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<OptionalThenParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<OptionalThenParamsMethodInvocationImposterGroup>();
+            private readonly OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public OptionalThenParamsMethodImposter(OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+            {
+                this._optionalThenParamsMethodInvocationHistoryCollection = _optionalThenParamsMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingInvocationImposterGroup(OptionalThenParamsArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private OptionalThenParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(OptionalThenParamsArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(int value, string? option, int[] extras)
+            {
+                var arguments = new OptionalThenParamsArguments(value, option, extras);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("int IMethodParametersWithDefaultSut.OptionalThenParams(int value, string? option = null, params int[] extras)");
+                    }
+
+                    matchingInvocationImposterGroup = OptionalThenParamsMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IMethodParametersWithDefaultSut.OptionalThenParams(int value, string? option = null, params int[] extras)", value, option, extras);
+                    _optionalThenParamsMethodInvocationHistoryCollection.Add(new OptionalThenParamsMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (global::System.Exception ex)
+                {
+                    _optionalThenParamsMethodInvocationHistoryCollection.Add(new OptionalThenParamsMethodInvocationHistory(arguments, default !, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class Builder : IOptionalThenParamsMethodImposterBuilder, IOptionalThenParamsMethodInvocationImposterGroupContinuation
+            {
+                private readonly OptionalThenParamsMethodImposter _imposter;
+                private readonly OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection;
+                private readonly OptionalThenParamsArgumentsCriteria _argumentsCriteria;
+                private readonly OptionalThenParamsMethodInvocationImposterGroup _invocationImposterGroup;
+                private OptionalThenParamsMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(OptionalThenParamsMethodImposter _imposter, OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection, OptionalThenParamsArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._optionalThenParamsMethodInvocationHistoryCollection = _optionalThenParamsMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new OptionalThenParamsMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((int value, string? option, int[] extras) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((int value, string? option, int[] extras) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroup.Throws(OptionalThenParamsExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((int value, string? option, int[] extras) =>
+                    {
+                        throw exceptionGenerator.Invoke(value, option, extras);
+                    });
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroupCallback.Callback(OptionalThenParamsCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroup.Returns(OptionalThenParamsDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroupContinuation IOptionalThenParamsMethodInvocationImposterGroup.Returns(int value_1)
+                {
+                    _currentInvocationImposter.Returns(value_1);
+                    return this;
+                }
+
+                IOptionalThenParamsMethodInvocationImposterGroup IOptionalThenParamsMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void OptionalThenParamsInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _optionalThenParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _optionalThenParamsMethodInvocationHistoryCollection.ToString());
+                    }
+                }
+            }
+        }
+
+        public delegate int RequiredThenOptionalDelegate(string data, bool validate);
+        public delegate void RequiredThenOptionalCallbackDelegate(string data, bool validate);
+        public delegate global::System.Exception RequiredThenOptionalExceptionGeneratorDelegate(string data, bool validate);
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class RequiredThenOptionalArguments
+        {
+            public string data;
+            public bool validate;
+            internal RequiredThenOptionalArguments(string data, bool validate)
+            {
+                this.data = data;
+                this.validate = validate;
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public class RequiredThenOptionalArgumentsCriteria
+        {
+            public global::Imposter.Abstractions.Arg<string> data { get; }
+            public global::Imposter.Abstractions.Arg<bool> validate { get; }
+
+            public RequiredThenOptionalArgumentsCriteria(global::Imposter.Abstractions.Arg<string> data, global::Imposter.Abstractions.Arg<bool> validate)
+            {
+                this.data = data;
+                this.validate = validate;
+            }
+
+            public bool Matches(RequiredThenOptionalArguments arguments)
+            {
+                return data.Matches(arguments.data) && validate.Matches(arguments.validate);
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IRequiredThenOptionalMethodInvocationHistory
+        {
+            bool Matches(RequiredThenOptionalArgumentsCriteria criteria);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class RequiredThenOptionalMethodInvocationHistory : IRequiredThenOptionalMethodInvocationHistory
+        {
+            internal RequiredThenOptionalArguments Arguments;
+            internal int? Result;
+            internal global::System.Exception? Exception;
+            public RequiredThenOptionalMethodInvocationHistory(RequiredThenOptionalArguments Arguments, int? Result, global::System.Exception? Exception)
+            {
+                this.Arguments = Arguments;
+                this.Result = Result;
+                this.Exception = Exception;
+            }
+
+            public bool Matches(RequiredThenOptionalArgumentsCriteria criteria)
+            {
+                return criteria.Matches(Arguments);
+            }
+
+            public override string ToString()
+            {
+                return "RequiredThenOptional(" + global::System.String.Join(", ", new[] { "data: " + FormatValue(Arguments.data), "validate: " + FormatValue(Arguments.validate) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+            }
+
+            private static string FormatValue(object? value)
+            {
+                return "<" + (value?.ToString() ?? "null") + ">";
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class RequiredThenOptionalMethodInvocationHistoryCollection
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<IRequiredThenOptionalMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IRequiredThenOptionalMethodInvocationHistory>();
+            internal void Add(IRequiredThenOptionalMethodInvocationHistory invocationHistory)
+            {
+                _invocationHistory.Push(invocationHistory);
+            }
+
+            internal int Count(RequiredThenOptionalArgumentsCriteria argumentsCriteria)
+            {
+                return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+            }
+
+            public override string ToString()
+            {
+                return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        class RequiredThenOptionalMethodInvocationImposterGroup
+        {
+            internal static RequiredThenOptionalMethodInvocationImposterGroup Default = new RequiredThenOptionalMethodInvocationImposterGroup(new RequiredThenOptionalArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<bool>.Any()));
+            internal RequiredThenOptionalArgumentsCriteria ArgumentsCriteria { get; }
+
+            private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+            private MethodInvocationImposter? _lastestInvocationImposter;
+            public RequiredThenOptionalMethodInvocationImposterGroup(RequiredThenOptionalArgumentsCriteria argumentsCriteria)
+            {
+                ArgumentsCriteria = argumentsCriteria;
+            }
+
+            internal MethodInvocationImposter AddInvocationImposter()
+            {
+                MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                _invocationImposters.Enqueue(invocationImposter);
+                return invocationImposter;
+            }
+
+            private MethodInvocationImposter? GetInvocationImposter()
+            {
+                if (_invocationImposters.TryDequeue(out var invocationImposter))
+                {
+                    if (!invocationImposter.IsEmpty)
+                    {
+                        _lastestInvocationImposter = invocationImposter;
+                    }
+
+                    return invocationImposter;
+                }
+
+                return _lastestInvocationImposter;
+            }
+
+            public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string data, bool validate)
+            {
+                var invocationImposter = GetInvocationImposter();
+                if (invocationImposter == null)
+                {
+                    if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                    }
+
+                    invocationImposter = MethodInvocationImposter.Default;
+                }
+
+                return invocationImposter.Invoke(invocationBehavior, methodDisplayName, data, validate);
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class MethodInvocationImposter
+            {
+                internal static MethodInvocationImposter Default;
+                static MethodInvocationImposter()
+                {
+                    Default = new MethodInvocationImposter();
+                    Default.Returns(DefaultResultGenerator);
+                }
+
+                private RequiredThenOptionalDelegate? _resultGenerator;
+                private readonly global::System.Collections.Concurrent.ConcurrentQueue<RequiredThenOptionalCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<RequiredThenOptionalCallbackDelegate>();
+                internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
+
+                public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string data, bool validate)
+                {
+                    if (_resultGenerator == null)
+                    {
+                        if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                        {
+                            throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+                        }
+
+                        _resultGenerator = DefaultResultGenerator;
+                    }
+
+                    int result = _resultGenerator.Invoke(data, validate);
+                    foreach (var callback in _callbacks)
+                    {
+                        callback(data, validate);
+                    }
+
+                    return result;
+                }
+
+                internal void Callback(RequiredThenOptionalCallbackDelegate callback)
+                {
+                    _callbacks.Enqueue(callback);
+                }
+
+                internal void Returns(RequiredThenOptionalDelegate resultGenerator)
+                {
+                    _resultGenerator = resultGenerator;
+                }
+
+                internal void Returns(int value)
+                {
+                    _resultGenerator = (string data, bool validate) =>
+                    {
+                        return value;
+                    };
+                }
+
+                internal void Throws(RequiredThenOptionalExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _resultGenerator = (string data, bool validate) =>
+                    {
+                        throw exceptionGenerator(data, validate);
+                    };
+                }
+
+                internal static int DefaultResultGenerator(string data, bool validate)
+                {
+                    return default !;
+                }
+            }
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IRequiredThenOptionalMethodInvocationImposterGroupCallback
+        {
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Callback(RequiredThenOptionalCallbackDelegate callback);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IRequiredThenOptionalMethodInvocationImposterGroupContinuation : IRequiredThenOptionalMethodInvocationImposterGroupCallback
+        {
+            IRequiredThenOptionalMethodInvocationImposterGroup Then();
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IRequiredThenOptionalMethodInvocationImposterGroup : IRequiredThenOptionalMethodInvocationImposterGroupCallback
+        {
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Throws<TException>()
+                where TException : global::System.Exception, new();
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Throws(RequiredThenOptionalExceptionGeneratorDelegate exceptionGenerator);
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Returns(RequiredThenOptionalDelegate resultGenerator);
+            IRequiredThenOptionalMethodInvocationImposterGroupContinuation Returns(int value);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface RequiredThenOptionalInvocationVerifier
+        {
+            void Called(Count count);
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        public interface IRequiredThenOptionalMethodImposterBuilder : IRequiredThenOptionalMethodInvocationImposterGroup, IRequiredThenOptionalMethodInvocationImposterGroupCallback, RequiredThenOptionalInvocationVerifier
+        {
+        }
+
+        [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+        internal class RequiredThenOptionalMethodImposter
+        {
+            private readonly global::System.Collections.Concurrent.ConcurrentStack<RequiredThenOptionalMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RequiredThenOptionalMethodInvocationImposterGroup>();
+            private readonly RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection;
+            private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+            public RequiredThenOptionalMethodImposter(RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+            {
+                this._requiredThenOptionalMethodInvocationHistoryCollection = _requiredThenOptionalMethodInvocationHistoryCollection;
+                this._invocationBehavior = _invocationBehavior;
+            }
+
+            public bool HasMatchingInvocationImposterGroup(RequiredThenOptionalArguments arguments)
+            {
+                return FindMatchingInvocationImposterGroup(arguments) != null;
+            }
+
+            private RequiredThenOptionalMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RequiredThenOptionalArguments arguments)
+            {
+                foreach (var invocationImposterGroup in _invocationImposters)
+                {
+                    if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+                        return invocationImposterGroup;
+                }
+
+                return null;
+            }
+
+            public int Invoke(string data, bool validate)
+            {
+                var arguments = new RequiredThenOptionalArguments(data, validate);
+                var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+                if (matchingInvocationImposterGroup == default)
+                {
+                    if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+                    {
+                        throw new global::Imposter.Abstractions.MissingImposterException("int IMethodParametersWithDefaultSut.RequiredThenOptional(string data, bool validate = true)");
+                    }
+
+                    matchingInvocationImposterGroup = RequiredThenOptionalMethodInvocationImposterGroup.Default;
+                }
+
+                try
+                {
+                    var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IMethodParametersWithDefaultSut.RequiredThenOptional(string data, bool validate = true)", data, validate);
+                    _requiredThenOptionalMethodInvocationHistoryCollection.Add(new RequiredThenOptionalMethodInvocationHistory(arguments, result, default));
+                    return result;
+                }
+                catch (global::System.Exception ex)
+                {
+                    _requiredThenOptionalMethodInvocationHistoryCollection.Add(new RequiredThenOptionalMethodInvocationHistory(arguments, default !, ex));
+                    throw;
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+            internal class Builder : IRequiredThenOptionalMethodImposterBuilder, IRequiredThenOptionalMethodInvocationImposterGroupContinuation
+            {
+                private readonly RequiredThenOptionalMethodImposter _imposter;
+                private readonly RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection;
+                private readonly RequiredThenOptionalArgumentsCriteria _argumentsCriteria;
+                private readonly RequiredThenOptionalMethodInvocationImposterGroup _invocationImposterGroup;
+                private RequiredThenOptionalMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+                public Builder(RequiredThenOptionalMethodImposter _imposter, RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection, RequiredThenOptionalArgumentsCriteria _argumentsCriteria)
+                {
+                    this._imposter = _imposter;
+                    this._requiredThenOptionalMethodInvocationHistoryCollection = _requiredThenOptionalMethodInvocationHistoryCollection;
+                    this._argumentsCriteria = _argumentsCriteria;
+                    this._invocationImposterGroup = new RequiredThenOptionalMethodInvocationImposterGroup(_argumentsCriteria);
+                    _imposter._invocationImposters.Push(_invocationImposterGroup);
+                    this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroup.Throws<TException>()
+                {
+                    _currentInvocationImposter.Throws((string data, bool validate) =>
+                    {
+                        throw new TException();
+                    });
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+                {
+                    _currentInvocationImposter.Throws((string data, bool validate) =>
+                    {
+                        throw exception;
+                    });
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroup.Throws(RequiredThenOptionalExceptionGeneratorDelegate exceptionGenerator)
+                {
+                    _currentInvocationImposter.Throws((string data, bool validate) =>
+                    {
+                        throw exceptionGenerator.Invoke(data, validate);
+                    });
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroupCallback.Callback(RequiredThenOptionalCallbackDelegate callback)
+                {
+                    _currentInvocationImposter.Callback(callback);
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroup.Returns(RequiredThenOptionalDelegate resultGenerator)
+                {
+                    _currentInvocationImposter.Returns(resultGenerator);
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroupContinuation IRequiredThenOptionalMethodInvocationImposterGroup.Returns(int value)
+                {
+                    _currentInvocationImposter.Returns(value);
+                    return this;
+                }
+
+                IRequiredThenOptionalMethodInvocationImposterGroup IRequiredThenOptionalMethodInvocationImposterGroupContinuation.Then()
+                {
+                    this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+                    return this;
+                }
+
+                void RequiredThenOptionalInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+                {
+                    var invocationCount = _requiredThenOptionalMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+                    if (!count.Matches(invocationCount))
+                    {
+                        throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _requiredThenOptionalMethodInvocationHistoryCollection.ToString());
+                    }
+                }
+            }
+        }
+
         public IMethodParametersWithDefaultSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
         {
             this._boolDefaultMethodImposter = new BoolDefaultMethodImposter(_boolDefaultMethodInvocationHistoryCollection, invocationBehavior);
@@ -4939,6 +6096,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
             this._nullableOutMethodImposter = new NullableOutMethodImposter(_nullableOutMethodInvocationHistoryCollection, invocationBehavior);
             this._nullableInMethodImposter = new NullableInMethodImposter(_nullableInMethodInvocationHistoryCollection, invocationBehavior);
             this._nullableParamsMethodImposter = new NullableParamsMethodImposter(_nullableParamsMethodInvocationHistoryCollection, invocationBehavior);
+            this._requiredThenOptionalMethodImposter = new RequiredThenOptionalMethodImposter(_requiredThenOptionalMethodInvocationHistoryCollection, invocationBehavior);
+            this._optionalThenParamsMethodImposter = new OptionalThenParamsMethodImposter(_optionalThenParamsMethodInvocationHistoryCollection, invocationBehavior);
+            this._multipleOptionalsMethodImposter = new MultipleOptionalsMethodImposter(_multipleOptionalsMethodInvocationHistoryCollection, invocationBehavior);
             this._imposterInstance = new ImposterTargetInstance(this);
             this._invocationBehavior = invocationBehavior;
         }
@@ -4952,47 +6112,47 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 this._imposter = _imposter;
             }
 
-            public int BoolDefault(bool flag = true)
+            public int BoolDefault(bool flag)
             {
                 return _imposter._boolDefaultMethodImposter.Invoke(flag);
             }
 
-            public int IntDefault(int value = 5)
+            public int IntDefault(int value)
             {
                 return _imposter._intDefaultMethodImposter.Invoke(value);
             }
 
-            public int DoubleDefault(double value = 2.5)
+            public int DoubleDefault(double value)
             {
                 return _imposter._doubleDefaultMethodImposter.Invoke(value);
             }
 
-            public int NullableDefault(string? text = default(string? ))
+            public int NullableDefault(string? text)
             {
                 return _imposter._nullableDefaultMethodImposter.Invoke(text);
             }
 
-            public int FloatDefault(float value = 1.25F)
+            public int FloatDefault(float value)
             {
                 return _imposter._floatDefaultMethodImposter.Invoke(value);
             }
 
-            public int DecimalDefault(decimal value = 12.5M)
+            public int DecimalDefault(decimal value)
             {
                 return _imposter._decimalDefaultMethodImposter.Invoke(value);
             }
 
-            public int CharDefault(char value = 'Z')
+            public int CharDefault(char value)
             {
                 return _imposter._charDefaultMethodImposter.Invoke(value);
             }
 
-            public int EnumDefault(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum)1)
+            public int EnumDefault(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
             {
                 return _imposter._enumDefaultMethodImposter.Invoke(mode);
             }
 
-            public int NameDefault(string name = "IMethodParametersWithDefaultSut")
+            public int NameDefault(string name)
             {
                 return _imposter._nameDefaultMethodImposter.Invoke(name);
             }
@@ -5015,6 +6175,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
             public int NullableParams(string? [] values)
             {
                 return _imposter._nullableParamsMethodImposter.Invoke(values);
+            }
+
+            public int RequiredThenOptional(string data, bool validate)
+            {
+                return _imposter._requiredThenOptionalMethodImposter.Invoke(data, validate);
+            }
+
+            public int OptionalThenParams(int value, string? option, int[] extras)
+            {
+                return _imposter._optionalThenParamsMethodImposter.Invoke(value, option, extras);
+            }
+
+            public int MultipleOptionals(string command, bool validate, int timeout)
+            {
+                return _imposter._multipleOptionalsMethodImposter.Invoke(command, validate, timeout);
             }
         }
     }

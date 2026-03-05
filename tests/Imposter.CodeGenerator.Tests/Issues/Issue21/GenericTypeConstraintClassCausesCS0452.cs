@@ -40,7 +40,7 @@ public class GenericTypeConstraintClassCausesCs0452
         );
 
     [Fact]
-    public async Task GivenMethodWithOptionalBool_WhenSnippetIsCompiled_ShouldCompile()
+    public async Task CreateNewMessageSenderImposter_WhenSnippetIsCompiled_ShouldCompile()
     {
         var diagnostics = await CompileSnippet( /*lang=csharp*/
             """

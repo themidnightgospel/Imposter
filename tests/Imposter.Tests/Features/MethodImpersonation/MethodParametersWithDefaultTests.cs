@@ -144,6 +144,66 @@ namespace Imposter.Tests.Features.MethodImpersonation
             _sut.Instance().NullableParams().ShouldBe(9);
             _sut.Instance().NullableParams("a", null).ShouldBe(10);
         }
+
+        [Fact]
+        public void GivenRequiredThenOptional_WhenInvokedWithBothArgs_ShouldReturnSetupValue()
+        {
+            _sut.RequiredThenOptional(Arg<string>.Is("data"), Arg<bool>.Is(false)).Returns(42);
+
+            _sut.Instance().RequiredThenOptional("data", false).ShouldBe(42);
+        }
+
+        [Fact]
+        public void GivenRequiredThenOptional_WhenInvokedWithDefaultOptional_ShouldReturnSetupValue()
+        {
+            _sut.RequiredThenOptional(Arg<string>.Is("data"), Arg<bool>.Is(true)).Returns(99);
+
+            _sut.Instance().RequiredThenOptional("data").ShouldBe(99);
+        }
+
+        [Fact]
+        public void GivenOptionalThenParams_WhenInvokedWithAllArgs_ShouldReturnSetupValue()
+        {
+            _sut.OptionalThenParams(
+                    Arg<int>.Is(1),
+                    Arg<string?>.Is("opt"),
+                    Arg<int[]>.Is(arr => arr.Length == 2)
+                )
+                .Returns(50);
+
+            _sut.Instance().OptionalThenParams(1, "opt", 10, 20).ShouldBe(50);
+        }
+
+        [Fact]
+        public void GivenOptionalThenParams_WhenInvokedWithEmptyParams_ShouldReturnSetupValue()
+        {
+            _sut.OptionalThenParams(
+                    Arg<int>.Is(5),
+                    Arg<string?>.Is((string?)null),
+                    Arg<int[]>.Is(arr => arr.Length == 0)
+                )
+                .Returns(60);
+
+            _sut.Instance().OptionalThenParams(5).ShouldBe(60);
+        }
+
+        [Fact]
+        public void GivenMultipleOptionals_WhenInvokedWithDefaults_ShouldReturnSetupValue()
+        {
+            _sut.MultipleOptionals(Arg<string>.Is("cmd"), Arg<bool>.Is(false), Arg<int>.Is(30))
+                .Returns(77);
+
+            _sut.Instance().MultipleOptionals("cmd").ShouldBe(77);
+        }
+
+        [Fact]
+        public void GivenMultipleOptionals_WhenInvokedWithOverriddenValues_ShouldReturnSetupValue()
+        {
+            _sut.MultipleOptionals(Arg<string>.Is("cmd"), Arg<bool>.Is(true), Arg<int>.Is(60))
+                .Returns(88);
+
+            _sut.Instance().MultipleOptionals("cmd", true, 60).ShouldBe(88);
+        }
     }
 
     public interface IMethodParametersWithDefaultSut
@@ -173,6 +233,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
         int NullableIn(in string? text);
 
         int NullableParams(params string?[] values);
+
+        int RequiredThenOptional(string data, bool validate = true);
+
+        int OptionalThenParams(int value, string? option = null, params int[] extras);
+
+        int MultipleOptionals(string command, bool validate = false, int timeout = 30);
     }
 
     public enum Issue2Enum
