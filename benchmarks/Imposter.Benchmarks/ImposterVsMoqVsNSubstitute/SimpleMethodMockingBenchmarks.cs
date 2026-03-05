@@ -4,8 +4,10 @@ using Imposter.Abstractions;
 using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 using Moq;
 using NSubstitute;
+using Rocks;
 
 [assembly: GenerateImposter(typeof(SimpleMethodMockingBenchmarks.ICalculator))]
+[assembly: Rock(typeof(SimpleMethodMockingBenchmarks.ICalculator), BuildType.Create)]
 
 namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 
@@ -65,6 +67,24 @@ public class SimpleMethodMockingBenchmarks
         for (var i = 0; i < Iteration; i++)
         {
             calculatorFake.Square(i);
+        }
+    }
+
+    [Benchmark]
+    public void Rocks()
+    {
+        var expectations = new ICalculatorCreateExpectations();
+
+        for (var i = 0; i < Iteration; i++)
+        {
+            var input = i;
+            expectations.Setups.Square(input).ReturnValue(input * input);
+        }
+
+        var mock = expectations.Instance();
+        for (var i = 0; i < Iteration; i++)
+        {
+            mock.Square(i);
         }
     }
 

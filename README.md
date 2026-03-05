@@ -129,6 +129,73 @@ BenchmarkDotNet v0.15.6, Windows 11 (10.0.26200.6899)
 DefaultJob : .NET 8.0.21 (8.0.21, 8.0.2125.47513), X64 RyuJIT x86-64-v3
 ```
 
+<details>
+<summary>Benchmarks on macOS (Apple M2 Pro)</summary>
+
+Mean execution time
+
+| Method      | Iteration | Mean              |
+|-------------|-----------|------------------:|
+| Moq         | 1         | 62,199.5 ns       |
+| NSubstitute | 1         | 1,688.9 ns        |
+| FakeItEasy  | 1         | 2,023.3 ns        |
+| Rocks       | 1         | 46.2 ns           |
+| Imposter    | 1         | **250.8 ns**      |
+| Moq         | 10        | 634,227.3 ns      |
+| NSubstitute | 10        | 9,484.3 ns        |
+| FakeItEasy  | 10        | 9,346.8 ns        |
+| Rocks       | 10        | 587.9 ns          |
+| Imposter    | 10        | **2,419.2 ns**    |
+| Moq         | 100       | 6,619,086.5 ns    |
+| NSubstitute | 100       | 224,316.0 ns      |
+| FakeItEasy  | 100       | 228,507.4 ns      |
+| Rocks       | 100       | 28,261.9 ns       |
+| Imposter    | 100       | **36,118.9 ns**   |
+| Moq         | 1000      | 98,252,350.2 ns   |
+| NSubstitute | 1000      | 25,223,566.8 ns   |
+| FakeItEasy  | 1000      | 19,298,298.4 ns   |
+| Rocks       | 1000      | 2,574,515.3 ns    |
+| Imposter    | 1000      | **4,011,942.7 ns**|
+
+
+Allocated Memory
+
+| Method      | Iteration | Allocated    |
+|-------------|-----------|-------------:|
+| Moq         | 1         | 12.85 KB     |
+| NSubstitute | 1         | 8.05 KB      |
+| FakeItEasy  | 1         | 5.68 KB      |
+| Rocks       | 1         | 0.30 KB      |
+| Imposter    | 1         | **2.73 KB**  |
+| Moq         | 10        | 115.07 KB    |
+| NSubstitute | 10        | 28.46 KB     |
+| FakeItEasy  | 10        | 35.06 KB     |
+| Rocks       | 10        | 1.84 KB      |
+| Imposter    | 10        | **25.65 KB** |
+| Moq         | 100       | 1412.43 KB   |
+| NSubstitute | 100       | 236.98 KB    |
+| FakeItEasy  | 100       | 715.71 KB    |
+| Rocks       | 100       | 17.31 KB     |
+| Imposter    | 100       | **254.87 KB**|
+| Moq         | 1000      | 42221.29 KB  |
+| NSubstitute | 1000      | 2312.93 KB   |
+| FakeItEasy  | 1000      | 45797.90 KB  |
+| Rocks       | 1000      | 172.00 KB    |
+| Imposter    | 1000      | **2547.05 KB**|
+
+
+Benchmark Environment
+
+```
+BenchmarkDotNet v0.15.6, macOS Sequoia 15.7.3 (24G419) [Darwin 24.6.0]
+Apple M2 Pro, 1 CPU, 10 logical and 10 physical cores
+.NET SDK 10.0.101
+[Host]     : .NET 10.0.1 (10.0.1, 10.0.125.57005), Arm64 RyuJIT armv8.0-a
+DefaultJob : .NET 10.0.1 (10.0.1, 10.0.125.57005), Arm64 RyuJIT armv8.0-a
+```
+</details>
+
+
 See other benchmarks [benchmark](https://github.com/themidnightgospel/Imposter/blob/3172c333603fd2d76031b20be39753a9b62f31c3/benchmarks/Imposter.Benchmarks/ImposterVsMoqVsNSubstitute/SimpleMethodMockingBenchmarks.cs#L12)
 
 ## ✨ Feature-Rich
