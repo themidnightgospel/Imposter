@@ -72,6 +72,22 @@ Benchmarks show Imposter running ~10× faster than NSubstitute and up to ~200× 
 
 Loosely typed callbacks often lead to runtime exceptions. **Imposter** enforces strong typing across the entire mocking pipeline, ensuring errors are caught at compile time. see more [here](https://themidnightgospel.github.io/Imposter/latest/methods/callbacks/#method-callbacks)
 
+## 🧵 Thread-safe by design
+
+Imposter is built to work reliably in multi-threaded and parallel test environments.
+
+## 🎭 Interfaces and classes
+
+Not limited to interfaces — Imposter can impersonate non-sealed classes and their protected members.
+
+## 🧬 Full generic support
+
+Generics are fully supported.
+
+## 🧩 Mock any member
+
+Imposter supports not only methods, but also properties, events and indexers.
+
 ## ⏱️ Benchmark
 
 We benchmarked the simple method-impersonation scenario: we set up a `Square` method to return `input * input` and ran it for 1, 10, 100, and 1000 iterations.
