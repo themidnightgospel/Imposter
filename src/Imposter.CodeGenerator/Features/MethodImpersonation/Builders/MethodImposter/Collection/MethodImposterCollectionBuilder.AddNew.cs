@@ -21,6 +21,7 @@ internal static partial class MethodImposterCollectionBuilder
             .WithTypeParameters(
                 typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null
             )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(

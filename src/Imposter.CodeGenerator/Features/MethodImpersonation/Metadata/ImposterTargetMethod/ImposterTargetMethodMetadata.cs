@@ -65,9 +65,13 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly TypeParameterListSyntax? GenericTypeParameterListSyntax;
 
+    internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> GenericTypeConstraintClauses;
+
     internal readonly IReadOnlyList<NameSyntax> TargetGenericTypeArguments;
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
+
+    internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> TargetGenericTypeConstraintClauses;
 
     internal readonly string Namespace;
 
@@ -103,6 +107,9 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(
             GenericTypeArguments
         );
+        GenericTypeConstraintClauses = SyntaxFactoryHelper.TypeParameterConstraintClauses(
+            Symbol.TypeParameters
+        );
 
         var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         TargetGenericTypeArguments = Symbol
@@ -113,6 +120,21 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         TargetGenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(
             TargetGenericTypeArguments
         );
+
+        if (GenericTypeConstraintClauses.Count > 0)
+        {
+            var targetRenamer = new TypeParameterRenamer(
+                Symbol.TypeParameters,
+                TargetGenericTypeArguments
+            );
+            TargetGenericTypeConstraintClauses = GenericTypeConstraintClauses
+                .Select(c => (TypeParameterConstraintClauseSyntax)targetRenamer.Visit(c))
+                .ToArray();
+        }
+        else
+        {
+            TargetGenericTypeConstraintClauses = [];
+        }
 
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
         CallbackDelegate = TypeMetadataFactory.Create(

@@ -23,6 +23,7 @@ internal static class ArgumentsBuilder
             method.Arguments.Name,
             SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
         )
+            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddPublicModifier()
             .AddMembers(
                 inputParameters.Select(
@@ -96,6 +97,7 @@ internal static class ArgumentsBuilder
         return new MethodDeclarationBuilder(returnType, "As")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
+            .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(
                 Block(
                     ReturnStatement(

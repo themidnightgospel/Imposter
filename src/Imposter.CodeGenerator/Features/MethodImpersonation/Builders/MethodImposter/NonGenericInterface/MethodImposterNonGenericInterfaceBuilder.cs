@@ -30,6 +30,7 @@ internal static class MethodImposterNonGenericInterfaceBuilder
                             method.TargetGenericTypeArguments
                         )
                     )
+                    .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
                     .WithSemicolon()
                     .Build()
             )

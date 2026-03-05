@@ -53,7 +53,6 @@ public interface {ITest}
     {
         var testContext = await TestContextTask(SourceSameNamespace).ConfigureAwait(false);
         var result = testContext.RunGenerator();
-        var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
             source.HintName == $"{ITest}Imposter.g.cs"
@@ -74,7 +73,6 @@ public interface {ITest}
     {
         var testContext = await TestContextTask(SourceDedicatedNamespace).ConfigureAwait(false);
         var result = testContext.RunGenerator();
-        var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
             source.HintName == $"{ITest}Imposter.g.cs"

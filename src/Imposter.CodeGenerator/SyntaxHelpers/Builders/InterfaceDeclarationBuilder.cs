@@ -16,6 +16,7 @@ internal class InterfaceDeclarationBuilder(
     private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
+    private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = [];
 
     internal InterfaceDeclarationBuilder AddBaseType(BaseTypeSyntax baseType)
     {
@@ -32,6 +33,17 @@ internal class InterfaceDeclarationBuilder(
     internal InterfaceDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
     {
         _attributes.Add(attribute);
+        return this;
+    }
+
+    internal InterfaceDeclarationBuilder AddConstraintClauses(
+        IReadOnlyList<TypeParameterConstraintClauseSyntax> clauses
+    )
+    {
+        foreach (var clause in clauses)
+        {
+            _constraintClauses.Add(clause);
+        }
         return this;
     }
 
@@ -71,7 +83,7 @@ internal class InterfaceDeclarationBuilder(
             Identifier(name),
             typeParameters,
             _baseTypes.Count > 0 ? BaseList(SeparatedList(_baseTypes)) : null,
-            default,
+            _constraintClauses.Count > 0 ? List(_constraintClauses) : default,
             List(_members)
         );
     }
