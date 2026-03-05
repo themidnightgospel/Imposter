@@ -21,6 +21,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly bool IsClass;
 
+    internal readonly Accessibility DeclaredAccessibility;
+
     internal readonly ImposterTargetConstructorMetadata[] AccessibleConstructors;
 
     internal readonly List<ImposterTargetMethodMetadata> Methods;
@@ -49,6 +51,7 @@ internal readonly struct ImposterTargetMetadata
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(targetSymbol);
         Methods = GetMethods(targetSymbol, _symbolNameNamespace, supportedCSharpFeatures);
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
+        DeclaredAccessibility = targetSymbol.DeclaredAccessibility;
         AccessibleConstructors = GetAccessibleConstructors(targetSymbol);
 
         var propertySymbols = GetPropertySymbols(targetSymbol);

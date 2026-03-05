@@ -187,7 +187,13 @@ internal readonly ref struct ImposterBuilder
                     typeMetadata.ImposterInstanceFieldName
                 )
             )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(
+                Token(
+                    imposterGenerationContext.Imposter.DeclaredAccessibility == Accessibility.Public
+                        ? SyntaxKind.PublicKeyword
+                        : SyntaxKind.InternalKeyword
+                )
+            )
             .AddModifier(Token(SyntaxKind.SealedKeyword));
 
         var imposterInstanceBuilder = ImposterInstanceBuilder.Create(
