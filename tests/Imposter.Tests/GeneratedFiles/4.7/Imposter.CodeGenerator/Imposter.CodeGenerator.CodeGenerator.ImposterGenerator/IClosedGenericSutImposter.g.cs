@@ -13,7 +13,7 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-    public sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>
+    internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>
     {
         private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
         private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
