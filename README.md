@@ -64,20 +64,13 @@ calculator.Add(1, 2); // 1
 calculator.Add(1, 2); // 2
 ```
 
-Learn more: https://themidnightgospel.github.io/Imposter/
+## ⚡ Built for speed
 
-## ✨ Feature-Rich
+Benchmarks show Imposter running ~10× faster than NSubstitute and up to ~200× faster than Moq in common mocking scenarios. See benchmarks below.
 
- - [Method Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/) 
- - [Property Impersonation](https://themidnightgospel.github.io/Imposter/latest/properties/)
- - [Indexer Impersonation](https://themidnightgospel.github.io/Imposter/latest/indexers/)
- - [Event Impersonation](https://themidnightgospel.github.io/Imposter/latest/events/)
- - [Class Impersonation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
- - [Generics](https://themidnightgospel.github.io/Imposter/latest/generics/)
- - [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/latest/implicit-vs-explicit/)
- - [Use Base implementation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
- - [Async Support](https://themidnightgospel.github.io/Imposter/latest/methods/#async-methods)
- - [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/protected-members/)
+## 🛡️ Strongly typed all the way
+
+Loosely typed callbacks often lead to runtime exceptions. **Imposter** enforces strong typing across the entire mocking pipeline, ensuring errors are caught at compile time. see more [here](https://themidnightgospel.github.io/Imposter/latest/methods/callbacks/#method-callbacks)
 
 ## ⏱️ Benchmark
 
@@ -146,9 +139,23 @@ DefaultJob : .NET 8.0.21 (8.0.21, 8.0.2125.47513), X64 RyuJIT x86-64-v3
 
 See other benchmarks [benchmark](https://github.com/themidnightgospel/Imposter/blob/3172c333603fd2d76031b20be39753a9b62f31c3/benchmarks/Imposter.Benchmarks/ImposterVsMoqVsNSubstitute/SimpleMethodMockingBenchmarks.cs#L12)
 
+## ✨ Feature-Rich
+
+- [Method Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/)
+- [Property Impersonation](https://themidnightgospel.github.io/Imposter/latest/properties/)
+- [Indexer Impersonation](https://themidnightgospel.github.io/Imposter/latest/indexers/)
+- [Event Impersonation](https://themidnightgospel.github.io/Imposter/latest/events/)
+- [Class Impersonation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
+- [Generics](https://themidnightgospel.github.io/Imposter/latest/generics/)
+- [Implicit & Explicit Modes](https://themidnightgospel.github.io/Imposter/latest/implicit-vs-explicit/)
+- [Use Base implementation](https://themidnightgospel.github.io/Imposter/latest/base-implementation/)
+- [Async Support](https://themidnightgospel.github.io/Imposter/latest/methods/#async-methods)
+- [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/protected-members/)
+
+
 ## Docs
 Docs: https://themidnightgospel.github.io/Imposter/
 
-## License
+## 📜 MIT License
 
-Licensed under the MIT License. See LICENSE.txt for details.
+Free to use, modify, and distribute under the MIT License.
