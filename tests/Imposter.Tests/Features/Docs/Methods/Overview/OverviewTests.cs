@@ -39,6 +39,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
             service.Increment(5).ShouldBe(50);
             service.Increment(-1).ShouldBe(0);
 
+            // A shorthand for Any
+            imposter.Increment(Arg.Any).Returns(42);
+
+            service.Increment(1000).ShouldBe(42);
+
             // Arranging Returns sequencing
             imposter.GetNumber().Returns(1).Then().Returns(() => 2).Then().Returns(3);
             service.GetNumber();

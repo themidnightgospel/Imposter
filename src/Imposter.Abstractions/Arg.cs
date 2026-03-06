@@ -1,6 +1,23 @@
 namespace Imposter.Abstractions;
 
 /// <summary>
+/// Marker class to be implecitly converted to a generic Arg
+/// </summary>
+public struct AnyArgMarker { }
+
+/// <summary>
+/// Provides untiped general argument matcher used when configuring method, property, indexer
+/// and event setups with Imposter.
+/// </summary>
+public static class Arg
+{
+    /// <summary>
+    /// Matches any argument
+    /// </summary>
+    public static AnyArgMarker Any => new();
+}
+
+/// <summary>
 /// Provides strongly-typed argument matchers used when configuring method, property, indexer
 /// and event setups with Imposter.
 /// </summary>
@@ -184,6 +201,12 @@ public class Arg<T>
     /// <param name="value">The value to convert to an argument matcher.</param>
     /// <returns>An <see cref="Arg{T}"/> that matches <paramref name="value"/>.</returns>
     public static implicit operator Arg<T>(T value) => Is(value);
+
+    /// <summary>
+    /// Implicitly converts a value of type AnyArgMarker to an <see cref="Arg{T}"/>
+    /// that matches that specific value.
+    /// </summary>
+    public static implicit operator Arg<T>(AnyArgMarker _) => Arg<T>.Any();
 }
 
 /// <summary>
