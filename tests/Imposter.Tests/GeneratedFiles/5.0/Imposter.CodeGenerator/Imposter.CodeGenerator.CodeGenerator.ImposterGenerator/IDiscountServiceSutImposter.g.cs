@@ -427,5 +427,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+    public static class IDiscountServiceSutImposterExtensions
+    {
+        extension(global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut imposter)
+        {
+            public static global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSutImposter Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSutImposter(invocationBehavior);
+        }
+    }
 }
 #nullable restore
