@@ -44,7 +44,9 @@ internal static class MethodImposterMembersBuilder
         return imposterGenerationContext.Imposter.Methods.Select(method =>
             new MethodDeclarationBuilder(
                 method.MethodImposter.BuilderInterface.Syntax,
-                method.Symbol.Name
+                method.RequiresExplicitInterfaceImplementation
+                    ? method.UniqueName
+                    : method.Symbol.Name
             )
                 .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
                 .AddConstraintClauses(method.GenericTypeConstraintClauses)

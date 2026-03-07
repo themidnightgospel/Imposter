@@ -4,7 +4,10 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBui
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 
@@ -32,10 +35,15 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
+    internal readonly bool RequiresExplicitInterfaceImplementation;
+
+    internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
+
     public ImposterPropertyMetadata(
         IPropertySymbol property,
         string uniqueName,
-        NameSet memberNameSet
+        NameSet memberNameSet,
+        bool requiresExplicitInterfaceImplementation = false
     )
     {
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
@@ -69,6 +77,18 @@ internal readonly ref struct ImposterPropertyMetadata
             GetterImposterBuilder
         );
 
-        ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property);
+        RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        if (requiresExplicitInterfaceImplementation && property.ContainingType is not null)
+        {
+            ExplicitInterfaceSpecifier = ExplicitInterfaceSpecifier(
+                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(property.ContainingType)
+            );
+            ImposterInstanceModifiers = default;
+        }
+        else
+        {
+            ExplicitInterfaceSpecifier = null;
+            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property);
+        }
     }
 }

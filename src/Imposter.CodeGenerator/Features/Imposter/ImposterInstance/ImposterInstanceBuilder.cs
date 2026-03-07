@@ -34,7 +34,9 @@ internal readonly ref struct ImposterInstanceBuilder
         var propertyBuilder = new PropertyDeclarationBuilder(
             property.Core.NullableAwareTypeSyntax,
             property.Core.Name
-        ).AddModifiers(property.ImposterInstanceModifiers);
+        )
+            .AddModifiers(property.ImposterInstanceModifiers)
+            .WithExplicitInterfaceSpecifier(property.ExplicitInterfaceSpecifier);
 
         if (property.Core.HasGetter)
         {
@@ -214,6 +216,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 Identifier(@event.Core.Name)
             )
             .WithModifiers(@event.ImposterInstanceModifiers)
+            .WithExplicitInterfaceSpecifier(@event.ExplicitInterfaceSpecifier)
             .WithAccessorList(
                 AccessorList(
                     List([
@@ -389,7 +392,8 @@ internal readonly ref struct ImposterInstanceBuilder
                             : invokeMethodInvocationExpression.ToStatementSyntax()
                     )
                 )
-                .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers);
+                .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
+                .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier);
 
             foreach (
                 var constraintClause in SyntaxFactoryHelper.TypeParameterConstraintClauses(
