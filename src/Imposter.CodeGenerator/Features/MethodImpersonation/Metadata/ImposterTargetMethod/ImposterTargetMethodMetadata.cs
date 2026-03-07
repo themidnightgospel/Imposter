@@ -59,6 +59,10 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
 
     internal readonly SyntaxTokenList ImposterInstanceMethodModifiers;
 
+    internal readonly bool RequiresExplicitInterfaceImplementation;
+
+    internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
+
     internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
 
     internal readonly TypeArgumentListSyntax? GenericTypeArgumentListSyntax;
@@ -80,7 +84,8 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
     internal ImposterTargetMethodMetadata(
         IMethodSymbol symbol,
         string uniqueName,
-        bool supportsNullableGenericType
+        bool supportsNullableGenericType,
+        bool requiresExplicitInterfaceImplementation = false
     )
     {
         Symbol = symbol;
@@ -161,7 +166,19 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         MethodInvocationImposter = new MethodInvocationImposterMetadata(this);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
-        ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(symbol);
+        RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        if (requiresExplicitInterfaceImplementation && symbol.ContainingType is not null)
+        {
+            ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(
+                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(symbol.ContainingType)
+            );
+            ImposterInstanceMethodModifiers = default;
+        }
+        else
+        {
+            ExplicitInterfaceSpecifier = null;
+            ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(symbol);
+        }
     }
 
     public NameSet CreateParameterNameContext()

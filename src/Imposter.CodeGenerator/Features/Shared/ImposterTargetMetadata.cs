@@ -33,6 +33,10 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
 
+    private readonly HashSet<IPropertySymbol> _explicitProperties;
+
+    private readonly HashSet<IEventSymbol> _explicitEvents;
+
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
 
     private readonly NameSet _symbolNameNamespace = new([]);
@@ -58,6 +62,15 @@ internal readonly struct ImposterTargetMetadata
         PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
         IndexerSymbols = propertySymbols.Where(property => property.IsIndexer).ToArray();
         EventSymbols = GetEventSymbols(targetSymbol);
+
+        _explicitProperties =
+            targetSymbol.TypeKind is TypeKind.Interface
+                ? DetectExplicitInterfaceProperties(PropertySymbols)
+                : new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
+        _explicitEvents =
+            targetSymbol.TypeKind is TypeKind.Interface
+                ? DetectExplicitInterfaceEvents(EventSymbols)
+                : new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
     }
 
     private static List<ImposterTargetMethodMetadata> GetMethods(
@@ -70,12 +83,15 @@ internal readonly struct ImposterTargetMetadata
 
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
-            return typeSymbol
-                .GetAllInterfaceMethods()
+            var allMethods = typeSymbol.GetAllInterfaceMethods();
+            var explicitMethods = DetectExplicitInterfaceMethods(allMethods);
+
+            return allMethods
                 .Select(methodSymbol => new ImposterTargetMethodMetadata(
                     methodSymbol,
                     nameSet.Use(methodSymbol.Name),
-                    supportsNullableGenericType
+                    supportsNullableGenericType,
+                    explicitMethods.Contains(methodSymbol)
                 ))
                 .ToList();
         }
@@ -150,7 +166,13 @@ internal readonly struct ImposterTargetMetadata
     internal ImposterPropertyMetadata CreatePropertyMetadata(
         IPropertySymbol propertySymbol,
         NameSet memberNameSet
-    ) => new(propertySymbol, _symbolNameNamespace.Use(propertySymbol.Name), memberNameSet);
+    ) =>
+        new(
+            propertySymbol,
+            _symbolNameNamespace.Use(propertySymbol.Name),
+            memberNameSet,
+            _explicitProperties.Contains(propertySymbol)
+        );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
         new(
@@ -159,7 +181,88 @@ internal readonly struct ImposterTargetMetadata
         );
 
     internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
-        new(eventSymbol, _symbolNameNamespace.Use(eventSymbol.Name));
+        new(
+            eventSymbol,
+            _symbolNameNamespace.Use(eventSymbol.Name),
+            _explicitEvents.Contains(eventSymbol)
+        );
+
+    private static HashSet<IPropertySymbol> DetectExplicitInterfaceProperties(
+        IReadOnlyCollection<IPropertySymbol> properties
+    )
+    {
+        var result = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
+
+        var groups = properties.GroupBy(p => p.Name);
+        foreach (var group in groups)
+        {
+            var members = group.ToList();
+            if (members.Count > 1)
+            {
+                foreach (var member in members)
+                {
+                    result.Add(member);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static HashSet<IEventSymbol> DetectExplicitInterfaceEvents(
+        IReadOnlyCollection<IEventSymbol> events
+    )
+    {
+        var result = new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
+
+        var groups = events.GroupBy(e => e.Name);
+        foreach (var group in groups)
+        {
+            var members = group.ToList();
+            if (members.Count > 1)
+            {
+                foreach (var member in members)
+                {
+                    result.Add(member);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static HashSet<IMethodSymbol> DetectExplicitInterfaceMethods(
+        IReadOnlyCollection<IMethodSymbol> methods
+    )
+    {
+        var result = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
+
+        var groups = methods.GroupBy(m => GetMethodSignatureKey(m));
+        foreach (var group in groups)
+        {
+            var members = group.ToList();
+            if (members.Count > 1)
+            {
+                foreach (var member in members)
+                {
+                    result.Add(member);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static string GetMethodSignatureKey(IMethodSymbol method)
+    {
+        var paramTypes = string.Join(
+            ",",
+            method.Parameters.Select(p =>
+                p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+            )
+        );
+        return $"{method.Name}({paramTypes})";
+    }
 
     private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(INamedTypeSymbol typeSymbol)
     {

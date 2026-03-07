@@ -12,6 +12,7 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
     private readonly List<SyntaxToken> _modifiers = [];
     private AccessorDeclarationSyntax? _getter;
     private AccessorDeclarationSyntax? _setter;
+    private ExplicitInterfaceSpecifierSyntax? _explicitInterfaceSpecifier;
 
     public PropertyDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
     {
@@ -54,6 +55,14 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
         return this;
     }
 
+    public PropertyDeclarationBuilder WithExplicitInterfaceSpecifier(
+        ExplicitInterfaceSpecifierSyntax? specifier
+    )
+    {
+        _explicitInterfaceSpecifier = specifier;
+        return this;
+    }
+
     public PropertyDeclarationSyntax Build()
     {
         var accessors = new List<AccessorDeclarationSyntax>();
@@ -74,7 +83,7 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
             _attributes.Count > 0 ? List(_attributes) : default,
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             typeSyntax,
-            explicitInterfaceSpecifier: default!,
+            explicitInterfaceSpecifier: _explicitInterfaceSpecifier!,
             Identifier(name),
             accessorList
         );

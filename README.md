@@ -11,9 +11,7 @@
 
 ## 🧘Balanced Performance and Developer Experience
 
-If raw performance were the only goal, we’d all be coding in Assembler. Imposter delivers top-tier performance without sacrificing a natural, intuitive API.
-
-While being ~10× faster than NSubstitute and up to ~50× faster than Moq in common mocking scenarios, Imposter is not the fastest mocking library available. Instead, it focuses on achieving a balance between performance and API ease of use.
+Imposter delivers top-tier performance without sacrificing a natural, intuitive API. While being ~10× faster than NSubstitute and up to ~50× faster than Moq in common mocking scenarios, Imposter is not the fastest mocking library available. Instead, it focuses on achieving a balance between performance and API ease of use.
 
 ## 🚀 Quick Start
 
