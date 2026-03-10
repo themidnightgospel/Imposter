@@ -1,0 +1,24 @@
+# Imposter
+
+> Imposter delivers top-tier performance without sacrificing a natural, intuitive API. While being ~10× faster than NSubstitute and up to ~50× faster than Moq in common mocking scenarios, Imposter is not the fastest mocking library available. Instead, it focuses on achieving a balance between performance and API ease of use.
+
+Important notes:
+
+- Imposter needs .net 9+
+- Use [GenerateImposter] attribute to generate an imposter object.
+
+## Docs
+
+- [Imposter quick start](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/index.md): A brief overview of how to get started with Imposter
+- [Method Impersonation](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/methods/index.md): Brief description of how to replace real method with a fake simulated one
+- [Property Impersonation](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/properties/index.md): Brief description of how to replace real property with a fake simulated one
+- [Indexer Impersonation](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/indexers/index.md): Brief description of how to replace your indexer-bearing interface or class with a fake simulated one
+- [Event Impersonation](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/events/index.md): Brief description of how to replace real event with a fake simulated one
+- [Arguments Matching](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/arguments-matching.md): Brief description of how argument matching works
+- [Verification](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/verification.md): Brief description of how verification works
+- [Limitations](https://github.com/themidnightgospel/Imposter/blob/master/docs/content/limitations.md): Brief description of limitations of Imposter
+
+## Examples
+
+- [Simple E-Commerce](https://github.com/themidnightgospel/Imposter/tree/master/samples/Sample.Services): Simple E-commerce application with sample services.
+- [Simple E-Commerce Tests](https://github.com/themidnightgospel/Imposter/tree/master/samples/Sample.Tests): Unit tests for the E-commerce sample application
