@@ -1,0 +1,18 @@
+# Imposter
+
+> Imposter — Mocking library that's using roslyn source generators to achieve high performance and low memory footprint
+
+Imposter delivers top-tier performance without sacrificing a natural, intuitive API. While being ~10× faster than NSubstitute and up to ~50× faster than Moq in common mocking scenarios, Imposter is not the fastest mocking library available. Instead, it focuses on achieving a balance between performance and API ease of use.
+
+
+## Usage documentation
+
+- [Getting Started](https://themidnightgospel.github.io/Imposter/dev/index.md): A brief overview of how to get started with Imposter
+- [Overview](https://themidnightgospel.github.io/Imposter/dev/methods/index.md): Brief description of how to replace real method with a fake simulated one
+- [Overview](https://themidnightgospel.github.io/Imposter/dev/properties/index.md): Brief description of how to replace real property with a fake simulated one
+- [Overview](https://themidnightgospel.github.io/Imposter/dev/indexers/index.md): Brief description of how to replace your indexer-bearing interface or class with a fake simulated one
+- [Overview](https://themidnightgospel.github.io/Imposter/dev/events/index.md): Brief description of how to replace real event with a fake simulated one
+- [Arguments Matching](https://themidnightgospel.github.io/Imposter/dev/arguments-matching/index.md): Brief description of how argument matching works
+- [Verification](https://themidnightgospel.github.io/Imposter/dev/verification/index.md): Brief description of how verification works
+- [Limitations](https://themidnightgospel.github.io/Imposter/dev/limitations/index.md): Brief description of limitations with Imposter
+
