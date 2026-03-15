@@ -183,6 +183,10 @@ DefaultJob : .NET 10.0.1 (10.0.1, 10.0.125.57005), Arm64 RyuJIT armv8.0-a
 - [Async Support](https://themidnightgospel.github.io/Imposter/latest/methods/#async-methods)
 - [Protected members Impersonation](https://themidnightgospel.github.io/Imposter/latest/methods/protected-members/)
 
+## Docs
+
+- See [Docs](https://themidnightgospel.github.io/Imposter/latest/)
+
 ## 📜 MIT License
 
 Free to use, modify, and distribute under the MIT License.
