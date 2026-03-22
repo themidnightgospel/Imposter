@@ -166,6 +166,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -245,6 +246,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     {
                         throw exceptionGenerator(item, index);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(T item, int index)
@@ -1220,6 +1226,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -1299,6 +1306,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     {
                         throw exceptionGenerator(payload, category, priority);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(T payload, string category, int priority)

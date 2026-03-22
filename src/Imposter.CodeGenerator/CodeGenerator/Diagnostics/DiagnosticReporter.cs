@@ -2,9 +2,9 @@
 
 namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 
-public static class DiagnosticReporter
+internal static class DiagnosticReporter
 {
-    public static void ReportDiagnostics(
+    internal static void ReportDiagnostics(
         this in IncrementalGeneratorInitializationContext context,
         IncrementalValuesProvider<Diagnostic> diagnostic
     )
