@@ -65,20 +65,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
         }
 
         [Fact]
-        public void GivenExplicitMode_WhenVoidMethodCallbackConfigured_ShouldStillRequireResultConfiguration()
+        public void GivenExplicitMode_WhenVoidMethodSetupWithoutConfiguration_ShouldInvokeSuccessfully()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.VoidNoParams();
+
+            Should.NotThrow(() => sut.Instance().VoidNoParams());
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenVoidMethodCallbackConfigured_ShouldInvokeSuccessfully()
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
             var callbackInvoked = false;
 
             sut.VoidNoParams().Callback(() => callbackInvoked = true);
 
-            var exception = Should.Throw<MissingImposterException>(() =>
-                sut.Instance().VoidNoParams()
-            );
-            exception
-                .MethodName.ShouldNotBeNull()
-                .ShouldContain(nameof(IMethodSetupFeatureSut.VoidNoParams));
-            callbackInvoked.ShouldBeFalse();
+            Should.NotThrow(() => sut.Instance().VoidNoParams());
+            callbackInvoked.ShouldBeTrue();
         }
     }
 }

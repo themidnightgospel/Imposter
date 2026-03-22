@@ -491,6 +491,7 @@ namespace Imposter.Tests.Docs.Properties
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -583,6 +584,11 @@ namespace Imposter.Tests.Docs.Properties
                 {
                     _useBaseImplementation = true;
                     _resultGenerator = null;
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(int value)

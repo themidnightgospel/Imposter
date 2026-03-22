@@ -141,6 +141,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -220,6 +221,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator(item);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(string item)

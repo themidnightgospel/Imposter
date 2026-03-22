@@ -47,28 +47,40 @@ internal static partial class InvocationSetupBuilder
             MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
         );
 
+        var bodyBuilder = new BlockBuilder().AddStatement(
+            LocalVariableDeclarationSyntax(
+                invocationImposterType,
+                "invocationImposter",
+                invocationImposterType.New(ArgumentList())
+            )
+        );
+
+        if (!method.HasReturnValue)
+        {
+            bodyBuilder.AddStatement(
+                IdentifierName("invocationImposter")
+                    .Dot(IdentifierName("UseDefaultResultGenerator"))
+                    .Call(ArgumentList())
+                    .ToStatementSyntax()
+            );
+        }
+
+        bodyBuilder
+            .AddStatement(
+                IdentifierName("_invocationImposters")
+                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    .Call(
+                        ArgumentList(
+                            SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))
+                        )
+                    )
+                    .ToStatementSyntax()
+            )
+            .AddStatement(ReturnStatement(IdentifierName("invocationImposter")));
+
         return new MethodDeclarationBuilder(invocationImposterType, "AddInvocationImposter")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        invocationImposterType,
-                        "invocationImposter",
-                        invocationImposterType.New(ArgumentList())
-                    ),
-                    IdentifierName("_invocationImposters")
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                        .Call(
-                            ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(IdentifierName("invocationImposter"))
-                                )
-                            )
-                        )
-                        .ToStatementSyntax(),
-                    ReturnStatement(IdentifierName("invocationImposter"))
-                )
-            )
+            .WithBody(bodyBuilder.Build())
             .Build();
     }
 

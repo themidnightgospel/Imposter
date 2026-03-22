@@ -510,6 +510,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -589,6 +590,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
                     {
                         throw exceptionGenerator(v);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(int v)

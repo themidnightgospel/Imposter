@@ -42,6 +42,7 @@ internal static partial class InvocationSetupBuilder
                     : null
             )
             .AddMember(method.SupportsBaseImplementation ? UseBaseImplementationMethod() : null)
+            .AddMember(!method.HasReturnValue ? UseDefaultResultGeneratorMethod(method) : null)
             .AddMember(InitializeOutParametersMethodBuilder.Build(method))
             .AddMember(DefaultResultGenerator(method));
 
@@ -489,6 +490,20 @@ internal static partial class InvocationSetupBuilder
                 Block(
                     IdentifierName("_useBaseImplementation").Assign(True).ToStatementSyntax(),
                     IdentifierName("_resultGenerator").Assign(Null).ToStatementSyntax()
+                )
+            )
+            .Build();
+
+    private static MethodDeclarationSyntax UseDefaultResultGeneratorMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseDefaultResultGenerator")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithBody(
+                Block(
+                    IdentifierName("_resultGenerator")
+                        .Assign(DefaultResultGeneratorDelegate(method))
+                        .ToStatementSyntax()
                 )
             )
             .Build();

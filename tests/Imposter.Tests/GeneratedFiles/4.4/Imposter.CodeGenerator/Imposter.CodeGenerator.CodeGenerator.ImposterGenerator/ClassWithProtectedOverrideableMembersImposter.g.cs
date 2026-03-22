@@ -1708,6 +1708,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -1800,6 +1801,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
                 {
                     _useBaseImplementation = true;
                     _resultGenerator = null;
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(global::System.EventHandler handler)
@@ -2067,6 +2073,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -2159,6 +2166,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
                 {
                     _useBaseImplementation = true;
                     _resultGenerator = null;
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(string value)
@@ -2430,6 +2442,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -2522,6 +2535,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
                 {
                     _useBaseImplementation = true;
                     _resultGenerator = null;
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(int index, int value)

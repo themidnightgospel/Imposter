@@ -2869,6 +2869,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -2948,6 +2949,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator(value);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(global::System.Collections.Generic.List<TValue> value)
@@ -5001,6 +5007,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -5080,6 +5087,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator(out value);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 private static void InitializeOutParametersWithDefaultValues(out TValue value)
@@ -5431,6 +5443,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -5510,6 +5523,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator(value);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(TValue value)
@@ -5854,6 +5872,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -5933,6 +5952,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator(ref value);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(ref TValue value)
@@ -9161,6 +9185,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -9240,6 +9265,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                     {
                         throw exceptionGenerator();
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator()

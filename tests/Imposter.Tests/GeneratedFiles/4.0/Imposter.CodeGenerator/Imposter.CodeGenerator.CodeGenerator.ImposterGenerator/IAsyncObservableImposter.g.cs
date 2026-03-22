@@ -127,6 +127,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             internal MethodInvocationImposter AddInvocationImposter()
             {
                 MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+                invocationImposter.UseDefaultResultGenerator();
                 _invocationImposters.Enqueue(invocationImposter);
                 return invocationImposter;
             }
@@ -206,6 +207,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
                     {
                         throw exceptionGenerator(item);
                     };
+                }
+
+                internal void UseDefaultResultGenerator()
+                {
+                    _resultGenerator = DefaultResultGenerator;
                 }
 
                 internal static void DefaultResultGenerator(T item)
