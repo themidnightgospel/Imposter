@@ -32,7 +32,7 @@ internal static partial class SyntaxFactoryHelper
             _ => SyntaxKind.None,
         };
 
-        return Argument(null, Token(refKindKeyword), IdentifierName(parameter.Name));
+        return Argument(null, Token(refKindKeyword), IdentifierName(EscapeKeyword(parameter.Name)));
     }
 
     internal static ParameterListSyntax ParameterListSyntax(
@@ -133,7 +133,7 @@ internal static partial class SyntaxFactoryHelper
             ? TypeSyntaxIncludingNullable(parameter.Type)
             : TypeSyntax(parameter.Type);
 
-        var parameterBuilder = new ParameterBuilder(parameterType, parameter.Name);
+        var parameterBuilder = new ParameterBuilder(parameterType, EscapeKeyword(parameter.Name));
 
         if (includeRefKind)
         {
@@ -208,7 +208,9 @@ internal static partial class SyntaxFactoryHelper
     }
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
-        IdentifierName(parameter.Name).Assign(DefaultNonNullable).ToStatementSyntax();
+        IdentifierName(EscapeKeyword(parameter.Name))
+            .Assign(DefaultNonNullable)
+            .ToStatementSyntax();
 
     internal static TypeParameterListSyntax? TypeParameterListSyntax(
         IReadOnlyList<NameSyntax> genericArguments

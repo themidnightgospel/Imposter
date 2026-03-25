@@ -46,14 +46,16 @@ internal static partial class SyntaxFactoryHelper
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
     internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
-        ParameterSyntax(ArgType(parameter), parameter.Name);
+        ParameterSyntax(ArgType(parameter), EscapeKeyword(parameter.Name));
 
     internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(
         ImposterTargetMethodMetadata method
     ) =>
         method.ArgumentsCriteria.Syntax.New(
             ArgumentListSyntax(
-                method.Symbol.Parameters.Select(p => Argument(IdentifierName(p.Name)))
+                method.Symbol.Parameters.Select(p =>
+                    Argument(IdentifierName(EscapeKeyword(p.Name)))
+                )
             )
         );
 }

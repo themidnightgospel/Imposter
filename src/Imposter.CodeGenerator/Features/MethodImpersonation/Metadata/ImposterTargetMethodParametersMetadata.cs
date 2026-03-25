@@ -14,6 +14,10 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal IReadOnlyList<IParameterSymbol> OutputParameters { get; }
 
+    internal IReadOnlyList<MethodParameterMetadata> AllParameterMetadata { get; }
+
+    internal IReadOnlyList<MethodParameterMetadata> InputParameterMetadata { get; }
+
     internal readonly ParameterListSyntax ParameterListSyntaxIncludingNullable;
 
     internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntaxIncludingNullable;
@@ -30,6 +34,13 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         InputParameters = symbolParameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
         OutputParameters = symbolParameters.Where(it => it.RefKind is RefKind.Out).ToArray();
         HasOutputParameters = OutputParameters.Count > 0;
+
+        AllParameterMetadata = symbolParameters
+            .Select(it => new MethodParameterMetadata(it))
+            .ToArray();
+        InputParameterMetadata = InputParameters
+            .Select(it => new MethodParameterMetadata(it))
+            .ToArray();
 
         ParameterListSyntaxIncludingNullable =
             SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(symbolParameters);

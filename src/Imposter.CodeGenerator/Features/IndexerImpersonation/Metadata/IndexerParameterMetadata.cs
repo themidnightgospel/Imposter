@@ -19,7 +19,7 @@ internal readonly struct IndexerParameterMetadata
     internal IndexerParameterMetadata(IParameterSymbol parameterSymbol)
     {
         Symbol = parameterSymbol;
-        Name = parameterSymbol.Name;
+        Name = SyntaxFactoryHelper.EscapeKeyword(parameterSymbol.Name);
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(parameterSymbol.Type);
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(parameterSymbol);

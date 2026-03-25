@@ -105,10 +105,10 @@ internal static partial class InvocationHistoryBuilder
         var argumentsIdentifier = IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName);
 
         var argumentDescriptions = method
-            .Parameters.InputParameters.Select(
+            .Parameters.InputParameterMetadata.Select(
                 ExpressionSyntax (parameter) =>
                     AddStrings(
-                        $"{parameter.Name}: ".StringLiteral(),
+                        $"{parameter.Symbol.Name}: ".StringLiteral(),
                         Invocation(argumentsIdentifier.Dot(IdentifierName(parameter.Name)))
                     )
             )

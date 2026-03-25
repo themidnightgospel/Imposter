@@ -10,7 +10,7 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static PropertyDeclarationSyntax ParameterAsArgProperty(IParameterSymbol parameter)
     {
-        return new PropertyDeclarationBuilder(ArgType(parameter), parameter.Name)
+        return new PropertyDeclarationBuilder(ArgType(parameter), EscapeKeyword(parameter.Name))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithGetter()
             .Build();

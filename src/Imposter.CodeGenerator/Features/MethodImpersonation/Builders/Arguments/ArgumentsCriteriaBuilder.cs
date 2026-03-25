@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -34,7 +35,7 @@ public static class ArgumentsCriteriaBuilder
                     )
                     .WithBody(
                         Block(
-                            method.Symbol.Parameters.Select(parameter =>
+                            method.Parameters.AllParameterMetadata.Select(parameter =>
                                 ThisExpression()
                                     .Dot(IdentifierName(parameter.Name))
                                     .Assign(IdentifierName(parameter.Name))
@@ -92,35 +93,29 @@ public static class ArgumentsCriteriaBuilder
             TypeParameterRenamer renamer
         ) =>
             SeparatedList(
-                metadata.Symbol.Parameters.Select(parameter =>
+                metadata.Parameters.AllParameterMetadata.Select(parameter =>
                     BuildArgForParameter(parameter, renamer)
                 )
             );
 
         static ArgumentSyntax BuildArgForParameter(
-            IParameterSymbol parameter,
+            MethodParameterMetadata parameter,
             TypeParameterRenamer renamer
         )
         {
-            var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(parameter.Type));
+            var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(parameter.Symbol.Type));
 
-            if (parameter.RefKind is RefKind.Out)
+            if (parameter.Symbol.RefKind is RefKind.Out)
             {
-                return BuildOutArgument(parameter, targetType);
+                return Argument(OutArgAny(targetType));
             }
 
-            var sourceType = TypeSyntax(parameter.Type);
+            var sourceType = TypeSyntax(parameter.Symbol.Type);
             return BuildIsPredicateArg(parameter, targetType, sourceType);
         }
 
-        static ArgumentSyntax BuildOutArgument(IParameterSymbol parameter, TypeSyntax targetType)
-        {
-            _ = parameter;
-            return Argument(OutArgAny(targetType));
-        }
-
         static ArgumentSyntax BuildIsPredicateArg(
-            IParameterSymbol parameter,
+            MethodParameterMetadata parameter,
             TypeSyntax targetType,
             TypeSyntax sourceType
         )
@@ -149,7 +144,7 @@ public static class ArgumentsCriteriaBuilder
         }
 
         static SimpleLambdaExpressionSyntax BuildTryCastAndMatchLambda(
-            IParameterSymbol parameter,
+            MethodParameterMetadata parameter,
             TypeSyntax targetType,
             TypeSyntax sourceType,
             SyntaxToken tryCastVarIdentifier
@@ -213,16 +208,16 @@ public static class ArgumentsCriteriaBuilder
             .WithBody(
                 Block(
                     ReturnStatement(
-                        method.Parameters.InputParameters.Count switch
+                        method.Parameters.InputParameterMetadata.Count switch
                         {
                             0 => True,
-                            1 => InvokeMatches(method.Parameters.InputParameters[0]),
+                            1 => InvokeMatches(method.Parameters.InputParameterMetadata[0]),
                             _ => method
-                                .Parameters.InputParameters.Skip(1)
+                                .Parameters.InputParameterMetadata.Skip(1)
                                 .Select(InvokeMatches)
                                 .Aggregate(
                                     (ExpressionSyntax)InvokeMatches(
-                                        method.Parameters.InputParameters[0]
+                                        method.Parameters.InputParameterMetadata[0]
                                     ),
                                     (left, right) => left.And(right)
                                 ),
@@ -232,7 +227,7 @@ public static class ArgumentsCriteriaBuilder
             )
             .Build();
 
-        InvocationExpressionSyntax InvokeMatches(IParameterSymbol p) =>
+        InvocationExpressionSyntax InvokeMatches(MethodParameterMetadata p) =>
             IdentifierName(p.Name)
                 .Dot(IdentifierName("Matches"))
                 .Call(

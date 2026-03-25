@@ -98,7 +98,7 @@ internal static partial class SyntaxFactoryHelper
     ) =>
         SingleVariableField(
             TypeSyntaxIncludingNullable(parameter.Type),
-            parameter.Name,
+            EscapeKeyword(parameter.Name),
             TokenList(Token(SyntaxKind.PublicKeyword))
         );
 }

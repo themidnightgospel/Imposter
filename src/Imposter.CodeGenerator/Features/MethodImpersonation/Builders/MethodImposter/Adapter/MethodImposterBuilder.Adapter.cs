@@ -81,13 +81,13 @@ internal static class MethodImposterAdapterBuilder
         var parameterList = ParameterListSyntaxWithoutDefaultValues(method.Symbol.Parameters, true);
         parameterList = (ParameterListSyntax)typeParamRenamer.Visit(parameterList);
 
-        foreach (var p in method.Symbol.Parameters)
+        foreach (var p in method.Parameters.AllParameterMetadata)
         {
-            var pType = TypeSyntax(p.Type);
+            var pType = TypeSyntax(p.Symbol.Type);
             var pTargetType = typeParamRenamer.Visit(pType);
             var pAdaptedName = Identifier(p.Name + "Adapted");
 
-            switch (p.RefKind)
+            switch (p.Symbol.RefKind)
             {
                 case RefKind.Ref:
                     body.Add(

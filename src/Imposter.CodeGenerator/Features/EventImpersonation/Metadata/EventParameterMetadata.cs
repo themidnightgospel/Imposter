@@ -16,7 +16,7 @@ internal readonly struct EventParameterMetadata
 
     internal EventParameterMetadata(IParameterSymbol parameterSymbol)
     {
-        Name = parameterSymbol.Name;
+        Name = SyntaxFactoryHelper.EscapeKeyword(parameterSymbol.Name);
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(parameterSymbol.Type);
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(parameterSymbol);
