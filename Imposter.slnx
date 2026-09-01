@@ -1,0 +1,34 @@
+<Solution>
+    <Folder Name="/benchmarks/">
+        <Project Path="benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj">
+            <Build Project="false"/>
+        </Project>
+    </Folder>
+    <Folder Name="/misc/">
+        <File Path=".editorconfig"/>
+        <File Path="global.json"/>
+        <File Path="README.md"/>
+        <File Path="Roslyn.Shared.props"/>
+    </Folder>
+    <Folder Name="/playground/">
+        <Project Path="playground/Imposter.Ideation/Imposter.Ideation.csproj">
+            <Build Project="false"/>
+        </Project>
+        <Project Path="playground/Imposter.Playground/Imposter.Playground.csproj">
+            <Build Project="false"/>
+        </Project>
+    </Folder>
+    <Folder Name="/samples/">
+        <Project Path="samples/Sample.Services/Sample.Services.csproj"/>
+        <Project Path="samples/Sample.Tests/Sample.Tests.csproj"/>
+    </Folder>
+    <Folder Name="/src/">
+        <Project Path="src/Imposter.Abstractions/Imposter.Abstractions.csproj"/>
+        <Project Path="src/Imposter.CodeGenerator/Imposter.CodeGenerator.csproj"/>
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path="tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj"/>
+        <Project Path="tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj"/>
+        <Project Path="tests/Imposter.Tests/Imposter.Tests.csproj"/>
+    </Folder>
+</Solution>

@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Imposter! This guide will help yo
 ```bash
 git clone https://github.com/themidnightgospel/Imposter.git
 cd Imposter
-dotnet build Imposter.sln
+dotnet build Imposter.slnx
 ```
 
 ### Run Tests
@@ -29,7 +29,7 @@ pwsh ./build-scripts/build-and-test.ps1
 Or run tests directly:
 
 ```bash
-dotnet test Imposter.sln
+dotnet test Imposter.slnx
 ```
 
 ### Run Benchmarks
@@ -116,7 +116,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 
 - [ ] Changes are scoped and focused (no unrelated formatting diffs)
 - [ ] Tests added or updated to cover new behaviour
-- [ ] `pwsh ./build-scripts/build-and-test.ps1` passes (or `dotnet test Imposter.sln`)
+- [ ] `pwsh ./build-scripts/build-and-test.ps1` passes (or `dotnet test Imposter.slnx`)
 - [ ] Release build compiles clean (warnings treated as errors)
 - [ ] No string-based code generation introduced
 - [ ] Terminology uses "impersonate/imposter" (not "mock")
