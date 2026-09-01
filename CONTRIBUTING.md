@@ -6,7 +6,8 @@ Thank you for your interest in contributing to Imposter! This guide will help yo
 
 ### Prerequisites
 
-- .NET SDK 9.0+
+- .NET SDKs 8.0 and 10.0
+- PowerShell 7+ (for running the full verification script)
 - An editor with Roslyn Source Generator support (VS 2022 17.10+, Rider, or VS Code + C# Dev Kit)
 
 ### Clone and Build
@@ -22,7 +23,7 @@ dotnet build Imposter.sln
 Use the CI-style script for full verification:
 
 ```bash
-./build-and-test.ps1
+pwsh ./build-scripts/build-and-test.ps1
 ```
 
 Or run tests directly:
@@ -67,7 +68,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 1. Fork the repository and create a branch from `master`.
 2. Make your changes following the coding standards below.
 3. Add or update tests to cover new behaviour.
-4. Run `./build-and-test.ps1` and ensure all tests pass.
+4. Run `pwsh ./build-scripts/build-and-test.ps1` and ensure all tests pass.
 5. Open a PR against `master` with a clear description of what and why.
 
 ### Code Generation Rules
@@ -115,7 +116,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 
 - [ ] Changes are scoped and focused (no unrelated formatting diffs)
 - [ ] Tests added or updated to cover new behaviour
-- [ ] `./build-and-test.ps1` passes (or `dotnet test Imposter.sln`)
+- [ ] `pwsh ./build-scripts/build-and-test.ps1` passes (or `dotnet test Imposter.sln`)
 - [ ] Release build compiles clean (warnings treated as errors)
 - [ ] No string-based code generation introduced
 - [ ] Terminology uses "impersonate/imposter" (not "mock")
