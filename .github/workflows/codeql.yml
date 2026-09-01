@@ -12,6 +12,9 @@ on:
   schedule:
     - cron: '25 7 * * 1'
 
+permissions:
+  contents: read
+
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true

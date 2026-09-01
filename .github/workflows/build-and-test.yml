@@ -11,6 +11,9 @@ on:
       - develop
   workflow_call:
 
+permissions:
+  contents: read
+
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
@@ -81,4 +84,3 @@ jobs:
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
         run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed"
-
