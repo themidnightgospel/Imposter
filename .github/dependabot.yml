@@ -1,0 +1,45 @@
+# Note: .config/dotnet-tools.json (csharpier, husky) has no Dependabot ecosystem;
+# update those manually with `dotnet tool update <tool>`.
+version: 2
+updates:
+  # .NET packages — solution at repo root
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Tbilisi"
+    ignore:
+      # The Microsoft.CodeAnalysis.CSharp versions in Imposter.Roslyn<V>.props are
+      # deliberate pins that define the Roslyn support matrix (4.0 ... 5.0).
+      # Bumping them would collapse the multi-target packaging — manage manually.
+      - dependency-name: "Microsoft.CodeAnalysis.CSharp"
+      - dependency-name: "Microsoft.CodeAnalysis.Analyzers"
+    groups:
+      nuget:
+        patterns:
+          - "*"
+
+  # Actions used in .github/workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Tbilisi"
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # MkDocs toolchain — docs/requirements.txt
+  - package-ecosystem: "pip"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Tbilisi"
+    groups:
+      docs:
+        patterns:
+          - "*"
