@@ -28,7 +28,7 @@ jobs:
       version: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
     steps:
       - name: checkout git
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -51,17 +51,17 @@ jobs:
 
       - name: convert release notes markdown to text
         id: release-notes-text
-        uses: koistya/strip-markdown@v1
+        uses: koistya/strip-markdown@ac3bfef4f59b1654a253796403c7222a1f56b0e8 # v1
         with:
           content: ${{ steps.extract-release-notes.outputs.RELEASE_NOTES }}
 
       - name: Setup .NET 8 SDK
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '8.0.x'
 
       - name: Setup .NET 10 SDK
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '10.0.x'
 
