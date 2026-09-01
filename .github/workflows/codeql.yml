@@ -50,7 +50,7 @@ jobs:
           queries: security-and-quality
 
       - name: Build solution
-        run: dotnet build Imposter.sln -c Release
+        run: dotnet build Imposter.slnx -c Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
