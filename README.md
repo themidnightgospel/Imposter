@@ -7,6 +7,8 @@
 </p>
 
 [![Build, Test, and Format verification](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/themidnightgospel/Imposter/actions/workflows/build-and-test.yml)
+[![CodeQL](https://github.com/themidnightgospel/Imposter/actions/workflows/codeql.yml/badge.svg)](https://github.com/themidnightgospel/Imposter/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/themidnightgospel/Imposter/badge)](https://scorecard.dev/viewer/?uri=github.com/themidnightgospel/Imposter)
 [![Nuget](https://img.shields.io/nuget/v/Imposter.svg)](https://www.nuget.org/packages/Imposter)
 
 ## 🧘Balanced Performance and Developer Experience
