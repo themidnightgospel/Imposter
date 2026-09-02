@@ -24,6 +24,8 @@ jobs:
     environment: ${{ github.event.release.prerelease && 'next' || 'stable' }}
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     outputs:
       version: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
     steps:
@@ -74,13 +76,22 @@ jobs:
           RELEASE_NOTES: ${{ steps.release-notes-text.outputs.content }}
           RELEASE_VERSION: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
 
+      - name: attest build provenance
+        id: attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: 'artifacts/*.nupkg'
+
       - name: publish nuget
         run: dotnet nuget push './artifacts/*.nupkg' --source "$NUGET_SOURCE" --api-key '${{ secrets.NUGET_API_KEY }}' --skip-duplicate
 
       - name: add release assets
-        run: gh release upload "${{ github.event.release.tag_name }}" artifacts/*.nupkg
+        run: |
+          cp "${{ steps.attest.outputs.bundle-path }}" "artifacts/Imposter.${RELEASE_VERSION}.nupkg.intoto.jsonl"
+          gh release upload "${{ github.event.release.tag_name }}" artifacts/*.nupkg artifacts/*.intoto.jsonl
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
   docs:
     needs: release
     permissions:
