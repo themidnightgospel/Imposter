@@ -122,16 +122,16 @@ public static class ClassSymbolExtensions
             return;
         }
 
-        foreach (
-            var property in typeSymbol
-                .GetMembers()
-                .OfType<IPropertySymbol>()
-                .Where(IsOverridableProperty)
-        )
+        foreach (var property in typeSymbol.GetMembers().OfType<IPropertySymbol>())
         {
             if (property.OverriddenProperty is { } overridden)
             {
                 overriddenProperties.Add(overridden);
+            }
+
+            if (!IsOverridableProperty(property))
+            {
+                continue;
             }
 
             if (overriddenProperties.Contains(property))
@@ -168,13 +168,16 @@ public static class ClassSymbolExtensions
             return;
         }
 
-        foreach (
-            var @event in typeSymbol.GetMembers().OfType<IEventSymbol>().Where(IsOverridableEvent)
-        )
+        foreach (var @event in typeSymbol.GetMembers().OfType<IEventSymbol>())
         {
             if (@event.OverriddenEvent is { } overridden)
             {
                 overriddenEvents.Add(overridden);
+            }
+
+            if (!IsOverridableEvent(@event))
+            {
+                continue;
             }
 
             if (overriddenEvents.Contains(@event))
