@@ -119,6 +119,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         BuildPropertyImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         BuildEventImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
+        imposterBuilder.AddInterfaceSetupViews(imposterGenerationContext);
 
         Action<MemberDeclarationSyntax> AddMember;
         Func<MemberDeclarationSyntax[]> GetTopLevelMembers;
@@ -260,6 +261,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddPropertyImposter(property)
+                .AddInterfaceSetupMember(
+                    propertySymbol,
+                    property.RequiresExplicitInterfaceImplementation
+                        ? property.Core.UniqueName
+                        : property.Core.Name,
+                    property.ImposterBuilderInterface.Syntax
+                )
                 .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMembers(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
@@ -291,6 +299,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddEventImposter(@event)
+                .AddInterfaceSetupMember(
+                    eventSymbol,
+                    @event.RequiresExplicitInterfaceImplementation
+                        ? @event.Core.UniqueName
+                        : @event.Core.Name,
+                    @event.BuilderInterface.TypeSyntax
+                )
                 .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))
                 .AddMember(EventImposterBuilder.Build(@event));
         }
@@ -320,6 +335,11 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddIndexerImposter(indexer)
+                .AddInterfaceSetupMember(
+                    indexerSymbol,
+                    indexer.Core.UniqueName,
+                    indexer.BuilderInterface.TypeSyntax
+                )
                 .AddMembers(IndexerDelegatesBuilder.Build(indexer))
                 .AddMember(IndexerArgumentsBuilder.Build(indexer))
                 .AddMember(IndexerArgumentsCriteriaBuilder.Build(indexer))

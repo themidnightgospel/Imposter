@@ -10,6 +10,40 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterBuilderBuilder
 {
+    private static MethodDeclarationSyntax BuildCallCountMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        new MethodDeclarationBuilder(
+            WellKnownTypes.Int,
+            InvocationVerifierInterfaceMetadata.CallCountMethodName
+        )
+            .WithExplicitInterfaceSpecifier(
+                ExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
+            )
+            .WithBody(Block(ReturnStatement(BuildInvocationCountExpression(method))))
+            .Build();
+
+    private static InvocationExpressionSyntax BuildInvocationCountExpression(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+            .Dot(
+                WithMethodGenericArguments(
+                    InvocationHistoryCollectionCountMethodMetadata.Name,
+                    method
+                )
+            )
+            .Call(
+                method.Parameters.HasInputParameters
+                    ? Argument(
+                            IdentifierName(
+                                method.MethodImposter.Builder.ArgumentsCriteriaField.Name
+                            )
+                        )
+                        .ToSingleArgumentList()
+                    : EmptyArgumentListSyntax
+            );
+
     private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
         return new MethodDeclarationBuilder(WellKnownTypes.Void, CalledMethodMetadata.Name)
@@ -27,27 +61,7 @@ internal static partial class MethodImposterBuilderBuilder
                     LocalVariableDeclarationSyntax(
                         Var,
                         "invocationCount",
-                        IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-                            .Dot(
-                                WithMethodGenericArguments(
-                                    InvocationHistoryCollectionCountMethodMetadata.Name,
-                                    method
-                                )
-                            )
-                            .Call(
-                                method.Parameters.HasInputParameters
-                                    ? Argument(
-                                            IdentifierName(
-                                                method
-                                                    .MethodImposter
-                                                    .Builder
-                                                    .ArgumentsCriteriaField
-                                                    .Name
-                                            )
-                                        )
-                                        .ToSingleArgumentList()
-                                    : EmptyArgumentListSyntax
-                            )
+                        BuildInvocationCountExpression(method)
                     ),
                     ThrowIfCountDoesNotMatch(method)
                 )

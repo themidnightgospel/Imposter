@@ -5,6 +5,8 @@ using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Imposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.InterfaceSetup.Builders;
+using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -28,6 +30,7 @@ internal readonly ref struct ImposterBuilder
     private readonly bool _isClassTarget;
     private readonly ImposterTargetConstructorMetadata[] _accessibleConstructors;
     private readonly NameSet _memberNameSet;
+    private readonly List<InterfaceSetupMemberMetadata> _interfaceSetupMembers = [];
 
     private ImposterBuilder(
         ClassDeclarationBuilder imposterBuilder,
@@ -74,6 +77,56 @@ internal readonly ref struct ImposterBuilder
             _invocationBehaviorParameterName,
             _imposterInstanceBuilder
         ).AddProperty(property);
+
+        return this;
+    }
+
+    internal ImposterBuilder AddInterfaceSetupMember(
+        ISymbol symbol,
+        string setupName,
+        TypeSyntax returnType
+    )
+    {
+        if (!_isClassTarget)
+        {
+            _interfaceSetupMembers.Add(
+                new InterfaceSetupMemberMetadata(symbol, setupName, returnType)
+            );
+        }
+        return this;
+    }
+
+    internal ImposterBuilder AddInterfaceSetupViews(in ImposterGenerationContext context)
+    {
+        if (context.Imposter.IsClass)
+        {
+            return this;
+        }
+
+        var members = context
+            .Imposter.Methods.Select(method => new InterfaceSetupMemberMetadata(method))
+            .Concat(_interfaceSetupMembers)
+            .ToArray();
+        var setup = new InterfaceSetupMetadata(
+            context.TargetSymbol,
+            members,
+            _imposterBuilder.Members
+        );
+        foreach (var view in setup.Views)
+        {
+            _imposterBuilder
+                .AddBaseType(
+                    SimpleBaseType(
+                        QualifiedName(
+                            context.Imposter.ImposterTypeSyntax,
+                            IdentifierName(view.Name)
+                        )
+                    )
+                )
+                .AddMember(InterfaceSetupViewBuilder.BuildInterface(view))
+                .AddMembers(InterfaceSetupViewBuilder.BuildImplementations(view))
+                .AddMember(InterfaceSetupViewBuilder.BuildSelector(view, setup.SelectorName));
+        }
 
         return this;
     }

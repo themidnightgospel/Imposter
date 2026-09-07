@@ -48,6 +48,7 @@ internal static partial class MethodImposterBuilderBuilder
             .AddMember(constructor)
             .AddMembers(ImplementInvocationSetupBuilderInterface(method))
             .AddMember(BuildCalledMethod(method))
+            .AddMember(BuildCallCountMethod(method))
             .Build();
     }
 }

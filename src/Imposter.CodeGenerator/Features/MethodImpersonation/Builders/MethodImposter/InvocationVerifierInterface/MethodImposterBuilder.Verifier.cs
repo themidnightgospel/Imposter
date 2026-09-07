@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,9 +10,20 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 internal static class MethodImposterInvocationVerifierInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
-        InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, method.InvocationVerifierInterface.Name)
+        new InterfaceDeclarationBuilder(
+            method.InvocationVerifierInterface.Name,
+            method.InvocationVerifierInterface.TypeParameterList
+        )
+            .AddConstraintClauses(method.InvocationVerifierInterface.ConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.Int,
+                    InvocationVerifierInterfaceMetadata.CallCountMethodName
+                )
+                    .WithSemicolon()
+                    .Build()
+            )
             .AddMember(
                 new MethodDeclarationBuilder(WellKnownTypes.Void, CalledMethodMetadata.Name)
                     .AddParameter(Parameter(Identifier("count")).WithType(IdentifierName("Count")))

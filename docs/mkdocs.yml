@@ -85,6 +85,7 @@ nav:
       - Throw : events/exceptions.md
       - Protected Events: events/protected-members.md
   - Arguments Matching: arguments-matching.md
+  - Interface-specific Setup: interface-setup.md
   - Verification: verification.md
   - Implicit vs Explicit: implicit-vs-explicit.md
   - Base Implementation: base-implementation.md
@@ -110,5 +111,6 @@ plugins:
           - indexers/index.md: Brief description of how to replace your indexer-bearing interface or class with a fake simulated one
           - events/index.md: Brief description of how to replace real event with a fake simulated one
           - arguments-matching.md: Brief description of how argument matching works
+          - interface-setup.md: Configure inherited interface members without numbered member names
           - verification.md: Brief description of how verification works
           - limitations.md: Brief description of limitations with Imposter
