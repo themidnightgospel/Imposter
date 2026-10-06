@@ -50,7 +50,7 @@ public interface IGeneric<TFirst, TSecond>
         );
         var namespaceLine = imposterSource
             .SourceText.ToString()
-            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            .Split(['\n'], StringSplitOptions.RemoveEmptyEntries)
             .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
             .Trim();
 

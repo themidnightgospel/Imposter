@@ -60,7 +60,7 @@ public interface {ITest}
 
         var namespaceLine = imposterSource
             .SourceText.ToString()
-            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            .Split(['\n'], StringSplitOptions.RemoveEmptyEntries)
             .FirstOrDefault(line =>
                 line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal)
             );
@@ -80,7 +80,7 @@ public interface {ITest}
 
         var namespaceLine = imposterSource
             .SourceText.ToString()
-            .Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            .Split(['\n'], StringSplitOptions.RemoveEmptyEntries)
             .First(line => line.TrimStart().StartsWith("namespace ", StringComparison.Ordinal))
             .Trim();
 

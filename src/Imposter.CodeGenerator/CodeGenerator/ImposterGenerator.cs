@@ -87,14 +87,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
             sourceProductionContext.AddSource(
                 $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
-                // NOTE: NormalizeWhitespace has a performance impact.
                 SourceText.From(
-                    BuildImposter(
+                    GeneratedCodeWriter.Write(
+                        BuildImposter(
                             imposterGenerationContext,
                             sourceProductionContext.CancellationToken
                         )
-                        .NormalizeWhitespace()
-                        .ToFullString(),
+                    ),
                     Encoding.UTF8
                 )
             );
