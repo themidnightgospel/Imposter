@@ -1,10 +1,5 @@
-﻿using Imposter.CodeGenerator.Helpers;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
-internal record CompilationContext(
-    CSharpCompilation Compilation,
-    NameSet NameSet,
-    bool IsLoggingEnabled
-) { }
+internal record CompilationContext(CSharpCompilation Compilation, bool IsLoggingEnabled) { }

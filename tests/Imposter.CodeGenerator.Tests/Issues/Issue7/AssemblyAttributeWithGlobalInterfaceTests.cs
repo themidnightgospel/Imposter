@@ -75,7 +75,7 @@ public interface {ITest}
         var result = testContext.RunGenerator();
 
         var imposterSource = result.GeneratedSources.Single(source =>
-            source.HintName == $"{ITest}Imposter.g.cs"
+            source.HintName == $"Imposters.{ITest}Imposter.g.cs"
         );
 
         var namespaceLine = imposterSource

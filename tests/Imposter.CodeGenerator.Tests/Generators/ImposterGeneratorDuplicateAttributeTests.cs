@@ -46,7 +46,9 @@ public interface IDuplicate
         var result = testContext.RunGenerator();
 
         var imposterSources = result
-            .GeneratedSources.Where(static source => source.HintName == "IDuplicateImposter.g.cs")
+            .GeneratedSources.Where(static source =>
+                source.HintName == "Sample.IDuplicateImposter.g.cs"
+            )
             .ToList();
 
         imposterSources.ShouldHaveSingleItem();

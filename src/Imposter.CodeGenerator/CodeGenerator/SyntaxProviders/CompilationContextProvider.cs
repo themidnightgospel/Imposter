@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
-using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -31,12 +30,7 @@ internal static class CompilationContextProvider
         return context
             .CompilationProvider.Combine(loggingEnabledProvider)
             .Select(
-                static (pair, _) =>
-                    new CompilationContext(
-                        (CSharpCompilation)pair.Left,
-                        new NameSet([]),
-                        pair.Right
-                    )
+                static (pair, _) => new CompilationContext((CSharpCompilation)pair.Left, pair.Right)
             )
 #if ROSLYN4_4_OR_GREATER
             .WithTrackingName("CompilationContext")

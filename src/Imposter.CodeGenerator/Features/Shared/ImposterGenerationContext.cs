@@ -16,6 +16,9 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly string? ImposterNamespaceName;
 
+    // Derived from the target alone, so it does not depend on the order in which targets are processed.
+    internal readonly string HintName;
+
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
     internal readonly IGeneratorLogger Logger;
@@ -32,22 +35,30 @@ internal readonly struct ImposterGenerationContext
             supportedCSharpFeatures
         );
 
+        var sanitizedTargetName = GetSanitizedTargetName(TargetSymbol);
+
         if (generateImposterDeclaration.PutInTheSameNamespace)
         {
             ImposterNamespaceName = TargetSymbol.ContainingNamespace.IsGlobalNamespace
                 ? null
                 : TargetSymbol.ContainingNamespace.ToDisplayString();
+            HintName = $"{sanitizedTargetName}Imposter.g.cs";
         }
         else
         {
-            ImposterNamespaceName = BuildImposterComponentsNamespace(TargetSymbol);
+            ImposterNamespaceName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}";
+            HintName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}Imposter.g.cs";
         }
 
         SupportedCSharpFeatures = supportedCSharpFeatures;
         Logger = logger;
     }
 
-    private static string BuildImposterComponentsNamespace(INamedTypeSymbol targetSymbol)
+    private const string DedicatedNamespacePrefix = "Imposters";
+
+    // The target's fully qualified name without `global::`, reduced to characters valid in a namespace and a
+    // hint name, e.g. `Sample.IPair<int, string>` becomes `Sample.IPair_int__string_`.
+    private static string GetSanitizedTargetName(INamedTypeSymbol targetSymbol)
     {
         var display = targetSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
@@ -57,7 +68,7 @@ internal readonly struct ImposterGenerationContext
             display = display[globalPrefix.Length..];
         }
 
-        return $"Imposters.{SanitizeForNamespace(display)}";
+        return SanitizeForNamespace(display);
     }
 
     private static string SanitizeForNamespace(string value)

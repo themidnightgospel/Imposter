@@ -86,7 +86,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             logger.LogCompilation(compilationContext.Compilation);
 
             sourceProductionContext.AddSource(
-                $"{compilationContext.NameSet.Use(imposterGenerationContext.Imposter.Name)}.g.cs",
+                imposterGenerationContext.HintName,
                 SourceText.From(
                     GeneratedCodeWriter.Write(
                         BuildImposter(

@@ -70,7 +70,9 @@ public abstract class GenericProcessor<TKey, TValue>
         var result = testContext.RunGenerator();
 
         var imposterSource = result
-            .GeneratedSources.Single(source => source.HintName == "IAsyncObserverImposter.g.cs")
+            .GeneratedSources.Single(source =>
+                source.HintName == "Sample.IAsyncObserver_TItem_Imposter.g.cs"
+            )
             .SourceText.ToString();
 
         imposterSource.ShouldContain("public sealed class IAsyncObserverImposter<TItem>");
@@ -90,7 +92,9 @@ public abstract class GenericProcessor<TKey, TValue>
         var result = testContext.RunGenerator();
 
         var imposterSource = result
-            .GeneratedSources.Single(source => source.HintName == "GenericProcessorImposter.g.cs")
+            .GeneratedSources.Single(source =>
+                source.HintName == "Sample.GenericProcessor_TKey__TValue_Imposter.g.cs"
+            )
             .SourceText.ToString();
 
         imposterSource.ShouldContain("public sealed class GenericProcessorImposter<TKey, TValue>");
