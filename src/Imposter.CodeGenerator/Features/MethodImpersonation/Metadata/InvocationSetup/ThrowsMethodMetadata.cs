@@ -28,7 +28,7 @@ internal readonly struct ThrowsMethodMetadata
     internal readonly TypeParameterConstraintClauseSyntax TypeParameterConstraintClause;
 
     public ThrowsMethodMetadata(
-        IParameterNameContextProvider parameterNameContextProvider,
+        in ReservedParameterNames reservedParameterNames,
         NameSyntax exceptionGeneratorDelegateSyntax,
         NameSyntax interfaceTypeSyntax,
         NameSyntax continuationInterfaceSyntax,
@@ -38,7 +38,7 @@ internal readonly struct ThrowsMethodMetadata
         InterfaceSyntax = interfaceTypeSyntax;
         ReturnType = continuationInterfaceSyntax;
         GenericTypeParameterName = genericTypeParameterNameSet.Use("TException");
-        var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var nameContext = reservedParameterNames.CreateNameSet();
         InterfaceExceptionParameterName = "exception";
         InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
         ExceptionParameter = new ParameterMetadata(

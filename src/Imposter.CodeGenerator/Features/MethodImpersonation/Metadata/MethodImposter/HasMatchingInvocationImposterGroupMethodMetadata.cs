@@ -12,12 +12,12 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
     internal readonly string ArgumentsParameterName;
 
     public HasMatchingInvocationImposterGroupMethodMetadata(
-        IParameterNameContextProvider parameterNameContextProvider
+        in ReservedParameterNames reservedParameterNames
     )
     {
         ReturnType = WellKnownTypes.Bool;
         Name = "HasMatchingInvocationImposterGroup";
-        var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var nameContext = reservedParameterNames.CreateNameSet();
         ArgumentsParameterName = nameContext.Use("arguments");
     }
 }

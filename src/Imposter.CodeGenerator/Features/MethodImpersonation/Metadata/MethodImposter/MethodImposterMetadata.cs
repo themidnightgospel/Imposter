@@ -51,12 +51,14 @@ internal readonly struct MethodImposterMetadata
 
         Collection = new MethodImposterCollectionMetadata($"{Name}Collection");
         AsField = new FieldDeclarationMetadata(Name);
-        InvokeMethod = new MethodImposterInvokeMethodMetadata(method);
+        InvokeMethod = new MethodImposterInvokeMethodMetadata(method.ReservedParameterNames);
         FindMatchingInvocationImposterGroupMethod =
-            new FindMatchingInvocationImposterGroupMethodMetadata(method);
+            new FindMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
         HasMatchingInvocationImposterGroupMethod =
-            new HasMatchingInvocationImposterGroupMethodMetadata(method);
-        InvocationImpostersField = new InvocationImpostersFieldMetadata(method);
+            new HasMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
+        InvocationImpostersField = new InvocationImpostersFieldMetadata(
+            method.ReservedParameterNames
+        );
         Builder = new MethodImposterBuilderMetadata(
             Syntax,
             Collection.Syntax,

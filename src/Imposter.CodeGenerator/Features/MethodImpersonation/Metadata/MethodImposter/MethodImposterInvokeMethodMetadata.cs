@@ -16,11 +16,9 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string CallbackIterationVariableName;
 
-    public MethodImposterInvokeMethodMetadata(
-        IParameterNameContextProvider parameterNameContextProvider
-    )
+    public MethodImposterInvokeMethodMetadata(in ReservedParameterNames reservedParameterNames)
     {
-        var parameterNameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var parameterNameContext = reservedParameterNames.CreateNameSet();
 
         ExceptionVariableName = parameterNameContext.Use("ex");
         ResultVariableName = parameterNameContext.Use("result");

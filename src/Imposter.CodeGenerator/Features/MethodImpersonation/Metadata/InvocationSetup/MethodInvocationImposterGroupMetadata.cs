@@ -57,7 +57,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName)
         );
         ReturnsMethod = new ReturnsMethodMetadata(
-            method,
+            method.ReservedParameterNames,
             method.ReturnTypeSyntax,
             Interface.Syntax,
             ContinuationInterface.Syntax,
@@ -66,14 +66,14 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ReturnsAsyncMethod = method.ReturnType.TaskLikeMetadata
             is { IsAwaitable: true, GenericAwaitableResultType: not null }
             ? new ReturnsAsyncMethodMetadata(
-                method,
+                method.ReservedParameterNames,
                 Interface.Syntax,
                 ContinuationInterface.Syntax,
                 method.ReturnType.GenericAwaitableResultType!
             )
             : null;
         ThrowsMethod = new ThrowsMethodMetadata(
-            method,
+            method.ReservedParameterNames,
             method.ExceptionGeneratorDelegate.Syntax,
             Interface.Syntax,
             ContinuationInterface.Syntax,
@@ -81,10 +81,14 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         );
 
         ThrowsAsyncMethod = method.IsAsync
-            ? new ThrowsAsyncMethodMetadata(method, Interface.Syntax, ContinuationInterface.Syntax)
+            ? new ThrowsAsyncMethodMetadata(
+                method.ReservedParameterNames,
+                Interface.Syntax,
+                ContinuationInterface.Syntax
+            )
             : null;
         CallbackMethod = new CallbackMethodMetadata(
-            method,
+            method.ReservedParameterNames,
             ContinuationInterface.Syntax,
             CallbackInterface.Syntax,
             method.CallbackDelegate.Syntax

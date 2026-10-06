@@ -7,11 +7,11 @@ internal readonly struct FindMatchingInvocationImposterGroupMethodMetadata
     internal readonly string SetupVariableName;
 
     public FindMatchingInvocationImposterGroupMethodMetadata(
-        IParameterNameContextProvider parameterNameContextProvider
+        in ReservedParameterNames reservedParameterNames
     )
     {
         Name = "FindMatchingInvocationImposterGroup";
-        var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var nameContext = reservedParameterNames.CreateNameSet();
         SetupVariableName = nameContext.Use("invocationImposterGroup");
     }
 }

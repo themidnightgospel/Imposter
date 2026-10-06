@@ -11,11 +11,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 
-internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextProvider
+internal readonly struct ImposterTargetMethodMetadata
 {
     internal readonly IMethodSymbol Symbol;
 
     internal readonly ImposterTargetMethodParametersMetadata Parameters;
+
+    internal readonly ReservedParameterNames ReservedParameterNames;
 
     internal readonly MethodInvocationImposterGroupMetadata MethodInvocationImposterGroup;
 
@@ -106,6 +108,9 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         IsAsync = symbol.IsMethodAsync();
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
+        ReservedParameterNames = new ReservedParameterNames(
+            Symbol.Parameters.Select(p => p.Name).Concat([UniqueName, Namespace])
+        );
         GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         GenericTypeArguments = Symbol
             .TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name))
@@ -167,7 +172,7 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
         );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
-        MethodInvocationImposter = new MethodInvocationImposterMetadata(this);
+        MethodInvocationImposter = new MethodInvocationImposterMetadata(ReservedParameterNames);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
@@ -183,17 +188,6 @@ internal readonly struct ImposterTargetMethodMetadata : IParameterNameContextPro
             ExplicitInterfaceSpecifier = null;
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(symbol);
         }
-    }
-
-    public NameSet CreateParameterNameContext()
-    {
-        var names = new List<string>(Parameters.Parameters.Select(p => p.Name))
-        {
-            UniqueName,
-            Namespace,
-        };
-
-        return new NameSet(names);
     }
 
     internal readonly struct AsMethodMetadata

@@ -273,7 +273,7 @@ internal readonly ref struct ImposterInstanceBuilder
     }
 
     private static IReadOnlyList<FieldDeclarationSyntax> GetFields(
-        ImposterGenerationContext imposterGenerationContext,
+        in ImposterGenerationContext imposterGenerationContext,
         string imposterFieldName
     ) =>
         [

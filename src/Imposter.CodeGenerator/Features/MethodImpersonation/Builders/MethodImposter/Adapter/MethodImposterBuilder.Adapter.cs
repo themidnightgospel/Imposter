@@ -307,7 +307,7 @@ internal static class MethodImposterAdapterBuilder
 
         internal AdapterNames(in ImposterTargetMethodMetadata method)
         {
-            var nameContext = method.CreateParameterNameContext();
+            var nameContext = method.ReservedParameterNames.CreateNameSet();
             TargetFieldName = nameContext.Use("_target");
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");

@@ -4,11 +4,9 @@ internal readonly struct InvocationImpostersFieldMetadata
 {
     internal readonly string Name;
 
-    internal InvocationImpostersFieldMetadata(
-        IParameterNameContextProvider parameterNameContextProvider
-    )
+    internal InvocationImpostersFieldMetadata(in ReservedParameterNames reservedParameterNames)
     {
-        var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var nameContext = reservedParameterNames.CreateNameSet();
         Name = nameContext.Use("_invocationImposters");
     }
 }

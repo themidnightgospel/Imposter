@@ -61,7 +61,7 @@ internal static partial class SyntaxFactoryHelper
         ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name);
 
     internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(
-        ImposterTargetMethodMetadata method
+        in ImposterTargetMethodMetadata method
     ) =>
         method.ArgumentsCriteria.Syntax.New(
             ArgumentListSyntax(

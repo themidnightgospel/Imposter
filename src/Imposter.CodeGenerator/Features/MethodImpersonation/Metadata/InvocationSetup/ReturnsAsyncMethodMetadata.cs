@@ -15,7 +15,7 @@ internal readonly struct ReturnsAsyncMethodMetadata
     internal readonly string InterfaceValueParameterName;
 
     internal ReturnsAsyncMethodMetadata(
-        IParameterNameContextProvider parameterNameContextProvider,
+        in ReservedParameterNames reservedParameterNames,
         NameSyntax interfaceSyntax,
         NameSyntax continuationInterfaceSyntax,
         TypeSyntax valueParameterType
@@ -24,7 +24,7 @@ internal readonly struct ReturnsAsyncMethodMetadata
         InterfaceSyntax = interfaceSyntax;
         ReturnType = continuationInterfaceSyntax;
         InterfaceValueParameterName = "value";
-        var nameContext = parameterNameContextProvider.CreateParameterNameContext();
+        var nameContext = reservedParameterNames.CreateNameSet();
         ValueParameter = new ParameterMetadata(
             nameContext.Use(InterfaceValueParameterName),
             valueParameterType

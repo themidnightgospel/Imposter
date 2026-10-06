@@ -12,13 +12,13 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Invocatio
 internal static partial class InvocationSetupBuilder
 {
     internal static IEnumerable<MemberDeclarationSyntax> BuildInvocationSetupInterfaces(
-        ImposterTargetMethodMetadata method
-    )
-    {
-        yield return BuildCallbackInterface(method);
-        yield return BuildContinuationInterface(method);
-        yield return BuildStartInterface(method);
-    }
+        in ImposterTargetMethodMetadata method
+    ) =>
+        [
+            BuildCallbackInterface(method),
+            BuildContinuationInterface(method),
+            BuildStartInterface(method),
+        ];
 
     private static InterfaceDeclarationSyntax BuildCallbackInterface(
         in ImposterTargetMethodMetadata method
