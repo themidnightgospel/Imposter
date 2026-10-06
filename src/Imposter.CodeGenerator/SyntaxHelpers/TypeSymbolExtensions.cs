@@ -1,114 +1,53 @@
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static class TypeSymbolExtensions
 {
-    internal static bool IsWellKnownType(
-        this ITypeSymbol? symbol,
-        TypeSyntax typeSyntax,
-        params string[] assemblyNames
-    )
-    {
-        if (symbol is not INamedTypeSymbol named)
-        {
-            return false;
-        }
-
-        var definition = named.IsGenericType ? named.ConstructedFrom : named;
-        var assemblyName = definition.ContainingAssembly?.Identity.Name;
-
-        if (
-            assemblyName is null
-            || assemblyNames.Length == 0
-            || Array.IndexOf(assemblyNames, assemblyName) == -1
-        )
-        {
-            return false;
-        }
-
-        var wellKnownTypeName = typeSyntax.NormalizeWhitespace().ToFullString();
-        var candidateName = definition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-        return string.Equals(candidateName, wellKnownTypeName, StringComparison.Ordinal);
-    }
-
     internal static bool IsAwaitable(this ITypeSymbol? symbol) =>
         symbol.GetTaskLikeMetadata().IsAwaitable;
 
     internal static TaskLikeMetadata GetTaskLikeMetadata(this ITypeSymbol? symbol)
     {
-        if (symbol is not INamedTypeSymbol named)
+        if (
+            symbol is not INamedTypeSymbol named
+            || !named.IsInNamespace("System", "Threading", "Tasks")
+        )
         {
             return TaskLikeMetadata.Empty;
         }
 
-        var definition = named.IsGenericType ? named.ConstructedFrom : named;
-        var isTask = definition.IsWellKnownType(
-            WellKnownTypes.System.Threading.Tasks.Task,
-            WellKnownAssemblyNames.SystemAssemblies
-        );
-        var isValueTask = definition.IsWellKnownType(
-            WellKnownTypes.System.Threading.Tasks.ValueTask,
-            WellKnownAssemblyNames.SystemAssemblies
-        );
-
-        var genericParameter = IdentifierName("TResult");
-        var genericTask = WellKnownTypes.System.Threading.Tasks.TaskOfT(genericParameter);
-        var genericValueTask = WellKnownTypes.System.Threading.Tasks.ValueTaskOfT(genericParameter);
-        var genericAsyncEnumerable = WellKnownTypes.System.Collections.Generic.IAsyncEnumerable(
-            genericParameter
-        );
-        var genericAsyncEnumerator = WellKnownTypes.System.Collections.Generic.IAsyncEnumerator(
-            genericParameter
-        );
-
-        var isGenericTask =
-            named.IsGenericType
-            && definition.IsWellKnownType(genericTask, WellKnownAssemblyNames.SystemAssemblies);
-        var isGenericValueTask =
-            named.IsGenericType
-            && definition.IsWellKnownType(
-                genericValueTask,
-                WellKnownAssemblyNames.SystemAssemblies
-            );
-        var isAsyncEnumerable =
-            named.IsGenericType
-            && definition.IsWellKnownType(
-                genericAsyncEnumerable,
-                WellKnownAssemblyNames.SystemAssemblies
-            );
-        var isAsyncEnumerator =
-            named.IsGenericType
-            && definition.IsWellKnownType(
-                genericAsyncEnumerator,
-                WellKnownAssemblyNames.SystemAssemblies
-            );
-        var isAwaitable =
-            isTask
-            || isGenericTask
-            || isValueTask
-            || isGenericValueTask
-            || isAsyncEnumerable
-            || isAsyncEnumerator;
-
-        var genericAwaitableResultType =
-            isAwaitable && named.TypeArguments.Length > 0 ? named.TypeArguments[0] : null;
-
-        return new TaskLikeMetadata(
-            isTask: isTask || isGenericTask,
-            isGenericTask: isGenericTask,
-            isValueTask: isValueTask || isGenericValueTask,
-            isGenericValueTask: isGenericValueTask,
-            isAsyncEnumerable: isAsyncEnumerable,
-            isAsyncEnumerator: isAsyncEnumerator,
-            isAwaitable: isAwaitable,
-            genericAwaitableResultType: genericAwaitableResultType
-        );
+        return named.MetadataName switch
+        {
+            "Task" or "ValueTask" => new TaskLikeMetadata(isAwaitable: true, null),
+            "Task`1" or "ValueTask`1" => new TaskLikeMetadata(
+                isAwaitable: true,
+                named.TypeArguments[0]
+            ),
+            _ => TaskLikeMetadata.Empty,
+        };
     }
+
+    internal static bool IsNonGenericValueTask(this ITypeSymbol? symbol) =>
+        symbol is INamedTypeSymbol { MetadataName: "ValueTask" } named
+        && named.IsInNamespace("System", "Threading", "Tasks");
+
+    // Matches by metadata name and namespace only: depending on the target framework these types live in
+    // System.Private.CoreLib, System.Runtime, mscorlib, netstandard or System.Threading.Tasks.Extensions.
+    private static bool IsInNamespace(
+        this ISymbol symbol,
+        string outerNamespace,
+        string middleNamespace,
+        string innerNamespace
+    ) =>
+        symbol.ContainingNamespace is { } inner
+        && inner.Name == innerNamespace
+        && inner.ContainingNamespace is { } middle
+        && middle.Name == middleNamespace
+        && middle.ContainingNamespace is { } outer
+        && outer.Name == outerNamespace
+        && outer.ContainingNamespace is { IsGlobalNamespace: true };
 
     internal static TypeSymbolMetadata GetTypeSymbolMetadata(
         this ITypeSymbol? symbol,
@@ -168,48 +107,19 @@ internal static class TypeSymbolExtensions
     }
 
     internal static bool IsAsyncStateMachineInterface(this ITypeSymbol? symbol) =>
-        symbol.IsWellKnownType(
-            WellKnownTypes.System.Runtime.CompilerServices.IAsyncStateMachine,
-            WellKnownAssemblyNames.SystemAssemblies
-        );
+        symbol is { MetadataName: "IAsyncStateMachine" }
+        && symbol.IsInNamespace("System", "Runtime", "CompilerServices");
 }
 
 internal readonly struct TaskLikeMetadata
 {
     internal static TaskLikeMetadata Empty => default;
 
-    internal TaskLikeMetadata(
-        bool isTask,
-        bool isGenericTask,
-        bool isValueTask,
-        bool isGenericValueTask,
-        bool isAsyncEnumerable,
-        bool isAsyncEnumerator,
-        bool isAwaitable,
-        ITypeSymbol? genericAwaitableResultType
-    )
+    internal TaskLikeMetadata(bool isAwaitable, ITypeSymbol? genericAwaitableResultType)
     {
-        IsTask = isTask;
-        IsGenericTask = isGenericTask;
-        IsValueTask = isValueTask;
-        IsGenericValueTask = isGenericValueTask;
-        IsAsyncEnumerable = isAsyncEnumerable;
-        IsAsyncEnumerator = isAsyncEnumerator;
-        GenericAwaitableResultType = genericAwaitableResultType;
         IsAwaitable = isAwaitable;
+        GenericAwaitableResultType = genericAwaitableResultType;
     }
-
-    internal bool IsTask { get; }
-
-    internal bool IsGenericTask { get; }
-
-    internal bool IsValueTask { get; }
-
-    internal bool IsGenericValueTask { get; }
-
-    internal bool IsAsyncEnumerable { get; }
-
-    internal bool IsAsyncEnumerator { get; }
 
     internal bool IsAwaitable { get; }
 

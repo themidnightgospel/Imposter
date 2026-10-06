@@ -132,10 +132,7 @@ internal static class EventImposterRaiseBuilder
     )
     {
         var fields = @event.Builder.Fields;
-        var usesValueTask = @event.Core.DelegateReturnTypeSymbol.IsWellKnownType(
-            WellKnownTypes.System.Threading.Tasks.ValueTask,
-            WellKnownAssemblyNames.SystemAssemblies
-        );
+        var usesValueTask = @event.Core.DelegateReturnTypeSymbol.IsNonGenericValueTask();
 
         return new BlockBuilder()
             .AddExpression(

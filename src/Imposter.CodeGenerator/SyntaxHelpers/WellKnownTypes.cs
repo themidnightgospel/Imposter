@@ -202,24 +202,6 @@ internal static class WellKnownTypes
                             )
                         )
                     );
-
-                internal static TypeSyntax IAsyncEnumerable(TypeSyntax typeArgument) =>
-                    QualifiedName(
-                        Namespace,
-                        GenericName(
-                            Identifier("IAsyncEnumerable"),
-                            TypeArgumentList(SingletonSeparatedList(typeArgument))
-                        )
-                    );
-
-                internal static TypeSyntax IAsyncEnumerator(TypeSyntax typeArgument) =>
-                    QualifiedName(
-                        Namespace,
-                        GenericName(
-                            Identifier("IAsyncEnumerator"),
-                            TypeArgumentList(SingletonSeparatedList(typeArgument))
-                        )
-                    );
             }
         }
 
@@ -251,11 +233,6 @@ internal static class WellKnownTypes
                 internal static NameSyntax Namespace = QualifiedName(
                     Runtime.Namespace,
                     IdentifierName("CompilerServices")
-                );
-
-                internal static TypeSyntax IAsyncStateMachine = QualifiedName(
-                    Namespace,
-                    IdentifierName("IAsyncStateMachine")
                 );
             }
         }
@@ -291,20 +268,6 @@ internal static class WellKnownTypes
                         Namespace,
                         GenericName(
                             Identifier("Task"),
-                            TypeArgumentList(SingletonSeparatedList(typeArgument))
-                        )
-                    );
-
-                internal static TypeSyntax ValueTask = QualifiedName(
-                    Namespace,
-                    IdentifierName("ValueTask")
-                );
-
-                internal static TypeSyntax ValueTaskOfT(TypeSyntax typeArgument) =>
-                    QualifiedName(
-                        Namespace,
-                        GenericName(
-                            Identifier("ValueTask"),
                             TypeArgumentList(SingletonSeparatedList(typeArgument))
                         )
                     );

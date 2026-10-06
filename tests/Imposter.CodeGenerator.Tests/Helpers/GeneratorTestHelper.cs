@@ -36,6 +36,25 @@ internal static class GeneratorTestHelper
         );
     }
 
+    internal static async Task<GeneratorTestContext> CreateContext(
+        string source,
+        string baseSourceFileName,
+        string snippetFileName,
+        string assemblyName,
+        ReferenceAssemblies referenceAssemblies,
+        LanguageVersion languageVersion = LanguageVersion.CSharp9
+    )
+    {
+        return new GeneratorTestContext(
+            source,
+            baseSourceFileName,
+            snippetFileName,
+            assemblyName,
+            languageVersion,
+            await ResolveReferencesAsync(referenceAssemblies).ConfigureAwait(false)
+        );
+    }
+
     internal static void AssertNoDiagnostics(ImmutableArray<Diagnostic> diagnostics)
     {
         diagnostics.ShouldBeEmpty();
@@ -81,10 +100,15 @@ internal static class GeneratorTestHelper
         );
     }
 
-    private static async Task<MetadataReference[]> ResolveReferencesAsync()
+    private static Task<MetadataReference[]> ResolveReferencesAsync() =>
+        ResolveReferencesAsync(ReferenceAssemblies.Net.Net90);
+
+    private static async Task<MetadataReference[]> ResolveReferencesAsync(
+        ReferenceAssemblies referenceAssemblies
+    )
     {
-        var references = await ReferenceAssemblies
-            .Net.Net90.ResolveAsync(null, CancellationToken.None)
+        var references = await referenceAssemblies
+            .ResolveAsync(null, CancellationToken.None)
             .ConfigureAwait(false);
 
         return references
