@@ -27,22 +27,7 @@ internal static partial class MethodImposterCollectionBuilder
                     LocalVariableDeclarationSyntax(
                         Var,
                         "imposter",
-                        method.MethodImposter.Syntax.New(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            IdentifierName(
-                                                method.InvocationHistory.Collection.AsField.Name
-                                            )
-                                        ),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(IdentifierName("_invocationBehavior")),
-                                    }
-                                )
-                            )
-                        )
+                        NewMethodImposterExpression(method)
                     ),
                     IdentifierName("_imposters")
                         .Dot(IdentifierName("Push"))
@@ -54,4 +39,20 @@ internal static partial class MethodImposterCollectionBuilder
 
         return methodBuilder.Build();
     }
+
+    private static ObjectCreationExpressionSyntax NewMethodImposterExpression(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        method.MethodImposter.Syntax.New(
+            ArgumentList(
+                SeparatedList<ArgumentSyntax>(
+                    new SyntaxNodeOrToken[]
+                    {
+                        Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                        Token(SyntaxKind.CommaToken),
+                        Argument(IdentifierName("_invocationBehavior")),
+                    }
+                )
+            )
+        );
 }

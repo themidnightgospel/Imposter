@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -18,6 +19,14 @@ internal static partial class MethodImposterCollectionBuilder
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var parameterName = hasMatchingMethod.ArgumentsParameterName;
 
+        var localNames = new NameSet(
+            method
+                .Symbol.TypeParameters.Select(typeParameter => typeParameter.Name)
+                .Append(parameterName)
+        );
+        var storedImposterIdentifier = Identifier(localNames.Use("storedImposter"));
+        var typedImposterName = IdentifierName(localNames.Use("typedImposter"));
+
         var methodBuilder = new MethodDeclarationBuilder(
             method.MethodImposter.GenericInterface.Syntax,
             "GetImposterWithMatchingInvocationImposterGroup"
@@ -28,62 +37,43 @@ internal static partial class MethodImposterCollectionBuilder
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(
-                    ReturnStatement(
-                        IdentifierName("_imposters")
-                            .Dot(IdentifierName("Select"))
-                            .Call(
-                                Identifier("it")
-                                    .Lambda(
-                                        IdentifierName("it")
-                                            .Dot(
-                                                GenericName(
-                                                    Identifier("As"),
-                                                    method.GenericTypeArguments.ToTypeArguments()
-                                                )
-                                            )
-                                            .Call()
-                                    )
-                                    .ToSingleArgumentList()
-                            )
-                            .Dot(IdentifierName("Where"))
-                            .Call(
-                                Identifier("it")
-                                    .Lambda(IdentifierName("it").IsNotNull())
-                                    .ToSingleArgumentList()
-                            )
-                            .Dot(IdentifierName("Select"))
-                            .Call(
-                                Identifier("it")
-                                    .Lambda(
-                                        PostfixUnaryExpression(
-                                            SyntaxKind.SuppressNullableWarningExpression,
-                                            IdentifierName("it")
+                    ForEachStatement(
+                        Var,
+                        storedImposterIdentifier,
+                        IdentifierName("_imposters"),
+                        Block(
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                typedImposterName.Identifier.Text,
+                                IdentifierName(storedImposterIdentifier)
+                                    .Dot(
+                                        GenericName(
+                                            Identifier("As"),
+                                            method.GenericTypeArguments.ToTypeArguments()
                                         )
                                     )
-                                    .ToSingleArgumentList()
-                            )
-                            .Dot(IdentifierName("FirstOrDefault"))
-                            .Call(
-                                Identifier("it")
-                                    .Lambda(
-                                        It.Dot(IdentifierName(hasMatchingMethod.Name))
+                                    .Call()
+                            ),
+                            IfStatement(
+                                typedImposterName
+                                    .IsNotNull()
+                                    .And(
+                                        typedImposterName
+                                            .Dot(IdentifierName(hasMatchingMethod.Name))
                                             .Call(
                                                 method.Parameters.HasInputParameters
                                                     ? Argument(IdentifierName(parameterName))
                                                         .AsSingleArgumentListSyntax()
                                                     : EmptyArgumentListSyntax
                                             )
-                                    )
-                                    .ToSingleArgumentList()
+                                    ),
+                                ReturnStatement(typedImposterName)
                             )
-                            .Coalesce(
-                                GenericName(
-                                        Identifier("AddNew"),
-                                        method.GenericTypeArguments.ToTypeArguments()
-                                    )
-                                    .Call()
-                            )
-                    )
+                        )
+                    ),
+                    // Without a matching setup, the invocation is served by a transient imposter that
+                    // records history but is not stored, so unconfigured invocations do not accumulate.
+                    ReturnStatement(NewMethodImposterExpression(method))
                 )
             );
 
@@ -94,7 +84,7 @@ internal static partial class MethodImposterCollectionBuilder
             string parameterName
         ) =>
             method.Parameters.HasInputParameters
-                ? Parameter(Identifier(parameterName)).WithType(method.Arguments.Syntax)
+                ? ParameterSyntax(method.Arguments.Syntax, parameterName)
                 : null;
     }
 }
