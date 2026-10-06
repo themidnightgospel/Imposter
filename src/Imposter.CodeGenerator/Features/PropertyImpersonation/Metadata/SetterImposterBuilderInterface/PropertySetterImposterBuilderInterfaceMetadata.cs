@@ -45,15 +45,15 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
     )
     {
         Name = $"I{property.UniqueName}PropertySetterBuilder";
-        Syntax = SyntaxFactory.ParseName(Name);
+        Syntax = SyntaxFactory.IdentifierName(Name);
         FluentInterfaceName = $"I{property.UniqueName}PropertySetterFluentBuilder";
-        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        FluentInterfaceTypeSyntax = SyntaxFactory.IdentifierName(FluentInterfaceName);
         CallbackInterfaceName = $"I{property.UniqueName}PropertySetterCallbackBuilder";
-        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+        CallbackInterfaceTypeSyntax = SyntaxFactory.IdentifierName(CallbackInterfaceName);
         ContinuationInterfaceName = $"I{property.UniqueName}PropertySetterContinuationBuilder";
-        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(ContinuationInterfaceName);
         VerificationInterfaceName = $"I{property.UniqueName}PropertySetterVerifier";
-        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+        VerificationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(
             property,
@@ -64,7 +64,7 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         {
             UseBaseImplementationEntryInterfaceName =
                 $"I{property.UniqueName}PropertySetterUseBaseImplementationBuilder";
-            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.IdentifierName(
                 UseBaseImplementationEntryInterfaceName
             );
             UseBaseImplementationEntryMethod = new SetterUseBaseImplementationMethodMetadata(

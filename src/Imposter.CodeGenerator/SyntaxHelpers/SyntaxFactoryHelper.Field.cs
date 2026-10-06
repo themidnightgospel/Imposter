@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -94,11 +95,11 @@ internal static partial class SyntaxFactoryHelper
         );
 
     internal static FieldDeclarationSyntax ParameterAsReadonlyFieldIncludingNullable(
-        IParameterSymbol parameter
+        MethodParameterMetadata parameter
     ) =>
         SingleVariableField(
-            TypeSyntaxIncludingNullable(parameter.Type),
-            EscapeKeyword(parameter.Name),
+            parameter.NullableAwareTypeSyntax,
+            parameter.Name,
             TokenList(Token(SyntaxKind.PublicKeyword))
         );
 }

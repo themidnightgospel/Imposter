@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,9 +9,11 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static PropertyDeclarationSyntax ParameterAsArgProperty(IParameterSymbol parameter)
+    internal static PropertyDeclarationSyntax ParameterAsArgProperty(
+        in MethodParameterMetadata parameter
+    )
     {
-        return new PropertyDeclarationBuilder(ArgType(parameter), EscapeKeyword(parameter.Name))
+        return new PropertyDeclarationBuilder(parameter.ArgTypeSyntax, parameter.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithGetter()
             .Build();

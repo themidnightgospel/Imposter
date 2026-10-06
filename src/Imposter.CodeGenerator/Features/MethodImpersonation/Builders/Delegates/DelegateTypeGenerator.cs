@@ -17,12 +17,7 @@ internal static class MethodDelegateTypeBuilder
 
     private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(
         in ImposterTargetMethodMetadata method
-    ) =>
-        CreateDelegateDeclaration(
-            method,
-            method.Delegate.Name,
-            SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType)
-        );
+    ) => CreateDelegateDeclaration(method, method.Delegate.Name, method.ReturnTypeSyntax);
 
     private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(
         in ImposterTargetMethodMetadata method
@@ -52,12 +47,8 @@ internal static class MethodDelegateTypeBuilder
                 modifiers: TokenList(Token(SyntaxKind.PublicKeyword)),
                 returnType: returnType,
                 identifier: Identifier(delegateName),
-                typeParameterList: method.GenericTypeArguments.Count > 0
-                    ? SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
-                    : default,
-                parameterList: SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(
-                    method.Symbol.Parameters
-                ),
+                typeParameterList: method.GenericTypeParameterListSyntax,
+                parameterList: method.Parameters.ParameterListSyntaxIncludingNullable,
                 constraintClauses: List(method.GenericTypeConstraintClauses)
             )
 #if DEBUG

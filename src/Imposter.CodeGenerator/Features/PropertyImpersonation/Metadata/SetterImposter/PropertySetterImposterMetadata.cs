@@ -31,7 +31,7 @@ internal readonly struct PropertySetterImposterMetadata
     )
     {
         Name = "SetterImposter";
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
         CallbacksField = new CallbacksFieldMetadata(property);
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",

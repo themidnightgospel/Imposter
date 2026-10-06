@@ -55,17 +55,17 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
     )
     {
         Name = $"I{property.UniqueName}PropertyGetterBuilder";
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
         OutcomeInterfaceName = $"I{property.UniqueName}PropertyGetterOutcomeBuilder";
-        OutcomeInterfaceTypeSyntax = SyntaxFactory.ParseName(OutcomeInterfaceName);
+        OutcomeInterfaceTypeSyntax = SyntaxFactory.IdentifierName(OutcomeInterfaceName);
         ContinuationInterfaceName = $"I{property.UniqueName}PropertyGetterContinuationBuilder";
-        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(ContinuationInterfaceName);
         CallbackInterfaceName = $"I{property.UniqueName}PropertyGetterCallbackBuilder";
-        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+        CallbackInterfaceTypeSyntax = SyntaxFactory.IdentifierName(CallbackInterfaceName);
         VerificationInterfaceName = $"I{property.UniqueName}PropertyGetterVerifier";
-        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+        VerificationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(VerificationInterfaceName);
         FluentInterfaceName = $"I{property.UniqueName}PropertyGetterFluentBuilder";
-        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        FluentInterfaceTypeSyntax = SyntaxFactory.IdentifierName(FluentInterfaceName);
 
         ReturnsMethod = new ReturnsMethodMetadata(
             in property,
@@ -94,7 +94,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
             UseBaseImplementationEntryInterfaceName =
                 $"I{property.UniqueName}PropertyGetterUseBaseImplementationBuilder";
-            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.ParseName(
+            UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.IdentifierName(
                 UseBaseImplementationEntryInterfaceName
             );
             UseBaseImplementationEntryMethod = new GetterUseBaseImplementationMethodMetadata(

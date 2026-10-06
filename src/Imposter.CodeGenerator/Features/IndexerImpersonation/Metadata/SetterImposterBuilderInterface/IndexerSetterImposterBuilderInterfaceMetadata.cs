@@ -39,18 +39,18 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
     )
     {
         Name = $"I{core.UniqueName}IndexerSetterBuilder";
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
         CallbackInterfaceName = $"I{core.UniqueName}IndexerSetterCallbackBuilder";
-        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+        CallbackInterfaceTypeSyntax = SyntaxFactory.IdentifierName(CallbackInterfaceName);
 
         ContinuationInterfaceName = $"I{core.UniqueName}IndexerSetterContinuationBuilder";
-        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(ContinuationInterfaceName);
 
         VerificationInterfaceName = $"I{core.UniqueName}IndexerSetterVerifier";
-        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+        VerificationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(VerificationInterfaceName);
 
         FluentInterfaceName = $"I{core.UniqueName}IndexerSetterFluentBuilder";
-        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        FluentInterfaceTypeSyntax = SyntaxFactory.IdentifierName(FluentInterfaceName);
 
         CallbackMethod = new CallbackMethodMetadata(
             delegatesMetadata,

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -29,9 +30,6 @@ internal static partial class SyntaxFactoryHelper
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             );
 
-    internal static ArgumentSyntax ArgAnyArgument(IParameterSymbol parameter) =>
-        Argument(ArgType(parameter).Dot(IdentifierName("Any")).Call());
-
     internal static InvocationExpressionSyntax OutArgAny(TypeSyntax type) =>
         WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
 
@@ -39,14 +37,28 @@ internal static partial class SyntaxFactoryHelper
         WellKnownTypes.Imposter.Abstractions.Arg(type).Dot(IdentifierName("Any")).Call();
 
     internal static ArgumentListSyntax ArgAnyArgumentList(
-        IEnumerable<IParameterSymbol> parameter
-    ) => ArgumentListSyntax(SeparatedList(parameter.Select(ArgAnyArgument)));
+        IEnumerable<MethodParameterMetadata> parameters
+    ) =>
+        ArgumentListSyntax(
+            SeparatedList(
+                parameters.Select(parameter =>
+                    Argument(parameter.ArgTypeSyntax.Dot(IdentifierName("Any")).Call())
+                )
+            )
+        );
 
     internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
+    internal static ParameterListSyntax ArgParameters(
+        IEnumerable<MethodParameterMetadata> parameters
+    ) => ParameterList(SeparatedList(parameters.Select(parameter => ArgParameter(parameter))));
+
     internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
         ParameterSyntax(ArgType(parameter), EscapeKeyword(parameter.Name));
+
+    internal static ParameterSyntax ArgParameter(in MethodParameterMetadata parameter) =>
+        ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name);
 
     internal static ObjectCreationExpressionSyntax NewArgumentsCriteria(
         ImposterTargetMethodMetadata method

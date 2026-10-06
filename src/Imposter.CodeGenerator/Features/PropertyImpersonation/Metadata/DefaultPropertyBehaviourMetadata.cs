@@ -30,7 +30,7 @@ internal readonly struct DefaultPropertyBehaviourMetadata
 
     internal DefaultPropertyBehaviourMetadata(in ImposterPropertyCoreMetadata property)
     {
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
         BackingField = new FieldMetadata("BackingField", property.NullableAwareTypeSyntax);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
@@ -22,6 +22,10 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly ParameterListSyntax InputParameterWithoutRefKindListSyntaxIncludingNullable;
 
+    internal readonly ParameterListSyntax ArgParameterListSyntax;
+
+    internal readonly ArgumentListSyntax ArgAnyArgumentListSyntax;
+
     internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithoutRef;
 
     internal bool HasInputParameters => InputParameters.Count > 0;
@@ -38,17 +42,19 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         AllParameterMetadata = symbolParameters
             .Select(it => new MethodParameterMetadata(it))
             .ToArray();
-        InputParameterMetadata = InputParameters
-            .Select(it => new MethodParameterMetadata(it))
+        InputParameterMetadata = AllParameterMetadata
+            .Where(it => it.Symbol.RefKind is not RefKind.Out)
             .ToArray();
 
         ParameterListSyntaxIncludingNullable =
-            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(symbolParameters);
+            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(AllParameterMetadata);
         InputParameterWithoutRefKindListSyntaxIncludingNullable =
             SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(
-                InputParameters,
+                InputParameterMetadata,
                 includeRefKind: false
             );
+        ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(AllParameterMetadata);
+        ArgAnyArgumentListSyntax = SyntaxFactoryHelper.ArgAnyArgumentList(AllParameterMetadata);
 
         InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(
             InputParameters,

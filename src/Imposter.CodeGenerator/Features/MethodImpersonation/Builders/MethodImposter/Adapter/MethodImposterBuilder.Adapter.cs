@@ -78,12 +78,12 @@ internal static class MethodImposterAdapterBuilder
             method.TargetGenericTypeArguments
         );
 
-        var parameterList = ParameterListSyntaxWithoutDefaultValues(method.Symbol.Parameters, true);
-        parameterList = (ParameterListSyntax)typeParamRenamer.Visit(parameterList);
+        var parameterList = (ParameterListSyntax)
+            typeParamRenamer.Visit(method.Parameters.ParameterListSyntaxIncludingNullable);
 
         foreach (var p in method.Parameters.AllParameterMetadata)
         {
-            var pType = TypeSyntax(p.Symbol.Type);
+            var pType = p.TypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
             var pAdaptedName = Identifier(p.Name + "Adapted");
 
@@ -189,7 +189,7 @@ internal static class MethodImposterAdapterBuilder
             );
             body.AddRange(postInvokeActions);
 
-            var returnType = TypeSyntax(method.Symbol.ReturnType);
+            var returnType = method.ReturnTypeSyntax;
             var returnTargetType = typeParamRenamer.Visit(returnType);
             body.Add(
                 ReturnStatement(
@@ -208,7 +208,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         return new MethodDeclarationBuilder(
-            (TypeSyntax)typeParamRenamer.Visit(TypeSyntax(method.Symbol.ReturnType)),
+            (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax),
             "Invoke"
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))

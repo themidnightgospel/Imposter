@@ -50,7 +50,7 @@ internal static class MethodImposterMembersBuilder
             )
                 .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
                 .AddConstraintClauses(method.GenericTypeConstraintClauses)
-                .WithParameterList(SyntaxFactoryHelper.ArgParameters(method.Symbol.Parameters))
+                .WithParameterList(method.Parameters.ArgParameterListSyntax)
                 .WithBody(
                     Block(
                         ReturnStatement(

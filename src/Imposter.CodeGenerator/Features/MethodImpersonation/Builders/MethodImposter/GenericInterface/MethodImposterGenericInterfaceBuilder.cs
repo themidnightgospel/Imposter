@@ -34,10 +34,7 @@ internal static class MethodImposterGenericInterfaceBuilder
             );
         }
 
-        var invokeMethod = new MethodDeclarationBuilder(
-            SyntaxFactoryHelper.TypeSyntax(method.Symbol.ReturnType),
-            "Invoke"
-        )
+        var invokeMethod = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
             .WithParameterList(invokeMethodParameters)
             .WithSemicolon()
             .Build();

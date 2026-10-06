@@ -12,7 +12,7 @@ internal static class ArgumentsBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        var inputParameters = method.Parameters.InputParameters;
+        var inputParameters = method.Parameters.InputParameterMetadata;
 
         if (inputParameters.Count <= 0)
         {
@@ -77,7 +77,7 @@ internal static class ArgumentsBuilder
         var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
         var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
         {
-            var sourceType = SyntaxFactoryHelper.TypeSyntax(p.Symbol.Type);
+            var sourceType = p.TypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
             return Argument(

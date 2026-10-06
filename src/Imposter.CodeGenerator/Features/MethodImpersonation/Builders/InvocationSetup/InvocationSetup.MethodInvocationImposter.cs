@@ -420,7 +420,12 @@ internal static partial class InvocationSetupBuilder
 
         blockBuilder.AddStatement(
             IdentifierName("_resultGenerator")
-                .Assign(Lambda(method.Symbol.Parameters, lambdaBody.Build()))
+                .Assign(
+                    Lambda(
+                        method.Parameters.ParameterListSyntaxIncludingNullable,
+                        lambdaBody.Build()
+                    )
+                )
                 .ToStatementSyntax()
         );
 
@@ -459,7 +464,7 @@ internal static partial class InvocationSetupBuilder
             IdentifierName("_resultGenerator")
                 .Assign(
                     Lambda(
-                        method.Symbol.Parameters,
+                        method.Parameters.ParameterListSyntaxIncludingNullable,
                         Block(
                             ThrowStatement(
                                 IdentifierName(throwsParameter.Name)
@@ -540,7 +545,12 @@ internal static partial class InvocationSetupBuilder
 
         returnsAsyncBodyBuilder.AddStatement(
             IdentifierName("_resultGenerator")
-                .Assign(AsyncLambda(method.Symbol.Parameters, lambdaBody.Build()))
+                .Assign(
+                    AsyncLambda(
+                        method.Parameters.ParameterListSyntaxIncludingNullable,
+                        lambdaBody.Build()
+                    )
+                )
                 .ToStatementSyntax()
         );
 
@@ -569,7 +579,7 @@ internal static partial class InvocationSetupBuilder
             IdentifierName("_resultGenerator")
                 .Assign(
                     AsyncLambda(
-                        method.Symbol.Parameters,
+                        method.Parameters.ParameterListSyntaxIncludingNullable,
                         Block(
                             ThrowExpression(IdentifierName(throwsAsync.ExceptionParameter.Name))
                                 .ToStatementSyntax()

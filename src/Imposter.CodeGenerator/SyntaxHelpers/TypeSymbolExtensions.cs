@@ -51,6 +51,7 @@ internal static class TypeSymbolExtensions
 
     internal static TypeSymbolMetadata GetTypeSymbolMetadata(
         this ITypeSymbol? symbol,
+        TypeSyntax typeSyntax,
         bool isAwaitable,
         bool supportsNullableGenericType
     )
@@ -60,7 +61,6 @@ internal static class TypeSymbolExtensions
             return TypeSymbolMetadata.Empty;
         }
 
-        var typeSyntax = SyntaxFactoryHelper.TypeSyntax(symbol);
         var isGenericType = symbol.TypeKind == TypeKind.TypeParameter;
         var isNullableType = typeSyntax is NullableTypeSyntax;
         var isConstructedGenericType = typeSyntax is GenericNameSyntax;

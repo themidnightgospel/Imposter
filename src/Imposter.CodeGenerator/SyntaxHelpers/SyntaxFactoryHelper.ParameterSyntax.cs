@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -41,7 +42,7 @@ internal static partial class SyntaxFactoryHelper
     ) => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
 
     internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
-        IEnumerable<IParameterSymbol> parameters,
+        IEnumerable<MethodParameterMetadata> parameters,
         bool includeRefKind = true
     ) =>
         ParameterList(
@@ -52,41 +53,27 @@ internal static partial class SyntaxFactoryHelper
             )
         );
 
+    internal static ParameterSyntax ParameterSyntaxWithoutDefaultValue(
+        in MethodParameterMetadata parameter,
+        bool includeRefKind = true
+    ) =>
+        ParameterSyntaxInternal(
+            parameter.Symbol,
+            parameter.NullableAwareTypeSyntax,
+            includeRefKind,
+            includeDefaultValue: false
+        );
+
     internal static ParameterListSyntax ParameterListSyntax(
         IEnumerable<ParameterSyntax> parameters
     ) => ParameterList(SeparatedList(parameters));
-
-    internal static ParameterListSyntax ParameterListSyntaxIncludingNullable(
-        IEnumerable<IParameterSymbol> parameters,
-        bool includeRefKind = true
-    ) =>
-        ParameterList(
-            SeparatedList(
-                parameters.Select(it => ParameterSyntaxIncludingNullable(it, includeRefKind))
-            )
-        );
 
     internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(
         IEnumerable<IParameterSymbol> parameters
     ) => parameters.Select(ParameterSyntax);
 
-    internal static IEnumerable<ParameterSyntax> ParameterSyntaxesIncludingNullable(
-        IEnumerable<IParameterSymbol> parameters
-    ) => parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter));
-
     internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) =>
         ParameterSyntax(parameter, includeRefKind: true);
-
-    internal static ParameterSyntax ParameterSyntaxWithoutDefaultValue(
-        IParameterSymbol parameter,
-        bool includeRefKind = true
-    ) =>
-        ParameterSyntaxInternal(
-            parameter,
-            includeRefKind,
-            includeNullableReferenceAnnotations: true,
-            includeDefaultValue: false
-        );
 
     internal static ParameterSyntax ParameterSyntaxIncludingNullable(
         IParameterSymbol parameter,
@@ -127,12 +114,23 @@ internal static partial class SyntaxFactoryHelper
         bool includeRefKind,
         bool includeNullableReferenceAnnotations,
         bool includeDefaultValue
+    ) =>
+        ParameterSyntaxInternal(
+            parameter,
+            includeNullableReferenceAnnotations
+                ? TypeSyntaxIncludingNullable(parameter.Type)
+                : TypeSyntax(parameter.Type),
+            includeRefKind,
+            includeDefaultValue
+        );
+
+    private static ParameterSyntax ParameterSyntaxInternal(
+        IParameterSymbol parameter,
+        TypeSyntax parameterType,
+        bool includeRefKind,
+        bool includeDefaultValue
     )
     {
-        var parameterType = includeNullableReferenceAnnotations
-            ? TypeSyntaxIncludingNullable(parameter.Type)
-            : TypeSyntax(parameter.Type);
-
         var parameterBuilder = new ParameterBuilder(parameterType, EscapeKeyword(parameter.Name));
 
         if (includeRefKind)

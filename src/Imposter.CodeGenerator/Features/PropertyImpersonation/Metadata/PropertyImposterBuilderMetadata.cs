@@ -25,7 +25,7 @@ internal readonly struct PropertyImposterBuilderMetadata
     )
     {
         Name = $"{property.UniqueName}PropertyBuilder";
-        Syntax = SyntaxFactory.ParseName(Name);
+        Syntax = SyntaxFactory.IdentifierName(Name);
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
         SetterImposterField = new FieldMetadata("_setterImposter", setterImposter.TypeSyntax);
         GetterImposterBuilderField = new FieldMetadata(

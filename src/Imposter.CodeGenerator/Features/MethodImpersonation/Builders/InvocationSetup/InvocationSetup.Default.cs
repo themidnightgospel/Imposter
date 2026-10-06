@@ -20,9 +20,7 @@ internal static partial class InvocationSetupBuilder
                 method.Parameters.HasInputParameters
                     ? Argument(
                             ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
-                                .WithArgumentList(
-                                    SyntaxFactoryHelper.ArgAnyArgumentList(method.Symbol.Parameters)
-                                )
+                                .WithArgumentList(method.Parameters.ArgAnyArgumentListSyntax)
                         )
                         .ToSingleArgumentList()
                     : SyntaxFactoryHelper.EmptyArgumentListSyntax

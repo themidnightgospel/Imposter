@@ -30,7 +30,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
     )
     {
         Name = "GetterImposterBuilder";
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
         var returnHandlerType = WellKnownTypes.System.Func(
             property.AsSystemFuncType.ToNullableType(),
             property.NullableAwareTypeSyntax

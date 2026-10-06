@@ -29,8 +29,9 @@ internal static partial class MethodImposterBuilder
 
         var conditions = new List<ExpressionSyntax>();
 
-        foreach (var parameterSymbol in method.Symbol.Parameters)
+        foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
+            var parameterSymbol = parameter.Symbol;
             var parameterSymbolType = parameterSymbol.Type;
             if (
                 !method.Symbol.TypeParameters.Any(tp =>
@@ -41,7 +42,7 @@ internal static partial class MethodImposterBuilder
                 continue;
             }
 
-            var sourceTypeSyntax = TypeSyntax(parameterSymbolType);
+            var sourceTypeSyntax = parameter.TypeSyntax;
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
             var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
@@ -68,7 +69,7 @@ internal static partial class MethodImposterBuilder
             var returnType = method.Symbol.ReturnType;
             if (method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(returnType, tp)))
             {
-                var sourceTypeSyntax = TypeSyntax(returnType);
+                var sourceTypeSyntax = method.ReturnTypeSyntax;
                 var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
                 var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);

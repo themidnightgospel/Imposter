@@ -24,7 +24,7 @@ internal readonly struct PropertyImposterBuilderInterfaceMetadata
     )
     {
         Name = $"I{property.UniqueName}PropertyBuilder";
-        Syntax = SyntaxFactory.ParseName(Name);
+        Syntax = SyntaxFactory.IdentifierName(Name);
         SetterMethod = new SetterMethodMetadata(property, setterInterfaceMetadata);
         GetterMethod = new GetterMethodMetadata(getterInterfaceMetadata);
         UseBaseImplementationMethod = property.SupportsBaseImplementation

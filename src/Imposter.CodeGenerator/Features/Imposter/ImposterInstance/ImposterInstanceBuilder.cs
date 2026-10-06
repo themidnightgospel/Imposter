@@ -381,7 +381,7 @@ internal readonly ref struct ImposterInstanceBuilder
             )
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
                 .AddParameters(
-                    imposterMethod.Symbol.Parameters.Select(p =>
+                    imposterMethod.Parameters.AllParameterMetadata.Select(p =>
                         ParameterSyntaxWithoutDefaultValue(p)
                     )
                 )

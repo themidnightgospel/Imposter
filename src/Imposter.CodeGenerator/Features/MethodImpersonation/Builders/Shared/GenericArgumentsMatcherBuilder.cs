@@ -22,9 +22,9 @@ internal static class GenericArgumentsMatcherBuilder
 
         var conditions = new List<ExpressionSyntax>();
 
-        foreach (var parameter in method.Symbol.Parameters)
+        foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
-            var sourceTypeSyntax = TypeSyntax(parameter.Type);
+            var sourceTypeSyntax = parameter.TypeSyntax;
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
             conditions.Add(
@@ -38,9 +38,7 @@ internal static class GenericArgumentsMatcherBuilder
 
         if (method.HasReturnValue)
         {
-            var returnType = method.Symbol.ReturnType;
-
-            var sourceTypeSyntax = TypeSyntax(returnType);
+            var sourceTypeSyntax = method.ReturnTypeSyntax;
             var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
 
             conditions.Add(

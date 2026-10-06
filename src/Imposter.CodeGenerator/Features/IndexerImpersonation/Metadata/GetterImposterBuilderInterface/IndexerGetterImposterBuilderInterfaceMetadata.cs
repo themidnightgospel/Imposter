@@ -47,22 +47,22 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
     )
     {
         Name = $"I{core.UniqueName}IndexerGetterBuilder";
-        TypeSyntax = SyntaxFactory.ParseName(Name);
+        TypeSyntax = SyntaxFactory.IdentifierName(Name);
 
         OutcomeInterfaceName = $"I{core.UniqueName}IndexerGetterOutcomeBuilder";
-        OutcomeInterfaceTypeSyntax = SyntaxFactory.ParseName(OutcomeInterfaceName);
+        OutcomeInterfaceTypeSyntax = SyntaxFactory.IdentifierName(OutcomeInterfaceName);
 
         ContinuationInterfaceName = $"I{core.UniqueName}IndexerGetterContinuationBuilder";
-        ContinuationInterfaceTypeSyntax = SyntaxFactory.ParseName(ContinuationInterfaceName);
+        ContinuationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(ContinuationInterfaceName);
 
         CallbackInterfaceName = $"I{core.UniqueName}IndexerGetterCallbackBuilder";
-        CallbackInterfaceTypeSyntax = SyntaxFactory.ParseName(CallbackInterfaceName);
+        CallbackInterfaceTypeSyntax = SyntaxFactory.IdentifierName(CallbackInterfaceName);
 
         VerificationInterfaceName = $"I{core.UniqueName}IndexerGetterVerifier";
-        VerificationInterfaceTypeSyntax = SyntaxFactory.ParseName(VerificationInterfaceName);
+        VerificationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(VerificationInterfaceName);
 
         FluentInterfaceName = $"I{core.UniqueName}IndexerGetterFluentBuilder";
-        FluentInterfaceTypeSyntax = SyntaxFactory.ParseName(FluentInterfaceName);
+        FluentInterfaceTypeSyntax = SyntaxFactory.IdentifierName(FluentInterfaceName);
 
         ReturnsMethod = new ReturnsMethodMetadata(
             core,

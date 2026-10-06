@@ -9,18 +9,18 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     public static ParenthesizedLambdaExpressionSyntax Lambda(
-        IEnumerable<IParameterSymbol> parameters,
+        ParameterListSyntax parameterList,
         BlockSyntax body
-    ) => ParenthesizedLambdaExpression(ParameterListSyntaxWithoutDefaultValues(parameters), body);
+    ) => ParenthesizedLambdaExpression(parameterList, body);
 
     public static ParenthesizedLambdaExpressionSyntax AsyncLambda(
-        IEnumerable<IParameterSymbol> parameters,
+        ParameterListSyntax parameterList,
         BlockSyntax body
     )
     {
         return ParenthesizedLambdaExpression(
             asyncKeyword: Token(SyntaxKind.AsyncKeyword),
-            parameterList: ParameterListSyntaxWithoutDefaultValues(parameters),
+            parameterList: parameterList,
             arrowToken: Token(SyntaxKind.EqualsGreaterThanToken),
             body: body
         );

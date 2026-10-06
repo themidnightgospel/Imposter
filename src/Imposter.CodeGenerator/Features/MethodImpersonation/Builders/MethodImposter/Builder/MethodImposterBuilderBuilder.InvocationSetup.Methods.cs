@@ -24,7 +24,7 @@ internal static partial class MethodImposterBuilderBuilder
         ).WithTypeParameters(throwsMethod.TypeParameterList);
 
         var throwGenericExceptionLambda = Lambda(
-            method.Symbol.Parameters,
+            method.Parameters.ParameterListSyntaxIncludingNullable,
             Block(ThrowStatement(IdentifierName(throwsMethod.GenericTypeParameterName).New()))
         );
 
@@ -65,7 +65,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Name;
 
         var throwProvidedExceptionLambda = Lambda(
-            method.Symbol.Parameters,
+            method.Parameters.ParameterListSyntaxIncludingNullable,
             Block(ThrowStatement(IdentifierName(parameterName)))
         );
 
@@ -108,7 +108,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Name;
 
         var throwGeneratedExceptionLambda = Lambda(
-            method.Symbol.Parameters,
+            method.Parameters.ParameterListSyntaxIncludingNullable,
             Block(
                 ThrowStatement(
                     IdentifierName(parameterName)

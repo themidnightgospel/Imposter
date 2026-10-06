@@ -26,13 +26,15 @@ public static class ArgumentsCriteriaBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(method.Symbol.Parameters.Select(ParameterAsArgProperty))
+            .AddMembers(
+                method.Parameters.AllParameterMetadata.Select(parameter =>
+                    ParameterAsArgProperty(parameter)
+                )
+            )
             .AddMember(
                 new ConstructorBuilder(method.ArgumentsCriteria.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .WithParameterList(
-                        ParameterList(SeparatedList(method.Symbol.Parameters.Select(ArgParameter)))
-                    )
+                    .WithParameterList(method.Parameters.ArgParameterListSyntax)
                     .WithBody(
                         Block(
                             method.Parameters.AllParameterMetadata.Select(parameter =>
@@ -103,14 +105,14 @@ public static class ArgumentsCriteriaBuilder
             TypeParameterRenamer renamer
         )
         {
-            var targetType = (TypeSyntax)renamer.Visit(TypeSyntax(parameter.Symbol.Type));
+            var targetType = (TypeSyntax)renamer.Visit(parameter.TypeSyntax);
 
             if (parameter.Symbol.RefKind is RefKind.Out)
             {
                 return Argument(OutArgAny(targetType));
             }
 
-            var sourceType = TypeSyntax(parameter.Symbol.Type);
+            var sourceType = parameter.TypeSyntax;
             return BuildIsPredicateArg(parameter, targetType, sourceType);
         }
 
