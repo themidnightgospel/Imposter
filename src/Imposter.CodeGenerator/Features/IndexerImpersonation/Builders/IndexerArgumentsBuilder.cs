@@ -66,17 +66,24 @@ internal static class IndexerArgumentsBuilder
         var otherParameter = Parameter(otherIdentifier)
             .WithType(NullableType(indexer.Arguments.TypeSyntax));
 
-        ExpressionSyntax comparison = True;
+        // EqualityComparer<T>.Default keeps Equals consistent with the generated GetHashCode
+        // (System.HashCode.Add) and with Arg<T>.Is, and works for type parameters and structs without ==.
+        ExpressionSyntax? comparison = null;
         foreach (var parameter in indexer.Core.Parameters)
         {
-            var equalsExpression = BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName(parameter.Name),
-                otherIdentifierName.Dot(IdentifierName(parameter.Name))
-            );
+            var equalsExpression = WellKnownTypes
+                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
+                .Dot(IdentifierName("Default"))
+                .Dot(IdentifierName("Equals"))
+                .Call([
+                    Argument(IdentifierName(parameter.Name)),
+                    Argument(otherIdentifierName.Dot(IdentifierName(parameter.Name))),
+                ]);
 
-            comparison = comparison.And(equalsExpression);
+            comparison = comparison is null ? equalsExpression : comparison.And(equalsExpression);
         }
+
+        comparison ??= True;
 
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))

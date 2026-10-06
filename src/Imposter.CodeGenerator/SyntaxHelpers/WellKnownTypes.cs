@@ -176,6 +176,15 @@ internal static class WellKnownTypes
                         )
                     );
 
+                internal static TypeSyntax EqualityComparer(TypeSyntax typeArgument) =>
+                    QualifiedName(
+                        Namespace,
+                        GenericName(
+                            Identifier("EqualityComparer"),
+                            TypeArgumentList(SingletonSeparatedList(typeArgument))
+                        )
+                    );
+
                 internal static TypeSyntax Dictionary(TypeSyntax keyType, TypeSyntax valueType) =>
                     QualifiedName(
                         Namespace,
