@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -9,33 +9,13 @@ internal static partial class MethodImposterBuilderBuilder
 {
     private static List<FieldDeclarationSyntax> GetFields(in ImposterTargetMethodMetadata method)
     {
-        var fields = new List<FieldDeclarationSyntax>();
-
-        if (method.Symbol.IsGenericMethod)
+        var fields = new List<FieldDeclarationSyntax>
         {
-            fields.Add(
-                SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Builder.ImposterCollectionField.Type,
-                    method.MethodImposter.Builder.ImposterCollectionField.Name
-                )
-            );
-        }
-        else
-        {
-            fields.Add(
-                SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Builder.MethodImposterField.Type,
-                    method.MethodImposter.Builder.MethodImposterField.Name
-                )
-            );
-        }
-
-        fields.Add(
             SinglePrivateReadonlyVariableField(
                 method.InvocationHistory.Collection.Syntax,
                 method.InvocationHistory.Collection.AsField.Name
-            )
-        );
+            ),
+        };
 
         if (method.Parameters.HasInputParameters)
         {
@@ -49,4 +29,11 @@ internal static partial class MethodImposterBuilderBuilder
 
         return fields;
     }
+
+    private static ParameterSyntax GetImposterParameter(in ImposterTargetMethodMetadata method) =>
+        ParameterSyntax(
+            method.Symbol.IsGenericMethod
+                ? method.MethodImposter.Builder.ImposterCollectionParameter
+                : method.MethodImposter.Builder.MethodImposterParameter
+        );
 }

@@ -30,8 +30,8 @@ internal static class DefaultIndexerBehaviourBuilder
                     indexer.DefaultIndexerBehaviour.BackingField.Type.New(EmptyArgumentListSyntax)
                 )
             )
-            .AddMember(BuildGetMethod(indexer))
-            .AddMember(BuildSetMethod(indexer))
+            .AddMember(indexer.Core.HasGetter ? BuildGetMethod(indexer) : null)
+            .AddMember(indexer.Core.HasSetter ? BuildSetMethod(indexer) : null)
             .Build();
     }
 

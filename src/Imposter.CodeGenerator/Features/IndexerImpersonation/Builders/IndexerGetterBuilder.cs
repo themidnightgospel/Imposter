@@ -579,13 +579,6 @@ internal static class IndexerGetterBuilder
             )
             .AddMember(
                 SingleVariableField(
-                    invocationMetadata.InvocationCountField.Type,
-                    invocationMetadata.InvocationCountField.Name,
-                    SyntaxKind.PrivateKeyword
-                )
-            )
-            .AddMember(
-                SingleVariableField(
                     invocationMetadata.PropertyDisplayNameField.Type,
                     invocationMetadata.PropertyDisplayNameField.Name,
                     SyntaxKind.PrivateKeyword
@@ -610,32 +603,16 @@ internal static class IndexerGetterBuilder
                         )
                     )
             )
-            .AddMember(
-                new PropertyDeclarationBuilder(WellKnownTypes.Int, "InvocationCount")
-                    .AddModifier(Token(SyntaxKind.InternalKeyword))
-                    .Build()
-                    .WithAccessorList(null)
-                    .WithExpressionBody(
-                        ArrowExpressionClause(
-                            WellKnownTypes
-                                .System.Threading.Volatile.Dot(IdentifierName("Read"))
-                                .Call(
-                                    Argument(
-                                        null,
-                                        Token(SyntaxKind.RefKeyword),
-                                        IdentifierName(invocationMetadata.InvocationCountField.Name)
-                                    )
-                                )
-                        )
-                    )
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-            )
             .AddMember(BuildGetterInvocationConstructor(indexer))
             .AddMember(BuildGetterInvocationAddReturnValueMethod(indexer))
             .AddMember(BuildGetterInvocationAddCallbackMethod(indexer))
             .AddMember(BuildGetterInvocationInvokeMethod(indexer))
             .AddMember(BuildGetterInvocationResolveNextGeneratorMethod(indexer))
-            .AddMember(BuildGetterInvocationUseBaseImplementationMethod(indexer))
+            .AddMember(
+                indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null
+                    ? BuildGetterInvocationUseBaseImplementationMethod(indexer)
+                    : null
+            )
             .Build();
     }
 
@@ -790,17 +767,6 @@ internal static class IndexerGetterBuilder
             .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
             .WithDefault(EqualsValueClause(Null));
 
-        var incrementInvocation = WellKnownTypes
-            .System.Threading.Interlocked.Dot(IdentifierName("Increment"))
-            .Call(
-                Argument(
-                    null,
-                    Token(SyntaxKind.RefKeyword),
-                    IdentifierName(invocationMetadata.InvocationCountField.Name)
-                )
-            )
-            .ToStatementSyntax();
-
         var foreachCallbacks = ForEachStatement(
             IdentifierName("var"),
             Identifier("callback"),
@@ -849,9 +815,7 @@ internal static class IndexerGetterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParameter)
             .AddParameter(baseImplementationParameter)
-            .WithBody(
-                Block(incrementInvocation, foreachCallbacks, generatorDeclaration, returnStatement)
-            )
+            .WithBody(Block(foreachCallbacks, generatorDeclaration, returnStatement))
             .Build();
     }
 

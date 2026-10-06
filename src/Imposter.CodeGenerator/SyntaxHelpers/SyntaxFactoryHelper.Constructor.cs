@@ -10,12 +10,18 @@ internal static partial class SyntaxFactoryHelper
 {
     internal static ConstructorDeclarationSyntax BuildConstructorAndInitializeMembers(
         string className,
-        IEnumerable<FieldDeclarationSyntax> fields
+        IEnumerable<FieldDeclarationSyntax> fields,
+        IEnumerable<ParameterSyntax>? leadingParameters = null
     )
     {
         var constructorBuilder = new ConstructorBuilder(className).WithModifiers(
             TokenList(Token(SyntaxKind.PublicKeyword))
         );
+
+        if (leadingParameters is not null)
+        {
+            constructorBuilder.AddParameters(leadingParameters);
+        }
 
         var constructorBody = new BlockBuilder();
 

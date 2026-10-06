@@ -17,10 +17,14 @@ internal static class PropertyImposterBuilder
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
+            // The default (auto-property) behaviour stores the last value set so the getter can return it;
+            // without a getter nothing would ever read it.
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    property.ImposterBuilder.DefaultPropertyBehaviourField
-                )
+                property.Core.HasGetter
+                    ? SinglePrivateReadonlyVariableField(
+                        property.ImposterBuilder.DefaultPropertyBehaviourField
+                    )
+                    : null
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
@@ -45,7 +49,11 @@ internal static class PropertyImposterBuilder
                     : null
             )
             .AddMember(BuildConstructor(property))
-            .AddMember(DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour))
+            .AddMember(
+                property.Core.HasGetter
+                    ? DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour)
+                    : null
+            )
             .AddMember(
                 property.Core.HasGetter ? GetterImposterBuilderBuilder.Build(property) : null
             )
@@ -182,14 +190,19 @@ internal static class PropertyImposterBuilder
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(invocationBehaviorParameter);
 
-        var bodyBuilder = new BlockBuilder()
-            .AddExpression(
+        var bodyBuilder = new BlockBuilder();
+
+        if (property.Core.HasGetter)
+        {
+            bodyBuilder.AddExpression(
                 IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
                     .Assign(property.ImposterBuilder.DefaultPropertyBehaviourField.Type.New())
-            )
-            .AddExpression(
-                IdentifierName("_invocationBehavior").Assign(IdentifierName("invocationBehavior"))
             );
+        }
+
+        bodyBuilder.AddExpression(
+            IdentifierName("_invocationBehavior").Assign(IdentifierName("invocationBehavior"))
+        );
 
         if (property.Core.HasGetter)
         {
@@ -215,14 +228,19 @@ internal static class PropertyImposterBuilder
 
         if (property.Core.HasSetter)
         {
-            var setterArguments = new[]
+            var setterArguments = new List<ArgumentSyntax>();
+
+            if (property.Core.HasGetter)
             {
-                Argument(
-                    IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
-                ),
-                Argument(IdentifierName("_invocationBehavior")),
-                Argument(propertyDisplayLiteral),
-            };
+                setterArguments.Add(
+                    Argument(
+                        IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
+                    )
+                );
+            }
+
+            setterArguments.Add(Argument(IdentifierName("_invocationBehavior")));
+            setterArguments.Add(Argument(propertyDisplayLiteral));
 
             var setterInitialization = IdentifierName(
                     property.ImposterBuilder.SetterImposterField.Name

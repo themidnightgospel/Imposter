@@ -197,11 +197,6 @@ internal readonly ref struct ImposterBuilder
 
         var memberNameSet = GetImposterNameSet(imposterGenerationContext, imposterBuilder.Members);
         var typeMetadata = new TypeMetadata(memberNameSet);
-        var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
-            WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            typeMetadata.InvocationBehaviorFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
-        );
 
         var constructorParameterName = "invocationBehavior";
         var isClassTarget = imposterGenerationContext.Imposter.IsClass;
@@ -227,7 +222,6 @@ internal readonly ref struct ImposterBuilder
         }
 
         var imposterClassBuilder = imposterBuilder
-            .AddMember(invocationBehaviorField)
             .AddMember(
                 ImposterInstanceField(
                     typeMetadata.ImposterTargetInstanceClassName,
@@ -371,12 +365,7 @@ internal readonly ref struct ImposterBuilder
             );
 
     private BlockSyntax BuildInterfaceConstructorBody() =>
-        _constructorBodyBuilder
-            .Build()
-            .AddStatements(
-                BuildInterfaceImposterInstanceAssignment(),
-                BuildInvocationBehaviorAssignment()
-            );
+        _constructorBodyBuilder.Build().AddStatements(BuildInterfaceImposterInstanceAssignment());
 
     private List<ConstructorDeclarationSyntax> BuildClassConstructors()
     {
@@ -394,8 +383,7 @@ internal readonly ref struct ImposterBuilder
             var constructorBody = _constructorBodyBuilder
                 .Build()
                 .AddStatements(
-                    BuildClassImposterInstanceAssignment(constructorMetadata.Parameters),
-                    BuildInvocationBehaviorAssignment()
+                    BuildClassImposterInstanceAssignment(constructorMetadata.Parameters)
                 );
 
             constructors.Add(constructorBuilder.WithBody(constructorBody).Build());
@@ -437,12 +425,6 @@ internal readonly ref struct ImposterBuilder
             .ToStatementSyntax();
     }
 
-    private ExpressionStatementSyntax BuildInvocationBehaviorAssignment() =>
-        ThisExpression()
-            .Dot(IdentifierName(_typeMetadata.InvocationBehaviorFieldName))
-            .Assign(IdentifierName(_invocationBehaviorParameterName))
-            .ToStatementSyntax();
-
     private static SyntaxTokenList GetConstructorModifiers(Accessibility accessibility) =>
         TokenList(Token(SyntaxKind.PublicKeyword));
 
@@ -460,13 +442,11 @@ internal readonly ref struct ImposterBuilder
     {
         internal readonly string ImposterTargetInstanceClassName;
         internal readonly string ImposterInstanceFieldName;
-        internal readonly string InvocationBehaviorFieldName;
 
         internal TypeMetadata(NameSet nameSet)
         {
             ImposterTargetInstanceClassName = nameSet.Use("ImposterTargetInstance");
             ImposterInstanceFieldName = nameSet.Use("_imposterInstance");
-            InvocationBehaviorFieldName = nameSet.Use("_invocationBehavior");
         }
     }
 }

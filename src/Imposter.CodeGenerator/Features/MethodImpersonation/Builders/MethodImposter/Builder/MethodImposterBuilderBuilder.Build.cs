@@ -36,7 +36,8 @@ internal static partial class MethodImposterBuilderBuilder
 
         var constructor = BuildConstructorAndInitializeMembers(
             method.MethodImposter.Builder.Name,
-            fields
+            fields,
+            [GetImposterParameter(method)]
         );
         constructor = constructor.WithBody(
             constructor.Body!.AddStatements(

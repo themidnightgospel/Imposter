@@ -180,8 +180,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly FieldMetadata LastReturnValueField;
 
-        internal readonly FieldMetadata InvocationCountField;
-
         internal readonly FieldMetadata PropertyDisplayNameField;
 
         internal readonly FieldMetadata CriteriaField;
@@ -213,7 +211,6 @@ internal readonly struct IndexerGetterImposterMetadata
                 "_lastReturnValue",
                 NullableType(returnHandlerType)
             );
-            InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",
                 PredefinedType(Token(SyntaxKind.StringKeyword))

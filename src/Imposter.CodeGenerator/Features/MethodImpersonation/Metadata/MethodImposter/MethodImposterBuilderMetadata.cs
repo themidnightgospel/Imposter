@@ -9,9 +9,11 @@ internal readonly struct MethodImposterBuilderMetadata
 
     internal readonly TypeSyntax Syntax;
 
-    internal readonly FieldMetadata ImposterCollectionField;
+    // The builder registers its invocation imposter group with the method imposter in its constructor
+    // and does not keep a reference to it afterwards.
+    internal readonly ParameterMetadata ImposterCollectionParameter;
 
-    internal readonly FieldMetadata MethodImposterField;
+    internal readonly ParameterMetadata MethodImposterParameter;
 
     internal readonly FieldMetadata ArgumentsCriteriaField;
 
@@ -31,11 +33,11 @@ internal readonly struct MethodImposterBuilderMetadata
             methodImposterSyntax,
             SyntaxFactory.IdentifierName("Builder")
         );
-        ImposterCollectionField = new FieldMetadata(
-            "_imposterCollection",
+        ImposterCollectionParameter = new ParameterMetadata(
+            "imposterCollection",
             methodImposterCollectionSyntax
         );
-        MethodImposterField = new FieldMetadata("_imposter", methodImposterSyntax);
+        MethodImposterParameter = new ParameterMetadata("imposter", methodImposterSyntax);
         ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", argumentCriteriaSyntax);
         InvocationImposterGroupField = new FieldMetadata(
             "_invocationImposterGroup",

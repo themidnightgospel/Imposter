@@ -38,7 +38,7 @@ internal static partial class MethodImposterBuilderBuilder
         if (method.Symbol.IsGenericMethod)
         {
             var addNewCall = IdentifierName(
-                    method.MethodImposter.Builder.ImposterCollectionField.Name
+                    method.MethodImposter.Builder.ImposterCollectionParameter.Name
                 )
                 .Dot(
                     GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
@@ -58,7 +58,7 @@ internal static partial class MethodImposterBuilderBuilder
         else
         {
             methodImposterAccess = IdentifierName(
-                method.MethodImposter.Builder.MethodImposterField.Name
+                method.MethodImposter.Builder.MethodImposterParameter.Name
             );
         }
 

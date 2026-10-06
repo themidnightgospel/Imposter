@@ -38,9 +38,11 @@ internal static class SetterImposterBuilder
                 )
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    property.SetterImposter.DefaultPropertyBehaviourField
-                )
+                property.Core.HasGetter
+                    ? SinglePrivateReadonlyVariableField(
+                        property.SetterImposter.DefaultPropertyBehaviourField
+                    )
+                    : null
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
@@ -82,7 +84,8 @@ internal static class SetterImposterBuilder
                 BuildSetMethod(
                     property.SetterImposter,
                     property.DefaultPropertyBehaviour,
-                    property.Core.SetterSupportsBaseImplementation
+                    property.Core.SetterSupportsBaseImplementation,
+                    property.Core.HasGetter
                 )
             )
             .AddMember(BuildEnsureSetterConfiguredMethod())
@@ -96,14 +99,30 @@ internal static class SetterImposterBuilder
         in ImposterPropertyMetadata property
     )
     {
-        var constructor = new ConstructorBuilder(property.SetterImposter.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(
+        var constructor = new ConstructorBuilder(property.SetterImposter.Name).WithModifiers(
+            TokenList(Token(SyntaxKind.InternalKeyword))
+        );
+        var body = new BlockBuilder();
+
+        if (property.Core.HasGetter)
+        {
+            constructor.AddParameter(
                 ParameterSyntax(
                     property.SetterImposter.DefaultPropertyBehaviourField.Type,
                     property.SetterImposter.DefaultPropertyBehaviourField.Name
                 )
-            )
+            );
+            body.AddStatement(
+                ThisExpression()
+                    .Dot(IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name))
+                    .Assign(
+                        IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name)
+                    )
+                    .ToStatementSyntax()
+            );
+        }
+
+        constructor
             .AddParameter(
                 ParameterSyntax(
                     WellKnownTypes.Imposter.Abstractions.ImposterMode,
@@ -117,16 +136,7 @@ internal static class SetterImposterBuilder
                 )
             );
 
-        var body = new BlockBuilder()
-            .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name))
-                    .Assign(
-                        IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name)
-                    )
-                    .ToStatementSyntax()
-            )
-            .AddStatement(
+        body.AddStatement(
                 ThisExpression()
                     .Dot(IdentifierName("_invocationBehavior"))
                     .Assign(IdentifierName("invocationBehavior"))
@@ -156,7 +166,8 @@ internal static class SetterImposterBuilder
     internal static MethodDeclarationSyntax BuildSetMethod(
         in PropertySetterImposterMetadata setterImposter,
         in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
-        bool setterSupportsBaseImplementation
+        bool setterSupportsBaseImplementation,
+        bool hasGetter
     )
     {
         var baseImplementationIdentifier = IdentifierName(
@@ -174,7 +185,8 @@ internal static class SetterImposterBuilder
                 setterImposter,
                 defaultPropertyBehaviour,
                 baseImplementationIdentifier,
-                setterSupportsBaseImplementation
+                setterSupportsBaseImplementation,
+                hasGetter
             )
         );
 
@@ -192,7 +204,8 @@ internal static class SetterImposterBuilder
             in PropertySetterImposterMetadata setterImposter,
             in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
             ExpressionSyntax baseImplementationIdentifier,
-            bool setterSupportsBaseImplementation
+            bool setterSupportsBaseImplementation,
+            bool hasGetter
         )
         {
             var defaultBehaviourCheck = IdentifierName(
@@ -252,7 +265,10 @@ internal static class SetterImposterBuilder
                 statements.Add(baseImplementationPath);
             }
 
-            statements.Add(defaultBehaviourPath);
+            if (hasGetter)
+            {
+                statements.Add(defaultBehaviourPath);
+            }
 
             return statements;
         }

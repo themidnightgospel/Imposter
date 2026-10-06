@@ -49,18 +49,15 @@ internal static partial class MethodImposterBuilder
             )
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
-            .AddMember(BuildInitializeOutParametersWithDefaultsMethod(method))
-            .AddMember(BuildHasMatchingInvocationImposterGroupMethod(method))
+            // Only generic method imposters are looked up by matching setup (through their generic interface).
+            .AddMember(
+                method.Symbol.IsGenericMethod
+                    ? BuildHasMatchingInvocationImposterGroupMethod(method)
+                    : null
+            )
             .AddMember(BuildFindMatchingInvocationImposterGroupMethod(method))
             .AddMember(InvokeMethod(method))
             .AddMember(MethodImposterBuilderBuilder.Build(method))
             .Build();
-
-        static MethodDeclarationSyntax? BuildInitializeOutParametersWithDefaultsMethod(
-            in ImposterTargetMethodMetadata method
-        ) =>
-            method.Parameters.HasOutputParameters
-                ? InitializeOutParametersMethodBuilder.Build(method)
-                : null;
     }
 }

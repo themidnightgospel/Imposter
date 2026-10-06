@@ -105,7 +105,7 @@ internal sealed class GeneratedCodeWriter
             {
                 EnsureLineStart();
                 WriteIndentation(token);
-                _text.Append(trivia.ToString());
+                _text.Append(trivia.ToFullString());
                 _atLineStart = false;
                 EnsureLineStart();
             }
