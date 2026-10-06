@@ -98,7 +98,9 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 )
             );
         }
-        catch (Exception ex)
+        // Cancellation must propagate: reporting it as a crash would leave the driver with a cached result
+        // that has no source and an error.
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             CrashDiagnosticsReporter.Report(sourceProductionContext, ex);
 #if DEBUG
