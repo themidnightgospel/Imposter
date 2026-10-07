@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
@@ -35,19 +36,21 @@ internal readonly struct ImposterGenerationContext
             supportedCSharpFeatures
         );
 
-        var sanitizedTargetName = GetSanitizedTargetName(TargetSymbol);
+        var targetName = GetTargetName(TargetSymbol);
+        var sanitizedTargetName = SanitizeForNamespace(targetName);
+        var hintNameSuffix = GetHintNameSuffix(targetName, sanitizedTargetName);
 
         if (generateImposterDeclaration.PutInTheSameNamespace)
         {
             ImposterNamespaceName = TargetSymbol.ContainingNamespace.IsGlobalNamespace
                 ? null
                 : TargetSymbol.ContainingNamespace.ToDisplayString();
-            HintName = $"{sanitizedTargetName}Imposter.g.cs";
+            HintName = $"{sanitizedTargetName}{hintNameSuffix}";
         }
         else
         {
             ImposterNamespaceName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}";
-            HintName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}Imposter.g.cs";
+            HintName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}{hintNameSuffix}";
         }
 
         SupportedCSharpFeatures = supportedCSharpFeatures;
@@ -56,21 +59,43 @@ internal readonly struct ImposterGenerationContext
 
     private const string DedicatedNamespacePrefix = "Imposters";
 
-    // The target's fully qualified name without `global::`, reduced to characters valid in a namespace and a
-    // hint name, e.g. `Sample.IPair<int, string>` becomes `Sample.IPair_int__string_`.
-    private static string GetSanitizedTargetName(INamedTypeSymbol targetSymbol)
+    // The target's fully qualified name without `global::`, e.g. `Sample.IPair<int, string>`.
+    private static string GetTargetName(INamedTypeSymbol targetSymbol)
     {
         var display = targetSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
         const string globalPrefix = "global::";
-        if (display.StartsWith(globalPrefix, StringComparison.Ordinal))
-        {
-            display = display[globalPrefix.Length..];
-        }
-
-        return SanitizeForNamespace(display);
+        return display.StartsWith(globalPrefix, StringComparison.Ordinal)
+            ? display[globalPrefix.Length..]
+            : display;
     }
 
+    // Sanitizing is lossy (`IFoo<int>` and `IFoo_int_` both become `IFoo_int_`), and duplicate hint names make
+    // Roslyn drop every source of the generator. A sanitized name without `_` lost nothing, so it is used as is
+    // and plain names cannot collide. Any other name gets a hash of the original name, so it differs from every
+    // plain name and only collides with another hashed name on a hash collision.
+    private static string GetHintNameSuffix(string targetName, string sanitizedTargetName) =>
+        sanitizedTargetName.IndexOf('_') < 0
+            ? "Imposter.g.cs"
+            : $"Imposter.{Fnv1aHash(targetName).ToString("x8", CultureInfo.InvariantCulture)}.g.cs";
+
+    // FNV-1a over UTF-16 code units: unlike string.GetHashCode, it is stable across processes and platforms.
+    private static uint Fnv1aHash(string value)
+    {
+        const uint offsetBasis = 2166136261;
+        const uint prime = 16777619;
+
+        var hash = offsetBasis;
+        foreach (var ch in value)
+        {
+            hash = unchecked((hash ^ ch) * prime);
+        }
+
+        return hash;
+    }
+
+    // Reduces a name to characters valid in a namespace and a hint name, e.g. `Sample.IPair<int, string>`
+    // becomes `Sample.IPair_int__string_`.
     private static string SanitizeForNamespace(string value)
     {
         var builder = new StringBuilder(value.Length);

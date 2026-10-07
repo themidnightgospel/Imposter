@@ -46,7 +46,7 @@ public interface IGeneric<TFirst, TSecond>
         var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
-            source.HintName == "Imposters.Sample.IGeneric_int__string_Imposter.g.cs"
+            source.HintName == "Imposters.Sample.IGeneric_int__string_Imposter.4a90a9f3.g.cs"
         );
         var namespaceLine = imposterSource
             .SourceText.ToString()

@@ -71,7 +71,7 @@ public abstract class GenericProcessor<TKey, TValue>
 
         var imposterSource = result
             .GeneratedSources.Single(source =>
-                source.HintName == "Sample.IAsyncObserver_TItem_Imposter.g.cs"
+                source.HintName == "Sample.IAsyncObserver_TItem_Imposter.ad08da67.g.cs"
             )
             .SourceText.ToString();
 
@@ -93,7 +93,7 @@ public abstract class GenericProcessor<TKey, TValue>
 
         var imposterSource = result
             .GeneratedSources.Single(source =>
-                source.HintName == "Sample.GenericProcessor_TKey__TValue_Imposter.g.cs"
+                source.HintName == "Sample.GenericProcessor_TKey__TValue_Imposter.4daa44b4.g.cs"
             )
             .SourceText.ToString();
 
