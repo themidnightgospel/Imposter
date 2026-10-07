@@ -1,10 +1,9 @@
 ﻿#if !ROSLYN4_4_OR_GREATER
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Immutable;
 using System.Threading;
 using Imposter.Abstractions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
@@ -13,78 +12,66 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 /// </summary>
 internal static class GenerateImposterDeclarationsProvider
 {
-    private static readonly string GenerateImposterAttribute =
-        typeof(GenerateImposterAttribute).FullName!;
-
     internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(
         this in IncrementalGeneratorInitializationContext context
     )
     {
-        // Roslyn 4.0 does not expose GeneratorAttributeSyntaxContext/ForAttributeWithMetadataName.
-        // Fall back to a syntax predicate for AttributeSyntax and resolve via semantic model.
-        return context
-            .SyntaxProvider.CreateSyntaxProvider(
-                predicate: static (node, _) =>
-                    node is AttributeSyntax attr && IsCandidateAttributeName(attr),
-                transform: static (ctx, token) => GetImposterDeclarations(ctx, token)
-            )
-            .Where(static list => list is not null)
-            .SelectMany(static (list, _) => list!)
-            .Collect()
-            .SelectMany(static (targetSymbols, _) => targetSymbols.Distinct());
+        // Roslyn 4.0 does not expose ForAttributeWithMetadataName. GenerateImposterAttribute only targets the
+        // assembly, so its usages are read from the assembly's bound attributes once per compilation: binding
+        // resolves aliases, and the cost is linear in the number of attributes. No caching is lost, because the
+        // generated output is combined with the compilation anyway.
+        return context.CompilationProvider.SelectMany(
+            static (compilation, cancellationToken) =>
+                GetImposterDeclarations(compilation, cancellationToken)
+        );
     }
 
-    private static IEnumerable<GenerateImposterDeclaration>? GetImposterDeclarations(
-        in GeneratorSyntaxContext context,
-        in CancellationToken token
+    private static ImmutableArray<GenerateImposterDeclaration> GetImposterDeclarations(
+        Compilation compilation,
+        CancellationToken cancellationToken
     )
     {
-        token.ThrowIfCancellationRequested();
+        var declarations = ImmutableArray.CreateBuilder<GenerateImposterDeclaration>();
+        var seenDeclarations = new HashSet<GenerateImposterDeclaration>();
 
-        // We are only interested in assembly-level attributes; however, walking the assembly attributes
-        // is inexpensive and avoids brittle syntax-to-symbol correlation across Roslyn versions.
-        var assembly = context.SemanticModel.Compilation.Assembly;
-        var attrs = assembly.GetAttributes();
-
-        if (attrs.Length == 0)
+        foreach (var attribute in compilation.Assembly.GetAttributes())
         {
-            return [];
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (
+                IsGenerateImposterAttribute(attribute.AttributeClass)
+                && attribute.ConstructorArguments.Length > 0
+                && attribute.ConstructorArguments[0].Value
+                    is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType
+            )
+            {
+                var declaration = new GenerateImposterDeclaration(
+                    NormalizeImposterTarget(imposterType),
+                    GetPutInTheSameNamespaceValue(attribute)
+                );
+
+                if (seenDeclarations.Add(declaration))
+                {
+                    declarations.Add(declaration);
+                }
+            }
         }
 
-        return attrs
-            .Where(static a => a.AttributeClass is not null)
-            .Where(static a => a.AttributeClass!.ToDisplayString() == GenerateImposterAttribute)
-            .Where(static a => a.ConstructorArguments.Length > 0)
-            .Select(static a =>
-            {
-                if (
-                    a.ConstructorArguments[0].Value is INamedTypeSymbol
-                    {
-                        TypeKind: not TypeKind.Error
-                    } imposterType
-                )
+        return declarations.ToImmutable();
+    }
+
+    // Compares names instead of rendering the attribute class with ToDisplayString, which allocates.
+    private static bool IsGenerateImposterAttribute(INamedTypeSymbol? attributeClass) =>
+        attributeClass
+            is {
+                MetadataName: nameof(GenerateImposterAttribute),
+                ContainingNamespace:
                 {
-                    return new GenerateImposterDeclaration(
-                        NormalizeImposterTarget(imposterType),
-                        GetPutInTheSameNamespaceValue(a)
-                    );
-                }
-
-                return default;
-            })
-            .Where(static it => it != default)
-            .Select(static it => it!);
-    }
-
-    private static bool IsCandidateAttributeName(AttributeSyntax attribute)
-    {
-        // Quick syntactic filter to reduce semantic model work.
-        // Matches short and fully-qualified names e.g., GenerateImposter, GenerateImposterAttribute, Imposter.Abstractions.GenerateImposterAttribute
-        var name = attribute.Name.ToString();
-        return name.EndsWith("GenerateImposter")
-            || name.EndsWith("GenerateImposterAttribute")
-            || name.Contains("GenerateImposterAttribute");
-    }
+                    Name: "Abstractions",
+                    ContainingNamespace:
+                    { Name: "Imposter", ContainingNamespace.IsGlobalNamespace: true },
+                },
+            };
 
     private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
         attributeData.ConstructorArguments.Length != 2

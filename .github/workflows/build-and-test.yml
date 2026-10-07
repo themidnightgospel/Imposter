@@ -84,3 +84,9 @@ jobs:
 
       - name: Run Imposter.Tests (Roslyn ${{ matrix.roslynVersion }})
         run: dotnet test tests/Imposter.Tests/Imposter.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed"
+
+      # The Roslyn 4.0 build discovers [GenerateImposter] with its own code path, which the
+      # generator-tests job (default Roslyn) never exercises.
+      - name: Run Imposter.CodeGenerator.Tests (Roslyn ${{ matrix.roslynVersion }})
+        if: matrix.roslynVersion == '4.0'
+        run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed" --blame-hang --blame-hang-timeout 5m
