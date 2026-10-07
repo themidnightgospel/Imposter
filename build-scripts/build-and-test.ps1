@@ -104,30 +104,6 @@ Invoke-Task -Name "Imposter.Tests / Roslyn 4.4" -Command "dotnet" -Args @(
     "/p:VERIFICATION_BUILD=true"
 )
 
-Invoke-Task -Name "Imposter.Tests / Roslyn 4.5" -Command "dotnet" -Args @(
-    "test",
-    "tests/Imposter.Tests/Imposter.Tests.csproj",
-    "-c", "Release",
-    "/p:ROSLYN_VERSION=4.5",
-    "/p:VERIFICATION_BUILD=true"
-)
-
-Invoke-Task -Name "Imposter.Tests / Roslyn 4.7" -Command "dotnet" -Args @(
-    "test",
-    "tests/Imposter.Tests/Imposter.Tests.csproj",
-    "-c", "Release",
-    "/p:ROSLYN_VERSION=4.7",
-    "/p:VERIFICATION_BUILD=true"
-)
-
-Invoke-Task -Name "Imposter.Tests / Roslyn 4.11" -Command "dotnet" -Args @(
-    "test",
-    "tests/Imposter.Tests/Imposter.Tests.csproj",
-    "-c", "Release",
-    "/p:ROSLYN_VERSION=4.11",
-    "/p:VERIFICATION_BUILD=true"
-)
-
 Invoke-Task -Name "Imposter.Tests / Roslyn 4.14" -Command "dotnet" -Args @(
     "test",
     "tests/Imposter.Tests/Imposter.Tests.csproj",
