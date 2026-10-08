@@ -27,6 +27,21 @@ internal static class WellKnownTypes
             IdentifierName("Exception")
         );
 
+        internal static readonly TypeSyntax ArgumentNullException = QualifiedName(
+            Namespace,
+            IdentifierName("ArgumentNullException")
+        );
+
+        internal static readonly TypeSyntax NotImplementedException = QualifiedName(
+            Namespace,
+            IdentifierName("NotImplementedException")
+        );
+
+        internal static readonly TypeSyntax Environment = QualifiedName(
+            Namespace,
+            IdentifierName("Environment")
+        );
+
         internal static TypeSyntax String = QualifiedName(Namespace, IdentifierName("String"));
 
         internal static TypeSyntax Action = QualifiedName(Namespace, IdentifierName("Action"));

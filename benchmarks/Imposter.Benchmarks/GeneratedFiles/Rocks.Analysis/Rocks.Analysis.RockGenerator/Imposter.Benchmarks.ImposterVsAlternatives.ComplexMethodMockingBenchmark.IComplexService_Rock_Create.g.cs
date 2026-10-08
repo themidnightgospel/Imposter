@@ -9,29 +9,29 @@
 
 using Rocks.Extensions;
 
-namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
+namespace Imposter.Benchmarks.ImposterVsAlternatives;
 
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class IComplexServiceCreateExpectations
 	: global::Rocks.Expectations
 {
-	private readonly global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.SetupsExpectations setups;
+	private readonly global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.SetupsExpectations setups;
 	
 	internal sealed class SetupsExpectations
 	{
-		private readonly global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations parent;
+		private readonly global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations parent;
 	
-		internal SetupsExpectations(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations parent) =>
+		internal SetupsExpectations(global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations parent) =>
 			this.parent = parent;
 	
-		internal global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.Adornments.AdornmentsForHandler0 Process(global::Rocks.Argument<string> @route, global::Rocks.Argument<int> @severity, global::Rocks.Argument<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext> @context)
+		internal global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.Adornments.AdornmentsForHandler0 Process(global::Rocks.Argument<string> @route, global::Rocks.Argument<int> @severity, global::Rocks.Argument<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext> @context)
 		{
 			global::Rocks.Exceptions.ExpectationException.ThrowIf(this.parent.WasInstanceInvoked);
 			global::System.ArgumentNullException.ThrowIfNull(@route);
 			global::System.ArgumentNullException.ThrowIfNull(@severity);
 			global::System.ArgumentNullException.ThrowIfNull(@context);
 			
-			var @handler = new global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.Handler0
+			var @handler = new global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.Handler0
 			{
 				@route = @route,
 				@severity = @severity,
@@ -44,7 +44,7 @@ internal sealed class IComplexServiceCreateExpectations
 		}
 	}
 	
-	internal global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.SetupsExpectations Setups => this.setups;
+	internal global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.SetupsExpectations Setups => this.setups;
 	
 	internal sealed class Handler0
 		: global::Rocks.Handler<global::System.Func<string, int, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext, string>, string>
@@ -53,13 +53,13 @@ internal sealed class IComplexServiceCreateExpectations
 		public global::Rocks.Argument<int> @severity { get; set; }
 		public global::Rocks.Argument<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext> @context { get; set; }
 	}
-	private global::Rocks.Handlers<global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.Handler0>? @handlers0;
+	private global::Rocks.Handlers<global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.Handler0>? @handlers0;
 	
 	public override void Verify()
 	{
 		if (!this.WasInstanceInvoked)
 		{
-			throw new global::Rocks.Exceptions.VerificationException([$"An instance of global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations was never made."]);
+			throw new global::Rocks.Exceptions.VerificationException([$"An instance of global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations was never made."]);
 		}
 		else if (!this.WasExceptionThrown)
 		{
@@ -77,7 +77,7 @@ internal sealed class IComplexServiceCreateExpectations
 	private sealed class Mock
 		: global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.IComplexService
 	{
-		public Mock(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations @expectations)
+		public Mock(global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations @expectations)
 		{
 			this.Expectations = @expectations;
 		}
@@ -120,7 +120,7 @@ internal sealed class IComplexServiceCreateExpectations
 				""");
 		}
 		
-		private global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations Expectations { get; }
+		private global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations Expectations { get; }
 	}
 	
 	public IComplexServiceCreateExpectations() => this.setups = new(this);
@@ -148,9 +148,9 @@ internal sealed class IComplexServiceCreateExpectations
 		{ }
 		
 		public sealed class AdornmentsForHandler0
-			: global::Rocks.Adornments<AdornmentsForHandler0, global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.Handler0, global::System.Func<string, int, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext, string>, string>, IAdornmentsForIComplexService<AdornmentsForHandler0>
+			: global::Rocks.Adornments<AdornmentsForHandler0, global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.Handler0, global::System.Func<string, int, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext, string>, string>, IAdornmentsForIComplexService<AdornmentsForHandler0>
 		{
-			public AdornmentsForHandler0(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.IComplexServiceCreateExpectations.Handler0 handler)
+			public AdornmentsForHandler0(global::Imposter.Benchmarks.ImposterVsAlternatives.IComplexServiceCreateExpectations.Handler0 handler)
 				: base(handler) { }
 		}
 	}

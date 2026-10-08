@@ -80,18 +80,7 @@ internal static class ArgumentsBuilder
             var sourceType = p.TypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
-            return Argument(
-                IdentifierName("TypeCaster")
-                    .Dot(
-                        GenericName("Cast")
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SeparatedList<TypeSyntax>([sourceType, targetType])
-                                )
-                            )
-                    )
-                    .Call(Argument(IdentifierName(p.Name)))
-            );
+            return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));
         });
 
         return new MethodDeclarationBuilder(returnType, "As")

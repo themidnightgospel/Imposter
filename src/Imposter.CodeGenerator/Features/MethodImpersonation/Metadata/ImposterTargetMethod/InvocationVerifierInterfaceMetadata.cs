@@ -38,7 +38,7 @@ internal readonly struct InvocationVerifierInterfaceMetadata
         var declarationTypeArguments = method
             .Symbol.TypeParameters.Select(parameter =>
                 IdentifierName(
-                    parameter.Name == CallCountMethodName
+                    parameter.Name is CallCountMethodName or CalledMethodMetadata.Name
                         ? Identifier(names.Use(parameter.Name))
                         : SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
                 )

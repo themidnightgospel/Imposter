@@ -23,8 +23,6 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly ArgumentSyntax[] ParameterArguments;
 
-    internal readonly NameSet ParameterNameSet;
-
     internal readonly TypeSyntax TypeSyntax;
 
     internal readonly TypeSyntax NullableAwareTypeSyntax;
@@ -53,7 +51,6 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         ParameterArguments = Parameters
             .Select(parameter => Argument(IdentifierName(parameter.Name)))
             .ToArray();
-        ParameterNameSet = new NameSet(Parameters.Select(parameter => parameter.Name));
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
         GetterSupportsBaseImplementation =
@@ -75,4 +72,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             ?? property.Name;
         DisplayName = $"{containingTypeDisplay}.this[{parametersDisplay}]";
     }
+
+    internal NameSet CreateParameterNameSet() =>
+        new(Parameters.Select(parameter => parameter.Name));
 }

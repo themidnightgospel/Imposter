@@ -200,7 +200,7 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 .AddConstraintClause(
                     TypeParameterConstraintClause("TException")
                         .AddConstraints(
-                            TypeConstraint(IdentifierName("Exception")),
+                            TypeConstraint(WellKnownTypes.System.Exception),
                             ConstructorConstraint()
                         )
                 )

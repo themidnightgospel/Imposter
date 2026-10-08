@@ -3,7 +3,6 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
@@ -439,22 +438,6 @@ internal static class EventImposterVerificationBuilder
         string label,
         ExpressionSyntax valueExpression
     ) => description.Add($" {label}: ".StringLiteral().Add(Invocation(valueExpression)));
-
-    private static InvocationExpressionSyntax JoinWithNewLines(ExpressionSyntax values) =>
-        IdentifierName("string")
-            .Dot(IdentifierName("Join"))
-            .Call(
-                ArgumentList(
-                    SeparatedList<ArgumentSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Argument(IdentifierName("Environment").Dot(IdentifierName("NewLine"))),
-                            Token(SyntaxKind.CommaToken),
-                            Argument(values),
-                        }
-                    )
-                )
-            );
 
     private static ExpressionSyntax GetPredicateBody(SimpleLambdaExpressionSyntax predicate) =>
         predicate.Body as ExpressionSyntax

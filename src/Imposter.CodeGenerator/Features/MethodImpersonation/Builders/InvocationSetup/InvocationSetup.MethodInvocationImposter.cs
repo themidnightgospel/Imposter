@@ -172,7 +172,9 @@ internal static partial class InvocationSetupBuilder
                     IfStatement(
                         BinaryExpression(
                             SyntaxKind.EqualsExpression,
-                            IdentifierName("invocationBehavior"),
+                            IdentifierName(
+                                method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
+                            ),
                             QualifiedName(
                                 WellKnownTypes.Imposter.Abstractions.ImposterMode,
                                 IdentifierName("Explicit")
@@ -187,7 +189,14 @@ internal static partial class InvocationSetupBuilder
                                             .MissingImposterException
                                     )
                                     .WithArgumentList(
-                                        Argument(IdentifierName("methodDisplayName"))
+                                        Argument(
+                                                IdentifierName(
+                                                    method
+                                                        .MethodImposter
+                                                        .InvokeMethod
+                                                        .MethodDisplayNameParameterName
+                                                )
+                                            )
                                             .AsSingleArgumentListSyntax()
                                     )
                             )
@@ -245,7 +254,12 @@ internal static partial class InvocationSetupBuilder
                     WellKnownTypes.Imposter.Abstractions.MissingImposterException
                 )
                 .WithArgumentList(
-                    Argument(IdentifierName("methodDisplayName")).AsSingleArgumentListSyntax()
+                    Argument(
+                            IdentifierName(
+                                method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+                            )
+                        )
+                        .AsSingleArgumentListSyntax()
                 );
 
             var assignBaseImplementation = IfStatement(
@@ -287,9 +301,12 @@ internal static partial class InvocationSetupBuilder
         [
             ParameterSyntax(
                 WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                "invocationBehavior"
+                method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
             ),
-            ParameterSyntax(WellKnownTypes.String, "methodDisplayName"),
+            ParameterSyntax(
+                WellKnownTypes.String,
+                method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+            ),
             .. method.Parameters.ParameterListSyntaxIncludingNullable.Parameters,
         ];
 
