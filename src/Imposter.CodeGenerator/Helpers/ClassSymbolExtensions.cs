@@ -213,7 +213,7 @@ public static class ClassSymbolExtensions
             return false;
         }
 
-        return method.IsVirtual || method.IsAbstract;
+        return method.IsVirtual || method.IsAbstract || method.IsOverride;
     }
 
     private static bool IsOverridableProperty(IPropertySymbol property)
