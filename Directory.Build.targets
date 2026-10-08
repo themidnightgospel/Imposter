@@ -18,4 +18,27 @@
       WorkingDirectory="$(MSBuildThisFileDirectory)"
     />
   </Target>
+
+  <!-- A project that sets GeneratedFileSnapshotsPath keeps a copy of its generated sources there for review.
+       Each compilation replaces the whole copy, so files the generators no longer produce do not linger. -->
+  <PropertyGroup Condition="'$(GeneratedFileSnapshotsPath)' != ''">
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
+    <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RefreshGeneratedFileSnapshots</TargetsTriggeredByCompilation>
+  </PropertyGroup>
+
+  <!-- CoreCompile calls this unless it was skipped as up to date. Design-time builds run CoreCompile without the
+       compiler, so the condition keeps them from wiping the snapshots. Emptying the compiler's folder afterwards
+       makes the next compilation start from nothing. -->
+  <Target Name="RefreshGeneratedFileSnapshots" Condition="'$(SkipCompilerExecution)' != 'true'">
+    <ItemGroup>
+      <_GeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(GeneratedFileSnapshotsPath)" />
+    <Copy
+      SourceFiles="@(_GeneratedSource)"
+      DestinationFiles="@(_GeneratedSource->'$(GeneratedFileSnapshotsPath)\%(RecursiveDir)%(Filename)%(Extension)')"
+    />
+    <RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)" />
+  </Target>
 </Project>

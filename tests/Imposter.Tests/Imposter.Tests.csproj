@@ -14,8 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>GeneratedFiles\$(ROSLYN_VERSION)</CompilerGeneratedFilesOutputPath>
+    <GeneratedFileSnapshotsPath>GeneratedFiles\$(ROSLYN_VERSION)</GeneratedFileSnapshotsPath>
   </PropertyGroup>
 
   <ItemGroup>
