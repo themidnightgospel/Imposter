@@ -43,6 +43,12 @@ This package includes both the source generator (analyzer) and the runtime abstr
 
     ```
 
+!!! tip "Pro tip"
+    To see what the generator does, set the `IMPOSTER_LOG` property to `true` in the project file, on the command line or as an environment variable. The generator then logs the language version, whether it generates the static `Imposter()` extensions, and each generated imposter with its file name. The log lines are `IMPLOG001` messages, which `dotnet build` shows only at detailed verbosity.
+    ```bash
+    dotnet build -v:d -p:IMPOSTER_LOG=true
+    ```
+
 ## Generate an imposter for an interface
 
 Annotate the target type with the assembly level attribute and build. The generator produces a `<TypeName>Imposter` you can new up in code.

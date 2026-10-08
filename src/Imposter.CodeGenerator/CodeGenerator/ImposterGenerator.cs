@@ -42,10 +42,21 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
     {
+        var compilationContextProvider = context.GetCompilationContext();
+
         context.ReportDiagnostics(context.GetCompilationDiagnostics());
 
         context.RegisterSourceOutput(
-            context.GetGenerateImposterDeclarations().Combine(context.GetCompilationContext()),
+            compilationContextProvider,
+            static (sourceProductionContext, compilationContext) =>
+                new DiagnosticLogger(
+                    sourceProductionContext,
+                    compilationContext.IsLoggingEnabled
+                ).LogCompilation(compilationContext.Compilation)
+        );
+
+        context.RegisterSourceOutput(
+            context.GetGenerateImposterDeclarations().Combine(compilationContextProvider),
             (sourceProductionContext, contexts) =>
                 GenerateImposter(sourceProductionContext, contexts.Left, contexts.Right)
         );
@@ -69,21 +80,10 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var supportedCSharpFeatures = new SupportedCSharpFeatures(
-                compilationContext.Compilation
-            );
-            var logger = GeneratorLoggerFactory.Create(
-                sourceProductionContext,
-                compilationContext.IsLoggingEnabled
-            );
             var imposterGenerationContext = new ImposterGenerationContext(
                 generateImposterDeclaration,
-                supportedCSharpFeatures,
-                logger
+                new SupportedCSharpFeatures(compilationContext.Compilation)
             );
-
-            logger.LogSupportedCSharpFeatures(supportedCSharpFeatures);
-            logger.LogCompilation(compilationContext.Compilation);
 
             sourceProductionContext.AddSource(
                 imposterGenerationContext.HintName,
@@ -97,6 +97,11 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     Encoding.UTF8
                 )
             );
+
+            new DiagnosticLogger(
+                sourceProductionContext,
+                compilationContext.IsLoggingEnabled
+            ).LogImposter(imposterGenerationContext);
         }
         // Cancellation must propagate: reporting it as a crash would leave the driver with a cached result
         // that has no source and an error.
@@ -153,19 +158,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     imposterGenerationContext.ImposterNamespaceName
                 )
             );
-
-            imposterGenerationContext.Logger.Log("Generated imposter extensions.");
         }
-        else
-        {
-            imposterGenerationContext.Logger.Log(
-                "Skipping generation of Imposter Extensions because the current C# version does not support type extensions."
-            );
-        }
-#else
-        imposterGenerationContext.Logger.Log(
-            "Skipping generation of Imposter Extensions because it requires ROSLYN 4.14 or greater."
-        );
 #endif
 
         var compilationUnit = CompilationUnit(

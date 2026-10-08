@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Microsoft.CodeAnalysis;
 
@@ -22,12 +21,9 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
-    internal readonly IGeneratorLogger Logger;
-
     internal ImposterGenerationContext(
         GenerateImposterDeclaration generateImposterDeclaration,
-        in SupportedCSharpFeatures supportedCSharpFeatures,
-        IGeneratorLogger logger
+        in SupportedCSharpFeatures supportedCSharpFeatures
     )
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
@@ -54,7 +50,6 @@ internal readonly struct ImposterGenerationContext
         }
 
         SupportedCSharpFeatures = supportedCSharpFeatures;
-        Logger = logger;
     }
 
     private const string DedicatedNamespacePrefix = "Imposters";

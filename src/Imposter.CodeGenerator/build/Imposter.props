@@ -1,0 +1,6 @@
+<Project>
+  <!-- Lets the generator read the IMPOSTER_LOG property, set in the project file or as an environment variable. -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="IMPOSTER_LOG" />
+  </ItemGroup>
+</Project>

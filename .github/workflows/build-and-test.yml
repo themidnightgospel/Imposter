@@ -48,7 +48,21 @@ jobs:
 
       - name: Test Imposter.Abstractions.Tests
         run: dotnet test tests/Imposter.Abstractions.Tests/Imposter.Abstractions.Tests.csproj -c $BUILD_CONFIGURATION -p:IMPOSTER_LOG=true -p:VERIFICATION_BUILD=true --logger "console;verbosity=detailed"
-         
+
+  package-smoke-test:
+    name: Package Smoke Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build a consumer project from the packed generator
+        run: bash build-scripts/package-smoke-test.sh
+
   roslyn-matrix:
     timeout-minutes: 10
     name: Imposter.Tests / Roslyn ${{ matrix.roslynVersion }}

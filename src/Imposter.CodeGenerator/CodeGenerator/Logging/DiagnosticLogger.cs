@@ -1,8 +1,10 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.CodeGenerator.Logging;
 
-internal readonly struct DiagnosticLogger : IGeneratorLogger
+// Writes the IMPOSTER_LOG messages. They are Info diagnostics, which builds show only at detailed verbosity (-v:d).
+internal readonly struct DiagnosticLogger
 {
     private static readonly DiagnosticDescriptor LogDescriptor = new(
         id: "IMPLOG001",
@@ -11,7 +13,7 @@ internal readonly struct DiagnosticLogger : IGeneratorLogger
         category: Diagnostics.DiagnosticCategories.Imposter,
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
-        description: "Internal generator log message. Enable with IMPOSTER_LOG=true."
+        description: "Generator log message, written when the IMPOSTER_LOG MSBuild property is true."
     );
 
     private readonly SourceProductionContext _context;
@@ -23,15 +25,39 @@ internal readonly struct DiagnosticLogger : IGeneratorLogger
         _enabled = enabled;
     }
 
-    public void Log(string message)
+    internal void LogCompilation(CSharpCompilation compilation)
     {
-        if (!_enabled || string.IsNullOrWhiteSpace(message))
+        if (_enabled)
         {
-            return;
-        }
+            var languageVersion = compilation.LanguageVersion.ToDisplayString();
+            var imposterExtensions = DescribeImposterExtensions(
+                new SupportedCSharpFeatures(compilation)
+            );
 
-        _context.ReportDiagnostic(Diagnostic.Create(LogDescriptor, Location.None, message));
+            Log($"C# {languageVersion}: {imposterExtensions}");
+        }
     }
 
-    public void Log(string label, string value) => Log($"{label}: {value}");
+    internal void LogImposter(in ImposterGenerationContext imposterGenerationContext)
+    {
+        if (_enabled)
+        {
+            var target = imposterGenerationContext.TargetSymbol.ToDisplayString();
+
+            Log($"Generated {imposterGenerationContext.HintName} for {target}");
+        }
+    }
+
+    // Mirrors the condition under which ImposterGenerator emits the extensions.
+    private static string DescribeImposterExtensions(in SupportedCSharpFeatures features) =>
+#if ROSLYN4_14_OR_GREATER
+        features.SupportsTypeExtensions
+            ? "generating the static Imposter() extensions"
+            : "not generating the static Imposter() extensions, which need C# 14 or later";
+#else
+        "not generating the static Imposter() extensions, which need Roslyn 4.14 or later";
+#endif
+
+    private void Log(string message) =>
+        _context.ReportDiagnostic(Diagnostic.Create(LogDescriptor, Location.None, message));
 }
