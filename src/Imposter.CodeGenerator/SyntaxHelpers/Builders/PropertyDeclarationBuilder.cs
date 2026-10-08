@@ -48,6 +48,12 @@ internal sealed class PropertyDeclarationBuilder(TypeSyntax typeSyntax, string n
         return this;
     }
 
+    public PropertyDeclarationBuilder WithInitBody(BlockSyntax body)
+    {
+        _setter = AccessorDeclaration(SyntaxKind.InitAccessorDeclaration).WithBody(body);
+        return this;
+    }
+
     public PropertyDeclarationBuilder WithExplicitInterfaceSpecifier(
         ExplicitInterfaceSpecifierSyntax? specifier
     )
