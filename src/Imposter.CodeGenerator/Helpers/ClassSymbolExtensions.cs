@@ -213,7 +213,22 @@ public static class ClassSymbolExtensions
             return false;
         }
 
-        return method.IsVirtual || method.IsAbstract || method.IsOverride;
+        return method.IsVirtual
+            || method.IsAbstract
+            || (method.IsOverride && !OverridesObjectMember(method));
+    }
+
+    // ToString, Equals and GetHashCode overrides keep their real behaviour, because collections, assertions and
+    // string formatting call them implicitly.
+    private static bool OverridesObjectMember(IMethodSymbol method)
+    {
+        var root = method;
+        while (root.OverriddenMethod is { } overridden)
+        {
+            root = overridden;
+        }
+
+        return root.ContainingType.SpecialType == SpecialType.System_Object;
     }
 
     private static bool IsOverridableProperty(IPropertySymbol property)

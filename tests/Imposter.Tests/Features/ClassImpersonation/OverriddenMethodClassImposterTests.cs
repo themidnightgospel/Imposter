@@ -66,6 +66,36 @@ namespace Imposter.Tests.Features.ClassImpersonation
         }
 
         [Fact]
+        public void GivenToStringOverrideInExplicitMode_WhenInvoked_ShouldRunTheOverride()
+        {
+            var instance = new ClassWithObjectMemberOverridesImposter(
+                ImposterMode.Explicit
+            ).Instance();
+
+            instance.ToString().ShouldBe(ClassWithObjectMemberOverrides.Text);
+        }
+
+        [Fact]
+        public void GivenEqualsOverrideInExplicitMode_WhenComparedWithItself_ShouldRunTheOverride()
+        {
+            var instance = new ClassWithObjectMemberOverridesImposter(
+                ImposterMode.Explicit
+            ).Instance();
+
+            instance.Equals(instance).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenGetHashCodeOverrideInExplicitMode_WhenInvoked_ShouldRunTheOverride()
+        {
+            var instance = new ClassWithObjectMemberOverridesImposter(
+                ImposterMode.Explicit
+            ).Instance();
+
+            instance.GetHashCode().ShouldBe(ClassWithObjectMemberOverrides.HashCode);
+        }
+
+        [Fact]
         public void GivenAbstractOverrideWithReturnSetup_WhenInvoked_ShouldReturnConfiguredValue()
         {
             var imposter = new ClassWithAbstractOverrideImposter();
