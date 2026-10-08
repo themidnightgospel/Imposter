@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -86,6 +88,56 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
+        }
+
+        [Fact]
+        public void GivenReturnsSetup_WhenFirstCallsAreConcurrent_ShouldReturnConfiguredValueEveryTime()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () => ConfiguredInstance(ImposterMode.Implicit, it => it.IntNoParams().Returns(42)),
+                it => it.IntNoParams()
+            );
+
+            outcomes.ShouldBe(ConcurrentFirstCalls.EveryCall("42"));
+        }
+
+        [Fact]
+        public void GivenReturnsSetupInExplicitMode_WhenFirstCallsAreConcurrent_ShouldReturnConfiguredValueEveryTime()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () => ConfiguredInstance(ImposterMode.Explicit, it => it.IntNoParams().Returns(42)),
+                it => it.IntNoParams()
+            );
+
+            outcomes.ShouldBe(ConcurrentFirstCalls.EveryCall("42"));
+        }
+
+        [Fact]
+        public void GivenReturnsSequence_WhenFirstCallsAreConcurrent_ShouldRepeatLastValueAfterSequence()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () =>
+                    ConfiguredInstance(
+                        ImposterMode.Implicit,
+                        it => it.IntNoParams().Returns(1).Then().Returns(2)
+                    ),
+                it => it.IntNoParams()
+            );
+
+            outcomes.ShouldBe(
+                ConcurrentFirstCalls.FirstCallThenEveryOtherCall("1", "2"),
+                ignoreOrder: true
+            );
+        }
+
+        private static IMethodSetupFeatureSut ConfiguredInstance(
+            ImposterMode mode,
+            Action<IMethodSetupFeatureSutImposter> setup
+        )
+        {
+            var imposter = new IMethodSetupFeatureSutImposter(mode);
+            setup(imposter);
+            return imposter.Instance();
         }
     }
 }

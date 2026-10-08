@@ -122,6 +122,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(
                 BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour)
             )
+            .AddMember(BuildNextReturnValueMethod(property.GetterImposterBuilder))
             .AddMember(BuildEnsureGetterConfiguredMethod());
 
         return builder.Build();
@@ -540,7 +541,6 @@ internal static class GetterImposterBuilderBuilder
         var baseImplementationIdentifier = IdentifierName(
             builder.GetMethod.BaseImplementationParameter.Name
         );
-        const string ReturnValueVariableName = "returnValue";
         const string NextReturnValueVariableName = "nextReturnValue";
 
         return new MethodDeclarationBuilder(builder.GetMethod.ReturnType, builder.GetMethod.Name)
@@ -557,11 +557,6 @@ internal static class GetterImposterBuilderBuilder
                         baseImplementationIdentifier
                     ),
                     DeclareNextGetterReturnValue(builder, NextReturnValueVariableName),
-                    UpdateNextGetterReturnValueFromDequeuedValue(
-                        builder,
-                        ReturnValueVariableName,
-                        NextReturnValueVariableName
-                    ),
                     ReturnNextGetterReturnValue(
                         NextReturnValueVariableName,
                         baseImplementationIdentifier
@@ -577,36 +572,7 @@ internal static class GetterImposterBuilderBuilder
             LocalVariableDeclarationSyntax(
                 Var,
                 nextVariableName,
-                IdentifierName(builder.LastReturnValueField.Name)
-            );
-
-        static StatementSyntax UpdateNextGetterReturnValueFromDequeuedValue(
-            in PropertyGetterImposterBuilderMetadata builder,
-            string returnValueVariableName,
-            string nextVariableName
-        ) =>
-            IfStatement(
-                IdentifierName(builder.ReturnValuesField.Name)
-                    .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                    .Call(
-                        Argument(
-                            null,
-                            Token(SyntaxKind.OutKeyword),
-                            DeclarationExpression(
-                                Var,
-                                SingleVariableDesignation(Identifier(returnValueVariableName))
-                            )
-                        )
-                    )
-                    .And(IdentifierName(returnValueVariableName).IsNotNull()),
-                Block(
-                    IdentifierName(nextVariableName)
-                        .Assign(IdentifierName(returnValueVariableName))
-                        .ToStatementSyntax(),
-                    IdentifierName(builder.LastReturnValueField.Name)
-                        .Assign(IdentifierName(returnValueVariableName))
-                        .ToStatementSyntax()
-                )
+                IdentifierName(builder.NextReturnValueMethod.Name).Call()
             );
 
         static StatementSyntax ReturnNextGetterReturnValue(
@@ -677,6 +643,23 @@ internal static class GetterImposterBuilderBuilder
                 )
                 .ToStatementSyntax();
     }
+
+    private static MethodDeclarationSyntax BuildNextReturnValueMethod(
+        in PropertyGetterImposterBuilderMetadata builder
+    ) =>
+        new MethodDeclarationBuilder(
+            builder.NextReturnValueMethod.ReturnType,
+            builder.NextReturnValueMethod.Name
+        )
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .WithBody(
+                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
+                    IdentifierName(builder.ReturnValuesField.Name),
+                    IdentifierName(builder.LastReturnValueField.Name),
+                    IdentifierName("returnValue")
+                )
+            )
+            .Build();
 
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod()
     {

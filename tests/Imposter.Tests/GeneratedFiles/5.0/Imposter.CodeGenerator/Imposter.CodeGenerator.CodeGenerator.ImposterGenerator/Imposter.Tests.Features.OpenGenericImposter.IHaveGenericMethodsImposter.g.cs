@@ -180,7 +180,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal AddItemArgumentsCriteria<TItem> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public AddItemMethodInvocationImposterGroup(AddItemArgumentsCriteria<TItem> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -196,17 +196,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TItem item)
@@ -582,7 +591,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			internal static GetValueMethodInvocationImposterGroup<TResult> Default = new GetValueMethodInvocationImposterGroup<TResult>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public GetValueMethodInvocationImposterGroup()
 			{
 			}
@@ -596,17 +605,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public TResult Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
@@ -1043,7 +1061,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ProcessAsyncArgumentsCriteria<TItem> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ProcessAsyncMethodInvocationImposterGroup(ProcessAsyncArgumentsCriteria<TItem> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -1058,17 +1076,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public global::System.Threading.Tasks.Task<TItem> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.IEnumerable<TItem> items)
@@ -1541,7 +1568,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ProcessComplexAsyncArgumentsCriteria<TItem, TResult> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ProcessComplexAsyncMethodInvocationImposterGroup(ProcessComplexAsyncArgumentsCriteria<TItem, TResult> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -1556,17 +1583,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public global::System.Threading.Tasks.Task<TResult> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.IEnumerable<TItem> items)

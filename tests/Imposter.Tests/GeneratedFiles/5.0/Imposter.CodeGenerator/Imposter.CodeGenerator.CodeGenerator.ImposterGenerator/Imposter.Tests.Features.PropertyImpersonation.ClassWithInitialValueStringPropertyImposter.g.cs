@@ -248,14 +248,28 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						return _defaultPropertyBehaviour.BackingField;
 					}
 
-					var nextReturnValue = _lastReturnValue;
-					if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<string>?, string> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
 					{
-						nextReturnValue = returnValue;
-						_lastReturnValue = returnValue;
+						return _lastReturnValue;
 					}
 
-					return nextReturnValue(baseImplementation);
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
 				}
 
 				private void EnsureGetterConfigured()

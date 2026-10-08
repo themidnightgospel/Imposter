@@ -394,15 +394,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 
 					internal void UseBaseImplementation()

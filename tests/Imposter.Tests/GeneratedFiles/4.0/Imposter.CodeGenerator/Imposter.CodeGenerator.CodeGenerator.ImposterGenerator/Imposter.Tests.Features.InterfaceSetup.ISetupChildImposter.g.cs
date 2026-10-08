@@ -210,7 +210,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal EchoArgumentsCriteria<T> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public EchoMethodInvocationImposterGroup(EchoArgumentsCriteria<T> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -225,17 +225,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public T Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, T value)
@@ -639,7 +648,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal ExecuteArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ExecuteMethodInvocationImposterGroup(ExecuteArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -654,17 +663,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value)
@@ -1010,7 +1028,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal Execute_1ArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public Execute_1MethodInvocationImposterGroup(Execute_1ArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -1025,17 +1043,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value)
@@ -1349,7 +1376,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		{
 			internal static NoOpMethodInvocationImposterGroup Default = new NoOpMethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public NoOpMethodInvocationImposterGroup()
 			{
 			}
@@ -1364,17 +1391,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
@@ -1686,7 +1722,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal NotifyArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public NotifyMethodInvocationImposterGroup(NotifyArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -1702,17 +1738,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string value)
@@ -2030,7 +2075,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal Notify_1ArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public Notify_1MethodInvocationImposterGroup(Notify_1ArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -2046,17 +2091,26 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value)
@@ -2469,14 +2523,28 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						return _defaultPropertyBehaviour.BackingField;
 					}
 
-					var nextReturnValue = _lastReturnValue;
-					if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<int>?, int> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
 					{
-						nextReturnValue = returnValue;
-						_lastReturnValue = returnValue;
+						return _lastReturnValue;
 					}
 
-					return nextReturnValue(baseImplementation);
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
 				}
 
 				private void EnsureGetterConfigured()
@@ -2780,14 +2848,28 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						return _defaultPropertyBehaviour.BackingField;
 					}
 
-					var nextReturnValue = _lastReturnValue;
-					if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<int>?, int> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
 					{
-						nextReturnValue = returnValue;
-						_lastReturnValue = returnValue;
+						return _lastReturnValue;
 					}
 
-					return nextReturnValue(baseImplementation);
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
 				}
 
 				private void EnsureGetterConfigured()
@@ -3958,15 +4040,33 @@ namespace Imposter.Tests.Features.InterfaceSetup
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 				}
 			}
@@ -4513,15 +4613,33 @@ namespace Imposter.Tests.Features.InterfaceSetup
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 				}
 			}
