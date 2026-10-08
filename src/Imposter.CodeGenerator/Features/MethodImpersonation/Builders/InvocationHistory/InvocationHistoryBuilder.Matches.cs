@@ -35,7 +35,7 @@ internal static partial class InvocationHistoryBuilder
 
         static ExpressionSyntax CallMatchesMethod(in ImposterTargetMethodMetadata method)
         {
-            if (method.Symbol.IsGenericMethod)
+            if (method.Model.IsGenericMethod)
             {
                 var genericArgumentsMatchCriteria =
                     GenericArgumentsMatcherBuilder.GenerateExactMatchCriteria(method);

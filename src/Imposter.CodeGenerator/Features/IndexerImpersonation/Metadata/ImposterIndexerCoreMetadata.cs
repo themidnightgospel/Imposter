@@ -1,5 +1,6 @@
 using System.Linq;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -45,7 +46,9 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
         Parameters = property
-            .Parameters.Select(parameter => new IndexerParameterMetadata(parameter))
+            .Parameters.Select(parameter => new IndexerParameterMetadata(
+                ParameterModel.From(parameter)
+            ))
             .ToArray();
         ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
         ParameterArguments = Parameters
@@ -60,8 +63,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
         var parametersDisplay = string.Join(
             ", ",
-            Parameters.Select(p =>
-                p.Symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
+            property.Parameters.Select(parameter =>
+                parameter.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
             )
         );
         var containingTypeDisplay =

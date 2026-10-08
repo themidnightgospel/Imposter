@@ -9,6 +9,7 @@ using Imposter.CodeGenerator.Features.InterfaceSetup.Builders;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -279,7 +280,7 @@ internal readonly ref struct ImposterBuilder
             )
         );
         memberNames.AddRange(
-            imposterGenerationContext.Imposter.Methods.Select(it => it.Symbol.Name)
+            imposterGenerationContext.Imposter.Methods.Select(it => it.Model.Name)
         );
         memberNames.AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
 
@@ -302,13 +303,13 @@ internal readonly ref struct ImposterBuilder
 
                 return ThisExpression()
                     .Dot(
-                        method.Symbol.IsGenericMethod
+                        method.Model.IsGenericMethod
                             ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
                             : IdentifierName(method.MethodImposter.AsField.Name)
                     )
                     .Assign(
                         (
-                            method.Symbol.IsGenericMethod
+                            method.Model.IsGenericMethod
                                 ? method.MethodImposter.Collection.Syntax
                                 : method.MethodImposter.Syntax
                         ).New(ArgumentList(SeparatedList(constructorArguments)))
@@ -368,7 +369,7 @@ internal readonly ref struct ImposterBuilder
             .ToStatementSyntax();
 
     private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(
-        in ImmutableArray<IParameterSymbol> parameters
+        in ImmutableArray<ParameterModel> parameters
     )
     {
         var arguments = new List<ArgumentSyntax>(parameters.Length + 1)

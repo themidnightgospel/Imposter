@@ -35,7 +35,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         ExpressionSyntax methodImposterAccess;
 
-        if (method.Symbol.IsGenericMethod)
+        if (method.Model.IsGenericMethod)
         {
             var addNewCall = IdentifierName(
                     method.MethodImposter.Builder.ImposterCollectionParameter.Name

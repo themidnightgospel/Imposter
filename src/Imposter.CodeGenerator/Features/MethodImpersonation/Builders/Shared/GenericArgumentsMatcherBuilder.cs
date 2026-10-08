@@ -16,7 +16,7 @@ internal static class GenericArgumentsMatcherBuilder
     )
     {
         var typeParamRenamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             method.TargetGenericTypeArguments
         );
 

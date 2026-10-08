@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -33,6 +34,20 @@ internal static class TypeSymbolExtensions
         symbol is INamedTypeSymbol { MetadataName: "ValueTask" } named
         && named.IsInNamespace("System", "Threading", "Tasks");
 
+    internal static bool ReferencesTypeParameterOf(this ITypeSymbol type, IMethodSymbol method) =>
+        method.TypeParameters.Any(typeParameter => type.Contains(typeParameter));
+
+    private static bool Contains(this ITypeSymbol type, ITypeParameterSymbol typeParameter) =>
+        SymbolEqualityComparer.Default.Equals(type, typeParameter)
+        || type switch
+        {
+            INamedTypeSymbol namedType => namedType.TypeArguments.Any(typeArgument =>
+                typeArgument.Contains(typeParameter)
+            ),
+            IArrayTypeSymbol arrayType => arrayType.ElementType.Contains(typeParameter),
+            _ => false,
+        };
+
     // Matches by metadata name and namespace only: depending on the target framework these types live in
     // System.Private.CoreLib, System.Runtime, mscorlib, netstandard or System.Threading.Tasks.Extensions.
     private static bool IsInNamespace(
@@ -48,32 +63,6 @@ internal static class TypeSymbolExtensions
         && middle.ContainingNamespace is { } outer
         && outer.Name == outerNamespace
         && outer.ContainingNamespace is { IsGlobalNamespace: true };
-
-    internal static TypeSymbolMetadata GetTypeSymbolMetadata(
-        this ITypeSymbol? symbol,
-        TypeSyntax typeSyntax,
-        bool isAwaitable,
-        bool supportsNullableGenericType
-    )
-    {
-        if (symbol is null)
-        {
-            return TypeSymbolMetadata.Empty;
-        }
-
-        var isGenericType = symbol.TypeKind == TypeKind.TypeParameter;
-        var isNullableType = typeSyntax is NullableTypeSyntax;
-        var isConstructedGenericType = typeSyntax is GenericNameSyntax;
-        var shouldConvertToNullable =
-            !isNullableType
-            && symbol.SpecialType != SpecialType.System_Void
-            && !isAwaitable
-            && !((isGenericType || isConstructedGenericType) && !supportsNullableGenericType);
-
-        var nullableTypeSyntax = shouldConvertToNullable ? typeSyntax.ToNullableType() : typeSyntax;
-
-        return new TypeSymbolMetadata(typeSyntax, nullableTypeSyntax);
-    }
 
     internal static bool IsMethodAsync(this IMethodSymbol methodSymbol)
     {
@@ -128,8 +117,6 @@ internal readonly struct TaskLikeMetadata
 
 internal readonly struct TypeSymbolMetadata
 {
-    internal static TypeSymbolMetadata Empty => default;
-
     internal TypeSymbolMetadata(TypeSyntax typeSyntax, TypeSyntax nullableTypeSyntax)
     {
         TypeSyntax = typeSyntax;

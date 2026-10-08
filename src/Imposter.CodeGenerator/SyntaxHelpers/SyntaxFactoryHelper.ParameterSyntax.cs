@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +14,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     internal static ArgumentListSyntax ArgumentListSyntax(
-        IEnumerable<IParameterSymbol> parameters,
+        IEnumerable<ParameterModel> parameters,
         bool includeRefKind = true
     ) =>
         ArgumentListSyntax(
@@ -20,7 +22,7 @@ internal static partial class SyntaxFactoryHelper
         );
 
     internal static ArgumentSyntax ArgumentSyntax(
-        IParameterSymbol parameter,
+        ParameterModel parameter,
         bool includeRefKind = true
     )
     {
@@ -37,7 +39,7 @@ internal static partial class SyntaxFactoryHelper
     }
 
     internal static ParameterListSyntax ParameterListSyntax(
-        IEnumerable<IParameterSymbol> parameters,
+        IEnumerable<ParameterModel> parameters,
         bool includeRefKind = true
     ) => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
 
@@ -58,7 +60,7 @@ internal static partial class SyntaxFactoryHelper
         bool includeRefKind = true
     ) =>
         ParameterSyntaxInternal(
-            parameter.Symbol,
+            parameter.Model,
             parameter.NullableAwareTypeSyntax,
             includeRefKind,
             includeDefaultValue: false
@@ -69,14 +71,14 @@ internal static partial class SyntaxFactoryHelper
     ) => ParameterList(SeparatedList(parameters));
 
     internal static IEnumerable<ParameterSyntax> ParameterSyntaxes(
-        IEnumerable<IParameterSymbol> parameters
+        IEnumerable<ParameterModel> parameters
     ) => parameters.Select(ParameterSyntax);
 
-    internal static ParameterSyntax ParameterSyntax(IParameterSymbol parameter) =>
+    internal static ParameterSyntax ParameterSyntax(ParameterModel parameter) =>
         ParameterSyntax(parameter, includeRefKind: true);
 
     internal static ParameterSyntax ParameterSyntaxIncludingNullable(
-        IParameterSymbol parameter,
+        ParameterModel parameter,
         bool includeRefKind = true
     ) =>
         ParameterSyntaxInternal(
@@ -99,7 +101,7 @@ internal static partial class SyntaxFactoryHelper
     ) => ParameterList(SingletonSeparatedList(parameterSyntax));
 
     internal static ParameterSyntax ParameterSyntax(
-        IParameterSymbol parameter,
+        ParameterModel parameter,
         bool includeRefKind
     ) =>
         ParameterSyntaxInternal(
@@ -110,7 +112,7 @@ internal static partial class SyntaxFactoryHelper
         );
 
     private static ParameterSyntax ParameterSyntaxInternal(
-        IParameterSymbol parameter,
+        ParameterModel parameter,
         bool includeRefKind,
         bool includeNullableReferenceAnnotations,
         bool includeDefaultValue
@@ -125,7 +127,7 @@ internal static partial class SyntaxFactoryHelper
         );
 
     private static ParameterSyntax ParameterSyntaxInternal(
-        IParameterSymbol parameter,
+        ParameterModel parameter,
         TypeSyntax parameterType,
         bool includeRefKind,
         bool includeDefaultValue
@@ -149,63 +151,43 @@ internal static partial class SyntaxFactoryHelper
             }
         }
 
-        if (includeDefaultValue && parameter.HasExplicitDefaultValue)
+        if (includeDefaultValue && parameter.DefaultValue is { } defaultValue)
         {
-            var explicitDefaultValue = parameter.ExplicitDefaultValue;
-            if (explicitDefaultValue is not null)
-            {
-                var defaultValue = GetDefaultValue(parameter, explicitDefaultValue);
-                if (defaultValue is not null)
-                {
-                    parameterBuilder.WithDefaultValue(defaultValue);
-                }
-            }
-            else
-            {
-                parameterBuilder.WithDefaultValue(DefaultExpression(parameterType));
-            }
+            parameterBuilder.WithDefaultValue(DefaultValueExpression(defaultValue, parameterType));
         }
 
         return parameterBuilder.Build();
-
-        static ExpressionSyntax? GetDefaultValue(
-            IParameterSymbol parameter,
-            object explicitDefaultValue
-        )
-        {
-            var defaultValueText = SymbolDisplay.FormatPrimitive(
-                explicitDefaultValue,
-                quoteStrings: true,
-                useHexadecimalNumbers: false
-            );
-
-            if (defaultValueText is null)
-            {
-                return null;
-            }
-
-            return parameter.Type.TypeKind == TypeKind.Enum
-                ? EnumDefaultExpression(parameter, defaultValueText)
-                : parameter.Type.SpecialType switch
-                {
-                    SpecialType.System_Decimal => LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        Literal((decimal)explicitDefaultValue)
-                    ),
-                    SpecialType.System_Single => LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        Literal((float)explicitDefaultValue)
-                    ),
-                    SpecialType.System_Double => LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        Literal((double)explicitDefaultValue)
-                    ),
-                    _ => ParseExpression(defaultValueText),
-                };
-        }
     }
 
-    internal static StatementSyntax AssignDefaultValueStatementSyntax(IParameterSymbol parameter) =>
+    private static ExpressionSyntax DefaultValueExpression(
+        ParameterDefaultValue defaultValue,
+        TypeSyntax parameterType
+    ) =>
+        defaultValue switch
+        {
+            { Value: null } => DefaultExpression(parameterType),
+            { EnumType: { } enumType } => CastExpression(
+                TypeSyntax(enumType),
+                EnumValue(defaultValue.ValueText)
+            ),
+            { Value: decimal value } => LiteralExpression(
+                SyntaxKind.NumericLiteralExpression,
+                Literal(value)
+            ),
+            { Value: float value } => FloatingPointDefault(
+                SyntaxKind.FloatKeyword,
+                value,
+                Literal(value)
+            ),
+            { Value: double value } => FloatingPointDefault(
+                SyntaxKind.DoubleKeyword,
+                value,
+                Literal(value)
+            ),
+            _ => ParseExpression(defaultValue.ValueText),
+        };
+
+    internal static StatementSyntax AssignDefaultValueStatementSyntax(ParameterModel parameter) =>
         IdentifierName(EscapeKeyword(parameter.Name))
             .Assign(DefaultNonNullable)
             .ToStatementSyntax();
@@ -223,8 +205,31 @@ internal static partial class SyntaxFactoryHelper
                 )
             );
 
-    private static CastExpressionSyntax EnumDefaultExpression(
-        IParameterSymbol parameter,
-        string defaultValueText
-    ) => CastExpression(TypeSyntax(parameter.Type), ParseExpression(defaultValueText));
+    // C# reads (E)-1 as a subtraction, so a negative value is parenthesized: (E)(-1).
+    private static ExpressionSyntax EnumValue(string valueText)
+    {
+        var value = ParseExpression(valueText);
+
+        return valueText.StartsWith("-", StringComparison.Ordinal)
+            ? ParenthesizedExpression(value)
+            : value;
+    }
+
+    // NaN and the infinities have no literal form, so they are written as members such as double.NaN.
+    private static ExpressionSyntax FloatingPointDefault(
+        SyntaxKind typeKeyword,
+        double value,
+        SyntaxToken literal
+    )
+    {
+        var nonFiniteMember =
+            double.IsNaN(value) ? "NaN"
+            : double.IsPositiveInfinity(value) ? "PositiveInfinity"
+            : double.IsNegativeInfinity(value) ? "NegativeInfinity"
+            : null;
+
+        return nonFiniteMember is null
+            ? LiteralExpression(SyntaxKind.NumericLiteralExpression, literal)
+            : PredefinedType(Token(typeKeyword)).Dot(IdentifierName(nonFiniteMember));
+    }
 }

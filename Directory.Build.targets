@@ -18,4 +18,46 @@
       WorkingDirectory="$(MSBuildThisFileDirectory)"
     />
   </Target>
+
+  <!-- A project that sets GeneratedFileSnapshotsPath keeps a copy of its generated sources there for review.
+       Each compilation replaces the whole copy, so files the generators no longer produce do not linger.
+       Only verification builds refresh it: plain builds add #pragma warning lines to the generated files, so they
+       would rewrite every snapshot without a generator change. -->
+  <PropertyGroup>
+    <RefreshesGeneratedFileSnapshots Condition="'$(GeneratedFileSnapshotsPath)' != '' and '$(VERIFICATION_BUILD)' == 'true'">true</RefreshesGeneratedFileSnapshots>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RefreshesGeneratedFileSnapshots)' == 'true'">
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
+    <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RefreshGeneratedFileSnapshots</TargetsTriggeredByCompilation>
+  </PropertyGroup>
+
+  <!-- The compiler adds to its folder and never deletes, even when the compilation fails, so every compilation
+       starts without files. Emptying it is harmless when CoreCompile is then skipped as up to date or runs without
+       the compiler, because only the snapshots have to persist. Only files are deleted: the SDK creates the folder
+       just before CoreCompile, and the compiler needs it to exist. -->
+  <Target
+    Name="ClearCompilerGeneratedFiles"
+    BeforeTargets="CoreCompile"
+    Condition="'$(RefreshesGeneratedFileSnapshots)' == 'true'"
+  >
+    <ItemGroup>
+      <_PreviousGeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
+    </ItemGroup>
+    <Delete Files="@(_PreviousGeneratedSource)" />
+  </Target>
+
+  <!-- CoreCompile calls this unless it was skipped as up to date. Design-time builds run CoreCompile without the
+       compiler, so the condition keeps them from wiping the snapshots. -->
+  <Target Name="RefreshGeneratedFileSnapshots" Condition="'$(SkipCompilerExecution)' != 'true'">
+    <ItemGroup>
+      <_GeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(GeneratedFileSnapshotsPath)" />
+    <Copy
+      SourceFiles="@(_GeneratedSource)"
+      DestinationFiles="@(_GeneratedSource->'$(GeneratedFileSnapshotsPath)\%(RecursiveDir)%(Filename)%(Extension)')"
+    />
+  </Target>
 </Project>

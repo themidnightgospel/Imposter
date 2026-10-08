@@ -21,7 +21,7 @@ internal static partial class MethodImposterCollectionBuilder
 
         var localNames = new NameSet(
             method
-                .Symbol.TypeParameters.Select(typeParameter => typeParameter.Name)
+                .Model.TypeParameters.Select(typeParameter => typeParameter.Name)
                 .Append(parameterName)
         );
         var storedImposterIdentifier = Identifier(localNames.Use("storedImposter"));
@@ -33,7 +33,7 @@ internal static partial class MethodImposterCollectionBuilder
         )
             .AddParameter(GetParameter(method, parameterName))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddTypeParameters(TypeParametersSyntax(method.Symbol).ToArray())
+            .AddTypeParameters(TypeParametersSyntax(method.Model.TypeParameters).ToArray())
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(

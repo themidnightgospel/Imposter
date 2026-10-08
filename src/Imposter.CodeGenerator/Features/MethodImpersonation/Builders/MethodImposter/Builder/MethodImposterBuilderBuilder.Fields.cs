@@ -32,7 +32,7 @@ internal static partial class MethodImposterBuilderBuilder
 
     private static ParameterSyntax GetImposterParameter(in ImposterTargetMethodMetadata method) =>
         ParameterSyntax(
-            method.Symbol.IsGenericMethod
+            method.Model.IsGenericMethod
                 ? method.MethodImposter.Builder.ImposterCollectionParameter
                 : method.MethodImposter.Builder.MethodImposterParameter
         );

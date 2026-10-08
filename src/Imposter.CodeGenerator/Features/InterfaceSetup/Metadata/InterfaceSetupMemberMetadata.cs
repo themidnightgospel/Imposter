@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -33,7 +34,7 @@ internal readonly struct InterfaceSetupMemberMetadata
     internal InterfaceSetupMemberMetadata(in ImposterTargetMethodMetadata method)
         : this(
             method.Symbol,
-            method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Symbol.Name,
+            method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Model.Name,
             method.MethodImposter.BuilderInterface.Syntax
         ) { }
 
@@ -72,7 +73,7 @@ internal readonly struct InterfaceSetupMemberMetadata
     {
         var result = new List<TypeParameterConstraintClauseSyntax>();
         var nullableParameters = SyntaxFactoryHelper
-            .ArgParameters(method.Parameters)
+            .ArgParameters(method.Parameters.Select(ParameterModel.From))
             .DescendantNodes()
             .OfType<NullableTypeSyntax>()
             .Select(nullable => nullable.ElementType)

@@ -78,7 +78,7 @@ internal static partial class InvocationSetupBuilder
                 Block(
                     invocationImposterAssignment,
                     guardMissingImposter,
-                    method.Symbol.ReturnsVoid
+                    method.Model.ReturnType.IsVoid
                         ? invokeCall.ToStatementSyntax()
                         : ReturnStatement(invokeCall)
                 )
@@ -132,7 +132,7 @@ internal static partial class InvocationSetupBuilder
                 ),
             };
 
-            arguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+            arguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
             if (method.SupportsBaseImplementation)
             {
                 arguments.Add(

@@ -11,7 +11,7 @@ internal static partial class MethodImposterCollectionBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (!method.Symbol.IsGenericMethod)
+        if (!method.Model.IsGenericMethod)
         {
             return null;
         }

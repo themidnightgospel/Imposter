@@ -103,7 +103,7 @@ internal static partial class MethodImposterBuilderBuilder
                 ThrowStatement(
                     IdentifierName(parameterName)
                         .Dot(IdentifierName("Invoke"))
-                        .Call(ArgumentListSyntax(method.Symbol.Parameters))
+                        .Call(ArgumentListSyntax(method.Parameters.AllParameters))
                 )
             )
         );

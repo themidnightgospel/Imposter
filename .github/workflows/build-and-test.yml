@@ -106,3 +106,7 @@ jobs:
       - name: Build benchmarks (Roslyn 5.0)
         if: matrix.roslynVersion == '5.0'
         run: dotnet build benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION=5.0 -p:VERIFICATION_BUILD=true
+
+      # The verification builds above refresh the generated-file snapshots of this Roslyn version.
+      - name: Check generated-file snapshots (Roslyn ${{ matrix.roslynVersion }})
+        run: bash build-scripts/check-generated-snapshots.sh

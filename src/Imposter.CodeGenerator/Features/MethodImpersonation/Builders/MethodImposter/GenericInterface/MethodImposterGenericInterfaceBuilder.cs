@@ -13,14 +13,14 @@ internal static class MethodImposterGenericInterfaceBuilder
 {
     internal static InterfaceDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (!method.Symbol.IsGenericMethod)
+        if (!method.Model.IsGenericMethod)
         {
             return null;
         }
 
         var genericInterfaceType = method.MethodImposter.Interface;
         var invokeMethodParameters = SyntaxFactoryHelper.ParameterListSyntax(
-            method.Symbol.Parameters
+            method.Parameters.AllParameters
         );
 
         if (method.SupportsBaseImplementation)
@@ -61,7 +61,7 @@ internal static class MethodImposterGenericInterfaceBuilder
         var hasMatchingSetupMethod = hasMatchingSetupMethodBuilder.WithSemicolon().Build();
 
         return InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, genericInterfaceType.Name)
+            .CreateForMethod(method.Model, genericInterfaceType.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)

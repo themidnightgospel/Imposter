@@ -1,20 +1,25 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Imposter.CodeGenerator.Models;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Helpers;
 
 internal static class ImposterInstanceModifierBuilder
 {
-    internal static SyntaxTokenList For(ISymbol symbol, MemberAccess memberAccess)
-    {
-        if (symbol?.ContainingType?.TypeKind == TypeKind.Class)
-        {
-            return GetAccessibilityModifiers(memberAccess.GetOverrideAccessibility(symbol))
-                .Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-        }
+    internal static SyntaxTokenList For(ISymbol symbol, MemberAccess memberAccess) =>
+        symbol?.ContainingType?.TypeKind == TypeKind.Class
+            ? Override(memberAccess.GetOverrideAccessibility(symbol))
+            : InterfaceImplementation();
 
-        return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-    }
+    internal static SyntaxTokenList For(MethodModel method) =>
+        method.IsClassMember ? Override(method.OverrideAccessibility) : InterfaceImplementation();
+
+    private static SyntaxTokenList Override(Accessibility accessibility) =>
+        GetAccessibilityModifiers(accessibility)
+            .Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+
+    private static SyntaxTokenList InterfaceImplementation() =>
+        SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
     private static SyntaxTokenList GetAccessibilityModifiers(Accessibility accessibility)
     {

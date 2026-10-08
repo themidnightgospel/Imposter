@@ -13,7 +13,7 @@ internal static partial class InvocationSetupBuilder
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         return ClassDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.Name)
+            .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Name)
             .AddMember(DefaultInstanceLazyInitializer(method))
             .AddMember(
                 method.Parameters.HasInputParameters

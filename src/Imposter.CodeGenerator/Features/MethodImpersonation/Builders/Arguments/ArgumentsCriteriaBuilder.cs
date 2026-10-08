@@ -49,7 +49,7 @@ public static class ArgumentsCriteriaBuilder
             )
             .AddMember(MatchesMethod(method));
 
-        if (method.Symbol.IsGenericMethod)
+        if (method.Model.IsGenericMethod)
         {
             argumentsCriteriaClass.AddMember(BuildAsMethod(method));
         }
@@ -66,7 +66,7 @@ public static class ArgumentsCriteriaBuilder
     {
         var returnType = BuildReturnType(method);
         var typeParameterRenamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             method.ArgumentsCriteriaAsMethod.TargetTypeArguments
         );
         var constructorArgs = BuildConstructorArgs(method, typeParameterRenamer);
@@ -107,7 +107,7 @@ public static class ArgumentsCriteriaBuilder
         {
             var targetType = (TypeSyntax)renamer.Visit(parameter.TypeSyntax);
 
-            if (parameter.Symbol.RefKind is RefKind.Out)
+            if (parameter.Model.RefKind is RefKind.Out)
             {
                 return Argument(OutArgAny(targetType));
             }

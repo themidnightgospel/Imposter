@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,15 +10,15 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 /// <summary>
 /// Rewrites identifier names that refer to a method's type parameters into explicit target type
-/// argument syntax. Intended for use on syntax that originates from a single
-/// <see cref="IMethodSymbol"/> to avoid semantic mismatches.
+/// argument syntax. Intended for use on syntax that originates from a single method to avoid
+/// semantic mismatches.
 /// </summary>
 internal sealed class TypeParameterRenamer : CSharpSyntaxRewriter
 {
     private readonly Dictionary<string, NameSyntax> _replacementMap;
 
     public TypeParameterRenamer(
-        IReadOnlyList<ITypeParameterSymbol> typeParameters,
+        IReadOnlyList<TypeParameterModel> typeParameters,
         IReadOnlyList<NameSyntax> replacementNames
     )
     {

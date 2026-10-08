@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,9 +9,11 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
 internal readonly record struct ImposterTargetMethodParametersMetadata
 {
-    internal IReadOnlyList<IParameterSymbol> InputParameters { get; }
+    internal IReadOnlyList<ParameterModel> AllParameters { get; }
 
-    internal IReadOnlyList<IParameterSymbol> OutputParameters { get; }
+    internal IReadOnlyList<ParameterModel> InputParameters { get; }
+
+    internal IReadOnlyList<ParameterModel> OutputParameters { get; }
 
     internal IReadOnlyList<MethodParameterMetadata> AllParameterMetadata { get; }
 
@@ -30,17 +33,16 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly bool HasOutputParameters;
 
-    public ImposterTargetMethodParametersMetadata(IReadOnlyList<IParameterSymbol> symbolParameters)
+    public ImposterTargetMethodParametersMetadata(IReadOnlyList<ParameterModel> parameters)
     {
-        InputParameters = symbolParameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
-        OutputParameters = symbolParameters.Where(it => it.RefKind is RefKind.Out).ToArray();
+        AllParameters = parameters;
+        InputParameters = parameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
+        OutputParameters = parameters.Where(it => it.RefKind is RefKind.Out).ToArray();
         HasOutputParameters = OutputParameters.Count > 0;
 
-        AllParameterMetadata = symbolParameters
-            .Select(it => new MethodParameterMetadata(it))
-            .ToArray();
+        AllParameterMetadata = parameters.Select(it => new MethodParameterMetadata(it)).ToArray();
         InputParameterMetadata = AllParameterMetadata
-            .Where(it => it.Symbol.RefKind is not RefKind.Out)
+            .Where(it => it.Model.RefKind is not RefKind.Out)
             .ToArray();
 
         ParameterListSyntaxIncludingNullable =

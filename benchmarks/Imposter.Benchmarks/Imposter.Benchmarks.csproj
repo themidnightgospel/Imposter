@@ -3,8 +3,6 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     <LangVersion>14</LangVersion>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
@@ -20,8 +18,7 @@
 
   <!-- Write generated sources to disk for review -->
   <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    <GeneratedFileSnapshotsPath>GeneratedFiles</GeneratedFileSnapshotsPath>
   </PropertyGroup>
 
   <!-- Include but don't compile generated code. The system will already compile the code, but this will make it visible for reference.-->

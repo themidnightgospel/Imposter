@@ -14,7 +14,7 @@ internal static partial class MethodImposterCollectionBuilder
 {
     private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
-        var typeParameters = TypeParametersSyntax(method.Symbol).ToArray();
+        var typeParameters = TypeParametersSyntax(method.Model.TypeParameters).ToArray();
 
         var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
             .AddModifier(Token(SyntaxKind.InternalKeyword))

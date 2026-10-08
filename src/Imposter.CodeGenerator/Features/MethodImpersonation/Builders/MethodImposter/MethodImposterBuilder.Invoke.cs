@@ -156,7 +156,7 @@ internal partial class MethodImposterBuilder
             Argument(IdentifierName("_invocationBehavior")),
             Argument(method.DisplayName.StringLiteral()),
         };
-        invokeArguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+        invokeArguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
 
         if (method.SupportsBaseImplementation)
         {
@@ -173,7 +173,7 @@ internal partial class MethodImposterBuilder
             .Dot(IdentifierName("Invoke"))
             .Call(ArgumentList(SeparatedList(invokeArguments)));
 
-        if (method.Symbol.ReturnsVoid)
+        if (method.Model.ReturnType.IsVoid)
         {
             return invokeExpression.ToStatementSyntax();
         }

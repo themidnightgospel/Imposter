@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -50,7 +51,7 @@ internal readonly ref struct ImposterEventCoreMetadata
 
         Parameters = delegateSymbol
             .DelegateInvokeMethod.Parameters.Select(parameter => new EventParameterMetadata(
-                parameter
+                ParameterModel.From(parameter)
             ))
             .ToArray();
 

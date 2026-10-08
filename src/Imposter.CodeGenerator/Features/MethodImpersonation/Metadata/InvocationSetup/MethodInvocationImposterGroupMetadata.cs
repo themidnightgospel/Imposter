@@ -63,13 +63,13 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             ContinuationInterface.Syntax,
             method.Delegate.Syntax
         );
-        ReturnsAsyncMethod = method.ReturnType.TaskLikeMetadata
-            is { IsAwaitable: true, GenericAwaitableResultType: not null }
+        ReturnsAsyncMethod = method.ReturnType
+            is { IsAwaitable: true, GenericAwaitableResultType: { } resultType }
             ? new ReturnsAsyncMethodMetadata(
                 method.ReservedParameterNames,
                 Interface.Syntax,
                 ContinuationInterface.Syntax,
-                method.ReturnType.GenericAwaitableResultType!
+                resultType
             )
             : null;
         ThrowsMethod = new ThrowsMethodMetadata(
