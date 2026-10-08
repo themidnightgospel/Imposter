@@ -174,5 +174,21 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
             status.ShouldBe(1);
             result.ShouldBe(42);
         }
+
+#if USE_CSHARP14
+        [Fact]
+        public void GivenArgumentMatchers_WhenMatchingRefReadOnlyParameters_ShouldPassTheArgumentToTheDelegate()
+        {
+            var imposter = new IRefReadOnlyArgumentMatchingServiceImposter();
+            var service = imposter.Instance();
+
+            imposter.Double(Arg<int>.Is(x => x > 0)).Returns((ref readonly int value) => value * 2);
+
+            int input = 5;
+            var result = service.Double(in input);
+
+            result.ShouldBe(10);
+        }
+#endif
     }
 }

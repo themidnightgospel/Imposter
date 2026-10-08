@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -87,23 +88,18 @@ internal static class MethodImposterAdapterBuilder
         {
             var pType = p.TypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
+            var castArgument = TypeCasterSyntaxHelper.CastExpression(
+                p.Name,
+                (TypeSyntax)pTargetType,
+                pType
+            );
 
             switch (p.Model.RefKind)
             {
                 case RefKind.Ref:
                 {
                     var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
-                    body.Add(
-                        LocalVariableDeclarationSyntax(
-                            pType,
-                            adaptedName,
-                            TypeCasterSyntaxHelper.CastExpression(
-                                p.Name,
-                                (TypeSyntax)pTargetType,
-                                pType
-                            )
-                        )
-                    );
+                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName, castArgument));
                     invokeArguments.Add(
                         Argument(IdentifierName(adaptedName))
                             .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
@@ -142,16 +138,19 @@ internal static class MethodImposterAdapterBuilder
                     );
                     break;
                 }
-                default:
+                case RefKinds.RefReadOnlyParameter:
+                {
+                    // A `ref readonly` parameter takes a variable, not the cast itself (CS9193).
+                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
+                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName, castArgument));
                     invokeArguments.Add(
-                        Argument(
-                            TypeCasterSyntaxHelper.CastExpression(
-                                p.Name,
-                                (TypeSyntax)pTargetType,
-                                pType
-                            )
-                        )
+                        Argument(IdentifierName(adaptedName))
+                            .WithRefOrOutKeyword(Token(SyntaxKind.InKeyword))
                     );
+                    break;
+                }
+                default:
+                    invokeArguments.Add(Argument(castArgument));
                     break;
             }
         }
@@ -312,7 +311,10 @@ internal static class MethodImposterAdapterBuilder
             HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
             AdaptedParameterNames = method
                 .Parameters.AllParameterMetadata.Where(parameter =>
-                    parameter.Model.RefKind is RefKind.Ref or RefKind.Out
+                    parameter.Model.RefKind
+                        is RefKind.Ref
+                            or RefKind.Out
+                            or RefKinds.RefReadOnlyParameter
                 )
                 .ToDictionary(
                     parameter => parameter.Name,

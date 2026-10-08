@@ -24,4 +24,8 @@ internal readonly struct IndexerParameterMetadata
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(model);
     }
+
+    // Passes this parameter, or a copy of it, to a member that declares the same parameter.
+    internal ArgumentSyntax ForwardingArgument(string variableName) =>
+        SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind);
 }
