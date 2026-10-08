@@ -153,53 +153,39 @@ internal static partial class SyntaxFactoryHelper
 
         if (includeDefaultValue && parameter.DefaultValue is { } defaultValue)
         {
-            parameterBuilder.WithDefaultValue(
-                defaultValue.Expression is null
-                    ? DefaultExpression(parameterType)
-                    : ParseExpression(defaultValue.Expression)
-            );
+            parameterBuilder.WithDefaultValue(DefaultValueExpression(defaultValue, parameterType));
         }
 
         return parameterBuilder.Build();
     }
 
-    // Null when the value has no C# form.
-    internal static ExpressionSyntax? DefaultValueExpression(ITypeSymbol type, object value)
-    {
-        var valueText = SymbolDisplay.FormatPrimitive(
-            value,
-            quoteStrings: true,
-            useHexadecimalNumbers: false
-        );
-
-        if (valueText is null)
+    private static ExpressionSyntax DefaultValueExpression(
+        ParameterDefaultValue defaultValue,
+        TypeSyntax parameterType
+    ) =>
+        defaultValue switch
         {
-            return null;
-        }
-
-        var valueType = UnderlyingValueType(type);
-
-        return valueType.TypeKind == TypeKind.Enum
-            ? CastExpression(TypeSyntax(valueType), EnumValue(valueText))
-            : value switch
-            {
-                decimal decimalValue => LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    Literal(decimalValue)
-                ),
-                float floatValue => FloatingPointDefault(
-                    SyntaxKind.FloatKeyword,
-                    floatValue,
-                    Literal(floatValue)
-                ),
-                double doubleValue => FloatingPointDefault(
-                    SyntaxKind.DoubleKeyword,
-                    doubleValue,
-                    Literal(doubleValue)
-                ),
-                _ => ParseExpression(valueText),
-            };
-    }
+            { Value: null } => DefaultExpression(parameterType),
+            { EnumType: { } enumType } => CastExpression(
+                TypeSyntax(enumType),
+                EnumValue(defaultValue.ValueText)
+            ),
+            { Value: decimal value } => LiteralExpression(
+                SyntaxKind.NumericLiteralExpression,
+                Literal(value)
+            ),
+            { Value: float value } => FloatingPointDefault(
+                SyntaxKind.FloatKeyword,
+                value,
+                Literal(value)
+            ),
+            { Value: double value } => FloatingPointDefault(
+                SyntaxKind.DoubleKeyword,
+                value,
+                Literal(value)
+            ),
+            _ => ParseExpression(defaultValue.ValueText),
+        };
 
     internal static StatementSyntax AssignDefaultValueStatementSyntax(ParameterModel parameter) =>
         IdentifierName(EscapeKeyword(parameter.Name))
@@ -218,16 +204,6 @@ internal static partial class SyntaxFactoryHelper
                     )
                 )
             );
-
-    // The default of a nullable value type, such as decimal? or E?, is a value of its underlying type.
-    private static ITypeSymbol UnderlyingValueType(ITypeSymbol type) =>
-        type
-            is INamedTypeSymbol
-            {
-                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T,
-            } nullable
-            ? nullable.TypeArguments[0]
-            : type;
 
     // C# reads (E)-1 as a subtraction, so a negative value is parenthesized: (E)(-1).
     private static ExpressionSyntax EnumValue(string valueText)

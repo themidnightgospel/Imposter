@@ -31,7 +31,7 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
             argumentsCriteriaName
         );
 
-        var nameContext = new NameSet(method.Symbol.Parameters.Select(p => p.Name));
+        var nameContext = new NameSet(method.Model.Parameters.Select(p => p.Name));
         MatchesMethod = new MatchesMethodMetadata(nameContext);
         AsMethod = new AsMethodMetadata(nameContext);
     }

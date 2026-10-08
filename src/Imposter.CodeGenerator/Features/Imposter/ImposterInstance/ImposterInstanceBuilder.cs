@@ -355,7 +355,7 @@ internal readonly ref struct ImposterInstanceBuilder
             if (imposterMethod.SupportsBaseImplementation)
             {
                 var baseMethodExpression = BaseExpression()
-                    .Dot(IdentifierName(imposterMethod.Symbol.Name));
+                    .Dot(IdentifierName(imposterMethod.Model.Name));
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
@@ -365,10 +365,10 @@ internal readonly ref struct ImposterInstanceBuilder
                     .Call(ArgumentList(SeparatedList(invokeArguments)));
 
             var methodBuilder = new MethodDeclarationBuilder(
-                TypeSyntaxIncludingNullable(imposterMethod.Symbol.ReturnType),
-                imposterMethod.Symbol.Name
+                TypeSyntaxIncludingNullable(imposterMethod.Model.ReturnType.Type),
+                imposterMethod.Model.Name
             )
-                .AddTypeParameters(TypeParametersSyntax(imposterMethod.Symbol))
+                .AddTypeParameters(TypeParametersSyntax(imposterMethod.Model.TypeParameters))
                 .AddParameters(
                     imposterMethod.Parameters.AllParameterMetadata.Select(p =>
                         ParameterSyntaxWithoutDefaultValue(p)
@@ -384,11 +384,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
                 .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier);
 
-            foreach (
-                var constraintClause in SyntaxFactoryHelper.TypeParameterConstraintClauses(
-                    imposterMethod.Symbol
-                )
-            )
+            foreach (var constraintClause in imposterMethod.GenericTypeConstraintClauses)
             {
                 methodBuilder.AddConstraintClause(constraintClause);
             }
@@ -400,7 +396,7 @@ internal readonly ref struct ImposterInstanceBuilder
             in ImposterTargetMethodMetadata method
         )
         {
-            if (method.Symbol.IsGenericMethod)
+            if (method.Model.IsGenericMethod)
             {
                 return IdentifierName(imposterFieldName)
                     .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))

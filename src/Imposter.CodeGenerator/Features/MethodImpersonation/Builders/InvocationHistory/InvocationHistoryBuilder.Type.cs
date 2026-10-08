@@ -75,7 +75,7 @@ internal static partial class InvocationHistoryBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var methodNameLiteral = $"{method.Symbol.Name}(".StringLiteral();
+        var methodNameLiteral = $"{method.Model.Name}(".StringLiteral();
 
         ExpressionSyntax argumentsExpression = method.Parameters.HasInputParameters
             ? BuildArgumentsText(method)

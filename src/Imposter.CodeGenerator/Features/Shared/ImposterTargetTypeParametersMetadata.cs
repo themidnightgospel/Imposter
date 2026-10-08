@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -27,7 +28,7 @@ internal readonly struct ImposterTargetTypeParametersMetadata
             .ToArray();
         TypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TypeArguments);
         ConstraintClauses = SyntaxFactoryHelper.TypeParameterConstraintClauses(
-            targetSymbol.TypeParameters
+            targetSymbol.TypeParameters.Select(TypeParameterModel.From)
         );
     }
 }

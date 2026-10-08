@@ -30,13 +30,11 @@ internal readonly struct InvocationVerifierInterfaceMetadata
         // A type parameter cannot share the name of a member declared on this interface.
         var names = new NameSet(
             method
-                .Symbol.TypeParameters.Select(parameter => parameter.Name)
-                .Concat(
-                    method.Symbol.ContainingType.TypeParameters.Select(parameter => parameter.Name)
-                )
+                .Model.TypeParameters.Select(parameter => parameter.Name)
+                .Concat(method.Model.ContainingTypeTypeParameterNames)
         );
         var declarationTypeArguments = method
-            .Symbol.TypeParameters.Select(parameter =>
+            .Model.TypeParameters.Select(parameter =>
                 IdentifierName(
                     parameter.Name is CallCountMethodName or CalledMethodMetadata.Name
                         ? Identifier(names.Use(parameter.Name))
@@ -46,7 +44,7 @@ internal readonly struct InvocationVerifierInterfaceMetadata
             .ToArray();
         TypeParameterList = SyntaxFactoryHelper.TypeParameterListSyntax(declarationTypeArguments);
         var renamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             declarationTypeArguments
         );
         ConstraintClauses = method

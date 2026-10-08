@@ -64,32 +64,6 @@ internal static class TypeSymbolExtensions
         && outer.Name == outerNamespace
         && outer.ContainingNamespace is { IsGlobalNamespace: true };
 
-    internal static TypeSymbolMetadata GetTypeSymbolMetadata(
-        this ITypeSymbol? symbol,
-        TypeSyntax typeSyntax,
-        bool isAwaitable,
-        bool supportsNullableGenericType
-    )
-    {
-        if (symbol is null)
-        {
-            return TypeSymbolMetadata.Empty;
-        }
-
-        var isGenericType = symbol.TypeKind == TypeKind.TypeParameter;
-        var isNullableType = typeSyntax is NullableTypeSyntax;
-        var isConstructedGenericType = typeSyntax is GenericNameSyntax;
-        var shouldConvertToNullable =
-            !isNullableType
-            && symbol.SpecialType != SpecialType.System_Void
-            && !isAwaitable
-            && !((isGenericType || isConstructedGenericType) && !supportsNullableGenericType);
-
-        var nullableTypeSyntax = shouldConvertToNullable ? typeSyntax.ToNullableType() : typeSyntax;
-
-        return new TypeSymbolMetadata(typeSyntax, nullableTypeSyntax);
-    }
-
     internal static bool IsMethodAsync(this IMethodSymbol methodSymbol)
     {
         if (
@@ -143,8 +117,6 @@ internal readonly struct TaskLikeMetadata
 
 internal readonly struct TypeSymbolMetadata
 {
-    internal static TypeSymbolMetadata Empty => default;
-
     internal TypeSymbolMetadata(TypeSyntax typeSyntax, TypeSyntax nullableTypeSyntax)
     {
         TypeSyntax = typeSyntax;

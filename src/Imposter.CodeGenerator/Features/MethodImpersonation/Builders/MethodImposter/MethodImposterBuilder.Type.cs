@@ -14,10 +14,10 @@ internal static partial class MethodImposterBuilder
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         var methodImposterClassBuilder = ClassDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, method.MethodImposter.Name)
+            .CreateForMethod(method.Model, method.MethodImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword));
 
-        if (method.Symbol.IsGenericMethod)
+        if (method.Model.IsGenericMethod)
         {
             methodImposterClassBuilder = methodImposterClassBuilder.AddBaseType(
                 SimpleBaseType(method.MethodImposter.GenericInterface.Syntax)
@@ -50,7 +50,7 @@ internal static partial class MethodImposterBuilder
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             // Only generic method imposters are looked up by matching setup (through their generic interface).
             .AddMember(
-                method.Symbol.IsGenericMethod
+                method.Model.IsGenericMethod
                     ? BuildHasMatchingInvocationImposterGroupMethod(method)
                     : null
             )

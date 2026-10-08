@@ -32,7 +32,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                                 Parameter(Identifier("it"))
                                     .Lambda(
                                         It.Dot(
-                                                method.Symbol.IsGenericMethod
+                                                method.Model.IsGenericMethod
                                                     ? GenericName(
                                                         Identifier(
                                                             InvocationHistoryMatchesMethodMetadata.Name

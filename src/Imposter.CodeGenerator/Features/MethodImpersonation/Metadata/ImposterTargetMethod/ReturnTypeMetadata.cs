@@ -1,5 +1,5 @@
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
@@ -10,24 +10,42 @@ internal readonly struct ReturnTypeMetadata
 
     internal readonly TypeSymbolMetadata TypeSymbolMetadata;
 
-    internal readonly TaskLikeMetadata TaskLikeMetadata;
+    internal readonly bool IsAwaitable;
 
     internal ReturnTypeMetadata(
-        ITypeSymbol returnTypeSymbol,
+        ReturnTypeModel returnType,
         TypeSyntax returnTypeSyntax,
         bool supportsNullableGenericType
     )
     {
-        TaskLikeMetadata = returnTypeSymbol.GetTaskLikeMetadata();
+        IsAwaitable = returnType.IsAwaitable;
 
-        GenericAwaitableResultType = TaskLikeMetadata.GenericAwaitableResultType is null
-            ? null
-            : SyntaxFactoryHelper.TypeSyntax(TaskLikeMetadata.GenericAwaitableResultType);
+        GenericAwaitableResultType = returnType.AwaitableResultType is { } resultType
+            ? SyntaxFactoryHelper.TypeSyntax(resultType)
+            : null;
 
-        TypeSymbolMetadata = returnTypeSymbol.GetTypeSymbolMetadata(
+        TypeSymbolMetadata = new TypeSymbolMetadata(
             returnTypeSyntax,
-            TaskLikeMetadata.IsAwaitable,
-            supportsNullableGenericType
+            NullableReturnTypeSyntax(returnType, returnTypeSyntax, supportsNullableGenericType)
         );
+    }
+
+    private static TypeSyntax NullableReturnTypeSyntax(
+        ReturnTypeModel returnType,
+        TypeSyntax typeSyntax,
+        bool supportsNullableGenericType
+    )
+    {
+        var isConstructedGenericType = typeSyntax is GenericNameSyntax;
+        var shouldConvertToNullable =
+            typeSyntax is not NullableTypeSyntax
+            && !returnType.IsVoid
+            && !returnType.IsAwaitable
+            && !(
+                (returnType.IsTypeParameter || isConstructedGenericType)
+                && !supportsNullableGenericType
+            );
+
+        return shouldConvertToNullable ? typeSyntax.ToNullableType() : typeSyntax;
     }
 }

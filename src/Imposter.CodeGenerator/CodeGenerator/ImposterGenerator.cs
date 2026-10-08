@@ -212,7 +212,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         foreach (
             var method in imposterGenerationContext
                 .Imposter.Methods.OrderBy(
-                    method => method.Symbol.MetadataName,
+                    method => method.Model.MetadataName,
                     StringComparer.Ordinal
                 )
                 .ThenBy(method => method.DisplayName, StringComparer.Ordinal)

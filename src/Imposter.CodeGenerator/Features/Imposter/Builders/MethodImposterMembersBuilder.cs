@@ -15,7 +15,7 @@ internal static class MethodImposterMembersBuilder
         in ImposterGenerationContext imposterGenerationContext
     ) =>
         imposterGenerationContext.Imposter.Methods.Select(method =>
-            method.Symbol.IsGenericMethod
+            method.Model.IsGenericMethod
                 ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
                     method.MethodImposter.Collection.Syntax,
                     method.MethodImposter.Collection.AsField.Name
@@ -46,9 +46,11 @@ internal static class MethodImposterMembersBuilder
                 method.MethodImposter.BuilderInterface.Syntax,
                 method.RequiresExplicitInterfaceImplementation
                     ? method.UniqueName
-                    : method.Symbol.Name
+                    : method.Model.Name
             )
-                .WithTypeParameters(SyntaxFactoryHelper.TypeParameterListSyntax(method.Symbol))
+                .WithTypeParameters(
+                    SyntaxFactoryHelper.TypeParameterListSyntax(method.Model.TypeParameters)
+                )
                 .AddConstraintClauses(method.GenericTypeConstraintClauses)
                 .WithParameterList(method.Parameters.ArgParameterListSyntax)
                 .WithBody(
@@ -71,7 +73,7 @@ internal static class MethodImposterMembersBuilder
             arguments.Add(
                 Argument(
                     IdentifierName(
-                        method.Symbol.IsGenericMethod
+                        method.Model.IsGenericMethod
                             ? method.MethodImposter.Collection.AsField.Name
                             : method.MethodImposter.AsField.Name
                     )

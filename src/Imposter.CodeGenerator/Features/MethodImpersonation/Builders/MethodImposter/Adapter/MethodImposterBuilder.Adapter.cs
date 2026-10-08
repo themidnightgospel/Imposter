@@ -15,7 +15,7 @@ internal static class MethodImposterAdapterBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (!method.Symbol.IsGenericMethod)
+        if (!method.Model.IsGenericMethod)
         {
             return null;
         }
@@ -76,7 +76,7 @@ internal static class MethodImposterAdapterBuilder
         var postInvokeActions = new List<StatementSyntax>();
 
         var typeParamRenamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             method.TargetGenericTypeArguments
         );
 
@@ -230,7 +230,7 @@ internal static class MethodImposterAdapterBuilder
     )
     {
         var typeParamRenamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             method.TargetGenericTypeArguments
         );
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
@@ -279,10 +279,10 @@ internal static class MethodImposterAdapterBuilder
     )
     {
         var asMethodTypeParams = method
-            .Symbol.TypeParameters.Select(p => TypeParameter(p.Name + "Target1"))
+            .Model.TypeParameters.Select(p => TypeParameter(p.Name + "Target1"))
             .ToArray();
         var targetTypeArgs = method
-            .Symbol.TypeParameters.Select(p => IdentifierName(p.Name + "Target1"))
+            .Model.TypeParameters.Select(p => IdentifierName(p.Name + "Target1"))
             .Cast<TypeSyntax>()
             .ToArray();
         var genericImposterInterface = GenericName(method.MethodImposter.Interface.Name)

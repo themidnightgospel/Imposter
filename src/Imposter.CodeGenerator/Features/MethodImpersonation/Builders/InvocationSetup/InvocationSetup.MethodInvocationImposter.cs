@@ -209,7 +209,7 @@ internal static partial class InvocationSetupBuilder
             )
         );
 
-        if (method.Symbol.ReturnsVoid)
+        if (method.Model.ReturnType.IsVoid)
         {
             defaultBlockBuilder.AddStatement(resultInvocation.ToStatementSyntax());
         }
@@ -240,7 +240,7 @@ internal static partial class InvocationSetupBuilder
 
         defaultBlockBuilder.AddStatement(callbackInvocation);
 
-        if (!method.Symbol.ReturnsVoid)
+        if (!method.Model.ReturnType.IsVoid)
         {
             defaultBlockBuilder.AddStatement(ReturnStatement(resultVariableIdentifier));
         }

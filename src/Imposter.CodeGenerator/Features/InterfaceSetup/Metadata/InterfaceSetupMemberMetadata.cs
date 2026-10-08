@@ -34,7 +34,7 @@ internal readonly struct InterfaceSetupMemberMetadata
     internal InterfaceSetupMemberMetadata(in ImposterTargetMethodMetadata method)
         : this(
             method.Symbol,
-            method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Symbol.Name,
+            method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Model.Name,
             method.MethodImposter.BuilderInterface.Syntax
         ) { }
 

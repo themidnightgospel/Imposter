@@ -78,7 +78,7 @@ internal static partial class InvocationSetupBuilder
                 Block(
                     invocationImposterAssignment,
                     guardMissingImposter,
-                    method.Symbol.ReturnsVoid
+                    method.Model.ReturnType.IsVoid
                         ? invokeCall.ToStatementSyntax()
                         : ReturnStatement(invokeCall)
                 )

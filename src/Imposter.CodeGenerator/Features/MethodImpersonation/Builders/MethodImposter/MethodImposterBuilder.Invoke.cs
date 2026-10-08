@@ -173,7 +173,7 @@ internal partial class MethodImposterBuilder
             .Dot(IdentifierName("Invoke"))
             .Call(ArgumentList(SeparatedList(invokeArguments)));
 
-        if (method.Symbol.ReturnsVoid)
+        if (method.Model.ReturnType.IsVoid)
         {
             return invokeExpression.ToStatementSyntax();
         }

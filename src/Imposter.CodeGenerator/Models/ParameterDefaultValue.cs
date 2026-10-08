@@ -1,16 +1,14 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// An explicit parameter default. The expression is kept as text so the model compares by value; null means
-/// default(T), whose T is written the way the parameter's type is.
+/// An explicit parameter default. <see cref="ValueText"/> also tells apart constants that compare equal but are
+/// written differently, such as 0.0 and -0.0. A null value is written as default(T).
 /// </summary>
-internal sealed record ParameterDefaultValue(string? Expression)
+internal sealed record ParameterDefaultValue(object? Value, string ValueText, TypeModel? EnumType)
 {
-    private static readonly ParameterDefaultValue TypeDefault = new((string?)null);
-
     internal static ParameterDefaultValue? From(IParameterSymbol parameter)
     {
         if (!parameter.HasExplicitDefaultValue)
@@ -18,13 +16,34 @@ internal sealed record ParameterDefaultValue(string? Expression)
             return null;
         }
 
-        if (parameter.ExplicitDefaultValue is not { } value)
+        var value = parameter.ExplicitDefaultValue;
+        var valueText = SymbolDisplay.FormatPrimitive(
+            value!,
+            quoteStrings: true,
+            useHexadecimalNumbers: false
+        );
+
+        if (valueText is null)
         {
-            return TypeDefault;
+            return null;
         }
 
-        return SyntaxFactoryHelper.DefaultValueExpression(parameter.Type, value) is { } expression
-            ? new ParameterDefaultValue(expression.ToFullString())
-            : null;
+        var valueType = UnderlyingValueType(parameter.Type);
+
+        return new ParameterDefaultValue(
+            value,
+            valueText,
+            valueType.TypeKind == TypeKind.Enum ? TypeModel.From(valueType) : null
+        );
     }
+
+    // The default of a nullable value type, such as decimal? or E?, is a value of its underlying type.
+    private static ITypeSymbol UnderlyingValueType(ITypeSymbol type) =>
+        type
+            is INamedTypeSymbol
+            {
+                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T,
+            } nullable
+            ? nullable.TypeArguments[0]
+            : type;
 }

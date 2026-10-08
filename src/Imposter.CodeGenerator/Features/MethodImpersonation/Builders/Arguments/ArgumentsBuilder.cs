@@ -49,7 +49,7 @@ internal static class ArgumentsBuilder
                     .Build()
             );
 
-        if (method.Symbol.IsGenericMethod)
+        if (method.Model.IsGenericMethod)
         {
             argumentsClassBuilder.AddMember(BuildArgumentsAsMethod(method));
         }
@@ -61,7 +61,7 @@ internal static class ArgumentsBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var typeParameters = method.Symbol.TypeParameters;
+        var typeParameters = method.Model.TypeParameters;
         var targetGenericTypeArguments = method.TargetGenericTypeArguments;
         var targetTypeArgumentSimpleNames = targetGenericTypeArguments
             .Select(SyntaxFactoryHelper.AsSimpleName)

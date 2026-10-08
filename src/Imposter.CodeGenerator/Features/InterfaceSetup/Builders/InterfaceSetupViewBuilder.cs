@@ -51,11 +51,12 @@ internal static class InterfaceSetupViewBuilder
         if (member.Symbol is IMethodSymbol method)
         {
             var parameters = ArgParameters(method.Parameters.Select(ParameterModel.From));
+            var typeParameters = method.TypeParameters.Select(TypeParameterModel.From).ToArray();
             var builder = new MethodDeclarationBuilder(
                 member.ReturnType,
                 EscapeKeyword(method.Name)
             )
-                .WithTypeParameters(TypeParameterListSyntax(method))
+                .WithTypeParameters(TypeParameterListSyntax(typeParameters))
                 .WithParameterList(parameters)
                 .WithExplicitInterfaceSpecifier(specifier);
 
@@ -66,7 +67,7 @@ internal static class InterfaceSetupViewBuilder
                     builder.AddModifier(Token(SyntaxKind.NewKeyword));
                 }
                 return builder
-                    .AddConstraintClauses(TypeParameterConstraintClauses(method.TypeParameters))
+                    .AddConstraintClauses(TypeParameterConstraintClauses(typeParameters))
                     .WithSemicolon()
                     .Build();
             }

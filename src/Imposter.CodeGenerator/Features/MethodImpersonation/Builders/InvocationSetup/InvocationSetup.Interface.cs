@@ -25,7 +25,7 @@ internal static partial class InvocationSetupBuilder
     ) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(
-                method.Symbol,
+                method.Model,
                 method.MethodInvocationImposterGroup.CallbackInterface.Name
             )
             .AddMember(BuildCallbackInterfaceMethod(method))
@@ -37,7 +37,7 @@ internal static partial class InvocationSetupBuilder
     ) =>
         InterfaceDeclarationBuilderFactory
             .CreateForMethod(
-                method.Symbol,
+                method.Model,
                 method.MethodInvocationImposterGroup.ContinuationInterface.Name
             )
             .AddBaseType(
@@ -51,7 +51,7 @@ internal static partial class InvocationSetupBuilder
         in ImposterTargetMethodMetadata method
     ) =>
         InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Symbol, method.MethodInvocationImposterGroup.Interface.Name)
+            .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Interface.Name)
             .AddBaseType(
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )

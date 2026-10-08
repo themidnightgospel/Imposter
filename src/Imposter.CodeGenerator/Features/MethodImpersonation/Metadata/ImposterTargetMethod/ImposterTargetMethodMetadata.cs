@@ -14,7 +14,10 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterT
 
 internal readonly struct ImposterTargetMethodMetadata
 {
+    // Read only by the interface setup views, which move to the model in a later stage.
     internal readonly IMethodSymbol Symbol;
+
+    internal readonly MethodModel Model;
 
     internal readonly ImposterTargetMethodParametersMetadata Parameters;
 
@@ -87,28 +90,25 @@ internal readonly struct ImposterTargetMethodMetadata
     )
     {
         Symbol = symbol;
+        Model = MethodModel.From(symbol, memberAccess);
         UniqueName = uniqueName;
-        DisplayName = Symbol.ToFullDisplayName();
-        var containingNamespace = Symbol.ContainingNamespace.ToDisplayString();
-        ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Symbol.ReturnType);
+        DisplayName = Model.DisplayName;
+        ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Model.ReturnType.Type);
         ReturnType = new ReturnTypeMetadata(
-            Symbol.ReturnType,
+            Model.ReturnType,
             ReturnTypeSyntax,
             supportsNullableGenericType
         );
-        HasReturnValue = !Symbol.ReturnsVoid;
-        SupportsBaseImplementation =
-            Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
-        IsAsync = symbol.IsMethodAsync();
+        HasReturnValue = !Model.ReturnType.IsVoid;
+        SupportsBaseImplementation = Model.IsClassMember && !Model.IsAbstract;
+        IsAsync = Model.IsAsync;
 
-        Parameters = new ImposterTargetMethodParametersMetadata(
-            Symbol.Parameters.Select(ParameterModel.From).ToArray()
-        );
+        Parameters = new ImposterTargetMethodParametersMetadata(Model.Parameters);
         ReservedParameterNames = new ReservedParameterNames(
-            Symbol.Parameters.Select(p => p.Name).Concat([UniqueName, containingNamespace])
+            Model.Parameters.Select(p => p.Name).Concat([UniqueName, Model.ContainingNamespace])
         );
-        GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
-        GenericTypeArguments = Symbol
+        GenericTypeParameterNameSet = new NameSet(Model.TypeParameters.Select(p => p.Name));
+        GenericTypeArguments = Model
             .TypeParameters.Select(p =>
                 SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(p.Name))
             )
@@ -120,11 +120,11 @@ internal readonly struct ImposterTargetMethodMetadata
             GenericTypeArguments
         );
         GenericTypeConstraintClauses = SyntaxFactoryHelper.TypeParameterConstraintClauses(
-            Symbol.TypeParameters
+            Model.TypeParameters
         );
 
-        var targetGenericNameContext = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
-        TargetGenericTypeArguments = Symbol
+        var targetGenericNameContext = new NameSet(Model.TypeParameters.Select(p => p.Name));
+        TargetGenericTypeArguments = Model
             .TypeParameters.Select(p =>
                 SyntaxFactory.IdentifierName(targetGenericNameContext.Use($"{p.Name}Target"))
             )
@@ -136,7 +136,7 @@ internal readonly struct ImposterTargetMethodMetadata
         if (GenericTypeConstraintClauses.Count > 0)
         {
             var targetRenamer = new TypeParameterRenamer(
-                Symbol.TypeParameters,
+                Model.TypeParameters,
                 TargetGenericTypeArguments
             );
             TargetGenericTypeConstraintClauses = GenericTypeConstraintClauses
@@ -165,7 +165,7 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         ArgumentsCriteriaAsMethod = new AsMethodMetadata(
-            Symbol.TypeParameters,
+            Model.TypeParameters,
             GenericTypeParameterNameSet
         );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
@@ -174,20 +174,17 @@ internal readonly struct ImposterTargetMethodMetadata
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
-        if (requiresExplicitInterfaceImplementation && symbol.ContainingType is not null)
+        if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(
-                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(symbol.ContainingType)
+                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(Model.ContainingType)
             );
             ImposterInstanceMethodModifiers = default;
         }
         else
         {
             ExplicitInterfaceSpecifier = null;
-            ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(
-                symbol,
-                memberAccess
-            );
+            ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
     }
 
@@ -196,10 +193,7 @@ internal readonly struct ImposterTargetMethodMetadata
         internal readonly NameSyntax[] TargetTypeArguments;
         internal readonly TypeParameterSyntax[] TypeParameters;
 
-        internal AsMethodMetadata(
-            IReadOnlyList<ITypeParameterSymbol> typeParameters,
-            NameSet nameSet
-        )
+        internal AsMethodMetadata(IReadOnlyList<TypeParameterModel> typeParameters, NameSet nameSet)
         {
             var allocatedNames = typeParameters
                 .Select(p => nameSet.Use($"{p.Name}Target"))

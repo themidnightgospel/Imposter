@@ -17,13 +17,13 @@ internal static partial class MethodImposterBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        if (!method.Symbol.IsGenericMethod)
+        if (!method.Model.IsGenericMethod)
         {
             return null;
         }
 
         var typeParamRenamer = new TypeParameterRenamer(
-            method.Symbol.TypeParameters,
+            method.Model.TypeParameters,
             method.TargetGenericTypeArguments
         );
 
@@ -60,7 +60,7 @@ internal static partial class MethodImposterBuilder
 
         if (method.HasReturnValue)
         {
-            if (method.Symbol.ReturnType.ReferencesTypeParameterOf(method.Symbol))
+            if (method.Model.ReturnType.ReferencesMethodTypeParameter)
             {
                 var sourceTypeSyntax = method.ReturnTypeSyntax;
                 var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);

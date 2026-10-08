@@ -280,7 +280,7 @@ internal readonly ref struct ImposterBuilder
             )
         );
         memberNames.AddRange(
-            imposterGenerationContext.Imposter.Methods.Select(it => it.Symbol.Name)
+            imposterGenerationContext.Imposter.Methods.Select(it => it.Model.Name)
         );
         memberNames.AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
 
@@ -303,13 +303,13 @@ internal readonly ref struct ImposterBuilder
 
                 return ThisExpression()
                     .Dot(
-                        method.Symbol.IsGenericMethod
+                        method.Model.IsGenericMethod
                             ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
                             : IdentifierName(method.MethodImposter.AsField.Name)
                     )
                     .Assign(
                         (
-                            method.Symbol.IsGenericMethod
+                            method.Model.IsGenericMethod
                                 ? method.MethodImposter.Collection.Syntax
                                 : method.MethodImposter.Syntax
                         ).New(ArgumentList(SeparatedList(constructorArguments)))
