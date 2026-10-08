@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHis
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -100,7 +101,9 @@ internal readonly struct ImposterTargetMethodMetadata
             Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
         IsAsync = symbol.IsMethodAsync();
 
-        Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
+        Parameters = new ImposterTargetMethodParametersMetadata(
+            Symbol.Parameters.Select(ParameterModel.From).ToArray()
+        );
         ReservedParameterNames = new ReservedParameterNames(
             Symbol.Parameters.Select(p => p.Name).Concat([UniqueName, containingNamespace])
         );

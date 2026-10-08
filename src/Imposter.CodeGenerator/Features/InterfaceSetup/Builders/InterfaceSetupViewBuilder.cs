@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -49,7 +50,7 @@ internal static class InterfaceSetupViewBuilder
         var specifier = viewType is null ? null : ExplicitInterfaceSpecifier(viewType);
         if (member.Symbol is IMethodSymbol method)
         {
-            var parameters = ArgParameters(method.Parameters);
+            var parameters = ArgParameters(method.Parameters.Select(ParameterModel.From));
             var builder = new MethodDeclarationBuilder(
                 member.ReturnType,
                 EscapeKeyword(method.Name)
@@ -100,7 +101,7 @@ internal static class InterfaceSetupViewBuilder
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         if (member.Symbol is IPropertySymbol { IsIndexer: true } indexer)
         {
-            var parameters = ArgParameters(indexer.Parameters);
+            var parameters = ArgParameters(indexer.Parameters.Select(ParameterModel.From));
             var declaration = IndexerDeclaration(member.ReturnType)
                 .WithParameterList(BracketedParameterList(parameters.Parameters))
                 .WithExplicitInterfaceSpecifier(specifier);

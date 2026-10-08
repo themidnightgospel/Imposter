@@ -157,7 +157,7 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var parameterList = BuildInvocationParameterList(method);
-        var arguments = ArgumentListSyntax(method.Symbol.Parameters);
+        var arguments = ArgumentListSyntax(method.Parameters.AllParameters);
         var resultInvocation = IdentifierName("_resultGenerator")
             .Dot(IdentifierName("Invoke"))
             .Call(arguments);
@@ -467,7 +467,7 @@ internal static partial class InvocationSetupBuilder
                         Block(
                             ThrowStatement(
                                 IdentifierName(throwsParameter.Name)
-                                    .Call(ArgumentListSyntax(method.Symbol.Parameters))
+                                    .Call(ArgumentListSyntax(method.Parameters.AllParameters))
                             )
                         )
                     )

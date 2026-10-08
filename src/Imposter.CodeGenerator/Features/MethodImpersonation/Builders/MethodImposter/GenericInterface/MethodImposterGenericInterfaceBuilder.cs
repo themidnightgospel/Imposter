@@ -20,7 +20,7 @@ internal static class MethodImposterGenericInterfaceBuilder
 
         var genericInterfaceType = method.MethodImposter.Interface;
         var invokeMethodParameters = SyntaxFactoryHelper.ParameterListSyntax(
-            method.Symbol.Parameters
+            method.Parameters.AllParameters
         );
 
         if (method.SupportsBaseImplementation)

@@ -31,13 +31,7 @@ internal static partial class MethodImposterBuilder
 
         foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
-            var parameterSymbol = parameter.Symbol;
-            var parameterSymbolType = parameterSymbol.Type;
-            if (
-                !method.Symbol.TypeParameters.Any(tp =>
-                    ContainsTypeParameter(parameterSymbolType, tp)
-                )
-            )
+            if (!parameter.Model.ReferencesMethodTypeParameter)
             {
                 continue;
             }
@@ -48,7 +42,7 @@ internal static partial class MethodImposterBuilder
             var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
             var targetTypeOf = TypeOfExpression(targetTypeSyntax);
 
-            switch (parameterSymbol.RefKind)
+            switch (parameter.Model.RefKind)
             {
                 case RefKind.Ref:
                     conditions.Add(
@@ -66,8 +60,7 @@ internal static partial class MethodImposterBuilder
 
         if (method.HasReturnValue)
         {
-            var returnType = method.Symbol.ReturnType;
-            if (method.Symbol.TypeParameters.Any(tp => ContainsTypeParameter(returnType, tp)))
+            if (method.Symbol.ReturnType.ReferencesTypeParameterOf(method.Symbol))
             {
                 var sourceTypeSyntax = method.ReturnTypeSyntax;
                 var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
@@ -116,30 +109,5 @@ internal static partial class MethodImposterBuilder
                 )
             )
             .Build();
-    }
-
-    private static bool ContainsTypeParameter(
-        ITypeSymbol typeSymbol,
-        ITypeParameterSymbol typeParameter
-    )
-    {
-        if (SymbolEqualityComparer.Default.Equals(typeSymbol, typeParameter))
-        {
-            return true;
-        }
-
-        if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
-        {
-            return namedTypeSymbol.TypeArguments.Any(typeArgument =>
-                ContainsTypeParameter(typeArgument, typeParameter)
-            );
-        }
-
-        if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
-        {
-            return ContainsTypeParameter(arrayTypeSymbol.ElementType, typeParameter);
-        }
-
-        return false;
     }
 }

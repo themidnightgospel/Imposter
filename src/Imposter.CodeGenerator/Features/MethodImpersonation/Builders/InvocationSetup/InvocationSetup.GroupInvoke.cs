@@ -132,7 +132,7 @@ internal static partial class InvocationSetupBuilder
                 ),
             };
 
-            arguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);
+            arguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
             if (method.SupportsBaseImplementation)
             {
                 arguments.Add(

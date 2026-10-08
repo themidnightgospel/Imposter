@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -32,6 +33,20 @@ internal static class TypeSymbolExtensions
     internal static bool IsNonGenericValueTask(this ITypeSymbol? symbol) =>
         symbol is INamedTypeSymbol { MetadataName: "ValueTask" } named
         && named.IsInNamespace("System", "Threading", "Tasks");
+
+    internal static bool ReferencesTypeParameterOf(this ITypeSymbol type, IMethodSymbol method) =>
+        method.TypeParameters.Any(typeParameter => type.Contains(typeParameter));
+
+    private static bool Contains(this ITypeSymbol type, ITypeParameterSymbol typeParameter) =>
+        SymbolEqualityComparer.Default.Equals(type, typeParameter)
+        || type switch
+        {
+            INamedTypeSymbol namedType => namedType.TypeArguments.Any(typeArgument =>
+                typeArgument.Contains(typeParameter)
+            ),
+            IArrayTypeSymbol arrayType => arrayType.ElementType.Contains(typeParameter),
+            _ => false,
+        };
 
     // Matches by metadata name and namespace only: depending on the target framework these types live in
     // System.Private.CoreLib, System.Runtime, mscorlib, netstandard or System.Threading.Tasks.Extensions.

@@ -2,6 +2,7 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,7 +12,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax ArgType(IParameterSymbol parameter)
+    internal static TypeSyntax ArgType(ParameterModel parameter)
     {
         var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
 
@@ -44,14 +45,14 @@ internal static partial class SyntaxFactoryHelper
             )
         );
 
-    internal static ParameterListSyntax ArgParameters(IEnumerable<IParameterSymbol> parameters) =>
+    internal static ParameterListSyntax ArgParameters(IEnumerable<ParameterModel> parameters) =>
         ParameterList(SeparatedList(parameters.Select(ArgParameter)));
 
     internal static ParameterListSyntax ArgParameters(
         IEnumerable<MethodParameterMetadata> parameters
     ) => ParameterList(SeparatedList(parameters.Select(parameter => ArgParameter(parameter))));
 
-    internal static ParameterSyntax ArgParameter(IParameterSymbol parameter) =>
+    internal static ParameterSyntax ArgParameter(ParameterModel parameter) =>
         ParameterSyntax(ArgType(parameter), EscapeKeyword(parameter.Name));
 
     internal static ParameterSyntax ArgParameter(in MethodParameterMetadata parameter) =>
@@ -62,8 +63,8 @@ internal static partial class SyntaxFactoryHelper
     ) =>
         method.ArgumentsCriteria.Syntax.New(
             ArgumentListSyntax(
-                method.Symbol.Parameters.Select(p =>
-                    Argument(IdentifierName(EscapeKeyword(p.Name)))
+                method.Parameters.AllParameterMetadata.Select(parameter =>
+                    Argument(IdentifierName(parameter.Name))
                 )
             )
         );

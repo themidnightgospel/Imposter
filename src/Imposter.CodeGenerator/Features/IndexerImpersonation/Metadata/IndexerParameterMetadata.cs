@@ -1,12 +1,12 @@
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerParameterMetadata
 {
-    internal readonly IParameterSymbol Symbol;
+    internal readonly ParameterModel Model;
 
     internal readonly string Name;
 
@@ -16,12 +16,12 @@ internal readonly struct IndexerParameterMetadata
 
     internal readonly ParameterSyntax ParameterSyntax;
 
-    internal IndexerParameterMetadata(IParameterSymbol parameterSymbol)
+    internal IndexerParameterMetadata(ParameterModel model)
     {
-        Symbol = parameterSymbol;
-        Name = SyntaxFactoryHelper.EscapeKeyword(parameterSymbol.Name);
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(parameterSymbol.Type);
+        Model = model;
+        Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
+        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(model.Type);
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(parameterSymbol);
+        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(model);
     }
 }

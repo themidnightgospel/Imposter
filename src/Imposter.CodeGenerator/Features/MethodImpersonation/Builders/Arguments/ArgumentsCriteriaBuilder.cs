@@ -107,7 +107,7 @@ public static class ArgumentsCriteriaBuilder
         {
             var targetType = (TypeSyntax)renamer.Visit(parameter.TypeSyntax);
 
-            if (parameter.Symbol.RefKind is RefKind.Out)
+            if (parameter.Model.RefKind is RefKind.Out)
             {
                 return Argument(OutArgAny(targetType));
             }

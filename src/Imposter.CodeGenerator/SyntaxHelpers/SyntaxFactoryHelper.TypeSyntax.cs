@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,14 +14,13 @@ internal static partial class SyntaxFactoryHelper
     internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol) =>
         ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-    private static readonly SymbolDisplayFormat FullyQualifiedFormatWithNullableReferenceTypes =
-        SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
-            SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
-                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-        );
+    internal static TypeSyntax TypeSyntax(TypeModel type) => ParseTypeName(type.FullyQualifiedName);
 
     internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
-        ParseTypeName(typeSymbol.ToDisplayString(FullyQualifiedFormatWithNullableReferenceTypes));
+        ParseTypeName(typeSymbol.ToDisplayString(TypeModel.FullyQualifiedFormatIncludingNullable));
+
+    internal static TypeSyntax TypeSyntaxIncludingNullable(TypeModel type) =>
+        ParseTypeName(type.FullyQualifiedNameIncludingNullable);
 
     internal static TypeParameterSyntax TypeParameterSyntax(
         ITypeParameterSymbol typeParameterSymbol

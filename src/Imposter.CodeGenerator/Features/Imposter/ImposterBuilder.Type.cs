@@ -9,6 +9,7 @@ using Imposter.CodeGenerator.Features.InterfaceSetup.Builders;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -368,7 +369,7 @@ internal readonly ref struct ImposterBuilder
             .ToStatementSyntax();
 
     private ExpressionStatementSyntax BuildClassImposterInstanceAssignment(
-        in ImmutableArray<IParameterSymbol> parameters
+        in ImmutableArray<ParameterModel> parameters
     )
     {
         var arguments = new List<ArgumentSyntax>(parameters.Length + 1)

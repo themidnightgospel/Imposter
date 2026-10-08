@@ -88,7 +88,7 @@ internal static class MethodImposterAdapterBuilder
             var pType = p.TypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
 
-            switch (p.Symbol.RefKind)
+            switch (p.Model.RefKind)
             {
                 case RefKind.Ref:
                 {
@@ -312,7 +312,7 @@ internal static class MethodImposterAdapterBuilder
             HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
             AdaptedParameterNames = method
                 .Parameters.AllParameterMetadata.Where(parameter =>
-                    parameter.Symbol.RefKind is RefKind.Ref or RefKind.Out
+                    parameter.Model.RefKind is RefKind.Ref or RefKind.Out
                 )
                 .ToDictionary(
                     parameter => parameter.Name,

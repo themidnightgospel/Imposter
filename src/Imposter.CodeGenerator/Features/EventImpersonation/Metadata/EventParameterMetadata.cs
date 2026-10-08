@@ -1,5 +1,5 @@
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
@@ -14,11 +14,11 @@ internal readonly struct EventParameterMetadata
 
     internal readonly ParameterSyntax ParameterSyntax;
 
-    internal EventParameterMetadata(IParameterSymbol parameterSymbol)
+    internal EventParameterMetadata(ParameterModel model)
     {
-        Name = SyntaxFactoryHelper.EscapeKeyword(parameterSymbol.Name);
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(parameterSymbol.Type);
+        Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
+        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(model.Type);
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(parameterSymbol);
+        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(model);
     }
 }

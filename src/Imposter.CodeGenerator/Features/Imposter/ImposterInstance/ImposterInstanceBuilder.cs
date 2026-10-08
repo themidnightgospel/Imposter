@@ -113,7 +113,7 @@ internal readonly ref struct ImposterInstanceBuilder
     internal ImposterInstanceBuilder AddIndexer(in ImposterIndexerMetadata indexer)
     {
         var parameters = indexer
-            .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Symbol))
+            .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Model))
             .ToArray();
         var parameterList = BracketedParameterList(SeparatedList(parameters));
 
@@ -346,7 +346,10 @@ internal readonly ref struct ImposterInstanceBuilder
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
             var invokeArguments = new List<ArgumentSyntax>(
-                ArgumentListSyntax(imposterMethod.Symbol.Parameters, includeRefKind: true).Arguments
+                ArgumentListSyntax(
+                    imposterMethod.Parameters.AllParameters,
+                    includeRefKind: true
+                ).Arguments
             );
 
             if (imposterMethod.SupportsBaseImplementation)
