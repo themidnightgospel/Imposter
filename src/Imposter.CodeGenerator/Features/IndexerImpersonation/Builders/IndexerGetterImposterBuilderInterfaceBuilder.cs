@@ -163,7 +163,7 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
                             getterInterface.ThrowsMethod.GenericTypeParameterName
                         )
                         .AddConstraints(
-                            TypeConstraint(IdentifierName("Exception")),
+                            TypeConstraint(WellKnownTypes.System.Exception),
                             ConstructorConstraint()
                         )
                 )

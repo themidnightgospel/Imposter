@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using Imposter.Benchmarks.ImposterVsAlternatives;
-using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 
 // The benchmark targets net10.0 because Rocks requires it.
 // BenchmarkDotNet creates an isolated build that doesn't inherit MSBuild properties,

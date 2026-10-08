@@ -36,13 +36,22 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string BaseImplementationParameterName;
 
+    internal readonly string ArgumentsVariableName;
+
+    internal readonly string MatchedCallbackVariableName;
+
+    internal readonly string RegistrationVariableName;
+
+    internal readonly string InvokedBaseImplementationVariableName;
+
     internal IndexerSetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
+        var parameterNames = indexer.Core.CreateParameterNameSet();
         Name = "SetterImposter";
         TypeSyntax = IdentifierName(Name);
 
-        ValueParameterName = indexer.Core.ParameterNameSet.Use("value");
-        CriteriaParameterName = indexer.Core.ParameterNameSet.Use("criteria");
+        ValueParameterName = parameterNames.Use("value");
+        CriteriaParameterName = parameterNames.Use("criteria");
         SetterSuffix = " (setter)";
         CallbacksField = new FieldMetadata(
             "_callbacks",
@@ -83,7 +92,11 @@ internal readonly struct IndexerSetterImposterMetadata
                 )
             )
             : null;
-        BaseImplementationParameterName = indexer.Core.ParameterNameSet.Use("baseImplementation");
+        BaseImplementationParameterName = parameterNames.Use("baseImplementation");
+        ArgumentsVariableName = parameterNames.Use("arguments");
+        MatchedCallbackVariableName = parameterNames.Use("matchedCallback");
+        RegistrationVariableName = parameterNames.Use("registration");
+        InvokedBaseImplementationVariableName = parameterNames.Use("invokedBaseImplementation");
 
         Builder = new SetterBuilderMetadata();
     }

@@ -24,7 +24,7 @@ internal static class IndexerGetterBuilder
         {
             getterBaseImplementationParameter = ParameterSyntax(
                     indexer.Core.AsSystemFuncType.ToNullableType(),
-                    BaseImplementationParameterName
+                    indexer.GetterImplementation.BaseImplementationParameterName
                 )
                 .WithDefault(EqualsValueClause(Null));
 
@@ -1086,7 +1086,7 @@ internal static class IndexerGetterBuilder
         );
 
         var body = Block(
-            CreateArgumentsDeclaration(indexer),
+            CreateArgumentsDeclaration(indexer, indexer.GetterImplementation.ArgumentsVariableName),
             TryStatement(Block(tryStatements), default, finallyClause)
         );
 

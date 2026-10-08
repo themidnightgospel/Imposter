@@ -286,7 +286,7 @@ internal static class MethodImposterAdapterBuilder
         return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(Block(ThrowStatement(IdentifierName("NotImplementedException").New())))
+            .WithBody(Block(ThrowStatement(WellKnownTypes.System.NotImplementedException.New())))
             .Build();
     }
 

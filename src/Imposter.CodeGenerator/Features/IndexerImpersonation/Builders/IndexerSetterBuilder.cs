@@ -255,7 +255,7 @@ internal static class IndexerSetterBuilder
     private static MethodDeclarationSyntax BuildSetterSetMethod(in ImposterIndexerMetadata indexer)
     {
         var setter = indexer.SetterImplementation;
-        var argumentsVariable = IdentifierName(indexer.GetterImplementation.ArgumentsVariableName);
+        var argumentsVariable = IdentifierName(setter.ArgumentsVariableName);
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
             ParameterSyntax(indexer.Core.TypeSyntax, setter.ValueParameterName),
@@ -266,20 +266,20 @@ internal static class IndexerSetterBuilder
                 .WithDefault(EqualsValueClause(Null)),
         };
 
-        var callbackMatchedIdentifier = IdentifierName("matchedCallback");
+        var callbackMatchedIdentifier = IdentifierName(setter.MatchedCallbackVariableName);
 
         var foreachStatement = ForEachStatement(
             Var,
-            Identifier("registration"),
+            Identifier(setter.RegistrationVariableName),
             IdentifierName(setter.CallbacksField.Name),
             Block(
                 IfStatement(
-                    IdentifierName("registration")
+                    IdentifierName(setter.RegistrationVariableName)
                         .Dot(IdentifierName("Criteria"))
                         .Dot(IdentifierName("Matches"))
                         .Call(Argument(argumentsVariable)),
                     Block(
-                        IdentifierName("registration")
+                        IdentifierName(setter.RegistrationVariableName)
                             .Dot(IdentifierName("Callback"))
                             .Call(
                                 BuildDelegateInvocationArgumentsWithValue(
@@ -310,15 +310,15 @@ internal static class IndexerSetterBuilder
             && setter.BaseImplementationCriteriaField.HasValue
         )
         {
-            invokedBaseIdentifier = IdentifierName("invokedBaseImplementation");
+            invokedBaseIdentifier = IdentifierName(setter.InvokedBaseImplementationVariableName);
 
             baseCriteriaLoop = ForEachStatement(
                 Var,
-                Identifier("criteria"),
+                Identifier(setter.CriteriaParameterName),
                 IdentifierName(setter.BaseImplementationCriteriaField.Value.Name),
                 Block(
                     IfStatement(
-                        IdentifierName("criteria")
+                        IdentifierName(setter.CriteriaParameterName)
                             .Dot(IdentifierName("Matches"))
                             .Call(Argument(argumentsVariable)),
                         Block(
@@ -362,7 +362,7 @@ internal static class IndexerSetterBuilder
 
         var bodyBuilder = new BlockBuilder()
             .AddStatement(IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax())
-            .AddStatement(CreateArgumentsDeclaration(indexer))
+            .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
                     .Dot(ConcurrentStackSyntaxHelper.Push)

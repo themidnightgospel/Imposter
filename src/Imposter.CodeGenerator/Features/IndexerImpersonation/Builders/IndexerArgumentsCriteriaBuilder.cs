@@ -63,7 +63,8 @@ internal static class IndexerArgumentsCriteriaBuilder
 
         foreach (var parameter in indexer.Core.Parameters)
         {
-            var parameterComparison = IdentifierName(parameter.Name)
+            var parameterComparison = ThisExpression()
+                .Dot(IdentifierName(parameter.Name))
                 .Dot(IdentifierName("Matches"))
                 .Call(
                     ArgumentList(

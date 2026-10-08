@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using Imposter.Abstractions;
 using Imposter.Benchmarks.ImposterVsAlternatives;
-using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 using Moq;
 using NSubstitute;
 using Rocks;

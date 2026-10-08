@@ -2,7 +2,6 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -43,48 +42,22 @@ internal static partial class InvocationHistoryCollectionBuilder
             .WithBody(
                 Block(
                     ReturnStatement(
-                        IdentifierName("string")
-                            .Dot(IdentifierName("Join"))
-                            .Call(
-                                ArgumentList(
-                                    SeparatedList<ArgumentSyntax>(
-                                        new SyntaxNodeOrToken[]
-                                        {
-                                            Argument(
-                                                IdentifierName("Environment")
-                                                    .Dot(IdentifierName("NewLine"))
-                                            ),
-                                            Token(SyntaxKind.CommaToken),
-                                            Argument(
-                                                IdentifierName(
-                                                        InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
-                                                    )
-                                                    .Dot(IdentifierName("Select"))
-                                                    .Call(
-                                                        ArgumentList(
-                                                            SingletonSeparatedList(
-                                                                Argument(
-                                                                    SimpleLambdaExpression(
-                                                                        Parameter(
-                                                                            Identifier("invocation")
-                                                                        ),
-                                                                        IdentifierName("invocation")
-                                                                            .Dot(
-                                                                                IdentifierName(
-                                                                                    "ToString"
-                                                                                )
-                                                                            )
-                                                                            .Call()
-                                                                    )
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                            ),
-                                        }
+                        JoinWithNewLines(
+                            IdentifierName(
+                                    InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+                                )
+                                .Dot(IdentifierName("Select"))
+                                .Call(
+                                    Argument(
+                                        SimpleLambdaExpression(
+                                            Parameter(Identifier("invocation")),
+                                            IdentifierName("invocation")
+                                                .Dot(IdentifierName("ToString"))
+                                                .Call()
+                                        )
                                     )
                                 )
-                            )
+                        )
                     )
                 )
             )

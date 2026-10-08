@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
@@ -452,8 +451,8 @@ internal readonly ref struct ImposterInstanceBuilder
         }
 
         return Block(
-            IdentifierName(nameof(ArgumentNullException))
-                .Dot(IdentifierName("ThrowIfNull"))
+            WellKnownTypes
+                .System.ArgumentNullException.Dot(IdentifierName("ThrowIfNull"))
                 .Call(Argument(IdentifierName("value")))
                 .ToStatementSyntax(),
             builderAccess

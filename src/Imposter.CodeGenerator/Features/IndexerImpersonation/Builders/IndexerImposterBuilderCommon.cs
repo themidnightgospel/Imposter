@@ -16,23 +16,6 @@ internal static class IndexerImposterBuilderCommon
     internal const string DefaultBehaviourParameterName = "defaultBehaviour";
     internal const string InvocationBehaviorParameterName = "invocationBehavior";
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
-    internal const string BaseImplementationParameterName = "baseImplementation";
-
-    internal static ArgumentSyntax BuildArgument(
-        IParameterSymbol parameter,
-        ExpressionSyntax expression
-    )
-    {
-        var modifier = parameter.RefKind switch
-        {
-            RefKind.Ref => Token(SyntaxKind.RefKeyword),
-            RefKind.Out => Token(SyntaxKind.OutKeyword),
-            RefKind.In => Token(SyntaxKind.InKeyword),
-            _ => default(SyntaxToken),
-        };
-
-        return Argument(null, modifier, expression);
-    }
 
     internal static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
@@ -44,11 +27,12 @@ internal static class IndexerImposterBuilderCommon
         );
 
     internal static LocalDeclarationStatementSyntax CreateArgumentsDeclaration(
-        in ImposterIndexerMetadata indexer
+        in ImposterIndexerMetadata indexer,
+        string variableName
     ) =>
         LocalVariableDeclarationSyntax(
             indexer.Arguments.TypeSyntax,
-            indexer.GetterImplementation.ArgumentsVariableName,
+            variableName,
             indexer.Arguments.TypeSyntax.New(BuildIndexerArgumentsArgumentList(indexer))
         );
 
@@ -58,7 +42,7 @@ internal static class IndexerImposterBuilderCommon
     )
     {
         var arguments = indexer.Core.Parameters.Select(parameter =>
-            BuildArgument(parameter.Symbol, source.Dot(IdentifierName(parameter.Name)))
+            Argument(source.Dot(IdentifierName(parameter.Name)))
         );
 
         return ArgumentList(SeparatedList(arguments));
@@ -276,31 +260,7 @@ internal static class IndexerImposterBuilderCommon
                                         Argument(IdentifierName("invocationCount")),
                                         Token(SyntaxKind.CommaToken),
                                         Argument(
-                                            IdentifierName("string")
-                                                .Dot(IdentifierName("Join"))
-                                                .Call(
-                                                    ArgumentList(
-                                                        SeparatedList<ArgumentSyntax>(
-                                                            new SyntaxNodeOrToken[]
-                                                            {
-                                                                Argument(
-                                                                    IdentifierName("Environment")
-                                                                        .Dot(
-                                                                            IdentifierName(
-                                                                                "NewLine"
-                                                                            )
-                                                                        )
-                                                                ),
-                                                                Token(SyntaxKind.CommaToken),
-                                                                Argument(
-                                                                    IdentifierName(
-                                                                        "performedInvocations"
-                                                                    )
-                                                                ),
-                                                            }
-                                                        )
-                                                    )
-                                                )
+                                            JoinWithNewLines(IdentifierName("performedInvocations"))
                                         ),
                                     }
                                 )
