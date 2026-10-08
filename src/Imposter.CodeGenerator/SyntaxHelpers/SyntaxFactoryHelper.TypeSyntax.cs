@@ -61,6 +61,38 @@ internal static partial class SyntaxFactoryHelper
         IEnumerable<TypeParameterModel> typeParameters
     ) => EnumerateTypeParameterConstraintClauses(typeParameters).ToArray();
 
+    // Overrides and explicit interface implementations inherit their constraints. They may only state class or
+    // struct, which must match whether T is a reference or value type, or default for a T? whose T is neither.
+    // These decide what a T? in their signature means.
+    internal static IReadOnlyList<TypeParameterConstraintClauseSyntax> RestatableConstraintClauses(
+        IEnumerable<TypeParameterModel> typeParameters,
+        ICollection<string> typeParametersUsedAsNullable
+    )
+    {
+        var clauses = new List<TypeParameterConstraintClauseSyntax>();
+
+        foreach (var typeParameter in typeParameters)
+        {
+            TypeParameterConstraintSyntax? constraint =
+                typeParameter.IsReferenceType ? ClassOrStructConstraint(SyntaxKind.ClassConstraint)
+                : typeParameter.IsValueType ? ClassOrStructConstraint(SyntaxKind.StructConstraint)
+                : typeParametersUsedAsNullable.Contains(typeParameter.Name) ? DefaultConstraint()
+                : null;
+
+            if (constraint is not null)
+            {
+                clauses.Add(
+                    TypeParameterConstraintClause(
+                            IdentifierName(EscapedIdentifier(typeParameter.Name))
+                        )
+                        .WithConstraints(SingletonSeparatedList(constraint))
+                );
+            }
+        }
+
+        return clauses;
+    }
+
     private static IEnumerable<TypeParameterConstraintClauseSyntax> EnumerateTypeParameterConstraintClauses(
         IEnumerable<TypeParameterModel> typeParameters
     )

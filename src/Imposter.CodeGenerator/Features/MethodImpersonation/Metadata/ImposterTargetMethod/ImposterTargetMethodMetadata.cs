@@ -61,6 +61,8 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceMethodModifiers;
 
+    internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> ImposterInstanceMethodConstraintClauses;
+
     internal readonly bool RequiresExplicitInterfaceImplementation;
 
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
@@ -174,6 +176,13 @@ internal readonly struct ImposterTargetMethodMetadata
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        ImposterInstanceMethodConstraintClauses =
+            Model.IsClassMember || requiresExplicitInterfaceImplementation
+                ? SyntaxFactoryHelper.RestatableConstraintClauses(
+                    Model.TypeParameters,
+                    TypeParametersUsedAsNullable(Parameters, Model.ReturnType)
+                )
+                : GenericTypeConstraintClauses;
         if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(
@@ -187,6 +196,21 @@ internal readonly struct ImposterTargetMethodMetadata
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
     }
+
+    // The names of the type parameters written as T? in the parameter or return types.
+    private static HashSet<string> TypeParametersUsedAsNullable(
+        in ImposterTargetMethodParametersMetadata parameters,
+        ReturnTypeModel returnType
+    ) =>
+        new(
+            parameters
+                .AllParameterMetadata.Select(it => it.NullableAwareTypeSyntax)
+                .Append(SyntaxFactoryHelper.TypeSyntaxIncludingNullable(returnType.Type))
+                .SelectMany(type => type.DescendantNodesAndSelf().OfType<NullableTypeSyntax>())
+                .Select(nullable => nullable.ElementType)
+                .OfType<IdentifierNameSyntax>()
+                .Select(name => name.Identifier.ValueText)
+        );
 
     internal readonly struct AsMethodMetadata
     {
