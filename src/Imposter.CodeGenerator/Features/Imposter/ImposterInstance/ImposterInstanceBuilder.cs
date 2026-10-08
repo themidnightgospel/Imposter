@@ -523,10 +523,7 @@ internal readonly ref struct ImposterInstanceBuilder
         }
 
         return Block(
-            WellKnownTypes
-                .System.ArgumentNullException.Dot(IdentifierName("ThrowIfNull"))
-                .Call(Argument(IdentifierName("value")))
-                .ToStatementSyntax(),
+            ThrowIfNull("value"),
             builderAccess
                 .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
                 .Call(arguments)

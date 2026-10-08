@@ -7,11 +7,6 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
 internal static class EventImposterBuilderCommon
 {
-    internal static InvocationExpressionSyntax ThrowIfNull(string parameterName) =>
-        WellKnownTypes
-            .System.ArgumentNullException.Dot(IdentifierName("ThrowIfNull"))
-            .Call(Argument(IdentifierName(parameterName)));
-
     internal static IdentifierNameSyntax FieldIdentifier(in FieldMetadata field) =>
         IdentifierName(field.Name);
 }

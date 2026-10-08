@@ -398,7 +398,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
-				if (typeof(TTarget).IsAssignableTo(typeof(T)) && typeof(T).IsAssignableTo(typeof(TTarget)))
+				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -1709,7 +1709,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>? ISelectFirstMethodImposter.As<TFirstTarget, TSecondTarget>()
 			{
-				if ((typeof(TFirstTarget).IsAssignableTo(typeof(TFirst)) && typeof(TSecondTarget).IsAssignableTo(typeof(TSecond))) && typeof(TFirst).IsAssignableTo(typeof(TFirstTarget)))
+				if ((typeof(TFirst).IsAssignableFrom(typeof(TFirstTarget)) && typeof(TSecond).IsAssignableFrom(typeof(TSecondTarget))) && typeof(TFirstTarget).IsAssignableFrom(typeof(TFirst)))
 				{
 					return new Adapter<TFirstTarget, TSecondTarget>(this);
 				}

@@ -374,7 +374,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IAdaptOutMethodImposter<TTarget>? IAdaptOutMethodImposter.As<TTarget>()
 			{
-				if (typeof(T).IsAssignableTo(typeof(TTarget)))
+				if (typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -857,7 +857,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IAdaptRefMethodImposter<TTarget>? IAdaptRefMethodImposter.As<TTarget>()
 			{
-				if (typeof(T).IsAssignableTo(typeof(TTarget)))
+				if (typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -1762,7 +1762,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IVerifyMethodImposter<CalledTarget>? IVerifyMethodImposter.As<CalledTarget>()
 			{
-				if (typeof(CalledTarget).IsAssignableTo(typeof(Called)) && typeof(Called).IsAssignableTo(typeof(CalledTarget)))
+				if (typeof(Called).IsAssignableFrom(typeof(CalledTarget)) && typeof(CalledTarget).IsAssignableFrom(typeof(Called)))
 				{
 					return new Adapter<CalledTarget>(this);
 				}

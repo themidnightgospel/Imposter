@@ -53,9 +53,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(index);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(index!);
+					return hash;
+				}
 			}
 		}
 
@@ -626,9 +629,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<T>.Default.GetHashCode(key!);
+					return hash;
+				}
 			}
 		}
 
@@ -1201,10 +1207,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key);
-				hash.Add(index);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<T>.Default.GetHashCode(key!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(index!);
+					return hash;
+				}
 			}
 		}
 

@@ -105,10 +105,10 @@ internal static class EventImposterVerificationBuilder
 
         foreach (var parameter in parameters)
         {
-            blockBuilder.AddExpression(ThrowIfNull($"{parameter.Name}Criteria"));
+            blockBuilder.AddStatement(ThrowIfNull($"{parameter.Name}Criteria"));
         }
 
-        blockBuilder.AddExpression(ThrowIfNull(countParameterName));
+        blockBuilder.AddStatement(ThrowIfNull(countParameterName));
 
         var predicate = BuildRaisedPredicate(@event);
 
@@ -217,8 +217,8 @@ internal static class EventImposterVerificationBuilder
         var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
 
         var blockBuilder = new BlockBuilder()
-            .AddExpression(ThrowIfNull(criteriaParameterName))
-            .AddExpression(ThrowIfNull(countParameterName));
+            .AddStatement(ThrowIfNull(criteriaParameterName))
+            .AddStatement(ThrowIfNull(countParameterName));
 
         var entryIdentifier = IdentifierName("entry");
         var predicateLambda = SimpleLambdaExpression(

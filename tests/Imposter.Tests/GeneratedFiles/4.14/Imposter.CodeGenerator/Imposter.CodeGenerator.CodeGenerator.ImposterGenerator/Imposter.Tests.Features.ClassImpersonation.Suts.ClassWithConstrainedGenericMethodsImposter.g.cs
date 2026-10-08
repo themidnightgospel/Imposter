@@ -385,7 +385,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IDescribeMethodImposter<TTarget>? IDescribeMethodImposter.As<TTarget>()
 			{
-				if (typeof(TTarget).IsAssignableTo(typeof(T)))
+				if (typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -900,7 +900,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
-				if (typeof(TTarget).IsAssignableTo(typeof(T)) && typeof(T).IsAssignableTo(typeof(TTarget)))
+				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
 				}

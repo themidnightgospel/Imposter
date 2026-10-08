@@ -66,8 +66,8 @@ internal static class IndexerArgumentsBuilder
         var otherParameter = Parameter(otherIdentifier)
             .WithType(NullableType(indexer.Arguments.TypeSyntax));
 
-        // EqualityComparer<T>.Default keeps Equals consistent with the generated GetHashCode
-        // (System.HashCode.Add) and with Arg<T>.Is, and works for type parameters and structs without ==.
+        // EqualityComparer<T>.Default keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and
+        // works for type parameters and structs without ==.
         ExpressionSyntax? comparison = null;
         foreach (var parameter in indexer.Core.Parameters)
         {
@@ -136,37 +136,59 @@ internal static class IndexerArgumentsBuilder
             .Build();
     }
 
+    // A manual combine instead of System.HashCode, which .NET Standard 2.0 and .NET Framework lack. The `!` only
+    // silences a nullability warning: EqualityComparer<T>.Default returns 0 for null.
     private static MethodDeclarationSyntax BuildGetHashCodeMethod(
         in ImposterIndexerMetadata indexer
     )
     {
+        var hash = IdentifierName("hash");
         var statements = new List<StatementSyntax>
         {
             LocalVariableDeclarationSyntax(
-                WellKnownTypes.System.HashCode,
-                "hash",
-                WellKnownTypes.System.HashCode.New()
+                Var,
+                hash.Identifier.Text,
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(17))
             ),
         };
 
         foreach (var parameter in indexer.Core.Parameters)
         {
+            var parameterHash = WellKnownTypes
+                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
+                .Dot(IdentifierName("Default"))
+                .Dot(IdentifierName("GetHashCode"))
+                .Call(
+                    Argument(
+                        PostfixUnaryExpression(
+                            SyntaxKind.SuppressNullableWarningExpression,
+                            IdentifierName(parameter.Name)
+                        )
+                    )
+                );
+
             statements.Add(
-                IdentifierName("hash")
-                    .Dot(IdentifierName("Add"))
-                    .Call(Argument(IdentifierName(parameter.Name)))
+                hash.Assign(
+                        BinaryExpression(
+                            SyntaxKind.AddExpression,
+                            BinaryExpression(
+                                SyntaxKind.MultiplyExpression,
+                                hash,
+                                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(31))
+                            ),
+                            parameterHash
+                        )
+                    )
                     .ToStatementSyntax()
             );
         }
 
-        statements.Add(
-            ReturnStatement(IdentifierName("hash").Dot(IdentifierName("ToHashCode")).Call())
-        );
+        statements.Add(ReturnStatement(hash));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Int, "GetHashCode")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
-            .WithBody(Block(statements))
+            .WithBody(Block(CheckedStatement(SyntaxKind.UncheckedStatement, Block(statements))))
             .Build();
     }
 }
