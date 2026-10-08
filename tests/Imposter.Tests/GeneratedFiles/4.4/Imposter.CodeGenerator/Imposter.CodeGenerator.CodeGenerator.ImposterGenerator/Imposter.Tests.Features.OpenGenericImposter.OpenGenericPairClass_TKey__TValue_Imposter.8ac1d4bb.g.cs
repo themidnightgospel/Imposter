@@ -1278,9 +1278,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<TKey>.Default.GetHashCode(key!);
+					return hash;
+				}
 			}
 		}
 

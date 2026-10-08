@@ -1120,7 +1120,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			ITransformMethodImposter<TTarget>? ITransformMethodImposter.As<TTarget>()
 			{
-				if (typeof(T).IsAssignableTo(typeof(TTarget)) && typeof(TTarget).IsAssignableTo(typeof(T)))
+				if (typeof(TTarget).IsAssignableFrom(typeof(T)) && typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -1736,7 +1736,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal void Subscribe(global::System.Action handler, global::System.Action? baseImplementation = null)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -1769,7 +1773,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal void Unsubscribe(global::System.Action handler, global::System.Action? baseImplementation = null)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -1802,7 +1810,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IChangedEventImposterSetupBuilder IChangedEventImposterSetupBuilder.Callback(global::System.Action callback)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(callback);
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -1815,8 +1827,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -1836,8 +1856,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -1857,21 +1885,33 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IChangedEventImposterSetupBuilder IChangedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Action> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IChangedEventImposterSetupBuilder IChangedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Action> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _history.Count(entry => true);
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -1891,8 +1931,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -1989,9 +2037,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(key!);
+					return hash;
+				}
 			}
 		}
 
@@ -2671,7 +2722,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 						return;
 					}
 
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._Changed.Subscribe(value, () =>
 					{
 						base.Changed += value;
@@ -2686,7 +2741,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 						return;
 					}
 
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._Changed.Unsubscribe(value, () =>
 					{
 						base.Changed -= value;

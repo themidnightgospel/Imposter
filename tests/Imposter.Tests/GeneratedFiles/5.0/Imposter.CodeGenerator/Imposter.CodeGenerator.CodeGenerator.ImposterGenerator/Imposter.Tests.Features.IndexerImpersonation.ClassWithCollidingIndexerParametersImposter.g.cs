@@ -65,15 +65,18 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(arguments);
-				hash.Add(baseImplementation);
-				hash.Add(invokedBaseImplementation);
-				hash.Add(matchedCallback);
-				hash.Add(registration);
-				hash.Add(getterInvocationImposter);
-				hash.Add(criteria);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(arguments!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(baseImplementation!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(invokedBaseImplementation!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(matchedCallback!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(registration!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(getterInvocationImposter!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(criteria!);
+					return hash;
+				}
 			}
 		}
 

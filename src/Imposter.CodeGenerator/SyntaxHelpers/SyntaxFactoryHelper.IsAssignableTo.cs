@@ -5,8 +5,9 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
+    // Written as right.IsAssignableFrom(left): Type.IsAssignableTo is missing from .NET Standard 2.0 and .NET Framework.
     internal static InvocationExpressionSyntax IsAssignableTo(
         this ExpressionSyntax left,
         ExpressionSyntax right
-    ) => left.Dot(IdentifierName("IsAssignableTo")).Call(Argument(right));
+    ) => right.Dot(IdentifierName("IsAssignableFrom")).Call(Argument(left));
 }

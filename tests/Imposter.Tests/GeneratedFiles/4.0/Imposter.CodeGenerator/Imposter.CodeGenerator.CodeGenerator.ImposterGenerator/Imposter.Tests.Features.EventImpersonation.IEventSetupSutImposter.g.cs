@@ -64,7 +64,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -87,7 +91,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -110,7 +118,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IAsyncSomethingHappenedEventImposterSetupBuilder IAsyncSomethingHappenedEventImposterSetupBuilder.Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> callback)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(callback);
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -123,8 +135,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -144,8 +164,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -165,23 +193,43 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IAsyncSomethingHappenedEventImposterSetupBuilder IAsyncSomethingHappenedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IAsyncSomethingHappenedEventImposterSetupBuilder IAsyncSomethingHappenedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(arg1Criteria);
-				global::System.ArgumentNullException.ThrowIfNull(arg2Criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _history.Count(entry => arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -201,8 +249,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -324,7 +380,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -347,7 +407,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Unsubscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -370,7 +434,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ICustomAsyncSomethingHappenedEventImposterSetupBuilder ICustomAsyncSomethingHappenedEventImposterSetupBuilder.Callback(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> callback)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(callback);
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -383,8 +451,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -404,8 +480,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -425,23 +509,43 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ICustomAsyncSomethingHappenedEventImposterSetupBuilder ICustomAsyncSomethingHappenedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ICustomAsyncSomethingHappenedEventImposterSetupBuilder ICustomAsyncSomethingHappenedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(senderCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(argsCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (argsCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(argsCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -461,8 +565,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -584,7 +696,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Subscribe(global::System.EventHandler handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -607,7 +723,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Unsubscribe(global::System.EventHandler handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -630,7 +750,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ISomethingHappenedEventImposterSetupBuilder ISomethingHappenedEventImposterSetupBuilder.Callback(global::System.EventHandler callback)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(callback);
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -643,8 +767,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -664,8 +796,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -685,23 +825,43 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ISomethingHappenedEventImposterSetupBuilder ISomethingHappenedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.EventHandler> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ISomethingHappenedEventImposterSetupBuilder ISomethingHappenedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(senderCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(eCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (eCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(eCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -721,8 +881,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -824,7 +992,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -847,7 +1019,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handler);
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
 				var handlers = _activeHandlers;
 				while (true)
 				{
@@ -870,7 +1046,11 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IValueTaskSomethingHappenedEventImposterSetupBuilder IValueTaskSomethingHappenedEventImposterSetupBuilder.Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(callback);
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -883,8 +1063,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -904,8 +1092,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -925,23 +1121,43 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IValueTaskSomethingHappenedEventImposterSetupBuilder IValueTaskSomethingHappenedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IValueTaskSomethingHappenedEventImposterSetupBuilder IValueTaskSomethingHappenedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(interceptor);
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(arg1Criteria);
-				global::System.ArgumentNullException.ThrowIfNull(arg2Criteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _history.Count(entry => arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -961,8 +1177,16 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
-				global::System.ArgumentNullException.ThrowIfNull(count);
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -1088,13 +1312,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				add
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._AsyncSomethingHappened.Subscribe(value);
 				}
 
 				remove
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._AsyncSomethingHappened.Unsubscribe(value);
 				}
 			}
@@ -1103,13 +1335,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				add
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._CustomAsyncSomethingHappened.Subscribe(value);
 				}
 
 				remove
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._CustomAsyncSomethingHappened.Unsubscribe(value);
 				}
 			}
@@ -1118,13 +1358,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				add
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._SomethingHappened.Subscribe(value);
 				}
 
 				remove
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._SomethingHappened.Unsubscribe(value);
 				}
 			}
@@ -1133,13 +1381,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				add
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._ValueTaskSomethingHappened.Subscribe(value);
 				}
 
 				remove
 				{
-					global::System.ArgumentNullException.ThrowIfNull(value);
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
 					_imposter._ValueTaskSomethingHappened.Unsubscribe(value);
 				}
 			}

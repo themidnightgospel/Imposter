@@ -344,7 +344,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IDoSomethingMethodImposter<TArgTarget>? IDoSomethingMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArgTarget).IsAssignableTo(typeof(TArg)))
+				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}
@@ -807,7 +807,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IMapMethodImposter<TSourceTarget, TResultTarget>? IMapMethodImposter.As<TSourceTarget, TResultTarget>()
 			{
-				if (typeof(TSourceTarget).IsAssignableTo(typeof(TSource)) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if (typeof(TSource).IsAssignableFrom(typeof(TSourceTarget)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TSourceTarget, TResultTarget>(this);
 				}
@@ -1284,7 +1284,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ITransformMethodImposter<TArgTarget>? ITransformMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArg).IsAssignableTo(typeof(TArgTarget)))
+				if (typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}

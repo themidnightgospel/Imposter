@@ -385,7 +385,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICloneStructMethodImposter<TArgTarget>? ICloneStructMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArgTarget).IsAssignableTo(typeof(TArg)) && typeof(TArg).IsAssignableTo(typeof(TArgTarget)))
+				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)) && typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}
@@ -868,7 +868,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICompareValuesMethodImposter<TArgTarget>? ICompareValuesMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArgTarget).IsAssignableTo(typeof(TArg)) && typeof(TArgTarget).IsAssignableTo(typeof(TArg)))
+				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)) && typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}
@@ -1302,7 +1302,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICreateInstanceMethodImposter<TArgTarget>? ICreateInstanceMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArg).IsAssignableTo(typeof(TArgTarget)))
+				if (typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}
@@ -1775,7 +1775,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IHandleReferenceMethodImposter<TArgTarget>? IHandleReferenceMethodImposter.As<TArgTarget>()
 			{
-				if (typeof(TArgTarget).IsAssignableTo(typeof(TArg)))
+				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
 				}
