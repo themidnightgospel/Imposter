@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿// `ref readonly` parameters need C# 12, which the Roslyn 4.0 and 4.4 builds of these tests don't know.
+#if ROSLYN4_14_OR_GREATER
+using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -66,3 +68,4 @@ public class RefReadOnlyIndexerParameterTests
         GeneratorTestHelper.AssertNoDiagnostics(context.CompileSnippet(string.Empty));
     }
 }
+#endif
