@@ -138,11 +138,11 @@ internal static class EventImposterSubscriptionsBuilder
         var method = @event.Builder.Methods.Callback;
         var callbackIdentifier = IdentifierName(method.CallbackParameter.Name);
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name
-            )
+        return new MethodDeclarationBuilder(
+            @event.BuilderInterface.SetupInterfaceTypeSyntax,
+            method.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.SetupInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CallbackParameter))
             .WithBody(
                 new BlockBuilder()
@@ -199,11 +199,11 @@ internal static class EventImposterSubscriptionsBuilder
     {
         var interceptorIdentifier = IdentifierName(method.InterceptorParameter.Name);
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                method.Name
-            )
+        return new MethodDeclarationBuilder(
+            @event.BuilderInterface.SetupInterfaceTypeSyntax,
+            method.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.SetupInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.InterceptorParameter))
             .WithBody(
                 new BlockBuilder()

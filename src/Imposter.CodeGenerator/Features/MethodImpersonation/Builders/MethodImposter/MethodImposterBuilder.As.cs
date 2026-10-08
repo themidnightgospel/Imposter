@@ -92,9 +92,7 @@ internal static partial class MethodImposterBuilder
             );
 
         return new MethodDeclarationBuilder(NullableType(genericImposterInterfaceWithTargets), "As")
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(asMethodTypeParams)
             .WithBody(
                 Block(

@@ -36,9 +36,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -74,9 +72,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -120,9 +116,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ThrowsMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -147,9 +141,7 @@ internal static partial class MethodImposterBuilderBuilder
         var body = Block(configureThrowsAsyncCall.ToStatementSyntax(), ReturnThis);
 
         return builder
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(throwsAsyncMethod.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(throwsAsyncMethod.InterfaceSyntax)
             .WithBody(body)
             .Build();
     }
@@ -179,9 +171,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.CallbackMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -214,9 +204,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -243,9 +231,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ReturnsMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();
@@ -270,9 +256,7 @@ internal static partial class MethodImposterBuilderBuilder
         var body = Block(configureReturnsAsyncCall.ToStatementSyntax(), ReturnThis);
 
         return builder
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(returnsAsyncMethod.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(returnsAsyncMethod.InterfaceSyntax)
             .WithBody(body)
             .Build();
     }
@@ -291,7 +275,7 @@ internal static partial class MethodImposterBuilderBuilder
         var body = Block(enableBaseImplementationCall.ToStatementSyntax(), ReturnThis);
 
         return builder
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(metadata.InterfaceSyntax)
             .WithBody(body)
             .Build();
     }
@@ -317,9 +301,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         return builder
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax
-                )
+                method.MethodInvocationImposterGroup.ThenMethod.InterfaceSyntax
             )
             .WithBody(body)
             .Build();

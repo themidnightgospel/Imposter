@@ -273,9 +273,7 @@ internal static class IndexerGetterBuilder
         );
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -298,9 +296,7 @@ internal static class IndexerGetterBuilder
         );
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -329,9 +325,7 @@ internal static class IndexerGetterBuilder
         );
 
         return new MethodDeclarationBuilder(returnsMetadata.ReturnType, returnsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(returnsMetadata.InterfaceSyntax)
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -354,9 +348,7 @@ internal static class IndexerGetterBuilder
         );
 
         return new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -372,9 +364,7 @@ internal static class IndexerGetterBuilder
         GetterThrowsMetadata throwsMetadata
     ) =>
         new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
             .WithTypeParameters(
                 TypeParameterList(
                     SingletonSeparatedList(TypeParameter(throwsMetadata.GenericTypeParameterName))
@@ -421,9 +411,7 @@ internal static class IndexerGetterBuilder
         );
 
         return new MethodDeclarationBuilder(throwsMetadata.ReturnType, throwsMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(throwsMetadata.InterfaceSyntax)
             .AddParameter(parameter)
             .WithBody(
                 Block(
@@ -446,9 +434,7 @@ internal static class IndexerGetterBuilder
             indexer.GetterBuilderInterface.CallbackMethod.Name
         )
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    indexer.GetterBuilderInterface.CallbackMethod.InterfaceSyntax
-                )
+                indexer.GetterBuilderInterface.CallbackMethod.InterfaceSyntax
             )
             .AddParameter(parameter)
             .WithBody(
@@ -475,9 +461,7 @@ internal static class IndexerGetterBuilder
             indexer.GetterBuilderInterface.CalledMethod.Name
         )
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax
-                )
+                indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax
             )
             .AddParameter(parameter)
             .WithBody(
@@ -500,9 +484,7 @@ internal static class IndexerGetterBuilder
     {
         var thenMetadata = indexer.GetterBuilderInterface.ThenMethod;
         return new MethodDeclarationBuilder(thenMetadata.ReturnType, thenMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
             .WithBody(Block(ReturnThis))
             .Build();
     }
@@ -513,7 +495,7 @@ internal static class IndexerGetterBuilder
     {
         var metadata = indexer.GetterBuilderInterface.UseBaseImplementationMethod!.Value;
         return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(metadata.InterfaceSyntax)
             .WithBody(
                 Block(
                     InvocationImposterUseBaseImplementation(indexer.GetterImplementation.Builder),

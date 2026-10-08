@@ -23,11 +23,11 @@ internal static class EventImposterVerificationBuilder
         var criteriaName = method.CriteriaParameter.Name;
         var eventName = @event.Core.Name;
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                method.Name
-            )
+        return new MethodDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+            method.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(
@@ -54,11 +54,11 @@ internal static class EventImposterVerificationBuilder
         var criteriaName = method.CriteriaParameter.Name;
         var eventName = @event.Core.Name;
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                method.Name
-            )
+        return new MethodDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+            method.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(
@@ -81,11 +81,11 @@ internal static class EventImposterVerificationBuilder
         in ImposterEventMetadata @event
     )
     {
-        var methodBuilder = ExplicitInterfaceMethod(
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.Builder.Methods.RaisedVerification.Name
-            )
+        var methodBuilder = new MethodDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+            @event.Builder.Methods.RaisedVerification.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameters(
                 @event.Core.Parameters.Select(parameter =>
                     ParameterSyntax(parameter.ArgTypeSyntax, $"{parameter.Name}Criteria")
@@ -186,11 +186,11 @@ internal static class EventImposterVerificationBuilder
                         .Dot(IdentifierName("Matches"))
                         .Call(Argument(entry.Dot(IdentifierName("Handler"))));
 
-        return ExplicitInterfaceMethod(
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-                method.Name
-            )
+        return new MethodDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
+            method.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.HandlerCriteriaParameter))
             .AddParameter(CountParameter(@event))
             .WithBody(

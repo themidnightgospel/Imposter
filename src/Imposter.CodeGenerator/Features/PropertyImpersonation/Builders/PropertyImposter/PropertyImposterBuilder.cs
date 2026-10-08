@@ -74,9 +74,7 @@ internal static class PropertyImposterBuilder
             property.ImposterBuilderInterface.SetterMethod.ReturnType,
             property.ImposterBuilderInterface.SetterMethod.Name
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
             .AddParameter(
                 ParameterSyntax(property.ImposterBuilderInterface.SetterMethod.CriteriaParameter)
             )
@@ -122,9 +120,7 @@ internal static class PropertyImposterBuilder
             property.ImposterBuilderInterface.GetterMethod.ReturnType,
             property.ImposterBuilderInterface.GetterMethod.Name
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
             .WithBody(
                 Block(
                     ReturnStatement(
@@ -169,9 +165,7 @@ internal static class PropertyImposterBuilder
         statements.Add(ReturnThis);
 
         return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
             .WithBody(Block(statements.ToArray()))
             .Build();
     }

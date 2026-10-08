@@ -283,9 +283,7 @@ internal static class MethodImposterAdapterBuilder
             .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
 
         return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(
                 Block(

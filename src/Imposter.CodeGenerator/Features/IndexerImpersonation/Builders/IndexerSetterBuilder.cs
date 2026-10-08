@@ -513,9 +513,7 @@ internal static class IndexerSetterBuilder
 
         return new MethodDeclarationBuilder(callbackMetadata.ReturnType, callbackMetadata.Name)
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    indexer.SetterBuilderInterface.CallbackMethod.InterfaceSyntax
-                )
+                indexer.SetterBuilderInterface.CallbackMethod.InterfaceSyntax
             )
             .AddParameter(parameter)
             .WithBody(
@@ -543,9 +541,7 @@ internal static class IndexerSetterBuilder
 
         return new MethodDeclarationBuilder(calledMetadata.ReturnType, calledMetadata.Name)
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax
-                )
+                indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax
             )
             .AddParameter(parameter)
             .WithBody(
@@ -569,9 +565,7 @@ internal static class IndexerSetterBuilder
         var thenMetadata = indexer.SetterBuilderInterface.ThenMethod;
 
         return new MethodDeclarationBuilder(thenMetadata.ReturnType, thenMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
             .WithBody(Block(ReturnThis))
             .Build();
     }
@@ -584,7 +578,7 @@ internal static class IndexerSetterBuilder
         var metadata = indexer.SetterBuilderInterface.UseBaseImplementationMethod!.Value;
 
         return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
-            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
+            .WithExplicitInterfaceSpecifier(metadata.InterfaceSyntax)
             .WithBody(
                 Block(
                     IdentifierName(builderMetadata.ImposterFieldName)

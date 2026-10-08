@@ -27,11 +27,11 @@ internal static class EventImposterRaiseBuilder
 
     internal static MethodDeclarationSyntax BuildRaiseMethod(in ImposterEventMetadata @event)
     {
-        var methodBuilder = ExplicitInterfaceMethod(
-                @event.BuilderInterface.SetupInterfaceTypeSyntax,
-                @event.BuilderInterface.RaiseMethod.ReturnType,
-                @event.BuilderInterface.RaiseMethod.Name
-            )
+        var methodBuilder = new MethodDeclarationBuilder(
+            @event.BuilderInterface.RaiseMethod.ReturnType,
+            @event.BuilderInterface.RaiseMethod.Name
+        )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.SetupInterfaceTypeSyntax)
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax));
 
         if (@event.Core.IsAsync)

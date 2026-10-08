@@ -17,9 +17,7 @@ internal static partial class MethodImposterBuilderBuilder
             WellKnownTypes.Int,
             InvocationVerifierInterfaceMetadata.CallCountMethodName
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(Block(ReturnStatement(BuildInvocationCountExpression(method))))
             .Build();
 
@@ -53,9 +51,7 @@ internal static partial class MethodImposterBuilderBuilder
                     method.InvocationVerifierInterface.CalledMethod.CountParameter.Name
                 )
             )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
-            )
+            .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(

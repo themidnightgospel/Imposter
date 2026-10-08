@@ -85,9 +85,7 @@ internal static class EventImposterBuilder
         }
 
         return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax)
             .WithBody(
                 Block(
                     FieldIdentifier(@event.Builder.Fields.UseBaseImplementation)

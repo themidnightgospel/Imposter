@@ -261,9 +261,7 @@ internal static class GetterImposterBuilderBuilder
                 builderInterface.ReturnsMethod.Name
             )
                 .AddParameter(ParameterSyntax(builderInterface.ReturnsMethod.ValueParameter))
-                .WithExplicitInterfaceSpecifier(
-                    ExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax)
-                )
+                .WithExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax)
                 .WithBody(
                     Block(
                         IdentifierName(builder.AddReturnValueMethod.Name)
@@ -288,9 +286,7 @@ internal static class GetterImposterBuilderBuilder
                 .AddParameter(
                     ParameterSyntax(builderInterface.ReturnsMethod.ValueGeneratorParameter)
                 )
-                .WithExplicitInterfaceSpecifier(
-                    ExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax)
-                )
+                .WithExplicitInterfaceSpecifier(builderInterface.ReturnsMethod.InterfaceSyntax)
                 .WithBody(
                     Block(
                         IdentifierName(builder.AddReturnValueMethod.Name)
@@ -324,9 +320,7 @@ internal static class GetterImposterBuilderBuilder
                 builderInterface.ThrowsMethod.Name
             )
                 .AddParameter(ParameterSyntax(builderInterface.ThrowsMethod.ExceptionParameter))
-                .WithExplicitInterfaceSpecifier(
-                    ExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax)
-                )
+                .WithExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax)
                 .WithBody(
                     Block(
                         IdentifierName(builder.AddReturnValueMethod.Name)
@@ -360,9 +354,7 @@ internal static class GetterImposterBuilderBuilder
                         )
                     )
                 )
-                .WithExplicitInterfaceSpecifier(
-                    ExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax)
-                )
+                .WithExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax)
                 .WithBody(
                     Block(
                         IdentifierName(builder.AddReturnValueMethod.Name)
@@ -395,9 +387,7 @@ internal static class GetterImposterBuilderBuilder
             builderInterface.CallbackMethod.ReturnType,
             builderInterface.CallbackMethod.Name
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(builderInterface.CallbackMethod.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(builderInterface.CallbackMethod.InterfaceSyntax)
             .AddParameter(ParameterSyntax(builderInterface.CallbackMethod.CallbackParameter))
             .WithBody(
                 Block(
@@ -424,9 +414,7 @@ internal static class GetterImposterBuilderBuilder
             builderInterface.CalledMethod.ReturnType,
             builderInterface.CalledMethod.Name
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(builderInterface.CalledMethod.CountParameter))
             .WithBody(
                 Block(
@@ -462,9 +450,7 @@ internal static class GetterImposterBuilderBuilder
             builderInterface.ThenMethod.ReturnType,
             builderInterface.ThenMethod.Name
         )
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(builderInterface.ThenMethod.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(builderInterface.ThenMethod.InterfaceSyntax)
             .WithBody(Block(ReturnThis))
             .Build();
 
@@ -475,9 +461,7 @@ internal static class GetterImposterBuilderBuilder
         var method = property.GetterImposterBuilderInterface.InitialThenMethod!.Value;
 
         return new MethodDeclarationBuilder(method.ReturnType, method.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(property.GetterImposterBuilderInterface.TypeSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(property.GetterImposterBuilderInterface.TypeSyntax)
             .WithBody(Block(ReturnThis))
             .Build();
     }
@@ -486,9 +470,7 @@ internal static class GetterImposterBuilderBuilder
         GetterUseBaseImplementationMethodMetadata methodMetadata
     ) =>
         new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(methodMetadata.InterfaceSyntax)
-            )
+            .WithExplicitInterfaceSpecifier(methodMetadata.InterfaceSyntax)
             .WithBody(
                 Block(
                     IdentifierName("EnableBaseImplementation").Call().ToStatementSyntax(),

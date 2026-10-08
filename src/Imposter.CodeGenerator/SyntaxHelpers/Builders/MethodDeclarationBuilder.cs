@@ -148,6 +148,9 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
         return this;
     }
 
+    public MethodDeclarationBuilder WithExplicitInterfaceSpecifier(NameSyntax interfaceName) =>
+        WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(interfaceName));
+
     public MethodDeclarationSyntax Build()
     {
         return MethodDeclaration(

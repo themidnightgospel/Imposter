@@ -16,10 +16,8 @@ internal static class ImposterInstanceMembersBuilder
             "Instance"
         )
             .WithExplicitInterfaceSpecifier(
-                ExplicitInterfaceSpecifier(
-                    WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
-                        imposterGenerationContext.Imposter.TargetTypeSyntax
-                    )
+                WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
+                    imposterGenerationContext.Imposter.TargetTypeSyntax
                 )
             )
             .WithBody(Block(ReturnStatement(IdentifierName(imposterInstanceFieldName))))
