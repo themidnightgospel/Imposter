@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -6,16 +7,6 @@ namespace Imposter.CodeGenerator.CodeGenerator.Logging;
 // Writes the IMPOSTER_LOG messages. They are Info diagnostics, which builds show only at detailed verbosity (-v:d).
 internal readonly struct DiagnosticLogger
 {
-    private static readonly DiagnosticDescriptor LogDescriptor = new(
-        id: "IMPLOG001",
-        title: "Imposter generator log",
-        messageFormat: "{0}",
-        category: Diagnostics.DiagnosticCategories.Imposter,
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true,
-        description: "Generator log message, written when the IMPOSTER_LOG MSBuild property is true."
-    );
-
     private readonly SourceProductionContext _context;
     private readonly bool _enabled;
 
@@ -59,5 +50,7 @@ internal readonly struct DiagnosticLogger
 #endif
 
     private void Log(string message) =>
-        _context.ReportDiagnostic(Diagnostic.Create(LogDescriptor, Location.None, message));
+        _context.ReportDiagnostic(
+            Diagnostic.Create(DiagnosticDescriptors.GeneratorLog, Location.None, message)
+        );
 }

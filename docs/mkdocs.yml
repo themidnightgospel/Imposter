@@ -94,6 +94,7 @@ nav:
       - Benchmarks: benchmarks.md
       - Cheat Sheet: cheat-sheet.md
       - Key API Reference: key-api-reference.md
+      - Diagnostics: diagnostics.md
 
 plugins:
   - search

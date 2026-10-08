@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
 /// <summary>
-/// Supplies compilation context and early diagnostics for language/version.
+/// Supplies the compilation context and the diagnostic for unsupported C# versions.
 /// </summary>
 internal static class CompilationContextProvider
 {
@@ -39,12 +39,12 @@ internal static class CompilationContextProvider
     }
 
     internal static IncrementalValuesProvider<Diagnostic> GetCompilationDiagnostics(
-        this in IncrementalGeneratorInitializationContext context
+        this IncrementalValueProvider<CompilationContext> compilationContextProvider
     )
     {
-        return context
-            .CompilationProvider.SelectMany(
-                static (compilation, _) => ValidateCSharpCompilation(compilation)
+        return compilationContextProvider
+            .SelectMany(
+                static (compilationContext, _) => ValidateLanguageVersion(compilationContext)
             )
 #if ROSLYN4_4_OR_GREATER
             .WithTrackingName("CompilationDiagnostics")
@@ -52,27 +52,17 @@ internal static class CompilationContextProvider
         ;
     }
 
-    private static IEnumerable<Diagnostic> ValidateCSharpCompilation(Compilation compilation)
-    {
-        if (compilation is not CSharpCompilation csCompilation)
-        {
-            yield return Diagnostic.Create(
-                DiagnosticDescriptors.UnsupportedLanguage,
-                Location.None,
-                compilation.Language,
-                LanguageVersion.CSharp9.ToDisplayString()
+    private static ImmutableArray<Diagnostic> ValidateLanguageVersion(
+        CompilationContext compilationContext
+    ) =>
+        compilationContext.IsLanguageVersionSupported
+            ? ImmutableArray<Diagnostic>.Empty
+            : ImmutableArray.Create(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.NotSupportedCSharpVersion,
+                    Location.None,
+                    compilationContext.Compilation.LanguageVersion.ToDisplayString(),
+                    CompilationContext.MinimumLanguageVersion.ToDisplayString()
+                )
             );
-            yield break;
-        }
-
-        if (csCompilation.LanguageVersion < LanguageVersion.CSharp9)
-        {
-            yield return Diagnostic.Create(
-                DiagnosticDescriptors.NotSupportedCSharpVersion,
-                Location.None,
-                csCompilation.LanguageVersion.ToDisplayString(),
-                LanguageVersion.CSharp9.ToDisplayString()
-            );
-        }
-    }
 }

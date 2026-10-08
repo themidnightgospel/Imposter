@@ -4,27 +4,9 @@ namespace Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 
 public static class DiagnosticDescriptors
 {
-    private const string LanguageSupportHelpUrl =
-        "https://themidnightgospel.github.io/Imposter/latest/";
-
-    private const string TargetHelpUrl = "https://themidnightgospel.github.io/Imposter/latest/";
-
-    private const string AccessibleConstructorHelpUrl =
-        "https://github.com/themidnightgospel/Imposter/blob/master/Imposter/modules/Imposter.CodeGenerator.md#accessible-constructors";
-
-    private const string CrashIssueUrl =
-        "https://github.com/themidnightgospel/Imposter/issues/new?labels=bug&title=Generator%20crash:%20IMP005";
-
-    public static readonly DiagnosticDescriptor UnsupportedLanguage = new(
-        "IMP001",
-        "Unsupported language",
-        "Imposter only supports 'C#' language version '{1}' or higher. Current language is '{0}'.",
-        DiagnosticCategories.Imposter,
-        DiagnosticSeverity.Error,
-        true,
-        description: "The generator runs only for C# projects targeting language version 8.0 or newer.",
-        helpLinkUri: LanguageSupportHelpUrl
-    );
+    // Each diagnostic links to its own section, whose anchor is the lower-case diagnostic ID.
+    private const string HelpUrl =
+        "https://themidnightgospel.github.io/Imposter/latest/diagnostics/";
 
     public static readonly DiagnosticDescriptor InvalidImposterTarget = new(
         "IMP002",
@@ -34,7 +16,7 @@ public static class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true,
         description: "Unsupported target type. Imposters can target interfaces or extensible classes only.",
-        helpLinkUri: TargetHelpUrl
+        helpLinkUri: HelpUrl + "#imp002"
     );
 
     public static readonly DiagnosticDescriptor NotSupportedCSharpVersion = new(
@@ -44,8 +26,8 @@ public static class DiagnosticDescriptors
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
         true,
-        description: "The generator relies on C# 9.0 features. Update the consuming project to a supported language version.",
-        helpLinkUri: LanguageSupportHelpUrl
+        description: "The generator relies on C# 9.0 features, so it generates no imposters for older language versions.",
+        helpLinkUri: HelpUrl + "#imp003"
     );
 
     public static readonly DiagnosticDescriptor ImposterTargetMustHaveAccessibleConstructor = new(
@@ -56,7 +38,7 @@ public static class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true,
         description: "Accessible constructor required so generated imposters can instantiate the target.",
-        helpLinkUri: AccessibleConstructorHelpUrl
+        helpLinkUri: HelpUrl + "#imp004"
     );
 
     public static readonly DiagnosticDescriptor ClosedGenericImposterTarget = new(
@@ -67,7 +49,7 @@ public static class DiagnosticDescriptors
         DiagnosticSeverity.Warning,
         true,
         description: "A closed generic target generates the same generic imposter as its open type, with type parameters that have no effect.",
-        helpLinkUri: TargetHelpUrl
+        helpLinkUri: HelpUrl + "#imp006"
     );
 
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
@@ -78,6 +60,17 @@ public static class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true,
         description: "An unexpected exception bubbled out of the source generator.",
-        helpLinkUri: CrashIssueUrl
+        helpLinkUri: HelpUrl + "#imp005"
+    );
+
+    public static readonly DiagnosticDescriptor GeneratorLog = new(
+        "IMPLOG001",
+        "Imposter generator log",
+        "{0}",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Info,
+        true,
+        description: "Generator log message, written when the IMPOSTER_LOG MSBuild property is true.",
+        helpLinkUri: HelpUrl + "#implog001"
     );
 }

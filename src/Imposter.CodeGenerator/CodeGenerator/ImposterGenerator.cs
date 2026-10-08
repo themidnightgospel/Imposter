@@ -44,7 +44,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     {
         var compilationContextProvider = context.GetCompilationContext();
 
-        context.ReportDiagnostics(context.GetCompilationDiagnostics());
+        context.ReportDiagnostics(compilationContextProvider.GetCompilationDiagnostics());
 
         context.RegisterSourceOutput(
             compilationContextProvider,
@@ -69,6 +69,12 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     )
     {
         if (sourceProductionContext.CancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        // An unsupported C# version is reported once for the compilation (IMP003) instead.
+        if (!compilationContext.IsLanguageVersionSupported)
         {
             return;
         }
