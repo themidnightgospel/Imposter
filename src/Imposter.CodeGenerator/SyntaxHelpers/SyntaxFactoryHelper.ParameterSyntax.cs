@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -31,12 +32,19 @@ internal static partial class SyntaxFactoryHelper
             (false, _) => SyntaxKind.None,
             (_, RefKind.Ref) => SyntaxKind.RefKeyword,
             (_, RefKind.Out) => SyntaxKind.OutKeyword,
-            (_, RefKind.In) => SyntaxKind.InKeyword,
+            (_, RefKind.In or RefKinds.RefReadOnlyParameter) => SyntaxKind.InKeyword,
             _ => SyntaxKind.None,
         };
 
         return Argument(null, Token(refKindKeyword), IdentifierName(EscapeKeyword(parameter.Name)));
     }
+
+    // Passes a variable on to a parameter of the given kind. A `ref readonly` parameter needs the `in` written out
+    // (CS9192, CS9195); an `in` parameter takes the bare variable.
+    internal static ArgumentSyntax ForwardingArgument(string variableName, RefKind refKind) =>
+        refKind == RefKinds.RefReadOnlyParameter
+            ? Argument(null, Token(SyntaxKind.InKeyword), IdentifierName(variableName))
+            : Argument(IdentifierName(variableName));
 
     internal static ParameterListSyntax ParameterListSyntax(
         IEnumerable<ParameterModel> parameters,
@@ -137,15 +145,7 @@ internal static partial class SyntaxFactoryHelper
 
         if (includeRefKind)
         {
-            var modifier = parameter.RefKind switch
-            {
-                RefKind.Ref => Token(SyntaxKind.RefKeyword),
-                RefKind.Out => Token(SyntaxKind.OutKeyword),
-                RefKind.In => Token(SyntaxKind.InKeyword),
-                _ => default,
-            };
-
-            if (modifier != default)
+            foreach (var modifier in RefKindModifiers(parameter.RefKind))
             {
                 parameterBuilder.AddModifier(modifier);
             }
@@ -158,6 +158,20 @@ internal static partial class SyntaxFactoryHelper
 
         return parameterBuilder.Build();
     }
+
+    private static SyntaxToken[] RefKindModifiers(RefKind refKind) =>
+        refKind switch
+        {
+            RefKind.Ref => [Token(SyntaxKind.RefKeyword)],
+            RefKind.Out => [Token(SyntaxKind.OutKeyword)],
+            RefKind.In => [Token(SyntaxKind.InKeyword)],
+            RefKinds.RefReadOnlyParameter =>
+            [
+                Token(SyntaxKind.RefKeyword),
+                Token(SyntaxKind.ReadOnlyKeyword),
+            ],
+            _ => [],
+        };
 
     private static ExpressionSyntax DefaultValueExpression(
         ParameterDefaultValue defaultValue,

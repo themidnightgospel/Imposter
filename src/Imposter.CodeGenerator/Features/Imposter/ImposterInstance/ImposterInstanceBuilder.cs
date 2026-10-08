@@ -146,15 +146,13 @@ internal readonly ref struct ImposterInstanceBuilder
             .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Model))
             .ToArray();
         var parameterList = BracketedParameterList(SeparatedList(parameters));
-        var (inParameterCopies, lambdaArguments) = CopyInParametersForLambdas(indexer);
+        var (parameterCopies, lambdaArguments) = CopyReadOnlyReferenceParametersForLambdas(indexer);
 
         var accessors = new List<AccessorDeclarationSyntax>();
 
         if (indexer.Core.HasGetter)
         {
-            var getterArguments = indexer
-                .Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-                .ToList();
+            var getterArguments = new List<ArgumentSyntax>(indexer.Core.ParameterArguments);
             var getterStatements = new List<StatementSyntax>();
 
             ExpressionSyntax? baseInvocation = indexer.Core.GetterSupportsBaseImplementation
@@ -163,7 +161,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (baseInvocation is not null)
             {
-                getterStatements.AddRange(inParameterCopies);
+                getterStatements.AddRange(parameterCopies);
                 getterArguments.Add(
                     Argument(EmptyParametersGoesTo(BaseIndexerAccess(lambdaArguments)))
                 );
@@ -189,10 +187,10 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (indexer.Core.HasSetter)
         {
-            var setterArguments = indexer
-                .Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-                .Concat([Argument(IdentifierName("value"))])
-                .ToList();
+            var setterArguments = new List<ArgumentSyntax>(indexer.Core.ParameterArguments)
+            {
+                Argument(IdentifierName("value")),
+            };
             var setterStatements = new List<StatementSyntax>();
 
             var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
@@ -201,7 +199,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (baseAssignment is not null)
             {
-                setterStatements.AddRange(inParameterCopies);
+                setterStatements.AddRange(parameterCopies);
                 setterArguments.Add(
                     Argument(
                         EmptyParametersGoesTo(
@@ -240,11 +238,12 @@ internal readonly ref struct ImposterInstanceBuilder
         return this;
     }
 
-    // A lambda cannot capture an `in` parameter, so the base-call lambdas read local copies of those parameters.
+    // A lambda cannot capture an `in` or `ref readonly` parameter, so the base-call lambdas read local copies of
+    // those parameters.
     private static (
         IReadOnlyList<StatementSyntax> Copies,
         IReadOnlyList<ArgumentSyntax> LambdaArguments
-    ) CopyInParametersForLambdas(in ImposterIndexerMetadata indexer)
+    ) CopyReadOnlyReferenceParametersForLambdas(in ImposterIndexerMetadata indexer)
     {
         var localNames = new NameSet(
             indexer.Core.Parameters.Select(parameter => parameter.Name).Append("value")
@@ -255,7 +254,7 @@ internal readonly ref struct ImposterInstanceBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             var argumentName = parameter.Name;
-            if (parameter.Model.RefKind == RefKind.In)
+            if (parameter.Model.RefKind is RefKind.In or RefKinds.RefReadOnlyParameter)
             {
                 argumentName = localNames.Use($"{parameter.Name}Copy");
                 copies.Add(
@@ -267,7 +266,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 );
             }
 
-            lambdaArguments.Add(Argument(IdentifierName(argumentName)));
+            lambdaArguments.Add(parameter.ForwardingArgument(argumentName));
         }
 
         return (copies, lambdaArguments);

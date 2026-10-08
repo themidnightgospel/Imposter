@@ -123,6 +123,22 @@ When every argument should be a wildcard and you don't want to spell out the gen
     service.InOnly(in input); // 99
     ```
 
+### `ref readonly` parameters
+
+!!! note
+    `ref readonly` parameters need C# 12 or later. They match like `in` parameters, and the delegates you pass to a method's `Returns` or `Callback` declare them as `ref readonly`.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L180"}
+    var imposter = new IRefReadOnlyArgumentMatchingServiceImposter();
+    var service = imposter.Instance();
+
+    imposter.Double(Arg<int>.Is(x => x > 0)).Returns((ref readonly int value) => value * 2);
+
+    int input = 5;
+    service.Double(in input); // 10
+    ```
+
 ### `ref` parameters
 
 !!! example
