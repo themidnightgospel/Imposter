@@ -67,7 +67,7 @@ internal static class EventImposterBuilderInterfaceBuilder
             @event.BuilderInterface.RaiseMethod.ReturnType,
             @event.BuilderInterface.RaiseMethod.Name
         )
-            .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
+            .AddParameters(@event.Core.RaiseParameterSyntaxes)
             .WithSemicolon()
             .Build();
 
