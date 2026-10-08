@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -110,6 +112,38 @@ namespace Imposter.Tests.Features.PropertyImpersonation
             // All results should be unique values from 0-99 (in some order)
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
+        }
+
+        [Fact]
+        public void GivenGetterReturnsSetup_WhenFirstReadsAreConcurrent_ShouldReturnConfiguredValueEveryTime()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () => ConfiguredInstance(it => it.Age.Getter().Returns(42)),
+                it => it.Age
+            );
+
+            outcomes.ShouldBe(ConcurrentFirstCalls.EveryCall("42"));
+        }
+
+        [Fact]
+        public void GivenGetterReturnsSequence_WhenFirstReadsAreConcurrent_ShouldRepeatLastValueAfterSequence()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () => ConfiguredInstance(it => it.Age.Getter().Returns(1).Then().Returns(2)),
+                it => it.Age
+            );
+
+            outcomes.ShouldBe(
+                ConcurrentFirstCalls.FirstCallThenEveryOtherCall("1", "2"),
+                ignoreOrder: true
+            );
+        }
+
+        private static IPropertySetupSut ConfiguredInstance(Action<IPropertySetupSutImposter> setup)
+        {
+            var imposter = new IPropertySetupSutImposter();
+            setup(imposter);
+            return imposter.Instance();
         }
     }
 }

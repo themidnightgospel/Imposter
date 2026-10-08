@@ -119,7 +119,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal ComputeArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ComputeMethodInvocationImposterGroup(ComputeArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -134,17 +134,26 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ComputeDelegate? baseImplementation = null)
@@ -648,14 +657,28 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _defaultPropertyBehaviour.BackingField;
 					}
 
-					var nextReturnValue = _lastReturnValue;
-					if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<string>?, string> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
 					{
-						nextReturnValue = returnValue;
-						_lastReturnValue = returnValue;
+						return _lastReturnValue;
 					}
 
-					return nextReturnValue(baseImplementation);
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
 				}
 
 				private void EnsureGetterConfigured()
@@ -1434,15 +1457,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 
 					internal void UseBaseImplementation()

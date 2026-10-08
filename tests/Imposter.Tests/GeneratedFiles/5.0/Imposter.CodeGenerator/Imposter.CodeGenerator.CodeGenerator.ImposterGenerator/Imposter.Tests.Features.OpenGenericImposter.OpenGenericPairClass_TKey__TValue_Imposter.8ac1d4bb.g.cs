@@ -130,7 +130,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal DescribePairArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public DescribePairMethodInvocationImposterGroup(DescribePairArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -145,17 +145,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
@@ -527,7 +536,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ResolveArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ResolveMethodInvocationImposterGroup(ResolveArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -542,17 +551,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public TValue Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
@@ -1056,14 +1074,28 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						return _defaultPropertyBehaviour.BackingField;
 					}
 
-					var nextReturnValue = _lastReturnValue;
-					if (_returnValues.TryDequeue(out var returnValue) && (returnValue != null))
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>?, global::System.Collections.Generic.KeyValuePair<TKey, TValue>> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
 					{
-						nextReturnValue = returnValue;
-						_lastReturnValue = returnValue;
+						return _lastReturnValue;
 					}
 
-					return nextReturnValue(baseImplementation);
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
 				}
 
 				private void EnsureGetterConfigured()
@@ -1582,15 +1614,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 
 					internal void UseBaseImplementation()

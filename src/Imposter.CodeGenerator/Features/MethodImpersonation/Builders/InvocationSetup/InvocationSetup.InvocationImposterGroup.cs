@@ -32,7 +32,7 @@ internal static partial class InvocationSetupBuilder
             IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
                 .ToNullableType(),
             "_lastestInvocationImposter",
-            SyntaxKind.PrivateKeyword
+            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))
         );
 
     internal static MethodDeclarationSyntax AddInvocationImposterMethod(
@@ -92,31 +92,12 @@ internal static partial class InvocationSetupBuilder
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
-                Block(
-                    IfStatement(
-                        IdentifierName("_invocationImposters")
-                            .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                            .Call(
-                                ArgumentList(
-                                    SingletonSeparatedList(OutVarArgument("invocationImposter"))
-                                )
-                            ),
-                        Block(
-                            IfStatement(
-                                Not(
-                                    IdentifierName("invocationImposter")
-                                        .Dot(IdentifierName("IsEmpty"))
-                                ),
-                                Block(
-                                    IdentifierName("_lastestInvocationImposter")
-                                        .Assign(IdentifierName("invocationImposter"))
-                                        .ToStatementSyntax()
-                                )
-                            ),
-                            ReturnStatement(IdentifierName("invocationImposter"))
-                        )
-                    ),
-                    ReturnStatement(IdentifierName("_lastestInvocationImposter"))
+                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
+                    IdentifierName("_invocationImposters"),
+                    IdentifierName("_lastestInvocationImposter"),
+                    IdentifierName("invocationImposter"),
+                    // An invocation imposter without an outcome applies to its own call but never repeats.
+                    Not(IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty")))
                 )
             )
             .Build();
