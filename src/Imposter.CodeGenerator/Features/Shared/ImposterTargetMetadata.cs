@@ -41,6 +41,8 @@ internal readonly struct ImposterTargetMetadata
 
     private readonly HashSet<IEventSymbol> _explicitEvents;
 
+    private readonly HashSet<IPropertySymbol> _explicitIndexers;
+
     private readonly MemberAccess _memberAccess;
 
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
@@ -84,6 +86,10 @@ internal readonly struct ImposterTargetMetadata
             targetSymbol.TypeKind is TypeKind.Interface
                 ? DetectExplicitInterfaceEvents(EventSymbols)
                 : new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
+        _explicitIndexers =
+            targetSymbol.TypeKind is TypeKind.Interface
+                ? DetectExplicitInterfaceIndexers(IndexerSymbols)
+                : new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
     }
 
     private static List<ImposterTargetMethodMetadata> GetMethods(
@@ -192,7 +198,32 @@ internal readonly struct ImposterTargetMetadata
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
-        new(propertySymbol, _symbolNameNamespace.Use(IndexerMemberName), _memberAccess);
+        new(
+            propertySymbol,
+            _symbolNameNamespace.Use(IndexerMemberName),
+            _memberAccess,
+            _explicitIndexers.Contains(propertySymbol)
+        );
+
+    // Indexers of different interfaces with the same parameter types would collide on the instance, and their setup
+    // indexers, which take Arg<T> whatever the ref kind, would collide on the imposter.
+    private static HashSet<IPropertySymbol> DetectExplicitInterfaceIndexers(
+        IReadOnlyCollection<IPropertySymbol> indexers
+    ) =>
+        new(
+            indexers
+                .GroupBy(indexer =>
+                    string.Join(
+                        ",",
+                        indexer.Parameters.Select(parameter =>
+                            parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                        )
+                    )
+                )
+                .Where(group => group.Count() > 1)
+                .SelectMany(group => group),
+            SymbolEqualityComparer.Default
+        );
 
     internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
         new(

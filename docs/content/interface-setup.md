@@ -50,6 +50,18 @@ Selecting a view does not register a setup. Selecting a method through the view 
 
 Views share the existing setup objects and invocation history. Existing members such as `CallCount_1` remain available for compatibility. Identical interface events continue to share their existing event builder.
 
+## Indexers with the same parameter types
+
+When two interfaces declare indexers with the same parameter types, such as `int this[int key]` and `string this[int key]`, or a derived interface hides an indexer with `new`, the imposter can't offer both through its own indexer. Configure each one through its declaring interface's view:
+
+```csharp
+imposter.For(default(INumberIndexer))[Arg<int>.Any()].Getter().Returns(1);
+imposter.For(default(ITextIndexer))[Arg<int>.Any()].Getter().Returns("one");
+
+((INumberIndexer)imposter.Instance())[0].ShouldBe(1);
+((ITextIndexer)imposter.Instance())[0].ShouldBe("one");
+```
+
 ## Generic interfaces and naming
 
 The selector uses the complete interface type, including its generic arguments and namespace:
