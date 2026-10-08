@@ -8,16 +8,8 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 internal struct ParameterBuilder(TypeSyntax type, string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<SyntaxToken> _modifiers = [];
     private EqualsValueClauseSyntax? _defaultValueClause;
-
-    /// <summary>Adds an attribute list to the parameter.</summary>
-    public ParameterBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attributes.Add(attribute);
-        return this;
-    }
 
     /// <summary>Adds a modifier (e.g., 'ref', 'in', 'out') to the parameter.</summary>
     public ParameterBuilder AddModifier(in SyntaxToken modifier)
@@ -40,7 +32,7 @@ internal struct ParameterBuilder(TypeSyntax type, string name)
 
     public ParameterSyntax Build() =>
         Parameter(
-            _attributes.Count > 0 ? List(_attributes) : default,
+            attributeLists: default,
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             type,
             Identifier(name),

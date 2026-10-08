@@ -17,8 +17,6 @@ internal static partial class SyntaxFactoryHelper
     internal static readonly PostfixUnaryExpressionSyntax DefaultNonNullable =
         PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, Default);
 
-    internal static readonly ReturnStatementSyntax ReturnDefault = ReturnStatement(Default);
-
     internal static readonly ReturnStatementSyntax ReturnDefaultNonNullable = ReturnStatement(
         DefaultNonNullable
     );

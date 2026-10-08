@@ -9,7 +9,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<SyntaxToken> _modifiers = [];
     private ParameterListSyntax? _parameterListSyntax;
     private readonly List<ParameterSyntax> _parameters = [];
@@ -20,12 +19,6 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     private ArrowExpressionClauseSyntax? _expressionBody;
     private SyntaxToken _semicolonToken;
     private ExplicitInterfaceSpecifierSyntax? _explicitInterfaceSpecifier;
-
-    public MethodDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attributes.Add(attribute);
-        return this;
-    }
 
     public MethodDeclarationBuilder AddModifierIf(bool condition, Func<SyntaxToken> modifierFactory)
     {
@@ -158,7 +151,7 @@ internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
     public MethodDeclarationSyntax Build()
     {
         return MethodDeclaration(
-            _attributes.Count > 0 ? List(_attributes) : default,
+            attributeLists: default,
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             returnType,
             _explicitInterfaceSpecifier,

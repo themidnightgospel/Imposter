@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -32,11 +31,6 @@ internal class BlockBuilder
             _statements.Add(statementSyntax.ToStatementSyntax());
         }
         return this;
-    }
-
-    internal BlockBuilder AddStatementsIf(bool condition, Func<StatementSyntax> statementGenerator)
-    {
-        return condition ? AddStatement(statementGenerator()) : this;
     }
 
     internal BlockSyntax Build()

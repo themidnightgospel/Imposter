@@ -72,7 +72,7 @@ internal static class TypeSymbolExtensions
 
         var nullableTypeSyntax = shouldConvertToNullable ? typeSyntax.ToNullableType() : typeSyntax;
 
-        return new TypeSymbolMetadata(typeSyntax, isGenericType, nullableTypeSyntax);
+        return new TypeSymbolMetadata(typeSyntax, nullableTypeSyntax);
     }
 
     internal static bool IsMethodAsync(this IMethodSymbol methodSymbol)
@@ -130,20 +130,13 @@ internal readonly struct TypeSymbolMetadata
 {
     internal static TypeSymbolMetadata Empty => default;
 
-    internal TypeSymbolMetadata(
-        TypeSyntax typeSyntax,
-        bool isGenericType,
-        TypeSyntax nullableTypeSyntax
-    )
+    internal TypeSymbolMetadata(TypeSyntax typeSyntax, TypeSyntax nullableTypeSyntax)
     {
         TypeSyntax = typeSyntax;
-        IsGenericType = isGenericType;
         NullableTypeSyntax = nullableTypeSyntax;
     }
 
     internal TypeSyntax TypeSyntax { get; }
-
-    internal bool IsGenericType { get; }
 
     internal TypeSyntax NullableTypeSyntax { get; }
 }

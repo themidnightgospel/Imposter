@@ -129,15 +129,6 @@ internal static class WellKnownTypes
                         )
                     );
 
-                internal static TypeSyntax ConcurrentBag(TypeSyntax typeArgument) =>
-                    QualifiedName(
-                        Namespace,
-                        GenericName(
-                            Identifier("ConcurrentBag"),
-                            TypeArgumentList(SingletonSeparatedList(typeArgument))
-                        )
-                    );
-
                 internal static TypeSyntax ConcurrentDictionary(
                     TypeSyntax keyType,
                     TypeSyntax valueType

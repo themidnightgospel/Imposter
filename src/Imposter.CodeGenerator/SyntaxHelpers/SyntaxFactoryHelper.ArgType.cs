@@ -33,9 +33,6 @@ internal static partial class SyntaxFactoryHelper
     internal static InvocationExpressionSyntax OutArgAny(TypeSyntax type) =>
         WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
 
-    internal static InvocationExpressionSyntax ArgAny(TypeSyntax type) =>
-        WellKnownTypes.Imposter.Abstractions.Arg(type).Dot(IdentifierName("Any")).Call();
-
     internal static ArgumentListSyntax ArgAnyArgumentList(
         IEnumerable<MethodParameterMetadata> parameters
     ) =>

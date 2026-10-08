@@ -16,16 +16,8 @@ internal static partial class SyntaxFactoryHelper
     internal static PrefixUnaryExpressionSyntax Not(ExpressionSyntax operand) =>
         PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, operand);
 
-    internal static PrefixUnaryExpressionSyntax Or(ExpressionSyntax operand) =>
-        PrefixUnaryExpression(SyntaxKind.LogicalOrExpression, operand);
-
     private static ExpressionSyntax ParenthesizeIfNeeded(this ExpressionSyntax expr) =>
         expr is BinaryExpressionSyntax ? ParenthesizedExpression(expr) : expr;
-
-    internal static IsPatternExpressionSyntax Is(
-        this ExpressionSyntax expression,
-        PatternSyntax pattern
-    ) => IsPatternExpression(expression, pattern);
 
     internal static BinaryExpressionSyntax IsNotNull(this ExpressionSyntax left) =>
         BinaryExpression(SyntaxKind.NotEqualsExpression, left, Null);

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -13,7 +11,6 @@ internal class InterfaceDeclarationBuilder(
 )
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
-    private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
     private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = [];
@@ -27,12 +24,6 @@ internal class InterfaceDeclarationBuilder(
     internal InterfaceDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
         _modifiers.Add(modifier);
-        return this;
-    }
-
-    internal InterfaceDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attributes.Add(attribute);
         return this;
     }
 
@@ -67,18 +58,10 @@ internal class InterfaceDeclarationBuilder(
         return this;
     }
 
-    internal InterfaceDeclarationBuilder AddMemberIf(
-        bool condition,
-        Func<MemberDeclarationSyntax> memberGenerator
-    )
-    {
-        return condition ? AddMember(memberGenerator()) : this;
-    }
-
     public InterfaceDeclarationSyntax Build()
     {
         return InterfaceDeclaration(
-            List(DefaultAttributes.DefaultTypeAttributes.Concat(_attributes)),
+            List(DefaultAttributes.DefaultTypeAttributes),
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,

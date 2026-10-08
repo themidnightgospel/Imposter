@@ -7,18 +7,11 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal struct ConstructorBuilder(string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<ParameterSyntax> _parameters = [];
     private ConstructorInitializerSyntax? _initializers;
     private BlockSyntax? _body;
     private SyntaxTokenList _modifiers = default;
     private ParameterListSyntax? _parameterListSyntax;
-
-    internal ConstructorBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attributes.Add(attribute);
-        return this;
-    }
 
     internal ConstructorBuilder AddParameter(ParameterSyntax parameter)
     {
@@ -59,7 +52,7 @@ internal struct ConstructorBuilder(string name)
     public ConstructorDeclarationSyntax Build()
     {
         return ConstructorDeclaration(
-            attributeLists: _attributes.Count > 0 ? List(_attributes) : default,
+            attributeLists: default,
             modifiers: _modifiers,
             identifier: Identifier(name),
             parameterList: _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),

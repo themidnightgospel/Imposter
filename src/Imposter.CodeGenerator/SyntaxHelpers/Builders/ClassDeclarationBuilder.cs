@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,7 +12,6 @@ internal readonly struct ClassDeclarationBuilder(
 )
 {
     private readonly List<MemberDeclarationSyntax> _members = [];
-    private readonly List<AttributeListSyntax> _attribute = [];
     private readonly List<BaseTypeSyntax> _baseTypes = [];
     private readonly List<SyntaxToken> _modifiers = new(1);
     private readonly List<TypeParameterConstraintClauseSyntax> _typeParameterConstraintClauses = [];
@@ -24,12 +21,6 @@ internal readonly struct ClassDeclarationBuilder(
     internal ClassDeclarationBuilder AddBaseType(BaseTypeSyntax baseType)
     {
         _baseTypes.Add(baseType);
-        return this;
-    }
-
-    internal ClassDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attribute.Add(attribute);
         return this;
     }
 
@@ -49,14 +40,6 @@ internal readonly struct ClassDeclarationBuilder(
             _members.AddRange(members);
         }
         return this;
-    }
-
-    internal ClassDeclarationBuilder AddMemberIf(
-        bool condition,
-        Func<MemberDeclarationSyntax> memberGenerator
-    )
-    {
-        return condition ? AddMember(memberGenerator()) : this;
     }
 
     internal ClassDeclarationBuilder AddPublicModifier() =>
@@ -101,7 +84,7 @@ internal readonly struct ClassDeclarationBuilder(
                 : default;
 
         return ClassDeclaration(
-            List(DefaultAttributes.DefaultTypeAttributes.Concat(_attribute)),
+            List(DefaultAttributes.DefaultTypeAttributes),
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             Identifier(name),
             typeParameters,

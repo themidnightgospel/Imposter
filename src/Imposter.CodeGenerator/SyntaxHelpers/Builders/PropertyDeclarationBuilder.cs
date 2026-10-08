@@ -8,17 +8,10 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
 {
-    private readonly List<AttributeListSyntax> _attributes = [];
     private readonly List<SyntaxToken> _modifiers = [];
     private AccessorDeclarationSyntax? _getter;
     private AccessorDeclarationSyntax? _setter;
     private ExplicitInterfaceSpecifierSyntax? _explicitInterfaceSpecifier;
-
-    public PropertyDeclarationBuilder AddAttribute(AttributeListSyntax attribute)
-    {
-        _attributes.Add(attribute);
-        return this;
-    }
 
     public PropertyDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
@@ -80,7 +73,7 @@ internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
         var accessorList = AccessorList(List(accessors));
 
         return PropertyDeclaration(
-            _attributes.Count > 0 ? List(_attributes) : default,
+            attributeLists: default,
             _modifiers.Count > 0 ? TokenList(_modifiers) : default,
             typeSyntax,
             explicitInterfaceSpecifier: _explicitInterfaceSpecifier!,
