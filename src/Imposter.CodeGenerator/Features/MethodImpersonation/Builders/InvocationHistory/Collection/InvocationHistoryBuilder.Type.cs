@@ -32,13 +32,11 @@ internal static partial class InvocationHistoryCollectionBuilder
             )
             .AddMember(BuildAddMethod(method))
             .AddMember(BuildCountMethod(method))
-            .AddMember(BuildToStringMethod(method))
+            .AddMember(BuildToStringMethod())
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildToStringMethod(
-        in ImposterTargetMethodMetadata method
-    ) =>
+    private static MethodDeclarationSyntax BuildToStringMethod() =>
         new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "ToString")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))

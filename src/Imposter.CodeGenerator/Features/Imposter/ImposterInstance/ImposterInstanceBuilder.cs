@@ -302,11 +302,6 @@ internal readonly ref struct ImposterInstanceBuilder
         string imposterFieldName
     )
     {
-        if (!imposterGenerationContext.Imposter.IsClass)
-        {
-            return [];
-        }
-
         var imposterTypeSyntax = imposterGenerationContext.Imposter.ImposterTypeSyntax;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
 

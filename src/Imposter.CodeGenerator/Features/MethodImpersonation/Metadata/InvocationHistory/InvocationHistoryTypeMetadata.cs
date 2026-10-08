@@ -18,8 +18,6 @@ internal readonly record struct InvocationHistoryTypeMetadata
 
     internal readonly InvocationHistoryCollectionMetadata Collection;
 
-    internal readonly FieldDeclarationMetadata AsField;
-
     internal readonly NameSyntax Syntax;
 
     public InvocationHistoryTypeMetadata(in ImposterTargetMethodMetadata method)
@@ -27,7 +25,6 @@ internal readonly record struct InvocationHistoryTypeMetadata
         Name = $"{method.UniqueName}MethodInvocationHistory";
         Interface = new TypeMetadata($"I{Name}");
         Collection = new InvocationHistoryCollectionMetadata($"{Name}Collection");
-        AsField = new FieldDeclarationMetadata(Name);
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
     }
 }

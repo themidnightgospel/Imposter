@@ -84,15 +84,7 @@ internal static partial class MethodImposterBuilder
                 ? conditions.Aggregate((current, next) => current.And(next))
                 : True;
 
-        var asMethodTypeParams =
-            method.TargetGenericTypeParameterListSyntax
-            ?? TypeParameterList(
-                SeparatedList(
-                    method.Symbol.TypeParameters.Select(p =>
-                        TypeParameter(Identifier(p.Name + "Target"))
-                    )
-                )
-            );
+        var asMethodTypeParams = method.TargetGenericTypeParameterListSyntax;
 
         var genericImposterInterfaceWithTargets = GenericName(method.MethodImposter.Interface.Name)
             .WithTypeArgumentList(

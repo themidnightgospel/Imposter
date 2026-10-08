@@ -210,20 +210,11 @@ public static class ArgumentsCriteriaBuilder
             .WithBody(
                 Block(
                     ReturnStatement(
-                        method.Parameters.InputParameterMetadata.Count switch
-                        {
-                            0 => True,
-                            1 => InvokeMatches(method.Parameters.InputParameterMetadata[0]),
-                            _ => method
-                                .Parameters.InputParameterMetadata.Skip(1)
-                                .Select(InvokeMatches)
-                                .Aggregate(
-                                    (ExpressionSyntax)InvokeMatches(
-                                        method.Parameters.InputParameterMetadata[0]
-                                    ),
-                                    (left, right) => left.And(right)
-                                ),
-                        }
+                        method
+                            .Parameters.InputParameterMetadata.Select(it =>
+                                (ExpressionSyntax)InvokeMatches(it)
+                            )
+                            .Aggregate((left, right) => left.And(right))
                     )
                 )
             )

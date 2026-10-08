@@ -288,8 +288,8 @@ internal readonly ref struct ImposterBuilder
             imposterGenerationContext.Imposter.PropertySymbols.Select(it => it.Name)
         );
         memberNames.AddRange(
-            imposterGenerationContext.Imposter.IndexerSymbols.Select(it =>
-                it.IsIndexer ? "Indexer" : it.Name
+            imposterGenerationContext.Imposter.IndexerSymbols.Select(_ =>
+                ImposterTargetMetadata.IndexerMemberName
             )
         );
         memberNames.AddRange(
@@ -374,7 +374,7 @@ internal readonly ref struct ImposterBuilder
         foreach (var constructorMetadata in _accessibleConstructors)
         {
             var constructorBuilder = new ConstructorBuilder(_imposterName)
-                .WithModifiers(GetConstructorModifiers(constructorMetadata.Accessibility))
+                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                 .AddParameters(
                     SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
                 )
@@ -424,9 +424,6 @@ internal readonly ref struct ImposterBuilder
             .Assign(IdentifierName(_typeMetadata.ImposterTargetInstanceClassName).New(argumentList))
             .ToStatementSyntax();
     }
-
-    private static SyntaxTokenList GetConstructorModifiers(Accessibility accessibility) =>
-        TokenList(Token(SyntaxKind.PublicKeyword));
 
     private static FieldDeclarationSyntax ImposterInstanceField(
         in string imposterTargetInstanceClassName,

@@ -47,11 +47,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly bool HasReturnValue;
 
-    internal readonly bool HasGenericReturnType;
-
     internal readonly bool SupportsBaseImplementation;
-
-    internal readonly bool SupportsNullableGenericType;
 
     internal readonly string UniqueName;
 
@@ -79,8 +75,6 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> TargetGenericTypeConstraintClauses;
 
-    internal readonly string Namespace;
-
     internal bool IsAsync { get; }
 
     internal ImposterTargetMethodMetadata(
@@ -93,7 +87,7 @@ internal readonly struct ImposterTargetMethodMetadata
         Symbol = symbol;
         UniqueName = uniqueName;
         DisplayName = Symbol.ToFullDisplayName();
-        Namespace = Symbol.ContainingNamespace.ToDisplayString();
+        var containingNamespace = Symbol.ContainingNamespace.ToDisplayString();
         ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Symbol.ReturnType);
         ReturnType = new ReturnTypeMetadata(
             Symbol.ReturnType,
@@ -101,15 +95,13 @@ internal readonly struct ImposterTargetMethodMetadata
             supportsNullableGenericType
         );
         HasReturnValue = !Symbol.ReturnsVoid;
-        HasGenericReturnType = Symbol.ReturnType.TypeKind == TypeKind.TypeParameter;
         SupportsBaseImplementation =
             Symbol.ContainingType?.TypeKind == TypeKind.Class && !Symbol.IsAbstract;
-        SupportsNullableGenericType = supportsNullableGenericType;
         IsAsync = symbol.IsMethodAsync();
 
         Parameters = new ImposterTargetMethodParametersMetadata(Symbol.Parameters);
         ReservedParameterNames = new ReservedParameterNames(
-            Symbol.Parameters.Select(p => p.Name).Concat([UniqueName, Namespace])
+            Symbol.Parameters.Select(p => p.Name).Concat([UniqueName, containingNamespace])
         );
         GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         GenericTypeArguments = Symbol

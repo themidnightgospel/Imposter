@@ -396,12 +396,9 @@ internal static partial class InvocationSetupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var lambdaBody = new BlockBuilder();
-
-        if (method.Parameters.HasOutputParameters)
-        {
-            lambdaBody.AddStatement(InitializeOutParametersMethodBuilder.Invoke(method));
-        }
+        var lambdaBody = new BlockBuilder().AddStatement(
+            InitializeOutParametersMethodBuilder.Invoke(method)
+        );
 
         lambdaBody.AddStatement(
             ReturnStatement(
@@ -527,12 +524,9 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var returnsAsync = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
-        var lambdaBody = new BlockBuilder();
-
-        if (method.Parameters.HasOutputParameters)
-        {
-            lambdaBody.AddStatement(InitializeOutParametersMethodBuilder.Invoke(method));
-        }
+        var lambdaBody = new BlockBuilder().AddStatement(
+            InitializeOutParametersMethodBuilder.Invoke(method)
+        );
 
         lambdaBody.AddStatement(ReturnStatement(IdentifierName(returnsAsync.ValueParameter.Name)));
 

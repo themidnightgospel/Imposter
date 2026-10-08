@@ -7,12 +7,6 @@ internal readonly record struct GenerateImposterDeclaration(
     bool PutInTheSameNamespace
 )
 {
-    public bool Equals(GenerateImposterDeclaration? other)
-    {
-        return other is not null
-            && SymbolEqualityComparer.Default.Equals(ImposterTarget, other.Value.ImposterTarget);
-    }
-
     public override int GetHashCode()
     {
         return SymbolEqualityComparer.Default.GetHashCode(ImposterTarget);

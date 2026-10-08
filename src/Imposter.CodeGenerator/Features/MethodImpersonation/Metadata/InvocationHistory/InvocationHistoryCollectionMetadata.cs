@@ -13,13 +13,10 @@ internal readonly record struct InvocationHistoryCollectionMetadata
 
     internal readonly FieldDeclarationMetadata AsField;
 
-    internal readonly InvocationHistoryCollectionCountMethodMetadata CountMethod;
-
     public InvocationHistoryCollectionMetadata(string name)
     {
         Name = name;
         Syntax = SyntaxFactory.IdentifierName(Name);
         AsField = new FieldDeclarationMetadata(Name);
-        CountMethod = new InvocationHistoryCollectionCountMethodMetadata();
     }
 }

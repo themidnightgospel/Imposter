@@ -8,8 +8,6 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
 internal readonly record struct ImposterTargetMethodParametersMetadata
 {
-    internal IReadOnlyList<IParameterSymbol> Parameters { get; }
-
     internal IReadOnlyList<IParameterSymbol> InputParameters { get; }
 
     internal IReadOnlyList<IParameterSymbol> OutputParameters { get; }
@@ -34,7 +32,6 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     public ImposterTargetMethodParametersMetadata(IReadOnlyList<IParameterSymbol> symbolParameters)
     {
-        Parameters = symbolParameters;
         InputParameters = symbolParameters.Where(it => it.RefKind is not RefKind.Out).ToArray();
         OutputParameters = symbolParameters.Where(it => it.RefKind is RefKind.Out).ToArray();
         HasOutputParameters = OutputParameters.Count > 0;

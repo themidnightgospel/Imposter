@@ -13,6 +13,8 @@ namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct ImposterTargetMetadata
 {
+    internal const string IndexerMemberName = "Indexer";
+
     internal readonly string Name;
 
     internal readonly NameSyntax ImposterTypeSyntax;
@@ -135,12 +137,7 @@ internal readonly struct ImposterTargetMetadata
 
         if (!typeSymbol.InstanceConstructors.Any(constructor => !constructor.IsImplicitlyDeclared))
         {
-            return new[]
-            {
-                ImposterTargetConstructorMetadata.CreateImplicitParameterless(
-                    typeSymbol.DeclaredAccessibility
-                ),
-            };
+            return new[] { ImposterTargetConstructorMetadata.CreateImplicitParameterless() };
         }
 
         return [];
@@ -175,10 +172,7 @@ internal readonly struct ImposterTargetMetadata
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
-        new(
-            propertySymbol,
-            _symbolNameNamespace.Use(propertySymbol.IsIndexer ? "Indexer" : propertySymbol.Name)
-        );
+        new(propertySymbol, _symbolNameNamespace.Use(IndexerMemberName));
 
     internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
         new(

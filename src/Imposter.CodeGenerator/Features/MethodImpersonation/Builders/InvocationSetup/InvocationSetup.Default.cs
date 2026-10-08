@@ -41,18 +41,11 @@ internal static partial class InvocationSetupBuilder
             .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
             .WithBody(
                 new BlockBuilder()
-                    .AddStatement(InvokeInitializeOutParametersWithDefaultValues(method))
+                    .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
                     .AddStatement(BuildDefaultReturnStatement(method))
                     .Build()
             )
             .Build();
-
-        static StatementSyntax? InvokeInitializeOutParametersWithDefaultValues(
-            in ImposterTargetMethodMetadata method
-        ) =>
-            method.Parameters.HasOutputParameters
-                ? InitializeOutParametersMethodBuilder.Invoke(method)
-                : null;
 
         static StatementSyntax? BuildDefaultReturnStatement(in ImposterTargetMethodMetadata method)
         {

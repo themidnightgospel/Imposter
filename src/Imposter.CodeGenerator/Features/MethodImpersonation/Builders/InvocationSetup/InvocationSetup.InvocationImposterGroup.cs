@@ -11,9 +11,7 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Invocatio
 
 internal static partial class InvocationSetupBuilder
 {
-    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(
-        in ImposterTargetMethodMetadata method
-    )
+    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration()
     {
         var invocationImposterType = IdentifierName(
             MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
@@ -29,9 +27,7 @@ internal static partial class InvocationSetupBuilder
         );
     }
 
-    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(
-        in ImposterTargetMethodMetadata method
-    ) =>
+    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration() =>
         SingleVariableField(
             IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
                 .ToNullableType(),
@@ -84,9 +80,7 @@ internal static partial class InvocationSetupBuilder
             .Build();
     }
 
-    internal static MethodDeclarationSyntax GetInvocationImposterMethod(
-        in ImposterTargetMethodMetadata method
-    )
+    internal static MethodDeclarationSyntax GetInvocationImposterMethod()
     {
         var invocationImposterType = IdentifierName(
             MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName

@@ -75,7 +75,7 @@ internal static partial class InvocationHistoryBuilder
     {
         var methodNameLiteral = $"{method.Symbol.Name}(".StringLiteral();
 
-        var argumentsExpression = method.Parameters.HasInputParameters
+        ExpressionSyntax argumentsExpression = method.Parameters.HasInputParameters
             ? BuildArgumentsText(method)
             : string.Empty.StringLiteral();
 
@@ -100,7 +100,9 @@ internal static partial class InvocationHistoryBuilder
         return AddStrings(description, ParenthesizedExpression(BuildExceptionText()));
     }
 
-    private static ExpressionSyntax BuildArgumentsText(in ImposterTargetMethodMetadata method)
+    private static InvocationExpressionSyntax BuildArgumentsText(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var argumentsIdentifier = IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName);
 
@@ -113,11 +115,6 @@ internal static partial class InvocationHistoryBuilder
                     )
             )
             .ToArray();
-
-        if (argumentDescriptions.Length == 0)
-        {
-            return string.Empty.StringLiteral();
-        }
 
         return WellKnownTypes
             .System.String.Dot(IdentifierName("Join"))
