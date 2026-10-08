@@ -52,10 +52,11 @@ Register the open generic type instead, for example `typeof(IRepository<>)`, and
 
 An imposter is named after its target, `IServiceImposter` for `IService`, and by default goes into the target's namespace. Two registered targets that share a name and namespace, such as interfaces nested in different classes, would therefore get the same imposter type. The generator reports IMP007 for both and generates neither.
 
-```csharp
-[assembly: GenerateImposter(typeof(Sample.A.IService))]
-[assembly: GenerateImposter(typeof(Sample.B.IService), putInTheSameNamespace: false)]
-```
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.CodeGenerator.Tests/Generators/ImposterTypeNameCollisionTests.cs#L150"}
+    [assembly: GenerateImposter(typeof(Sample.A.IService))]
+    [assembly: GenerateImposter(typeof(Sample.B.IService), putInTheSameNamespace: false)]
+    ```
 
 Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter then goes into a namespace of its own, such as `Imposters.Sample.B.IService`. Two closed registrations of one generic type, such as `IRepository<int>` and `IRepository<string>`, collide too; register the open type instead (see [IMP006](#imp006)).
 
