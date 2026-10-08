@@ -74,7 +74,15 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             return;
         }
 
-        if (!ImposterTargetValidator.Validate(sourceProductionContext, generateImposterDeclaration))
+        var memberAccess = new MemberAccess(compilationContext.Compilation.Assembly);
+
+        if (
+            !ImposterTargetValidator.Validate(
+                sourceProductionContext,
+                generateImposterDeclaration,
+                memberAccess
+            )
+        )
         {
             return;
         }
@@ -84,7 +92,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             var imposterGenerationContext = new ImposterGenerationContext(
                 generateImposterDeclaration,
                 new SupportedCSharpFeatures(compilationContext.Compilation),
-                new OverrideAccess(compilationContext.Compilation.Assembly)
+                memberAccess
             );
 
             sourceProductionContext.AddSource(

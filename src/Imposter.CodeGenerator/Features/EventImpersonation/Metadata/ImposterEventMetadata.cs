@@ -25,7 +25,7 @@ internal readonly ref struct ImposterEventMetadata
     internal ImposterEventMetadata(
         IEventSymbol eventSymbol,
         string uniqueName,
-        OverrideAccess overrideAccess,
+        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation
     )
     {
@@ -47,7 +47,7 @@ internal readonly ref struct ImposterEventMetadata
             ExplicitInterfaceSpecifier = null;
             ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
                 eventSymbol,
-                overrideAccess
+                memberAccess
             );
         }
     }

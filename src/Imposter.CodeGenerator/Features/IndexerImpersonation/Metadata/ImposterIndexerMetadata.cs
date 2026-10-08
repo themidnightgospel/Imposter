@@ -37,7 +37,7 @@ internal readonly ref struct ImposterIndexerMetadata
     internal ImposterIndexerMetadata(
         IPropertySymbol propertySymbol,
         string uniqueName,
-        OverrideAccess overrideAccess
+        MemberAccess memberAccess
     )
     {
         Core = new ImposterIndexerCoreMetadata(propertySymbol, uniqueName);
@@ -62,7 +62,7 @@ internal readonly ref struct ImposterIndexerMetadata
         BuilderField = new FieldMetadata($"_{Core.UniqueName}Indexer", Builder.TypeSyntax);
         ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
             propertySymbol,
-            overrideAccess
+            memberAccess
         );
     }
 }

@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.CodeGenerator;
+using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
@@ -27,6 +28,15 @@ public class CrossAssemblyAccessibilityTests
             protected internal virtual event System.EventHandler ProtectedInternalEvent;
             internal virtual int InternalMethod() => 2;
             private protected virtual int PrivateProtectedMethod() => 3;
+        }
+        """;
+
+    private const string InternalConstructorServiceSource = /*lang=csharp*/
+        """
+        public class Service
+        {
+            internal Service() { }
+            public virtual int Get() => 1;
         }
         """;
 
@@ -64,7 +74,10 @@ public class CrossAssemblyAccessibilityTests
     [Fact]
     public async Task GivenTargetInAnotherAssembly_WhenImposterIsGenerated_ShouldCompile()
     {
-        var consumer = await CreateConsumerOfExternalService(ServiceSource);
+        var consumer = await CreateConsumerOfExternalService(
+            ServiceSource,
+            MetadataImportOptions.All
+        );
 
         GetErrorsAfterGeneration(consumer).ShouldBeEmpty();
     }
@@ -74,14 +87,42 @@ public class CrossAssemblyAccessibilityTests
     {
         var consumer = await CreateConsumerOfExternalService(
             $"[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(\"{ConsumerAssemblyName}\")]\n"
-                + ServiceSource
+                + ServiceSource,
+            MetadataImportOptions.All
         );
 
         GetErrorsAfterGeneration(consumer).ShouldBeEmpty();
     }
 
+    [Fact]
+    public async Task GivenOnlyInternalConstructorInAnotherAssemblyWithAllMetadata_WhenGeneratorRuns_ShouldReportIMP004()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalConstructorServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id]);
+    }
+
+    [Fact]
+    public async Task GivenOnlyInternalConstructorInAnotherAssemblyWithPublicMetadata_WhenGeneratorRuns_ShouldReportIMP004()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalConstructorServiceSource,
+            MetadataImportOptions.Public
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id]);
+    }
+
+    // The IDE imports all metadata, so internal members of other assemblies are visible there; command-line builds
+    // import only public and protected metadata.
     private static async Task<CSharpCompilation> CreateConsumerOfExternalService(
-        string serviceSource
+        string serviceSource,
+        MetadataImportOptions metadataImportOptions
     )
     {
         var service = await CreateCompilationAsync(
@@ -98,19 +139,30 @@ public class CrossAssemblyAccessibilityTests
             ConsumerAssemblyName
         );
 
-        return consumer.AddReferences(MetadataReference.CreateFromImage(serviceImage.ToArray()));
+        return consumer
+            .WithOptions(consumer.Options.WithMetadataImportOptions(metadataImportOptions))
+            .AddReferences(MetadataReference.CreateFromImage(serviceImage.ToArray()));
     }
 
     private static Diagnostic[] GetErrorsAfterGeneration(CSharpCompilation consumer)
     {
-        CSharpGeneratorDriver
-            .Create(new ImposterGenerator())
-            .WithUpdatedParseOptions(new CSharpParseOptions(LanguageVersion.CSharp9))
-            .RunGeneratorsAndUpdateCompilation(consumer, out var output, out _);
+        CreateDriver().RunGeneratorsAndUpdateCompilation(consumer, out var output, out _);
 
         return output
             .GetDiagnostics()
             .Where(it => it.Severity == DiagnosticSeverity.Error)
             .ToArray();
     }
+
+    private static string[] GetGeneratorDiagnosticIds(CSharpCompilation consumer) =>
+        CreateDriver()
+            .RunGenerators(consumer)
+            .GetRunResult()
+            .Diagnostics.Select(it => it.Id)
+            .ToArray();
+
+    private static GeneratorDriver CreateDriver() =>
+        CSharpGeneratorDriver
+            .Create(new ImposterGenerator())
+            .WithUpdatedParseOptions(new CSharpParseOptions(LanguageVersion.CSharp9));
 }

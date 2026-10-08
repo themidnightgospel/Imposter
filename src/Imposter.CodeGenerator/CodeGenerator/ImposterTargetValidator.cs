@@ -1,5 +1,7 @@
+using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator;
@@ -8,7 +10,8 @@ internal static class ImposterTargetValidator
 {
     public static bool Validate(
         in SourceProductionContext sourceProductionContext,
-        GenerateImposterDeclaration generateImposterDeclaration
+        GenerateImposterDeclaration generateImposterDeclaration,
+        MemberAccess memberAccess
     )
     {
         var target = generateImposterDeclaration.ImposterTarget;
@@ -19,7 +22,7 @@ internal static class ImposterTargetValidator
             return false;
         }
 
-        if (target.TypeKind == TypeKind.Class && !HasAccessibleConstructor(target))
+        if (target.TypeKind == TypeKind.Class && !HasAccessibleConstructor(target, memberAccess))
         {
             ReportImposterTargetMustHaveAccessibleConstructor(sourceProductionContext, target);
             return false;
@@ -90,25 +93,12 @@ internal static class ImposterTargetValidator
         typeSymbol.TypeKind == TypeKind.Interface
         || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
 
-    private static bool HasAccessibleConstructor(INamedTypeSymbol typeSymbol)
-    {
-        if (typeSymbol.InstanceConstructors.Length == 0)
-        {
-            return true;
-        }
-
-        foreach (var constructor in typeSymbol.InstanceConstructors)
-        {
-            if (constructor.DeclaredAccessibility is Accessibility.Private)
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
+    // A source class always has at least its implicit constructor. A class from another assembly can show none, when
+    // the build imports only public and protected metadata and every constructor is internal.
+    private static bool HasAccessibleConstructor(
+        INamedTypeSymbol typeSymbol,
+        MemberAccess memberAccess
+    ) => typeSymbol.InstanceConstructors.Any(memberAccess.IsAccessible);
 
     private static Location GetPreferredLocation(INamedTypeSymbol typeSymbol)
     {

@@ -41,7 +41,7 @@ internal readonly ref struct ImposterPropertyMetadata
         IPropertySymbol property,
         string uniqueName,
         NameSet memberNameSet,
-        OverrideAccess overrideAccess,
+        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation
     )
     {
@@ -87,10 +87,7 @@ internal readonly ref struct ImposterPropertyMetadata
         else
         {
             ExplicitInterfaceSpecifier = null;
-            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
-                property,
-                overrideAccess
-            );
+            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property, memberAccess);
         }
     }
 }

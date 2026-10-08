@@ -81,7 +81,7 @@ internal readonly struct ImposterTargetMethodMetadata
         IMethodSymbol symbol,
         string uniqueName,
         bool supportsNullableGenericType,
-        OverrideAccess overrideAccess,
+        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation = false
     )
     {
@@ -183,7 +183,7 @@ internal readonly struct ImposterTargetMethodMetadata
             ExplicitInterfaceSpecifier = null;
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(
                 symbol,
-                overrideAccess
+                memberAccess
             );
         }
     }

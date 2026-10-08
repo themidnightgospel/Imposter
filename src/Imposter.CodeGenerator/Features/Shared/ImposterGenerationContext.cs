@@ -25,14 +25,14 @@ internal readonly struct ImposterGenerationContext
     internal ImposterGenerationContext(
         GenerateImposterDeclaration generateImposterDeclaration,
         in SupportedCSharpFeatures supportedCSharpFeatures,
-        OverrideAccess overrideAccess
+        MemberAccess memberAccess
     )
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(
             generateImposterDeclaration.ImposterTarget,
             supportedCSharpFeatures,
-            overrideAccess
+            memberAccess
         );
 
         var targetName = GetTargetName(TargetSymbol);

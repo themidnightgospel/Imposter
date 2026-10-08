@@ -19,11 +19,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
         [Fact]
         public async Task GivenSendAsyncSetup_WhenHttpClientSendsRequest_ShouldReturnConfiguredResponse()
         {
+            using var configuredResponse = new HttpResponseMessage(HttpStatusCode.Accepted);
             _sut.SendAsync(Arg<HttpRequestMessage>.Any(), Arg<CancellationToken>.Any())
-                .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.Accepted)));
+                .Returns(Task.FromResult(configuredResponse));
             using var client = new HttpClient(_sut.Instance());
 
-            var response = await client.GetAsync("https://example.test/");
+            using var response = await client.GetAsync("https://example.test/");
 
             response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         }
