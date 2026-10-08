@@ -218,7 +218,7 @@ internal static partial class SyntaxFactoryHelper
             : TypeParameterList(
                 SeparatedList(
                     genericArguments.Select(name =>
-                        TypeParameter(Identifier(((IdentifierNameSyntax)name).Identifier.Text))
+                        TypeParameter(((IdentifierNameSyntax)name).Identifier)
                     )
                 )
             );

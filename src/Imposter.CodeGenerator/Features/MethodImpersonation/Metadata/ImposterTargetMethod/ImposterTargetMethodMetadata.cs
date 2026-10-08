@@ -105,7 +105,9 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         GenericTypeParameterNameSet = new NameSet(Symbol.TypeParameters.Select(p => p.Name));
         GenericTypeArguments = Symbol
-            .TypeParameters.Select(p => SyntaxFactory.IdentifierName(p.Name))
+            .TypeParameters.Select(p =>
+                SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(p.Name))
+            )
             .ToArray();
         GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(
             GenericTypeArguments

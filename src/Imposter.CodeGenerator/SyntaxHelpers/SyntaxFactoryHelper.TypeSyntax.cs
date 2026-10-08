@@ -24,7 +24,7 @@ internal static partial class SyntaxFactoryHelper
 
     internal static TypeParameterSyntax TypeParameterSyntax(
         ITypeParameterSymbol typeParameterSymbol
-    ) => TypeParameter(typeParameterSymbol.Name);
+    ) => TypeParameter(EscapedIdentifier(typeParameterSymbol.Name));
 
     internal static IEnumerable<TypeParameterSyntax> TypeParametersSyntax(IMethodSymbol method) =>
         method.TypeParameters.Length > 0 ? method.TypeParameters.Select(TypeParameterSyntax) : [];
@@ -132,7 +132,7 @@ internal static partial class SyntaxFactoryHelper
             return null;
         }
 
-        return TypeParameterConstraintClause(typeParameter.Name)
+        return TypeParameterConstraintClause(IdentifierName(EscapedIdentifier(typeParameter.Name)))
             .WithConstraints(SeparatedList(constraints));
     }
 

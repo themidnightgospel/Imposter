@@ -19,7 +19,10 @@ internal readonly struct ImposterTargetTypeParametersMetadata
     {
         TypeArguments = targetSymbol
             .TypeParameters.Select(parameter =>
-                (NameSyntax)SyntaxFactory.IdentifierName((string)parameter.Name)
+                (NameSyntax)
+                    SyntaxFactory.IdentifierName(
+                        SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
+                    )
             )
             .ToArray();
         TypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TypeArguments);

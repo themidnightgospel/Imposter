@@ -39,8 +39,8 @@ internal readonly struct InvocationVerifierInterfaceMetadata
             .Symbol.TypeParameters.Select(parameter =>
                 IdentifierName(
                     parameter.Name == CallCountMethodName
-                        ? names.Use(parameter.Name)
-                        : parameter.Name
+                        ? Identifier(names.Use(parameter.Name))
+                        : SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
                 )
             )
             .ToArray();
