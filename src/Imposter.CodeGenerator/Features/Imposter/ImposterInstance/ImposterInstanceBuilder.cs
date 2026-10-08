@@ -408,8 +408,10 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (imposterMethod.SupportsBaseImplementation)
             {
+                // Type arguments are explicit because a type parameter that only appears in the
+                // return type, or not in the signature at all, cannot be inferred.
                 var baseMethodExpression = BaseExpression()
-                    .Dot(IdentifierName(imposterMethod.Model.Name));
+                    .Dot(WithMethodGenericArguments(imposterMethod.Model.Name, imposterMethod));
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
