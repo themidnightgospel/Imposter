@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -152,22 +153,8 @@ internal static class IndexerArgumentsBuilder
             ),
         };
 
-        foreach (var parameter in indexer.Core.Parameters)
-        {
-            var parameterHash = WellKnownTypes
-                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
-                .Dot(IdentifierName("Default"))
-                .Dot(IdentifierName("GetHashCode"))
-                .Call(
-                    Argument(
-                        PostfixUnaryExpression(
-                            SyntaxKind.SuppressNullableWarningExpression,
-                            IdentifierName(parameter.Name)
-                        )
-                    )
-                );
-
-            statements.Add(
+        statements.AddRange(
+            indexer.Core.Parameters.Select(parameter =>
                 hash.Assign(
                         BinaryExpression(
                             SyntaxKind.AddExpression,
@@ -176,12 +163,23 @@ internal static class IndexerArgumentsBuilder
                                 hash,
                                 LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(31))
                             ),
-                            parameterHash
+                            WellKnownTypes
+                                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
+                                .Dot(IdentifierName("Default"))
+                                .Dot(IdentifierName("GetHashCode"))
+                                .Call(
+                                    Argument(
+                                        PostfixUnaryExpression(
+                                            SyntaxKind.SuppressNullableWarningExpression,
+                                            IdentifierName(parameter.Name)
+                                        )
+                                    )
+                                )
                         )
                     )
                     .ToStatementSyntax()
-            );
-        }
+            )
+        );
 
         statements.Add(ReturnStatement(hash));
 
