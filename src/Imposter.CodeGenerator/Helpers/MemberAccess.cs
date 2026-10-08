@@ -22,6 +22,10 @@ internal readonly struct MemberAccess
             _ => true,
         };
 
+    // An inaccessible accessor, such as a private one, cannot be overridden or called, so it counts as absent.
+    internal IMethodSymbol? AccessibleOrNull(IMethodSymbol? accessor) =>
+        accessor is not null && IsAccessible(accessor) ? accessor : null;
+
     internal Accessibility GetOverrideAccessibility(ISymbol member) =>
         member.DeclaredAccessibility == Accessibility.ProtectedOrInternal
         && !HasInternalAccessTo(member)

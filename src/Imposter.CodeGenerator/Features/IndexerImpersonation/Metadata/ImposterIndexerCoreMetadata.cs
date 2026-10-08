@@ -36,11 +36,31 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly bool SetterSupportsBaseImplementation;
 
-    internal ImposterIndexerCoreMetadata(IPropertySymbol property, string uniqueName)
+    internal readonly SyntaxTokenList GetterModifiers;
+
+    internal readonly SyntaxTokenList SetterModifiers;
+
+    internal ImposterIndexerCoreMetadata(
+        IPropertySymbol property,
+        string uniqueName,
+        MemberAccess memberAccess
+    )
     {
+        var getter = memberAccess.AccessibleOrNull(property.GetMethod);
+        var setter = memberAccess.AccessibleOrNull(property.SetMethod);
         UniqueName = uniqueName;
-        HasGetter = property.GetMethod is not null;
-        HasSetter = property.SetMethod is not null;
+        HasGetter = getter is not null;
+        HasSetter = setter is not null;
+        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
+            getter,
+            property,
+            memberAccess
+        );
+        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
+            setter,
+            property,
+            memberAccess
+        );
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
@@ -56,10 +76,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             .ToArray();
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation =
-            containingTypeIsClass && property.GetMethod is { IsAbstract: false };
-        SetterSupportsBaseImplementation =
-            containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        GetterSupportsBaseImplementation = containingTypeIsClass && getter is { IsAbstract: false };
+        SetterSupportsBaseImplementation = containingTypeIsClass && setter is { IsAbstract: false };
 
         var parametersDisplay = string.Join(
             ", ",

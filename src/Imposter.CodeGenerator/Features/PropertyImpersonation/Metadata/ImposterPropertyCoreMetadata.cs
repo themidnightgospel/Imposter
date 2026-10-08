@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -36,12 +37,32 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly bool SupportsBaseImplementation;
 
-    internal ImposterPropertyCoreMetadata(IPropertySymbol property, string uniqueName)
+    internal readonly SyntaxTokenList GetterModifiers;
+
+    internal readonly SyntaxTokenList SetterModifiers;
+
+    internal ImposterPropertyCoreMetadata(
+        IPropertySymbol property,
+        string uniqueName,
+        MemberAccess memberAccess
+    )
     {
+        var getter = memberAccess.AccessibleOrNull(property.GetMethod);
+        var setter = memberAccess.AccessibleOrNull(property.SetMethod);
         UniqueName = uniqueName;
-        HasGetter = property.GetMethod != null;
-        HasSetter = property.SetMethod != null;
-        IsInitOnly = property.SetMethod?.IsInitOnly == true;
+        HasGetter = getter != null;
+        HasSetter = setter != null;
+        IsInitOnly = setter?.IsInitOnly == true;
+        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
+            getter,
+            property,
+            memberAccess
+        );
+        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
+            setter,
+            property,
+            memberAccess
+        );
         Name = property.Name;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
@@ -50,10 +71,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareTypeSyntax);
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation =
-            containingTypeIsClass && property.GetMethod is { IsAbstract: false };
-        SetterSupportsBaseImplementation =
-            containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        GetterSupportsBaseImplementation = containingTypeIsClass && getter is { IsAbstract: false };
+        SetterSupportsBaseImplementation = containingTypeIsClass && setter is { IsAbstract: false };
         SetterRequiresDirectBaseAssignment = IsInitOnly && SetterSupportsBaseImplementation;
         SupportsBaseImplementation =
             GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;

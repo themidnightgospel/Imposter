@@ -45,7 +45,7 @@ internal readonly ref struct ImposterPropertyMetadata
         bool requiresExplicitInterfaceImplementation
     )
     {
-        Core = new ImposterPropertyCoreMetadata(property, uniqueName);
+        Core = new ImposterPropertyCoreMetadata(property, uniqueName, memberAccess);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
         var defaultPropertyBehaviourField = new FieldMetadata(

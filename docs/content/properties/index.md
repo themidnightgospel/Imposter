@@ -75,6 +75,22 @@ checks, and default value storage as an ordinary setter. For virtual class prope
 if a callback throws, the base accessor is not invoked. Abstract and interface accessors do not expose
 base delegation.
 
+## Accessors with their own accessibility
+
+A class property or indexer can restrict one accessor, as in `{ get; protected set; }`. The imposter
+overrides each accessor with the accessibility it declares, so a `protected` setter is still impersonated
+when the class itself assigns the property.
+
+A `private` accessor can't be overridden, and neither can an `internal` one from an assembly that
+doesn't grant yours `InternalsVisibleTo`. The imposter leaves such an accessor to the class: for
+`{ get; private set; }` you can configure `Getter()`, but there is no `Setter(...)`.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/ClassImpersonation/RestrictedAccessorsClassImposterTests.cs#L16"}
+    imposter.PrivateSetter.Getter().Returns(5);
+    var value = imposter.Instance().PrivateSetter; // 5
+    ```
+
 ## Base Implementation
 
 Forward to the base implementation for overridable class members:

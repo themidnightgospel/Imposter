@@ -36,21 +36,36 @@ internal sealed class PropertyDeclarationBuilder(TypeSyntax typeSyntax, string n
         return this;
     }
 
-    public PropertyDeclarationBuilder WithGetterBody(BlockSyntax body)
+    public PropertyDeclarationBuilder WithGetterBody(
+        BlockSyntax body,
+        SyntaxTokenList modifiers = default
+    )
     {
-        _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithBody(body);
+        _getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+            .WithModifiers(modifiers)
+            .WithBody(body);
         return this;
     }
 
-    public PropertyDeclarationBuilder WithSetterBody(BlockSyntax body)
+    public PropertyDeclarationBuilder WithSetterBody(
+        BlockSyntax body,
+        SyntaxTokenList modifiers = default
+    )
     {
-        _setter = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(body);
+        _setter = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+            .WithModifiers(modifiers)
+            .WithBody(body);
         return this;
     }
 
-    public PropertyDeclarationBuilder WithInitBody(BlockSyntax body)
+    public PropertyDeclarationBuilder WithInitBody(
+        BlockSyntax body,
+        SyntaxTokenList modifiers = default
+    )
     {
-        _setter = AccessorDeclaration(SyntaxKind.InitAccessorDeclaration).WithBody(body);
+        _setter = AccessorDeclaration(SyntaxKind.InitAccessorDeclaration)
+            .WithModifiers(modifiers)
+            .WithBody(body);
         return this;
     }
 
