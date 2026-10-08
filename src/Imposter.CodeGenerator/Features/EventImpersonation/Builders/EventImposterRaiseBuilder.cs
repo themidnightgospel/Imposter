@@ -32,7 +32,7 @@ internal static class EventImposterRaiseBuilder
             @event.BuilderInterface.RaiseMethod.Name
         )
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.SetupInterfaceTypeSyntax)
-            .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax));
+            .AddParameters(@event.Core.RaiseParameterSyntaxes);
 
         if (@event.Core.IsAsync)
         {
@@ -120,7 +120,7 @@ internal static class EventImposterRaiseBuilder
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.AsyncKeyword))
-            .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
+            .AddParameters(@event.Core.RaiseParameterSyntaxes)
             .WithBody(BuildRaiseCoreAsyncBody(@event, taskListType))
             .Build();
     }

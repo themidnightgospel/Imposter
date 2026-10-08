@@ -23,6 +23,10 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly EventParameterMetadata[] Parameters;
 
+    // An async method cannot take `in` parameters (CS1988), so an async event's raise methods take the delegate's
+    // parameters by value. The handlers and callbacks they call keep the delegate's own modifiers.
+    internal readonly ParameterSyntax[] RaiseParameterSyntaxes;
+
     internal readonly bool IsAsync;
 
     internal readonly ITypeSymbol? DelegateReturnTypeSymbol;
@@ -49,14 +53,17 @@ internal readonly ref struct ImposterEventCoreMetadata
             throw new InvalidOperationException("Events must expose a delegate invoke method.");
         }
 
-        Parameters = delegateSymbol
-            .DelegateInvokeMethod.Parameters.Select(parameter => new EventParameterMetadata(
-                ParameterModel.From(parameter)
-            ))
+        var parameterModels = delegateSymbol
+            .DelegateInvokeMethod.Parameters.Select(ParameterModel.From)
             .ToArray();
+        Parameters = parameterModels.Select(model => new EventParameterMetadata(model)).ToArray();
 
         DelegateReturnTypeSymbol = delegateSymbol.DelegateInvokeMethod.ReturnType;
         IsAsync = DelegateReturnTypeSymbol.IsAwaitable();
+        var includeRefKind = !IsAsync;
+        RaiseParameterSyntaxes = parameterModels
+            .Select(model => SyntaxFactoryHelper.ParameterSyntax(model, includeRefKind))
+            .ToArray();
 
         var containingTypeIsClass = eventSymbol.ContainingType?.TypeKind == TypeKind.Class;
         var addSupportsBaseImplementation =
