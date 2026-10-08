@@ -9,27 +9,27 @@
 
 using Rocks.Extensions;
 
-namespace Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
+namespace Imposter.Benchmarks.ImposterVsAlternatives;
 
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class ICalculatorCreateExpectations
 	: global::Rocks.Expectations
 {
-	private readonly global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.SetupsExpectations setups;
+	private readonly global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.SetupsExpectations setups;
 	
 	internal sealed class SetupsExpectations
 	{
-		private readonly global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations parent;
+		private readonly global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations parent;
 	
-		internal SetupsExpectations(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations parent) =>
+		internal SetupsExpectations(global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations parent) =>
 			this.parent = parent;
 	
-		internal global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.Adornments.AdornmentsForHandler0 Square(global::Rocks.Argument<int> @input)
+		internal global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.Adornments.AdornmentsForHandler0 Square(global::Rocks.Argument<int> @input)
 		{
 			global::Rocks.Exceptions.ExpectationException.ThrowIf(this.parent.WasInstanceInvoked);
 			global::System.ArgumentNullException.ThrowIfNull(@input);
 			
-			var @handler = new global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.Handler0
+			var @handler = new global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.Handler0
 			{
 				@input = @input,
 			};
@@ -40,20 +40,20 @@ internal sealed class ICalculatorCreateExpectations
 		}
 	}
 	
-	internal global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.SetupsExpectations Setups => this.setups;
+	internal global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.SetupsExpectations Setups => this.setups;
 	
 	internal sealed class Handler0
 		: global::Rocks.Handler<global::System.Func<int, int>, int>
 	{
 		public global::Rocks.Argument<int> @input { get; set; }
 	}
-	private global::Rocks.Handlers<global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.Handler0>? @handlers0;
+	private global::Rocks.Handlers<global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.Handler0>? @handlers0;
 	
 	public override void Verify()
 	{
 		if (!this.WasInstanceInvoked)
 		{
-			throw new global::Rocks.Exceptions.VerificationException([$"An instance of global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations was never made."]);
+			throw new global::Rocks.Exceptions.VerificationException([$"An instance of global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations was never made."]);
 		}
 		else if (!this.WasExceptionThrown)
 		{
@@ -71,7 +71,7 @@ internal sealed class ICalculatorCreateExpectations
 	private sealed class Mock
 		: global::Imposter.Benchmarks.ImposterVsAlternatives.SimpleMethodMockingBenchmarks.ICalculator
 	{
-		public Mock(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations @expectations)
+		public Mock(global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations @expectations)
 		{
 			this.Expectations = @expectations;
 		}
@@ -108,7 +108,7 @@ internal sealed class ICalculatorCreateExpectations
 				""");
 		}
 		
-		private global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations Expectations { get; }
+		private global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations Expectations { get; }
 	}
 	
 	public ICalculatorCreateExpectations() => this.setups = new(this);
@@ -136,9 +136,9 @@ internal sealed class ICalculatorCreateExpectations
 		{ }
 		
 		public sealed class AdornmentsForHandler0
-			: global::Rocks.Adornments<AdornmentsForHandler0, global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.Handler0, global::System.Func<int, int>, int>, IAdornmentsForICalculator<AdornmentsForHandler0>
+			: global::Rocks.Adornments<AdornmentsForHandler0, global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.Handler0, global::System.Func<int, int>, int>, IAdornmentsForICalculator<AdornmentsForHandler0>
 		{
-			public AdornmentsForHandler0(global::Imposter.Benchmarks.ImposterVsMoqVsNSubstitute.ICalculatorCreateExpectations.Handler0 handler)
+			public AdornmentsForHandler0(global::Imposter.Benchmarks.ImposterVsAlternatives.ICalculatorCreateExpectations.Handler0 handler)
 				: base(handler) { }
 		}
 	}

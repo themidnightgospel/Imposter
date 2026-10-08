@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 using FakeItEasy;
 using Imposter.Abstractions;
 using Imposter.Benchmarks.ImposterVsAlternatives;
-using Imposter.Benchmarks.ImposterVsMoqVsNSubstitute;
 using Moq;
 using NSubstitute;
 using Rocks;
