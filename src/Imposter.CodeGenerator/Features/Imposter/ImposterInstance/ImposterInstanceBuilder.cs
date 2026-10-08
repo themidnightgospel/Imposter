@@ -448,7 +448,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
                 .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier);
 
-            foreach (var constraintClause in imposterMethod.GenericTypeConstraintClauses)
+            foreach (var constraintClause in imposterMethod.ImposterInstanceMethodConstraintClauses)
             {
                 methodBuilder.AddConstraintClause(constraintClause);
             }
