@@ -249,6 +249,9 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
 
 Open generics let you register a generic interface or class once (for example, `typeof(IAsyncObservable<>)`) and then create imposters for any concrete type you close it with at call site.
 
+!!! note
+    Register the open type. A closed registration such as `typeof(IAsyncObservable<int>)` produces the same generic imposter, ignores its type arguments, and reports warning `IMP006`.
+
 From a behaviour point of view:
 
 - Each closed generic target gets its own imposter type and its own call tracking. An `IAsyncObservable<string>` imposter and an `IAsyncObservable<int>` imposter never share setups or call history.
