@@ -38,7 +38,7 @@ internal static class InterfaceSetupViewBuilder
             .AddParameter(
                 ParameterSyntax(view.SelectorType, InterfaceSetupViewMetadata.SelectorParameterName)
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
 
     private static MemberDeclarationSyntax BuildMember(

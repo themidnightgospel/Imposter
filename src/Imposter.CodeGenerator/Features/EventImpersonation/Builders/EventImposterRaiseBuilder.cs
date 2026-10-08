@@ -41,7 +41,7 @@ internal static class EventImposterRaiseBuilder
                 .WithBody(
                     new BlockBuilder()
                         .AddStatement(BuildAwaitRaiseAsyncStatement(@event))
-                        .AddStatement(ReturnStatement(ThisExpression()))
+                        .AddStatement(ReturnThis)
                         .Build()
                 )
                 .Build();
@@ -58,7 +58,7 @@ internal static class EventImposterRaiseBuilder
                                 )
                             )
                     )
-                    .AddStatement(ReturnStatement(ThisExpression()))
+                    .AddStatement(ReturnThis)
                     .Build()
             )
             .Build();

@@ -128,7 +128,7 @@ internal static class EventImposterVerificationBuilder
             )
         );
 
-        blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
+        blockBuilder.AddStatement(ReturnThis);
 
         return blockBuilder.Build();
     }
@@ -241,7 +241,7 @@ internal static class EventImposterVerificationBuilder
             )
         );
 
-        blockBuilder.AddStatement(ReturnStatement(ThisExpression()));
+        blockBuilder.AddStatement(ReturnThis);
 
         return blockBuilder.Build();
     }

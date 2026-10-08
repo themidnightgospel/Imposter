@@ -282,8 +282,9 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)
+                Block(
+                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda),
+                    ReturnThis
                 )
             )
             .Build();
@@ -306,8 +307,9 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)
+                Block(
+                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda),
+                    ReturnThis
                 )
             )
             .Build();
@@ -336,8 +338,9 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)
+                Block(
+                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda),
+                    ReturnThis
                 )
             )
             .Build();
@@ -360,8 +363,9 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)
+                Block(
+                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda),
+                    ReturnThis
                 )
             )
             .Build();
@@ -381,7 +385,7 @@ internal static class IndexerGetterBuilder
                 )
             )
             .WithBody(
-                BuildFluentBodyReturningThis(
+                Block(
                     InvocationImposterAddReturnValue(
                         indexer.GetterImplementation.Builder,
                         SimpleLambdaExpression(
@@ -395,7 +399,8 @@ internal static class IndexerGetterBuilder
                                     .WithArgumentList(EmptyArgumentListSyntax)
                             )
                         )
-                    )
+                    ),
+                    ReturnThis
                 )
             )
             .Build();
@@ -425,8 +430,9 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda)
+                Block(
+                    InvocationImposterAddReturnValue(indexer.GetterImplementation.Builder, lambda),
+                    ReturnThis
                 )
             )
             .Build();
@@ -450,11 +456,12 @@ internal static class IndexerGetterBuilder
             )
             .AddParameter(parameter)
             .WithBody(
-                BuildFluentBodyReturningThis(
+                Block(
                     InvocationImposterAddCallback(
                         indexer.GetterImplementation.Builder,
                         IdentifierName(parameter.Identifier)
-                    )
+                    ),
+                    ReturnThis
                 )
             )
             .Build();
@@ -500,7 +507,7 @@ internal static class IndexerGetterBuilder
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
     }
 
@@ -512,8 +519,9 @@ internal static class IndexerGetterBuilder
         return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
             .WithBody(
-                BuildFluentBodyReturningThis(
-                    InvocationImposterUseBaseImplementation(indexer.GetterImplementation.Builder)
+                Block(
+                    InvocationImposterUseBaseImplementation(indexer.GetterImplementation.Builder),
+                    ReturnThis
                 )
             )
             .Build();

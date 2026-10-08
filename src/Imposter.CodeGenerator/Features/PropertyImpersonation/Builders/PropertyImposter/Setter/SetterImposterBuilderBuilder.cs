@@ -142,7 +142,7 @@ internal static class SetterImposterBuilderBuilder
                             ])
                         )
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();
@@ -157,7 +157,7 @@ internal static class SetterImposterBuilderBuilder
                     property.SetterImposterBuilderInterface.ThenMethod.InterfaceSyntax
                 )
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
 
     private static MethodDeclarationSyntax? BuildInitialThenMethod(
@@ -171,7 +171,7 @@ internal static class SetterImposterBuilderBuilder
 
         return new MethodDeclarationBuilder(method.ReturnType, method.Name)
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(method.InterfaceSyntax))
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
     }
 
@@ -195,7 +195,7 @@ internal static class SetterImposterBuilderBuilder
                         .Dot(IdentifierName("UseBaseImplementation"))
                         .Call()
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();

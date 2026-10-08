@@ -93,7 +93,7 @@ internal static class EventImposterBuilder
                     FieldIdentifier(@event.Builder.Fields.UseBaseImplementation)
                         .Assign(True)
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();

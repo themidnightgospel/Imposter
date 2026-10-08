@@ -166,7 +166,7 @@ internal static class PropertyImposterBuilder
             );
         }
 
-        statements.Add(ReturnStatement(ThisExpression()));
+        statements.Add(ReturnThis);
 
         return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
             .WithExplicitInterfaceSpecifier(

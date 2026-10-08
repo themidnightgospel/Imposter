@@ -529,7 +529,7 @@ internal static class IndexerSetterBuilder
                             Argument(IdentifierName(parameter.Identifier)),
                         ])
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();
@@ -574,7 +574,7 @@ internal static class IndexerSetterBuilder
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
     }
 
@@ -593,7 +593,7 @@ internal static class IndexerSetterBuilder
                         .Dot(IdentifierName("UseBaseImplementation"))
                         .Call(Argument(IdentifierName(builderMetadata.CriteriaFieldName)))
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();

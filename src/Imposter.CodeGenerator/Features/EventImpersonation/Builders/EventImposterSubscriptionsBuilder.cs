@@ -152,7 +152,7 @@ internal static class EventImposterSubscriptionsBuilder
                             .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                             .Call(Argument(callbackIdentifier))
                     )
-                    .AddStatement(ReturnStatement(ThisExpression()))
+                    .AddStatement(ReturnThis)
                     .Build()
             )
             .Build();
@@ -213,7 +213,7 @@ internal static class EventImposterSubscriptionsBuilder
                             .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                             .Call(Argument(interceptorIdentifier))
                     )
-                    .AddStatement(ReturnStatement(ThisExpression()))
+                    .AddStatement(ReturnThis)
                     .Build()
             )
             .Build();

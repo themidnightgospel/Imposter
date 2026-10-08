@@ -18,12 +18,6 @@ internal static class IndexerImposterBuilderCommon
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
     internal const string BaseImplementationParameterName = "baseImplementation";
 
-    internal static BlockSyntax BuildFluentBodyReturningThis(params StatementSyntax[] statements)
-    {
-        var fluentStatements = statements.Concat([ReturnStatement(ThisExpression())]).ToArray();
-        return Block(fluentStatements);
-    }
-
     internal static ArgumentSyntax BuildArgument(
         IParameterSymbol parameter,
         ExpressionSyntax expression

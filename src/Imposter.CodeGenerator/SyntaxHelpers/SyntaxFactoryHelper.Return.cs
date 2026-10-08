@@ -22,4 +22,6 @@ internal static partial class SyntaxFactoryHelper
     );
 
     internal static readonly ReturnStatementSyntax ReturnVoid = ReturnStatement();
+
+    internal static readonly ReturnStatementSyntax ReturnThis = ReturnStatement(ThisExpression());
 }

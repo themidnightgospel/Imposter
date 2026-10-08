@@ -32,10 +32,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(throwGenericExceptionLambda).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureThrowsGenericCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureThrowsGenericCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -73,10 +70,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(throwProvidedExceptionLambda).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureThrowsInstanceCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureThrowsInstanceCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -122,10 +116,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ThrowsMethod.Name))
             .Call(Argument(throwGeneratedExceptionLambda).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureThrowsGeneratorCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureThrowsGeneratorCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -153,10 +144,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(throwsAsyncMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureThrowsAsyncCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureThrowsAsyncCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -187,10 +175,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.CallbackMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureCallbackCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureCallbackCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -225,10 +210,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureReturnsDelegateCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureReturnsDelegateCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -257,10 +239,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureReturnsValueCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureReturnsValueCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -288,10 +267,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName(returnsAsyncMethod.Name))
             .Call(Argument(IdentifierName(parameterName)).AsSingleArgumentListSyntax());
 
-        var body = Block(
-            configureReturnsAsyncCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(configureReturnsAsyncCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(
@@ -312,10 +288,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(IdentifierName("UseBaseImplementation"))
             .Call();
 
-        var body = Block(
-            enableBaseImplementationCall.ToStatementSyntax(),
-            ReturnStatement(ThisExpression())
-        );
+        var body = Block(enableBaseImplementationCall.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(metadata.InterfaceSyntax))
@@ -340,7 +313,7 @@ internal static partial class MethodImposterBuilderBuilder
                     .Call()
             );
 
-        var body = Block(assignment.ToStatementSyntax(), ReturnStatement(ThisExpression()));
+        var body = Block(assignment.ToStatementSyntax(), ReturnThis);
 
         return builder
             .WithExplicitInterfaceSpecifier(

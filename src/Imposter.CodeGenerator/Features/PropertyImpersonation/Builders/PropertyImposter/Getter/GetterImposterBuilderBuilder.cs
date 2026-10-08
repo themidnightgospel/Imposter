@@ -285,7 +285,7 @@ internal static class GetterImposterBuilderBuilder
                                 )
                             )
                             .ToStatementSyntax(),
-                        ReturnStatement(ThisExpression())
+                        ReturnThis
                     )
                 )
                 .Build(),
@@ -316,7 +316,7 @@ internal static class GetterImposterBuilderBuilder
                                 )
                             )
                             .ToStatementSyntax(),
-                        ReturnStatement(ThisExpression())
+                        ReturnThis
                     )
                 )
                 .Build(),
@@ -353,7 +353,7 @@ internal static class GetterImposterBuilderBuilder
                                 )
                             )
                             .ToStatementSyntax(),
-                        ReturnStatement(ThisExpression())
+                        ReturnThis
                     )
                 )
                 .Build(),
@@ -389,7 +389,7 @@ internal static class GetterImposterBuilderBuilder
                                 )
                             )
                             .ToStatementSyntax(),
-                        ReturnStatement(ThisExpression())
+                        ReturnThis
                     )
                 )
                 .Build(),
@@ -419,7 +419,7 @@ internal static class GetterImposterBuilderBuilder
                             )
                         )
                         .ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();
@@ -473,7 +473,7 @@ internal static class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(builderInterface.ThenMethod.InterfaceSyntax)
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
 
     private static MethodDeclarationSyntax BuildInitialThenMethod(
@@ -486,7 +486,7 @@ internal static class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(
                 ExplicitInterfaceSpecifier(property.GetterImposterBuilderInterface.TypeSyntax)
             )
-            .WithBody(Block(ReturnStatement(ThisExpression())))
+            .WithBody(Block(ReturnThis))
             .Build();
     }
 
@@ -500,7 +500,7 @@ internal static class GetterImposterBuilderBuilder
             .WithBody(
                 Block(
                     IdentifierName("EnableBaseImplementation").Call().ToStatementSyntax(),
-                    ReturnStatement(ThisExpression())
+                    ReturnThis
                 )
             )
             .Build();
