@@ -63,6 +63,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp007"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTargetHasUnoverridableAbstractMember = new(
+        "IMP008",
+        "Imposter target has abstract members the project cannot override",
+        "'{0}' has the abstract member '{1}', which this project cannot override, so only its own assembly or one it grants InternalsVisibleTo can derive from it",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An imposter derives from its target class, so it must override every abstract member, which an internal or private protected member of another assembly does not allow.",
+        helpLinkUri: HelpUrl + "#imp008"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

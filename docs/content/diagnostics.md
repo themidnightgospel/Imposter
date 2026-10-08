@@ -10,6 +10,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP005](#imp005) | Error | The generator failed unexpectedly |
 | [IMP006](#imp006) | Warning | A closed generic type is registered as a target |
 | [IMP007](#imp007) | Error | Two targets would generate the same imposter type |
+| [IMP008](#imp008) | Error | The target class has abstract members your project cannot override |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -59,6 +60,12 @@ An imposter is named after its target, `IServiceImposter` for `IService`, and by
     ```
 
 Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter then goes into a namespace of its own, such as `Imposters.Sample.B.IService`. Two closed registrations of one generic type, such as `IRepository<int>` and `IRepository<string>`, collide too; register the open type instead (see [IMP006](#imp006)).
+
+## IMP008: Abstract members the project cannot override { #imp008 }
+
+The generated imposter derives from the target class, so it must override every abstract member the class leaves abstract. IMP008 means one of them is not accessible from your project: the class is in another assembly, and the member, or one of its property accessors, is `internal` or `private protected` without `InternalsVisibleTo` for your project. Only its own assembly, or one it grants `InternalsVisibleTo`, can derive from such a class, so no imposter is generated.
+
+Register an interface the class implements instead, or ask the class's owner to grant your project `InternalsVisibleTo`.
 
 ## IMPLOG001: Generator log { #implog001 }
 

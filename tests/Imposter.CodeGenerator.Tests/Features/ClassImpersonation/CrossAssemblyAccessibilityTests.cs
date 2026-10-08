@@ -43,6 +43,40 @@ public class CrossAssemblyAccessibilityTests
         }
         """;
 
+    private const string InternalAbstractMethodServiceSource = /*lang=csharp*/
+        """
+        public abstract class Service
+        {
+            public virtual int Get() => 1;
+            internal abstract int Hidden();
+        }
+        """;
+
+    private const string PrivateProtectedAbstractMethodServiceSource = /*lang=csharp*/
+        """
+        public abstract class Service
+        {
+            public virtual int Get() => 1;
+            private protected abstract int Hidden();
+        }
+        """;
+
+    private const string AbstractPropertyWithInternalSetterServiceSource = /*lang=csharp*/
+        """
+        public abstract class Service
+        {
+            public abstract int Value { get; internal set; }
+        }
+        """;
+
+    private const string InternalAbstractEventServiceSource = /*lang=csharp*/
+        """
+        public abstract class Service
+        {
+            internal abstract event System.EventHandler Hidden;
+        }
+        """;
+
     private const string GenerateServiceImposter = /*lang=csharp*/
         """
         [assembly: Imposter.Abstractions.GenerateImposter(typeof(Service))]
@@ -119,6 +153,101 @@ public class CrossAssemblyAccessibilityTests
 
         GetGeneratorDiagnosticIds(consumer)
             .ShouldBe([DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor.Id]);
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractMethodInAnotherAssemblyWithAllMetadata_WhenGeneratorRuns_ShouldReportIMP008()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalAbstractMethodServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember.Id]);
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractMethodInAnotherAssemblyWithPublicMetadata_WhenGeneratorRuns_ShouldReportIMP008()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalAbstractMethodServiceSource,
+            MetadataImportOptions.Public
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember.Id]);
+    }
+
+    [Fact]
+    public async Task GivenPrivateProtectedAbstractMethodInAnotherAssembly_WhenGeneratorRuns_ShouldReportIMP008()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            PrivateProtectedAbstractMethodServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember.Id]);
+    }
+
+    [Fact]
+    public async Task GivenAbstractPropertyWithInternalSetterInAnotherAssembly_WhenGeneratorRuns_ShouldReportIMP008()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            AbstractPropertyWithInternalSetterServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember.Id]);
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractEventInAnotherAssembly_WhenGeneratorRuns_ShouldReportIMP008()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalAbstractEventServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetGeneratorDiagnosticIds(consumer)
+            .ShouldBe([DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember.Id]);
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractMethodInAnotherAssembly_WhenGeneratorRuns_ShouldGenerateNoImposter()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            InternalAbstractMethodServiceSource,
+            MetadataImportOptions.All
+        );
+
+        CreateDriver().RunGenerators(consumer).GetRunResult().GeneratedTrees.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractMethodInAssemblyGrantingInternalsToConsumer_WhenImposterIsGenerated_ShouldCompile()
+    {
+        var consumer = await CreateConsumerOfExternalService(
+            $"[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(\"{ConsumerAssemblyName}\")]\n"
+                + InternalAbstractMethodServiceSource,
+            MetadataImportOptions.All
+        );
+
+        GetErrorsAfterGeneration(consumer).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GivenInternalAbstractMethodInSameAssembly_WhenImposterIsGenerated_ShouldCompile()
+    {
+        var consumer = await CreateCompilationAsync(
+            LanguageVersion.CSharp9,
+            GenerateServiceImposter + InternalAbstractMethodServiceSource,
+            ConsumerAssemblyName
+        );
+
+        GetErrorsAfterGeneration(consumer).ShouldBeEmpty();
     }
 
     // The IDE imports all metadata, so internal members of other assemblies are visible there; command-line builds
