@@ -50,8 +50,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class DiagnosticPayloadPublishedEventImposterBuilder : IDiagnosticPayloadPublishedEventImposterBuilder, IDiagnosticPayloadPublishedEventImposterSetupBuilder, IDiagnosticPayloadPublishedEventImposterVerificationBuilder
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int>();
+			private global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>? _activeHandlers;
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
@@ -66,8 +65,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerOrder.Enqueue(handler);
-				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>?)global::System.Delegate.Combine(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
 				_subscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _subscribeInterceptors)
 				{
@@ -78,15 +88,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Unsubscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
+				var handlers = _activeHandlers;
+				while (true)
 				{
-					if (count > 0)
+					var updated = (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>?)global::System.Delegate.Remove(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
 					{
-						return count - 1;
+						break;
 					}
 
-					return 0;
-				});
+					handlers = observed;
+				}
+
 				_unsubscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _unsubscribeInterceptors)
 				{
@@ -223,17 +237,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private global::System.Collections.Generic.IEnumerable<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> EnumerateActiveHandlers()
 			{
-				global::System.Collections.Generic.Dictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int> budgets = new global::System.Collections.Generic.Dictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int>(_handlerCounts);
-				foreach (var handler in _handlerOrder)
+				var handlers = _activeHandlers;
+				if (handlers != null)
 				{
-					int remaining;
-					if (budgets.TryGetValue(handler, out remaining))
+					foreach (var handler in handlers.GetInvocationList())
 					{
-						if (remaining > 0)
-						{
-							budgets[handler] = remaining - 1;
-							yield return handler;
-						}
+						yield return (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>)handler;
 					}
 				}
 			}
@@ -281,8 +290,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class LegacyPayloadAvailableEventImposterBuilder : ILegacyPayloadAvailableEventImposterBuilder, ILegacyPayloadAvailableEventImposterSetupBuilder, ILegacyPayloadAvailableEventImposterVerificationBuilder
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler, int>();
+			private global::System.EventHandler? _activeHandlers;
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
@@ -297,8 +305,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Subscribe(global::System.EventHandler handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerOrder.Enqueue(handler);
-				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::System.EventHandler?)global::System.Delegate.Combine(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
 				_subscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _subscribeInterceptors)
 				{
@@ -309,15 +328,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Unsubscribe(global::System.EventHandler handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
+				var handlers = _activeHandlers;
+				while (true)
 				{
-					if (count > 0)
+					var updated = (global::System.EventHandler?)global::System.Delegate.Remove(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
 					{
-						return count - 1;
+						break;
 					}
 
-					return 0;
-				});
+					handlers = observed;
+				}
+
 				_unsubscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _unsubscribeInterceptors)
 				{
@@ -454,17 +477,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private global::System.Collections.Generic.IEnumerable<global::System.EventHandler> EnumerateActiveHandlers()
 			{
-				global::System.Collections.Generic.Dictionary<global::System.EventHandler, int> budgets = new global::System.Collections.Generic.Dictionary<global::System.EventHandler, int>(_handlerCounts);
-				foreach (var handler in _handlerOrder)
+				var handlers = _activeHandlers;
+				if (handlers != null)
 				{
-					int remaining;
-					if (budgets.TryGetValue(handler, out remaining))
+					foreach (var handler in handlers.GetInvocationList())
 					{
-						if (remaining > 0)
-						{
-							budgets[handler] = remaining - 1;
-							yield return handler;
-						}
+						yield return (global::System.EventHandler)handler;
 					}
 				}
 			}
@@ -512,8 +530,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class PayloadAvailableEventImposterBuilder : IPayloadAvailableEventImposterBuilder, IPayloadAvailableEventImposterSetupBuilder, IPayloadAvailableEventImposterVerificationBuilder
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int>();
+			private global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>? _activeHandlers;
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
@@ -528,8 +545,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerOrder.Enqueue(handler);
-				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>?)global::System.Delegate.Combine(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
 				_subscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _subscribeInterceptors)
 				{
@@ -540,15 +568,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Unsubscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
+				var handlers = _activeHandlers;
+				while (true)
 				{
-					if (count > 0)
+					var updated = (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>?)global::System.Delegate.Remove(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
 					{
-						return count - 1;
+						break;
 					}
 
-					return 0;
-				});
+					handlers = observed;
+				}
+
 				_unsubscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _unsubscribeInterceptors)
 				{
@@ -685,17 +717,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private global::System.Collections.Generic.IEnumerable<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> EnumerateActiveHandlers()
 			{
-				global::System.Collections.Generic.Dictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int> budgets = new global::System.Collections.Generic.Dictionary<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>, int>(_handlerCounts);
-				foreach (var handler in _handlerOrder)
+				var handlers = _activeHandlers;
+				if (handlers != null)
 				{
-					int remaining;
-					if (budgets.TryGetValue(handler, out remaining))
+					foreach (var handler in handlers.GetInvocationList())
 					{
-						if (remaining > 0)
-						{
-							budgets[handler] = remaining - 1;
-							yield return handler;
-						}
+						yield return (global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>)handler;
 					}
 				}
 			}

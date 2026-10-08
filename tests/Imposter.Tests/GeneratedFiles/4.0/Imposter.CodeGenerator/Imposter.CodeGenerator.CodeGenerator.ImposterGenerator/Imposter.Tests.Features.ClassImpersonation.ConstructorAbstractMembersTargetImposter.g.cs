@@ -1579,8 +1579,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ChangedEventImposterBuilder : IChangedEventImposterBuilder, IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _handlerOrder = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-			private readonly global::System.Collections.Concurrent.ConcurrentDictionary<global::System.Action, int> _handlerCounts = new global::System.Collections.Concurrent.ConcurrentDictionary<global::System.Action, int>();
+			private global::System.Action? _activeHandlers;
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Action>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Action>>();
@@ -1595,8 +1594,19 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal void Subscribe(global::System.Action handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerOrder.Enqueue(handler);
-				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::System.Action?)global::System.Delegate.Combine(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
 				_subscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _subscribeInterceptors)
 				{
@@ -1607,15 +1617,19 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal void Unsubscribe(global::System.Action handler)
 			{
 				global::System.ArgumentNullException.ThrowIfNull(handler);
-				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
+				var handlers = _activeHandlers;
+				while (true)
 				{
-					if (count > 0)
+					var updated = (global::System.Action?)global::System.Delegate.Remove(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
 					{
-						return count - 1;
+						break;
 					}
 
-					return 0;
-				});
+					handlers = observed;
+				}
+
 				_unsubscribeHistory.Enqueue(handler);
 				foreach (var interceptor in _unsubscribeInterceptors)
 				{
@@ -1750,17 +1764,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private global::System.Collections.Generic.IEnumerable<global::System.Action> EnumerateActiveHandlers()
 			{
-				global::System.Collections.Generic.Dictionary<global::System.Action, int> budgets = new global::System.Collections.Generic.Dictionary<global::System.Action, int>(_handlerCounts);
-				foreach (var handler in _handlerOrder)
+				var handlers = _activeHandlers;
+				if (handlers != null)
 				{
-					int remaining;
-					if (budgets.TryGetValue(handler, out remaining))
+					foreach (var handler in handlers.GetInvocationList())
 					{
-						if (remaining > 0)
-						{
-							budgets[handler] = remaining - 1;
-							yield return handler;
-						}
+						yield return (global::System.Action)handler;
 					}
 				}
 			}
