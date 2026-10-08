@@ -80,7 +80,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
-				return (key1.Matches(arguments.key1) && key2.Matches(arguments.key2)) && key3.Matches(arguments.key3);
+				return (this.key1.Matches(arguments.key1) && this.key2.Matches(arguments.key2)) && this.key3.Matches(arguments.key3);
 			}
 		}
 
@@ -259,7 +259,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key1), FormatValue(entry.key2), FormatValue(entry.key3) }) + "]");
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -438,7 +438,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key1), FormatValue(entry.Arguments.key2), FormatValue(entry.Arguments.key3) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -519,7 +519,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
 			IIndexerIndexerGetterContinuationBuilder Throws(global::System.Exception exception);
 			IIndexerIndexerGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 			IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
 		}
 
@@ -635,7 +635,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public bool Matches(Indexer_1IndexerArguments arguments)
 			{
-				return key1.Matches(arguments.key1);
+				return this.key1.Matches(arguments.key1);
 			}
 		}
 
@@ -814,7 +814,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key1) }) + "]");
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -993,7 +993,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key1) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -1074,7 +1074,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			IIndexer_1IndexerGetterContinuationBuilder Returns(Indexer_1IndexerDelegate valueGenerator);
 			IIndexer_1IndexerGetterContinuationBuilder Throws(global::System.Exception exception);
 			IIndexer_1IndexerGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 			IIndexer_1IndexerGetterContinuationBuilder Throws(Indexer_1IndexerExceptionGenerator exceptionGenerator);
 		}
 

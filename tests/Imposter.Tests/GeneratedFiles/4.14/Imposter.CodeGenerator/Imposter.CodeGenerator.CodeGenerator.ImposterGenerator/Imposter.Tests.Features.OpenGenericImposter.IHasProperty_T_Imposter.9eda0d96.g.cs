@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			ICountPropertyGetterContinuationBuilder Returns(global::System.Func<int> valueGenerator);
 			ICountPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			ICountPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -207,7 +207,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IItemsPropertyGetterContinuationBuilder Returns(global::System.Func<global::System.Collections.Generic.IEnumerable<T>> valueGenerator);
 			IItemsPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IItemsPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -383,7 +383,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IReadOnlyValuePropertyGetterContinuationBuilder Returns(global::System.Func<T> valueGenerator);
 			IReadOnlyValuePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IReadOnlyValuePropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -559,7 +559,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IValuePropertyGetterContinuationBuilder Returns(global::System.Func<T> valueGenerator);
 			IValuePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IValuePropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -782,7 +782,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 

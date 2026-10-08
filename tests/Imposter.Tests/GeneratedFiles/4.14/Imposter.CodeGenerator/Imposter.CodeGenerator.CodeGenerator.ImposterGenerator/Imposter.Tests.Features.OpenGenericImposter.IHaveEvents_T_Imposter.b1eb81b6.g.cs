@@ -65,7 +65,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerOrder.Enqueue(handler);
 				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
 				_subscribeHistory.Enqueue(handler);
@@ -77,7 +77,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Unsubscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
 				{
 					if (count > 0)
@@ -96,7 +96,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback)
 			{
-				ArgumentNullException.ThrowIfNull(callback);
+				global::System.ArgumentNullException.ThrowIfNull(callback);
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -109,8 +109,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -123,15 +123,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -144,30 +144,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(senderCriteria);
-				ArgumentNullException.ThrowIfNull(eCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(senderCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(eCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -180,15 +180,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(handlerCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -201,7 +201,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
@@ -296,7 +296,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Subscribe(global::System.EventHandler handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerOrder.Enqueue(handler);
 				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
 				_subscribeHistory.Enqueue(handler);
@@ -308,7 +308,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Unsubscribe(global::System.EventHandler handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
 				{
 					if (count > 0)
@@ -327,7 +327,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.Callback(global::System.EventHandler callback)
 			{
-				ArgumentNullException.ThrowIfNull(callback);
+				global::System.ArgumentNullException.ThrowIfNull(callback);
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -340,8 +340,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -354,15 +354,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -375,30 +375,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.EventHandler> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(senderCriteria);
-				ArgumentNullException.ThrowIfNull(eCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(senderCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(eCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -411,15 +411,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(handlerCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -432,7 +432,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
@@ -527,7 +527,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerOrder.Enqueue(handler);
 				_handlerCounts.AddOrUpdate(handler, 1, (_, count) => count + 1);
 				_subscribeHistory.Enqueue(handler);
@@ -539,7 +539,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal void Unsubscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
-				ArgumentNullException.ThrowIfNull(handler);
+				global::System.ArgumentNullException.ThrowIfNull(handler);
 				_handlerCounts.AddOrUpdate(handler, 0, (_, count) =>
 				{
 					if (count > 0)
@@ -558,7 +558,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback)
 			{
-				ArgumentNullException.ThrowIfNull(callback);
+				global::System.ArgumentNullException.ThrowIfNull(callback);
 				_callbacks.Enqueue(callback);
 				return this;
 			}
@@ -571,8 +571,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -585,15 +585,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(criteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(criteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -606,30 +606,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_subscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor)
 			{
-				ArgumentNullException.ThrowIfNull(interceptor);
+				global::System.ArgumentNullException.ThrowIfNull(interceptor);
 				_unsubscribeInterceptors.Enqueue(interceptor);
 				return this;
 			}
 
 			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(senderCriteria);
-				ArgumentNullException.ThrowIfNull(eCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(senderCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(eCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -642,15 +642,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
 
 			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
-				ArgumentNullException.ThrowIfNull(handlerCriteria);
-				ArgumentNullException.ThrowIfNull(count);
+				global::System.ArgumentNullException.ThrowIfNull(handlerCriteria);
+				global::System.ArgumentNullException.ThrowIfNull(count);
 				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
 				EnsureCountMatches(actual, count, () =>
 				{
@@ -663,7 +663,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						}
 					}
 
-					return string.Join(Environment.NewLine, performedInvocations);
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
 				});
 				return this;
 			}
@@ -756,13 +756,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				add
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._DiagnosticPayloadPublished.Subscribe(value);
 				}
 
 				remove
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._DiagnosticPayloadPublished.Unsubscribe(value);
 				}
 			}
@@ -771,13 +771,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				add
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._LegacyPayloadAvailable.Subscribe(value);
 				}
 
 				remove
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._LegacyPayloadAvailable.Unsubscribe(value);
 				}
 			}
@@ -786,13 +786,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				add
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._PayloadAvailable.Subscribe(value);
 				}
 
 				remove
 				{
-					ArgumentNullException.ThrowIfNull(value);
+					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._PayloadAvailable.Unsubscribe(value);
 				}
 			}

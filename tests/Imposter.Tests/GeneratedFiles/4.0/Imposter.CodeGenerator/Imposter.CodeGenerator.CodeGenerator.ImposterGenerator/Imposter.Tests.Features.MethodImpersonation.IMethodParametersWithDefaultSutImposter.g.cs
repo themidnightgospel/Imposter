@@ -213,7 +213,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -363,7 +363,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface BoolDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -584,7 +584,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -734,7 +734,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface CharDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -955,7 +955,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1105,7 +1105,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface DecimalDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1326,7 +1326,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1476,7 +1476,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface DoubleDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1697,7 +1697,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1847,7 +1847,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface EnumDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2068,7 +2068,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -2218,7 +2218,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface FloatDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2439,7 +2439,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -2589,7 +2589,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2818,7 +2818,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -2968,7 +2968,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface MultipleOptionalsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3189,7 +3189,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -3339,7 +3339,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NameDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3560,7 +3560,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -3710,7 +3710,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NullableDefaultInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3931,7 +3931,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -4081,7 +4081,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NullableInInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4274,7 +4274,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -4428,7 +4428,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NullableOutInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4643,7 +4643,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -4793,7 +4793,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NullableParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5014,7 +5014,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -5164,7 +5164,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface NullableRefInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5393,7 +5393,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -5543,7 +5543,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface OptionalThenParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5768,7 +5768,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -5918,7 +5918,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface RequiredThenOptionalInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

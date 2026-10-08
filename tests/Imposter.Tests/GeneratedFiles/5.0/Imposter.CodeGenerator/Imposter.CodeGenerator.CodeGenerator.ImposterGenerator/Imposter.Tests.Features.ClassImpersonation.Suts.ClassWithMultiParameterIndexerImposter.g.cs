@@ -75,7 +75,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
-				return row.Matches(arguments.row) && column.Matches(arguments.column);
+				return this.row.Matches(arguments.row) && this.column.Matches(arguments.column);
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.row), FormatValue(entry.column) }) + "]");
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -456,7 +456,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.row), FormatValue(entry.Arguments.column) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -565,7 +565,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
 			IIndexerIndexerGetterContinuationBuilder Throws(global::System.Exception exception);
 			IIndexerIndexerGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 			IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
 			IIndexerIndexerGetterContinuationBuilder UseBaseImplementation();
 		}

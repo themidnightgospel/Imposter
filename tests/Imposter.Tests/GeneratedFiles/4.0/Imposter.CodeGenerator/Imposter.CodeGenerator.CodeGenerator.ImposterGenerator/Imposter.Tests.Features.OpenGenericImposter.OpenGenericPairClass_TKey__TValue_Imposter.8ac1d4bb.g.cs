@@ -119,7 +119,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -285,7 +285,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface DescribePairInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -516,7 +516,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -682,7 +682,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface ResolveInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -839,7 +839,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			ICurrentPairPropertyGetterContinuationBuilder Returns(global::System.Func<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> valueGenerator);
 			ICurrentPairPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			ICurrentPairPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1106,7 +1106,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -1263,7 +1263,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return this.key.Matches(arguments.key);
 			}
 		}
 
@@ -1442,7 +1442,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -1644,7 +1644,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -1753,7 +1753,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
 			IIndexerIndexerGetterContinuationBuilder Throws(global::System.Exception exception);
 			IIndexerIndexerGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 			IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
 			IIndexerIndexerGetterContinuationBuilder UseBaseImplementation();
 		}

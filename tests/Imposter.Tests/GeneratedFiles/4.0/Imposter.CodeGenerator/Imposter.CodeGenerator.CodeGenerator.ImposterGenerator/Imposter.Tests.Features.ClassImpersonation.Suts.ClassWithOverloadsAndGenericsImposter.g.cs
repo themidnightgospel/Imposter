@@ -69,7 +69,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public EchoArguments<TTarget> As<TTarget>()
 				where TTarget : class
 			{
-				return new EchoArguments<TTarget>(TypeCaster.Cast<T, TTarget>(item));
+				return new EchoArguments<TTarget>(global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(item));
 			}
 		}
 
@@ -150,7 +150,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -367,7 +367,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			where T : class
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -419,7 +419,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -636,7 +636,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -802,7 +802,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public interface FormatInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1033,7 +1033,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1199,7 +1199,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public interface Format_1InvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1362,7 +1362,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public SelectFirstArguments<TFirstTarget, TSecondTarget> As<TFirstTarget, TSecondTarget>()
 			{
-				return new SelectFirstArguments<TFirstTarget, TSecondTarget>(TypeCaster.Cast<TFirst, TFirstTarget>(first), TypeCaster.Cast<TSecond, TSecondTarget>(second));
+				return new SelectFirstArguments<TFirstTarget, TSecondTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TFirst, TFirstTarget>(first), global::Imposter.Abstractions.TypeCaster.Cast<TSecond, TSecondTarget>(second));
 			}
 		}
 
@@ -1440,7 +1440,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1651,7 +1651,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public interface SelectFirstInvocationVerifier<TFirst, TSecond>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1703,7 +1703,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				ISelectFirstMethodImposter<TFirstTarget1, TSecondTarget1>? ISelectFirstMethodImposter.As<TFirstTarget1, TSecondTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 

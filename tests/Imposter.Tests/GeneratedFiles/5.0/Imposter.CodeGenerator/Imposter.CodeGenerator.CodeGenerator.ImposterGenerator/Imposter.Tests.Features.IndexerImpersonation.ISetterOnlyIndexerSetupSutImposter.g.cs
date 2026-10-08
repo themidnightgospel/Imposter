@@ -70,7 +70,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return this.key.Matches(arguments.key);
 			}
 		}
 
@@ -174,7 +174,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 

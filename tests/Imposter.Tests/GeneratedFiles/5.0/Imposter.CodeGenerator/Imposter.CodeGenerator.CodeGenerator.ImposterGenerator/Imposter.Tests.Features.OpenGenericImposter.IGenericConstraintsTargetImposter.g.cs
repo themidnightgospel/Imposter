@@ -72,7 +72,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public CloneStructArguments<TArgTarget> As<TArgTarget>()
 				where TArgTarget : struct
 			{
-				return new CloneStructArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(value));
+				return new CloneStructArguments<TArgTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(value));
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -354,7 +354,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			where TArg : struct
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -406,7 +406,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ICloneStructMethodImposter<TArgTarget1>? ICloneStructMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -558,7 +558,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public CompareValuesArguments<TArgTarget> As<TArgTarget>()
 				where TArgTarget : global::System.IComparable<TArgTarget>
 			{
-				return new CompareValuesArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(left), TypeCaster.Cast<TArg, TArgTarget>(right));
+				return new CompareValuesArguments<TArgTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(left), global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(right));
 			}
 		}
 
@@ -639,7 +639,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -828,7 +828,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			where TArg : global::System.IComparable<TArg>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -879,7 +879,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ICompareValuesMethodImposter<TArgTarget1>? ICompareValuesMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -1055,7 +1055,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1253,7 +1253,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			where TArg : new()
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1305,7 +1305,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ICreateInstanceMethodImposter<TArgTarget1>? ICreateInstanceMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -1449,7 +1449,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public HandleReferenceArguments<TArgTarget> As<TArgTarget>()
 				where TArgTarget : class, new()
 			{
-				return new HandleReferenceArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(value));
+				return new HandleReferenceArguments<TArgTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(value));
 			}
 		}
 
@@ -1528,7 +1528,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1717,7 +1717,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			where TArg : class, new()
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1768,7 +1768,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IHandleReferenceMethodImposter<TArgTarget1>? IHandleReferenceMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 

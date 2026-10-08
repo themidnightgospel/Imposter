@@ -56,7 +56,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public DoSomethingArguments<TArgTarget> As<TArgTarget>()
 			{
-				return new DoSomethingArguments<TArgTarget>(TypeCaster.Cast<TArg, TArgTarget>(arg));
+				return new DoSomethingArguments<TArgTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(arg));
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -313,7 +313,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface DoSomethingInvocationVerifier<TArg>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -364,7 +364,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IDoSomethingMethodImposter<TArgTarget1>? IDoSomethingMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -496,7 +496,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public MapArguments<TSourceTarget, TResultTarget> As<TSourceTarget, TResultTarget>()
 			{
-				return new MapArguments<TSourceTarget, TResultTarget>(TypeCaster.Cast<TSource, TSourceTarget>(source));
+				return new MapArguments<TSourceTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TSource, TSourceTarget>(source));
 			}
 		}
 
@@ -572,7 +572,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -767,7 +767,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface MapInvocationVerifier<TSource, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -819,7 +819,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IMapMethodImposter<TSourceTarget1, TResultTarget1>? IMapMethodImposter.As<TSourceTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -964,7 +964,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public TransformArguments<TArgTarget> As<TArgTarget>()
 			{
-				return new TransformArguments<TArgTarget>(TypeCaster.Cast<T, T>(input));
+				return new TransformArguments<TArgTarget>(global::Imposter.Abstractions.TypeCaster.Cast<T, T>(input));
 			}
 		}
 
@@ -1040,7 +1040,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1235,7 +1235,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface TransformInvocationVerifier<TArg>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1287,7 +1287,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ITransformMethodImposter<TArgTarget1>? ITransformMethodImposter.As<TArgTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 

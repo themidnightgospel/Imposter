@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			INamePropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			INamePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			INamePropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -207,7 +207,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IValuePropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IValuePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IValuePropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -383,7 +383,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IValue_1PropertyGetterContinuationBuilder Returns(global::System.Func<int> valueGenerator);
 			IValue_1PropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IValue_1PropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -63,7 +63,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public AddItemArguments<TItemTarget> As<TItemTarget>()
 			{
-				return new AddItemArguments<TItemTarget>(TypeCaster.Cast<TItem, TItemTarget>(item));
+				return new AddItemArguments<TItemTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TItem, TItemTarget>(item));
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -320,7 +320,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface AddItemInvocationVerifier<TItem>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -371,7 +371,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IAddItemMethodImposter<TItemTarget1>? IAddItemMethodImposter.As<TItemTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -541,7 +541,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -733,7 +733,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface GetValueInvocationVerifier<TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -785,7 +785,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IGetValueMethodImposter<TResultTarget1>? IGetValueMethodImposter.As<TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -924,7 +924,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public ProcessAsyncArguments<TItemTarget> As<TItemTarget>()
 			{
-				return new ProcessAsyncArguments<TItemTarget>(TypeCaster.Cast<global::System.Collections.Generic.IEnumerable<TItem>, global::System.Collections.Generic.IEnumerable<TItemTarget>>(items));
+				return new ProcessAsyncArguments<TItemTarget>(global::Imposter.Abstractions.TypeCaster.Cast<global::System.Collections.Generic.IEnumerable<TItem>, global::System.Collections.Generic.IEnumerable<TItemTarget>>(items));
 			}
 		}
 
@@ -1000,7 +1000,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1213,7 +1213,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface ProcessAsyncInvocationVerifier<TItem>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1265,7 +1265,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IProcessAsyncMethodImposter<TItemTarget1>? IProcessAsyncMethodImposter.As<TItemTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -1422,7 +1422,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public ProcessComplexAsyncArguments<TItemTarget, TResultTarget> As<TItemTarget, TResultTarget>()
 			{
-				return new ProcessComplexAsyncArguments<TItemTarget, TResultTarget>(TypeCaster.Cast<global::System.Collections.Generic.IEnumerable<TItem>, global::System.Collections.Generic.IEnumerable<TItemTarget>>(items));
+				return new ProcessComplexAsyncArguments<TItemTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<global::System.Collections.Generic.IEnumerable<TItem>, global::System.Collections.Generic.IEnumerable<TItemTarget>>(items));
 			}
 		}
 
@@ -1498,7 +1498,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1711,7 +1711,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface ProcessComplexAsyncInvocationVerifier<TItem, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1763,7 +1763,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IProcessComplexAsyncMethodImposter<TItemTarget1, TResultTarget1>? IProcessComplexAsyncMethodImposter.As<TItemTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 

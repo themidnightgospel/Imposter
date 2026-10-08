@@ -70,7 +70,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return this.key.Matches(arguments.key);
 			}
 		}
 
@@ -249,7 +249,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -428,7 +428,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -509,7 +509,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			IIndexerIndexerGetterContinuationBuilder Returns(IndexerIndexerDelegate valueGenerator);
 			IIndexerIndexerGetterContinuationBuilder Throws(global::System.Exception exception);
 			IIndexerIndexerGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 			IIndexerIndexerGetterContinuationBuilder Throws(IndexerIndexerExceptionGenerator exceptionGenerator);
 		}
 

@@ -87,7 +87,7 @@ namespace Imposter.Tests.Docs.Properties
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -250,7 +250,7 @@ namespace Imposter.Tests.Docs.Properties
 		public interface ReadProtectedInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -469,7 +469,7 @@ namespace Imposter.Tests.Docs.Properties
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -621,7 +621,7 @@ namespace Imposter.Tests.Docs.Properties
 		public interface WriteProtectedInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -765,7 +765,7 @@ namespace Imposter.Tests.Docs.Properties
 			IProtectedAgePropertyGetterContinuationBuilder Returns(global::System.Func<int> valueGenerator);
 			IProtectedAgePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IProtectedAgePropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1032,7 +1032,7 @@ namespace Imposter.Tests.Docs.Properties
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 

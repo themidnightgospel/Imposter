@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			IGetterOnlyVirtualPropertyPropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IGetterOnlyVirtualPropertyPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IGetterOnlyVirtualPropertyPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -326,7 +326,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -432,7 +432,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			IThrowingGetterVirtualPropertyPropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IThrowingGetterVirtualPropertyPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IThrowingGetterVirtualPropertyPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -651,7 +651,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			IThrowingSetterVirtualPropertyPropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IThrowingSetterVirtualPropertyPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IThrowingSetterVirtualPropertyPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -918,7 +918,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 

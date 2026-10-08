@@ -31,7 +31,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			IVirtualPropertyPropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IVirtualPropertyPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IVirtualPropertyPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -298,7 +298,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 
@@ -416,7 +416,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			IVirtualPropertyWithInitializerPropertyGetterContinuationBuilder Returns(global::System.Func<string> valueGenerator);
 			IVirtualPropertyWithInitializerPropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			IVirtualPropertyWithInitializerPropertyGetterContinuationBuilder Throws<TException>()
-				where TException : Exception, new();
+				where TException : global::System.Exception, new();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -683,7 +683,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
 					}
 				}
 

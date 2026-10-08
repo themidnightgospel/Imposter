@@ -234,7 +234,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -399,7 +399,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface AsyncTaskIntNoParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -598,7 +598,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -763,7 +763,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface AsyncValueTaskIntNoParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -928,7 +928,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericAllRefKindArguments<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
 			{
-				return new GenericAllRefKindArguments<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(TypeCaster.Cast<TRef, TRefTarget>(refValue), TypeCaster.Cast<TIn, TInTarget>(inValue), TypeCaster.Cast<TParams[], TParamsTarget[]>(paramsValues));
+				return new GenericAllRefKindArguments<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TRef, TRefTarget>(refValue), global::Imposter.Abstractions.TypeCaster.Cast<TIn, TInTarget>(inValue), global::Imposter.Abstractions.TypeCaster.Cast<TParams[], TParamsTarget[]>(paramsValues));
 			}
 		}
 
@@ -1010,7 +1010,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1212,7 +1212,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericAllRefKindInvocationVerifier<TOut, TRef, TIn, TParams, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1268,7 +1268,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericAllRefKindMethodImposter<TOutTarget1, TRefTarget1, TInTarget1, TParamsTarget1, TResultTarget1>? IGenericAllRefKindMethodImposter.As<TOutTarget1, TRefTarget1, TInTarget1, TParamsTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -1451,7 +1451,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -1650,7 +1650,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericInnerOutParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1704,7 +1704,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericInnerOutParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericInnerOutParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -1843,7 +1843,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerParamsParamArguments<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
-				return new GenericInnerParamsParamArguments<TValueTarget, TResultTarget>(TypeCaster.Cast<global::System.Collections.Generic.List<TValue>[], global::System.Collections.Generic.List<TValueTarget>[]>(value));
+				return new GenericInnerParamsParamArguments<TValueTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<global::System.Collections.Generic.List<TValue>[], global::System.Collections.Generic.List<TValueTarget>[]>(value));
 			}
 		}
 
@@ -1919,7 +1919,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -2114,7 +2114,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericInnerParamsParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2166,7 +2166,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericInnerParamsParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericInnerParamsParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -2311,7 +2311,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerRefParamArguments<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
-				return new GenericInnerRefParamArguments<TValueTarget, TResultTarget>(TypeCaster.Cast<global::System.Collections.Generic.List<TValue>, global::System.Collections.Generic.List<TValueTarget>>(value));
+				return new GenericInnerRefParamArguments<TValueTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<global::System.Collections.Generic.List<TValue>, global::System.Collections.Generic.List<TValueTarget>>(value));
 			}
 		}
 
@@ -2387,7 +2387,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -2582,7 +2582,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericInnerRefParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2636,7 +2636,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericInnerRefParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericInnerRefParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -2781,7 +2781,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerSingleParamArguments<TValueTarget> As<TValueTarget>()
 			{
-				return new GenericInnerSingleParamArguments<TValueTarget>(TypeCaster.Cast<global::System.Collections.Generic.List<TValue>, global::System.Collections.Generic.List<TValueTarget>>(value));
+				return new GenericInnerSingleParamArguments<TValueTarget>(global::Imposter.Abstractions.TypeCaster.Cast<global::System.Collections.Generic.List<TValue>, global::System.Collections.Generic.List<TValueTarget>>(value));
 			}
 		}
 
@@ -2855,7 +2855,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -3038,7 +3038,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericInnerSingleParamInvocationVerifier<TValue>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3089,7 +3089,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericInnerSingleParamMethodImposter<TValueTarget1>? IGenericInnerSingleParamMethodImposter.As<TValueTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -3259,7 +3259,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -3458,7 +3458,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericOutParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3512,7 +3512,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericOutParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericOutParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -3651,7 +3651,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericParamsParamArguments<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
-				return new GenericParamsParamArguments<TValueTarget, TResultTarget>(TypeCaster.Cast<TValue[], TValueTarget[]>(value));
+				return new GenericParamsParamArguments<TValueTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TValue[], TValueTarget[]>(value));
 			}
 		}
 
@@ -3727,7 +3727,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -3922,7 +3922,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericParamsParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -3974,7 +3974,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericParamsParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericParamsParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -4119,7 +4119,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericRefParamArguments<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
-				return new GenericRefParamArguments<TValueTarget, TResultTarget>(TypeCaster.Cast<TValue, TValueTarget>(value));
+				return new GenericRefParamArguments<TValueTarget, TResultTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TValue, TValueTarget>(value));
 			}
 		}
 
@@ -4195,7 +4195,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -4390,7 +4390,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericRefParamInvocationVerifier<TValue, TResult>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4444,7 +4444,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericRefParamMethodImposter<TValueTarget1, TResultTarget1>? IGenericRefParamMethodImposter.As<TValueTarget1, TResultTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -4627,7 +4627,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -4819,7 +4819,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericReturnTypeInvocationVerifier<TValue>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -4871,7 +4871,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericReturnTypeMethodImposter<TValueTarget1>? IGenericReturnTypeMethodImposter.As<TValueTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -5046,7 +5046,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -5232,7 +5232,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericSingleOutParamInvocationVerifier<TValue>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5285,7 +5285,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericSingleOutParamMethodImposter<TValueTarget1>? IGenericSingleOutParamMethodImposter.As<TValueTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -5411,7 +5411,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericSingleParamArguments<TValueTarget> As<TValueTarget>()
 			{
-				return new GenericSingleParamArguments<TValueTarget>(TypeCaster.Cast<TValue, TValueTarget>(value));
+				return new GenericSingleParamArguments<TValueTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TValue, TValueTarget>(value));
 			}
 		}
 
@@ -5485,7 +5485,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -5668,7 +5668,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericSingleParamInvocationVerifier<TValue>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -5719,7 +5719,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericSingleParamMethodImposter<TValueTarget1>? IGenericSingleParamMethodImposter.As<TValueTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -5851,7 +5851,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericSingleRefParamArguments<TValueTarget> As<TValueTarget>()
 			{
-				return new GenericSingleRefParamArguments<TValueTarget>(TypeCaster.Cast<TValue, TValueTarget>(value));
+				return new GenericSingleRefParamArguments<TValueTarget>(global::Imposter.Abstractions.TypeCaster.Cast<TValue, TValueTarget>(value));
 			}
 		}
 
@@ -5925,7 +5925,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -6108,7 +6108,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface GenericSingleRefParamInvocationVerifier<TValue>
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -6161,7 +6161,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericSingleRefParamMethodImposter<TValueTarget1>? IGenericSingleRefParamMethodImposter.As<TValueTarget1>()
 				{
-					throw new NotImplementedException();
+					throw new global::System.NotImplementedException();
 				}
 			}
 
@@ -6373,7 +6373,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -6530,7 +6530,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntAllRefKindsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -6751,7 +6751,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -6901,7 +6901,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntInParamInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -7094,7 +7094,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -7241,7 +7241,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntNoParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -7428,7 +7428,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -7582,7 +7582,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntOutParamInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -7805,7 +7805,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -7955,7 +7955,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -8176,7 +8176,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -8326,7 +8326,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntParamsParamInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -8547,7 +8547,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -8697,7 +8697,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntRefParamInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -8918,7 +8918,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -9068,7 +9068,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IntSingleParamInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -9259,7 +9259,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
 			}
 		}
 
@@ -9394,7 +9394,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface VoidNoParamsInvocationVerifier
 		{
 			int CallCount();
-			void Called(Count count);
+			void Called(global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
