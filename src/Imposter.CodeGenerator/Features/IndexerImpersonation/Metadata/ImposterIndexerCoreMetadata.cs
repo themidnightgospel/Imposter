@@ -72,7 +72,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             .ToArray();
         ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
         ParameterArguments = Parameters
-            .Select(parameter => Argument(IdentifierName(parameter.Name)))
+            .Select(parameter => parameter.ForwardingArgument(parameter.Name))
             .ToArray();
         var containingType = property.ContainingType;
         var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;

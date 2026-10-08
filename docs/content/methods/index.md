@@ -98,7 +98,7 @@ With async methods, imposter provides some handy methods to simplify setup:
 
 ## Ref/Out/In Parameters
 
-Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref` and `in`.
+Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref`, `in` and `ref readonly`.
 
 Returns and callbacks can specify `out/ref/in` in the delegate signature:
 !!! example
@@ -153,4 +153,4 @@ Sequenced outcomes are consumed in order under concurrency; the implementation a
 
 - Repeating `Returns` or `Throws` without `Then()` is invalid.
 - In `Explicit` mode, missing setups throw `MissingImposterException`.
-- Ensure `OutArg<T>.Any()` is used for `out` parameters; use `Arg<T>` for `ref`/`in`.
+- Ensure `OutArg<T>.Any()` is used for `out` parameters; use `Arg<T>` for `ref`/`in`/`ref readonly`.

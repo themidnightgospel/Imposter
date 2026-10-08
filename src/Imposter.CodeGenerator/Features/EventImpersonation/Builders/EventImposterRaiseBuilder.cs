@@ -54,7 +54,7 @@ internal static class EventImposterRaiseBuilder
                         IdentifierName(@event.Builder.Methods.RaiseInternal.Name)
                             .Call(
                                 @event.Core.Parameters.Select(parameter =>
-                                    Argument(IdentifierName(parameter.Name))
+                                    parameter.ForwardingArgument
                                 )
                             )
                     )
@@ -259,11 +259,7 @@ internal static class EventImposterRaiseBuilder
             FieldIdentifier(field),
             Block(
                 IdentifierName("callback")
-                    .Call(
-                        @event.Core.Parameters.Select(parameter =>
-                            Argument(IdentifierName(parameter.Name))
-                        )
-                    )
+                    .Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument))
                     .ToStatementSyntax()
             )
         );
@@ -281,11 +277,7 @@ internal static class EventImposterRaiseBuilder
                     .Call(Argument(BuildHandlerInvocationTuple(IdentifierName("handler"), @event)))
                     .ToStatementSyntax(),
                 IdentifierName("handler")
-                    .Call(
-                        @event.Core.Parameters.Select(parameter =>
-                            Argument(IdentifierName(parameter.Name))
-                        )
-                    )
+                    .Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument))
                     .ToStatementSyntax()
             )
         );
@@ -306,9 +298,7 @@ internal static class EventImposterRaiseBuilder
                     "task",
                     IdentifierName("callback")
                         .Call(
-                            @event.Core.Parameters.Select(parameter =>
-                                Argument(IdentifierName(parameter.Name))
-                            )
+                            @event.Core.Parameters.Select(parameter => parameter.ForwardingArgument)
                         )
                 ),
                 IfStatement(
@@ -343,9 +333,7 @@ internal static class EventImposterRaiseBuilder
                     "task",
                     IdentifierName("handler")
                         .Call(
-                            @event.Core.Parameters.Select(parameter =>
-                                Argument(IdentifierName(parameter.Name))
-                            )
+                            @event.Core.Parameters.Select(parameter => parameter.ForwardingArgument)
                         )
                 ),
                 IfStatement(
