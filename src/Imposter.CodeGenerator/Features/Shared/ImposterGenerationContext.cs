@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Features.Shared;
@@ -23,13 +24,15 @@ internal readonly struct ImposterGenerationContext
 
     internal ImposterGenerationContext(
         GenerateImposterDeclaration generateImposterDeclaration,
-        in SupportedCSharpFeatures supportedCSharpFeatures
+        in SupportedCSharpFeatures supportedCSharpFeatures,
+        OverrideAccess overrideAccess
     )
     {
         GenerateImposterDeclaration = generateImposterDeclaration;
         Imposter = new ImposterTargetMetadata(
             generateImposterDeclaration.ImposterTarget,
-            supportedCSharpFeatures
+            supportedCSharpFeatures,
+            overrideAccess
         );
 
         var targetName = GetTargetName(TargetSymbol);
