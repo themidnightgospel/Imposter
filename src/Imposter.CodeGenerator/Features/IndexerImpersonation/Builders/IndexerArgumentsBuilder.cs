@@ -90,10 +90,7 @@ internal static class IndexerArgumentsBuilder
             .AddParameter(otherParameter)
             .WithBody(
                 Block(
-                    IfStatement(
-                        BinaryExpression(SyntaxKind.EqualsExpression, otherIdentifierName, Null),
-                        Block(ReturnStatement(False))
-                    ),
+                    IfStatement(otherIdentifierName.IsNull(), Block(ReturnStatement(False))),
                     ReturnStatement(comparison)
                 )
             )
@@ -146,8 +143,7 @@ internal static class IndexerArgumentsBuilder
             LocalVariableDeclarationSyntax(
                 WellKnownTypes.System.HashCode,
                 "hash",
-                ObjectCreationExpression(WellKnownTypes.System.HashCode)
-                    .WithArgumentList(EmptyArgumentListSyntax)
+                WellKnownTypes.System.HashCode.New()
             ),
         };
 

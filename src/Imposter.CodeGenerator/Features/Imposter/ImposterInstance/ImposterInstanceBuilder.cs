@@ -53,10 +53,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 getterCall = getterInvocation.Call(
                     ArgumentList(
                         SingletonSeparatedList(
-                            Argument(
-                                ParenthesizedLambdaExpression()
-                                    .WithExpressionBody(baseGetterInvocation)
-                            )
+                            Argument(EmptyParametersGoesTo(baseGetterInvocation))
                         )
                     )
                 );
@@ -142,9 +139,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         )
                     );
 
-                getterArguments.Add(
-                    Argument(ParenthesizedLambdaExpression().WithExpressionBody(baseInvocation))
-                );
+                getterArguments.Add(Argument(EmptyParametersGoesTo(baseInvocation)));
             }
 
             var getterCall = IdentifierName(_imposterFieldName)
@@ -181,10 +176,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 var baseAssignment = baseIndexerAccess.Assign(IdentifierName("value"));
 
                 setterArguments.Add(
-                    Argument(
-                        ParenthesizedLambdaExpression()
-                            .WithBlock(Block(baseAssignment.ToStatementSyntax()))
-                    )
+                    Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
                 );
             }
 
@@ -484,7 +476,6 @@ internal readonly ref struct ImposterInstanceBuilder
             IdentifierName("value")
         );
 
-        return ParenthesizedLambdaExpression()
-            .WithBlock(Block(assignmentExpression.ToStatementSyntax()));
+        return EmptyParametersGoesTo(Block(assignmentExpression.ToStatementSyntax()));
     }
 }

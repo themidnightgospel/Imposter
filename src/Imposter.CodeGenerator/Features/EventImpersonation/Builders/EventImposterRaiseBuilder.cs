@@ -72,7 +72,7 @@ internal static class EventImposterRaiseBuilder
                 @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
             )
             .Dot(IdentifierName("ConfigureAwait"))
-            .Call(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)))
+            .Call(Argument(False))
             .Await()
             .ToStatementSyntax();
 

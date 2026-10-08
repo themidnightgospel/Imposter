@@ -329,34 +329,28 @@ internal static class EventImposterVerificationBuilder
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
         var entryIdentifier = IdentifierName("entry");
 
-        return ParenthesizedLambdaExpression()
-            .WithParameterList(ParameterList())
-            .WithBlock(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        "performedInvocations",
-                        stringListType.New()
-                    ),
-                    ForEachStatement(
-                        Var,
-                        Identifier("entry"),
-                        FieldIdentifier(historyField),
-                        Block(
-                            IfStatement(
-                                predicateBody,
-                                Block(
-                                    IdentifierName("performedInvocations")
-                                        .Dot(IdentifierName("Add"))
-                                        .Call(Argument(descriptionFactory(entryIdentifier)))
-                                        .ToStatementSyntax()
-                                )
+        return EmptyParametersGoesTo(
+            Block(
+                LocalVariableDeclarationSyntax(Var, "performedInvocations", stringListType.New()),
+                ForEachStatement(
+                    Var,
+                    Identifier("entry"),
+                    FieldIdentifier(historyField),
+                    Block(
+                        IfStatement(
+                            predicateBody,
+                            Block(
+                                IdentifierName("performedInvocations")
+                                    .Dot(IdentifierName("Add"))
+                                    .Call(Argument(descriptionFactory(entryIdentifier)))
+                                    .ToStatementSyntax()
                             )
                         )
-                    ),
-                    ReturnStatement(JoinWithNewLines(IdentifierName("performedInvocations")))
-                )
-            );
+                    )
+                ),
+                ReturnStatement(JoinWithNewLines(IdentifierName("performedInvocations")))
+            )
+        );
     }
 
     private static ParenthesizedLambdaExpressionSyntax BuildRaisedPerformedInvocationsFactory(

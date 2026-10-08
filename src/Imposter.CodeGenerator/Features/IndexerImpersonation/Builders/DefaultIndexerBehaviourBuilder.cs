@@ -121,7 +121,7 @@ internal static class DefaultIndexerBehaviourBuilder
                                 .Call(EmptyArgumentListSyntax)
                         )
                     ),
-                    ReturnStatement(DefaultNonNullable)
+                    ReturnDefaultNonNullable
                 )
             )
             .Build();

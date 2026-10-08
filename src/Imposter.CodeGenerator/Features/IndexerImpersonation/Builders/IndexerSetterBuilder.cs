@@ -272,7 +272,7 @@ internal static class IndexerSetterBuilder
         var callbackMatchedIdentifier = IdentifierName("matchedCallback");
 
         var foreachStatement = ForEachStatement(
-            IdentifierName("var"),
+            Var,
             Identifier("registration"),
             IdentifierName(setter.CallbacksField.Name),
             Block(
@@ -316,7 +316,7 @@ internal static class IndexerSetterBuilder
             invokedBaseIdentifier = IdentifierName("invokedBaseImplementation");
 
             baseCriteriaLoop = ForEachStatement(
-                IdentifierName("var"),
+                Var,
                 Identifier("criteria"),
                 IdentifierName(setter.BaseImplementationCriteriaField.Value.Name),
                 Block(
@@ -326,11 +326,7 @@ internal static class IndexerSetterBuilder
                             .Call(Argument(argumentsVariable)),
                         Block(
                             IfStatement(
-                                BinaryExpression(
-                                    SyntaxKind.EqualsExpression,
-                                    IdentifierName(setter.BaseImplementationParameterName),
-                                    Null
-                                ),
+                                IdentifierName(setter.BaseImplementationParameterName).IsNull(),
                                 Block(
                                     BuildMissingImposterThrow(
                                         setter.PropertyDisplayNameField.Name,

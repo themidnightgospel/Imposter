@@ -129,11 +129,8 @@ internal static partial class InvocationSetupBuilder
 
     private static PropertyDeclarationSyntax IsEmptyProperty(bool supportsBaseImplementation)
     {
-        ExpressionSyntax condition = BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName("_resultGenerator"),
-                Null
-            )
+        ExpressionSyntax condition = IdentifierName("_resultGenerator")
+            .IsNull()
             .And(
                 BinaryExpression(
                     SyntaxKind.EqualsExpression,
@@ -170,11 +167,7 @@ internal static partial class InvocationSetupBuilder
 
         var defaultBlockBuilder = new BlockBuilder().AddStatement(
             IfStatement(
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    IdentifierName("_resultGenerator"),
-                    Null
-                ),
+                IdentifierName("_resultGenerator").IsNull(),
                 Block(
                     IfStatement(
                         BinaryExpression(
@@ -226,7 +219,7 @@ internal static partial class InvocationSetupBuilder
             method.MethodImposter.InvokeMethod.CallbackIterationVariableName
         );
         var callbackInvocation = ForEachStatement(
-            IdentifierName("var"),
+            Var,
             callbackIdentifier,
             IdentifierName("_callbacks"),
             Block(

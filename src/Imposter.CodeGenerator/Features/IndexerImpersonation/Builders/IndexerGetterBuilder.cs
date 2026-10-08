@@ -379,10 +379,7 @@ internal static class IndexerGetterBuilder
                                 Identifier(indexer.GetterImplementation.ArgumentsVariableName)
                             ),
                             ThrowExpression(
-                                ObjectCreationExpression(
-                                        IdentifierName(throwsMetadata.GenericTypeParameterName)
-                                    )
-                                    .WithArgumentList(EmptyArgumentListSyntax)
+                                IdentifierName(throwsMetadata.GenericTypeParameterName).New()
                             )
                         )
                     ),
@@ -511,7 +508,7 @@ internal static class IndexerGetterBuilder
     ) =>
         IdentifierName(builderMetadata.InvocationImposterPropertyName)
             .Dot(IdentifierName("AddReturnValue"))
-            .Call(ArgumentList(SingletonSeparatedList(Argument(lambda))))
+            .Call(Argument(lambda))
             .ToStatementSyntax();
 
     private static ExpressionStatementSyntax InvocationImposterAddCallback(
@@ -520,7 +517,7 @@ internal static class IndexerGetterBuilder
     ) =>
         IdentifierName(builderMetadata.InvocationImposterPropertyName)
             .Dot(IdentifierName("AddCallback"))
-            .Call(ArgumentList(SingletonSeparatedList(Argument(callback))))
+            .Call(Argument(callback))
             .ToStatementSyntax();
 
     private static ExpressionStatementSyntax InvocationImposterUseBaseImplementation(
@@ -752,7 +749,7 @@ internal static class IndexerGetterBuilder
             .WithDefault(EqualsValueClause(Null));
 
         var foreachCallbacks = ForEachStatement(
-            IdentifierName("var"),
+            Var,
             Identifier("callback"),
             IdentifierName(invocationMetadata.CallbacksField.Name),
             Block(
@@ -942,13 +939,8 @@ internal static class IndexerGetterBuilder
             .WithBlock(
                 Block(
                     IfStatement(
-                        BinaryExpression(
-                            SyntaxKind.EqualsExpression,
-                            IdentifierName(
-                                indexer.GetterImplementation.BaseImplementationParameterName
-                            ),
-                            Null
-                        ),
+                        IdentifierName(indexer.GetterImplementation.BaseImplementationParameterName)
+                            .IsNull(),
                         Block(
                             ThrowStatement(
                                 ObjectCreationExpression(
@@ -1020,10 +1012,9 @@ internal static class IndexerGetterBuilder
         var tryStatements = new List<StatementSyntax>
         {
             LocalVariableDeclarationSyntax(
-                IdentifierName("var"),
+                Var,
                 indexer.GetterImplementation.SetupVariableName,
-                IdentifierName("FindGetterInvocationImposter")
-                    .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))
+                IdentifierName("FindGetterInvocationImposter").Call(Argument(argumentsIdentifier))
             ),
             IfStatement(
                 IsPatternExpression(
@@ -1058,7 +1049,7 @@ internal static class IndexerGetterBuilder
                                 indexer.GetterImplementation.GetterSuffix
                             )
                         ),
-                        ElseClause(Block(ReturnStatement(DefaultNonNullable)))
+                        ElseClause(Block(ReturnDefaultNonNullable))
                     )
                 )
             ),
@@ -1078,7 +1069,7 @@ internal static class IndexerGetterBuilder
             Block(
                 IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
                     .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))
+                    .Call(Argument(argumentsIdentifier))
                     .ToStatementSyntax()
             )
         );
@@ -1112,7 +1103,7 @@ internal static class IndexerGetterBuilder
             .WithBody(
                 Block(
                     ForEachStatement(
-                        IdentifierName("var"),
+                        Var,
                         Identifier(indexer.GetterImplementation.SetupVariableName),
                         IdentifierName(indexer.GetterImplementation.SetupsField.Name),
                         Block(

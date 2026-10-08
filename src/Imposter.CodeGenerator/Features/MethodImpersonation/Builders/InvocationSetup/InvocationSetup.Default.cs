@@ -19,8 +19,9 @@ internal static partial class InvocationSetupBuilder
             method.MethodInvocationImposterGroup.Syntax.New(
                 method.Parameters.HasInputParameters
                     ? Argument(
-                            ObjectCreationExpression(method.ArgumentsCriteria.Syntax)
-                                .WithArgumentList(method.Parameters.ArgAnyArgumentListSyntax)
+                            method.ArgumentsCriteria.Syntax.New(
+                                method.Parameters.ArgAnyArgumentListSyntax
+                            )
                         )
                         .ToSingleArgumentList()
                     : SyntaxFactoryHelper.EmptyArgumentListSyntax

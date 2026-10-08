@@ -216,7 +216,7 @@ internal partial class MethodImposterBuilder
         );
 
         return IfStatement(
-            BinaryExpression(SyntaxKind.EqualsExpression, matchingIdentifier, Default),
+            matchingIdentifier.IsDefault(),
             Block(
                 IfStatement(
                     BinaryExpression(

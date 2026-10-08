@@ -90,7 +90,7 @@ internal static class ArgumentsBuilder
                                 )
                             )
                     )
-                    .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(p.Name)))))
+                    .Call(Argument(IdentifierName(p.Name)))
             );
         });
 
@@ -99,12 +99,7 @@ internal static class ArgumentsBuilder
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(
-                Block(
-                    ReturnStatement(
-                        ObjectCreationExpression(returnType)
-                            .WithArgumentList(ArgumentList(SeparatedList(constructorArgs)))
-                    )
-                )
+                Block(ReturnStatement(returnType.New(ArgumentList(SeparatedList(constructorArgs)))))
             )
             .Build();
     }

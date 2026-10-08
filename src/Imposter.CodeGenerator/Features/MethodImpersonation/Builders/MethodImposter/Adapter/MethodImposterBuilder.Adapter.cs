@@ -182,7 +182,7 @@ internal static class MethodImposterAdapterBuilder
         {
             body.Add(
                 LocalVariableDeclarationSyntax(
-                    IdentifierName("var"),
+                    Var,
                     adapterNames.InvokeResultVariableName,
                     invokeExpression
                 )
@@ -285,14 +285,7 @@ internal static class MethodImposterAdapterBuilder
         return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
-            .WithBody(
-                Block(
-                    ThrowStatement(
-                        ObjectCreationExpression(IdentifierName("NotImplementedException"))
-                            .WithArgumentList(ArgumentList())
-                    )
-                )
-            )
+            .WithBody(Block(ThrowStatement(IdentifierName("NotImplementedException").New())))
             .Build();
     }
 

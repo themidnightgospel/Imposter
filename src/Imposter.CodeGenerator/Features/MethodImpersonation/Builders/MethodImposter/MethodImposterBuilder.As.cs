@@ -100,21 +100,15 @@ internal static partial class MethodImposterBuilder
                         condition,
                         Block(
                             ReturnStatement(
-                                ObjectCreationExpression(
-                                        GenericName("Adapter")
-                                            .WithTypeArgumentList(
-                                                TypeArgumentList(
-                                                    SeparatedList<TypeSyntax>(
-                                                        method.TargetGenericTypeArguments
-                                                    )
-                                                )
+                                GenericName("Adapter")
+                                    .WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SeparatedList<TypeSyntax>(
+                                                method.TargetGenericTypeArguments
                                             )
-                                    )
-                                    .WithArgumentList(
-                                        ArgumentList(
-                                            SingletonSeparatedList(Argument(ThisExpression()))
                                         )
                                     )
+                                    .New(Argument(ThisExpression()).ToSingleArgumentList())
                             )
                         )
                     ),

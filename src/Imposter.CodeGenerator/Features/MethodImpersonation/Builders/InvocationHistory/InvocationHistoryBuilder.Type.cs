@@ -140,11 +140,7 @@ internal static partial class InvocationHistoryBuilder
         var exceptionIdentifier = IdentifierName(InvocationHistoryTypeMetadata.ExceptionFieldName);
 
         return ConditionalExpression(
-            BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                exceptionIdentifier,
-                LiteralExpression(SyntaxKind.NullLiteralExpression)
-            ),
+            exceptionIdentifier.IsNull(),
             string.Empty.StringLiteral(),
             " threw ".StringLiteral().Add(Invocation(exceptionIdentifier))
         );

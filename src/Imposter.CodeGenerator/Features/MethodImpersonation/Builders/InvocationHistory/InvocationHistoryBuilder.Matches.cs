@@ -70,7 +70,7 @@ internal static partial class InvocationHistoryBuilder
                     InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
                 )
                 .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                .Call(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("Arguments")))));
+                .Call(Argument(IdentifierName("Arguments")));
         }
     }
 }

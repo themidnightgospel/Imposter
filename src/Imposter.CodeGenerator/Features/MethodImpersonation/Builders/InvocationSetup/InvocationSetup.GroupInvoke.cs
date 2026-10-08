@@ -27,11 +27,7 @@ internal static partial class InvocationSetupBuilder
         );
 
         var guardMissingImposter = IfStatement(
-            BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName("invocationImposter"),
-                Null
-            ),
+            IdentifierName("invocationImposter").IsNull(),
             Block(
                 IfStatement(
                     BinaryExpression(
