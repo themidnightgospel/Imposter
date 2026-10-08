@@ -27,9 +27,23 @@
     <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RefreshGeneratedFileSnapshots</TargetsTriggeredByCompilation>
   </PropertyGroup>
 
+  <!-- The compiler adds to its folder and never deletes, even when the compilation fails, so every compilation
+       starts without files. Emptying it is harmless when CoreCompile is then skipped as up to date or runs without
+       the compiler, because only the snapshots have to persist. Only files are deleted: the SDK creates the folder
+       just before CoreCompile, and the compiler needs it to exist. -->
+  <Target
+    Name="ClearCompilerGeneratedFiles"
+    BeforeTargets="CoreCompile"
+    Condition="'$(GeneratedFileSnapshotsPath)' != ''"
+  >
+    <ItemGroup>
+      <_PreviousGeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
+    </ItemGroup>
+    <Delete Files="@(_PreviousGeneratedSource)" />
+  </Target>
+
   <!-- CoreCompile calls this unless it was skipped as up to date. Design-time builds run CoreCompile without the
-       compiler, so the condition keeps them from wiping the snapshots. Emptying the compiler's folder afterwards
-       makes the next compilation start from nothing. -->
+       compiler, so the condition keeps them from wiping the snapshots. -->
   <Target Name="RefreshGeneratedFileSnapshots" Condition="'$(SkipCompilerExecution)' != 'true'">
     <ItemGroup>
       <_GeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
@@ -39,6 +53,5 @@
       SourceFiles="@(_GeneratedSource)"
       DestinationFiles="@(_GeneratedSource->'$(GeneratedFileSnapshotsPath)\%(RecursiveDir)%(Filename)%(Extension)')"
     />
-    <RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)" />
   </Target>
 </Project>
