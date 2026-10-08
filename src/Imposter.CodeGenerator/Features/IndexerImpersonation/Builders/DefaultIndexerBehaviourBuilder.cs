@@ -83,10 +83,11 @@ internal static class DefaultIndexerBehaviourBuilder
 
     private static MethodDeclarationSyntax BuildGetMethod(in ImposterIndexerMetadata indexer)
     {
-        var argumentsParam = Parameter(Identifier("arguments"))
-            .WithType(indexer.Arguments.TypeSyntax);
-        var baseImplementationParam = Parameter(Identifier("baseImplementation"))
-            .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
+        var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
+        var baseImplementationParam = ParameterSyntax(
+                indexer.Core.AsSystemFuncType.ToNullableType(),
+                "baseImplementation"
+            )
             .WithDefault(EqualsValueClause(Null));
         var valueIdentifier = IdentifierName("value");
 
@@ -129,12 +130,13 @@ internal static class DefaultIndexerBehaviourBuilder
 
     private static MethodDeclarationSyntax BuildSetMethod(in ImposterIndexerMetadata indexer)
     {
-        var baseImplementationParam = Parameter(Identifier("baseImplementation"))
-            .WithType(indexer.Core.AsSystemActionType.ToNullableType())
+        var baseImplementationParam = ParameterSyntax(
+                indexer.Core.AsSystemActionType.ToNullableType(),
+                "baseImplementation"
+            )
             .WithDefault(EqualsValueClause(Null));
 
-        var argumentsParameter = Parameter(Identifier("arguments"))
-            .WithType(indexer.Arguments.TypeSyntax);
+        var argumentsParameter = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
 
         var assignment = ElementAccessExpression(
                 IdentifierName(indexer.DefaultIndexerBehaviour.BackingField.Name)
@@ -156,7 +158,7 @@ internal static class DefaultIndexerBehaviourBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParameter)
-            .AddParameter(Parameter(Identifier("value")).WithType(indexer.Core.TypeSyntax))
+            .AddParameter(ParameterSyntax(indexer.Core.TypeSyntax, "value"))
             .AddParameter(baseImplementationParam)
             .WithBody(Block(baseInvocation, assignment))
             .Build();

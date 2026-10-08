@@ -22,10 +22,10 @@ internal static class IndexerGetterBuilder
         ParameterSyntax? getterBaseImplementationParameter = null;
         if (indexer.Core.GetterSupportsBaseImplementation)
         {
-            getterBaseImplementationParameter = Parameter(
-                    Identifier(BaseImplementationParameterName)
+            getterBaseImplementationParameter = ParameterSyntax(
+                    indexer.Core.AsSystemFuncType.ToNullableType(),
+                    BaseImplementationParameterName
                 )
-                .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
                 .WithDefault(EqualsValueClause(Null));
 
             parameters.Add(getterBaseImplementationParameter);
@@ -190,12 +190,16 @@ internal static class IndexerGetterBuilder
                 new ConstructorBuilder(builderMetadata.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                     .AddParameter(
-                        Parameter(Identifier(builderMetadata.ImposterFieldName))
-                            .WithType(indexer.GetterImplementation.TypeSyntax)
+                        ParameterSyntax(
+                            indexer.GetterImplementation.TypeSyntax,
+                            builderMetadata.ImposterFieldName
+                        )
                     )
                     .AddParameter(
-                        Parameter(Identifier(builderMetadata.CriteriaFieldName))
-                            .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                        ParameterSyntax(
+                            indexer.ArgumentsCriteria.TypeSyntax,
+                            builderMetadata.CriteriaFieldName
+                        )
                     )
                     .WithBody(
                         new BlockBuilder()
@@ -605,16 +609,18 @@ internal static class IndexerGetterBuilder
 
         return new ConstructorBuilder(invocationMetadata.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            .AddParameter(ParameterSyntax(indexer.GetterImplementation.TypeSyntax, "parent"))
             .AddParameter(
-                Parameter(Identifier("parent")).WithType(indexer.GetterImplementation.TypeSyntax)
+                ParameterSyntax(
+                    indexer.DefaultIndexerBehaviour.TypeSyntax,
+                    DefaultBehaviourParameterName
+                )
             )
             .AddParameter(
-                Parameter(Identifier(DefaultBehaviourParameterName))
-                    .WithType(indexer.DefaultIndexerBehaviour.TypeSyntax)
-            )
-            .AddParameter(
-                Parameter(Identifier(indexer.GetterImplementation.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(
+                    indexer.ArgumentsCriteria.TypeSyntax,
+                    indexer.GetterImplementation.CriteriaParameterName
+                )
             )
             .WithBody(
                 new BlockBuilder()
@@ -657,8 +663,7 @@ internal static class IndexerGetterBuilder
     {
         var invocationMetadata = indexer.GetterImplementation.Invocation;
         var builderMetadata = indexer.GetterImplementation.Builder;
-        var parameter = Parameter(Identifier("generator"))
-            .WithType(builderMetadata.ReturnGeneratorType);
+        var parameter = ParameterSyntax(builderMetadata.ReturnGeneratorType, "generator");
         var handlerLambda = ParenthesizedLambdaExpression()
             .WithParameterList(
                 ParameterList(
@@ -740,12 +745,14 @@ internal static class IndexerGetterBuilder
     {
         var invocationMetadata = indexer.GetterImplementation.Invocation;
         var argumentsParameterName = indexer.GetterImplementation.ArgumentsVariableName;
-        var argumentsParameter = Parameter(Identifier(argumentsParameterName))
-            .WithType(indexer.Arguments.TypeSyntax);
-        var baseImplementationParameter = Parameter(
-                Identifier(indexer.GetterImplementation.BaseImplementationParameterName)
+        var argumentsParameter = ParameterSyntax(
+            indexer.Arguments.TypeSyntax,
+            argumentsParameterName
+        );
+        var baseImplementationParameter = ParameterSyntax(
+                indexer.Core.AsSystemFuncType.ToNullableType(),
+                indexer.GetterImplementation.BaseImplementationParameterName
             )
-            .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
             .WithDefault(EqualsValueClause(Null));
 
         var foreachCallbacks = ForEachStatement(
@@ -805,8 +812,10 @@ internal static class IndexerGetterBuilder
     {
         var invocationMetadata = indexer.GetterImplementation.Invocation;
         var argumentsParameterName = indexer.GetterImplementation.ArgumentsVariableName;
-        var argumentsParameter = Parameter(Identifier(argumentsParameterName))
-            .WithType(indexer.Arguments.TypeSyntax);
+        var argumentsParameter = ParameterSyntax(
+            indexer.Arguments.TypeSyntax,
+            argumentsParameterName
+        );
         const string ReturnValueVariableName = "returnValue";
         const string NextReturnValueVariableName = "nextReturnValue";
 
@@ -1004,8 +1013,10 @@ internal static class IndexerGetterBuilder
         );
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
-            Parameter(Identifier(indexer.GetterImplementation.BaseImplementationParameterName))
-                .WithType(indexer.Core.AsSystemFuncType.ToNullableType())
+            ParameterSyntax(
+                    indexer.Core.AsSystemFuncType.ToNullableType(),
+                    indexer.GetterImplementation.BaseImplementationParameterName
+                )
                 .WithDefault(EqualsValueClause(Null)),
         };
 
@@ -1097,8 +1108,10 @@ internal static class IndexerGetterBuilder
         return new MethodDeclarationBuilder(getterInvocationType, "FindGetterInvocationImposter")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
-                Parameter(Identifier(indexer.GetterImplementation.ArgumentsVariableName))
-                    .WithType(indexer.Arguments.TypeSyntax)
+                ParameterSyntax(
+                    indexer.Arguments.TypeSyntax,
+                    indexer.GetterImplementation.ArgumentsVariableName
+                )
             )
             .WithBody(
                 Block(
@@ -1149,8 +1162,10 @@ internal static class IndexerGetterBuilder
         return new MethodDeclarationBuilder(getterInvocationType, "GetOrCreate")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
-                Parameter(Identifier(indexer.GetterImplementation.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(
+                    indexer.ArgumentsCriteria.TypeSyntax,
+                    indexer.GetterImplementation.CriteriaParameterName
+                )
             )
             .WithBody(
                 Block(
@@ -1178,8 +1193,7 @@ internal static class IndexerGetterBuilder
                     ),
                     LocalFunctionStatement(getterInvocationType, Identifier("CreateSetup"))
                         .AddParameterListParameters(
-                            Parameter(Identifier("key"))
-                                .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                            ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "key")
                         )
                         .WithBody(
                             Block(
@@ -1265,12 +1279,16 @@ internal static class IndexerGetterBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
-                Parameter(Identifier(indexer.GetterImplementation.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(
+                    indexer.ArgumentsCriteria.TypeSyntax,
+                    indexer.GetterImplementation.CriteriaParameterName
+                )
             )
             .AddParameter(
-                Parameter(Identifier(indexer.GetterImplementation.CountParameterName))
-                    .WithType(WellKnownTypes.Imposter.Abstractions.Count)
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.Count,
+                    indexer.GetterImplementation.CountParameterName
+                )
             )
             .WithBody(
                 Block(

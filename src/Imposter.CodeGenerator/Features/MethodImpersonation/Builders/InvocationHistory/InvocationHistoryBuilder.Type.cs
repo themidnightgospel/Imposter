@@ -41,8 +41,10 @@ internal static partial class InvocationHistoryBuilder
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                 .AddParameters(
                     fields.Select(field =>
-                        Parameter(Identifier(field.Declaration.Variables[0].Identifier.Text))
-                            .WithType(field.Declaration.Type)
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            field.Declaration.Type,
+                            field.Declaration.Variables[0].Identifier.Text
+                        )
                     )
                 )
                 .WithBody(

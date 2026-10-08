@@ -26,7 +26,9 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
             )
             .AddMember(
                 new MethodDeclarationBuilder(WellKnownTypes.Void, CalledMethodMetadata.Name)
-                    .AddParameter(Parameter(Identifier("count")).WithType(IdentifierName("Count")))
+                    .AddParameter(
+                        SyntaxFactoryHelper.ParameterSyntax(IdentifierName("Count"), "count")
+                    )
                     .WithSemicolon()
                     .Build()
             )

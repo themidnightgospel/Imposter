@@ -48,8 +48,10 @@ internal static class IndexerDelegatesBuilder
             .AddParameterListParameters(
                 IndexerParameters(indexer)
                     .Concat([
-                        Parameter(Identifier(indexer.SetterImplementation.ValueParameterName))
-                            .WithType(indexer.Core.TypeSyntax),
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            indexer.Core.TypeSyntax,
+                            indexer.SetterImplementation.ValueParameterName
+                        ),
                     ])
                     .ToArray()
             );

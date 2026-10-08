@@ -44,8 +44,10 @@ internal static class MethodImposterAdapterBuilder
                 new ConstructorBuilder("Adapter")
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .AddParameter(
-                        Parameter(Identifier(adapterNames.TargetConstructorParameterName))
-                            .WithType(method.MethodImposter.Syntax)
+                        ParameterSyntax(
+                            method.MethodImposter.Syntax,
+                            adapterNames.TargetConstructorParameterName
+                        )
                     )
                     .WithBody(
                         Block(
@@ -156,10 +158,10 @@ internal static class MethodImposterAdapterBuilder
             var baseImplementationParameterTypeNullable =
                 baseImplementationParameterType.ToNullableType();
             parameterList = parameterList.AddParameters(
-                Parameter(
-                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                ParameterSyntax(
+                        baseImplementationParameterTypeNullable,
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName
                     )
-                    .WithType(baseImplementationParameterTypeNullable)
                     .WithDefault(EqualsValueClause(Null))
             );
 
@@ -235,8 +237,7 @@ internal static class MethodImposterAdapterBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameterIf(
                 method.Parameters.HasInputParameters,
-                () =>
-                    Parameter(Identifier(argumentsParameterName)).WithType(argumentsTypeWithTarget)
+                () => ParameterSyntax(argumentsTypeWithTarget, argumentsParameterName)
             )
             .WithBody(
                 Block(

@@ -26,10 +26,10 @@ internal static class MethodImposterGenericInterfaceBuilder
         if (method.SupportsBaseImplementation)
         {
             invokeMethodParameters = invokeMethodParameters.AddParameters(
-                Parameter(
-                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                ParameterSyntax(
+                        method.Delegate.Syntax.ToNullableType(),
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName
                     )
-                    .WithType(method.Delegate.Syntax.ToNullableType())
                     .WithDefault(EqualsValueClause(Null))
             );
         }
@@ -51,8 +51,10 @@ internal static class MethodImposterGenericInterfaceBuilder
         if (method.Parameters.HasInputParameters)
         {
             hasMatchingSetupMethodBuilder = hasMatchingSetupMethodBuilder.AddParameter(
-                Parameter(Identifier(hasMatchingMethodMetadata.ArgumentsParameterName))
-                    .WithType(method.Arguments.Syntax)
+                ParameterSyntax(
+                    method.Arguments.Syntax,
+                    hasMatchingMethodMetadata.ArgumentsParameterName
+                )
             );
         }
 

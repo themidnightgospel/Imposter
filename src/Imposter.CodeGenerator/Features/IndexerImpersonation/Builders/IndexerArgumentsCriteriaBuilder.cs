@@ -58,8 +58,7 @@ internal static class IndexerArgumentsCriteriaBuilder
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterIndexerMetadata indexer)
     {
-        var argumentsParam = Parameter(Identifier("arguments"))
-            .WithType(indexer.Arguments.TypeSyntax);
+        var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
         ExpressionSyntax? comparison = null;
 
         foreach (var parameter in indexer.Core.Parameters)

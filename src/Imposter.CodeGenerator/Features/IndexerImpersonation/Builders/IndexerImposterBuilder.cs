@@ -55,10 +55,14 @@ internal static class IndexerImposterBuilder
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterIndexerMetadata indexer)
     {
-        var invocationBehaviorParameter = Parameter(Identifier("invocationBehavior"))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode);
-        var propertyDisplayNameParameter = Parameter(Identifier("propertyDisplayName"))
-            .WithType(WellKnownTypes.String);
+        var invocationBehaviorParameter = ParameterSyntax(
+            WellKnownTypes.Imposter.Abstractions.ImposterMode,
+            "invocationBehavior"
+        );
+        var propertyDisplayNameParameter = ParameterSyntax(
+            WellKnownTypes.String,
+            "propertyDisplayName"
+        );
 
         var getterInitialization = indexer.Core.HasGetter
             ? ThisExpression()
@@ -137,9 +141,7 @@ internal static class IndexerImposterBuilder
             "CreateGetter"
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                Parameter(Identifier("criteria")).WithType(indexer.ArgumentsCriteria.TypeSyntax)
-            )
+            .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
             .WithBody(body)
             .Build();
     }
@@ -177,9 +179,7 @@ internal static class IndexerImposterBuilder
             "CreateSetter"
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                Parameter(Identifier("criteria")).WithType(indexer.ArgumentsCriteria.TypeSyntax)
-            )
+            .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
             .WithBody(bodyBuilder.Build())
             .Build();
     }
@@ -199,13 +199,8 @@ internal static class IndexerImposterBuilder
             .AddMember(
                 new ConstructorBuilder("InvocationBuilder")
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .AddParameter(
-                        Parameter(Identifier("builder")).WithType(indexer.Builder.TypeSyntax)
-                    )
-                    .AddParameter(
-                        Parameter(Identifier("criteria"))
-                            .WithType(indexer.ArgumentsCriteria.TypeSyntax)
-                    )
+                    .AddParameter(ParameterSyntax(indexer.Builder.TypeSyntax, "builder"))
+                    .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
                     .WithBody(
                         new BlockBuilder()
                             .AddStatement(

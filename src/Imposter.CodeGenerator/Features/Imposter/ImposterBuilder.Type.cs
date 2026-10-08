@@ -319,8 +319,8 @@ internal readonly ref struct ImposterBuilder
     }
 
     private static ParameterSyntax CreateInvocationBehaviorParameter(string parameterName) =>
-        Parameter(Identifier(parameterName))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
+        SyntaxFactoryHelper
+            .ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, parameterName)
             .WithDefault(
                 EqualsValueClause(
                     QualifiedName(

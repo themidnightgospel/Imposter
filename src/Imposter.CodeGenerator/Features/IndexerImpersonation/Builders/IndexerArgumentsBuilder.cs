@@ -105,8 +105,10 @@ internal static class IndexerArgumentsBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .AddParameter(
-                Parameter(Identifier("obj"))
-                    .WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))))
+                ParameterSyntax(
+                    NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))),
+                    "obj"
+                )
             )
             .WithBody(
                 Block(

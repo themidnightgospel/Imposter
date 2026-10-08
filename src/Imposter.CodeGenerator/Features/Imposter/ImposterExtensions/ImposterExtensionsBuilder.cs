@@ -51,7 +51,7 @@ internal static class ImposterExtensionsBuilder
             .WithParameterList(
                 ParameterList(
                     SingletonSeparatedList(
-                        Parameter(Identifier(ExtensionParameterName)).WithType(targetType)
+                        SyntaxFactoryHelper.ParameterSyntax(targetType, ExtensionParameterName)
                     )
                 )
             )
@@ -166,8 +166,11 @@ internal static class ImposterExtensionsBuilder
     }
 
     private static ParameterSyntax CreateInvocationBehaviorParameter() =>
-        Parameter(Identifier(InvocationBehaviorParameterName))
-            .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
+        SyntaxFactoryHelper
+            .ParameterSyntax(
+                WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                InvocationBehaviorParameterName
+            )
             .WithDefault(
                 EqualsValueClause(
                     QualifiedName(

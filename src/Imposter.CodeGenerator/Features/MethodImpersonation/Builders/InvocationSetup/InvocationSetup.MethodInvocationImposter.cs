@@ -296,10 +296,10 @@ internal static partial class InvocationSetupBuilder
         if (method.SupportsBaseImplementation)
         {
             parameters.Add(
-                Parameter(
-                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
+                ParameterSyntax(
+                        method.Delegate.Syntax.ToNullableType(),
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName
                     )
-                    .WithType(method.Delegate.Syntax.ToNullableType())
                     .WithDefault(EqualsValueClause(Null))
             );
         }
@@ -370,16 +370,10 @@ internal static partial class InvocationSetupBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                Parameter(
-                        Identifier(
-                            method
-                                .MethodInvocationImposterGroup
-                                .ReturnsMethod
-                                .ResultGeneratorParameter
-                                .Name
-                        )
-                    )
-                    .WithType(method.Delegate.Syntax)
+                ParameterSyntax(
+                    method.Delegate.Syntax,
+                    method.MethodInvocationImposterGroup.ReturnsMethod.ResultGeneratorParameter.Name
+                )
             )
             .WithBody(blockBuilder.Build())
             .Build();
@@ -425,12 +419,10 @@ internal static partial class InvocationSetupBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                Parameter(
-                        Identifier(
-                            method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name
-                        )
-                    )
-                    .WithType(method.ReturnTypeSyntax)
+                ParameterSyntax(
+                    method.ReturnTypeSyntax,
+                    method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name
+                )
             )
             .WithBody(blockBuilder.Build())
             .Build();
@@ -471,9 +463,7 @@ internal static partial class InvocationSetupBuilder
             method.MethodInvocationImposterGroup.ThrowsMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                Parameter(Identifier(throwsParameter.Name)).WithType(throwsParameter.Type)
-            )
+            .AddParameter(ParameterSyntax(throwsParameter.Type, throwsParameter.Name))
             .WithBody(blockBuilder.Build())
             .Build();
     }
@@ -544,8 +534,7 @@ internal static partial class InvocationSetupBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, returnsAsync.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                Parameter(Identifier(returnsAsync.ValueParameter.Name))
-                    .WithType(returnsAsync.ValueParameter.Type)
+                ParameterSyntax(returnsAsync.ValueParameter.Type, returnsAsync.ValueParameter.Name)
             )
             .WithBody(returnsAsyncBodyBuilder.Build())
             .Build();
@@ -579,8 +568,10 @@ internal static partial class InvocationSetupBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, throwsAsync.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                Parameter(Identifier(throwsAsync.ExceptionParameter.Name))
-                    .WithType(throwsAsync.ExceptionParameter.Type)
+                ParameterSyntax(
+                    throwsAsync.ExceptionParameter.Type,
+                    throwsAsync.ExceptionParameter.Name
+                )
             )
             .WithBody(blockBuilder.Build())
             .Build();

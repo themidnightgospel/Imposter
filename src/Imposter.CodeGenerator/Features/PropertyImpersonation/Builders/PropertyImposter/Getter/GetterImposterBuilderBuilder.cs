@@ -499,8 +499,10 @@ internal static class GetterImposterBuilderBuilder
     {
         const string BaseImplementationParameterName = "baseImplementation";
 
-        var baseImplementationParameter = Parameter(Identifier(BaseImplementationParameterName))
-            .WithType(property.Core.AsSystemFuncType.ToNullableType());
+        var baseImplementationParameter = ParameterSyntax(
+            property.Core.AsSystemFuncType.ToNullableType(),
+            BaseImplementationParameterName
+        );
         var baseImplementationIdentifier = IdentifierName(BaseImplementationParameterName);
         var messageExpression = IdentifierName("_propertyDisplayName")
             .Add(" (getter)".StringLiteral());

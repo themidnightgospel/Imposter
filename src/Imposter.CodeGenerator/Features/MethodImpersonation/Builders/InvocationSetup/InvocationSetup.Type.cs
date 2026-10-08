@@ -44,8 +44,10 @@ internal static partial class InvocationSetupBuilder
         {
             ctorBuilder = ctorBuilder
                 .AddParameter(
-                    Parameter(Identifier("argumentsCriteria"))
-                        .WithType(method.ArgumentsCriteria.Syntax)
+                    SyntaxFactoryHelper.ParameterSyntax(
+                        method.ArgumentsCriteria.Syntax,
+                        "argumentsCriteria"
+                    )
                 )
                 .WithBody(
                     Block(

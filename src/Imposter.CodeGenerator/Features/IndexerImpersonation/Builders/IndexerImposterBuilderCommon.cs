@@ -140,17 +140,14 @@ internal static class IndexerImposterBuilderCommon
     ) =>
         new ConstructorBuilder(className)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            .AddParameter(ParameterSyntax(defaultBehaviourType, DefaultBehaviourParameterName))
             .AddParameter(
-                Parameter(Identifier(DefaultBehaviourParameterName)).WithType(defaultBehaviourType)
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                    InvocationBehaviorParameterName
+                )
             )
-            .AddParameter(
-                Parameter(Identifier(InvocationBehaviorParameterName))
-                    .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode)
-            )
-            .AddParameter(
-                Parameter(Identifier(PropertyDisplayNameParameterName))
-                    .WithType(WellKnownTypes.String)
-            )
+            .AddParameter(ParameterSyntax(WellKnownTypes.String, PropertyDisplayNameParameterName))
             .WithBody(
                 new BlockBuilder()
                     .AddStatement(

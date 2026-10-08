@@ -19,17 +19,15 @@ internal static class IndexerSetterBuilder
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes);
 
         var setterValueParameterName = indexer.SetterImplementation.ValueParameterName;
-        parameters.Add(
-            Parameter(Identifier(setterValueParameterName)).WithType(indexer.Core.TypeSyntax)
-        );
+        parameters.Add(ParameterSyntax(indexer.Core.TypeSyntax, setterValueParameterName));
 
         ParameterSyntax? setterBaseImplementationParameter = null;
         if (indexer.Core.SetterSupportsBaseImplementation)
         {
-            setterBaseImplementationParameter = Parameter(
-                    Identifier(indexer.SetterImplementation.BaseImplementationParameterName)
+            setterBaseImplementationParameter = ParameterSyntax(
+                    indexer.Core.AsSystemActionType.ToNullableType(),
+                    indexer.SetterImplementation.BaseImplementationParameterName
                 )
-                .WithType(indexer.Core.AsSystemActionType.ToNullableType())
                 .WithDefault(EqualsValueClause(Null));
 
             parameters.Add(setterBaseImplementationParameter);
@@ -150,8 +148,7 @@ internal static class IndexerSetterBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Callback")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
-                Parameter(Identifier(setter.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
             )
             .AddParameter(callbackParameter)
             .WithBody(
@@ -215,8 +212,7 @@ internal static class IndexerSetterBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
-                Parameter(Identifier(setter.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
             )
             .AddParameter(countParameter)
             .WithBody(
@@ -242,8 +238,7 @@ internal static class IndexerSetterBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
-                Parameter(Identifier(setter.CriteriaParameterName))
-                    .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
             )
             .WithBody(
                 Block(
@@ -263,9 +258,11 @@ internal static class IndexerSetterBuilder
         var argumentsVariable = IdentifierName(indexer.GetterImplementation.ArgumentsVariableName);
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
-            Parameter(Identifier(setter.ValueParameterName)).WithType(indexer.Core.TypeSyntax),
-            Parameter(Identifier(setter.BaseImplementationParameterName))
-                .WithType(indexer.Core.AsSystemActionType.ToNullableType())
+            ParameterSyntax(indexer.Core.TypeSyntax, setter.ValueParameterName),
+            ParameterSyntax(
+                    indexer.Core.AsSystemActionType.ToNullableType(),
+                    setter.BaseImplementationParameterName
+                )
                 .WithDefault(EqualsValueClause(Null)),
         };
 
@@ -463,12 +460,16 @@ internal static class IndexerSetterBuilder
                 new ConstructorBuilder(builderMetadata.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                     .AddParameter(
-                        Parameter(Identifier(builderMetadata.ImposterFieldName))
-                            .WithType(indexer.SetterImplementation.TypeSyntax)
+                        ParameterSyntax(
+                            indexer.SetterImplementation.TypeSyntax,
+                            builderMetadata.ImposterFieldName
+                        )
                     )
                     .AddParameter(
-                        Parameter(Identifier(builderMetadata.CriteriaFieldName))
-                            .WithType(indexer.ArgumentsCriteria.TypeSyntax)
+                        ParameterSyntax(
+                            indexer.ArgumentsCriteria.TypeSyntax,
+                            builderMetadata.CriteriaFieldName
+                        )
                     )
                     .WithBody(
                         new BlockBuilder()
