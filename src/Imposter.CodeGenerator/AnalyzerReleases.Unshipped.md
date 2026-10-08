@@ -3,3 +3,7 @@
 
 ### New Rules
 
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+IMP006 | Imposter | Warning  | Imposter.CodeGenerator
+

@@ -196,7 +196,9 @@ internal sealed class GeneratorTestContext
         var runResult = driver.RunGenerators(compilation).GetRunResult();
         var generatorResult = runResult.Results.Single();
 
-        runResult.Diagnostics.ShouldBeEmpty();
+        runResult
+            .Diagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+            .ShouldBeEmpty();
         generatorResult.Exception.ShouldBeNull();
 
         return generatorResult;

@@ -25,7 +25,31 @@ internal static class ImposterTargetValidator
             return false;
         }
 
+        if (IsClosedGenericType(target))
+        {
+            ReportClosedGenericTarget(sourceProductionContext, target);
+        }
+
         return true;
+    }
+
+    private static bool IsClosedGenericType(INamedTypeSymbol typeSymbol) =>
+        typeSymbol.IsGenericType
+        && !SymbolEqualityComparer.Default.Equals(typeSymbol, typeSymbol.OriginalDefinition);
+
+    private static void ReportClosedGenericTarget(
+        in SourceProductionContext sourceProductionContext,
+        INamedTypeSymbol target
+    )
+    {
+        sourceProductionContext.ReportDiagnostic(
+            Diagnostic.Create(
+                DiagnosticDescriptors.ClosedGenericImposterTarget,
+                GetPreferredLocation(target),
+                target.ToDisplayString(),
+                target.ConstructUnboundGenericType().ToDisplayString()
+            )
+        );
     }
 
     private static void ReportImposterTargetMustBeInterface(

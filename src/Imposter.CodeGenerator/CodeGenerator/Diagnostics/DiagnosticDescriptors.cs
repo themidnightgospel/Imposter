@@ -59,6 +59,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: AccessibleConstructorHelpUrl
     );
 
+    public static readonly DiagnosticDescriptor ClosedGenericImposterTarget = new(
+        "IMP006",
+        "Closed generic imposter target",
+        "Register the open generic type 'typeof({1})' instead of '{0}'; the generated imposter keeps the type parameters and ignores these type arguments",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Warning,
+        true,
+        description: "A closed generic target generates the same generic imposter as its open type, with type parameters that have no effect.",
+        helpLinkUri: TargetHelpUrl
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",
