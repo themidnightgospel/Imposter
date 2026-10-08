@@ -88,7 +88,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 ? BaseExpression().Dot(IdentifierName(property.Core.Name))
                 : null;
 
-            if (basePropertyAccess is not null)
+            if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
             {
                 const string BaseSetterValueParameterName = "baseSetterValue";
                 var baseSetterValueIdentifier = IdentifierName(BaseSetterValueParameterName);
@@ -109,9 +109,17 @@ internal readonly ref struct ImposterInstanceBuilder
                 );
             }
 
-            var setterBody = Block(
-                setterInvocation.Call(ArgumentListSyntax(setterArguments)).ToStatementSyntax()
-            );
+            var setterCall = setterInvocation.Call(ArgumentListSyntax(setterArguments));
+            var setterBody = property.Core.SetterRequiresDirectBaseAssignment
+                ? Block(
+                    IfStatement(
+                        setterCall,
+                        Block(
+                            basePropertyAccess!.Assign(IdentifierName("value")).ToStatementSyntax()
+                        )
+                    )
+                )
+                : Block(setterCall.ToStatementSyntax());
             setterBody = WithConstructorFallback(
                 setterBody,
                 ConstructorDispatchBuilder.SetterFallback(
@@ -119,7 +127,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 )
             );
 
-            propertyBuilder = propertyBuilder.WithSetterBody(setterBody);
+            propertyBuilder = property.Core.IsInitOnly
+                ? propertyBuilder.WithInitBody(setterBody)
+                : propertyBuilder.WithSetterBody(setterBody);
         }
 
         _imposterInstanceBuilder.AddMember(propertyBuilder.Build());

@@ -10,13 +10,16 @@ internal readonly struct SetMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
+    internal readonly bool RequiresDirectBaseAssignment;
+
     internal readonly ParameterMetadata ValueParameter;
 
     internal readonly ParameterMetadata BaseImplementationParameter;
 
     internal SetMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
-        ReturnType = WellKnownTypes.Void;
+        RequiresDirectBaseAssignment = property.SetterRequiresDirectBaseAssignment;
+        ReturnType = RequiresDirectBaseAssignment ? WellKnownTypes.Bool : WellKnownTypes.Void;
         ValueParameter = new ParameterMetadata("value", property.NullableAwareTypeSyntax);
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",

@@ -12,6 +12,10 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly bool HasSetter;
 
+    internal readonly bool IsInitOnly;
+
+    internal readonly bool SetterRequiresDirectBaseAssignment;
+
     internal readonly string UniqueName;
 
     internal readonly TypeSyntax TypeSyntax;
@@ -37,6 +41,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         UniqueName = uniqueName;
         HasGetter = property.GetMethod != null;
         HasSetter = property.SetMethod != null;
+        IsInitOnly = property.SetMethod?.IsInitOnly == true;
         Name = property.Name;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
@@ -49,6 +54,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
             containingTypeIsClass && property.GetMethod is { IsAbstract: false };
         SetterSupportsBaseImplementation =
             containingTypeIsClass && property.SetMethod is { IsAbstract: false };
+        SetterRequiresDirectBaseAssignment = IsInitOnly && SetterSupportsBaseImplementation;
         SupportsBaseImplementation =
             GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
         DisplayName =

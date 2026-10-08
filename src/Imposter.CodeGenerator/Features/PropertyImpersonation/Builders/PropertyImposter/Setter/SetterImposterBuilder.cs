@@ -182,13 +182,23 @@ internal static class SetterImposterBuilder
             )
         );
 
+        if (setterImposter.SetMethod.RequiresDirectBaseAssignment)
+        {
+            bodyStatements.Add(ReturnStatement(False));
+        }
+
+        var baseImplementationParameter = setterImposter.SetMethod.BaseImplementationParameter;
+
         return new MethodDeclarationBuilder(
             setterImposter.SetMethod.ReturnType,
             setterImposter.SetMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
-            .AddParameter(ParameterSyntax(setterImposter.SetMethod.BaseImplementationParameter))
+            .AddParameterIf(
+                !setterImposter.SetMethod.RequiresDirectBaseAssignment,
+                () => ParameterSyntax(baseImplementationParameter)
+            )
             .WithBody(Block(bodyStatements.ToArray()))
             .Build();
 
@@ -224,7 +234,18 @@ internal static class SetterImposterBuilder
 
             var statements = new List<StatementSyntax>();
 
-            if (setterSupportsBaseImplementation)
+            if (setterImposter.SetMethod.RequiresDirectBaseAssignment)
+            {
+                // An init-only base assignment must execute in the generated init accessor,
+                // after configuration checks, invocation tracking and callbacks have completed.
+                statements.Add(
+                    IfStatement(
+                        IdentifierName("_useBaseImplementation"),
+                        Block(ReturnStatement(True))
+                    )
+                );
+            }
+            else if (setterSupportsBaseImplementation)
             {
                 var baseImplementationCall = baseImplementationIdentifier.Call(
                     ArgumentList(
