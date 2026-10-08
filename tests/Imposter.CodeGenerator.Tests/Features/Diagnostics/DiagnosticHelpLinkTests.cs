@@ -32,7 +32,7 @@ public class DiagnosticHelpLinkTests
     public void GivenEveryDiagnostic_WhenDiagnosticsPageIsRead_ShouldHaveSectionWithItsAnchor()
     {
         var page = File.ReadAllText(
-            Path.Combine(FindRepositoryRoot(), "docs", "content", "diagnostics.md")
+            Path.Join(FindRepositoryRoot(), "docs", "content", "diagnostics.md")
         );
 
         Descriptors
@@ -48,7 +48,7 @@ public class DiagnosticHelpLinkTests
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
 
-        while (!File.Exists(Path.Combine(directory.FullName, "Imposter.slnx")))
+        while (!File.Exists(Path.Join(directory.FullName, "Imposter.slnx")))
         {
             directory =
                 directory.Parent ?? throw new DirectoryNotFoundException("Imposter.slnx not found");
