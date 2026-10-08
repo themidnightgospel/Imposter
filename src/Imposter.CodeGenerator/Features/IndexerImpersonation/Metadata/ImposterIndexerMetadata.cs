@@ -40,7 +40,7 @@ internal readonly ref struct ImposterIndexerMetadata
         MemberAccess memberAccess
     )
     {
-        Core = new ImposterIndexerCoreMetadata(propertySymbol, uniqueName);
+        Core = new ImposterIndexerCoreMetadata(propertySymbol, uniqueName, memberAccess);
         Arguments = new IndexerArgumentsMetadata(Core);
         ArgumentsCriteria = new IndexerArgumentsCriteriaMetadata(Core);
         DefaultIndexerBehaviour = new DefaultIndexerBehaviourMetadata(Core, Arguments);

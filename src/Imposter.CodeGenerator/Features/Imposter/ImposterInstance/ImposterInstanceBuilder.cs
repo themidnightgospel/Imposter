@@ -73,7 +73,10 @@ internal readonly ref struct ImposterInstanceBuilder
                 Block(ReturnStatement(baseGetterInvocation ?? DefaultNonNullable))
             );
 
-            propertyBuilder = propertyBuilder.WithGetterBody(getterBody);
+            propertyBuilder = propertyBuilder.WithGetterBody(
+                getterBody,
+                property.Core.GetterModifiers
+            );
         }
 
         if (property.Core.HasSetter)
@@ -128,8 +131,8 @@ internal readonly ref struct ImposterInstanceBuilder
             );
 
             propertyBuilder = property.Core.IsInitOnly
-                ? propertyBuilder.WithInitBody(setterBody)
-                : propertyBuilder.WithSetterBody(setterBody);
+                ? propertyBuilder.WithInitBody(setterBody, property.Core.SetterModifiers)
+                : propertyBuilder.WithSetterBody(setterBody, property.Core.SetterModifiers);
         }
 
         _imposterInstanceBuilder.AddMember(propertyBuilder.Build());
@@ -170,6 +173,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithModifiers(indexer.Core.GetterModifiers)
                     .WithBody(
                         WithConstructorFallback(
                             Block(ReturnStatement(getterCall)),
@@ -208,6 +212,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithModifiers(indexer.Core.SetterModifiers)
                     .WithBody(
                         WithConstructorFallback(
                             Block(setterCall.ToStatementSyntax()),

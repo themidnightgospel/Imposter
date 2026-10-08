@@ -28,6 +28,9 @@ public class CrossAssemblyAccessibilityTests
             protected internal virtual event System.EventHandler ProtectedInternalEvent;
             internal virtual int InternalMethod() => 2;
             private protected virtual int PrivateProtectedMethod() => 3;
+            public virtual int ProtectedInternalSetter { get; protected internal set; }
+            public virtual int InternalSetter { get; internal set; }
+            public virtual int this[string key] { get => 0; protected internal set { } }
         }
         """;
 

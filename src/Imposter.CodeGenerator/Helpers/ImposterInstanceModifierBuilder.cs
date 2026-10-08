@@ -14,6 +14,24 @@ internal static class ImposterInstanceModifierBuilder
     internal static SyntaxTokenList For(MethodModel method) =>
         method.IsClassMember ? Override(method.OverrideAccessibility) : InterfaceImplementation();
 
+    // An overriding accessor restates its own accessibility when it differs from the property's.
+    internal static SyntaxTokenList ForAccessor(
+        IMethodSymbol? accessor,
+        IPropertySymbol property,
+        MemberAccess memberAccess
+    )
+    {
+        if (accessor is null || property.ContainingType?.TypeKind != TypeKind.Class)
+        {
+            return default;
+        }
+
+        var accessibility = memberAccess.GetOverrideAccessibility(accessor);
+        return accessibility == memberAccess.GetOverrideAccessibility(property)
+            ? default
+            : GetAccessibilityModifiers(accessibility);
+    }
+
     private static SyntaxTokenList Override(Accessibility accessibility) =>
         GetAccessibilityModifiers(accessibility)
             .Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
