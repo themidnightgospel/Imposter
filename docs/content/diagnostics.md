@@ -24,7 +24,7 @@ Register an interface or a non-sealed class instead. If you own the class, remov
 
 Generated imposters use C# 9.0 features. When the project compiles with an older language version, the generator reports IMP003 once and generates no imposters.
 
-Set the language version to 9.0 or later in the project file, for example `<LangVersion>9.0</LangVersion>` or `<LangVersion>latest</LangVersion>`. Projects that target .NET Framework or .NET Standard default to C# 7.3, so they need this setting.
+Set the language version to 9.0 or later in the project file, for example `<LangVersion>9.0</LangVersion>`. Projects that target .NET Framework, .NET Standard or .NET Core 3.x or earlier default to C# 7.3 or 8.0, so they need this setting.
 
 ## IMP004: No accessible constructor { #imp004 }
 
