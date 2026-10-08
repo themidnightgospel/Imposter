@@ -19,20 +19,24 @@ internal static partial class InvocationSetupBuilder
         var invocationImposterType = IdentifierName(
             MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
         );
-        var invocationImposterIdentifier = IdentifierName("invocationImposter");
+        var invocationImposterIdentifier = IdentifierName(
+            method.MethodImposter.InvokeMethod.InvocationImposterVariableName
+        );
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
             Var,
-            "invocationImposter",
+            method.MethodImposter.InvokeMethod.InvocationImposterVariableName,
             IdentifierName("GetInvocationImposter").Call()
         );
 
         var guardMissingImposter = IfStatement(
-            IdentifierName("invocationImposter").IsNull(),
+            invocationImposterIdentifier.IsNull(),
             Block(
                 IfStatement(
                     BinaryExpression(
                         SyntaxKind.EqualsExpression,
-                        IdentifierName("invocationBehavior"),
+                        IdentifierName(
+                            method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
+                        ),
                         QualifiedName(
                             WellKnownTypes.Imposter.Abstractions.ImposterMode,
                             IdentifierName("Explicit")
@@ -44,13 +48,20 @@ internal static partial class InvocationSetupBuilder
                                     WellKnownTypes.Imposter.Abstractions.MissingImposterException
                                 )
                                 .WithArgumentList(
-                                    Argument(IdentifierName("methodDisplayName"))
+                                    Argument(
+                                            IdentifierName(
+                                                method
+                                                    .MethodImposter
+                                                    .InvokeMethod
+                                                    .MethodDisplayNameParameterName
+                                            )
+                                        )
                                         .AsSingleArgumentListSyntax()
                                 )
                         )
                     )
                 ),
-                IdentifierName("invocationImposter")
+                invocationImposterIdentifier
                     .Assign(invocationImposterType.Dot(IdentifierName("Default")))
                     .ToStatementSyntax()
             )
@@ -82,9 +93,12 @@ internal static partial class InvocationSetupBuilder
             {
                 ParameterSyntax(
                     WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "invocationBehavior"
+                    method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
                 ),
-                ParameterSyntax(WellKnownTypes.String, "methodDisplayName"),
+                ParameterSyntax(
+                    WellKnownTypes.String,
+                    method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+                ),
             };
 
             parameters.AddRange(method.Parameters.ParameterListSyntaxIncludingNullable.Parameters);
@@ -106,8 +120,16 @@ internal static partial class InvocationSetupBuilder
         {
             var arguments = new List<ArgumentSyntax>
             {
-                Argument(IdentifierName("invocationBehavior")),
-                Argument(IdentifierName("methodDisplayName")),
+                Argument(
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
+                    )
+                ),
+                Argument(
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+                    )
+                ),
             };
 
             arguments.AddRange(ArgumentListSyntax(method.Symbol.Parameters).Arguments);

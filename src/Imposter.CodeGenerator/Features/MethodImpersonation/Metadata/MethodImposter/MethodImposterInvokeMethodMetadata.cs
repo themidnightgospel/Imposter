@@ -16,6 +16,12 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string CallbackIterationVariableName;
 
+    internal readonly string InvocationBehaviorParameterName;
+
+    internal readonly string MethodDisplayNameParameterName;
+
+    internal readonly string InvocationImposterVariableName;
+
     public MethodImposterInvokeMethodMetadata(in ReservedParameterNames reservedParameterNames)
     {
         var parameterNameContext = reservedParameterNames.CreateNameSet();
@@ -28,5 +34,8 @@ internal readonly struct MethodImposterInvokeMethodMetadata
         ArgumentsVariableName = parameterNameContext.Use("arguments");
         BaseInvocationParameterName = parameterNameContext.Use("baseImplementation");
         CallbackIterationVariableName = parameterNameContext.Use("callback");
+        InvocationBehaviorParameterName = parameterNameContext.Use("invocationBehavior");
+        MethodDisplayNameParameterName = parameterNameContext.Use("methodDisplayName");
+        InvocationImposterVariableName = parameterNameContext.Use("invocationImposter");
     }
 }

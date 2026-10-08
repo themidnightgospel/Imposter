@@ -34,7 +34,11 @@ internal readonly ref struct ImposterIndexerMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
-    internal ImposterIndexerMetadata(IPropertySymbol propertySymbol, string uniqueName)
+    internal ImposterIndexerMetadata(
+        IPropertySymbol propertySymbol,
+        string uniqueName,
+        MemberAccess memberAccess
+    )
     {
         Core = new ImposterIndexerCoreMetadata(propertySymbol, uniqueName);
         Arguments = new IndexerArgumentsMetadata(Core);
@@ -56,6 +60,9 @@ internal readonly ref struct ImposterIndexerMetadata
         );
         Builder = new IndexerImposterBuilderMetadata(Core, defaultIndexerBehaviourField);
         BuilderField = new FieldMetadata($"_{Core.UniqueName}Indexer", Builder.TypeSyntax);
-        ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(propertySymbol);
+        ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
+            propertySymbol,
+            memberAccess
+        );
     }
 }

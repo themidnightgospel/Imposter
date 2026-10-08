@@ -39,15 +39,19 @@ internal readonly struct ImposterTargetMetadata
 
     private readonly HashSet<IEventSymbol> _explicitEvents;
 
+    private readonly MemberAccess _memberAccess;
+
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
 
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(
         INamedTypeSymbol targetSymbol,
-        in SupportedCSharpFeatures supportedCSharpFeatures
+        in SupportedCSharpFeatures supportedCSharpFeatures,
+        MemberAccess memberAccess
     )
     {
+        _memberAccess = memberAccess;
         Name = targetSymbol.Name + "Imposter";
         TypeParameters = new ImposterTargetTypeParametersMetadata(targetSymbol);
         ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
@@ -55,15 +59,20 @@ internal readonly struct ImposterTargetMetadata
             Name
         );
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(targetSymbol);
-        Methods = GetMethods(targetSymbol, _symbolNameNamespace, supportedCSharpFeatures);
+        Methods = GetMethods(
+            targetSymbol,
+            _symbolNameNamespace,
+            supportedCSharpFeatures,
+            memberAccess
+        );
         IsClass = targetSymbol.TypeKind is TypeKind.Class;
         DeclaredAccessibility = targetSymbol.DeclaredAccessibility;
-        AccessibleConstructors = GetAccessibleConstructors(targetSymbol);
+        AccessibleConstructors = GetAccessibleConstructors(targetSymbol, memberAccess);
 
-        var propertySymbols = GetPropertySymbols(targetSymbol);
+        var propertySymbols = GetPropertySymbols(targetSymbol, memberAccess);
         PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
         IndexerSymbols = propertySymbols.Where(property => property.IsIndexer).ToArray();
-        EventSymbols = GetEventSymbols(targetSymbol);
+        EventSymbols = GetEventSymbols(targetSymbol, memberAccess);
 
         _explicitProperties =
             targetSymbol.TypeKind is TypeKind.Interface
@@ -78,7 +87,8 @@ internal readonly struct ImposterTargetMetadata
     private static List<ImposterTargetMethodMetadata> GetMethods(
         INamedTypeSymbol typeSymbol,
         NameSet nameSet,
-        in SupportedCSharpFeatures supportedCSharpFeatures
+        in SupportedCSharpFeatures supportedCSharpFeatures,
+        MemberAccess memberAccess
     )
     {
         var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
@@ -93,6 +103,7 @@ internal readonly struct ImposterTargetMetadata
                     methodSymbol,
                     nameSet.Use(methodSymbol.Name),
                     supportsNullableGenericType,
+                    memberAccess,
                     explicitMethods.Contains(methodSymbol)
                 ))
                 .ToList();
@@ -102,10 +113,12 @@ internal readonly struct ImposterTargetMetadata
         {
             return typeSymbol
                 .GetAllOverridableMethods()
+                .Where(memberAccess.IsAccessible)
                 .Select(methodSymbol => new ImposterTargetMethodMetadata(
                     methodSymbol,
                     nameSet.Use(methodSymbol.Name),
-                    supportsNullableGenericType
+                    supportsNullableGenericType,
+                    memberAccess
                 ))
                 .ToList();
         }
@@ -114,7 +127,8 @@ internal readonly struct ImposterTargetMetadata
     }
 
     private static ImposterTargetConstructorMetadata[] GetAccessibleConstructors(
-        INamedTypeSymbol typeSymbol
+        INamedTypeSymbol typeSymbol,
+        MemberAccess memberAccess
     )
     {
         if (typeSymbol.TypeKind is not TypeKind.Class)
@@ -124,8 +138,7 @@ internal readonly struct ImposterTargetMetadata
 
         var declaredConstructors = typeSymbol
             .InstanceConstructors.Where(constructor =>
-                !constructor.IsImplicitlyDeclared
-                && constructor.DeclaredAccessibility != Accessibility.Private
+                !constructor.IsImplicitlyDeclared && memberAccess.IsAccessible(constructor)
             )
             .Select(ImposterTargetConstructorMetadata.FromSymbol)
             .ToArray();
@@ -144,7 +157,8 @@ internal readonly struct ImposterTargetMetadata
     }
 
     private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(
-        INamedTypeSymbol typeSymbol
+        INamedTypeSymbol typeSymbol,
+        MemberAccess memberAccess
     )
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
@@ -154,7 +168,10 @@ internal readonly struct ImposterTargetMetadata
 
         if (typeSymbol.TypeKind is TypeKind.Class)
         {
-            return typeSymbol.GetAllOverridableProperties();
+            return typeSymbol
+                .GetAllOverridableProperties()
+                .Where(memberAccess.IsAccessible)
+                .ToArray();
         }
 
         return [];
@@ -168,16 +185,18 @@ internal readonly struct ImposterTargetMetadata
             propertySymbol,
             _symbolNameNamespace.Use(propertySymbol.Name),
             memberNameSet,
+            _memberAccess,
             _explicitProperties.Contains(propertySymbol)
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
-        new(propertySymbol, _symbolNameNamespace.Use(IndexerMemberName));
+        new(propertySymbol, _symbolNameNamespace.Use(IndexerMemberName), _memberAccess);
 
     internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
         new(
             eventSymbol,
             _symbolNameNamespace.Use(eventSymbol.Name),
+            _memberAccess,
             _explicitEvents.Contains(eventSymbol)
         );
 
@@ -258,7 +277,10 @@ internal readonly struct ImposterTargetMetadata
         return $"{method.Name}({paramTypes})";
     }
 
-    private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(INamedTypeSymbol typeSymbol)
+    private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(
+        INamedTypeSymbol typeSymbol,
+        MemberAccess memberAccess
+    )
     {
         if (typeSymbol.TypeKind is TypeKind.Interface)
         {
@@ -267,7 +289,7 @@ internal readonly struct ImposterTargetMetadata
 
         if (typeSymbol.TypeKind is TypeKind.Class)
         {
-            return typeSymbol.GetAllOverridableEvents();
+            return typeSymbol.GetAllOverridableEvents().Where(memberAccess.IsAccessible).ToArray();
         }
 
         return [];

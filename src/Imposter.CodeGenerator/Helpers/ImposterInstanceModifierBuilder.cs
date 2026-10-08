@@ -5,11 +5,11 @@ namespace Imposter.CodeGenerator.Helpers;
 
 internal static class ImposterInstanceModifierBuilder
 {
-    internal static SyntaxTokenList For(ISymbol symbol)
+    internal static SyntaxTokenList For(ISymbol symbol, MemberAccess memberAccess)
     {
         if (symbol?.ContainingType?.TypeKind == TypeKind.Class)
         {
-            return GetAccessibilityModifiers(symbol.DeclaredAccessibility)
+            return GetAccessibilityModifiers(memberAccess.GetOverrideAccessibility(symbol))
                 .Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
         }
 
