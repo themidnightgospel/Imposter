@@ -72,10 +72,26 @@ internal static partial class MethodImposterBuilder
             }
         }
 
-        var condition =
+        var returnAdapter = ReturnStatement(
+            GenericName("Adapter")
+                .WithTypeArgumentList(
+                    TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
+                )
+                .New(Argument(ThisExpression()).ToSingleArgumentList())
+        );
+
+        // Without a type to check, the adapter always applies, and an if (true) would leave the
+        // trailing return null unreachable.
+        var body =
             conditions.Count > 0
-                ? conditions.Aggregate((current, next) => current.And(next))
-                : True;
+                ? Block(
+                    IfStatement(
+                        conditions.Aggregate((current, next) => current.And(next)),
+                        Block(returnAdapter)
+                    ),
+                    ReturnStatement(Null)
+                )
+                : Block(returnAdapter);
 
         var asMethodTypeParams = method.TargetGenericTypeParameterListSyntax;
 
@@ -87,27 +103,7 @@ internal static partial class MethodImposterBuilder
         return new MethodDeclarationBuilder(NullableType(genericImposterInterfaceWithTargets), "As")
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(asMethodTypeParams)
-            .WithBody(
-                Block(
-                    IfStatement(
-                        condition,
-                        Block(
-                            ReturnStatement(
-                                GenericName("Adapter")
-                                    .WithTypeArgumentList(
-                                        TypeArgumentList(
-                                            SeparatedList<TypeSyntax>(
-                                                method.TargetGenericTypeArguments
-                                            )
-                                        )
-                                    )
-                                    .New(Argument(ThisExpression()).ToSingleArgumentList())
-                            )
-                        )
-                    ),
-                    ReturnStatement(Null)
-                )
-            )
+            .WithBody(body)
             .Build();
     }
 }

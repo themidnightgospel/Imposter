@@ -1886,7 +1886,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.Echo<T>(item);
 				}
 
-				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo);
+				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo<T>);
 			}
 
 			public override TFirst SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
@@ -1896,7 +1896,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.SelectFirst<TFirst, TSecond>(first, second);
 				}
 
-				return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst);
+				return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst<TFirst, TSecond>);
 			}
 		}
 	}

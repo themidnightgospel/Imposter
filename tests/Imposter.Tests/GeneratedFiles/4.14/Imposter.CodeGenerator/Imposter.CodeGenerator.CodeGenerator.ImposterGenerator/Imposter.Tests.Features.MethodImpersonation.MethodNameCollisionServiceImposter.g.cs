@@ -1949,7 +1949,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return base.Verify<Called>(value);
 				}
 
-				return _imposter._verifyMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<Called>(new VerifyArguments<Called>(value)).Invoke(value, base.Verify);
+				return _imposter._verifyMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<Called>(new VerifyArguments<Called>(value)).Invoke(value, base.Verify<Called>);
 			}
 		}
 	}

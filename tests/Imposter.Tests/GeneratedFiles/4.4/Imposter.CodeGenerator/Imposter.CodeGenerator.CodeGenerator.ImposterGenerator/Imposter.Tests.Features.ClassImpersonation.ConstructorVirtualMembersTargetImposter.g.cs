@@ -2553,7 +2553,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return base.Transform<T>(ref input, out output, expected);
 				}
 
-				return _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new TransformArguments<T>(input, expected)).Invoke(ref input, out output, expected, base.Transform);
+				return _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new TransformArguments<T>(input, expected)).Invoke(ref input, out output, expected, base.Transform<T>);
 			}
 
 			public override global::System.Threading.Tasks.Task<int> ReadAsync()
