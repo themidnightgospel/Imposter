@@ -14,18 +14,20 @@ namespace Imposter.Tests.Features.ClassImpersonation
         [Fact]
         public void GivenReturnsSetup_WhenMethodWithInterfaceConstraintIsCalled_ShouldReturnConfiguredValue()
         {
-            var configured = new MemoryStream();
+            using var configured = new MemoryStream();
+            using var argument = new MemoryStream();
             _sut.Echo<MemoryStream>(Arg<MemoryStream>.Any()).Returns(configured);
 
-            _sut.Instance().Echo(new MemoryStream()).ShouldBeSameAs(configured);
+            _sut.Instance().Echo(argument).ShouldBeSameAs(configured);
         }
 
         [Fact]
         public void GivenUseBaseImplementation_WhenMethodWithConstructorConstraintIsCalled_ShouldCallBase()
         {
+            using var argument = new MemoryStream();
             _sut.Describe<MemoryStream>(Arg<MemoryStream>.Any()).UseBaseImplementation();
 
-            _sut.Instance().Describe(new MemoryStream()).ShouldBe("base:MemoryStream");
+            _sut.Instance().Describe(argument).ShouldBe("base:MemoryStream");
         }
     }
 }
