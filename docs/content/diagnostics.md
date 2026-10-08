@@ -28,9 +28,9 @@ Set the language version to 9.0 or later in the project file, for example `<Lang
 
 ## IMP004: No accessible constructor { #imp004 }
 
-The generated imposter derives from the target class, so it must call one of the class's constructors. IMP004 means every constructor is private.
+The generated imposter derives from the target class, so it must call one of the class's constructors. IMP004 means none of them is accessible from your project: every constructor is private, or the class is in another assembly and its constructors are internal or private protected without `InternalsVisibleTo` for your project.
 
-Add a public, internal or protected constructor to the class.
+Add a public or protected constructor to the class, or an internal one if the class is in your project or its assembly grants your project `InternalsVisibleTo`.
 
 ## IMP005: Generator crash { #imp005 }
 
