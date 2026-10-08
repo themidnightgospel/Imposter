@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -187,7 +188,7 @@ internal static partial class SyntaxFactoryHelper
             var valueType = UnderlyingValueType(parameter.Type);
 
             return valueType.TypeKind == TypeKind.Enum
-                ? CastExpression(TypeSyntax(valueType), ParseExpression(defaultValueText))
+                ? CastExpression(TypeSyntax(valueType), EnumValue(defaultValueText))
                 : explicitDefaultValue switch
                 {
                     decimal value => LiteralExpression(
@@ -236,6 +237,16 @@ internal static partial class SyntaxFactoryHelper
             } nullable
             ? nullable.TypeArguments[0]
             : type;
+
+    // C# reads (E)-1 as a subtraction, so a negative value is parenthesized: (E)(-1).
+    private static ExpressionSyntax EnumValue(string valueText)
+    {
+        var value = ParseExpression(valueText);
+
+        return valueText.StartsWith("-", StringComparison.Ordinal)
+            ? ParenthesizedExpression(value)
+            : value;
+    }
 
     // NaN and the infinities have no literal form, so they are written as members such as double.NaN.
     private static ExpressionSyntax FloatingPointDefault(

@@ -33,5 +33,17 @@ namespace Imposter.Tests.Features.ClassImpersonation
         {
             _instance.Limit.ShouldBe(float.NegativeInfinity);
         }
+
+        [Fact]
+        public void GivenNegativeEnumDefault_WhenImposterIsCreatedWithoutArguments_ShouldPassTheDefault()
+        {
+            _instance.Floor.ShouldBe(ConstructorDefaultLevel.Below);
+        }
+
+        [Fact]
+        public void GivenNegativeNullableEnumDefault_WhenImposterIsCreatedWithoutArguments_ShouldPassTheDefault()
+        {
+            _instance.Ceiling.ShouldBe(ConstructorDefaultLevel.Below);
+        }
     }
 }
