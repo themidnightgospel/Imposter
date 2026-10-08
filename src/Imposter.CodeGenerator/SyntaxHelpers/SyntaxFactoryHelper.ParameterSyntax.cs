@@ -184,21 +184,25 @@ internal static partial class SyntaxFactoryHelper
                 return null;
             }
 
-            return parameter.Type.TypeKind == TypeKind.Enum
-                ? EnumDefaultExpression(parameter, defaultValueText)
-                : parameter.Type.SpecialType switch
+            var valueType = UnderlyingValueType(parameter.Type);
+
+            return valueType.TypeKind == TypeKind.Enum
+                ? CastExpression(TypeSyntax(valueType), ParseExpression(defaultValueText))
+                : explicitDefaultValue switch
                 {
-                    SpecialType.System_Decimal => LiteralExpression(
+                    decimal value => LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        Literal((decimal)explicitDefaultValue)
+                        Literal(value)
                     ),
-                    SpecialType.System_Single => LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        Literal((float)explicitDefaultValue)
+                    float value => FloatingPointDefault(
+                        SyntaxKind.FloatKeyword,
+                        value,
+                        Literal(value)
                     ),
-                    SpecialType.System_Double => LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        Literal((double)explicitDefaultValue)
+                    double value => FloatingPointDefault(
+                        SyntaxKind.DoubleKeyword,
+                        value,
+                        Literal(value)
                     ),
                     _ => ParseExpression(defaultValueText),
                 };
@@ -223,8 +227,31 @@ internal static partial class SyntaxFactoryHelper
                 )
             );
 
-    private static CastExpressionSyntax EnumDefaultExpression(
-        IParameterSymbol parameter,
-        string defaultValueText
-    ) => CastExpression(TypeSyntax(parameter.Type), ParseExpression(defaultValueText));
+    // The default of a nullable value type, such as decimal? or E?, is a value of its underlying type.
+    private static ITypeSymbol UnderlyingValueType(ITypeSymbol type) =>
+        type
+            is INamedTypeSymbol
+            {
+                OriginalDefinition.SpecialType: SpecialType.System_Nullable_T,
+            } nullable
+            ? nullable.TypeArguments[0]
+            : type;
+
+    // NaN and the infinities have no literal form, so they are written as members such as double.NaN.
+    private static ExpressionSyntax FloatingPointDefault(
+        SyntaxKind typeKeyword,
+        double value,
+        SyntaxToken literal
+    )
+    {
+        var nonFiniteMember =
+            double.IsNaN(value) ? "NaN"
+            : double.IsPositiveInfinity(value) ? "PositiveInfinity"
+            : double.IsNegativeInfinity(value) ? "NegativeInfinity"
+            : null;
+
+        return nonFiniteMember is null
+            ? LiteralExpression(SyntaxKind.NumericLiteralExpression, literal)
+            : PredefinedType(Token(typeKeyword)).Dot(IdentifierName(nonFiniteMember));
+    }
 }
