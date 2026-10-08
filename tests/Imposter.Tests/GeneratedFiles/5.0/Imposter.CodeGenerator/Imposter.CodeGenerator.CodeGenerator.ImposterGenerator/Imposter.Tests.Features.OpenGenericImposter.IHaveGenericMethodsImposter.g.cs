@@ -351,7 +351,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IAddItemMethodImposter<TItemTarget>? IAddItemMethodImposter.As<TItemTarget>()
 			{
-				if (typeof(TItemTarget).IsAssignableTo(typeof(TItem)))
+				if (typeof(TItem).IsAssignableFrom(typeof(TItemTarget)))
 				{
 					return new Adapter<TItemTarget>(this);
 				}
@@ -773,7 +773,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IGetValueMethodImposter<TResultTarget>? IGetValueMethodImposter.As<TResultTarget>()
 			{
-				if (typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if (typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TResultTarget>(this);
 				}
@@ -1262,7 +1262,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IProcessAsyncMethodImposter<TItemTarget>? IProcessAsyncMethodImposter.As<TItemTarget>()
 			{
-				if (typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>).IsAssignableTo(typeof(global::System.Collections.Generic.IEnumerable<TItem>)) && typeof(global::System.Threading.Tasks.Task<TItem>).IsAssignableTo(typeof(global::System.Threading.Tasks.Task<TItemTarget>)))
+				if (typeof(global::System.Collections.Generic.IEnumerable<TItem>).IsAssignableFrom(typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>)) && typeof(global::System.Threading.Tasks.Task<TItemTarget>).IsAssignableFrom(typeof(global::System.Threading.Tasks.Task<TItem>)))
 				{
 					return new Adapter<TItemTarget>(this);
 				}
@@ -1769,7 +1769,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IProcessComplexAsyncMethodImposter<TItemTarget, TResultTarget>? IProcessComplexAsyncMethodImposter.As<TItemTarget, TResultTarget>()
 			{
-				if (typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>).IsAssignableTo(typeof(global::System.Collections.Generic.IEnumerable<TItem>)) && typeof(global::System.Threading.Tasks.Task<TResult>).IsAssignableTo(typeof(global::System.Threading.Tasks.Task<TResultTarget>)))
+				if (typeof(global::System.Collections.Generic.IEnumerable<TItem>).IsAssignableFrom(typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>)) && typeof(global::System.Threading.Tasks.Task<TResultTarget>).IsAssignableFrom(typeof(global::System.Threading.Tasks.Task<TResult>)))
 				{
 					return new Adapter<TItemTarget, TResultTarget>(this);
 				}

@@ -1261,7 +1261,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>? IGenericAllRefKindMethodImposter.As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
 			{
-				if ((((typeof(TOut).IsAssignableTo(typeof(TOutTarget)) && (typeof(TRefTarget) == typeof(TRef))) && typeof(TInTarget).IsAssignableTo(typeof(TIn))) && typeof(TParamsTarget[]).IsAssignableTo(typeof(TParams[]))) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if ((((typeof(TOutTarget).IsAssignableFrom(typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && typeof(TIn).IsAssignableFrom(typeof(TInTarget))) && typeof(TParams[]).IsAssignableFrom(typeof(TParamsTarget[]))) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(this);
 				}
@@ -1708,7 +1708,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerOutParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerOutParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if (typeof(global::System.Collections.Generic.List<TValue>).IsAssignableTo(typeof(global::System.Collections.Generic.List<TValueTarget>)) && typeof(global::System.Collections.Generic.Stack<TResult>).IsAssignableTo(typeof(global::System.Collections.Generic.Stack<TResultTarget>)))
+				if (typeof(global::System.Collections.Generic.List<TValueTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -2181,7 +2181,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerParamsParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerParamsParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if (typeof(global::System.Collections.Generic.List<TValueTarget>[]).IsAssignableTo(typeof(global::System.Collections.Generic.List<TValue>[])) && typeof(global::System.Collections.Generic.Stack<TResult>).IsAssignableTo(typeof(global::System.Collections.Generic.Stack<TResultTarget>)))
+				if (typeof(global::System.Collections.Generic.List<TValue>[]).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValueTarget>[])) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -2658,7 +2658,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerRefParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResult>).IsAssignableTo(typeof(global::System.Collections.Generic.Stack<TResultTarget>)))
+				if ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -3123,7 +3123,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerSingleParamMethodImposter<TValueTarget>? IGenericInnerSingleParamMethodImposter.As<TValueTarget>()
 			{
-				if (typeof(global::System.Collections.Generic.List<TValueTarget>).IsAssignableTo(typeof(global::System.Collections.Generic.List<TValue>)))
+				if (typeof(global::System.Collections.Generic.List<TValue>).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValueTarget>)))
 				{
 					return new Adapter<TValueTarget>(this);
 				}
@@ -3552,7 +3552,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericOutParamMethodImposter<TValueTarget, TResultTarget>? IGenericOutParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if (typeof(TValue).IsAssignableTo(typeof(TValueTarget)) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -4025,7 +4025,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericParamsParamMethodImposter<TValueTarget, TResultTarget>? IGenericParamsParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if (typeof(TValueTarget[]).IsAssignableTo(typeof(TValue[])) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if (typeof(TValue[]).IsAssignableFrom(typeof(TValueTarget[])) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -4502,7 +4502,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericRefParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
-				if ((typeof(TValueTarget) == typeof(TValue)) && typeof(TResult).IsAssignableTo(typeof(TResultTarget)))
+				if ((typeof(TValueTarget) == typeof(TValue)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
 				}
@@ -4940,7 +4940,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericReturnTypeMethodImposter<TValueTarget>? IGenericReturnTypeMethodImposter.As<TValueTarget>()
 			{
-				if (typeof(TValue).IsAssignableTo(typeof(TValueTarget)))
+				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)))
 				{
 					return new Adapter<TValueTarget>(this);
 				}
@@ -5362,7 +5362,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericSingleOutParamMethodImposter<TValueTarget>? IGenericSingleOutParamMethodImposter.As<TValueTarget>()
 			{
-				if (typeof(TValue).IsAssignableTo(typeof(TValueTarget)))
+				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)))
 				{
 					return new Adapter<TValueTarget>(this);
 				}
@@ -5807,7 +5807,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericSingleParamMethodImposter<TValueTarget>? IGenericSingleParamMethodImposter.As<TValueTarget>()
 			{
-				if (typeof(TValueTarget).IsAssignableTo(typeof(TValue)))
+				if (typeof(TValue).IsAssignableFrom(typeof(TValueTarget)))
 				{
 					return new Adapter<TValueTarget>(this);
 				}

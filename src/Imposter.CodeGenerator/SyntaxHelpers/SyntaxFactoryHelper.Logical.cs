@@ -25,6 +25,21 @@ internal static partial class SyntaxFactoryHelper
     internal static BinaryExpressionSyntax IsNull(this ExpressionSyntax left) =>
         BinaryExpression(SyntaxKind.EqualsExpression, left, Null);
 
+    // ArgumentNullException.ThrowIfNull is missing from .NET Standard 2.0 and .NET Framework.
+    internal static IfStatementSyntax ThrowIfNull(string parameterName) =>
+        IfStatement(
+            IsPatternExpression(IdentifierName(parameterName), ConstantPattern(Null)),
+            Block(
+                ThrowStatement(
+                    WellKnownTypes.System.ArgumentNullException.New(
+                        IdentifierName("nameof")
+                            .Call(Argument(IdentifierName(parameterName)))
+                            .ToSingleArgumentList()
+                    )
+                )
+            )
+        );
+
     internal static BinaryExpressionSyntax IsNotDefault(this ExpressionSyntax left) =>
         BinaryExpression(SyntaxKind.NotEqualsExpression, left, Default);
 

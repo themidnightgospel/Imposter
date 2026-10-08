@@ -57,11 +57,14 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key1);
-				hash.Add(key2);
-				hash.Add(key3);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(key1!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<string>.Default.GetHashCode(key2!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<object>.Default.GetHashCode(key3!);
+					return hash;
+				}
 			}
 		}
 
@@ -636,9 +639,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public override int GetHashCode()
 			{
-				global::System.HashCode hash = new global::System.HashCode();
-				hash.Add(key1);
-				return hash.ToHashCode();
+				unchecked
+				{
+					var hash = 17;
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<int>.Default.GetHashCode(key1!);
+					return hash;
+				}
 			}
 		}
 

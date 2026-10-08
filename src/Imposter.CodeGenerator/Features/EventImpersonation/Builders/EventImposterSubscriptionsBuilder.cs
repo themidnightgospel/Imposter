@@ -41,7 +41,7 @@ internal static class EventImposterSubscriptionsBuilder
         }
 
         var blockBuilder = new BlockBuilder()
-            .AddExpression(ThrowIfNull(method.HandlerParameter.Name))
+            .AddStatement(ThrowIfNull(method.HandlerParameter.Name))
             .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Combine"))
             .AddExpression(
                 FieldIdentifier(fields.SubscribeHistory)
@@ -82,7 +82,7 @@ internal static class EventImposterSubscriptionsBuilder
         }
 
         var unsubscribeBlockBuilder = new BlockBuilder()
-            .AddExpression(ThrowIfNull(method.HandlerParameter.Name))
+            .AddStatement(ThrowIfNull(method.HandlerParameter.Name))
             .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Remove"))
             .AddExpression(
                 FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
@@ -122,7 +122,7 @@ internal static class EventImposterSubscriptionsBuilder
             .AddParameter(ParameterSyntax(method.CallbackParameter))
             .WithBody(
                 new BlockBuilder()
-                    .AddExpression(ThrowIfNull(method.CallbackParameter.Name))
+                    .AddStatement(ThrowIfNull(method.CallbackParameter.Name))
                     .AddExpression(
                         FieldIdentifier(@event.Builder.Fields.Callbacks)
                             .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
@@ -241,7 +241,7 @@ internal static class EventImposterSubscriptionsBuilder
             .AddParameter(ParameterSyntax(method.InterceptorParameter))
             .WithBody(
                 new BlockBuilder()
-                    .AddExpression(ThrowIfNull(method.InterceptorParameter.Name))
+                    .AddStatement(ThrowIfNull(method.InterceptorParameter.Name))
                     .AddExpression(
                         FieldIdentifier(interceptorsField)
                             .Dot(ConcurrentQueueSyntaxHelper.Enqueue)

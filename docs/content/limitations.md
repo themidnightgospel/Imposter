@@ -6,6 +6,7 @@ Imposter keeps the source generator and runtime focused on common impersonation 
 
 - Minimum supported C# version is 9.0.
 - Only Roslyn-based C# projects are supported (no Visual Basic or F#).
+- Generated imposters compile for projects targeting .NET Standard 2.0 and later, .NET Framework 4.7.2 and later, and .NET Core or .NET 5 and later. Projects targeting .NET Standard or .NET Framework default to an older C# version, so set `<LangVersion>9.0</LangVersion>` or later (see [IMP003](diagnostics.md#imp003)).
 
 ## Class targets
 

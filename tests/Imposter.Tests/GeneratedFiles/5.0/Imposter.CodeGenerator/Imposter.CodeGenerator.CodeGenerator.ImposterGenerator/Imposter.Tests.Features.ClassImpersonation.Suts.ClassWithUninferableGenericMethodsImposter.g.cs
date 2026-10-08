@@ -374,7 +374,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IConvertMethodImposter<TInputTarget, TResultTarget>? IConvertMethodImposter.As<TInputTarget, TResultTarget>()
 			{
-				if (typeof(TInputTarget).IsAssignableTo(typeof(TInput)))
+				if (typeof(TInput).IsAssignableFrom(typeof(TInputTarget)))
 				{
 					return new Adapter<TInputTarget, TResultTarget>(this);
 				}
