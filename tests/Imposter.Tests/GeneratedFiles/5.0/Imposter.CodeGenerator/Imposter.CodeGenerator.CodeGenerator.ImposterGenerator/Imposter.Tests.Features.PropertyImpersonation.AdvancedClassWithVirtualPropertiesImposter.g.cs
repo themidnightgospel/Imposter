@@ -1090,6 +1090,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.GetterOnlyVirtualProperty;
+					}
+
 					return _imposter._GetterOnlyVirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.GetterOnlyVirtualProperty);
 				}
 			}
@@ -1098,6 +1103,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.SetterOnlyVirtualProperty = value;
+						return;
+					}
+
 					_imposter._SetterOnlyVirtualPropertyPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.SetterOnlyVirtualProperty = baseSetterValue;
@@ -1109,6 +1120,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.ThrowingGetterVirtualProperty;
+					}
+
 					return _imposter._ThrowingGetterVirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.ThrowingGetterVirtualProperty);
 				}
 			}
@@ -1117,11 +1133,22 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.ThrowingSetterVirtualProperty;
+					}
+
 					return _imposter._ThrowingSetterVirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.ThrowingSetterVirtualProperty);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.ThrowingSetterVirtualProperty = value;
+						return;
+					}
+
 					_imposter._ThrowingSetterVirtualPropertyPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.ThrowingSetterVirtualProperty = baseSetterValue;

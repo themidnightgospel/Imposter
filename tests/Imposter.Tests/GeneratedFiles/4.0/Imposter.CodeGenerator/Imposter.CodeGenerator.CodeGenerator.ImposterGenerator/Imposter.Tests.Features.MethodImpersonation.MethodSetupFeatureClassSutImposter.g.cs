@@ -2553,31 +2553,62 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal override int IntSingleParam(int age)
 			{
+				if (this._imposter == null)
+				{
+					return base.IntSingleParam(age);
+				}
+
 				return _imposter._intSingleParamMethodImposter.Invoke(age, base.IntSingleParam);
 			}
 
 			internal override void VoidWithSideEffect(int delta)
 			{
+				if (this._imposter == null)
+				{
+					base.VoidWithSideEffect(delta);
+					return;
+				}
+
 				_imposter._voidWithSideEffectMethodImposter.Invoke(delta, base.VoidWithSideEffect);
 			}
 
 			internal override global::System.Threading.Tasks.Task<int> SumAsync(int left, int right)
 			{
+				if (this._imposter == null)
+				{
+					return base.SumAsync(left, right);
+				}
+
 				return _imposter._sumAsyncMethodImposter.Invoke(left, right, base.SumAsync);
 			}
 
 			internal override global::System.Threading.Tasks.ValueTask<string> BuildLabelAsync(string prefix, string suffix)
 			{
+				if (this._imposter == null)
+				{
+					return base.BuildLabelAsync(prefix, suffix);
+				}
+
 				return _imposter._buildLabelAsyncMethodImposter.Invoke(prefix, suffix, base.BuildLabelAsync);
 			}
 
 			internal override int RefOutWithParams(ref int seed, out int doubled, int[] adjustments)
 			{
+				if (this._imposter == null)
+				{
+					return base.RefOutWithParams(ref seed, out doubled, adjustments);
+				}
+
 				return _imposter._refOutWithParamsMethodImposter.Invoke(ref seed, out doubled, adjustments, base.RefOutWithParams);
 			}
 
 			internal override int ThrowingCalculation(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.ThrowingCalculation(value);
+				}
+
 				return _imposter._throwingCalculationMethodImposter.Invoke(value, base.ThrowingCalculation);
 			}
 		}

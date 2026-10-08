@@ -1287,16 +1287,31 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 			public override int Add(int a, int b)
 			{
+				if (this._imposter == null)
+				{
+					return base.Add(a, b);
+				}
+
 				return _imposter._addMethodImposter.Invoke(a, b, base.Add);
 			}
 
 			public override global::System.Threading.Tasks.Task ProcessAsync(string s)
 			{
+				if (this._imposter == null)
+				{
+					return base.ProcessAsync(s);
+				}
+
 				return _imposter._processAsyncMethodImposter.Invoke(s, base.ProcessAsync);
 			}
 
 			public override int MightFail(int v)
 			{
+				if (this._imposter == null)
+				{
+					return base.MightFail(v);
+				}
+
 				return _imposter._mightFailMethodImposter.Invoke(v, base.MightFail);
 			}
 		}

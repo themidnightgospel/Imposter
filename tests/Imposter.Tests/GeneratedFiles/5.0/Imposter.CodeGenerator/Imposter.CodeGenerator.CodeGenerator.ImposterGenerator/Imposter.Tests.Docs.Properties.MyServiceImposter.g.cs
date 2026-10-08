@@ -1191,11 +1191,22 @@ namespace Imposter.Tests.Docs.Properties
 
 			public override int ReadProtected()
 			{
+				if (this._imposter == null)
+				{
+					return base.ReadProtected();
+				}
+
 				return _imposter._readProtectedMethodImposter.Invoke(base.ReadProtected);
 			}
 
 			public override void WriteProtected(int value)
 			{
+				if (this._imposter == null)
+				{
+					base.WriteProtected(value);
+					return;
+				}
+
 				_imposter._writeProtectedMethodImposter.Invoke(value, base.WriteProtected);
 			}
 
@@ -1203,11 +1214,22 @@ namespace Imposter.Tests.Docs.Properties
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.ProtectedAge;
+					}
+
 					return _imposter._ProtectedAgePropertyBuilderField._getterImposterBuilder.Get(() => base.ProtectedAge);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.ProtectedAge = value;
+						return;
+					}
+
 					_imposter._ProtectedAgePropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.ProtectedAge = baseSetterValue;

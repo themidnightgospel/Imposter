@@ -671,11 +671,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[row, column];
+					}
+
 					return _imposter._IndexerIndexer.Get(row, column, () => base[row, column]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[row, column] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(row, column, value, () =>
 					{
 						base[row, column] = value;

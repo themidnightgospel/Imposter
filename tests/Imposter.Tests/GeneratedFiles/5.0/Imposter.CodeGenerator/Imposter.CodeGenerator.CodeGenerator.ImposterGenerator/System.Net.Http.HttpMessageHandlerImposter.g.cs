@@ -1254,16 +1254,32 @@ namespace System.Net.Http
 
 			protected override void Dispose(bool disposing)
 			{
+				if (this._imposter == null)
+				{
+					base.Dispose(disposing);
+					return;
+				}
+
 				_imposter._disposeMethodImposter.Invoke(disposing, base.Dispose);
 			}
 
 			protected override global::System.Net.Http.HttpResponseMessage Send(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 			{
+				if (this._imposter == null)
+				{
+					return base.Send(request, cancellationToken);
+				}
+
 				return _imposter._sendMethodImposter.Invoke(request, cancellationToken, base.Send);
 			}
 
 			protected override global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> SendAsync(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 			{
+				if (this._imposter == null)
+				{
+					return default !;
+				}
+
 				return _imposter._sendAsyncMethodImposter.Invoke(request, cancellationToken);
 			}
 		}

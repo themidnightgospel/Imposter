@@ -696,11 +696,22 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria];
+					}
+
 					return _imposter._IndexerIndexer.Get(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria, () => base[arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria, value, () =>
 					{
 						base[arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria] = value;

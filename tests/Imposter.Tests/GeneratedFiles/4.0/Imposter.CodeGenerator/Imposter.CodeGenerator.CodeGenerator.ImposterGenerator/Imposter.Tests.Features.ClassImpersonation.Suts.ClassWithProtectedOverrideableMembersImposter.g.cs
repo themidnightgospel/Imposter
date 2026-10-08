@@ -4075,36 +4075,74 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			protected override int ProtectedVirtualMethod(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.ProtectedVirtualMethod(value);
+				}
+
 				return _imposter._protectedVirtualMethodMethodImposter.Invoke(value, base.ProtectedVirtualMethod);
 			}
 
 			public override int InvokeProtectedMethod(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.InvokeProtectedMethod(value);
+				}
+
 				return _imposter._invokeProtectedMethodMethodImposter.Invoke(value, base.InvokeProtectedMethod);
 			}
 
 			public override string ReadProtectedProperty()
 			{
+				if (this._imposter == null)
+				{
+					return base.ReadProtectedProperty();
+				}
+
 				return _imposter._readProtectedPropertyMethodImposter.Invoke(base.ReadProtectedProperty);
 			}
 
 			public override void WriteProtectedProperty(string value)
 			{
+				if (this._imposter == null)
+				{
+					base.WriteProtectedProperty(value);
+					return;
+				}
+
 				_imposter._writeProtectedPropertyMethodImposter.Invoke(value, base.WriteProtectedProperty);
 			}
 
 			public override int ReadProtectedValue(int index)
 			{
+				if (this._imposter == null)
+				{
+					return base.ReadProtectedValue(index);
+				}
+
 				return _imposter._readProtectedValueMethodImposter.Invoke(index, base.ReadProtectedValue);
 			}
 
 			public override void WriteProtectedValue(int index, int value)
 			{
+				if (this._imposter == null)
+				{
+					base.WriteProtectedValue(index, value);
+					return;
+				}
+
 				_imposter._writeProtectedValueMethodImposter.Invoke(index, value, base.WriteProtectedValue);
 			}
 
 			public override void SubscribeToProtectedEvent(global::System.EventHandler handler)
 			{
+				if (this._imposter == null)
+				{
+					base.SubscribeToProtectedEvent(handler);
+					return;
+				}
+
 				_imposter._subscribeToProtectedEventMethodImposter.Invoke(handler, base.SubscribeToProtectedEvent);
 			}
 
@@ -4112,11 +4150,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.ProtectedVirtualProperty;
+					}
+
 					return _imposter._ProtectedVirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.ProtectedVirtualProperty);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.ProtectedVirtualProperty = value;
+						return;
+					}
+
 					_imposter._ProtectedVirtualPropertyPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.ProtectedVirtualProperty = baseSetterValue;
@@ -4128,6 +4177,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.ProtectedVirtualEvent += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ProtectedVirtualEvent.Subscribe(value, () =>
 					{
@@ -4137,6 +4192,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.ProtectedVirtualEvent -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ProtectedVirtualEvent.Unsubscribe(value, () =>
 					{
@@ -4149,11 +4210,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[index];
+					}
+
 					return _imposter._IndexerIndexer.Get(index, () => base[index]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[index] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(index, value, () =>
 					{
 						base[index] = value;

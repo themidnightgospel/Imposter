@@ -1896,22 +1896,42 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override string Format(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.Format(value);
+				}
+
 				return _imposter._formatMethodImposter.Invoke(value, base.Format);
 			}
 
 			public override string Format(string value, int padding)
 			{
+				if (this._imposter == null)
+				{
+					return base.Format(value, padding);
+				}
+
 				return _imposter._format_1MethodImposter.Invoke(value, padding, base.Format);
 			}
 
 			public override T Echo<T>(T item)
 				where T : class
 			{
+				if (this._imposter == null)
+				{
+					return base.Echo<T>(item);
+				}
+
 				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo);
 			}
 
 			public override TFirst SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
 			{
+				if (this._imposter == null)
+				{
+					return base.SelectFirst<TFirst, TSecond>(first, second);
+				}
+
 				return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst);
 			}
 		}

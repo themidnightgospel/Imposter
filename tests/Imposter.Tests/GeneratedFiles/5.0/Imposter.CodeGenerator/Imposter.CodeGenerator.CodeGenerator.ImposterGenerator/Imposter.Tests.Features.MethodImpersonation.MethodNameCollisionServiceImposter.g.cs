@@ -1949,21 +1949,42 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public override int Invoke(int invocationBehavior, string methodDisplayName, int invocationImposter)
 			{
+				if (this._imposter == null)
+				{
+					return base.Invoke(invocationBehavior, methodDisplayName, invocationImposter);
+				}
+
 				return _imposter._invokeMethodImposter.Invoke(invocationBehavior, methodDisplayName, invocationImposter, base.Invoke);
 			}
 
 			public override T AdaptRef<T>(ref int value, int valueAdapted)
 			{
+				if (this._imposter == null)
+				{
+					return default !;
+				}
+
 				return _imposter._adaptRefMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new AdaptRefArguments<T>(value, valueAdapted)).Invoke(ref value, valueAdapted);
 			}
 
 			public override T AdaptOut<T>(out int value, int valueAdapted)
 			{
+				if (this._imposter == null)
+				{
+					value = default !;
+					return default !;
+				}
+
 				return _imposter._adaptOutMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new AdaptOutArguments<T>(valueAdapted)).Invoke(out value, valueAdapted);
 			}
 
 			public override Called Verify<Called>(Called value)
 			{
+				if (this._imposter == null)
+				{
+					return base.Verify<Called>(value);
+				}
+
 				return _imposter._verifyMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<Called>(new VerifyArguments<Called>(value)).Invoke(value, base.Verify);
 			}
 		}

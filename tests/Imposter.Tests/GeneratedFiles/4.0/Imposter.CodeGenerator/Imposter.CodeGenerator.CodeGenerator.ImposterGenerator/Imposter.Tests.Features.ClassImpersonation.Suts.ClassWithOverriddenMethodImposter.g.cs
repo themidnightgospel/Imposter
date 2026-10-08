@@ -410,6 +410,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override int Get()
 			{
+				if (this._imposter == null)
+				{
+					return base.Get();
+				}
+
 				return _imposter._getMethodImposter.Invoke(base.Get);
 			}
 		}

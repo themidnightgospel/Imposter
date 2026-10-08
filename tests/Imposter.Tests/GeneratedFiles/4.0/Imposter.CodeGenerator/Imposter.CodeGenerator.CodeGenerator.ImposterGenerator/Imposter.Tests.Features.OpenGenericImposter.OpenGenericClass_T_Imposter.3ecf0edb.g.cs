@@ -2777,11 +2777,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override string Describe(T value)
 			{
+				if (this._imposter == null)
+				{
+					return base.Describe(value);
+				}
+
 				return _imposter._describeMethodImposter.Invoke(value, base.Describe);
 			}
 
 			public override T Echo(T value)
 			{
+				if (this._imposter == null)
+				{
+					return base.Echo(value);
+				}
+
 				return _imposter._echoMethodImposter.Invoke(value, base.Echo);
 			}
 
@@ -2789,11 +2799,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.Current;
+					}
+
 					return _imposter._CurrentPropertyBuilderField._getterImposterBuilder.Get(() => base.Current);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.Current = value;
+						return;
+					}
+
 					_imposter._CurrentPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.Current = baseSetterValue;
@@ -2805,6 +2826,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.ValueChanged += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ValueChanged.Subscribe(value, () =>
 					{
@@ -2814,6 +2841,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.ValueChanged -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ValueChanged.Unsubscribe(value, () =>
 					{
@@ -2826,11 +2859,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[index];
+					}
+
 					return _imposter._IndexerIndexer.Get(index, () => base[index]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[index] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(index, value, () =>
 					{
 						base[index] = value;
@@ -2842,11 +2886,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[key, index];
+					}
+
 					return _imposter._Indexer_1Indexer.Get(key, index, () => base[key, index]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[key, index] = value;
+						return;
+					}
+
 					_imposter._Indexer_1Indexer.Set(key, index, value, () =>
 					{
 						base[key, index] = value;

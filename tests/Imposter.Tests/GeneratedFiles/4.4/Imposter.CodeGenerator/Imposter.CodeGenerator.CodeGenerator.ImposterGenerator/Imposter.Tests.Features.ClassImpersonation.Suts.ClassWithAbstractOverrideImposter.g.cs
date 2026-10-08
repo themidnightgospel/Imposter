@@ -388,6 +388,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override int Get()
 			{
+				if (this._imposter == null)
+				{
+					return default !;
+				}
+
 				return _imposter._getMethodImposter.Invoke();
 			}
 		}

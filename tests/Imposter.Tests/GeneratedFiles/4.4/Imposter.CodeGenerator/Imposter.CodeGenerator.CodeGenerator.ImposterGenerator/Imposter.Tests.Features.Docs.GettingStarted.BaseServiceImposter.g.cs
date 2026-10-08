@@ -410,6 +410,11 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 
 			public override int GetNumber()
 			{
+				if (this._imposter == null)
+				{
+					return base.GetNumber();
+				}
+
 				return _imposter._getNumberMethodImposter.Invoke(base.GetNumber);
 			}
 		}

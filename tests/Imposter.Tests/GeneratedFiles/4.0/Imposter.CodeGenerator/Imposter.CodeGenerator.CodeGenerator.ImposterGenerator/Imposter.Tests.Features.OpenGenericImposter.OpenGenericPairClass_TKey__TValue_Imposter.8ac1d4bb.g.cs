@@ -1892,11 +1892,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public override TValue Resolve(TKey key, TValue defaultValue)
 			{
+				if (this._imposter == null)
+				{
+					return base.Resolve(key, defaultValue);
+				}
+
 				return _imposter._resolveMethodImposter.Invoke(key, defaultValue, base.Resolve);
 			}
 
 			public override string DescribePair(TKey key, TValue value)
 			{
+				if (this._imposter == null)
+				{
+					return base.DescribePair(key, value);
+				}
+
 				return _imposter._describePairMethodImposter.Invoke(key, value, base.DescribePair);
 			}
 
@@ -1904,11 +1914,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.CurrentPair;
+					}
+
 					return _imposter._CurrentPairPropertyBuilderField._getterImposterBuilder.Get(() => base.CurrentPair);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.CurrentPair = value;
+						return;
+					}
+
 					_imposter._CurrentPairPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.CurrentPair = baseSetterValue;
@@ -1920,11 +1941,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[key];
+					}
+
 					return _imposter._IndexerIndexer.Get(key, () => base[key]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[key] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(key, value, () =>
 					{
 						base[key] = value;

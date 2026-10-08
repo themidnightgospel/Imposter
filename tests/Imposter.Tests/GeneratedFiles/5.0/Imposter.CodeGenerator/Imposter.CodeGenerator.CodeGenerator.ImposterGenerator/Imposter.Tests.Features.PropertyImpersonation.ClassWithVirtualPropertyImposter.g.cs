@@ -839,11 +839,22 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.VirtualProperty;
+					}
+
 					return _imposter._VirtualPropertyPropertyBuilderField._getterImposterBuilder.Get(() => base.VirtualProperty);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.VirtualProperty = value;
+						return;
+					}
+
 					_imposter._VirtualPropertyPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.VirtualProperty = baseSetterValue;
@@ -855,11 +866,22 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.VirtualPropertyWithInitializer;
+					}
+
 					return _imposter._VirtualPropertyWithInitializerPropertyBuilderField._getterImposterBuilder.Get(() => base.VirtualPropertyWithInitializer);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.VirtualPropertyWithInitializer = value;
+						return;
+					}
+
 					_imposter._VirtualPropertyWithInitializerPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.VirtualPropertyWithInitializer = baseSetterValue;

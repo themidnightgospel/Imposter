@@ -857,11 +857,21 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 
 			protected override int ProtectedAdd(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.ProtectedAdd(value);
+				}
+
 				return _imposter._protectedAddMethodImposter.Invoke(value, base.ProtectedAdd);
 			}
 
 			public override int InvokeProtected(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.InvokeProtected(value);
+				}
+
 				return _imposter._invokeProtectedMethodImposter.Invoke(value, base.InvokeProtected);
 			}
 		}

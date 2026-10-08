@@ -439,11 +439,22 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.S;
+					}
+
 					return _imposter._SPropertyBuilderField._getterImposterBuilder.Get(() => base.S);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.S = value;
+						return;
+					}
+
 					_imposter._SPropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.S = baseSetterValue;

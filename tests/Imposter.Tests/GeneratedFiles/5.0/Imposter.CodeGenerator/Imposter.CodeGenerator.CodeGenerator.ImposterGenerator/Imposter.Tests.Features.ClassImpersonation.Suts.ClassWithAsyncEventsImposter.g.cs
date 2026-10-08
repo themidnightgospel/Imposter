@@ -882,6 +882,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.CustomAsyncEvent += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._CustomAsyncEvent.Subscribe(value, () =>
 					{
@@ -891,6 +897,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.CustomAsyncEvent -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._CustomAsyncEvent.Unsubscribe(value, () =>
 					{
@@ -903,6 +915,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.TaskBasedEvent += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._TaskBasedEvent.Subscribe(value, () =>
 					{
@@ -912,6 +930,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.TaskBasedEvent -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._TaskBasedEvent.Unsubscribe(value, () =>
 					{
@@ -924,6 +948,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.ValueTaskBasedEvent += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ValueTaskBasedEvent.Subscribe(value, () =>
 					{
@@ -933,6 +963,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.ValueTaskBasedEvent -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._ValueTaskBasedEvent.Unsubscribe(value, () =>
 					{

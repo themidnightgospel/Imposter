@@ -480,6 +480,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override int Calculate(int input)
 			{
+				if (this._imposter == null)
+				{
+					return base.Calculate(input);
+				}
+
 				return _imposter._calculateMethodImposter.Invoke(input, base.Calculate);
 			}
 		}
