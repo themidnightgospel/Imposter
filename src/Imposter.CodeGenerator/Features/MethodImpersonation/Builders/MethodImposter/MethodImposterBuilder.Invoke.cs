@@ -14,7 +14,7 @@ internal partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
         new MethodDeclarationBuilder(
-            method.ReturnTypeSyntax,
+            method.NullableAwareReturnTypeSyntax,
             MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))

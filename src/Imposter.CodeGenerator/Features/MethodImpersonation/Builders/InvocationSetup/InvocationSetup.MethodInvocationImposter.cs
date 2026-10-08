@@ -217,7 +217,7 @@ internal static partial class InvocationSetupBuilder
         {
             defaultBlockBuilder.AddStatement(
                 LocalVariableDeclarationSyntax(
-                    method.ReturnTypeSyntax,
+                    method.NullableAwareReturnTypeSyntax,
                     method.MethodInvocationImposter.ResultVariableName,
                     resultInvocation
                 )
@@ -286,7 +286,7 @@ internal static partial class InvocationSetupBuilder
             body = defaultBlock;
         }
 
-        return new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
+        return new MethodDeclarationBuilder(method.NullableAwareReturnTypeSyntax, "Invoke")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
             .WithBody(body)
@@ -437,7 +437,7 @@ internal static partial class InvocationSetupBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
                 ParameterSyntax(
-                    method.ReturnTypeSyntax,
+                    method.NullableAwareReturnTypeSyntax,
                     method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name
                 )
             )

@@ -57,7 +57,11 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly string DisplayName;
 
+    // Without nullable reference annotations, which `typeof` doesn't allow. Declarations use
+    // NullableAwareReturnTypeSyntax, so they match the target's annotations.
     internal readonly TypeSyntax ReturnTypeSyntax;
+
+    internal readonly TypeSyntax NullableAwareReturnTypeSyntax;
 
     internal readonly SyntaxTokenList ImposterInstanceMethodModifiers;
 
@@ -96,9 +100,12 @@ internal readonly struct ImposterTargetMethodMetadata
         UniqueName = uniqueName;
         DisplayName = Model.DisplayName;
         ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Model.ReturnType.Type);
+        NullableAwareReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
+            Model.ReturnType.Type
+        );
         ReturnType = new ReturnTypeMetadata(
             Model.ReturnType,
-            ReturnTypeSyntax,
+            NullableAwareReturnTypeSyntax,
             supportsNullableGenericType
         );
         HasReturnValue = !Model.ReturnType.IsVoid;

@@ -142,7 +142,7 @@ internal static partial class SyntaxFactoryHelper
 
         constraints.AddRange(
             typeParameter.ConstraintTypes.Select(constraintType =>
-                TypeConstraint(TypeSyntax(constraintType))
+                TypeConstraint(TypeSyntaxIncludingNullable(constraintType))
             )
         );
 

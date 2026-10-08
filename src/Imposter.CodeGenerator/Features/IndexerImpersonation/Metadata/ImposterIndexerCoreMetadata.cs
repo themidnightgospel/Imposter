@@ -24,8 +24,6 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly ArgumentSyntax[] ParameterArguments;
 
-    internal readonly TypeSyntax TypeSyntax;
-
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
     internal readonly TypeSyntax AsSystemFuncType;
@@ -61,9 +59,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             property,
             memberAccess
         );
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(TypeSyntax);
+        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
         Parameters = property
             .Parameters.Select(parameter => new IndexerParameterMetadata(

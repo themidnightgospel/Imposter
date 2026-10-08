@@ -105,14 +105,14 @@ public static class ArgumentsCriteriaBuilder
             TypeParameterRenamer renamer
         )
         {
-            var targetType = (TypeSyntax)renamer.Visit(parameter.TypeSyntax);
+            var targetType = (TypeSyntax)renamer.Visit(parameter.NullableAwareTypeSyntax);
 
             if (parameter.Model.RefKind is RefKind.Out)
             {
                 return Argument(OutArgAny(targetType));
             }
 
-            var sourceType = parameter.TypeSyntax;
+            var sourceType = parameter.NullableAwareTypeSyntax;
             return BuildIsPredicateArg(parameter, targetType, sourceType);
         }
 
