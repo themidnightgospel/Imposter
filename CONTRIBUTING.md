@@ -110,7 +110,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 
 - Never edit files ending with `.g.cs` — they are generated output.
 - Make changes in the generator or metadata, then rebuild to regenerate.
-- Inspect generated output at `tests/Imposter.Tests/GeneratedFiles/<Roslyn version>/` after building. Every build that compiles the project replaces that folder with the current output, so a generator change shows up there as a diff. Commit it together with the generator change.
+- Inspect generated output at `tests/Imposter.Tests/GeneratedFiles/<Roslyn version>/` after a verification build (`-p:VERIFICATION_BUILD=true`, which the pre-commit hook and CI run). Each verification build that compiles the project replaces that folder with the current output, so a generator change shows up there as a diff. Commit it together with the generator change. Plain builds leave the folder alone, because their generated files also contain `#pragma warning` lines.
 
 ## PR Checklist
 

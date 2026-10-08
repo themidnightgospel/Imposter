@@ -20,8 +20,14 @@
   </Target>
 
   <!-- A project that sets GeneratedFileSnapshotsPath keeps a copy of its generated sources there for review.
-       Each compilation replaces the whole copy, so files the generators no longer produce do not linger. -->
-  <PropertyGroup Condition="'$(GeneratedFileSnapshotsPath)' != ''">
+       Each compilation replaces the whole copy, so files the generators no longer produce do not linger.
+       Only verification builds refresh it: plain builds add #pragma warning lines to the generated files, so they
+       would rewrite every snapshot without a generator change. -->
+  <PropertyGroup>
+    <RefreshesGeneratedFileSnapshots Condition="'$(GeneratedFileSnapshotsPath)' != '' and '$(VERIFICATION_BUILD)' == 'true'">true</RefreshesGeneratedFileSnapshots>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RefreshesGeneratedFileSnapshots)' == 'true'">
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
     <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RefreshGeneratedFileSnapshots</TargetsTriggeredByCompilation>
@@ -34,7 +40,7 @@
   <Target
     Name="ClearCompilerGeneratedFiles"
     BeforeTargets="CoreCompile"
-    Condition="'$(GeneratedFileSnapshotsPath)' != ''"
+    Condition="'$(RefreshesGeneratedFileSnapshots)' == 'true'"
   >
     <ItemGroup>
       <_PreviousGeneratedSource Include="$(CompilerGeneratedFilesOutputPath)\**\*" />
