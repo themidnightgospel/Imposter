@@ -38,6 +38,15 @@ internal static class ImposterTargetValidator
             return false;
         }
 
+        if (
+            target.TypeKind == TypeKind.Class
+            && FindUnoverridableAbstractMember(target, memberAccess) is { } abstractMember
+        )
+        {
+            ReportUnoverridableAbstractMember(sourceProductionContext, target, abstractMember);
+            return false;
+        }
+
         if (IsClosedGenericType(target))
         {
             ReportClosedGenericTarget(sourceProductionContext, target);
@@ -99,6 +108,22 @@ internal static class ImposterTargetValidator
         );
     }
 
+    private static void ReportUnoverridableAbstractMember(
+        in SourceProductionContext sourceProductionContext,
+        INamedTypeSymbol target,
+        ISymbol abstractMember
+    )
+    {
+        sourceProductionContext.ReportDiagnostic(
+            Diagnostic.Create(
+                DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember,
+                GetPreferredLocation(target),
+                target.ToDisplayString(),
+                abstractMember.ToDisplayString()
+            )
+        );
+    }
+
     private static void ReportImposterTypeNameCollision(
         in SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration declaration,
@@ -126,6 +151,38 @@ internal static class ImposterTargetValidator
         INamedTypeSymbol typeSymbol,
         MemberAccess memberAccess
     ) => typeSymbol.InstanceConstructors.Any(memberAccess.IsAccessible);
+
+    // The imposter derives from the target, so it must override every abstract member the target leaves abstract.
+    private static ISymbol? FindUnoverridableAbstractMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    )
+    {
+        ISymbol[] overridableMembers =
+        [
+            .. target.GetAllOverridableMethods(),
+            .. target.GetAllOverridableProperties(),
+            .. target.GetAllOverridableEvents(),
+        ];
+
+        return overridableMembers.FirstOrDefault(member =>
+            member.IsAbstract && !CanOverride(member, memberAccess)
+        );
+    }
+
+    // A property's accessors are overridden too, and an accessor can be less accessible than its property.
+    private static bool CanOverride(ISymbol member, MemberAccess memberAccess) =>
+        memberAccess.IsAccessible(member)
+        && (
+            member is not IPropertySymbol property
+            || (
+                IsAbsentOrAccessible(property.GetMethod, memberAccess)
+                && IsAbsentOrAccessible(property.SetMethod, memberAccess)
+            )
+        );
+
+    private static bool IsAbsentOrAccessible(IMethodSymbol? accessor, MemberAccess memberAccess) =>
+        accessor is null || memberAccess.IsAccessible(accessor);
 
     private static Location GetPreferredLocation(INamedTypeSymbol typeSymbol)
     {
