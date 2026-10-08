@@ -101,3 +101,8 @@ jobs:
       - name: Run Imposter.CodeGenerator.Tests (Roslyn ${{ matrix.roslynVersion }})
         if: matrix.roslynVersion == '4.0'
         run: dotnet test tests/Imposter.CodeGenerator.Tests/Imposter.CodeGenerator.Tests.csproj -p:ROSLYN_VERSION="${{ matrix.roslynVersion }}" -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed" --blame-hang --blame-hang-timeout 5m
+
+      # Imposter.slnx excludes the benchmarks, and they only build against Roslyn 5.0.
+      - name: Build benchmarks (Roslyn 5.0)
+        if: matrix.roslynVersion == '5.0'
+        run: dotnet build benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION=5.0 -p:VERIFICATION_BUILD=true
