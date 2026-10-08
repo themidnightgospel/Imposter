@@ -7,6 +7,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -145,6 +146,7 @@ internal readonly ref struct ImposterInstanceBuilder
             .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Model))
             .ToArray();
         var parameterList = BracketedParameterList(SeparatedList(parameters));
+        var (inParameterCopies, lambdaArguments) = CopyInParametersForLambdas(indexer);
 
         var accessors = new List<AccessorDeclarationSyntax>();
 
@@ -153,30 +155,32 @@ internal readonly ref struct ImposterInstanceBuilder
             var getterArguments = indexer
                 .Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
                 .ToList();
+            var getterStatements = new List<StatementSyntax>();
 
             ExpressionSyntax? baseInvocation = indexer.Core.GetterSupportsBaseImplementation
-                ? ElementAccessExpression(BaseExpression())
-                    .WithArgumentList(
-                        BracketedArgumentList(SeparatedList(indexer.Core.ParameterArguments))
-                    )
+                ? BaseIndexerAccess(indexer.Core.ParameterArguments)
                 : null;
 
             if (baseInvocation is not null)
             {
-                getterArguments.Add(Argument(EmptyParametersGoesTo(baseInvocation)));
+                getterStatements.AddRange(inParameterCopies);
+                getterArguments.Add(
+                    Argument(EmptyParametersGoesTo(BaseIndexerAccess(lambdaArguments)))
+                );
             }
 
             var getterCall = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Get"))
                 .Call(ArgumentListSyntax(getterArguments));
+            getterStatements.Add(ReturnStatement(getterCall));
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithModifiers(indexer.Core.GetterModifiers)
                     .WithBody(
                         WithConstructorFallback(
-                            Block(ReturnStatement(getterCall)),
+                            Block(getterStatements),
                             Block(ReturnStatement(baseInvocation ?? DefaultNonNullable))
                         )
                     )
@@ -189,19 +193,21 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
                 .Concat([Argument(IdentifierName("value"))])
                 .ToList();
+            var setterStatements = new List<StatementSyntax>();
 
             var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
-                ? ElementAccessExpression(BaseExpression())
-                    .WithArgumentList(
-                        BracketedArgumentList(SeparatedList(indexer.Core.ParameterArguments))
-                    )
-                    .Assign(IdentifierName("value"))
+                ? BaseIndexerAssignment(indexer.Core.ParameterArguments)
                 : null;
 
             if (baseAssignment is not null)
             {
+                setterStatements.AddRange(inParameterCopies);
                 setterArguments.Add(
-                    Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
+                    Argument(
+                        EmptyParametersGoesTo(
+                            Block(BaseIndexerAssignment(lambdaArguments).ToStatementSyntax())
+                        )
+                    )
                 );
             }
 
@@ -209,13 +215,14 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Dot(IdentifierName("Set"))
                 .Call(ArgumentListSyntax(setterArguments));
+            setterStatements.Add(setterCall.ToStatementSyntax());
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                     .WithModifiers(indexer.Core.SetterModifiers)
                     .WithBody(
                         WithConstructorFallback(
-                            Block(setterCall.ToStatementSyntax()),
+                            Block(setterStatements),
                             ConstructorDispatchBuilder.SetterFallback(baseAssignment)
                         )
                     )
@@ -232,6 +239,49 @@ internal readonly ref struct ImposterInstanceBuilder
 
         return this;
     }
+
+    // A lambda cannot capture an `in` parameter, so the base-call lambdas read local copies of those parameters.
+    private static (
+        IReadOnlyList<StatementSyntax> Copies,
+        IReadOnlyList<ArgumentSyntax> LambdaArguments
+    ) CopyInParametersForLambdas(in ImposterIndexerMetadata indexer)
+    {
+        var localNames = new NameSet(
+            indexer.Core.Parameters.Select(parameter => parameter.Name).Append("value")
+        );
+        var copies = new List<StatementSyntax>();
+        var lambdaArguments = new List<ArgumentSyntax>();
+
+        foreach (var parameter in indexer.Core.Parameters)
+        {
+            var argumentName = parameter.Name;
+            if (parameter.Model.RefKind == RefKind.In)
+            {
+                argumentName = localNames.Use($"{parameter.Name}Copy");
+                copies.Add(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        argumentName,
+                        IdentifierName(parameter.Name)
+                    )
+                );
+            }
+
+            lambdaArguments.Add(Argument(IdentifierName(argumentName)));
+        }
+
+        return (copies, lambdaArguments);
+    }
+
+    private static ElementAccessExpressionSyntax BaseIndexerAccess(
+        IEnumerable<ArgumentSyntax> arguments
+    ) =>
+        ElementAccessExpression(BaseExpression())
+            .WithArgumentList(BracketedArgumentList(SeparatedList(arguments)));
+
+    private static AssignmentExpressionSyntax BaseIndexerAssignment(
+        IEnumerable<ArgumentSyntax> arguments
+    ) => BaseIndexerAccess(arguments).Assign(IdentifierName("value"));
 
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
