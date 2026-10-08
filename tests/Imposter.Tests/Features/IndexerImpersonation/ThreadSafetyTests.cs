@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -108,6 +110,41 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
+        }
+
+        [Fact]
+        public void GivenGetterReturnsSetup_WhenFirstReadsAreConcurrent_ShouldReturnConfiguredValueEveryTime()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () => ConfiguredInstance(it => it[Arg<int>.Any()].Getter().Returns(42)),
+                it => it[7]
+            );
+
+            outcomes.ShouldBe(ConcurrentFirstCalls.EveryCall("42"));
+        }
+
+        [Fact]
+        public void GivenGetterReturnsSequence_WhenFirstReadsAreConcurrent_ShouldRepeatLastValueAfterSequence()
+        {
+            var outcomes = ConcurrentFirstCalls.CountOutcomes(
+                () =>
+                    ConfiguredInstance(it =>
+                        it[Arg<int>.Any()].Getter().Returns(1).Then().Returns(2)
+                    ),
+                it => it[7]
+            );
+
+            outcomes.ShouldBe(
+                ConcurrentFirstCalls.FirstCallThenEveryOtherCall("1", "2"),
+                ignoreOrder: true
+            );
+        }
+
+        private static IIndexerSetupSut ConfiguredInstance(Action<IIndexerSetupSutImposter> setup)
+        {
+            var imposter = new IIndexerSetupSutImposter();
+            setup(imposter);
+            return imposter.Instance();
         }
     }
 }

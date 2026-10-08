@@ -24,6 +24,8 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly GetMethodMetadata GetMethod;
 
+    internal readonly NextReturnValueMethodMetadata NextReturnValueMethod;
+
     internal PropertyGetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
         in FieldMetadata defaultPropertyBehaviourMetadata
@@ -42,5 +44,6 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
         AddReturnValueMethod = new AddReturnValueMethodMetadata(returnHandlerType);
         GetMethod = new GetMethodMetadata(property);
+        NextReturnValueMethod = new NextReturnValueMethodMetadata(returnHandlerType);
     }
 }

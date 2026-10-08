@@ -117,7 +117,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal OnNextArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public OnNextMethodInvocationImposterGroup(OnNextArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -133,17 +133,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, T item)

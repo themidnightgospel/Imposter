@@ -173,6 +173,8 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly FieldMetadata CriteriaField;
 
+        internal readonly NextReturnValueMethodMetadata NextReturnValueMethod;
+
         internal GetterInvocationMetadata(
             in ImposterIndexerMetadata indexer,
             TypeSyntax returnHandlerType
@@ -204,6 +206,7 @@ internal readonly struct IndexerGetterImposterMetadata
                 WellKnownTypes.String
             );
             CriteriaField = new FieldMetadata("Criteria", indexer.ArgumentsCriteria.TypeSyntax);
+            NextReturnValueMethod = new NextReturnValueMethodMetadata(LastReturnValueField.Type);
         }
     }
 }

@@ -131,7 +131,7 @@ namespace System.Net.Http
 			internal DisposeArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public DisposeMethodInvocationImposterGroup(DisposeArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -147,17 +147,26 @@ namespace System.Net.Http
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool disposing, DisposeDelegate? baseImplementation = null)
@@ -501,7 +510,7 @@ namespace System.Net.Http
 			internal SendArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public SendMethodInvocationImposterGroup(SendArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -516,17 +525,26 @@ namespace System.Net.Http
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public global::System.Net.Http.HttpResponseMessage Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken, SendDelegate? baseImplementation = null)
@@ -898,7 +916,7 @@ namespace System.Net.Http
 			internal SendAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public SendAsyncMethodInvocationImposterGroup(SendAsyncArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -913,17 +931,26 @@ namespace System.Net.Http
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)

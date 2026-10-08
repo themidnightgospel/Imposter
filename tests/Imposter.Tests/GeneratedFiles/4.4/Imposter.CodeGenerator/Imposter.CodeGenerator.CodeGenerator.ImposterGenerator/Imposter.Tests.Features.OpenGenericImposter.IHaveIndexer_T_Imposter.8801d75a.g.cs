@@ -383,15 +383,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<IndexerIndexerArguments, global::System.Func<T>?, T>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 				}
 			}
@@ -938,15 +956,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>?, int>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 				}
 			}
@@ -1498,15 +1534,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
 						}
 
-						_returnValues.TryDequeue(out var returnValue);
-						var nextReturnValue = returnValue ?? _lastReturnValue;
+						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						_lastReturnValue = nextReturnValue;
 						return nextReturnValue!;
+					}
+
+					private global::System.Func<Indexer_2IndexerArguments, global::System.Func<T>?, T>? NextReturnValue()
+					{
+						if (_returnValues.IsEmpty)
+						{
+							return _lastReturnValue;
+						}
+
+						lock (_returnValues)
+						{
+							if (!_returnValues.TryPeek(out var returnValue))
+							{
+								return _lastReturnValue;
+							}
+
+							_lastReturnValue = returnValue;
+							_returnValues.TryDequeue(out _);
+							return returnValue;
+						}
 					}
 				}
 			}

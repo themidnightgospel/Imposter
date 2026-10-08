@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal AddArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public AddMethodInvocationImposterGroup(AddArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -152,17 +152,26 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int a, int b, AddDelegate? baseImplementation = null)
@@ -530,7 +539,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal MightFailArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public MightFailMethodInvocationImposterGroup(MightFailArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -545,17 +554,26 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int v, MightFailDelegate? baseImplementation = null)
@@ -923,7 +941,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal ProcessAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public ProcessAsyncMethodInvocationImposterGroup(ProcessAsyncArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -938,17 +956,26 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public global::System.Threading.Tasks.Task Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string s, ProcessAsyncDelegate? baseImplementation = null)

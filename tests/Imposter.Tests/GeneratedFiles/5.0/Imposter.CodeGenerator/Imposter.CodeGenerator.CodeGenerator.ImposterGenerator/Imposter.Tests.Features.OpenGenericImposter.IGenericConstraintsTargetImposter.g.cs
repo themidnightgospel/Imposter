@@ -199,7 +199,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal CloneStructArgumentsCriteria<TArg> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public CloneStructMethodInvocationImposterGroup(CloneStructArgumentsCriteria<TArg> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -214,17 +214,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public TArg Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TArg value)
@@ -685,7 +694,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal CompareValuesArgumentsCriteria<TArg> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public CompareValuesMethodInvocationImposterGroup(CompareValuesArgumentsCriteria<TArg> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -701,17 +710,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TArg left, TArg right)
@@ -1099,7 +1117,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			internal static CreateInstanceMethodInvocationImposterGroup<TArg> Default = new CreateInstanceMethodInvocationImposterGroup<TArg>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public CreateInstanceMethodInvocationImposterGroup()
 			{
 			}
@@ -1113,17 +1131,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public TArg Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
@@ -1574,7 +1601,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal HandleReferenceArgumentsCriteria<TArg> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
 			public HandleReferenceMethodInvocationImposterGroup(HandleReferenceArgumentsCriteria<TArg> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -1590,17 +1617,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private MethodInvocationImposter? GetInvocationImposter()
 			{
-				if (_invocationImposters.TryDequeue(out var invocationImposter))
+				if (_invocationImposters.IsEmpty)
 				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
 					if (!invocationImposter.IsEmpty)
 					{
 						_lastestInvocationImposter = invocationImposter;
 					}
 
+					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
-
-				return _lastestInvocationImposter;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TArg value)

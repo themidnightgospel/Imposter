@@ -18,6 +18,9 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentListSyntax ArgumentListSyntax(ArgumentSyntax? argument) =>
         argument is null ? ArgumentList() : ArgumentListSyntax(SingletonSeparatedList(argument));
 
+    internal static ArgumentSyntax OutDiscardArgument() =>
+        Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("_"));
+
     internal static ArgumentSyntax OutVarArgument(string name) =>
         Argument(
             null,
