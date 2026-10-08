@@ -61,3 +61,9 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# Generated-file snapshots are written by the compiler with LF line endings.
+# Checking them out with LF too keeps rebuilt snapshots from showing as modified.
+###############################################################################
+**/GeneratedFiles/**/*.g.cs text eol=lf
