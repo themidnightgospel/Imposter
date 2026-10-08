@@ -44,6 +44,11 @@ internal static class WellKnownTypes
 
         internal static TypeSyntax String = QualifiedName(Namespace, IdentifierName("String"));
 
+        internal static readonly TypeSyntax Delegate = QualifiedName(
+            Namespace,
+            IdentifierName("Delegate")
+        );
+
         internal static TypeSyntax Action = QualifiedName(Namespace, IdentifierName("Action"));
 
         internal static TypeSyntax ActionOfT(TypeSyntax typeArgument) =>

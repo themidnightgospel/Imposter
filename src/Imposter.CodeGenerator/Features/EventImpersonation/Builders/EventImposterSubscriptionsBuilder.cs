@@ -17,8 +17,7 @@ internal static class EventImposterSubscriptionsBuilder
 
         return
         [
-            SingleVariableField(fields.HandlerOrder),
-            SingleVariableField(fields.HandlerCounts),
+            SingleVariableField(fields.ActiveHandlers),
             SingleVariableField(fields.SubscribeHistory),
             SingleVariableField(fields.UnsubscribeHistory),
             SingleVariableField(fields.SubscribeInterceptors),
@@ -32,14 +31,6 @@ internal static class EventImposterSubscriptionsBuilder
         var method = @event.Builder.Methods.Subscribe;
         var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
 
-        var addOrUpdateExpression = FieldIdentifier(fields.HandlerCounts)
-            .Dot(IdentifierName("AddOrUpdate"))
-            .Call([
-                Argument(handlerIdentifier),
-                Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))),
-                Argument(CounterIncrementLambda()),
-            ]);
-
         var methodBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(method.HandlerParameter));
@@ -51,12 +42,7 @@ internal static class EventImposterSubscriptionsBuilder
 
         var blockBuilder = new BlockBuilder()
             .AddExpression(ThrowIfNull(method.HandlerParameter.Name))
-            .AddExpression(
-                FieldIdentifier(fields.HandlerOrder)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(handlerIdentifier))
-            )
-            .AddExpression(addOrUpdateExpression)
+            .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Combine"))
             .AddExpression(
                 FieldIdentifier(fields.SubscribeHistory)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
@@ -97,17 +83,7 @@ internal static class EventImposterSubscriptionsBuilder
 
         var unsubscribeBlockBuilder = new BlockBuilder()
             .AddExpression(ThrowIfNull(method.HandlerParameter.Name))
-            .AddExpression(
-                FieldIdentifier(@event.Builder.Fields.HandlerCounts)
-                    .Dot(IdentifierName("AddOrUpdate"))
-                    .Call([
-                        Argument(handlerIdentifier),
-                        Argument(
-                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-                        ),
-                        Argument(CounterDecrementLambda()),
-                    ])
-            )
+            .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Remove"))
             .AddExpression(
                 FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
@@ -175,6 +151,64 @@ internal static class EventImposterSubscriptionsBuilder
             @event.Builder.Methods.OnUnsubscribe,
             @event.Builder.Fields.UnsubscribeInterceptors
         );
+
+    // Updates the active handlers the way a field-like event's accessors do: Delegate.Combine appends a subscription,
+    // Delegate.Remove drops the handler's last one, and the compare-exchange loop retries when another caller changed
+    // the field in between. References are compared because delegate == compares delegates by value.
+    private static StatementSyntax[] UpdateActiveHandlers(
+        in ImposterEventMetadata @event,
+        IdentifierNameSyntax handler,
+        string delegateOperation
+    )
+    {
+        var activeHandlers = @event.Builder.Fields.ActiveHandlers;
+        var activeHandlersIdentifier = FieldIdentifier(activeHandlers);
+        var handlers = IdentifierName("handlers");
+        var updated = IdentifierName("updated");
+        var observed = IdentifierName("observed");
+
+        return
+        [
+            LocalVariableDeclarationSyntax(Var, handlers.Identifier.Text, activeHandlersIdentifier),
+            WhileStatement(
+                True,
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        updated.Identifier.Text,
+                        CastExpression(
+                            activeHandlers.Type,
+                            WellKnownTypes
+                                .System.Delegate.Dot(IdentifierName(delegateOperation))
+                                .Call([Argument(handlers), Argument(handler)])
+                        )
+                    ),
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        observed.Identifier.Text,
+                        WellKnownTypes
+                            .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
+                            .Call([
+                                Argument(
+                                    null,
+                                    Token(SyntaxKind.RefKeyword),
+                                    activeHandlersIdentifier
+                                ),
+                                Argument(updated),
+                                Argument(handlers),
+                            ])
+                    ),
+                    IfStatement(
+                        PredefinedType(Token(SyntaxKind.ObjectKeyword))
+                            .Dot(IdentifierName("ReferenceEquals"))
+                            .Call([Argument(observed), Argument(handlers)]),
+                        Block(BreakStatement())
+                    ),
+                    handlers.Assign(observed).ToStatementSyntax()
+                )
+            ),
+        ];
+    }
 
     private static ForEachStatementSyntax ForEachInterceptor(
         in FieldMetadata interceptorsField,

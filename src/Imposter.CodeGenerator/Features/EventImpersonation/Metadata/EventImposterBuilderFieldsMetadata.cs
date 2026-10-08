@@ -9,9 +9,8 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct EventImposterBuilderFieldsMetadata
 {
-    internal readonly FieldMetadata HandlerOrder;
-
-    internal readonly FieldMetadata HandlerCounts;
+    // The subscribed handlers as one combined delegate, in subscription order, like a field-like event's backing field.
+    internal readonly FieldMetadata ActiveHandlers;
 
     internal readonly FieldMetadata Callbacks;
 
@@ -36,10 +35,6 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
             core.HandlerTypeSyntax
         );
-        var handlerCountsType = WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
-            core.HandlerTypeSyntax,
-            WellKnownTypes.Int
-        );
         var historyQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
             BuildHistoryEntryType(core)
         );
@@ -55,17 +50,9 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             Token(SyntaxKind.ReadOnlyKeyword)
         );
 
-        HandlerOrder = new FieldMetadata(
-            "_handlerOrder",
-            handlerQueueType,
-            privateReadonlyModifiers,
-            handlerQueueType.New()
-        );
-        HandlerCounts = new FieldMetadata(
-            "_handlerCounts",
-            handlerCountsType,
-            privateReadonlyModifiers,
-            handlerCountsType.New()
+        ActiveHandlers = FieldMetadata.PrivateField(
+            "_activeHandlers",
+            core.HandlerTypeSyntax.ToNullableType()
         );
         Callbacks = new FieldMetadata(
             "_callbacks",

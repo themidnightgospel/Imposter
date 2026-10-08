@@ -183,78 +183,27 @@ internal static class EventImposterRaiseBuilder
 
     private static BlockSyntax BuildEnumerateHandlersBody(in ImposterEventMetadata @event)
     {
-        var blockBuilder = new BlockBuilder();
-        var dictionaryType = WellKnownTypes.System.Collections.Generic.Dictionary(
-            @event.Core.HandlerTypeSyntax,
-            WellKnownTypes.Int
-        );
-        var handlerCounts = FieldIdentifier(@event.Builder.Fields.HandlerCounts);
-        var handlerOrder = FieldIdentifier(@event.Builder.Fields.HandlerOrder);
+        var handlers = IdentifierName("handlers");
 
-        blockBuilder.AddStatement(
+        return Block(
             LocalVariableDeclarationSyntax(
-                dictionaryType,
-                "budgets",
-                dictionaryType.New(ArgumentList(SingletonSeparatedList(Argument(handlerCounts))))
-            )
-        );
-
-        blockBuilder.AddStatement(
-            ForEachStatement(
                 Var,
-                Identifier("handler"),
-                handlerOrder,
+                handlers.Identifier.Text,
+                FieldIdentifier(@event.Builder.Fields.ActiveHandlers)
+            ),
+            IfStatement(
+                handlers.IsNotNull(),
                 Block(
-                    LocalVariableDeclarationSyntax(WellKnownTypes.Int, "remaining"),
-                    IfStatement(
-                        IdentifierName("budgets")
-                            .Dot(IdentifierName("TryGetValue"))
-                            .Call(
-                                ArgumentList(
-                                    SeparatedList([
-                                        Argument(IdentifierName("handler")),
-                                        Argument(
-                                            null,
-                                            Token(SyntaxKind.OutKeyword),
-                                            IdentifierName("remaining")
-                                        ),
-                                    ])
-                                )
-                            ),
+                    ForEachStatement(
+                        Var,
+                        Identifier("handler"),
+                        handlers.Dot(IdentifierName("GetInvocationList")).Call(),
                         Block(
-                            IfStatement(
-                                BinaryExpression(
-                                    SyntaxKind.GreaterThanExpression,
-                                    IdentifierName("remaining"),
-                                    LiteralExpression(
-                                        SyntaxKind.NumericLiteralExpression,
-                                        Literal(0)
-                                    )
-                                ),
-                                Block(
-                                    ElementAccessExpression(IdentifierName("budgets"))
-                                        .WithArgumentList(
-                                            BracketedArgumentList(
-                                                SingletonSeparatedList(
-                                                    Argument(IdentifierName("handler"))
-                                                )
-                                            )
-                                        )
-                                        .Assign(
-                                            BinaryExpression(
-                                                SyntaxKind.SubtractExpression,
-                                                IdentifierName("remaining"),
-                                                LiteralExpression(
-                                                    SyntaxKind.NumericLiteralExpression,
-                                                    Literal(1)
-                                                )
-                                            )
-                                        )
-                                        .ToStatementSyntax(),
-                                    YieldStatement(
-                                        SyntaxKind.YieldReturnStatement,
-                                        IdentifierName("handler")
-                                    )
+                            YieldStatement(
+                                SyntaxKind.YieldReturnStatement,
+                                CastExpression(
+                                    @event.Core.HandlerTypeSyntax,
+                                    IdentifierName("handler")
                                 )
                             )
                         )
@@ -262,8 +211,6 @@ internal static class EventImposterRaiseBuilder
                 )
             )
         );
-
-        return blockBuilder.Build();
     }
 
     private static ExpressionSyntax BuildHistoryEntryExpression(in ImposterEventMetadata @event)
