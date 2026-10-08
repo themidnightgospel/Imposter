@@ -18,11 +18,20 @@ internal readonly struct InterfaceSetupMemberMetadata
     internal readonly bool HidesInheritedMember;
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> ImplementationConstraints;
 
-    internal InterfaceSetupMemberMetadata(ISymbol symbol, string setupName, TypeSyntax returnType)
+    // True for an indexer the imposter sets up with a method named SetupName instead of its own this[...].
+    internal readonly bool IsSetUpByMethod;
+
+    internal InterfaceSetupMemberMetadata(
+        ISymbol symbol,
+        string setupName,
+        TypeSyntax returnType,
+        bool isSetUpByMethod = false
+    )
     {
         Symbol = symbol;
         SetupName = setupName;
         ReturnType = returnType;
+        IsSetUpByMethod = isSetUpByMethod;
         HidesInheritedMember = symbol
             .ContainingType.AllInterfaces.SelectMany(parent => parent.GetMembers(symbol.Name))
             .Any(parentMember => HidesMember(symbol, parentMember));

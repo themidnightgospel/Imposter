@@ -82,13 +82,14 @@ internal readonly ref struct ImposterBuilder
     internal ImposterBuilder AddInterfaceSetupMember(
         ISymbol symbol,
         string setupName,
-        TypeSyntax returnType
+        TypeSyntax returnType,
+        bool isSetUpByMethod = false
     )
     {
         if (!_isClassTarget)
         {
             _interfaceSetupMembers.Add(
-                new InterfaceSetupMemberMetadata(symbol, setupName, returnType)
+                new InterfaceSetupMemberMetadata(symbol, setupName, returnType, isSetUpByMethod)
             );
         }
         return this;

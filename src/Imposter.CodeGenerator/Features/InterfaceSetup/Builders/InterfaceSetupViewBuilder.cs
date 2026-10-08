@@ -110,23 +110,20 @@ internal static class InterfaceSetupViewBuilder
             {
                 declaration = declaration.AddModifiers(Token(SyntaxKind.NewKeyword));
             }
+
+            var arguments = SeparatedList(
+                parameters.Parameters.Select(parameter =>
+                    Argument(IdentifierName(parameter.Identifier))
+                )
+            );
+            ExpressionSyntax setup = member.IsSetUpByMethod
+                ? IdentifierName(member.SetupName).Call(ArgumentList(arguments))
+                : ElementAccessExpression(ThisExpression())
+                    .WithArgumentList(BracketedArgumentList(arguments));
             return viewType is null
                 ? declaration.WithAccessorList(AccessorList(SingletonList(getter)))
                 : declaration
-                    .WithExpressionBody(
-                        ArrowExpressionClause(
-                            ElementAccessExpression(ThisExpression())
-                                .WithArgumentList(
-                                    BracketedArgumentList(
-                                        SeparatedList(
-                                            parameters.Parameters.Select(parameter =>
-                                                Argument(IdentifierName(parameter.Identifier))
-                                            )
-                                        )
-                                    )
-                                )
-                        )
-                    )
+                    .WithExpressionBody(ArrowExpressionClause(setup))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         }
 

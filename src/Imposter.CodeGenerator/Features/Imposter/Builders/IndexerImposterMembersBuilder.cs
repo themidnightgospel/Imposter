@@ -44,23 +44,30 @@ internal readonly ref struct IndexerImposterMembersBuilder(
             ])
         );
 
+        var setupParameters = SeparatedList(
+            indexer.Core.Parameters.Select(parameter =>
+                SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name)
+            )
+        );
+
+        // Indexers that collide with another interface's indexer can't share the imposter's this[...]. Each is set
+        // up through its interface's view, which calls this method instead.
         _imposterBuilder.AddMember(
-            IndexerDeclaration(indexer.BuilderInterface.TypeSyntax)
-                .AddModifiers(Token(SyntaxKind.PublicKeyword))
-                .WithParameterList(
-                    BracketedParameterList(
-                        SeparatedList(
-                            indexer.Core.Parameters.Select(parameter =>
-                                SyntaxFactoryHelper.ParameterSyntax(
-                                    parameter.ArgTypeSyntax,
-                                    parameter.Name
-                                )
-                            )
-                        )
-                    )
+            indexer.RequiresExplicitInterfaceImplementation
+                ? new MethodDeclarationBuilder(
+                    indexer.BuilderInterface.TypeSyntax,
+                    indexer.Core.UniqueName
                 )
-                .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                    .AddModifier(Token(SyntaxKind.PrivateKeyword))
+                    .WithParameterList(ParameterList(setupParameters))
+                    .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
+                    .WithSemicolon()
+                    .Build()
+                : IndexerDeclaration(indexer.BuilderInterface.TypeSyntax)
+                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                    .WithParameterList(BracketedParameterList(setupParameters))
+                    .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
         );
 
         constructorBodyBuilder.AddStatement(
