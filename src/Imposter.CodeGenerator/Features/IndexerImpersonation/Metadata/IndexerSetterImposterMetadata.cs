@@ -16,8 +16,6 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly FieldMetadata InvocationHistoryField;
 
-    internal readonly TypeSyntax InvocationHistoryEntryType;
-
     internal readonly FieldMetadata DefaultBehaviourField;
 
     internal readonly FieldMetadata InvocationBehaviorField;
@@ -52,7 +50,7 @@ internal readonly struct IndexerSetterImposterMetadata
                 BuildRegistrationTuple(indexer)
             )
         );
-        InvocationHistoryEntryType = TupleType(
+        var invocationHistoryEntryType = TupleType(
             SeparatedList<TupleElementSyntax>(
                 new SyntaxNodeOrToken[]
                 {
@@ -65,7 +63,7 @@ internal readonly struct IndexerSetterImposterMetadata
         );
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(InvocationHistoryEntryType)
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
         );
         DefaultBehaviourField = new FieldMetadata(
             "_defaultBehaviour",

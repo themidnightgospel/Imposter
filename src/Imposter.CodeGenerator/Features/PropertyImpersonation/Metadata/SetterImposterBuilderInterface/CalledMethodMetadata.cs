@@ -11,8 +11,6 @@ internal readonly struct CalledMethodMetadata
 
     internal readonly ParameterMetadata CountParameter;
 
-    internal readonly string SetterInvocationCountVariableName = "setterInvocationCount";
-
     public CalledMethodMetadata()
     {
         ReturnType = WellKnownTypes.Void;

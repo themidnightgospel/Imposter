@@ -31,8 +31,6 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly DefaultPropertyBehaviourMetadata DefaultPropertyBehaviour;
 
-    internal readonly FieldMetadata DefaultPropertyBehaviourField;
-
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
     internal readonly bool RequiresExplicitInterfaceImplementation;
@@ -43,13 +41,13 @@ internal readonly ref struct ImposterPropertyMetadata
         IPropertySymbol property,
         string uniqueName,
         NameSet memberNameSet,
-        bool requiresExplicitInterfaceImplementation = false
+        bool requiresExplicitInterfaceImplementation
     )
     {
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
-        DefaultPropertyBehaviourField = new FieldMetadata(
+        var defaultPropertyBehaviourField = new FieldMetadata(
             "_defaultPropertyBehaviour",
             DefaultPropertyBehaviour.TypeSyntax
         );
@@ -59,11 +57,11 @@ internal readonly ref struct ImposterPropertyMetadata
         GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
         GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(
             Core,
-            DefaultPropertyBehaviourField
+            defaultPropertyBehaviourField
         );
 
         SetterImposterBuilderInterface = new PropertySetterImposterBuilderInterfaceMetadata(Core);
-        SetterImposter = new PropertySetterImposterMetadata(Core, DefaultPropertyBehaviourField);
+        SetterImposter = new PropertySetterImposterMetadata(Core, defaultPropertyBehaviourField);
 
         ImposterBuilderInterface = new PropertyImposterBuilderInterfaceMetadata(
             Core,
@@ -72,7 +70,7 @@ internal readonly ref struct ImposterPropertyMetadata
         );
         ImposterBuilder = new PropertyImposterBuilderMetadata(
             Core,
-            DefaultPropertyBehaviourField,
+            defaultPropertyBehaviourField,
             SetterImposter,
             GetterImposterBuilder
         );

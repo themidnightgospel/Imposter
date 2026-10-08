@@ -16,8 +16,6 @@ internal readonly ref struct ImposterIndexerMetadata
 
     internal readonly DefaultIndexerBehaviourMetadata DefaultIndexerBehaviour;
 
-    internal readonly FieldMetadata DefaultIndexerBehaviourField;
-
     internal readonly IndexerDelegateMetadata Delegates;
 
     internal readonly IndexerGetterImposterMetadata GetterImplementation;
@@ -42,7 +40,7 @@ internal readonly ref struct ImposterIndexerMetadata
         Arguments = new IndexerArgumentsMetadata(Core);
         ArgumentsCriteria = new IndexerArgumentsCriteriaMetadata(Core);
         DefaultIndexerBehaviour = new DefaultIndexerBehaviourMetadata(Core, Arguments);
-        DefaultIndexerBehaviourField = new FieldMetadata(
+        var defaultIndexerBehaviourField = new FieldMetadata(
             $"_{Core.UniqueName}DefaultIndexerBehaviour",
             DefaultIndexerBehaviour.TypeSyntax
         );
@@ -56,7 +54,7 @@ internal readonly ref struct ImposterIndexerMetadata
             SetterBuilderInterface,
             GetterBuilderInterface
         );
-        Builder = new IndexerImposterBuilderMetadata(Core, DefaultIndexerBehaviourField);
+        Builder = new IndexerImposterBuilderMetadata(Core, defaultIndexerBehaviourField);
         BuilderField = new FieldMetadata($"_{Core.UniqueName}Indexer", Builder.TypeSyntax);
         ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(propertySymbol);
     }

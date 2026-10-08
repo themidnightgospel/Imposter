@@ -325,8 +325,7 @@ internal static class IndexerGetterBuilder
                 .Call(
                     BuildDelegateInvocationArguments(
                         IdentifierName(indexer.GetterImplementation.ArgumentsVariableName),
-                        indexer,
-                        fromArguments: true
+                        indexer
                     )
                 )
         );
@@ -414,8 +413,7 @@ internal static class IndexerGetterBuilder
                     .Call(
                         BuildDelegateInvocationArguments(
                             IdentifierName(indexer.GetterImplementation.ArgumentsVariableName),
-                            indexer,
-                            fromArguments: true
+                            indexer
                         )
                     )
             )
@@ -776,8 +774,7 @@ internal static class IndexerGetterBuilder
                     .Call(
                         BuildDelegateInvocationArguments(
                             IdentifierName(argumentsParameterName),
-                            indexer,
-                            fromArguments: true
+                            indexer
                         )
                     )
                     .ToStatementSyntax()
@@ -1317,7 +1314,6 @@ internal static class IndexerGetterBuilder
     ) =>
         BuildMarkConfiguredMethod(
             "MarkReturnConfigured",
-            SyntaxKind.InternalKeyword,
             indexer.GetterImplementation.HasConfiguredReturnField.Name
         );
 

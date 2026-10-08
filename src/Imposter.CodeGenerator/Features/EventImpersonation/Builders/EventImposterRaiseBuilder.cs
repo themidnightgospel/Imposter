@@ -121,14 +121,13 @@ internal static class EventImposterRaiseBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.AsyncKeyword))
             .AddParameters(@event.Core.Parameters.Select(parameter => parameter.ParameterSyntax))
-            .WithBody(BuildRaiseCoreAsyncBody(@event, taskListType, taskType))
+            .WithBody(BuildRaiseCoreAsyncBody(@event, taskListType))
             .Build();
     }
 
     private static BlockSyntax BuildRaiseCoreAsyncBody(
         in ImposterEventMetadata @event,
-        TypeSyntax taskListType,
-        TypeSyntax taskType
+        TypeSyntax taskListType
     )
     {
         var fields = @event.Builder.Fields;
@@ -143,7 +142,7 @@ internal static class EventImposterRaiseBuilder
             .AddStatement(
                 LocalVariableDeclarationSyntax(taskListType, "pendingTasks", taskListType.New())
             )
-            .AddStatement(ForEachAsyncHandlerInvocation(@event, taskType, usesValueTask))
+            .AddStatement(ForEachAsyncHandlerInvocation(@event, usesValueTask))
             .AddStatement(AwaitPendingTasksStatement())
             .AddStatement(
                 IdentifierName("pendingTasks")
@@ -151,7 +150,7 @@ internal static class EventImposterRaiseBuilder
                     .Call()
                     .ToStatementSyntax()
             )
-            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, taskType, usesValueTask))
+            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, usesValueTask))
             .AddStatement(AwaitPendingTasksStatement())
             .Build();
     }
@@ -347,7 +346,6 @@ internal static class EventImposterRaiseBuilder
     private static ForEachStatementSyntax ForEachAsyncInvocation(
         in FieldMetadata field,
         in ImposterEventMetadata @event,
-        TypeSyntax taskType,
         bool usesValueTask
     )
     {
@@ -381,7 +379,6 @@ internal static class EventImposterRaiseBuilder
 
     private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(
         in ImposterEventMetadata @event,
-        TypeSyntax taskType,
         bool usesValueTask
     )
     {

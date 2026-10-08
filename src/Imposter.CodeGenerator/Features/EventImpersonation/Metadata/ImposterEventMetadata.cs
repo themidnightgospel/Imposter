@@ -25,7 +25,7 @@ internal readonly ref struct ImposterEventMetadata
     internal ImposterEventMetadata(
         IEventSymbol eventSymbol,
         string uniqueName,
-        bool requiresExplicitInterfaceImplementation = false
+        bool requiresExplicitInterfaceImplementation
     )
     {
         Core = new ImposterEventCoreMetadata(eventSymbol, uniqueName);

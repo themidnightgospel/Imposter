@@ -94,12 +94,7 @@ internal static class GetterImposterBuilderBuilder
                     property.GetterImposterBuilderInterface
                 )
             )
-            .AddMember(
-                BuildThenMethod(
-                    property.GetterImposterBuilder,
-                    property.GetterImposterBuilderInterface
-                )
-            )
+            .AddMember(BuildThenMethod(property.GetterImposterBuilderInterface))
             .AddMember(
                 property.GetterImposterBuilderInterface.InitialThenMethod is not null
                     ? BuildInitialThenMethod(property)
@@ -469,7 +464,6 @@ internal static class GetterImposterBuilderBuilder
             .Build();
 
     private static MethodDeclarationSyntax BuildThenMethod(
-        in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
     ) =>
         new MethodDeclarationBuilder(

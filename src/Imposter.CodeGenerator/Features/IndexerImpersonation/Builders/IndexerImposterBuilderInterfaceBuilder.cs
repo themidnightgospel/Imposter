@@ -1,7 +1,5 @@
-using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.ImposterBuilderInterface;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,11 +28,6 @@ internal static class IndexerImposterBuilderInterfaceBuilder
         in GetterMethodMetadata getterMethod
     ) =>
         new MethodDeclarationBuilder(getterMethod.ReturnType, getterMethod.Name)
-            .AddParameters(
-                getterMethod
-                    .Parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it))
-                    .ToArray()
-            )
             .WithSemicolon()
             .Build();
 
@@ -42,11 +35,6 @@ internal static class IndexerImposterBuilderInterfaceBuilder
         in SetterMethodMetadata setterMethod
     ) =>
         new MethodDeclarationBuilder(setterMethod.ReturnType, setterMethod.Name)
-            .AddParameters(
-                setterMethod
-                    .Parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it))
-                    .ToArray()
-            )
             .WithSemicolon()
             .Build();
 }

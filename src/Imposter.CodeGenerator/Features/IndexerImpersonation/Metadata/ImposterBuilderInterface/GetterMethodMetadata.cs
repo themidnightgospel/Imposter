@@ -9,14 +9,10 @@ internal readonly struct GetterMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal readonly ParameterMetadata[] Parameters;
-
     internal GetterMethodMetadata(
-        in ImposterIndexerCoreMetadata core,
         in IndexerGetterImposterBuilderInterfaceMetadata getterInterfaceMetadata
     )
     {
         ReturnType = getterInterfaceMetadata.TypeSyntax;
-        Parameters = [];
     }
 }

@@ -290,7 +290,6 @@ internal static class IndexerSetterBuilder
                                 BuildDelegateInvocationArgumentsWithValue(
                                     argumentsVariable,
                                     indexer,
-                                    fromArguments: true,
                                     IdentifierName(setter.ValueParameterName)
                                 )
                             )
@@ -443,11 +442,7 @@ internal static class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return BuildMarkConfiguredMethod(
-            "MarkConfigured",
-            SyntaxKind.InternalKeyword,
-            setter.HasConfiguredSetterField.Name
-        );
+        return BuildMarkConfiguredMethod("MarkConfigured", setter.HasConfiguredSetterField.Name);
     }
 
     private static ClassDeclarationSyntax BuildSetterBuilder(in ImposterIndexerMetadata indexer)

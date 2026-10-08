@@ -23,7 +23,7 @@ internal readonly struct IndexerImposterBuilderInterfaceMetadata
     {
         Name = $"I{core.UniqueName}IndexerBuilder";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
-        GetterMethod = new GetterMethodMetadata(core, getterInterfaceMetadata);
-        SetterMethod = new SetterMethodMetadata(core, setterInterfaceMetadata);
+        GetterMethod = new GetterMethodMetadata(getterInterfaceMetadata);
+        SetterMethod = new SetterMethodMetadata(setterInterfaceMetadata);
     }
 }

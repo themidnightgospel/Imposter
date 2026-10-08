@@ -60,18 +60,12 @@ internal static class IndexerImposterBuilderCommon
 
     internal static ArgumentListSyntax BuildDelegateInvocationArguments(
         ExpressionSyntax source,
-        in ImposterIndexerMetadata indexer,
-        bool fromArguments
+        in ImposterIndexerMetadata indexer
     )
     {
         var arguments = indexer.Core.Parameters.Select(parameter =>
-        {
-            ExpressionSyntax argumentExpression = fromArguments
-                ? source.Dot(IdentifierName(parameter.Name))
-                : IdentifierName(parameter.Name);
-
-            return BuildArgument(parameter.Symbol, argumentExpression);
-        });
+            BuildArgument(parameter.Symbol, source.Dot(IdentifierName(parameter.Name)))
+        );
 
         return ArgumentList(SeparatedList(arguments));
     }
@@ -79,11 +73,10 @@ internal static class IndexerImposterBuilderCommon
     internal static ArgumentListSyntax BuildDelegateInvocationArgumentsWithValue(
         ExpressionSyntax source,
         in ImposterIndexerMetadata indexer,
-        bool fromArguments,
         ExpressionSyntax valueExpression
     )
     {
-        var arguments = BuildDelegateInvocationArguments(source, indexer, fromArguments)
+        var arguments = BuildDelegateInvocationArguments(source, indexer)
             .Arguments.Add(Argument(valueExpression));
 
         return ArgumentList(arguments);
@@ -195,11 +188,10 @@ internal static class IndexerImposterBuilderCommon
 
     internal static MethodDeclarationSyntax BuildMarkConfiguredMethod(
         string methodName,
-        SyntaxKind visibility,
         string fieldName
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
-            .AddModifier(Token(visibility))
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
                     WellKnownTypes

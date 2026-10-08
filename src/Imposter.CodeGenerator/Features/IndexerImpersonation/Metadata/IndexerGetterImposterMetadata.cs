@@ -12,10 +12,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
-    internal readonly string InvocationImposterName;
-
-    internal readonly NameSyntax InvocationImposterTypeSyntax;
-
     internal readonly FieldMetadata DefaultBehaviourField;
 
     internal readonly FieldMetadata SetupsField;
@@ -52,8 +48,6 @@ internal readonly struct IndexerGetterImposterMetadata
     {
         Name = "GetterImposter";
         TypeSyntax = IdentifierName(Name);
-        InvocationImposterName = "GetterInvocationImposter";
-        InvocationImposterTypeSyntax = IdentifierName(InvocationImposterName);
         ArgumentsVariableName = "arguments";
         SetupVariableName = "getterInvocationImposter";
         CriteriaParameterName = "criteria";
@@ -62,8 +56,8 @@ internal readonly struct IndexerGetterImposterMetadata
         BaseImplementationParameterName = "baseImplementation";
 
         var returnGeneratorType = BuildReturnGeneratorType(indexer);
-        var returnHandlerType = BuildReturnHandlerType(indexer);
-        ReturnHandlerType = returnHandlerType;
+        ReturnHandlerType = BuildReturnHandlerType(indexer);
+        Invocation = new GetterInvocationMetadata(indexer, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(
             "_defaultBehaviour",
@@ -71,15 +65,13 @@ internal readonly struct IndexerGetterImposterMetadata
         );
         SetupsField = new FieldMetadata(
             "_getterInvocationImposters",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
-                InvocationImposterTypeSyntax
-            )
+            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(Invocation.TypeSyntax)
         );
         SetupLookupField = new FieldMetadata(
             "_setupLookup",
             WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
                 indexer.ArgumentsCriteria.TypeSyntax,
-                InvocationImposterTypeSyntax
+                Invocation.TypeSyntax
             )
         );
         InvocationHistoryField = new FieldMetadata(
@@ -99,7 +91,6 @@ internal readonly struct IndexerGetterImposterMetadata
         HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
-        Invocation = new GetterInvocationMetadata(indexer, returnGeneratorType, returnHandlerType);
     }
 
     private static QualifiedNameSyntax BuildReturnGeneratorType(
@@ -186,7 +177,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal GetterInvocationMetadata(
             in ImposterIndexerMetadata indexer,
-            TypeSyntax returnGeneratorType,
             TypeSyntax returnHandlerType
         )
         {
