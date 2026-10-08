@@ -51,10 +51,7 @@ internal static class SetterImposterBuilder
                 )
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "_propertyDisplayName"
-                )
+                SinglePrivateReadonlyVariableField(WellKnownTypes.String, "_propertyDisplayName")
             )
             .AddMember(
                 SingleVariableField(
@@ -129,12 +126,7 @@ internal static class SetterImposterBuilder
                     "invocationBehavior"
                 )
             )
-            .AddParameter(
-                ParameterSyntax(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "propertyDisplayName"
-                )
-            );
+            .AddParameter(ParameterSyntax(WellKnownTypes.String, "propertyDisplayName"));
 
         body.AddStatement(
                 ThisExpression()
@@ -317,7 +309,7 @@ internal static class SetterImposterBuilder
             in PropertySetterImposterMetadata setterImposter
         ) =>
             IdentifierName(setterImposter.InvocationHistoryField.Name)
-                .Dot(IdentifierName("Push"))
+                .Dot(ConcurrentStackSyntaxHelper.Push)
                 .Call(Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name)))
                 .ToStatementSyntax();
     }
@@ -329,9 +321,7 @@ internal static class SetterImposterBuilder
         var invocationHistoryIdentifier = IdentifierName(
             setterImposter.InvocationHistoryField.Name
         );
-        var stringListType = WellKnownTypes.System.Collections.Generic.List(
-            PredefinedType(Token(SyntaxKind.StringKeyword))
-        );
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
 
         return new MethodDeclarationBuilder(
             setterImposter.CalledMethod.ReturnType,
@@ -445,14 +435,11 @@ internal static class SetterImposterBuilder
 
         ExpressionSyntax BuildInvocationDescription(IdentifierNameSyntax valueIdentifier)
         {
-            var prefix = AddStrings("set ".StringLiteral(), IdentifierName("_propertyDisplayName"));
+            var prefix = "set ".StringLiteral().Add(IdentifierName("_propertyDisplayName"));
 
-            var assignment = AddStrings(prefix, " = ".StringLiteral());
+            var assignment = prefix.Add(" = ".StringLiteral());
 
-            return AddStrings(
-                assignment,
-                IdentifierName("FormatValue").Call(Argument(valueIdentifier))
-            );
+            return assignment.Add(Invocation(valueIdentifier));
         }
     }
 

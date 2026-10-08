@@ -63,7 +63,7 @@ internal static partial class InvocationHistoryBuilder
     private static MethodDeclarationSyntax BuildToStringMethod(
         in ImposterTargetMethodMetadata method
     ) =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "ToString")
+        new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(Block(ReturnStatement(BuildInvocationDescription(method))))
@@ -81,23 +81,20 @@ internal static partial class InvocationHistoryBuilder
 
         var closingLiteral = ")".StringLiteral();
 
-        ExpressionSyntax description = AddStrings(
-            AddStrings(methodNameLiteral, argumentsExpression),
-            closingLiteral
-        );
+        ExpressionSyntax description = methodNameLiteral
+            .Add(argumentsExpression)
+            .Add(closingLiteral);
 
         if (method.HasReturnValue)
         {
-            description = AddStrings(
-                description,
-                AddStrings(
-                    " => ".StringLiteral(),
-                    Invocation(IdentifierName(InvocationHistoryTypeMetadata.ResultFieldName))
-                )
+            description = description.Add(
+                " => "
+                    .StringLiteral()
+                    .Add(Invocation(IdentifierName(InvocationHistoryTypeMetadata.ResultFieldName)))
             );
         }
 
-        return AddStrings(description, ParenthesizedExpression(BuildExceptionText()));
+        return description.Add(ParenthesizedExpression(BuildExceptionText()));
     }
 
     private static InvocationExpressionSyntax BuildArgumentsText(
@@ -109,10 +106,9 @@ internal static partial class InvocationHistoryBuilder
         var argumentDescriptions = method
             .Parameters.InputParameterMetadata.Select(
                 ExpressionSyntax (parameter) =>
-                    AddStrings(
-                        $"{parameter.Symbol.Name}: ".StringLiteral(),
-                        Invocation(argumentsIdentifier.Dot(IdentifierName(parameter.Name)))
-                    )
+                    $"{parameter.Symbol.Name}: "
+                        .StringLiteral()
+                        .Add(Invocation(argumentsIdentifier.Dot(IdentifierName(parameter.Name))))
             )
             .ToArray();
 
@@ -150,7 +146,7 @@ internal static partial class InvocationHistoryBuilder
                 LiteralExpression(SyntaxKind.NullLiteralExpression)
             ),
             string.Empty.StringLiteral(),
-            AddStrings(" threw ".StringLiteral(), Invocation(exceptionIdentifier))
+            " threw ".StringLiteral().Add(Invocation(exceptionIdentifier))
         );
     }
 }

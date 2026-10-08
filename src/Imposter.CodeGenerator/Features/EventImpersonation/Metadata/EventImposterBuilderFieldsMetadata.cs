@@ -119,7 +119,7 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
         EventDisplayName = new FieldMetadata(
             "_eventDisplayName",
-            PredefinedType(Token(SyntaxKind.StringKeyword)),
+            WellKnownTypes.String,
             privateReadonlyModifiers,
             core.DisplayName.StringLiteral()
         );

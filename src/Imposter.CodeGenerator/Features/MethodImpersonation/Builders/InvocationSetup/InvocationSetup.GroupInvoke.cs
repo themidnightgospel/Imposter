@@ -88,10 +88,7 @@ internal static partial class InvocationSetupBuilder
                     WellKnownTypes.Imposter.Abstractions.ImposterMode,
                     "invocationBehavior"
                 ),
-                ParameterSyntax(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "methodDisplayName"
-                ),
+                ParameterSyntax(WellKnownTypes.String, "methodDisplayName"),
             };
 
             parameters.AddRange(method.Parameters.ParameterListSyntaxIncludingNullable.Parameters);

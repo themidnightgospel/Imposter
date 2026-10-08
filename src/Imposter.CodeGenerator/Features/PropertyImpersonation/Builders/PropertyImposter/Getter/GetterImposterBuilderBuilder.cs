@@ -51,10 +51,7 @@ internal static class GetterImposterBuilderBuilder
                 )
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "_propertyDisplayName"
-                )
+                SinglePrivateReadonlyVariableField(WellKnownTypes.String, "_propertyDisplayName")
             )
             .AddMember(
                 SingleVariableField(
@@ -148,12 +145,7 @@ internal static class GetterImposterBuilderBuilder
                     "invocationBehavior"
                 )
             )
-            .AddParameter(
-                ParameterSyntax(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "propertyDisplayName"
-                )
-            );
+            .AddParameter(ParameterSyntax(WellKnownTypes.String, "propertyDisplayName"));
 
         var body = new BlockBuilder()
             .AddStatement(

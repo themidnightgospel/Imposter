@@ -18,10 +18,7 @@ internal static class FormatValueMethodBuilder
 
         var valueToString = MemberBindingExpression(IdentifierName("ToString")).Call();
 
-        return new MethodDeclarationBuilder(
-            PredefinedType(Token(SyntaxKind.StringKeyword)),
-            "FormatValue"
-        )
+        return new MethodDeclarationBuilder(WellKnownTypes.String, "FormatValue")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddParameter(valueParameter)
@@ -51,9 +48,4 @@ internal static class FormatValueMethodBuilder
 
     internal static InvocationExpressionSyntax Invocation(ExpressionSyntax value) =>
         IdentifierName("FormatValue").Call(Argument(value));
-
-    internal static BinaryExpressionSyntax AddStrings(
-        ExpressionSyntax left,
-        ExpressionSyntax right
-    ) => left.Add(right);
 }

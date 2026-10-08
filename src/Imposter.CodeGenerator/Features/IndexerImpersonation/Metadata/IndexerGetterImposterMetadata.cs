@@ -84,10 +84,7 @@ internal readonly struct IndexerGetterImposterMetadata
             "_invocationBehavior",
             WellKnownTypes.Imposter.Abstractions.ImposterMode
         );
-        PropertyDisplayNameField = new FieldMetadata(
-            "_propertyDisplayName",
-            PredefinedType(Token(SyntaxKind.StringKeyword))
-        );
+        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
         HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
@@ -203,7 +200,7 @@ internal readonly struct IndexerGetterImposterMetadata
             );
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",
-                PredefinedType(Token(SyntaxKind.StringKeyword))
+                WellKnownTypes.String
             );
             CriteriaField = new FieldMetadata("Criteria", indexer.ArgumentsCriteria.TypeSyntax);
         }

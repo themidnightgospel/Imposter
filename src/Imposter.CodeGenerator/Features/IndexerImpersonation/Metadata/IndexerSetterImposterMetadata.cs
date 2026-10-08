@@ -73,10 +73,7 @@ internal readonly struct IndexerSetterImposterMetadata
             "_invocationBehavior",
             WellKnownTypes.Imposter.Abstractions.ImposterMode
         );
-        PropertyDisplayNameField = new FieldMetadata(
-            "_propertyDisplayName",
-            PredefinedType(Token(SyntaxKind.StringKeyword))
-        );
+        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
         HasConfiguredSetterField = new FieldMetadata("_hasConfiguredSetter", WellKnownTypes.Bool);
         BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
             ? new FieldMetadata(

@@ -115,14 +115,9 @@ internal static class IndexerImposterBuilderCommon
                                         SeparatedList(
                                             indexer.Core.Parameters.Select(
                                                 ExpressionSyntax (parameter) =>
-                                                    IdentifierName("FormatValue")
-                                                        .Call(
-                                                            Argument(
-                                                                source.Dot(
-                                                                    IdentifierName(parameter.Name)
-                                                                )
-                                                            )
-                                                        )
+                                                    Invocation(
+                                                        source.Dot(IdentifierName(parameter.Name))
+                                                    )
                                             )
                                         )
                                     )
@@ -133,7 +128,7 @@ internal static class IndexerImposterBuilderCommon
                 )
             );
 
-        return AddStrings("[".StringLiteral(), AddStrings(formattedValues, "]".StringLiteral()));
+        return "[".StringLiteral().Add(formattedValues.Add("]".StringLiteral()));
     }
 
     internal static ConstructorDeclarationSyntax BuildImposterConstructor(
@@ -154,7 +149,7 @@ internal static class IndexerImposterBuilderCommon
             )
             .AddParameter(
                 Parameter(Identifier(PropertyDisplayNameParameterName))
-                    .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+                    .WithType(WellKnownTypes.String)
             )
             .WithBody(
                 new BlockBuilder()
@@ -253,9 +248,7 @@ internal static class IndexerImposterBuilderCommon
         ExpressionSyntax entryDescriptionExpression
     )
     {
-        var stringListType = WellKnownTypes.System.Collections.Generic.List(
-            PredefinedType(Token(SyntaxKind.StringKeyword))
-        );
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
 
         return IfStatement(
             condition,

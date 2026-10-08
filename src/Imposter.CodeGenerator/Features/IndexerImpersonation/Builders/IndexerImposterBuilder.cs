@@ -58,7 +58,7 @@ internal static class IndexerImposterBuilder
         var invocationBehaviorParameter = Parameter(Identifier("invocationBehavior"))
             .WithType(WellKnownTypes.Imposter.Abstractions.ImposterMode);
         var propertyDisplayNameParameter = Parameter(Identifier("propertyDisplayName"))
-            .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)));
+            .WithType(WellKnownTypes.String);
 
         var getterInitialization = indexer.Core.HasGetter
             ? ThisExpression()

@@ -13,6 +13,8 @@ internal static class WellKnownTypes
 
     internal static readonly TypeSyntax Bool = PredefinedType(Token(SyntaxKind.BoolKeyword));
 
+    internal static readonly TypeSyntax String = PredefinedType(Token(SyntaxKind.StringKeyword));
+
     internal static class System
     {
         internal static NameSyntax Namespace = AliasQualifiedName(

@@ -204,14 +204,12 @@ internal static class IndexerSetterBuilder
 
         var entryIdentifier = IdentifierName("entry");
         var argumentsIdentifier = entryIdentifier.Dot(IdentifierName("Arguments"));
-        var prefix = AddStrings("set ".StringLiteral(), IdentifierName("_propertyDisplayName"));
+        var prefix = "set ".StringLiteral().Add(IdentifierName("_propertyDisplayName"));
         var indices = BuildIndices(indexer, argumentsIdentifier);
-        var withIndices = AddStrings(prefix, indices);
-        var assignment = AddStrings(withIndices, " = ".StringLiteral());
-        var descriptionExpression = AddStrings(
-            assignment,
-            IdentifierName("FormatValue")
-                .Call(Argument(entryIdentifier.Dot(IdentifierName("Value"))))
+        var withIndices = prefix.Add(indices);
+        var assignment = withIndices.Add(" = ".StringLiteral());
+        var descriptionExpression = assignment.Add(
+            Invocation(entryIdentifier.Dot(IdentifierName("Value")))
         );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
@@ -374,7 +372,7 @@ internal static class IndexerSetterBuilder
             .AddStatement(CreateArgumentsDeclaration(indexer))
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
-                    .Dot(IdentifierName("Push"))
+                    .Dot(ConcurrentStackSyntaxHelper.Push)
                     .Call(
                         Argument(
                             TupleExpression(

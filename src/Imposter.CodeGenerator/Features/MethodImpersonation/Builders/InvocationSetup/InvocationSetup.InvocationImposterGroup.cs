@@ -95,7 +95,7 @@ internal static partial class InvocationSetupBuilder
                 Block(
                     IfStatement(
                         IdentifierName("_invocationImposters")
-                            .Dot(IdentifierName("TryDequeue"))
+                            .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
                             .Call(
                                 ArgumentList(
                                     SingletonSeparatedList(OutVarArgument("invocationImposter"))

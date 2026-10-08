@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
-using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using GetterReturnsMetadata = Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface.ReturnsMethodMetadata;
@@ -116,7 +115,7 @@ internal static class IndexerGetterBuilder
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
+                    WellKnownTypes.String,
                     indexer.GetterImplementation.PropertyDisplayNameField.Name
                 )
             )
@@ -133,10 +132,7 @@ internal static class IndexerGetterBuilder
             .AddMember(BuildGetOrCreateMethod(indexer))
             .AddMember(BuildGetterCalledMethod(indexer))
             .AddMember(
-                new PropertyDeclarationBuilder(
-                    PredefinedType(Token(SyntaxKind.StringKeyword)),
-                    "PropertyDisplayName"
-                )
+                new PropertyDeclarationBuilder(WellKnownTypes.String, "PropertyDisplayName")
                     .AddModifier(Token(SyntaxKind.InternalKeyword))
                     .Build()
                     .WithAccessorList(null)
@@ -874,7 +870,7 @@ internal static class IndexerGetterBuilder
         );
 
         var dequeueNextReturnValue = IdentifierName(invocationMetadata.ReturnValuesField.Name)
-            .Dot(IdentifierName("TryDequeue"))
+            .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
             .Call(
                 Argument(
                     null,
@@ -1099,7 +1095,7 @@ internal static class IndexerGetterBuilder
         var finallyClause = FinallyClause(
             Block(
                 IdentifierName(indexer.GetterImplementation.InvocationHistoryField.Name)
-                    .Dot(IdentifierName("Push"))
+                    .Dot(ConcurrentStackSyntaxHelper.Push)
                     .Call(ArgumentList(SingletonSeparatedList(Argument(argumentsIdentifier))))
                     .ToStatementSyntax()
             )
@@ -1233,7 +1229,7 @@ internal static class IndexerGetterBuilder
                                     )
                                 ),
                                 IdentifierName(indexer.GetterImplementation.SetupsField.Name)
-                                    .Dot(IdentifierName("Push"))
+                                    .Dot(ConcurrentStackSyntaxHelper.Push)
                                     .Call(
                                         Argument(
                                             IdentifierName(
@@ -1288,10 +1284,10 @@ internal static class IndexerGetterBuilder
         );
 
         var entryIdentifier = IdentifierName("entry");
-        var descriptionExpression = AddStrings(
-            AddStrings("get ".StringLiteral(), IdentifierName("_propertyDisplayName")),
-            BuildIndices(indexer, entryIdentifier)
-        );
+        var descriptionExpression = "get "
+            .StringLiteral()
+            .Add(IdentifierName("_propertyDisplayName"))
+            .Add(BuildIndices(indexer, entryIdentifier));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))

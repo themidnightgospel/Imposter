@@ -37,7 +37,7 @@ internal static partial class InvocationHistoryCollectionBuilder
     }
 
     private static MethodDeclarationSyntax BuildToStringMethod() =>
-        new MethodDeclarationBuilder(PredefinedType(Token(SyntaxKind.StringKeyword)), "ToString")
+        new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(

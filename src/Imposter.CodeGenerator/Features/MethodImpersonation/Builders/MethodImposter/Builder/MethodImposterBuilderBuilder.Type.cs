@@ -65,7 +65,7 @@ internal static partial class MethodImposterBuilderBuilder
         statements.Add(
             methodImposterAccess
                 .Dot(IdentifierName(method.MethodImposter.InvocationImpostersField.Name))
-                .Dot(IdentifierName("Push"))
+                .Dot(ConcurrentStackSyntaxHelper.Push)
                 .Call(
                     Argument(
                             IdentifierName(

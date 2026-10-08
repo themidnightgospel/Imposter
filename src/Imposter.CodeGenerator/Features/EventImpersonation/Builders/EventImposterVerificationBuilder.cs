@@ -259,7 +259,7 @@ internal static class EventImposterVerificationBuilder
             .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.Count, "expected"))
             .AddParameter(
                 ParameterSyntax(
-                    WellKnownTypes.System.FuncOfT(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                    WellKnownTypes.System.FuncOfT(WellKnownTypes.String),
                     "performedInvocationsFactory"
                 )
             )
@@ -326,9 +326,7 @@ internal static class EventImposterVerificationBuilder
         ExpressionSyntax predicateBody
     )
     {
-        var stringListType = WellKnownTypes.System.Collections.Generic.List(
-            PredefinedType(Token(SyntaxKind.StringKeyword))
-        );
+        var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
         var entryIdentifier = IdentifierName("entry");
 
         return ParenthesizedLambdaExpression()
@@ -441,18 +439,14 @@ internal static class EventImposterVerificationBuilder
     {
         var actionText = $"{eventName} {action} ".StringLiteral();
 
-        return AddStrings(actionText, Invocation(eventName.StringLiteral()));
+        return actionText.Add(Invocation(eventName.StringLiteral()));
     }
 
     private static BinaryExpressionSyntax AppendDetail(
         ExpressionSyntax description,
         string label,
         ExpressionSyntax valueExpression
-    ) =>
-        AddStrings(
-            description,
-            AddStrings($" {label}: ".StringLiteral(), Invocation(valueExpression))
-        );
+    ) => description.Add($" {label}: ".StringLiteral().Add(Invocation(valueExpression)));
 
     private static InvocationExpressionSyntax JoinWithNewLines(ExpressionSyntax values) =>
         IdentifierName("string")
