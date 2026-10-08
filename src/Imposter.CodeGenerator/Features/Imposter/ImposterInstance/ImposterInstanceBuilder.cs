@@ -219,6 +219,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
         var indexerDeclaration = IndexerDeclaration(indexer.Core.NullableAwareTypeSyntax)
             .WithModifiers(indexer.ImposterInstanceModifiers)
+            .WithExplicitInterfaceSpecifier(indexer.ExplicitInterfaceSpecifier)
             .WithParameterList(parameterList)
             .WithAccessorList(AccessorList(List(accessors)));
 
