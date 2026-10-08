@@ -39,23 +39,30 @@ internal readonly struct ImposterGenerationContext
         var sanitizedTargetName = SanitizeForNamespace(targetName);
         var hintNameSuffix = GetHintNameSuffix(targetName, sanitizedTargetName);
 
-        if (generateImposterDeclaration.PutInTheSameNamespace)
-        {
-            ImposterNamespaceName = TargetSymbol.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : TargetSymbol.ContainingNamespace.ToDisplayString();
-            HintName = $"{sanitizedTargetName}{hintNameSuffix}";
-        }
-        else
-        {
-            ImposterNamespaceName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}";
-            HintName = $"{DedicatedNamespacePrefix}.{sanitizedTargetName}{hintNameSuffix}";
-        }
+        ImposterNamespaceName = GetImposterNamespaceName(generateImposterDeclaration);
+        HintName = generateImposterDeclaration.PutInTheSameNamespace
+            ? $"{sanitizedTargetName}{hintNameSuffix}"
+            : $"{DedicatedNamespacePrefix}.{sanitizedTargetName}{hintNameSuffix}";
 
         SupportedCSharpFeatures = supportedCSharpFeatures;
     }
 
     private const string DedicatedNamespacePrefix = "Imposters";
+
+    // Null for the global namespace.
+    internal static string? GetImposterNamespaceName(GenerateImposterDeclaration declaration)
+    {
+        var target = declaration.ImposterTarget;
+
+        if (!declaration.PutInTheSameNamespace)
+        {
+            return $"{DedicatedNamespacePrefix}.{SanitizeForNamespace(GetTargetName(target))}";
+        }
+
+        return target.ContainingNamespace.IsGlobalNamespace
+            ? null
+            : target.ContainingNamespace.ToDisplayString();
+    }
 
     // The target's fully qualified name without `global::`, e.g. `Sample.IPair<int, string>`.
     private static string GetTargetName(INamedTypeSymbol targetSymbol)

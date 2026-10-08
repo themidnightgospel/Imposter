@@ -27,7 +27,9 @@ internal static class GenerateImposterDeclarationsProvider
             )
             .SelectMany((symbols, _) => symbols)
             .Collect()
-            .SelectMany((targetSymbols, _) => targetSymbols.Distinct())
+            .SelectMany(
+                (declarations, _) => ImposterTypeCollisions.Mark(declarations.Distinct().ToArray())
+            )
             .WithTrackingName("GenerateImposterDeclarations");
     }
 

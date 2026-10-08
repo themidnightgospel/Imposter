@@ -1,6 +1,7 @@
 ﻿#if !ROSLYN4_4_OR_GREATER
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
 using Microsoft.CodeAnalysis;
@@ -57,7 +58,7 @@ internal static class GenerateImposterDeclarationsProvider
             }
         }
 
-        return declarations.ToImmutable();
+        return ImposterTypeCollisions.Mark(declarations.ToImmutable()).ToImmutableArray();
     }
 
     // Compares names instead of rendering the attribute class with ToDisplayString, which allocates.

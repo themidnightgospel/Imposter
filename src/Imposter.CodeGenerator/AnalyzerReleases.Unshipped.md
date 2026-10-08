@@ -6,6 +6,7 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 IMP006 | Imposter | Warning  | Imposter.CodeGenerator
+IMP007 | Imposter | Error    | Imposter.CodeGenerator
 
 ### Removed Rules
 
