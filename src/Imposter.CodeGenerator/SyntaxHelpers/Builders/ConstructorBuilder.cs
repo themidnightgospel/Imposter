@@ -5,12 +5,12 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal struct ConstructorBuilder(string name)
+internal sealed class ConstructorBuilder(string name)
 {
     private readonly List<ParameterSyntax> _parameters = [];
     private ConstructorInitializerSyntax? _initializers;
     private BlockSyntax? _body;
-    private SyntaxTokenList _modifiers = default;
+    private SyntaxTokenList _modifiers;
     private ParameterListSyntax? _parameterListSyntax;
 
     internal ConstructorBuilder AddParameter(ParameterSyntax parameter)

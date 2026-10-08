@@ -6,7 +6,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal struct PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
+internal sealed class PropertyDeclarationBuilder(TypeSyntax typeSyntax, string name)
 {
     private readonly List<SyntaxToken> _modifiers = [];
     private AccessorDeclarationSyntax? _getter;

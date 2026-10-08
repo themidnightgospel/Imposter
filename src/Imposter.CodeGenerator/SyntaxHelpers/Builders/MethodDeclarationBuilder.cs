@@ -7,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
-internal struct MethodDeclarationBuilder(TypeSyntax returnType, string name)
+internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string name)
 {
     private readonly List<SyntaxToken> _modifiers = [];
     private ParameterListSyntax? _parameterListSyntax;

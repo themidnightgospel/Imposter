@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-internal struct ParameterBuilder(TypeSyntax type, string name)
+internal sealed class ParameterBuilder(TypeSyntax type, string name)
 {
     private readonly List<SyntaxToken> _modifiers = [];
     private EqualsValueClauseSyntax? _defaultValueClause;

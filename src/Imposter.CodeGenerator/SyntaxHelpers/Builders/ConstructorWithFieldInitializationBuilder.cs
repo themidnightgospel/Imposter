@@ -7,7 +7,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal class ConstructorWithFieldInitializationBuilder
 {
-    private ConstructorBuilder _constructorBuilder;
+    private readonly ConstructorBuilder _constructorBuilder;
     private readonly BlockBuilder _bodyBuilder = new BlockBuilder();
 
     internal ConstructorWithFieldInitializationBuilder(string className)
@@ -18,7 +18,6 @@ internal class ConstructorWithFieldInitializationBuilder
     internal ConstructorWithFieldInitializationBuilder AddParameter(in FieldMetadata fieldMetadata)
     {
         _constructorBuilder.AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name));
-        ;
         _bodyBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(fieldMetadata.Name))

@@ -24,7 +24,6 @@ internal readonly ref struct ImposterBuilder
     private readonly ImposterInstanceBuilder _imposterInstanceBuilder;
     private readonly string _imposterName;
     private readonly TypeMetadata _typeMetadata;
-    private readonly ConstructorBuilder _constructorBuilder;
     private readonly BlockBuilder _constructorBodyBuilder;
     private readonly string _invocationBehaviorParameterName;
     private readonly bool _isClassTarget;
@@ -37,7 +36,6 @@ internal readonly ref struct ImposterBuilder
         ImposterInstanceBuilder imposterInstanceBuilder,
         string imposterName,
         TypeMetadata typeMetadata,
-        ConstructorBuilder constructorBuilder,
         BlockBuilder constructorBodyBuilder,
         string invocationBehaviorParameterName,
         bool isClassTarget,
@@ -49,7 +47,6 @@ internal readonly ref struct ImposterBuilder
         _imposterInstanceBuilder = imposterInstanceBuilder;
         _imposterName = imposterName;
         _typeMetadata = typeMetadata;
-        _constructorBuilder = constructorBuilder;
         _constructorBodyBuilder = constructorBodyBuilder;
         _invocationBehaviorParameterName = invocationBehaviorParameterName;
         _isClassTarget = isClassTarget;
@@ -164,7 +161,11 @@ internal readonly ref struct ImposterBuilder
         }
         else
         {
-            var constructor = _constructorBuilder.WithBody(BuildInterfaceConstructorBody()).Build();
+            var constructor = new ConstructorBuilder(_imposterName)
+                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                .AddParameter(CreateInvocationBehaviorParameter(_invocationBehaviorParameterName))
+                .WithBody(BuildInterfaceConstructorBody())
+                .Build();
             imposterBuilder = imposterBuilder.AddMember(constructor);
         }
 
@@ -202,24 +203,10 @@ internal readonly ref struct ImposterBuilder
         var isClassTarget = imposterGenerationContext.Imposter.IsClass;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
 
-        ConstructorBuilder constructorBuilder;
-        BlockBuilder constructorBodyBuilder;
-
-        if (isClassTarget)
-        {
-            constructorBodyBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
-                imposterGenerationContext,
-                constructorParameterName
-            );
-            constructorBuilder = default;
-        }
-        else
-        {
-            (constructorBuilder, constructorBodyBuilder) = CreateConstructorBuilder(
-                imposterGenerationContext,
-                constructorParameterName
-            );
-        }
+        var constructorBodyBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
+            imposterGenerationContext,
+            constructorParameterName
+        );
 
         var imposterClassBuilder = imposterBuilder
             .AddMember(
@@ -253,7 +240,6 @@ internal readonly ref struct ImposterBuilder
             imposterInstanceBuilder,
             imposterGenerationContext.Imposter.Name,
             typeMetadata,
-            constructorBuilder,
             constructorBodyBuilder,
             constructorParameterName,
             isClassTarget,
@@ -298,26 +284,6 @@ internal readonly ref struct ImposterBuilder
         memberNames.AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
 
         return memberNames;
-    }
-
-    private static (
-        ConstructorBuilder constructorBuilder,
-        BlockBuilder bodyBuilder
-    ) CreateConstructorBuilder(
-        in ImposterGenerationContext imposterGenerationContext,
-        string invocationBehaviorParameterName
-    )
-    {
-        var blockBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
-            imposterGenerationContext,
-            invocationBehaviorParameterName
-        );
-
-        var constructorBuilder = new ConstructorBuilder(imposterGenerationContext.Imposter.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .AddParameter(CreateInvocationBehaviorParameter(invocationBehaviorParameterName));
-
-        return (constructorBuilder, blockBuilder);
     }
 
     private static BlockBuilder CreateConstructorBodyBuilderWithoutInstanceAssignment(
