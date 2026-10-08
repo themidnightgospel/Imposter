@@ -375,13 +375,13 @@ internal static class EventImposterVerificationBuilder
         return AppendDetail(description, "handler", handlerExpression);
     }
 
-    private static BinaryExpressionSyntax BuildHandlerInvocationDescription(
+    private static ExpressionSyntax BuildHandlerInvocationDescription(
         string eventName,
         EventParameterMetadata[] parameters,
         ExpressionSyntax entry
     )
     {
-        var description = BuildActionDescription(eventName, "handler invoked");
+        ExpressionSyntax description = BuildActionDescription(eventName, "handler invoked");
         var handlerExpression =
             parameters.Length == 0 ? entry : entry.Dot(IdentifierName("Handler"));
 
@@ -399,13 +399,13 @@ internal static class EventImposterVerificationBuilder
         return description;
     }
 
-    private static BinaryExpressionSyntax BuildRaisedDescription(
+    private static ExpressionSyntax BuildRaisedDescription(
         string eventName,
         EventParameterMetadata[] parameters,
         ExpressionSyntax entry
     )
     {
-        var description = BuildActionDescription(eventName, "raised");
+        ExpressionSyntax description = BuildActionDescription(eventName, "raised");
 
         if (parameters.Length == 0)
         {
@@ -429,12 +429,10 @@ internal static class EventImposterVerificationBuilder
         return description;
     }
 
-    private static BinaryExpressionSyntax BuildActionDescription(string eventName, string action)
-    {
-        var actionText = $"{eventName} {action} ".StringLiteral();
-
-        return actionText.Add(Invocation(eventName.StringLiteral()));
-    }
+    private static LiteralExpressionSyntax BuildActionDescription(
+        string eventName,
+        string action
+    ) => $"{eventName} {action}".StringLiteral();
 
     private static BinaryExpressionSyntax AppendDetail(
         ExpressionSyntax description,

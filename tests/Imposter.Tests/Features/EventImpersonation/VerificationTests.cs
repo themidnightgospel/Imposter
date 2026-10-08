@@ -64,6 +64,21 @@ namespace Imposter.Tests.Features.EventImpersonation
         }
 
         [Fact]
+        public void GivenMismatchedSubscriptionVerification_WhenVerificationFails_ShouldDescribeEachSubscriptionOnce()
+        {
+            EventHandler handler = (s, e) => { };
+            _sut.Instance().SomethingHappened += handler;
+
+            var exception = Should.Throw<VerificationFailedException>(() =>
+                _sut.SomethingHappened.Subscribed(Arg<EventHandler>.Any(), Count.Exactly(2))
+            );
+
+            exception.PerformedInvocations.ShouldStartWith(
+                "SomethingHappened subscribed handler: "
+            );
+        }
+
+        [Fact]
         public void GivenHandlerInvocations_WhenVerifyingHandlerInvoked_ShouldMatch()
         {
             int count = 0;

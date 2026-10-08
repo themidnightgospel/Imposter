@@ -27,8 +27,8 @@ namespace Imposter.Tests.Features.Verification
             var entries = exception.ReadEntries();
             var expectedEntries = new[]
             {
-                $"SomethingHappened raised {FormatValue("SomethingHappened")} sender: {FormatValue(firstSender)} e: {FormatValue(eventArgs)}",
-                $"SomethingHappened raised {FormatValue("SomethingHappened")} sender: {FormatValue(secondSender)} e: {FormatValue(eventArgs)}",
+                $"SomethingHappened raised sender: {FormatValue(firstSender)} e: {FormatValue(eventArgs)}",
+                $"SomethingHappened raised sender: {FormatValue(secondSender)} e: {FormatValue(eventArgs)}",
             };
             entries.ShouldBe(expectedEntries);
             exception.MessageShouldDescribeCounts(expectedCount, 2);
@@ -56,7 +56,7 @@ namespace Imposter.Tests.Features.Verification
             entries.ShouldBe(
                 new[]
                 {
-                    $"SomethingHappened handler invoked {FormatValue("SomethingHappened")} handler: {FormatValue(handler)} sender: {FormatValue(sender)} e: {FormatValue(eventArgs)}",
+                    $"SomethingHappened handler invoked handler: {FormatValue(handler)} sender: {FormatValue(sender)} e: {FormatValue(eventArgs)}",
                 }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
@@ -76,10 +76,7 @@ namespace Imposter.Tests.Features.Verification
 
             var entries = exception.ReadEntries();
             entries.ShouldBe(
-                new[]
-                {
-                    $"SomethingHappened subscribed {FormatValue("SomethingHappened")} handler: {FormatValue(handler)}",
-                }
+                new[] { $"SomethingHappened subscribed handler: {FormatValue(handler)}" }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }
@@ -99,10 +96,7 @@ namespace Imposter.Tests.Features.Verification
 
             var entries = exception.ReadEntries();
             entries.ShouldBe(
-                new[]
-                {
-                    $"SomethingHappened unsubscribed {FormatValue("SomethingHappened")} handler: {FormatValue(handler)}",
-                }
+                new[] { $"SomethingHappened unsubscribed handler: {FormatValue(handler)}" }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }
@@ -128,7 +122,7 @@ namespace Imposter.Tests.Features.Verification
             entries.ShouldBe(
                 new[]
                 {
-                    $"AsyncSomethingHappened raised {FormatValue("AsyncSomethingHappened")} arg1: {FormatValue(sender)} arg2: {FormatValue(eventArgs)}",
+                    $"AsyncSomethingHappened raised arg1: {FormatValue(sender)} arg2: {FormatValue(eventArgs)}",
                 }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
