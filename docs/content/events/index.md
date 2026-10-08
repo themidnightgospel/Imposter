@@ -51,6 +51,7 @@ Define the target interface and enable generation:
 
 !!! note
     - `Raise(sender, args)` notifies the handlers currently subscribed at the time of the call, in subscription order.
+    - Callbacks registered with `Callback(...)` run before the subscribed handlers, for both `Raise` and `RaiseAsync`.
     - If no one is subscribed, `Raise` is a no-op.
     - Exceptions thrown by a handler bubble up and stop further handlers unless your SUT or test catches them (see Event Exceptions).
 

@@ -142,7 +142,7 @@ internal static class EventImposterRaiseBuilder
             .AddStatement(
                 LocalVariableDeclarationSyntax(taskListType, "pendingTasks", taskListType.New())
             )
-            .AddStatement(ForEachAsyncHandlerInvocation(@event, usesValueTask))
+            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, usesValueTask))
             .AddStatement(AwaitPendingTasksStatement())
             .AddStatement(
                 IdentifierName("pendingTasks")
@@ -150,7 +150,7 @@ internal static class EventImposterRaiseBuilder
                     .Call()
                     .ToStatementSyntax()
             )
-            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, usesValueTask))
+            .AddStatement(ForEachAsyncHandlerInvocation(@event, usesValueTask))
             .AddStatement(AwaitPendingTasksStatement())
             .Build();
     }
