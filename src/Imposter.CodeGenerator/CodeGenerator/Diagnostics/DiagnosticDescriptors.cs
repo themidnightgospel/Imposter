@@ -52,6 +52,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp006"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTypeNameCollision = new(
+        "IMP007",
+        "Imposter type name collision",
+        "The imposters of '{0}' and '{1}' would both be '{2}'; register one of them with putInTheSameNamespace: false to generate it in its own namespace",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "Two registered targets, such as same-named types nested in different classes, would generate the same imposter type, so neither is generated.",
+        helpLinkUri: HelpUrl + "#imp007"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

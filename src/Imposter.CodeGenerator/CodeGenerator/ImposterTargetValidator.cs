@@ -22,6 +22,16 @@ internal static class ImposterTargetValidator
             return false;
         }
 
+        if (generateImposterDeclaration.SameImposterTypeAs is { } otherTarget)
+        {
+            ReportImposterTypeNameCollision(
+                sourceProductionContext,
+                generateImposterDeclaration,
+                otherTarget
+            );
+            return false;
+        }
+
         if (target.TypeKind == TypeKind.Class && !HasAccessibleConstructor(target, memberAccess))
         {
             ReportImposterTargetMustHaveAccessibleConstructor(sourceProductionContext, target);
@@ -89,7 +99,24 @@ internal static class ImposterTargetValidator
         );
     }
 
-    private static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol) =>
+    private static void ReportImposterTypeNameCollision(
+        in SourceProductionContext sourceProductionContext,
+        GenerateImposterDeclaration declaration,
+        INamedTypeSymbol otherTarget
+    )
+    {
+        sourceProductionContext.ReportDiagnostic(
+            Diagnostic.Create(
+                DiagnosticDescriptors.ImposterTypeNameCollision,
+                GetPreferredLocation(declaration.ImposterTarget),
+                declaration.ImposterTarget.ToDisplayString(),
+                otherTarget.ToDisplayString(),
+                ImposterTypeCollisions.GetImposterTypeDisplayName(declaration)
+            )
+        );
+    }
+
+    internal static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol) =>
         typeSymbol.TypeKind == TypeKind.Interface
         || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
 
