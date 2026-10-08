@@ -15,6 +15,8 @@ internal readonly struct ImposterTargetMetadata
 {
     internal const string IndexerMemberName = "Indexer";
 
+    internal static string GetImposterName(INamedTypeSymbol target) => target.Name + "Imposter";
+
     internal readonly string Name;
 
     internal readonly NameSyntax ImposterTypeSyntax;
@@ -54,7 +56,7 @@ internal readonly struct ImposterTargetMetadata
     )
     {
         _memberAccess = memberAccess;
-        Name = targetSymbol.Name + "Imposter";
+        Name = GetImposterName(targetSymbol);
         TypeParameters = new ImposterTargetTypeParametersMetadata(targetSymbol);
         ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
             TypeParameters.TypeArguments,

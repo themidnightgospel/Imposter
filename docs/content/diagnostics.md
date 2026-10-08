@@ -9,6 +9,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP004](#imp004) | Error | The target class has no constructor the imposter can call |
 | [IMP005](#imp005) | Error | The generator failed unexpectedly |
 | [IMP006](#imp006) | Warning | A closed generic type is registered as a target |
+| [IMP007](#imp007) | Error | Two targets would generate the same imposter type |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -46,6 +47,18 @@ Register the open generic type instead, for example `typeof(IRepository<>)`, and
 
 !!! warning
     With `TreatWarningsAsErrors`, IMP006 fails the build. Switch to the open registration, or suppress IMP006 with `#pragma warning disable IMP006` or `<NoWarn>`.
+
+## IMP007: Imposter type name collision { #imp007 }
+
+An imposter is named after its target, `IServiceImposter` for `IService`, and by default goes into the target's namespace. Two registered targets that share a name and namespace, such as interfaces nested in different classes, would therefore get the same imposter type. The generator reports IMP007 for both and generates neither.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.CodeGenerator.Tests/Generators/ImposterTypeNameCollisionTests.cs#L150"}
+    [assembly: GenerateImposter(typeof(Sample.A.IService))]
+    [assembly: GenerateImposter(typeof(Sample.B.IService), putInTheSameNamespace: false)]
+    ```
+
+Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter then goes into a namespace of its own, such as `Imposters.Sample.B.IService`. Two closed registrations of one generic type, such as `IRepository<int>` and `IRepository<string>`, collide too; register the open type instead (see [IMP006](#imp006)).
 
 ## IMPLOG001: Generator log { #implog001 }
 
