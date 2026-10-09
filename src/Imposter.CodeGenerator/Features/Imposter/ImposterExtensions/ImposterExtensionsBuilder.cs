@@ -20,7 +20,7 @@ internal static class ImposterExtensionsBuilder
         string? imposterNamespaceName
     )
     {
-        var extensionClassName = $"{imposterGenerationContext.Target.Name}{MethodName}Extensions";
+        var extensionClassName = imposterGenerationContext.ExtensionClassName;
         var targetType = imposterGenerationContext.Imposter.TargetTypeSyntax;
 
         var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(
