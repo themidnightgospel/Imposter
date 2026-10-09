@@ -239,7 +239,7 @@ internal static class EventImposterVerificationBuilder
             )
             .AddParameter(
                 ParameterSyntax(
-                    WellKnownTypes.System.FuncOfT(WellKnownTypes.String),
+                    WellKnownTypes.System.Func(WellKnownTypes.String),
                     performedInvocationsFactory.Identifier.Text
                 )
             )

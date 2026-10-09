@@ -174,9 +174,8 @@ internal static class EventImposterRaiseBuilder
         in ImposterEventMetadata @event
     )
     {
-        var enumerableType = QualifiedName(
-            WellKnownTypes.System.Collections.Generic.Namespace,
-            GenericName(Identifier("IEnumerable"), TypeArguments([@event.Core.HandlerTypeSyntax]))
+        var enumerableType = WellKnownTypes.System.Collections.Generic.IEnumerable(
+            @event.Core.HandlerTypeSyntax
         );
 
         return new MethodDeclarationBuilder(
