@@ -66,3 +66,18 @@ Define the target interface and enable generation:
     // Verify handler invocation count
     imposter.SomethingHappened.HandlerInvoked(Arg<EventHandler>.Is(h), Count.Exactly(2));
     ```
+
+## Span parameters
+
+An event whose delegate takes a `Span<T>` or `ReadOnlySpan<T>` can be impersonated. `Raise` passes the span to the callbacks and the subscribed handlers, and the raise history keeps a copy of its elements, so `Raised` matches them with `SpanArg<T>` or `ReadOnlySpanArg<T>` (see [Span parameters](../arguments-matching.md#span-parameters)).
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/EventImpersonation/SpanEventTests.cs#L37"}
+    // delegate void TextReceivedHandler(ReadOnlySpan<char> text);
+    imposter.TextReceived.Raise("ab".AsSpan());
+
+    imposter.TextReceived.Raised(ReadOnlySpanArg<char>.Is('a', 'b'), Count.Once());
+    ```
+
+!!! warning
+    The span must be passed by value, `in` or `ref readonly`, and the delegate can't be async: an async raise can't take a span, and a handler's change to a `ref` span can't reach the raiser through a copy. Such an event reports [IMP009](../diagnostics.md#imp009).

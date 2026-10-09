@@ -45,7 +45,7 @@ internal readonly struct EventHandlerInvocationEntryMetadata
             : TupleExpression(
                 SeparatedList(
                     new[] { Argument(handler) }.Concat(
-                        _parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
+                        _parameters.Select(parameter => Argument(parameter.StoredValue))
                     )
                 )
             );

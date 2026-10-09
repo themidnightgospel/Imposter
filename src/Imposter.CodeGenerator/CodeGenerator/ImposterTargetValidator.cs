@@ -3,6 +3,7 @@ using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator;
@@ -197,7 +198,8 @@ internal static class ImposterTargetValidator
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
-    // or indexer's span value, and an indexer's span key. SpanModel leaves out the ones a scoped parameter rules out.
+    // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). SpanModel
+    // leaves out the ones a scoped parameter rules out.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -223,8 +225,7 @@ internal static class ImposterTargetValidator
         {
             if (
                 @event.Type is INamedTypeSymbol { DelegateInvokeMethod: { } invoke }
-                && FindRefLikeType([invoke.ReturnType, .. ParameterTypes(invoke.Parameters)])
-                    is { } type
+                && FindRefLikeType(UncopiedEventTypes(invoke)) is { } type
             )
             {
                 return (@event, type);
@@ -265,9 +266,25 @@ internal static class ImposterTargetValidator
         }
     }
 
-    private static IEnumerable<ITypeSymbol> ParameterTypes(
-        IEnumerable<IParameterSymbol> parameters
-    ) => parameters.Select(parameter => parameter.Type);
+    // An event's raise copies a span argument's elements into its history, but an async event's raise can't take a
+    // span, and a ref or out span can't be copied back to the raise's caller.
+    private static IEnumerable<ITypeSymbol> UncopiedEventTypes(IMethodSymbol invoke)
+    {
+        yield return invoke.ReturnType;
+
+        var copiesSpans = !invoke.ReturnType.IsAwaitable();
+        foreach (var parameter in invoke.Parameters)
+        {
+            if (
+                !copiesSpans
+                || parameter.RefKind is RefKind.Ref or RefKind.Out
+                || SpanModel.From(parameter) is null
+            )
+            {
+                yield return parameter.Type;
+            }
+        }
+    }
 
     private static ITypeSymbol? FindRefLikeType(IEnumerable<ITypeSymbol> types) =>
         types.FirstOrDefault(it => it.IsRefLikeType);
