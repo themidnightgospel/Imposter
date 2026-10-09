@@ -10,10 +10,10 @@ internal readonly record struct MethodImposterCollectionMetadata(
     FieldDeclarationMetadata AsField
 )
 {
-    public MethodImposterCollectionMetadata(string name, NameSet methodNames)
+    public MethodImposterCollectionMetadata(string name, NameSet fieldNames)
         : this(
             name,
             SyntaxFactory.IdentifierName(name),
-            new FieldDeclarationMetadata(name, methodNames)
+            new FieldDeclarationMetadata(name, fieldNames)
         ) { }
 }

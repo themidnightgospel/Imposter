@@ -14,10 +14,10 @@ internal readonly record struct InvocationHistoryCollectionMetadata
 
     internal readonly FieldDeclarationMetadata AsField;
 
-    public InvocationHistoryCollectionMetadata(string name, NameSet methodNames)
+    public InvocationHistoryCollectionMetadata(string name, NameSet fieldNames)
     {
         Name = name;
         Syntax = SyntaxFactory.IdentifierName(Name);
-        AsField = new FieldDeclarationMetadata(Name, methodNames);
+        AsField = new FieldDeclarationMetadata(Name, fieldNames);
     }
 }
