@@ -41,6 +41,10 @@ explicit-mode checks apply.
 - In a generic method, a span whose element type uses one of the method's type parameters passes as a copy. A `Span<T>` argument reaches the delegates you pass to `Returns` and `Callback` as a copy, so their writes don't reach the caller's memory; a `ref` or `out` span the delegates leave reaches the caller as a copy; and a returned `Span<T>` is a copy of the array given to `Returns`, so the caller's writes don't reach that array.
 - Members that use a ref-like type (`Span<T>`, `ReadOnlySpan<T>` or another `ref struct`) in any other way can't be impersonated, because an imposter can't store or match its values: a span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out` (a `params` span parameter is scoped implicitly), a span property returned by reference, a span in an indexer or event, or a custom `ref struct` anywhere. A target with such a member reports [IMP009](diagnostics.md#imp009) and gets no imposter.
 
+## Ref returns
+
+- Methods, properties and indexers that return by `ref` or `ref readonly` can't be impersonated, because an imposter returns its results by value. A target with such a member reports [IMP011](diagnostics.md#imp011) and gets no imposter. An interface member of this kind with a default body is left out instead: it has no setup, and calls reach its body.
+
 ## Async behavior
 
 - Async methods without setup return `default`, which for `Task` is `null`.
