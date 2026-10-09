@@ -32,12 +32,17 @@ internal static partial class InvocationSetupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var body = new BlockBuilder()
-            .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
-            .AddStatement(BuildDefaultReturnStatement(method))
-            .Build();
-        // A span parameter can't be declared on an async method (CS4012).
-        var runsAsyncPartInLocalFunction = method.IsAsync && method.Parameters.HasSpanParameters;
+        var runsAsyncPartInLocalFunction =
+            method.IsAsync && method.Parameters.HasAsyncIncompatibleParameters;
+        var body = runsAsyncPartInLocalFunction
+            ? AsyncResultFunctionCall(
+                method,
+                new BlockBuilder().AddStatement(BuildDefaultReturnStatement(method)).Build()
+            )
+            : new BlockBuilder()
+                .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
+                .AddStatement(BuildDefaultReturnStatement(method))
+                .Build();
 
         return new MethodDeclarationBuilder(
             method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnType,
@@ -50,7 +55,7 @@ internal static partial class InvocationSetupBuilder
                 () => Token(SyntaxKind.AsyncKeyword)
             )
             .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
-            .WithBody(runsAsyncPartInLocalFunction ? AsyncResultFunctionCall(method, body) : body)
+            .WithBody(body)
             .Build();
 
         static StatementSyntax? BuildDefaultReturnStatement(in ImposterTargetMethodMetadata method)

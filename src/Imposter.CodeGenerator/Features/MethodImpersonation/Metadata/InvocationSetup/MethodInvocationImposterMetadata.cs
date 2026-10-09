@@ -14,7 +14,8 @@ internal readonly struct MethodInvocationImposterMetadata
 
     internal readonly string InitializeOutParametersMethodName;
 
-    // The async local function that runs the async part of a result generator whose method has span parameters.
+    // The async local function that runs the async part of a result generator whose method has span or by-reference
+    // parameters.
     internal readonly string AsyncResultFunctionName;
 
     internal MethodInvocationImposterMetadata(
