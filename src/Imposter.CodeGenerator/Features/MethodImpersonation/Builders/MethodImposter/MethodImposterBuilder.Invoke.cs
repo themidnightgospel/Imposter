@@ -153,7 +153,7 @@ internal partial class MethodImposterBuilder
     {
         var invokeArguments = new List<ArgumentSyntax>
         {
-            Argument(IdentifierName("_invocationBehavior")),
+            Argument(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
             Argument(method.DisplayName.StringLiteral()),
         };
         invokeArguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
@@ -221,7 +221,7 @@ internal partial class MethodImposterBuilder
                 IfStatement(
                     BinaryExpression(
                         SyntaxKind.EqualsExpression,
-                        IdentifierName("_invocationBehavior"),
+                        IdentifierName(method.MethodImposter.InvocationBehaviorFieldName),
                         QualifiedName(
                             WellKnownTypes.Imposter.Abstractions.ImposterMode,
                             IdentifierName("Explicit")

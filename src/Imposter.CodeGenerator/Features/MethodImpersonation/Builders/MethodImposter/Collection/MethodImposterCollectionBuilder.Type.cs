@@ -19,7 +19,7 @@ internal static partial class MethodImposterCollectionBuilder
         var historyCollectionField = BuildInvocationHistoryCollectionField(method);
         var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            "_invocationBehavior",
+            method.MethodImposter.InvocationBehaviorFieldName,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
         );
 

@@ -101,6 +101,9 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             )
             : null;
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();
-        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(method.ReturnType);
+        DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(
+            method.ReturnType,
+            method.MemberNames
+        );
     }
 }

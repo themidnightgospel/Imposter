@@ -50,7 +50,7 @@ internal static partial class MethodImposterCollectionBuilder
                     {
                         Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
                         Token(SyntaxKind.CommaToken),
-                        Argument(IdentifierName("_invocationBehavior")),
+                        Argument(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
                     }
                 )
             )
