@@ -1,6 +1,6 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,24 +19,11 @@ internal static class MethodImposterGenericInterfaceBuilder
         }
 
         var genericInterfaceType = method.MethodImposter.Interface;
-        var invokeMethodParameters = method.Parameters.ParameterListSyntaxIncludingNullable;
-
-        if (method.SupportsBaseImplementation)
-        {
-            invokeMethodParameters = invokeMethodParameters.AddParameters(
-                ParameterSyntax(
-                        method.Delegate.Syntax.ToNullableType(),
-                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName
-                    )
-                    .WithDefault(EqualsValueClause(Null))
-            );
-        }
-
         var invokeMethod = new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
             "Invoke"
         )
-            .WithParameterList(invokeMethodParameters)
+            .WithParameterList(InvokeSignatureBuilder.MethodImposterParameters(method))
             .WithSemicolon()
             .Build();
 

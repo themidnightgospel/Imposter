@@ -78,23 +78,15 @@ internal static partial class MethodImposterBuilderBuilder
         );
 
         statements.Add(
-            ThisExpression()
-                .Dot(
-                    IdentifierName(
-                        method.MethodImposter.Builder.CurrentInvocationImposterField.Name
-                    )
-                )
-                .Assign(
-                    ThisExpression()
-                        .Dot(
-                            IdentifierName(
-                                method.MethodImposter.Builder.InvocationImposterGroupField.Name
-                            )
+            AdvanceToNewInvocationImposter(
+                method,
+                ThisExpression()
+                    .Dot(
+                        IdentifierName(
+                            method.MethodImposter.Builder.InvocationImposterGroupField.Name
                         )
-                        .Dot(IdentifierName("AddInvocationImposter"))
-                        .Call()
-                )
-                .ToStatementSyntax()
+                    )
+            )
         );
 
         return statements;

@@ -55,7 +55,10 @@ internal readonly struct MethodImposterMetadata
         Collection = new MethodImposterCollectionMetadata($"{Name}Collection", method.MemberNames);
         AsField = new FieldDeclarationMetadata(Name, method.MemberNames);
         InvocationBehaviorFieldName = method.MemberNames.Use("_invocationBehavior");
-        InvokeMethod = new MethodImposterInvokeMethodMetadata(method.ReservedParameterNames);
+        InvokeMethod = new MethodImposterInvokeMethodMetadata(
+            method.ReservedParameterNames,
+            method.Delegate.Syntax
+        );
         FindMatchingInvocationImposterGroupMethod =
             new FindMatchingInvocationImposterGroupMethodMetadata(
                 method.ReservedParameterNames,
