@@ -16,40 +16,31 @@ internal static class EventImposterVerificationBuilder
 {
     internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
         in ImposterEventMetadata @event
-    )
-    {
-        var method = @event.Builder.Methods.Subscribed;
-        var criteriaName = method.CriteriaParameter.Name;
-        var eventName = @event.Core.Name;
-
-        return new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            method.Name
-        )
-            .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
-            .AddParameter(ParameterSyntax(method.CriteriaParameter))
-            .AddParameter(CountParameter(@event))
-            .WithBody(
-                BuildHistoryVerificationBody(
-                    @event,
-                    historyField: @event.Builder.Fields.SubscribeHistory,
-                    criteriaParameterName: criteriaName,
-                    predicateFactory: handler =>
-                        IdentifierName(criteriaName)
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(handler)),
-                    descriptionFactory: handler =>
-                        BuildSubscriptionDescription(eventName, "subscribed", handler)
-                )
-            )
-            .Build();
-    }
+    ) =>
+        BuildSubscriptionVerificationMethod(
+            @event,
+            @event.Builder.Methods.Subscribed,
+            @event.Builder.Fields.SubscribeHistory,
+            "subscribed"
+        );
 
     internal static MethodDeclarationSyntax BuildUnsubscribedVerificationMethod(
         in ImposterEventMetadata @event
+    ) =>
+        BuildSubscriptionVerificationMethod(
+            @event,
+            @event.Builder.Methods.Unsubscribed,
+            @event.Builder.Fields.UnsubscribeHistory,
+            "unsubscribed"
+        );
+
+    private static MethodDeclarationSyntax BuildSubscriptionVerificationMethod(
+        in ImposterEventMetadata @event,
+        in CriteriaMethodMetadata method,
+        in FieldMetadata history,
+        string action
     )
     {
-        var method = @event.Builder.Methods.Unsubscribed;
         var criteriaName = method.CriteriaParameter.Name;
         var eventName = @event.Core.Name;
 
@@ -63,14 +54,14 @@ internal static class EventImposterVerificationBuilder
             .WithBody(
                 BuildHistoryVerificationBody(
                     @event,
-                    historyField: @event.Builder.Fields.UnsubscribeHistory,
+                    historyField: history,
                     criteriaParameterName: criteriaName,
                     predicateFactory: handler =>
                         IdentifierName(criteriaName)
                             .Dot(IdentifierName("Matches"))
                             .Call(Argument(handler)),
                     descriptionFactory: handler =>
-                        BuildSubscriptionDescription(eventName, "unsubscribed", handler)
+                        BuildSubscriptionDescription(eventName, action, handler)
                 )
             )
             .Build();
@@ -86,8 +77,8 @@ internal static class EventImposterVerificationBuilder
         )
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameters(
-                @event.Core.Parameters.Select(parameter =>
-                    ParameterSyntax(parameter.ArgTypeSyntax, $"{parameter.Name}Criteria")
+                @event.Builder.Methods.RaisedCriteriaParameters.Select(criteria =>
+                    ParameterSyntax(criteria)
                 )
             )
             .AddParameter(CountParameter(@event));
@@ -100,12 +91,9 @@ internal static class EventImposterVerificationBuilder
         var blockBuilder = new BlockBuilder();
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
         var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
-        var eventName = @event.Core.Name;
-        var parameters = @event.Core.Parameters;
-
-        foreach (var parameter in parameters)
+        foreach (var criteria in @event.Builder.Methods.RaisedCriteriaParameters)
         {
-            blockBuilder.AddStatement(ThrowIfNull($"{parameter.Name}Criteria"));
+            blockBuilder.AddStatement(ThrowIfNull(criteria.Name));
         }
 
         blockBuilder.AddStatement(ThrowIfNull(countParameterName));
@@ -119,12 +107,7 @@ internal static class EventImposterVerificationBuilder
             FieldIdentifier(@event.Builder.Fields.History)
                 .Dot(LinqSyntaxHelper.Count)
                 .Call([Argument(predicate)]),
-            BuildRaisedPerformedInvocationsFactory(
-                @event.Builder.Fields.History,
-                eventName,
-                parameters,
-                GetPredicateBody(predicate)
-            )
+            BuildRaisedPerformedInvocationsFactory(@event, GetPredicateBody(predicate))
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -136,35 +119,22 @@ internal static class EventImposterVerificationBuilder
         in ImposterEventMetadata @event
     )
     {
-        var entryIdentifier = IdentifierName("entry");
+        var entry = IdentifierName("entry");
+        var historyEntry = @event.Builder.Fields.HistoryEntry;
+        var parameters = @event.Core.Parameters;
+        var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
         ExpressionSyntax? predicateBody = null;
 
-        if (@event.Core.Parameters.Length == 0)
+        for (var index = 0; index < parameters.Length; index++)
         {
-            predicateBody = True;
-        }
-        else if (@event.Core.Parameters.Length == 1)
-        {
-            var parameter = @event.Core.Parameters[0];
-            predicateBody = IdentifierName($"{parameter.Name}Criteria")
+            var matchCall = IdentifierName(criteria[index].Name)
                 .Dot(IdentifierName("Matches"))
-                .Call(Argument(entryIdentifier));
-        }
-        else
-        {
-            foreach (var parameter in @event.Core.Parameters)
-            {
-                var matchCall = IdentifierName($"{parameter.Name}Criteria")
-                    .Dot(IdentifierName("Matches"))
-                    .Call(
-                        Argument(entryIdentifier.Dot(IdentifierName(parameter.TupleElementName)))
-                    );
+                .Call(Argument(historyEntry.ParameterValue(entry, parameters[index])));
 
-                predicateBody = predicateBody is null ? matchCall : predicateBody.And(matchCall);
-            }
+            predicateBody = predicateBody is null ? matchCall : predicateBody.And(matchCall);
         }
 
-        return SimpleLambdaExpression(Parameter(Identifier("entry")), predicateBody!);
+        return SimpleLambdaExpression(Parameter(entry.Identifier), predicateBody ?? True);
     }
 
     internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
@@ -175,18 +145,7 @@ internal static class EventImposterVerificationBuilder
         var criteriaName = method.HandlerCriteriaParameter.Name;
         var eventName = @event.Core.Name;
         var parameters = @event.Core.Parameters;
-        var handlerElementName = @event.Core.HandlerTupleElementName;
-
-        Func<ExpressionSyntax, ExpressionSyntax> predicateFactory =
-            @event.Core.Parameters.Length == 0
-                ? entry =>
-                    IdentifierName(criteriaName)
-                        .Dot(IdentifierName("Matches"))
-                        .Call(Argument(entry))
-                : entry =>
-                    IdentifierName(criteriaName)
-                        .Dot(IdentifierName("Matches"))
-                        .Call(Argument(entry.Dot(IdentifierName(handlerElementName))));
+        var handlerInvocationEntry = @event.Builder.Fields.HandlerInvocationEntry;
 
         return new MethodDeclarationBuilder(
             @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -200,12 +159,15 @@ internal static class EventImposterVerificationBuilder
                     @event,
                     historyField: @event.Builder.Fields.HandlerInvocations,
                     criteriaParameterName: criteriaName,
-                    predicateFactory: predicateFactory,
+                    predicateFactory: entry =>
+                        IdentifierName(criteriaName)
+                            .Dot(IdentifierName("Matches"))
+                            .Call(Argument(handlerInvocationEntry.Handler(entry))),
                     descriptionFactory: entry =>
                         BuildHandlerInvocationDescription(
                             eventName,
                             parameters,
-                            handlerElementName,
+                            handlerInvocationEntry,
                             entry
                         )
                 )
@@ -361,16 +323,20 @@ internal static class EventImposterVerificationBuilder
     }
 
     private static ParenthesizedLambdaExpressionSyntax BuildRaisedPerformedInvocationsFactory(
-        in FieldMetadata historyField,
-        string eventName,
-        EventParameterMetadata[] parameters,
+        in ImposterEventMetadata @event,
         ExpressionSyntax predicateBody
-    ) =>
-        BuildHistoryPerformedInvocationsFactory(
-            historyField,
-            entry => BuildRaisedDescription(eventName, parameters, entry),
+    )
+    {
+        var eventName = @event.Core.Name;
+        var parameters = @event.Core.Parameters;
+        var historyEntry = @event.Builder.Fields.HistoryEntry;
+
+        return BuildHistoryPerformedInvocationsFactory(
+            @event.Builder.Fields.History,
+            entry => BuildRaisedDescription(eventName, parameters, historyEntry, entry),
             predicateBody
         );
+    }
 
     private static BinaryExpressionSyntax BuildSubscriptionDescription(
         string eventName,
@@ -385,22 +351,19 @@ internal static class EventImposterVerificationBuilder
     private static ExpressionSyntax BuildHandlerInvocationDescription(
         string eventName,
         EventParameterMetadata[] parameters,
-        string handlerElementName,
+        in EventHandlerInvocationEntryMetadata handlerInvocationEntry,
         ExpressionSyntax entry
     )
     {
         ExpressionSyntax description = BuildActionDescription(eventName, "handler invoked");
-        var handlerExpression =
-            parameters.Length == 0 ? entry : entry.Dot(IdentifierName(handlerElementName));
-
-        description = AppendDetail(description, "handler", handlerExpression);
+        description = AppendDetail(description, "handler", handlerInvocationEntry.Handler(entry));
 
         foreach (var parameter in parameters)
         {
             description = AppendDetail(
                 description,
                 parameter.Name,
-                entry.Dot(IdentifierName(parameter.TupleElementName))
+                EventHandlerInvocationEntryMetadata.ParameterValue(entry, parameter)
             );
         }
 
@@ -410,27 +373,18 @@ internal static class EventImposterVerificationBuilder
     private static ExpressionSyntax BuildRaisedDescription(
         string eventName,
         EventParameterMetadata[] parameters,
+        in EventHistoryEntryMetadata historyEntry,
         ExpressionSyntax entry
     )
     {
         ExpressionSyntax description = BuildActionDescription(eventName, "raised");
-
-        if (parameters.Length == 0)
-        {
-            return description;
-        }
-
-        if (parameters.Length == 1)
-        {
-            return AppendDetail(description, parameters[0].Name, entry);
-        }
 
         foreach (var parameter in parameters)
         {
             description = AppendDetail(
                 description,
                 parameter.Name,
-                entry.Dot(IdentifierName(parameter.TupleElementName))
+                historyEntry.ParameterValue(entry, parameter)
             );
         }
 
