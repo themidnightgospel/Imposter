@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
 
@@ -10,7 +11,8 @@ internal static class CollisionCompilation
         string targetType,
         string targetDeclaration,
         string usage,
-        string assemblyName
+        string assemblyName,
+        LanguageVersion languageVersion = LanguageVersion.CSharp9
     )
     {
         var context = await GeneratorTestHelper.CreateContext(
@@ -27,14 +29,17 @@ internal static class CollisionCompilation
             """,
             baseSourceFileName: $"{assemblyName}.cs",
             snippetFileName: "Snippet.cs",
-            assemblyName: assemblyName
+            assemblyName: assemblyName,
+            languageVersion
         );
 
+        // The snippet imports Sample because the C# 14 Imposter() extension is only in scope through its namespace.
         GeneratorTestHelper.AssertNoDiagnostics(
             context.CompileSnippet(
                 /*lang=csharp*/
                 $$"""
                 using Imposter.Abstractions;
+                using Sample;
 
                 public static class Usage
                 {

@@ -26,7 +26,7 @@ internal readonly ref struct ImposterBuilder
     private readonly string _imposterName;
     private readonly TypeMetadata _typeMetadata;
     private readonly BlockBuilder _constructorBodyBuilder;
-    private readonly string _invocationBehaviorParameterName;
+    private readonly ParameterMetadata _invocationBehaviorParameter;
     private readonly bool _isClassTarget;
     private readonly ImposterTargetConstructorMetadata[] _accessibleConstructors;
     private readonly NameSet _memberNameSet;
@@ -38,7 +38,7 @@ internal readonly ref struct ImposterBuilder
         string imposterName,
         TypeMetadata typeMetadata,
         BlockBuilder constructorBodyBuilder,
-        string invocationBehaviorParameterName,
+        ParameterMetadata invocationBehaviorParameter,
         bool isClassTarget,
         ImposterTargetConstructorMetadata[] accessibleConstructors,
         NameSet memberNameSet
@@ -49,7 +49,7 @@ internal readonly ref struct ImposterBuilder
         _imposterName = imposterName;
         _typeMetadata = typeMetadata;
         _constructorBodyBuilder = constructorBodyBuilder;
-        _invocationBehaviorParameterName = invocationBehaviorParameterName;
+        _invocationBehaviorParameter = invocationBehaviorParameter;
         _isClassTarget = isClassTarget;
         _accessibleConstructors = accessibleConstructors;
         _memberNameSet = memberNameSet;
@@ -72,7 +72,7 @@ internal readonly ref struct ImposterBuilder
         new PropertyImposterMembersBuilder(
             _imposterBuilder,
             _constructorBodyBuilder,
-            _invocationBehaviorParameterName,
+            _invocationBehaviorParameter.Name,
             _imposterInstanceBuilder
         ).AddProperty(property);
 
@@ -147,7 +147,7 @@ internal readonly ref struct ImposterBuilder
         new IndexerImposterMembersBuilder(
             _imposterBuilder,
             _constructorBodyBuilder,
-            _invocationBehaviorParameterName,
+            _invocationBehaviorParameter.Name,
             _imposterInstanceBuilder
         ).AddIndexer(indexer);
 
@@ -166,7 +166,7 @@ internal readonly ref struct ImposterBuilder
         {
             var constructor = new ConstructorBuilder(_imposterName)
                 .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                .AddParameter(CreateInvocationBehaviorParameter(_invocationBehaviorParameterName))
+                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(_invocationBehaviorParameter))
                 .WithBody(BuildInterfaceConstructorBody())
                 .Build();
             imposterBuilder = imposterBuilder.AddMember(constructor);
@@ -202,13 +202,15 @@ internal readonly ref struct ImposterBuilder
         var memberNameSet = GetImposterNameSet(imposterGenerationContext, imposterBuilder.Members);
         var typeMetadata = new TypeMetadata(memberNameSet);
 
-        var constructorParameterName = "invocationBehavior";
+        var invocationBehaviorParameter = imposterGenerationContext
+            .Imposter
+            .InvocationBehaviorParameter;
         var isClassTarget = imposterGenerationContext.Imposter.IsClass;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
 
         var constructorBodyBuilder = CreateConstructorBodyBuilderWithoutInstanceAssignment(
             imposterGenerationContext,
-            constructorParameterName
+            invocationBehaviorParameter.Name
         );
 
         var imposterClassBuilder = imposterBuilder
@@ -244,7 +246,7 @@ internal readonly ref struct ImposterBuilder
             imposterGenerationContext.Imposter.Name,
             typeMetadata,
             constructorBodyBuilder,
-            constructorParameterName,
+            invocationBehaviorParameter,
             isClassTarget,
             accessibleConstructors,
             memberNameSet
@@ -323,18 +325,6 @@ internal readonly ref struct ImposterBuilder
         );
     }
 
-    private static ParameterSyntax CreateInvocationBehaviorParameter(string parameterName) =>
-        SyntaxFactoryHelper
-            .ParameterSyntax(WellKnownTypes.Imposter.Abstractions.ImposterMode, parameterName)
-            .WithDefault(
-                EqualsValueClause(
-                    QualifiedName(
-                        WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                        IdentifierName("Implicit")
-                    )
-                )
-            );
-
     private BlockSyntax BuildInterfaceConstructorBody() =>
         _constructorBodyBuilder.Build().AddStatements(BuildInterfaceImposterInstanceAssignment());
 
@@ -349,7 +339,7 @@ internal readonly ref struct ImposterBuilder
                 .AddParameters(
                     SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
                 )
-                .AddParameter(CreateInvocationBehaviorParameter(_invocationBehaviorParameterName));
+                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(_invocationBehaviorParameter));
 
             var constructorBody = _constructorBodyBuilder
                 .Build()
