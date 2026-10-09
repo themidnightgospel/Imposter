@@ -234,19 +234,10 @@ internal static class EventImposterSubscriptionsBuilder
         in ImposterEventMetadata @event,
         IdentifierNameSyntax baseImplementationIdentifier
     ) =>
-        IfStatement(
+        CallBaseImplementationIfUsed(
             FieldIdentifier(@event.Builder.Fields.UseBaseImplementation),
-            Block(
-                IfStatement(
-                    baseImplementationIdentifier.IsNotNull(),
-                    Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
-                    ElseClause(
-                        ThrowMissingImposter(
-                            @event.Builder.Fields.EventDisplayName.Name,
-                            " (event)"
-                        )
-                    )
-                )
-            )
+            baseImplementationIdentifier,
+            Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
+            ThrowMissingImposter(@event.Builder.Fields.EventDisplayName.Name, " (event)")
         );
 }

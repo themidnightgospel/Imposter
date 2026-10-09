@@ -16,6 +16,10 @@ internal readonly struct DefaultIndexerBehaviourMetadata
 
     internal readonly FieldMetadata BackingField;
 
+    internal readonly ParameterMetadata GetBaseImplementationParameter;
+
+    internal readonly ParameterMetadata SetBaseImplementationParameter;
+
     internal DefaultIndexerBehaviourMetadata(
         in ImposterIndexerCoreMetadata core,
         in IndexerArgumentsMetadata arguments
@@ -31,6 +35,12 @@ internal readonly struct DefaultIndexerBehaviourMetadata
                 arguments.TypeSyntax,
                 core.NullableAwareStoredTypeSyntax
             )
+        );
+        GetBaseImplementationParameter = core.GetterBaseImplementationParameter(
+            ImposterIndexerCoreMetadata.BaseImplementationParameterName
+        );
+        SetBaseImplementationParameter = core.SetterBaseImplementationParameter(
+            ImposterIndexerCoreMetadata.BaseImplementationParameterName
         );
     }
 }

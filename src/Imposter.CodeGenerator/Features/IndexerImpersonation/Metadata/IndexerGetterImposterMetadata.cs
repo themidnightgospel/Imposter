@@ -40,7 +40,7 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly string GetterSuffix;
 
-    internal readonly string BaseImplementationParameterName;
+    internal readonly ParameterMetadata BaseImplementationParameter;
 
     internal readonly TypeSyntax ReturnHandlerType;
 
@@ -61,7 +61,9 @@ internal readonly struct IndexerGetterImposterMetadata
         CriteriaParameterName = "criteria";
         CountParameterName = "count";
         GetterSuffix = " (getter)";
-        BaseImplementationParameterName = names.Use("baseImplementation");
+        BaseImplementationParameter = indexer.Core.GetterBaseImplementationParameter(
+            names.Use(ImposterIndexerCoreMetadata.BaseImplementationParameterName)
+        );
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
         EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
