@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Shouldly;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
 
 namespace Imposter.CodeGenerator.Tests.Features.Diagnostics;
 
@@ -128,6 +129,27 @@ public class RefReturnDiagnosticTests
         );
 
         result.Diagnostics.ShouldBeEmpty();
+    }
+
+    // Calls reach the default body, which the imposter leaves in place.
+    [Fact]
+    public async Task GivenInterfaceMethodReturningByReferenceWithDefaultBody_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Plain(); ref int Get() => throw null!; }",
+            "imposter.Plain().Returns(1); imposter.Instance().Plain();",
+            nameof(RefReturnDiagnosticTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenInterfacePropertyReturningByReferenceWithDefaultBody_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Plain { get; } ref readonly int Value => throw null!; }",
+            "imposter.Plain.Getter().Returns(1); _ = imposter.Instance().Plain;",
+            nameof(RefReturnDiagnosticTests)
+        );
     }
 
     [Fact]

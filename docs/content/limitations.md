@@ -43,7 +43,7 @@ explicit-mode checks apply.
 
 ## Ref returns
 
-- Methods, properties and indexers that return by `ref` or `ref readonly` can't be impersonated, because an imposter returns its results by value. A target with such a member reports [IMP011](diagnostics.md#imp011) and gets no imposter.
+- Methods, properties and indexers that return by `ref` or `ref readonly` can't be impersonated, because an imposter returns its results by value. A target with such a member reports [IMP011](diagnostics.md#imp011) and gets no imposter. An interface member of this kind with a default body is left out instead: it has no setup, and calls reach its body.
 
 ## Async behavior
 

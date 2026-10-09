@@ -98,7 +98,7 @@ Target .NET 7 or later, or declare the attribute in your project, as polyfill pa
 
 An imposter returns the results you set up with `Returns`, or `default`, by value. It has no storage of its own to hand out a reference to, so it can't implement or override a method, property or indexer that returns by `ref` or `ref readonly`. IMP011 names the first such member, and no imposter is generated. A ref-like type returned by reference reports [IMP009](#imp009) instead.
 
-Change the member to return by value, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member that returns by reference doesn't cause IMP011.
+Change the member to return by value, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member that returns by reference doesn't cause IMP011. On an interface target, a member that returns by reference and has a default body doesn't cause it either: the imposter leaves it out, and calls reach that body.
 
 ## IMP012: Static abstract member { #imp012 }
 
