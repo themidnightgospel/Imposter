@@ -1,7 +1,7 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
@@ -9,7 +9,7 @@ internal readonly struct ThrowsMethodMetadata
 {
     internal readonly string Name = "Throws";
 
-    internal readonly string GenericTypeParameterName;
+    internal readonly ExceptionTypeParameterMetadata ExceptionTypeParameter;
 
     internal readonly TypeSyntax ReturnType;
 
@@ -23,10 +23,6 @@ internal readonly struct ThrowsMethodMetadata
 
     internal readonly string InterfaceExceptionGeneratorParameterName;
 
-    internal readonly TypeParameterListSyntax TypeParameterList;
-
-    internal readonly TypeParameterConstraintClauseSyntax TypeParameterConstraintClause;
-
     public ThrowsMethodMetadata(
         in ReservedParameterNames reservedParameterNames,
         NameSyntax exceptionGeneratorDelegateSyntax,
@@ -37,7 +33,9 @@ internal readonly struct ThrowsMethodMetadata
     {
         InterfaceSyntax = interfaceTypeSyntax;
         ReturnType = continuationInterfaceSyntax;
-        GenericTypeParameterName = genericTypeParameterNameSet.Use("TException");
+        ExceptionTypeParameter = new ExceptionTypeParameterMetadata(
+            genericTypeParameterNameSet.Use(ExceptionTypeParameterMetadata.PreferredName)
+        );
         var nameContext = reservedParameterNames.CreateNameSet();
         InterfaceExceptionParameterName = "exception";
         InterfaceExceptionGeneratorParameterName = "exceptionGenerator";
@@ -49,15 +47,5 @@ internal readonly struct ThrowsMethodMetadata
             nameContext.Use(InterfaceExceptionGeneratorParameterName),
             exceptionGeneratorDelegateSyntax
         );
-
-        TypeParameterList = TypeParameterList(
-            SingletonSeparatedList(TypeParameter(GenericTypeParameterName))
-        );
-
-        TypeParameterConstraintClause = TypeParameterConstraintClause(GenericTypeParameterName)
-            .AddConstraints(
-                TypeConstraint(WellKnownTypes.System.Exception),
-                ConstructorConstraint()
-            );
     }
 }
