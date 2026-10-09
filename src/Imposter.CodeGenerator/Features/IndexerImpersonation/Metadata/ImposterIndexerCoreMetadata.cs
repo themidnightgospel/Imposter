@@ -56,7 +56,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareStoredTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareStoredTypeSyntax);
+        AsSystemFuncType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
         var fieldNames = new NameSet(
             indexer.Parameters.Select(parameter =>
