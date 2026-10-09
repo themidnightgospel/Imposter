@@ -115,14 +115,17 @@ internal static class ImposterTargetValidator
         && !SymbolEqualityComparer.Default.Equals(typeSymbol, typeSymbol.OriginalDefinition);
 
     // The imposter passes its target as a type argument, which an interface can't be while one of its static abstract
-    // members, or an inherited one, has no implementation in it. A class target implements them itself.
+    // members, or an inherited one, has no implementation in it. A class target implements them itself. Accessors are
+    // skipped, so the diagnostic names their property or event.
     private static ISymbol? FindUnimplementedStaticAbstractMember(INamedTypeSymbol target) =>
         target.TypeKind == TypeKind.Interface
             ? target
                 .AllInterfaces.Prepend(target)
                 .SelectMany(@interface => @interface.GetMembers())
                 .FirstOrDefault(member =>
-                    member is { IsStatic: true, IsAbstract: true }
+                    member
+                        is { IsStatic: true, IsAbstract: true }
+                            and not IMethodSymbol { AssociatedSymbol: not null }
                     && target.FindImplementationForInterfaceMember(member) is null
                 )
             : null;

@@ -82,6 +82,21 @@ public class StaticAbstractMemberDiagnosticTests
     }
 
     [Fact]
+    public async Task GivenInterfaceWithStaticAbstractEvent_WhenGeneratorRuns_ShouldNameTheEvent()
+    {
+        var result = await RunGenerator(
+            "public interface IService { static abstract event System.Action Changed; }"
+        );
+
+        result
+            .Diagnostics.ShouldHaveSingleItem()
+            .GetMessage()
+            .ShouldBe(
+                "'Sample.IService' has the static abstract member 'Sample.IService.Changed', so it can't be the type argument its imposter needs"
+            );
+    }
+
+    [Fact]
     public async Task GivenInterfaceWithStaticAbstractMethod_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
     {
         var result = await RunGenerator(
