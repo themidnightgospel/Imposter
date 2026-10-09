@@ -18,16 +18,7 @@ internal static partial class SyntaxFactoryHelper
     {
         if (parameter.Span is { } span)
         {
-            var elementType = TypeSyntaxIncludingNullable(span.ElementType);
-            return (span.IsReadOnly, parameter.RefKind == RefKind.Out) switch
-            {
-                (true, true) => WellKnownTypes.Imposter.Abstractions.OutReadOnlySpanArg(
-                    elementType
-                ),
-                (true, false) => WellKnownTypes.Imposter.Abstractions.ReadOnlySpanArg(elementType),
-                (false, true) => WellKnownTypes.Imposter.Abstractions.OutSpanArg(elementType),
-                (false, false) => WellKnownTypes.Imposter.Abstractions.SpanArg(elementType),
-            };
+            return parameter.RefKind == RefKind.Out ? OutSpanArgType(span) : SpanArgType(span);
         }
 
         var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
@@ -35,6 +26,24 @@ internal static partial class SyntaxFactoryHelper
         return parameter.RefKind == RefKind.Out
             ? WellKnownTypes.Imposter.Abstractions.OutArg(parameterType)
             : WellKnownTypes.Imposter.Abstractions.Arg(parameterType);
+    }
+
+    internal static NameSyntax SpanArgType(SpanModel span)
+    {
+        var elementType = TypeSyntaxIncludingNullable(span.ElementType);
+
+        return span.IsReadOnly
+            ? WellKnownTypes.Imposter.Abstractions.ReadOnlySpanArg(elementType)
+            : WellKnownTypes.Imposter.Abstractions.SpanArg(elementType);
+    }
+
+    private static NameSyntax OutSpanArgType(SpanModel span)
+    {
+        var elementType = TypeSyntaxIncludingNullable(span.ElementType);
+
+        return span.IsReadOnly
+            ? WellKnownTypes.Imposter.Abstractions.OutReadOnlySpanArg(elementType)
+            : WellKnownTypes.Imposter.Abstractions.OutSpanArg(elementType);
     }
 
     // A span argument is kept as an array of its elements.

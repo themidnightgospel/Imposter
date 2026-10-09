@@ -17,6 +17,20 @@ internal static partial class SyntaxFactoryHelper
         PragmaWarningDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), isActive: true)
             .WithErrorCodes(default);
 
+    internal static PragmaWarningDirectiveTriviaSyntax DisableWarning(string code) =>
+        PragmaWarningDirectiveTrivia(
+            Token(SyntaxKind.DisableKeyword),
+            SingletonSeparatedList<ExpressionSyntax>(IdentifierName(code)),
+            isActive: true
+        );
+
+    internal static PragmaWarningDirectiveTriviaSyntax RestoreWarning(string code) =>
+        PragmaWarningDirectiveTrivia(
+            Token(SyntaxKind.RestoreKeyword),
+            SingletonSeparatedList<ExpressionSyntax>(IdentifierName(code)),
+            isActive: true
+        );
+
     internal static NullableDirectiveTriviaSyntax RestoreNullableTrivia() =>
         NullableDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), isActive: true);
 

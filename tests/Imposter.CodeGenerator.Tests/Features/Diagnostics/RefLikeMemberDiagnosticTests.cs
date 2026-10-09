@@ -56,10 +56,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenPropertyOfSpanType_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenPropertyReturningSpanByReference_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { System.Span<byte> Buffer { get; } }"
+            "public interface IService { ref System.Span<byte> Buffer { get; } }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);

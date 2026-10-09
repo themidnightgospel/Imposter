@@ -85,6 +85,29 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp009"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTargetRequiredMembersNeedSetsRequiredMembers =
+        new(
+            "IMP010",
+            "Imposter target has required members, and SetsRequiredMembersAttribute is missing",
+            "'{0}' has required members, which its imposter can only leave unset with System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute; target .NET 7 or later, or declare the attribute in this project",
+            DiagnosticCategories.Imposter,
+            DiagnosticSeverity.Error,
+            true,
+            description: "An imposter creates its instance without setting the target's required members, which its constructors allow with SetsRequiredMembersAttribute. The attribute is built into .NET 7 and later, so a project on an older framework has to declare it, and no imposter is generated without it.",
+            helpLinkUri: HelpUrl + "#imp010"
+        );
+
+    public static readonly DiagnosticDescriptor ImposterTargetHasStaticAbstractMember = new(
+        "IMP012",
+        "Imposter target has a static abstract member",
+        "'{0}' has the static abstract member '{1}', so it can't be the type argument its imposter needs",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An interface whose static abstract member has no implementation in the interface can't be a type argument, and its imposter passes it as one, so no imposter is generated.",
+        helpLinkUri: HelpUrl + "#imp012"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

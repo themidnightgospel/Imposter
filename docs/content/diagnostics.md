@@ -12,6 +12,8 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP007](#imp007) | Error | Two targets would generate the same imposter type |
 | [IMP008](#imp008) | Error | The target class has abstract members your project cannot override |
 | [IMP009](#imp009) | Error | The target has a member whose signature uses a ref-like type |
+| [IMP010](#imp010) | Error | The target class has required members, and `SetsRequiredMembersAttribute` is missing |
+| [IMP012](#imp012) | Error | The target interface has a static abstract member without an implementation |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -70,11 +72,32 @@ Register an interface the class implements instead, or ask the class's owner to 
 
 ## IMP009: Member with a ref-like type { #imp009 }
 
-An imposter records every argument and result of the members it impersonates, and matches arguments with `Arg<T>`. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: `Span<T>`, `ReadOnlySpan<T>` or another `ref struct`. The exception is a method's `Span<T>` or `ReadOnlySpan<T>` parameter, or a span it returns by value. The imposter copies the elements a span argument arrives with into an array and matches them with `SpanArg<T>` or `ReadOnlySpanArg<T>`, or `OutSpanArg<T>` or `OutReadOnlySpanArg<T>` for an `out` span (see [Span parameters](arguments-matching.md#span-parameters)), and `Returns` takes the array a returned span covers (see [Methods](methods/index.md#setup-return-values)).
+An imposter records every argument and result of the members it impersonates, and matches arguments with `Arg<T>`. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: `Span<T>`, `ReadOnlySpan<T>` or another `ref struct`. The exception is a method's `Span<T>` or `ReadOnlySpan<T>` parameter, a span it returns by value, and a property whose type is a span (see [Span properties](properties/index.md#span-properties)). The imposter copies the elements a span argument arrives with into an array and matches them with `SpanArg<T>` or `ReadOnlySpanArg<T>`, or `OutSpanArg<T>` or `OutReadOnlySpanArg<T>` for an `out` span (see [Span parameters](arguments-matching.md#span-parameters)), and `Returns` takes the array a returned span covers (see [Methods](methods/index.md#setup-return-values)).
 
-IMP009 means a member the imposter would impersonate uses a ref-like type anywhere else in its signature: as a method parameter or return type of another `ref struct` type, a span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out` (a `params` span parameter is scoped implicitly), a property or indexer type, an indexer parameter, a parameter or return type of an event's delegate, or a method's type parameter that allows ref structs (`where T : allows ref struct`). The diagnostic names the first such member and type, and no imposter is generated.
+IMP009 means a member the imposter would impersonate uses a ref-like type anywhere else in its signature: as a method parameter or return type of another `ref struct` type, a span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out` (a `params` span parameter is scoped implicitly), a property returned by reference, an indexer type or parameter, a parameter or return type of an event's delegate, or a method's type parameter that allows ref structs (`where T : allows ref struct`). The diagnostic names the first such member and type, and no imposter is generated.
 
 Change the member to take or return a type the imposter can store, such as `ReadOnlyMemory<T>`, `Memory<T>` or an array, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a ref-like type doesn't cause IMP009.
+
+## IMP010: Required members without SetsRequiredMembersAttribute { #imp010 }
+
+The imposter creates its instance without setting the target's C# 11 `required` members. Its constructors allow that with `System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute`, which is built into .NET 7 and later. IMP010 means the target class has required members, and your project can't use that attribute: it targets an older framework, such as .NET Standard, .NET Framework or .NET 6, and declares only the attributes the compiler needs for required members. No imposter is generated.
+
+Target .NET 7 or later, or declare the attribute in your project, as polyfill packages do:
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.CodeGenerator.Tests/Features/ClassImpersonation/RequiredMemberTests.cs#L100"}
+    namespace System.Diagnostics.CodeAnalysis
+    {
+        [AttributeUsage(AttributeTargets.Constructor)]
+        internal sealed class SetsRequiredMembersAttribute : Attribute { }
+    }
+    ```
+
+## IMP012: Static abstract member { #imp012 }
+
+An imposter passes its target interface as a type argument, as in `IHaveImposterInstance<IService>`. C# doesn't allow an interface as a type argument while one of its static abstract members, declared or inherited, has no implementation in the interface (CS8920). IMP012 names the first such member, and no imposter is generated.
+
+Register an interface without the member, such as one that declares only the instance members your tests need, or give the member a body with `static virtual`. Static virtual members don't cause IMP012, and neither does a class target that implements the interface.
 
 ## IMPLOG001: Generator log { #implog001 }
 

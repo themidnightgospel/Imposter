@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004, IMP008 and IMP009 stop the target's generation; IMP006 only warns. Collisions between targets
-    // (IMP007) are found once all targets are known.
+    // IMP002, IMP004, IMP008, IMP009, IMP010 and IMP012 stop the target's generation; IMP006 only warns. Collisions
+    // between targets (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -32,11 +32,36 @@ internal static class ImposterTargetValidator
             );
         }
 
+        if (FindUnimplementedStaticAbstractMember(target) is { } staticAbstractMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasStaticAbstractMember,
+                    location,
+                    targetDisplayName,
+                    staticAbstractMember.ToDisplayString()
+                ),
+                false
+            );
+        }
+
         if (target.TypeKind == TypeKind.Class && !HasAccessibleConstructor(target, memberAccess))
         {
             return (
                 Single(
                     DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
+                    location,
+                    targetDisplayName
+                ),
+                false
+            );
+        }
+
+        if (target.HasRequiredMembers() && memberAccess.LacksSetsRequiredMembersAttribute())
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetRequiredMembersNeedSetsRequiredMembers,
                     location,
                     targetDisplayName
                 ),
@@ -101,6 +126,22 @@ internal static class ImposterTargetValidator
         typeSymbol.IsGenericType
         && !SymbolEqualityComparer.Default.Equals(typeSymbol, typeSymbol.OriginalDefinition);
 
+    // The imposter passes its target as a type argument, which an interface can't be while one of its static abstract
+    // members, or an inherited one, has no implementation in it. A class target implements them itself. Accessors are
+    // skipped, so the diagnostic names their property or event.
+    private static ISymbol? FindUnimplementedStaticAbstractMember(INamedTypeSymbol target) =>
+        target.TypeKind == TypeKind.Interface
+            ? target
+                .AllInterfaces.Prepend(target)
+                .SelectMany(@interface => @interface.GetMembers())
+                .FirstOrDefault(member =>
+                    member
+                        is { IsStatic: true, IsAbstract: true }
+                            and not IMethodSymbol { AssociatedSymbol: not null }
+                    && target.FindImplementationForInterfaceMember(member) is null
+                )
+            : null;
+
     // A source class always has at least its implicit constructor. A class from another assembly can show none, when
     // the build imports only public and protected metadata and every constructor is internal.
     private static bool HasAccessibleConstructor(
@@ -142,7 +183,7 @@ internal static class ImposterTargetValidator
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
     // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> passed or returned by
-    // value is the exception: the imposter keeps its elements in an array.
+    // value, and a property's, are the exception: the imposter keeps its elements in an array.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -158,9 +199,7 @@ internal static class ImposterTargetValidator
 
         foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
         {
-            if (
-                FindRefLikeType([property.Type, .. ParameterTypes(property.Parameters)]) is { } type
-            )
+            if (FindRefLikeType(UncopiedTypes(property)) is { } type)
             {
                 return (property, type);
             }
@@ -198,6 +237,11 @@ internal static class ImposterTargetValidator
             yield return parameter.Type;
         }
     }
+
+    private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property) =>
+        SpanModel.FromProperty(property) is null
+            ? ParameterTypes(property.Parameters).Prepend(property.Type)
+            : ParameterTypes(property.Parameters);
 
     private static IEnumerable<ITypeSymbol> ParameterTypes(
         IEnumerable<IParameterSymbol> parameters
