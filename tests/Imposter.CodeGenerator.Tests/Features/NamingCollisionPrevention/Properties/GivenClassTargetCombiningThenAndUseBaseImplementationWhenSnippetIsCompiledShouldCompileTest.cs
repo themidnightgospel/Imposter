@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Properties;
 
-public partial class PropertyClassTargetCollisionPreventionTests : PropertyNamingCollisionPreventionTestsBase
+public partial class PropertyClassTargetCollisionPreventionTests
+    : PropertyNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenClassTargetCombiningThenAndUseBaseImplementation_WhenSnippetIsCompiled_ShouldCompile()
@@ -34,4 +35,3 @@ namespace Sample.NamingCollisionUsage
         AssertNoDiagnostics(diagnostics);
     }
 }
-

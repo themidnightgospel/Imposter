@@ -44,6 +44,15 @@ public class ImposterFieldNameCollisionTests
     }
 
     [Fact]
+    public async Task GivenConstructorParameterNamedLikeTheImposterField_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "public class Service { public Service(int _imposter) { } public virtual int Get() => 0; }",
+            "var imposter = new Sample.ServiceImposter(1); imposter.Instance().Get();"
+        );
+    }
+
+    [Fact]
     public async Task GivenMethodTypeParameterNamedLikeTheImposterField_WhenImposterIsUsed_ShouldCompile()
     {
         await AssertCompiles(
