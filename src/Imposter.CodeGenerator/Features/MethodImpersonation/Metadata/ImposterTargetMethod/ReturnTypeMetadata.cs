@@ -20,11 +20,7 @@ internal readonly struct ReturnTypeMetadata
     // The type the invocation history keeps the result as: the nullable return type, or a copy of a span's elements.
     internal readonly TypeSyntax StoredTypeSyntax;
 
-    internal ReturnTypeMetadata(
-        ReturnTypeModel returnType,
-        TypeSyntax returnTypeSyntax,
-        bool supportsNullableGenericType
-    )
+    internal ReturnTypeMetadata(ReturnTypeModel returnType, TypeSyntax returnTypeSyntax)
     {
         IsAwaitable = returnType.IsAwaitable;
 
@@ -34,7 +30,7 @@ internal readonly struct ReturnTypeMetadata
 
         TypeSymbolMetadata = new TypeSymbolMetadata(
             returnTypeSyntax,
-            NullableReturnTypeSyntax(returnType, returnTypeSyntax, supportsNullableGenericType)
+            NullableReturnTypeSyntax(returnType, returnTypeSyntax)
         );
 
         IsSpan = returnType.Span is not null;
@@ -52,20 +48,9 @@ internal readonly struct ReturnTypeMetadata
 
     private static TypeSyntax NullableReturnTypeSyntax(
         ReturnTypeModel returnType,
-        TypeSyntax typeSyntax,
-        bool supportsNullableGenericType
-    )
-    {
-        var isConstructedGenericType = typeSyntax is GenericNameSyntax;
-        var shouldConvertToNullable =
-            typeSyntax is not NullableTypeSyntax
-            && !returnType.IsVoid
-            && !returnType.IsAwaitable
-            && !(
-                (returnType.IsTypeParameter || isConstructedGenericType)
-                && !supportsNullableGenericType
-            );
-
-        return shouldConvertToNullable ? typeSyntax.ToNullableType() : typeSyntax;
-    }
+        TypeSyntax typeSyntax
+    ) =>
+        typeSyntax is not NullableTypeSyntax && !returnType.IsVoid && !returnType.IsAwaitable
+            ? typeSyntax.ToNullableType()
+            : typeSyntax;
 }

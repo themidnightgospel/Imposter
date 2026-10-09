@@ -98,11 +98,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal bool IsAsync { get; }
 
-    internal ImposterTargetMethodMetadata(
-        TargetMemberModel<MethodModel> method,
-        string uniqueName,
-        bool supportsNullableGenericType
-    )
+    internal ImposterTargetMethodMetadata(TargetMemberModel<MethodModel> method, string uniqueName)
     {
         Model = method.Member;
         InterfaceSetupMember = method.Setup;
@@ -112,11 +108,7 @@ internal readonly struct ImposterTargetMethodMetadata
         NullableAwareReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
             Model.ReturnType.Type
         );
-        ReturnType = new ReturnTypeMetadata(
-            Model.ReturnType,
-            NullableAwareReturnTypeSyntax,
-            supportsNullableGenericType
-        );
+        ReturnType = new ReturnTypeMetadata(Model.ReturnType, NullableAwareReturnTypeSyntax);
         HasReturnValue = !Model.ReturnType.IsVoid;
         SupportsBaseImplementation = Model.IsClassMember && !Model.IsAbstract;
         IsAsync = Model.IsAsync;
@@ -193,7 +185,8 @@ internal readonly struct ImposterTargetMethodMetadata
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         ArgumentsCriteriaAsMethod = new AsMethodMetadata(
             Model.TypeParameters,
-            GenericTypeParameterNameSet
+            GenericTypeParameterNameSet,
+            ReservedParameterNames
         );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
@@ -250,7 +243,15 @@ internal readonly struct ImposterTargetMethodMetadata
         internal readonly NameSyntax[] TargetTypeArguments;
         internal readonly TypeParameterSyntax[] TypeParameters;
 
-        internal AsMethodMetadata(IReadOnlyList<TypeParameterModel> typeParameters, NameSet nameSet)
+        // The parameter of the lambdas that convert each matcher. It can't hide the criteria's fields, which are named
+        // after the method's parameters.
+        internal readonly IdentifierNameSyntax MatcherLambdaParameter;
+
+        internal AsMethodMetadata(
+            IReadOnlyList<TypeParameterModel> typeParameters,
+            NameSet nameSet,
+            in ReservedParameterNames reservedParameterNames
+        )
         {
             var allocatedNames = typeParameters
                 .Select(p => nameSet.Use($"{p.Name}Target"))
@@ -261,6 +262,10 @@ internal readonly struct ImposterTargetMethodMetadata
                 .ToArray();
 
             TypeParameters = allocatedNames.Select(SyntaxFactory.TypeParameter).ToArray();
+
+            MatcherLambdaParameter = SyntaxFactory.IdentifierName(
+                reservedParameterNames.CreateNameSet().Use("it")
+            );
         }
     }
 }
