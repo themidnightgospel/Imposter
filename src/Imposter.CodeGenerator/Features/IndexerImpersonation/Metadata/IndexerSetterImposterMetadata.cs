@@ -70,7 +70,7 @@ internal readonly struct IndexerSetterImposterMetadata
                     TupleElement(indexer.Arguments.TypeSyntax)
                         .WithIdentifier(Identifier("Arguments")),
                     Token(SyntaxKind.CommaToken),
-                    TupleElement(indexer.Core.NullableAwareTypeSyntax)
+                    TupleElement(indexer.Core.NullableAwareStoredTypeSyntax)
                         .WithIdentifier(Identifier("Value")),
                 }
             )

@@ -25,7 +25,7 @@ internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
             : null;
 
     internal static SpanModel? FromProperty(IPropertySymbol property) =>
-        property is { IsIndexer: false, RefKind: RefKind.None } ? From(property.Type) : null;
+        property.RefKind == RefKind.None ? From(property.Type) : null;
 
     private static SpanModel? From(ITypeSymbol type) =>
         type is INamedTypeSymbol { IsRefLikeType: true, TypeArguments.Length: 1 } span

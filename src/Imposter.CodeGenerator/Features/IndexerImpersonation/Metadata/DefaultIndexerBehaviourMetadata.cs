@@ -29,7 +29,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
             "BackingField",
             WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
                 arguments.TypeSyntax,
-                core.NullableAwareTypeSyntax
+                core.NullableAwareStoredTypeSyntax
             )
         );
     }

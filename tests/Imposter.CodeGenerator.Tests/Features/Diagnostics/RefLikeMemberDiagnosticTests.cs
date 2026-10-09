@@ -63,10 +63,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenIndexerWithReadOnlySpanKey_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int this[System.ReadOnlySpan<char> key] { get; } }"
+            "public interface IService { int this[RefLike key] { get; } }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);

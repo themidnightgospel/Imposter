@@ -67,15 +67,13 @@ internal static class IndexerArgumentsBuilder
         var otherParameter = Parameter(otherIdentifier)
             .WithType(NullableType(indexer.Arguments.TypeSyntax));
 
-        // EqualityComparer<T>.Default keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and
-        // works for type parameters and structs without ==.
+        // A comparer keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and works for type
+        // parameters and structs without ==.
         ExpressionSyntax? comparison = null;
         foreach (var parameter in indexer.Core.Parameters)
         {
-            var equalsExpression = WellKnownTypes
-                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
-                .Dot(IdentifierName("Default"))
-                .Dot(IdentifierName("Equals"))
+            var equalsExpression = parameter
+                .EqualityComparer.Dot(IdentifierName("Equals"))
                 .Call([
                     Argument(IdentifierName(parameter.FieldName)),
                     Argument(otherIdentifierName.Dot(IdentifierName(parameter.FieldName))),
@@ -134,7 +132,7 @@ internal static class IndexerArgumentsBuilder
     }
 
     // A manual combine instead of System.HashCode, which .NET Standard 2.0 and .NET Framework lack. The `!` only
-    // silences a nullability warning: EqualityComparer<T>.Default returns 0 for null.
+    // silences a nullability warning: both comparers return 0 for null.
     private static MethodDeclarationSyntax BuildGetHashCodeMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -159,10 +157,8 @@ internal static class IndexerArgumentsBuilder
                                 hash,
                                 LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(31))
                             ),
-                            WellKnownTypes
-                                .System.Collections.Generic.EqualityComparer(parameter.TypeSyntax)
-                                .Dot(IdentifierName("Default"))
-                                .Dot(IdentifierName("GetHashCode"))
+                            parameter
+                                .EqualityComparer.Dot(IdentifierName("GetHashCode"))
                                 .Call(
                                     Argument(
                                         PostfixUnaryExpression(
