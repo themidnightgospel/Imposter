@@ -64,13 +64,20 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             ))
             .ToArray();
 
-        RaiseInternal = new MethodMetadata("RaiseInternal", WellKnownTypes.Void);
+        var raiseMethodNames = core.CreateParameterNameSet();
+        RaiseInternal = new MethodMetadata(
+            raiseMethodNames.Use("RaiseInternal"),
+            WellKnownTypes.Void
+        );
         RaiseCoreAsync = new MethodMetadata(
-            "RaiseCoreAsync",
+            raiseMethodNames.Use("RaiseCoreAsync"),
             WellKnownTypes.System.Threading.Tasks.Task
         );
         RaiseLocalNames = new EventRaiseLocalNames(core);
-        EnumerateHandlers = new MethodMetadata("EnumerateActiveHandlers", WellKnownTypes.Void);
+        EnumerateHandlers = new MethodMetadata(
+            raiseMethodNames.Use("EnumerateActiveHandlers"),
+            WellKnownTypes.Void
+        );
         EnsureCountMatches = new MethodMetadata("EnsureCountMatches", WellKnownTypes.Void);
         RaisedVerification = new MethodMetadata("Raised", WellKnownTypes.Void);
     }
