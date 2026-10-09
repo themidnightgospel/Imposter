@@ -109,7 +109,7 @@ With async methods, imposter provides some handy methods to simplify setup:
 
 ## Ref/Out/In Parameters
 
-Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref`, `in` and `ref readonly`.
+Use `OutArg<T>.Any()` to match `out` parameters; `Arg<T>` for `ref`, `in` and `ref readonly`. Span parameters have matchers of their own; see [Span parameters](../arguments-matching.md#span-parameters).
 
 Returns and callbacks can specify `out/ref/in` in the delegate signature:
 !!! example

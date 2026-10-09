@@ -203,5 +203,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
             service.Parse("42").ShouldBe(42);
             service.Parse("123").ShouldBe(-1);
         }
+
+        [Fact]
+        public void GivenOutSpanMatcher_WhenTheDelegateAssignsTheSpan_ShouldHandItToTheCaller()
+        {
+            var imposter = new ISpanReaderImposter();
+            var reader = imposter.Instance();
+
+            imposter
+                .TryRead(OutReadOnlySpanArg<byte>.Any())
+                .Returns(
+                    (out System.ReadOnlySpan<byte> data) =>
+                    {
+                        data = new byte[] { 1, 2 };
+                        return true;
+                    }
+                );
+
+            reader.TryRead(out var data).ShouldBeTrue();
+            data.ToArray().ShouldBe(new byte[] { 1, 2 });
+        }
     }
 }

@@ -20,10 +20,10 @@ public class RefLikeMemberDiagnosticTests
         .Id;
 
     [Fact]
-    public async Task GivenMethodWithOutSpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodWithOutCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int Get(out System.ReadOnlySpan<byte> output); }"
+            "public interface IService { int Get(out RefLike output); }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -86,10 +86,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenVirtualClassMethodWithRefSpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenVirtualClassMethodWithRefCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public class Service { public virtual int Get(ref System.Span<byte> input) => 0; }",
+            "public class Service { public virtual int Get(ref RefLike input) => 0; }",
             "Sample.Service"
         );
 
@@ -138,7 +138,28 @@ public class RefLikeMemberDiagnosticTests
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
+
+    [Fact]
+    public async Task GivenRefSpanParameterNextToScopedParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { int Copy(ref System.Span<byte> target, scoped System.ReadOnlySpan<byte> source); }",
+            languageVersion: LanguageVersion.CSharp11
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
 #endif
+
+    [Fact]
+    public async Task GivenMethodsWithSpanParametersByReference_WhenGeneratorRuns_ShouldNotReportDiagnostics()
+    {
+        var result = await RunGenerator(
+            "public interface IService { int Advance(ref System.ReadOnlySpan<byte> buffer); bool TryRead(out System.Span<char> text); }"
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
 
     [Fact]
     public async Task GivenMethodsReturningSpansByValue_WhenGeneratorRuns_ShouldNotReportDiagnostics()

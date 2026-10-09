@@ -1,4 +1,3 @@
-using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 #if ROSLYN4_4_OR_GREATER
 using System.Linq;
@@ -7,16 +6,17 @@ using System.Linq;
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> passed by value, <c>in</c> or <c>ref readonly</c>, or
-/// returned by value. A span itself can't be kept, so an imposter keeps its elements in an array.
+/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> parameter, or one returned by value. A span itself can't be
+/// kept, so an imposter keeps the elements a span argument arrives with, or a span result has, in an array.
 /// </summary>
 internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
 {
-    // A method can't replace a span it takes by value, in or ref readonly, so the copy stays the whole story.
     internal static SpanModel? From(IParameterSymbol parameter) =>
-        parameter.RefKind is RefKind.None or RefKind.In or RefKinds.RefReadOnlyParameter
-            ? From(parameter.Type)
-            : null;
+        parameter.RefKind is RefKind.Ref or RefKind.Out
+        && parameter.ContainingSymbol is IMethodSymbol method
+        && HasScopedParameter(method)
+            ? null
+            : From(parameter.Type);
 
     internal static SpanModel? FromReturnType(IMethodSymbol method) =>
         method.RefKind == RefKind.None && !HasScopedParameter(method)
@@ -31,8 +31,9 @@ internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
             ? new SpanModel(TypeModel.From(span.TypeArguments[0]), span.Name == "ReadOnlySpan")
             : null;
 
-    // An implementation has to repeat a parameter's scoped modifier, and then can't return the span the imposter's
-    // delegates hand back, which may come from that parameter. An out parameter is scoped implicitly, on both sides.
+    // An implementation has to repeat a parameter's scoped modifier, and then can't return a span the imposter's
+    // delegates hand back, or pass one by reference to them, since it may come from that parameter (CS8987). An out
+    // parameter is scoped implicitly, on both sides.
     private static bool HasScopedParameter(IMethodSymbol method) =>
 #if ROSLYN4_4_OR_GREATER
         method.Parameters.Any(parameter =>
