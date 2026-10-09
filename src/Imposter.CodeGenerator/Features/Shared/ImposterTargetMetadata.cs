@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -190,18 +191,16 @@ internal readonly struct ImposterTargetMetadata
         NameSet memberNameSet
     ) =>
         new(
-            propertySymbol,
+            PropertyModel.From(propertySymbol, _memberAccess),
             _symbolNameNamespace.Use(propertySymbol.Name),
             memberNameSet,
-            _memberAccess,
             _explicitProperties.Contains(propertySymbol)
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
         new(
-            propertySymbol,
+            PropertyModel.From(propertySymbol, _memberAccess),
             _symbolNameNamespace.Use(IndexerMemberName),
-            _memberAccess,
             _explicitIndexers.Contains(propertySymbol)
         );
 
@@ -227,9 +226,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
         new(
-            eventSymbol,
+            EventModel.From(eventSymbol, _memberAccess),
             _symbolNameNamespace.Use(eventSymbol.Name),
-            _memberAccess,
             _explicitEvents.Contains(eventSymbol)
         );
 

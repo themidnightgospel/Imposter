@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
@@ -29,48 +27,31 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly bool IsAsync;
 
-    internal readonly ITypeSymbol? DelegateReturnTypeSymbol;
+    internal readonly bool ReturnsNonGenericValueTask;
 
     internal readonly bool SupportsBaseImplementation;
 
-    internal ImposterEventCoreMetadata(IEventSymbol eventSymbol, string uniqueName)
+    internal ImposterEventCoreMetadata(EventModel @event, string uniqueName)
     {
         UniqueName = uniqueName;
-        Name = eventSymbol.Name;
-        DisplayName =
-            $"{eventSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{Name}";
-        HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntax(eventSymbol.Type);
+        Name = @event.Name;
+        DisplayName = @event.DisplayName;
+        HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntax(@event.Type);
         NullableAwareHandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
-            eventSymbol.Type
+            @event.Type
         );
         HandlerArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(HandlerTypeSyntax);
-
-        if (
-            eventSymbol.Type is not INamedTypeSymbol delegateSymbol
-            || delegateSymbol.DelegateInvokeMethod is null
-        )
-        {
-            throw new InvalidOperationException("Events must expose a delegate invoke method.");
-        }
-
-        var parameterModels = delegateSymbol
-            .DelegateInvokeMethod.Parameters.Select(ParameterModel.From)
+        Parameters = @event
+            .DelegateParameters.Select(model => new EventParameterMetadata(model))
             .ToArray();
-        Parameters = parameterModels.Select(model => new EventParameterMetadata(model)).ToArray();
-
-        DelegateReturnTypeSymbol = delegateSymbol.DelegateInvokeMethod.ReturnType;
-        IsAsync = DelegateReturnTypeSymbol.IsAwaitable();
+        IsAsync = @event.IsAsync;
+        ReturnsNonGenericValueTask = @event.ReturnsNonGenericValueTask;
         var includeRefKind = !IsAsync;
-        RaiseParameterSyntaxes = parameterModels
-            .Select(model => SyntaxFactoryHelper.ParameterSyntax(model, includeRefKind))
+        RaiseParameterSyntaxes = @event
+            .DelegateParameters.Select(model =>
+                SyntaxFactoryHelper.ParameterSyntax(model, includeRefKind)
+            )
             .ToArray();
-
-        var containingTypeIsClass = eventSymbol.ContainingType?.TypeKind == TypeKind.Class;
-        var addSupportsBaseImplementation =
-            containingTypeIsClass && eventSymbol.AddMethod is { IsAbstract: false };
-        var removeSupportsBaseImplementation =
-            containingTypeIsClass && eventSymbol.RemoveMethod is { IsAbstract: false };
-        SupportsBaseImplementation =
-            addSupportsBaseImplementation && removeSupportsBaseImplementation;
+        SupportsBaseImplementation = @event.IsClassMember && @event.HasConcreteAccessors;
     }
 }

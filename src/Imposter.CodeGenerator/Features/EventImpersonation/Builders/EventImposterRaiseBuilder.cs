@@ -131,7 +131,7 @@ internal static class EventImposterRaiseBuilder
     )
     {
         var fields = @event.Builder.Fields;
-        var usesValueTask = @event.Core.DelegateReturnTypeSymbol.IsNonGenericValueTask();
+        var usesValueTask = @event.Core.ReturnsNonGenericValueTask;
 
         return new BlockBuilder()
             .AddExpression(

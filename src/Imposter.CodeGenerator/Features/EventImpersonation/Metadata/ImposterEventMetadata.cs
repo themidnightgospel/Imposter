@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,32 +24,28 @@ internal readonly ref struct ImposterEventMetadata
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
     internal ImposterEventMetadata(
-        IEventSymbol eventSymbol,
+        EventModel @event,
         string uniqueName,
-        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation
     )
     {
-        Core = new ImposterEventCoreMetadata(eventSymbol, uniqueName);
+        Core = new ImposterEventCoreMetadata(@event, uniqueName);
         BuilderInterface = new EventImposterBuilderInterfaceMetadata(Core);
         Builder = new EventImposterBuilderMetadata(Core);
         BuilderField = new FieldMetadata($"_{Core.UniqueName}", Builder.TypeSyntax);
 
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
-        if (requiresExplicitInterfaceImplementation && eventSymbol.ContainingType is not null)
+        if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = ExplicitInterfaceSpecifier(
-                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(eventSymbol.ContainingType)
+                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(@event.ContainingType)
             );
             ImposterInstanceModifiers = default;
         }
         else
         {
             ExplicitInterfaceSpecifier = null;
-            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
-                eventSymbol,
-                memberAccess
-            );
+            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(@event);
         }
     }
 }
