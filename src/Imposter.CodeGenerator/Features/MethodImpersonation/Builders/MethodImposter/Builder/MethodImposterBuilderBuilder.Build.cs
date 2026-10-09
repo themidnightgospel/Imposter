@@ -41,13 +41,13 @@ internal static partial class MethodImposterBuilderBuilder
         );
         constructor = constructor.WithBody(
             constructor.Body!.AddStatements(
-                BuildInvocationSetupInitializationStatements(method).ToArray()
+                BuildInvocationImposterGroupInitializationStatements(method).ToArray()
             )
         );
 
         return builderClass
             .AddMember(constructor)
-            .AddMembers(ImplementInvocationSetupBuilderInterface(method))
+            .AddMembers(ImplementInvocationImposterGroupInterface(method))
             .AddMember(BuildCalledMethod(method))
             .AddMember(BuildCallCountMethod(method))
             .Build();

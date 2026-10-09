@@ -29,7 +29,7 @@ internal partial class MethodImposterBuilder
                     .AddStatement(
                         TryStatement(
                             new BlockBuilder()
-                                .AddStatement(InvokeMatchingSetup(method))
+                                .AddStatement(InvokeMatchingInvocationImposterGroup(method))
                                 .AddStatement(
                                     AddToInvocationHistoryCollection(method, threwException: false)
                                 )
@@ -139,7 +139,9 @@ internal partial class MethodImposterBuilder
         }
     }
 
-    private static StatementSyntax InvokeMatchingSetup(in ImposterTargetMethodMetadata method)
+    private static StatementSyntax InvokeMatchingInvocationImposterGroup(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var invokeExpression = IdentifierName(
                 method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
@@ -192,7 +194,9 @@ internal partial class MethodImposterBuilder
             method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
         );
         var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(
-            IdentifierName(method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name)
+            IdentifierName(
+                method.MethodInvocationImposterGroup.DefaultInvocationImposterGroupField.Name
+            )
         );
 
         return IfStatement(

@@ -36,7 +36,7 @@ internal static partial class MethodImposterBuilder
         );
 
         return methodImposterClassBuilder
-            .AddMember(BuildInvocationSetupsField(method))
+            .AddMember(BuildInvocationImposterGroupsField(method))
             .AddMember(invocationHistoryCollectionField)
             .AddMember(invocationBehaviorField)
             .AddMember(

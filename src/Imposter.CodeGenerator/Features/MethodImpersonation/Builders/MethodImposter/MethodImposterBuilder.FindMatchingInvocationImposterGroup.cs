@@ -14,12 +14,12 @@ internal partial class MethodImposterBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var setupIdentifier = Identifier(
-            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.SetupVariableName
+        var groupIdentifier = Identifier(
+            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.GroupVariableName
         );
-        var setupIdentifierName = IdentifierName(setupIdentifier);
+        var groupIdentifierName = IdentifierName(groupIdentifier);
 
-        var findMatchingSetupMethod = new MethodDeclarationBuilder(
+        var findMatchingGroupMethod = new MethodDeclarationBuilder(
             NullableType(method.MethodInvocationImposterGroup.Syntax),
             method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
         )
@@ -28,16 +28,18 @@ internal partial class MethodImposterBuilder
 
         if (method.Parameters.HasInputParameters)
         {
-            return findMatchingSetupMethod
+            return findMatchingGroupMethod
                 .WithBody(
                     Block(
                         ForEachStatement(
                             Var,
-                            setupIdentifier,
-                            IdentifierName(method.MethodImposter.InvocationImpostersField.Name),
+                            groupIdentifier,
+                            IdentifierName(
+                                method.MethodImposter.InvocationImposterGroupsField.Name
+                            ),
                             Block(
                                 IfStatement(
-                                    setupIdentifierName
+                                    groupIdentifierName
                                         .Dot(IdentifierName("ArgumentsCriteria"))
                                         .Dot(
                                             IdentifierName(
@@ -45,7 +47,7 @@ internal partial class MethodImposterBuilder
                                             )
                                         )
                                         .Call(Argument(IdentifierName("arguments"))),
-                                    ReturnStatement(setupIdentifierName)
+                                    ReturnStatement(groupIdentifierName)
                                 )
                             )
                         ),
@@ -55,21 +57,21 @@ internal partial class MethodImposterBuilder
                 .Build();
         }
 
-        return findMatchingSetupMethod
+        return findMatchingGroupMethod
             .WithBody(
                 Block(
                     IfStatement(
-                        IdentifierName(method.MethodImposter.InvocationImpostersField.Name)
+                        IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name)
                             .Dot(ConcurrentStackSyntaxHelper.TryPeek)
                             .Call(
                                 OutVarArgument(
                                     method
                                         .MethodImposter
                                         .FindMatchingInvocationImposterGroupMethod
-                                        .SetupVariableName
+                                        .GroupVariableName
                                 )
                             ),
-                        ReturnStatement(setupIdentifierName),
+                        ReturnStatement(groupIdentifierName),
                         ElseClause(ReturnStatement(Null))
                     )
                 )

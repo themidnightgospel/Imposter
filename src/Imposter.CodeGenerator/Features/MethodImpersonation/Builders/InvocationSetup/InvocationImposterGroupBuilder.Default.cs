@@ -7,14 +7,14 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationSetup;
 
-internal static partial class InvocationSetupBuilder
+internal static partial class InvocationImposterGroupBuilder
 {
-    internal static FieldDeclarationSyntax DefaultInstanceLazyInitializer(
+    internal static FieldDeclarationSyntax DefaultInstanceField(
         in ImposterTargetMethodMetadata method
     ) =>
         SyntaxFactoryHelper.SingleVariableField(
             method.MethodInvocationImposterGroup.Syntax,
-            method.MethodInvocationImposterGroup.DefaultInvocationSetupField.Name,
+            method.MethodInvocationImposterGroup.DefaultInvocationImposterGroupField.Name,
             TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword)),
             method.MethodInvocationImposterGroup.Syntax.New(
                 method.Parameters.HasInputParameters
