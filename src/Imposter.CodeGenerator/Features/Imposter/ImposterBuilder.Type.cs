@@ -308,17 +308,11 @@ internal readonly ref struct ImposterBuilder
                 };
 
                 return ThisExpression()
-                    .Dot(
-                        method.Model.IsGenericMethod
-                            ? IdentifierName(method.MethodImposter.Collection.AsField.Name)
-                            : IdentifierName(method.MethodImposter.AsField.Name)
-                    )
+                    .Dot(IdentifierName(method.ImposterField.Name))
                     .Assign(
-                        (
-                            method.Model.IsGenericMethod
-                                ? method.MethodImposter.Collection.Syntax
-                                : method.MethodImposter.Syntax
-                        ).New(ArgumentList(SeparatedList(constructorArguments)))
+                        method.ImposterField.Type.New(
+                            ArgumentList(SeparatedList(constructorArguments))
+                        )
                     )
                     .ToStatementSyntax();
             })

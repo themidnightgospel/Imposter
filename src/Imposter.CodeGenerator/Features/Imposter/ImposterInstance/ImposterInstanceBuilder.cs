@@ -593,10 +593,12 @@ internal readonly ref struct ImposterInstanceBuilder
             in ImposterTargetMethodMetadata method
         )
         {
+            var imposterField = IdentifierName(imposterFieldName)
+                .Dot(IdentifierName(method.ImposterField.Name));
+
             if (method.Model.IsGenericMethod)
             {
-                return IdentifierName(imposterFieldName)
-                    .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
+                return imposterField
                     .Dot(
                         GenericName(
                             Identifier("GetImposterWithMatchingInvocationImposterGroup"),
@@ -606,8 +608,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     .Call(GetGetImposterWithMatchingInvocationImposterGroupArguments(method));
             }
 
-            return IdentifierName(imposterFieldName)
-                .Dot(IdentifierName(method.MethodImposter.AsField.Name));
+            return imposterField;
 
             static ArgumentListSyntax? GetGetImposterWithMatchingInvocationImposterGroupArguments(
                 in ImposterTargetMethodMetadata method

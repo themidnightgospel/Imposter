@@ -300,9 +300,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddPropertyImposter(property)
                 .AddInterfaceSetupMember(
                     targetProperty.Setup,
-                    property.RequiresExplicitInterfaceImplementation
-                        ? property.Core.UniqueName
-                        : property.Core.Name,
+                    property.SetupName,
                     property.ImposterBuilderInterface.Syntax
                 )
                 .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
@@ -328,9 +326,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddEventImposter(@event)
                 .AddInterfaceSetupMember(
                     targetEvent.Setup,
-                    @event.RequiresExplicitInterfaceImplementation
-                        ? @event.Core.UniqueName
-                        : @event.Core.Name,
+                    @event.SetupName,
                     @event.BuilderInterface.TypeSyntax
                 )
                 .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))
