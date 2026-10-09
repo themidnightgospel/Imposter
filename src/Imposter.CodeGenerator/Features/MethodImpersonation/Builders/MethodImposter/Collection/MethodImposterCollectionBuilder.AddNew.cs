@@ -1,4 +1,3 @@
-using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -14,13 +13,9 @@ internal static partial class MethodImposterCollectionBuilder
 {
     private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
-        var typeParameters = TypeParametersSyntax(method.Model.TypeParameters).ToArray();
-
         var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithTypeParameters(
-                typeParameters.Length > 0 ? TypeParameterList(SeparatedList(typeParameters)) : null
-            )
+            .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(

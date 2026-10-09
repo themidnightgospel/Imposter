@@ -196,8 +196,8 @@ internal static class ImposterTargetValidator
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
-    // imposter keeps its elements in an array: a method's span passed or returned by value, a property's or indexer's
-    // span value, and an indexer's span key.
+    // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
+    // or indexer's span value, and an indexer's span key. SpanModel leaves out the ones a scoped parameter rules out.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess

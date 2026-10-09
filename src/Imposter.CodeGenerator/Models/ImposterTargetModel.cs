@@ -7,8 +7,9 @@ using Microsoft.CodeAnalysis;
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// Everything the generator reads from a target to build its imposter. Members are in the order the imposter emits
-/// them, and only the ones the imposter's assembly can override or implement are included.
+/// Everything the generator reads from a target to build its imposter. Properties, indexers and events are in the
+/// order the imposter emits them; ImposterGenerator orders the methods when it emits them. Only the members the
+/// imposter's assembly can override or implement are included.
 /// <see cref="HasRequiredMembers"/> is true for a class with C# 11 required members, which the imposter's
 /// <c>new</c> of its instance can skip only through <c>[SetsRequiredMembers]</c>.
 /// </summary>

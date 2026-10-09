@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
@@ -17,20 +17,7 @@ internal readonly record struct MethodImposterGenericTypeMetadata(
     )
         : this(
             name,
-            GetNameSyntax(name, genericTypeArguments),
-            GetNameSyntax(name, targetGenericTypeArguments)
+            SyntaxFactoryHelper.WithMethodGenericArguments(genericTypeArguments, name),
+            SyntaxFactoryHelper.WithMethodGenericArguments(targetGenericTypeArguments, name)
         ) { }
-
-    private static NameSyntax GetNameSyntax(
-        string name,
-        IReadOnlyList<NameSyntax> genericTypeArguments
-    ) =>
-        genericTypeArguments.Count > 0
-            ? SyntaxFactory.GenericName(
-                SyntaxFactory.Identifier(name),
-                SyntaxFactory.TypeArgumentList(
-                    SyntaxFactory.SeparatedList<TypeSyntax>(genericTypeArguments)
-                )
-            )
-            : SyntaxFactory.IdentifierName(name);
 }
