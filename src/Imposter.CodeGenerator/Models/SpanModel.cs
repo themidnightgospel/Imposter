@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 #if ROSLYN4_4_OR_GREATER
 using System.Linq;
@@ -6,13 +7,16 @@ using System.Linq;
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> passed or returned by value. A span itself can't be kept, so
-/// an imposter keeps its elements in an array.
+/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> passed by value, <c>in</c> or <c>ref readonly</c>, or
+/// returned by value. A span itself can't be kept, so an imposter keeps its elements in an array.
 /// </summary>
 internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
 {
+    // A method can't replace a span it takes by value, in or ref readonly, so the copy stays the whole story.
     internal static SpanModel? From(IParameterSymbol parameter) =>
-        parameter.RefKind == RefKind.None ? From(parameter.Type) : null;
+        parameter.RefKind is RefKind.None or RefKind.In or RefKinds.RefReadOnlyParameter
+            ? From(parameter.Type)
+            : null;
 
     internal static SpanModel? FromReturnType(IMethodSymbol method) =>
         method.RefKind == RefKind.None && !HasScopedParameter(method)
