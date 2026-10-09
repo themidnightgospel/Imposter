@@ -155,5 +155,18 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
             buffer[0].ShouldBe((byte)42);
         }
+
+        [Fact]
+        public void GivenOverloadsDifferingOnlyInPassingByReference_WhenEachIsSetUp_ShouldUseItsOwnSetup()
+        {
+            var imposter = new ICounterServiceImposter();
+
+            imposter.Count(Arg<int>.Any()).Returns(1); // int Count(int value)
+            imposter.Count_1(Arg<int>.Any()).Returns(2); // int Count(in int value)
+
+            var value = 5;
+            imposter.Instance().Count(value).ShouldBe(1);
+            imposter.Instance().Count(in value).ShouldBe(2);
+        }
     }
 }

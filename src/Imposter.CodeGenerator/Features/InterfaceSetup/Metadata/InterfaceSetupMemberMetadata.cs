@@ -19,17 +19,23 @@ internal readonly struct InterfaceSetupMemberMetadata
     // True for an indexer the imposter sets up with a method named SetupName instead of its own this[...].
     internal readonly bool IsSetUpByMethod;
 
+    // The name the view declares the member under: its own, or the setup name of an overload whose setup signature
+    // another overload shares.
+    internal readonly string ViewName;
+
     internal InterfaceSetupMemberMetadata(
         InterfaceSetupMemberModel model,
         string setupName,
         TypeSyntax returnType,
-        bool isSetUpByMethod = false
+        bool isSetUpByMethod = false,
+        string? viewName = null
     )
     {
         Model = model;
         SetupName = setupName;
         ReturnType = returnType;
         IsSetUpByMethod = isSetUpByMethod;
+        ViewName = viewName ?? model.Name;
         ImplementationConstraints =
             model.Kind == InterfaceSetupMemberKind.Method
                 ? GetImplementationConstraints(model)
@@ -40,8 +46,9 @@ internal readonly struct InterfaceSetupMemberMetadata
     internal InterfaceSetupMemberMetadata(in ImposterTargetMethodMetadata method)
         : this(
             method.InterfaceSetupMember!,
-            method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Model.Name,
-            method.MethodImposter.BuilderInterface.Syntax
+            method.SetupName,
+            method.MethodImposter.BuilderInterface.Syntax,
+            viewName: method.Model.HasRefKindOverload ? method.SetupName : null
         ) { }
 
     private static List<TypeParameterConstraintClauseSyntax> GetImplementationConstraints(

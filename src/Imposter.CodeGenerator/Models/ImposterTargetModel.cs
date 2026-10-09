@@ -31,6 +31,14 @@ internal sealed record ImposterTargetModel(
     {
         var isInterface = target.TypeKind is TypeKind.Interface;
         var methods = GetMethods(target, memberAccess);
+        // A class's imposter sets all its methods up side by side. An interface's setup view lists only the methods
+        // its interface declares, and DetectCollisions already names them apart on the imposter, so there they
+        // collide only within one interface.
+        var refKindOverloads = FindRefKindOverloads(
+            isInterface
+                ? methods.GroupBy(method => method.ContainingType, SymbolEqualityComparer.Default)
+                : [methods]
+        );
         var properties = GetProperties(target, memberAccess);
         var indexers = properties.Where(property => property.IsIndexer).ToArray();
         var nonIndexers = properties.Where(property => !property.IsIndexer).ToArray();
@@ -52,7 +60,7 @@ internal sealed record ImposterTargetModel(
             ToTargetMembers(
                 methods,
                 isInterface ? DetectCollisions(methods, MethodKey) : null,
-                method => MethodModel.From(method, memberAccess),
+                method => MethodModel.From(method, memberAccess, refKindOverloads.Contains(method)),
                 isInterface
             ),
             ToTargetMembers(
@@ -155,6 +163,47 @@ internal sealed record ImposterTargetModel(
             members.GroupBy(key).Where(group => group.Count() > 1).SelectMany(group => group),
             SymbolEqualityComparer.Default
         );
+
+    // A setup matches a parameter passed by value, in, ref or ref readonly with the same Arg<T>, so overloads that
+    // differ only in that would get setups with the same signature.
+    private static HashSet<IMethodSymbol> FindRefKindOverloads(
+        IEnumerable<IEnumerable<IMethodSymbol>> setupScopes
+    ) =>
+        new(
+            setupScopes
+                .SelectMany(scope => scope.GroupBy(method => method.Name))
+                .SelectMany(overloads =>
+                    overloads.Where(method =>
+                        overloads.Any(other => DifferOnlyInPassingByReference(method, other))
+                    )
+                ),
+            SymbolEqualityComparer.Default
+        );
+
+    private static bool DifferOnlyInPassingByReference(IMethodSymbol method, IMethodSymbol other)
+    {
+        if (
+            method.TypeParameters.Length != other.TypeParameters.Length
+            || method.Parameters.Length != other.Parameters.Length
+        )
+        {
+            return false;
+        }
+
+        // A generic overload compares with the other one written in terms of its own type parameters.
+        var otherParameters = other.TypeParameters.IsEmpty
+            ? other.Parameters
+            : other.Construct([.. method.TypeParameters]).Parameters;
+        var parameterPairs = method.Parameters.Zip(otherParameters, (a, b) => (a, b)).ToArray();
+
+        return parameterPairs.All(it => HaveTheSameMatcher(it.a, it.b))
+            && parameterPairs.Any(it => it.a.RefKind != it.b.RefKind);
+    }
+
+    // Only out gets a matcher of its own (OutArg<T>).
+    private static bool HaveTheSameMatcher(IParameterSymbol parameter, IParameterSymbol other) =>
+        (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
+        && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type);
 
     private static string MethodKey(IMethodSymbol method) =>
         $"{method.Name}({ParameterTypesKey(method.Parameters)})";

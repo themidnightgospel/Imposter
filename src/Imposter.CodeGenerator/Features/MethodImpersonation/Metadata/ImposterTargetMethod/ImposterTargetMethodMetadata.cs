@@ -76,6 +76,10 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly bool RequiresExplicitInterfaceImplementation;
 
+    // The imposter method that sets this method up: named after it, or by its unique name when another member would
+    // take the same setup signature.
+    internal readonly string SetupName;
+
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
     internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
@@ -200,6 +204,7 @@ internal readonly struct ImposterTargetMethodMetadata
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = method.RequiresExplicitInterfaceImplementation;
+        SetupName = NeedsNumberedSetup(method) ? UniqueName : Model.Name;
         ImposterInstanceMethodConstraintClauses =
             Model.IsClassMember || RequiresExplicitInterfaceImplementation
                 ? SyntaxFactoryHelper.RestatableConstraintClauses(
@@ -220,6 +225,10 @@ internal readonly struct ImposterTargetMethodMetadata
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
     }
+
+    // A method another member's setup would collide with is set up by its unique name.
+    internal static bool NeedsNumberedSetup(TargetMemberModel<MethodModel> method) =>
+        method.RequiresExplicitInterfaceImplementation || method.Member.HasRefKindOverload;
 
     // The names of the type parameters written as T? in the parameter or return types.
     private static HashSet<string> TypeParametersUsedAsNullable(
