@@ -22,6 +22,9 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly EventParameterMetadata[] Parameters;
 
+    // The handler's element in the handler-invocation history tuple, next to the parameters' elements.
+    internal readonly string HandlerTupleElementName;
+
     // An async method cannot take `in` parameters (CS1988), so an async event's raise methods take the delegate's
     // parameters by value. The handlers and callbacks they call keep the delegate's own modifiers.
     internal readonly ParameterSyntax[] RaiseParameterSyntaxes;
@@ -42,9 +45,16 @@ internal readonly ref struct ImposterEventCoreMetadata
             @event.Type
         );
         HandlerArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(HandlerTypeSyntax);
+        var tupleElementNames = new NameSet(
+            @event.DelegateParameters.Select(model => SyntaxFactoryHelper.EscapeKeyword(model.Name))
+        );
         Parameters = @event
-            .DelegateParameters.Select(model => new EventParameterMetadata(model))
+            .DelegateParameters.Select(model => new EventParameterMetadata(
+                model,
+                tupleElementNames
+            ))
             .ToArray();
+        HandlerTupleElementName = tupleElementNames.Use("Handler");
         IsAsync = @event.IsAsync;
         ReturnsNonGenericValueTask = @event.ReturnsNonGenericValueTask;
         var includeRefKind = !IsAsync;
