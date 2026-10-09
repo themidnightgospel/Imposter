@@ -42,6 +42,17 @@ Define the target interface and enable generation:
 
        imposter.Instance().Increment(10); // returns 12;
        ```
+ - Return a `Span<T>` or `ReadOnlySpan<T>`: `Returns` takes the array the returned span covers. Every call returns a span over that same array, so writes to a returned `Span<T>` land in it. A delegate passed to `Returns` returns the span itself.
+  
+!!! example
+       ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L150"}
+       // Span<byte> Rent(int size);
+       var buffer = new byte[4];
+       imposter.Rent(Arg<int>.Any()).Returns(buffer);
+
+       var span = imposter.Instance().Rent(4); // a span over buffer
+       span[0] = 42; // buffer[0] is now 42
+       ```
  - Sequence multiple outcomes with `Then()`:
   
 !!! example

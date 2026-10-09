@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -90,7 +89,11 @@ internal static class MethodImposterAdapterBuilder
             var pType = p.NullableAwareTypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
             var castArgument = p.IsSpan
-                ? AdaptedSpanArgument(p, typeParamRenamer)
+                ? AdaptedSpan(
+                    IdentifierName(p.Name),
+                    (TypeSyntax)typeParamRenamer.Visit(p.NullableAwareStoredTypeSyntax),
+                    p.NullableAwareStoredTypeSyntax
+                )
                 : TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType);
 
             switch (p.Model.RefKind)
@@ -194,17 +197,7 @@ internal static class MethodImposterAdapterBuilder
             );
             body.AddRange(postInvokeActions);
 
-            var returnType = method.NullableAwareReturnTypeSyntax;
-            var returnTargetType = typeParamRenamer.Visit(returnType);
-            body.Add(
-                ReturnStatement(
-                    TypeCasterSyntaxHelper.CastExpression(
-                        adapterNames.InvokeResultVariableName,
-                        returnType,
-                        (TypeSyntax)returnTargetType
-                    )
-                )
-            );
+            body.Add(ReturnStatement(AdaptedResult(method, adapterNames, typeParamRenamer)));
         }
         else
         {
@@ -222,24 +215,55 @@ internal static class MethodImposterAdapterBuilder
             .Build();
     }
 
-    // A span can't go through TypeCaster. One whose type uses none of the method's type parameters passes on as it
-    // is, so writes to it reach the caller; any other passes as a cast copy, which converts back to a span.
-    private static ExpressionSyntax AdaptedSpanArgument(
-        in MethodParameterMetadata parameter,
+    private static ExpressionSyntax AdaptedResult(
+        in ImposterTargetMethodMetadata method,
+        in AdapterNames adapterNames,
         TypeParameterRenamer typeParamRenamer
     )
     {
-        var storedType = parameter.NullableAwareStoredTypeSyntax;
-        var adaptedStoredType = (TypeSyntax)typeParamRenamer.Visit(storedType);
+        if (method.ReturnType.IsSpan)
+        {
+            var result = IdentifierName(adapterNames.InvokeResultVariableName);
+            var elementsType = method.ReturnType.ValueTypeSyntax;
+            var targetElementsType = (TypeSyntax)typeParamRenamer.Visit(elementsType);
 
-        return adaptedStoredType.IsEquivalentTo(storedType)
-            ? IdentifierName(parameter.Name)
-            : TypeCasterSyntaxHelper.CastExpression(
-                parameter.StoredValue,
-                adaptedStoredType,
-                storedType
-            );
+            // The result may refer to the locals the adapter passes by reference, so with those it can't pass back as
+            // it is.
+            return method.Parameters.HasByReferenceParameters
+                ? SpanCopy(result, elementsType, targetElementsType)
+                : AdaptedSpan(result, elementsType, targetElementsType);
+        }
+
+        var returnType = method.NullableAwareReturnTypeSyntax;
+        return TypeCasterSyntaxHelper.CastExpression(
+            adapterNames.InvokeResultVariableName,
+            returnType,
+            (TypeSyntax)typeParamRenamer.Visit(returnType)
+        );
     }
+
+    // A span argument or result can't go through TypeCaster. One whose type uses none of the method's type parameters
+    // passes as it is, so writes to it reach the other side; any other passes as a cast copy of its elements, which
+    // converts back to a span.
+    private static ExpressionSyntax AdaptedSpan(
+        ExpressionSyntax span,
+        TypeSyntax fromElementsType,
+        TypeSyntax toElementsType
+    ) =>
+        fromElementsType.IsEquivalentTo(toElementsType)
+            ? span
+            : SpanCopy(span, fromElementsType, toElementsType);
+
+    private static ExpressionSyntax SpanCopy(
+        ExpressionSyntax span,
+        TypeSyntax fromElementsType,
+        TypeSyntax toElementsType
+    ) =>
+        TypeCasterSyntaxHelper.CastExpression(
+            SpanElementsCopy(span),
+            fromElementsType,
+            toElementsType
+        );
 
     private static MethodDeclarationSyntax BuildAdapterHasMatchingInvocationImposterGroupMethod(
         in ImposterTargetMethodMetadata method,

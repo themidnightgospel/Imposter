@@ -117,7 +117,13 @@ internal partial class MethodImposterBuilder
                 arguments.Add(
                     threwException
                         ? Argument(DefaultNonNullable)
-                        : method.MethodImposter.InvokeMethod.ResultVariableName.ToArgument()
+                        : Argument(
+                            method.ReturnType.StoredValue(
+                                IdentifierName(
+                                    method.MethodImposter.InvokeMethod.ResultVariableName
+                                )
+                            )
+                        )
                 );
             }
 

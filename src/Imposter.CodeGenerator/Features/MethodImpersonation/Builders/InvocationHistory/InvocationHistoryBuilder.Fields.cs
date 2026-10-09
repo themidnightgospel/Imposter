@@ -30,7 +30,7 @@ internal static partial class InvocationHistoryBuilder
         {
             fields.Add(
                 SingleVariableField(
-                    method.ReturnType.TypeSymbolMetadata.NullableTypeSyntax,
+                    method.ReturnType.StoredTypeSyntax,
                     InvocationHistoryTypeMetadata.ResultFieldName,
                     TokenList(Token(SyntaxKind.InternalKeyword))
                 )

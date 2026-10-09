@@ -141,5 +141,19 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
             imposter.Instance().Increment(10).ShouldBe(14);
             imposter.Instance().Increment(10).ShouldBe(14);
         }
+
+        [Fact]
+        public void GivenSpanReturningMethod_WhenTheCallerWritesToTheReturnedSpan_ShouldWriteToTheArray()
+        {
+            var imposter = new IBufferServiceImposter();
+
+            var buffer = new byte[4];
+            imposter.Rent(Arg<int>.Any()).Returns(buffer);
+
+            var span = imposter.Instance().Rent(4);
+            span[0] = 42;
+
+            buffer[0].ShouldBe((byte)42);
+        }
     }
 }

@@ -35,6 +35,8 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly bool HasSpanParameters;
 
+    internal readonly bool HasByReferenceParameters;
+
     public ImposterTargetMethodParametersMetadata(IReadOnlyList<ParameterModel> parameters)
     {
         AllParameters = parameters;
@@ -44,6 +46,7 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
         AllParameterMetadata = parameters.Select(it => new MethodParameterMetadata(it)).ToArray();
         HasSpanParameters = AllParameterMetadata.Any(it => it.IsSpan);
+        HasByReferenceParameters = parameters.Any(it => it.RefKind is not RefKind.None);
         InputParameterMetadata = AllParameterMetadata
             .Where(it => it.Model.RefKind is not RefKind.Out)
             .ToArray();
