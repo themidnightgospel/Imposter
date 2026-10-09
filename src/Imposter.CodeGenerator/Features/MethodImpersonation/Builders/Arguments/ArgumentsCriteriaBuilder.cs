@@ -26,11 +26,7 @@ public static class ArgumentsCriteriaBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(
-                method.Parameters.AllParameterMetadata.Select(parameter =>
-                    ParameterAsArgProperty(parameter)
-                )
-            )
+            .AddMembers(method.Parameters.AllParameterMetadata.Select(ArgProperty))
             .AddMember(
                 new ConstructorBuilder(method.ArgumentsCriteria.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -61,6 +57,13 @@ public static class ArgumentsCriteriaBuilder
 #endif
             .WithTrailingTrivia(CarriageReturnLineFeed);
     }
+
+    // The Arg<T> criterion for one of the method's parameters.
+    private static PropertyDeclarationSyntax ArgProperty(MethodParameterMetadata parameter) =>
+        new PropertyDeclarationBuilder(parameter.ArgTypeSyntax, parameter.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithGetter()
+            .Build();
 
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {

@@ -221,6 +221,15 @@ internal readonly struct ImposterTargetMethodMetadata
         }
     }
 
+    // A member name followed by this method's type arguments, when it has any.
+    internal SimpleNameSyntax WithGenericArguments(string identifier) =>
+        GenericTypeArgumentListSyntax is not null
+            ? SyntaxFactory.GenericName(
+                SyntaxFactory.Identifier(identifier),
+                GenericTypeArgumentListSyntax
+            )
+            : SyntaxFactory.IdentifierName(identifier);
+
     // A method another member's setup would collide with is set up by its unique name.
     internal static bool NeedsNumberedSetup(TargetMemberModel<MethodModel> method) =>
         method.RequiresExplicitInterfaceImplementation || method.Member.HasRefKindOverload;

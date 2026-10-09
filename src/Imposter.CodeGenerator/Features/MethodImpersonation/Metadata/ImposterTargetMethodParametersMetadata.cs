@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 
@@ -55,14 +56,18 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
             .ToArray();
 
         ParameterListSyntaxIncludingNullable =
-            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(AllParameterMetadata);
+            SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(AllParameters);
         InputParameterWithoutRefKindListSyntaxIncludingNullable =
             SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(
-                InputParameterMetadata,
+                InputParameters,
                 includeRefKind: false
             );
-        ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(AllParameterMetadata);
-        ArgAnyArgumentListSyntax = SyntaxFactoryHelper.ArgAnyArgumentList(AllParameterMetadata);
+        ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(AllParameters);
+        ArgAnyArgumentListSyntax = SyntaxFactoryHelper.ArgumentListSyntax(
+            AllParameterMetadata.Select(parameter =>
+                Argument(parameter.ArgTypeSyntax.Dot(IdentifierName("Any")).Call())
+            )
+        );
 
         InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(
             InputParameters,

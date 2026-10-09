@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -25,11 +26,7 @@ internal static class ArgumentsBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddPublicModifier()
-            .AddMembers(
-                inputParameters.Select(
-                    SyntaxFactoryHelper.ParameterAsReadonlyFieldIncludingNullable
-                )
-            )
+            .AddMembers(inputParameters.Select(ArgumentField))
             .AddMember(
                 new ConstructorBuilder(method.Arguments.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
@@ -56,6 +53,14 @@ internal static class ArgumentsBuilder
 
         return argumentsClassBuilder.Build();
     }
+
+    // A public field that keeps an argument, or the array a span argument is copied into.
+    private static FieldDeclarationSyntax ArgumentField(MethodParameterMetadata parameter) =>
+        SyntaxFactoryHelper.SingleVariableField(
+            parameter.NullableAwareStoredTypeSyntax,
+            parameter.Name,
+            TokenList(Token(SyntaxKind.PublicKeyword))
+        );
 
     private static MethodDeclarationSyntax BuildArgumentsAsMethod(
         in ImposterTargetMethodMetadata method

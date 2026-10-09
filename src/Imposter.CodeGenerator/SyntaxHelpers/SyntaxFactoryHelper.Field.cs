@@ -1,5 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -92,14 +91,5 @@ internal static partial class SyntaxFactoryHelper
     ) =>
         LocalDeclarationStatement(
             VariableDeclarationSyntax(typeSyntax: typeSyntax, name: name, initializer: initializer)
-        );
-
-    internal static FieldDeclarationSyntax ParameterAsReadonlyFieldIncludingNullable(
-        MethodParameterMetadata parameter
-    ) =>
-        SingleVariableField(
-            parameter.NullableAwareStoredTypeSyntax,
-            parameter.Name,
-            TokenList(Token(SyntaxKind.PublicKeyword))
         );
 }

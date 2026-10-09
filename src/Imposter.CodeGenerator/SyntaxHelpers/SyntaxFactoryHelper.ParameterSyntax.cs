@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -47,7 +46,7 @@ internal static partial class SyntaxFactoryHelper
             : Argument(IdentifierName(variableName));
 
     internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
-        IEnumerable<MethodParameterMetadata> parameters,
+        IEnumerable<ParameterModel> parameters,
         bool includeRefKind = true
     ) =>
         ParameterList(
@@ -59,13 +58,13 @@ internal static partial class SyntaxFactoryHelper
         );
 
     internal static ParameterSyntax ParameterSyntaxWithoutDefaultValue(
-        in MethodParameterMetadata parameter,
+        ParameterModel parameter,
         bool includeRefKind = true
     ) =>
         ParameterSyntaxInternal(
-            parameter.Model,
-            parameter.NullableAwareTypeSyntax,
+            parameter,
             includeRefKind,
+            includeNullableReferenceAnnotations: true,
             includeDefaultValue: false
         );
 

@@ -1,6 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -8,16 +6,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static PropertyDeclarationSyntax ParameterAsArgProperty(
-        in MethodParameterMetadata parameter
-    )
-    {
-        return new PropertyDeclarationBuilder(parameter.ArgTypeSyntax, parameter.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithGetter()
-            .Build();
-    }
-
     internal static PropertyDeclarationSyntax ReadOnlyPropertyDeclarationSyntax(
         TypeSyntax type,
         string name,
