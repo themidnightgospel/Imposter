@@ -48,7 +48,7 @@ public class ConstructorParameterNameCollisionTests
     ) =>
         AssertCompiles(
             "Sample.Service",
-            $"public class Service {{ {constructorDeclaration} public virtual int Get() => 0; }}",
+            $"public class Service {{ {constructorDeclaration} public virtual int Get() => 0; public virtual int Name {{ get; set; }} public virtual int this[int key] {{ get => 0; set {{ }} }} }}",
             usage,
             nameof(ConstructorParameterNameCollisionTests),
             languageVersion
