@@ -1,3 +1,6 @@
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
 internal readonly struct MethodImposterInvokeMethodMetadata
@@ -12,7 +15,7 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string ArgumentsVariableName;
 
-    internal readonly string BaseInvocationParameterName;
+    internal readonly ParameterMetadata BaseInvocationParameter;
 
     internal readonly string CallbackIterationVariableName;
 
@@ -22,7 +25,10 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string InvocationImposterVariableName;
 
-    public MethodImposterInvokeMethodMetadata(in ReservedParameterNames reservedParameterNames)
+    public MethodImposterInvokeMethodMetadata(
+        in ReservedParameterNames reservedParameterNames,
+        TypeSyntax delegateSyntax
+    )
     {
         var parameterNameContext = reservedParameterNames.CreateNameSet();
 
@@ -32,7 +38,11 @@ internal readonly struct MethodImposterInvokeMethodMetadata
             "matchingInvocationImposterGroup"
         );
         ArgumentsVariableName = parameterNameContext.Use("arguments");
-        BaseInvocationParameterName = parameterNameContext.Use("baseImplementation");
+        BaseInvocationParameter = new ParameterMetadata(
+            parameterNameContext.Use("baseImplementation"),
+            delegateSyntax.ToNullableType(),
+            SyntaxFactoryHelper.Null
+        );
         CallbackIterationVariableName = parameterNameContext.Use("callback");
         InvocationBehaviorParameterName = parameterNameContext.Use("invocationBehavior");
         MethodDisplayNameParameterName = parameterNameContext.Use("methodDisplayName");

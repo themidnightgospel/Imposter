@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -70,14 +70,24 @@ internal static partial class InvocationSetupBuilder
 
         var invokeCall = invocationImposterIdentifier
             .Dot(IdentifierName("Invoke"))
-            .Call(BuildInvokeArgumentList(method));
+            .Call(
+                InvokeSignatureBuilder.InvocationImposterArguments(
+                    method,
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
+                    ),
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+                    )
+                )
+            );
 
         var methodDeclaration = new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
             "Invoke"
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(BuildParameterList(method))
+            .WithParameterList(InvokeSignatureBuilder.InvocationImposterParameters(method))
             .WithBody(
                 Block(
                     invocationImposterAssignment,
@@ -90,65 +100,5 @@ internal static partial class InvocationSetupBuilder
             .Build();
 
         return methodDeclaration;
-
-        static ParameterListSyntax BuildParameterList(in ImposterTargetMethodMetadata method)
-        {
-            var parameters = new List<ParameterSyntax>
-            {
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
-                ),
-                ParameterSyntax(
-                    WellKnownTypes.String,
-                    method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
-                ),
-            };
-
-            parameters.AddRange(method.Parameters.ParameterListSyntaxIncludingNullable.Parameters);
-            if (method.SupportsBaseImplementation)
-            {
-                parameters.Add(
-                    ParameterSyntax(
-                            method.Delegate.Syntax.ToNullableType(),
-                            method.MethodImposter.InvokeMethod.BaseInvocationParameterName
-                        )
-                        .WithDefault(EqualsValueClause(Null))
-                );
-            }
-
-            return ParameterList(SeparatedList(parameters));
-        }
-
-        static ArgumentListSyntax BuildInvokeArgumentList(in ImposterTargetMethodMetadata method)
-        {
-            var arguments = new List<ArgumentSyntax>
-            {
-                Argument(
-                    IdentifierName(
-                        method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
-                    )
-                ),
-                Argument(
-                    IdentifierName(
-                        method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
-                    )
-                ),
-            };
-
-            arguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
-            if (method.SupportsBaseImplementation)
-            {
-                arguments.Add(
-                    Argument(
-                        IdentifierName(
-                            method.MethodImposter.InvokeMethod.BaseInvocationParameterName
-                        )
-                    )
-                );
-            }
-
-            return ArgumentList(SeparatedList(arguments));
-        }
     }
 }
