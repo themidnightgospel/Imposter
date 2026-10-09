@@ -36,7 +36,7 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly FieldMetadata? BaseImplementationCriteriaField;
 
-    internal readonly string BaseImplementationParameterName;
+    internal readonly ParameterMetadata BaseImplementationParameter;
 
     internal readonly string ArgumentsVariableName;
 
@@ -105,7 +105,9 @@ internal readonly struct IndexerSetterImposterMetadata
                 )
             )
             : null;
-        BaseImplementationParameterName = names.Use("baseImplementation");
+        BaseImplementationParameter = indexer.Core.SetterBaseImplementationParameter(
+            names.Use(ImposterIndexerCoreMetadata.BaseImplementationParameterName)
+        );
         ArgumentsVariableName = names.Use("arguments");
         MatchedCallbackVariableName = names.Use("matchedCallback");
         RegistrationVariableName = names.Use("registration");
