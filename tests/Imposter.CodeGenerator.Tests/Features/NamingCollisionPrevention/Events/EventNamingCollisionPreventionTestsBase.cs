@@ -28,6 +28,7 @@ public abstract class EventNamingCollisionPreventionTestsBase
         [assembly: GenerateImposter(typeof(Sample.NamingCollision.ICrossMemberEventCollisionTarget))]
         [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventTypeNameCollisionTarget))]
         [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventCaseSensitivityCollisionTarget))]
+        [assembly: GenerateImposter(typeof(Sample.NamingCollision.IEventRaiseLocalCollisionTarget))]
 
         namespace Sample.NamingCollision
         {
@@ -156,6 +157,19 @@ public abstract class EventNamingCollisionPreventionTestsBase
             {
                 event EventHandler raise;
                 event EventHandler Raise;
+            }
+
+            public delegate void RaiseLocalNamedHandler(int callback, int handler);
+
+            public delegate Task RaiseLocalNamedAsyncHandler(int task, int pendingTasks, int callback, int handler);
+
+            public delegate ValueTask RaiseLocalNamedValueTaskHandler(int task, int pendingTasks, int callback, int handler);
+
+            public interface IEventRaiseLocalCollisionTarget
+            {
+                event RaiseLocalNamedHandler Happened;
+                event RaiseLocalNamedAsyncHandler HappenedAsync;
+                event RaiseLocalNamedValueTaskHandler HappenedValueTask;
             }
         }
         """;
