@@ -43,7 +43,7 @@ internal static class IndexerGetterBuilder
             );
         }
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(
@@ -799,7 +799,7 @@ internal static class IndexerGetterBuilder
                 )
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareTypeSyntax, "Invoke")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Invoke")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParameter)
             .AddParameter(baseImplementationParameter)
@@ -1084,7 +1084,7 @@ internal static class IndexerGetterBuilder
             TryStatement(Block(tryStatements), default, finallyClause)
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(body)

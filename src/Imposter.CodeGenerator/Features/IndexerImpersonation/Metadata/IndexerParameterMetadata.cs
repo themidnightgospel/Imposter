@@ -2,9 +2,11 @@ using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
+// A span key is kept as the array of its elements, so the imposter's members take it as that array, by value.
 internal readonly struct IndexerParameterMetadata
 {
     internal readonly ParameterModel Model;
@@ -25,13 +27,41 @@ internal readonly struct IndexerParameterMetadata
     {
         Model = model;
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(model.Type);
-        ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
+        TypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model);
+        ArgTypeSyntax = SyntaxFactoryHelper.ArgType(model);
+        ParameterSyntax = model.Span is null
+            ? SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model)
+            : SyntaxFactoryHelper.ParameterSyntax(TypeSyntax, Name);
         FieldName = Name is "Equals" or "GetHashCode" or "Matches" ? fieldNames.Use(Name) : Name;
     }
 
-    // Passes this parameter, or a copy of it, to a member that declares the same parameter.
+    // Compares two arguments, so arguments class equality matches Arg<T>.Is, and SpanArg<T>.Is for a span key's
+    // elements.
+    internal ExpressionSyntax EqualityComparer =>
+        (
+            Model.Span is { } span
+                ? WellKnownTypes.Imposter.Abstractions.SpanElementsComparer(
+                    SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
+                )
+                : WellKnownTypes.System.Collections.Generic.EqualityComparer(TypeSyntax)
+        ).Dot(IdentifierName("Default"));
+
+    // The indexer's argument as the imposter's members take it: a copy of a span's elements, or the argument itself.
+    internal ArgumentSyntax ImposterArgument =>
+        Model.Span is null
+            ? ForwardingArgument(Name)
+            : Argument(SyntaxFactoryHelper.SpanElementsCopy(IdentifierName(Name)));
+
+    // Passes this parameter to the arguments class's constructor, which declares it the same way.
+    internal ArgumentSyntax ConstructorArgument =>
+        Model.Span is null
+            ? SyntaxFactoryHelper.ArgumentSyntax(Model)
+            : Argument(IdentifierName(Name));
+
+    // Passes this parameter, or a copy of it, to a member that declares the same parameter. A span key's array
+    // converts to the span by itself.
     internal ArgumentSyntax ForwardingArgument(string variableName) =>
-        SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind);
+        Model.Span is null
+            ? SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind)
+            : Argument(IdentifierName(variableName));
 }

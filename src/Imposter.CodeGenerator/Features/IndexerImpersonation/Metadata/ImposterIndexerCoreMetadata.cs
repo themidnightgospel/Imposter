@@ -26,6 +26,11 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
+    internal readonly bool HasSpanValue;
+
+    // The type the imposter gets and sets the value as: the indexer's type, or the array that keeps a span's elements.
+    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
+
     internal readonly TypeSyntax AsSystemFuncType;
 
     internal readonly TypeSyntax AsSystemActionType;
@@ -46,7 +51,11 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(indexer.Getter, indexer);
         SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(indexer.Setter, indexer);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(indexer.Type);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
+        HasSpanValue = indexer.Span is not null;
+        NullableAwareStoredTypeSyntax = indexer.Span is { } span
+            ? SyntaxFactoryHelper.SpanElementsArrayType(span)
+            : NullableAwareTypeSyntax;
+        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareStoredTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
         var fieldNames = new NameSet(
             indexer.Parameters.Select(parameter =>
@@ -66,6 +75,10 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             indexer.IsClassMember && indexer.Setter is { IsAbstract: false };
         DisplayName = indexer.DisplayName;
     }
+
+    // The indexer's value as the imposter keeps it: a copy of a span's elements, or the value itself.
+    internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
+        HasSpanValue ? SyntaxFactoryHelper.SpanElementsCopy(value) : value;
 
     internal NameSet CreateParameterNameSet() =>
         new(Parameters.Select(parameter => parameter.Name));
