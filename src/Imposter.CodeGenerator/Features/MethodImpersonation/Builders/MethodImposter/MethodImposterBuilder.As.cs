@@ -23,55 +23,10 @@ internal static partial class MethodImposterBuilder
             return null;
         }
 
-        var typeParamRenamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
+        var conditions = TypeCompatibilityConditions(
+            method,
+            new TypeParameterRenamer(method.Model.TypeParameters, method.TargetGenericTypeArguments)
         );
-
-        var conditions = new List<ExpressionSyntax>();
-
-        foreach (var parameter in method.Parameters.AllParameterMetadata)
-        {
-            if (!parameter.Model.ReferencesMethodTypeParameter)
-            {
-                continue;
-            }
-
-            var sourceTypeSyntax = parameter.TypeSyntax;
-            var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
-
-            var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
-            var targetTypeOf = TypeOfExpression(targetTypeSyntax);
-
-            switch (parameter.Model.RefKind)
-            {
-                case RefKind.Ref:
-                    conditions.Add(
-                        BinaryExpression(SyntaxKind.EqualsExpression, targetTypeOf, sourceTypeOf)
-                    );
-                    break;
-                case RefKind.Out:
-                    conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
-                    break;
-                default: // In and None
-                    conditions.Add(targetTypeOf.IsAssignableTo(sourceTypeOf));
-                    break;
-            }
-        }
-
-        if (method.HasReturnValue)
-        {
-            if (method.Model.ReturnType.ReferencesMethodTypeParameter)
-            {
-                var sourceTypeSyntax = method.ReturnTypeSyntax;
-                var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
-
-                var sourceTypeOf = TypeOfExpression(sourceTypeSyntax);
-                var targetTypeOf = TypeOfExpression(targetTypeSyntax);
-
-                conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
-            }
-        }
 
         var returnAdapter = ReturnStatement(
             GenericName(MethodImposterMetadata.AdapterName)
@@ -102,5 +57,52 @@ internal static partial class MethodImposterBuilder
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .WithBody(body)
             .Build();
+    }
+
+    // The checks that the target type arguments fit each type using the method's type parameters: an input parameter
+    // takes the target type, an output or the result gives the source type, and a ref parameter needs the same type.
+    private static List<ExpressionSyntax> TypeCompatibilityConditions(
+        in ImposterTargetMethodMetadata method,
+        TypeParameterRenamer typeParamRenamer
+    )
+    {
+        var conditions = new List<ExpressionSyntax>();
+
+        foreach (
+            var parameter in method.Parameters.AllParameterMetadata.Where(it =>
+                it.Model.ReferencesMethodTypeParameter
+            )
+        )
+        {
+            var sourceTypeOf = TypeOfExpression(parameter.TypeSyntax);
+            var targetTypeOf = TypeOfExpression(
+                (TypeSyntax)typeParamRenamer.Visit(parameter.TypeSyntax)
+            );
+
+            conditions.Add(
+                parameter.Model.RefKind switch
+                {
+                    RefKind.Ref => BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        targetTypeOf,
+                        sourceTypeOf
+                    ),
+                    RefKind.Out => sourceTypeOf.IsAssignableTo(targetTypeOf),
+                    _ => targetTypeOf.IsAssignableTo(sourceTypeOf),
+                }
+            );
+        }
+
+        if (method.HasReturnValue && method.Model.ReturnType.ReferencesMethodTypeParameter)
+        {
+            var sourceTypeOf = TypeOfExpression(method.ReturnTypeSyntax);
+            var targetTypeOf = TypeOfExpression(
+                (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax)
+            );
+
+            conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
+        }
+
+        return conditions;
     }
 }
