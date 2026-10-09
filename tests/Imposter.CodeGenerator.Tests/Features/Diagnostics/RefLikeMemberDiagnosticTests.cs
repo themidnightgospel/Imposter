@@ -148,6 +148,71 @@ public class RefLikeMemberDiagnosticTests
     }
 #endif
 
+#if ROSLYN4_14_OR_GREATER
+    [Fact]
+    public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { void Use<T>(T value) where T : allows ref struct; }",
+            languageVersion: LanguageVersion.CSharp13
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    [Fact]
+    public async Task GivenMethodWithoutValuesWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { int Count<T>() where T : allows ref struct; }",
+            languageVersion: LanguageVersion.CSharp13
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    [Fact]
+    public async Task GivenVirtualClassMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public class Service { public virtual void Use<T>(T value) where T : allows ref struct { } }",
+            "Sample.Service",
+            LanguageVersion.CSharp13
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    [Fact]
+    public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldNameTheTypeParameter()
+    {
+        var result = await RunGenerator(
+            "public interface IService { void Use<T>(T value) where T : allows ref struct; }",
+            languageVersion: LanguageVersion.CSharp13
+        );
+
+        result
+            .Diagnostics.ShouldHaveSingleItem()
+            .GetMessage()
+            .ShouldBe(
+                "'Sample.IService' has the member 'Sample.IService.Use<T>(T)', whose signature uses the ref-like type 'T', which an imposter cannot store or match"
+            );
+    }
+
+    // The imposter of a generic interface leaves out the anti-constraint, so its type argument can't be a ref struct.
+    [Fact]
+    public async Task GivenInterfaceWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldNotReportDiagnostics()
+    {
+        var result = await RunGenerator(
+            "public interface IService<T> where T : allows ref struct { void Use(T value); }",
+            "Sample.IService<>",
+            LanguageVersion.CSharp13
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+#endif
+
     [Fact]
     public async Task GivenMethodsWithSpanParametersByReference_WhenGeneratorRuns_ShouldNotReportDiagnostics()
     {
