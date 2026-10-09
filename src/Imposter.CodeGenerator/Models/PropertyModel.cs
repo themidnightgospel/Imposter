@@ -6,12 +6,14 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A property or indexer the imposter implements or overrides. <see cref="Parameters"/> is empty for a property.
+/// <see cref="Span"/> is set for a property whose type is a span.
 /// <see cref="OverrideAccessibility"/> is the accessibility an override in the imposter's assembly must declare.
 /// </summary>
 internal sealed record PropertyModel(
     string Name,
     string DisplayName,
     TypeModel Type,
+    SpanModel? Span,
     TypeModel ContainingType,
     bool IsClassMember,
     Accessibility OverrideAccessibility,
@@ -25,6 +27,7 @@ internal sealed record PropertyModel(
             property.Name,
             GetDisplayName(property),
             TypeModel.From(property.Type),
+            SpanModel.FromProperty(property),
             TypeModel.From(property.ContainingType),
             property.ContainingType.TypeKind == TypeKind.Class,
             memberAccess.GetOverrideAccessibility(property),
