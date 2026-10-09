@@ -382,11 +382,25 @@ internal readonly ref struct ImposterInstanceBuilder
             ),
         ];
 
+    // The instance's members reach the field by its bare name, so a parameter or method type parameter with that name
+    // would shadow it.
     private static string CreateImposterFieldName(
         in ImposterGenerationContext imposterGenerationContext
     )
     {
-        var nameSet = new NameSet(imposterGenerationContext.Target.MemberNames);
+        var target = imposterGenerationContext.Target;
+        var methodScopeNames = target.Methods.SelectMany(method =>
+            method
+                .Member.Parameters.Select(parameter => parameter.Name)
+                .Concat(method.Member.TypeParameters.Select(typeParameter => typeParameter.Name))
+        );
+        var indexerScopeNames = target.Indexers.SelectMany(indexer =>
+            indexer.Member.Parameters.Select(parameter => parameter.Name)
+        );
+
+        var nameSet = new NameSet(
+            target.MemberNames.Concat(methodScopeNames).Concat(indexerScopeNames)
+        );
         return nameSet.Use("_imposter");
     }
 
