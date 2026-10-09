@@ -9,11 +9,9 @@ internal readonly struct MethodImposterBuilderMetadata
 
     internal readonly TypeSyntax Syntax;
 
-    // The builder registers its invocation imposter group with the method imposter in its constructor
-    // and does not keep a reference to it afterwards.
-    internal readonly ParameterMetadata ImposterCollectionParameter;
-
-    internal readonly ParameterMetadata MethodImposterParameter;
+    // The method imposter, or a generic method's collection that the builder adds one to. The builder registers its
+    // invocation imposter group with the method imposter in its constructor and doesn't keep a reference to it.
+    internal readonly ParameterMetadata ImposterParameter;
 
     internal readonly FieldMetadata ArgumentsCriteriaField;
 
@@ -21,9 +19,10 @@ internal readonly struct MethodImposterBuilderMetadata
 
     internal readonly FieldMetadata CurrentInvocationImposterField;
 
+    // methodImposterCollectionSyntax is null for a non-generic method, which has no collection.
     internal MethodImposterBuilderMetadata(
         NameSyntax methodImposterSyntax,
-        NameSyntax methodImposterCollectionSyntax,
+        NameSyntax? methodImposterCollectionSyntax,
         NameSyntax argumentCriteriaSyntax,
         NameSyntax invocationImposterGroupType,
         NameSyntax methodInvocationImposterType
@@ -33,11 +32,9 @@ internal readonly struct MethodImposterBuilderMetadata
             methodImposterSyntax,
             SyntaxFactory.IdentifierName("Builder")
         );
-        ImposterCollectionParameter = new ParameterMetadata(
-            "imposterCollection",
-            methodImposterCollectionSyntax
-        );
-        MethodImposterParameter = new ParameterMetadata("imposter", methodImposterSyntax);
+        ImposterParameter = methodImposterCollectionSyntax is not null
+            ? new ParameterMetadata("imposterCollection", methodImposterCollectionSyntax)
+            : new ParameterMetadata("imposter", methodImposterSyntax);
         ArgumentsCriteriaField = new FieldMetadata("_argumentsCriteria", argumentCriteriaSyntax);
         InvocationImposterGroupField = new FieldMetadata(
             "_invocationImposterGroup",

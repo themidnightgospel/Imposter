@@ -20,9 +20,7 @@ internal readonly ref struct EventImposterMembersBuilder(
         _imposterBuilder.AddMember(
             SyntaxFactoryHelper.ReadOnlyPropertyDeclarationSyntax(
                 @event.BuilderInterface.TypeSyntax,
-                @event.RequiresExplicitInterfaceImplementation
-                    ? @event.Core.UniqueName
-                    : @event.Core.Name,
+                @event.SetupName,
                 IdentifierName(@event.BuilderField.Name)
             )
         );
