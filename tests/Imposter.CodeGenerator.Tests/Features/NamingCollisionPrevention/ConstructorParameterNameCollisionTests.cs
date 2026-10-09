@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
+using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
 
@@ -12,7 +12,7 @@ public class ConstructorParameterNameCollisionTests
     [Fact]
     public async Task GivenConstructorParameterNamedInvocationBehavior_WhenImposterIsCreated_ShouldCompile()
     {
-        await AssertCompiles(
+        await AssertServiceCompiles(
             "public Service(int invocationBehavior) { }",
             "new Sample.ServiceImposter(1, ImposterMode.Explicit).Instance().Get();",
             LanguageVersion.CSharp9
@@ -23,7 +23,7 @@ public class ConstructorParameterNameCollisionTests
     [Fact]
     public async Task GivenConstructorParameterNamedInvocationBehavior_WhenImposterIsCreatedFromTheExtension_ShouldCompile()
     {
-        await AssertCompiles(
+        await AssertServiceCompiles(
             "public Service(int invocationBehavior) { }",
             "Sample.Service.Imposter(1, ImposterMode.Explicit).Instance().Get();",
             LanguageVersion.Preview
@@ -33,7 +33,7 @@ public class ConstructorParameterNameCollisionTests
     [Fact]
     public async Task GivenConstructorParameterNamedLikeTheExtensionParameter_WhenImposterIsCreatedFromTheExtension_ShouldCompile()
     {
-        await AssertCompiles(
+        await AssertServiceCompiles(
             "public Service(int imposter) { }",
             "Sample.Service.Imposter(1).Instance().Get();",
             LanguageVersion.Preview
@@ -41,51 +41,16 @@ public class ConstructorParameterNameCollisionTests
     }
 #endif
 
-    private static async Task AssertCompiles(
+    private static Task AssertServiceCompiles(
         string constructorDeclaration,
         string usage,
         LanguageVersion languageVersion
-    )
-    {
-        var context = await GeneratorTestHelper.CreateContext(
-            /*lang=csharp*/
-            $$"""
-            using Imposter.Abstractions;
-
-            [assembly: GenerateImposter(typeof(Sample.Service))]
-
-            namespace Sample
-            {
-                public class Service
-                {
-                    {{constructorDeclaration}}
-
-                    public virtual int Get() => 0;
-                }
-            }
-            """,
-            baseSourceFileName: "ConstructorParameterNameCollision.cs",
-            snippetFileName: "Snippet.cs",
-            assemblyName: nameof(ConstructorParameterNameCollisionTests),
+    ) =>
+        AssertCompiles(
+            "Sample.Service",
+            $"public class Service {{ {constructorDeclaration} public virtual int Get() => 0; }}",
+            usage,
+            nameof(ConstructorParameterNameCollisionTests),
             languageVersion
         );
-
-        GeneratorTestHelper.AssertNoDiagnostics(
-            context.CompileSnippet(
-                /*lang=csharp*/
-                $$"""
-                using Imposter.Abstractions;
-                using Sample;
-
-                public static class Usage
-                {
-                    public static void Run()
-                    {
-                        {{usage}}
-                    }
-                }
-                """
-            )
-        );
-    }
 }

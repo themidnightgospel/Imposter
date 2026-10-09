@@ -41,7 +41,7 @@ internal static class ImposterExtensionsBuilder
                 BuildParameterlessMethod(
                     imposterType,
                     accessibilityModifiers,
-                    imposterGenerationContext.Imposter.InvocationBehaviorParameterName
+                    imposterGenerationContext.Imposter.InvocationBehaviorParameter
                 ),
             ];
 
@@ -99,9 +99,9 @@ internal static class ImposterExtensionsBuilder
     )
     {
         var constructors = imposterGenerationContext.Imposter.AccessibleConstructors;
-        var invocationBehaviorParameterName = imposterGenerationContext
+        var invocationBehaviorParameter = imposterGenerationContext
             .Imposter
-            .InvocationBehaviorParameterName;
+            .InvocationBehaviorParameter;
         var methods = new List<MethodDeclarationSyntax>(constructors.Length + 1);
 
         if (constructors.Any(constructor => constructor.Parameters.Length == 0))
@@ -110,7 +110,7 @@ internal static class ImposterExtensionsBuilder
                 BuildParameterlessMethod(
                     imposterType,
                     accessibilityModifiers,
-                    invocationBehaviorParameterName
+                    invocationBehaviorParameter
                 )
             );
         }
@@ -122,7 +122,7 @@ internal static class ImposterExtensionsBuilder
                     imposterType,
                     accessibilityModifiers,
                     constructor,
-                    invocationBehaviorParameterName
+                    invocationBehaviorParameter
                 )
             );
         }
@@ -133,7 +133,7 @@ internal static class ImposterExtensionsBuilder
     private static MethodDeclarationSyntax BuildParameterlessMethod(
         TypeSyntax imposterType,
         SyntaxTokenList accessibilityModifiers,
-        string invocationBehaviorParameterName
+        in ParameterMetadata invocationBehaviorParameter
     ) =>
         new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifiers(accessibilityModifiers)
@@ -141,12 +141,12 @@ internal static class ImposterExtensionsBuilder
             .WithExpressionBody(
                 ArrowExpressionClause(
                     imposterType.New(
-                        ImposterModeArgument(invocationBehaviorParameterName)
+                        ImposterModeArgument(invocationBehaviorParameter)
                             .AsSingleArgumentListSyntax()
                     )
                 )
             )
-            .AddParameter(CreateInvocationBehaviorParameter(invocationBehaviorParameterName))
+            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(invocationBehaviorParameter))
             .WithSemicolon()
             .Build();
 
@@ -154,14 +154,14 @@ internal static class ImposterExtensionsBuilder
         TypeSyntax imposterType,
         SyntaxTokenList accessibilityModifiers,
         in ImposterTargetConstructorMetadata constructorMetadata,
-        string invocationBehaviorParameterName
+        in ParameterMetadata invocationBehaviorParameter
     )
     {
         var parameters = new List<ParameterSyntax>(
             SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
         )
         {
-            CreateInvocationBehaviorParameter(invocationBehaviorParameterName),
+            SyntaxFactoryHelper.ParameterSyntax(invocationBehaviorParameter),
         };
 
         var arguments = new List<ArgumentSyntax>(
@@ -170,7 +170,7 @@ internal static class ImposterExtensionsBuilder
             )
         )
         {
-            ImposterModeArgument(invocationBehaviorParameterName),
+            ImposterModeArgument(invocationBehaviorParameter),
         };
 
         return new MethodDeclarationBuilder(imposterType, MethodName)
@@ -186,27 +186,9 @@ internal static class ImposterExtensionsBuilder
             .Build();
     }
 
-    private static ArgumentSyntax ImposterModeArgument(string invocationBehaviorParameterName)
-    {
-        return Argument(IdentifierName(invocationBehaviorParameterName));
-    }
-
-    private static ParameterSyntax CreateInvocationBehaviorParameter(
-        string invocationBehaviorParameterName
-    ) =>
-        SyntaxFactoryHelper
-            .ParameterSyntax(
-                WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                invocationBehaviorParameterName
-            )
-            .WithDefault(
-                EqualsValueClause(
-                    QualifiedName(
-                        WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                        IdentifierName("Implicit")
-                    )
-                )
-            );
+    private static ArgumentSyntax ImposterModeArgument(
+        in ParameterMetadata invocationBehaviorParameter
+    ) => Argument(IdentifierName(invocationBehaviorParameter.Name));
 
     private static SyntaxTokenList GetAccessibilityModifiers(Accessibility targetAccessibility) =>
         targetAccessibility switch

@@ -9,6 +9,7 @@ using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
@@ -42,7 +43,7 @@ internal readonly struct ImposterTargetMetadata
 
     // The imposter's constructors and the Imposter() extension declare these parameters next to the parameters of the
     // target's constructors, so they avoid those names.
-    internal readonly string InvocationBehaviorParameterName;
+    internal readonly ParameterMetadata InvocationBehaviorParameter;
 
     internal readonly string ExtensionParameterName;
 
@@ -85,7 +86,14 @@ internal readonly struct ImposterTargetMetadata
                 constructor.Parameters.Select(parameter => parameter.Name)
             )
         );
-        InvocationBehaviorParameterName = constructorParameterNames.Use("invocationBehavior");
+        InvocationBehaviorParameter = new ParameterMetadata(
+            constructorParameterNames.Use("invocationBehavior"),
+            WellKnownTypes.Imposter.Abstractions.ImposterMode,
+            QualifiedName(
+                WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                IdentifierName("Implicit")
+            )
+        );
         ExtensionParameterName = constructorParameterNames.Use("imposter");
     }
 
