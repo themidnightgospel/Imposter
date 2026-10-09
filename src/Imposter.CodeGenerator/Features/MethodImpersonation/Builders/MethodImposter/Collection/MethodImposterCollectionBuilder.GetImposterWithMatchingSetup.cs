@@ -63,8 +63,8 @@ internal static partial class MethodImposterCollectionBuilder
                                             .Dot(IdentifierName(hasMatchingMethod.Name))
                                             .Call(
                                                 method.Parameters.HasInputParameters
-                                                    ? Argument(IdentifierName(parameterName))
-                                                        .AsSingleArgumentListSyntax()
+                                                    ? IdentifierName(parameterName)
+                                                        .ToSingleArgumentList()
                                                     : EmptyArgumentListSyntax
                                             )
                                     ),

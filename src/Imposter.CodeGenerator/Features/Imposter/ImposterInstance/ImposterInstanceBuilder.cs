@@ -57,15 +57,7 @@ internal readonly ref struct ImposterInstanceBuilder
             if (baseGetterInvocation is not null)
             {
                 getterCall = getterInvocation.Call(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(
-                                EmptyParametersGoesTo(
-                                    property.Core.StoredValue(baseGetterInvocation)
-                                )
-                            )
-                        )
-                    )
+                    Argument(EmptyParametersGoesTo(property.Core.StoredValue(baseGetterInvocation)))
                 );
             }
             else
@@ -627,7 +619,7 @@ internal readonly ref struct ImposterInstanceBuilder
                                 )
                             )
                         )
-                        .AsSingleArgumentListSyntax();
+                        .ToSingleArgumentList();
                 }
 
                 return default;

@@ -249,11 +249,7 @@ internal static class SetterImposterBuilder
             else if (setterSupportsBaseImplementation)
             {
                 var baseImplementationCall = baseImplementationIdentifier.Call(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                        )
-                    )
+                    Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
                 );
                 var baseImplementationPath = CallBaseImplementationIfUsed(
                     IdentifierName(setterImposter.UseBaseImplementationField.Name),

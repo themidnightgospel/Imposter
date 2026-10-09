@@ -69,11 +69,7 @@ internal static partial class MethodImposterBuilderBuilder
                 Not(
                     count
                         .Dot(IdentifierName("Matches"))
-                        .Call(
-                            ArgumentList(
-                                SingletonSeparatedList(Argument(IdentifierName("invocationCount")))
-                            )
-                        )
+                        .Call(Argument(IdentifierName("invocationCount")))
                 ),
                 Block(
                     ThrowStatement(

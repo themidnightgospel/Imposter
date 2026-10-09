@@ -114,16 +114,12 @@ public static class ArgumentsCriteriaBuilder
                 targetMatcherType
                     .Dot(IdentifierName("Is"))
                     .Call(
-                        ArgumentList(
-                            SingletonSeparatedList(
-                                Argument(
-                                    BuildTryCastAndMatchLambda(
-                                        parameter,
-                                        targetType,
-                                        sourceType,
-                                        matcherLambdaParameter
-                                    )
-                                )
+                        Argument(
+                            BuildTryCastAndMatchLambda(
+                                parameter,
+                                targetType,
+                                sourceType,
+                                matcherLambdaParameter
                             )
                         )
                     )
@@ -162,11 +158,7 @@ public static class ArgumentsCriteriaBuilder
 
             var matchesCall = IdentifierName(parameter.Name)
                 .Dot(IdentifierName("Matches"))
-                .Call(
-                    ArgumentList(
-                        SingletonSeparatedList(Argument(IdentifierName(tryCastVarIdentifier)))
-                    )
-                );
+                .Call(Argument(IdentifierName(tryCastVarIdentifier)));
 
             return SimpleLambdaExpression(
                 Parameter(matcherLambdaParameter.Identifier),
@@ -209,12 +201,6 @@ public static class ArgumentsCriteriaBuilder
         InvocationExpressionSyntax InvokeMatches(MethodParameterMetadata p) =>
             IdentifierName(p.Name)
                 .Dot(IdentifierName("Matches"))
-                .Call(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(matchesParameterExpression.Dot(IdentifierName(p.Name)))
-                        )
-                    )
-                );
+                .Call(Argument(matchesParameterExpression.Dot(IdentifierName(p.Name))));
     }
 }

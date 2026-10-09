@@ -18,10 +18,8 @@ internal static partial class MethodImposterBuilderBuilder
 
         var groupCreation = method.MethodInvocationImposterGroup.Syntax.New(
             method.Parameters.HasInputParameters
-                ? Argument(
-                        IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)
-                    )
-                    .AsSingleArgumentListSyntax()
+                ? IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)
+                    .ToSingleArgumentList()
                 : EmptyArgumentListSyntax
         );
 
@@ -66,11 +64,10 @@ internal static partial class MethodImposterBuilderBuilder
                 .Dot(ConcurrentStackSyntaxHelper.Push)
                 .Call(
                     Argument(
-                            IdentifierName(
-                                method.MethodImposter.Builder.InvocationImposterGroupField.Name
-                            )
+                        IdentifierName(
+                            method.MethodImposter.Builder.InvocationImposterGroupField.Name
                         )
-                        .AsSingleArgumentListSyntax()
+                    )
                 )
                 .ToStatementSyntax()
         );

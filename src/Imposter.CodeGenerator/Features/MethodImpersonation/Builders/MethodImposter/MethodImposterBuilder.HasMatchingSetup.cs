@@ -26,11 +26,9 @@ internal static partial class MethodImposterBuilder
                                 method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
                             )
                             .Call(
-                                SyntaxFactoryHelper.ArgumentListSyntax(
-                                    GetFindMatchingInvocationImposterGroupArguments(
-                                        method,
-                                        hasMatchingMethod
-                                    )
+                                GetFindMatchingInvocationImposterGroupArguments(
+                                    method,
+                                    hasMatchingMethod
                                 )
                             )
                             .IsNotNull()
@@ -52,14 +50,14 @@ internal static partial class MethodImposterBuilder
                 : null;
         }
 
-        static ArgumentSyntax? GetFindMatchingInvocationImposterGroupArguments(
+        static ArgumentListSyntax GetFindMatchingInvocationImposterGroupArguments(
             in ImposterTargetMethodMetadata method,
             in HasMatchingInvocationImposterGroupMethodMetadata hasMatchingMethod
         )
         {
             return method.Parameters.HasInputParameters
-                ? Argument(IdentifierName(hasMatchingMethod.ArgumentsParameterName))
-                : null;
+                ? IdentifierName(hasMatchingMethod.ArgumentsParameterName).ToSingleArgumentList()
+                : SyntaxFactoryHelper.EmptyArgumentListSyntax;
         }
     }
 }

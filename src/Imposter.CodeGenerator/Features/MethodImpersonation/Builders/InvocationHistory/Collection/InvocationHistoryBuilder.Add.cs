@@ -25,7 +25,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                             InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
                         )
                         .Dot(ConcurrentStackSyntaxHelper.Push)
-                        .Call(ArgumentListSyntax(Argument(IdentifierName("invocationHistory"))))
+                        .Call(Argument(IdentifierName("invocationHistory")))
                         .ToStatementSyntax()
                 )
             )

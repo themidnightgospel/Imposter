@@ -52,6 +52,6 @@ internal static class MissingImposterBuilder
         ExpressionSyntax memberDisplayName
     ) =>
         WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-            Argument(memberDisplayName).AsSingleArgumentListSyntax()
+            memberDisplayName.ToSingleArgumentList()
         );
 }
