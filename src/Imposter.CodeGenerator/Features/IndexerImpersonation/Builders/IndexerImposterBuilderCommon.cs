@@ -22,7 +22,7 @@ internal static class IndexerImposterBuilderCommon
     ) =>
         ArgumentList(
             SeparatedList(
-                indexer.Core.Parameters.Select(parameter => ArgumentSyntax(parameter.Model))
+                indexer.Core.Parameters.Select(parameter => parameter.ConstructorArgument)
             )
         );
 

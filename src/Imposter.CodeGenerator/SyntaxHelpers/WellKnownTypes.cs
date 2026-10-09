@@ -335,6 +335,9 @@ internal static class WellKnownTypes
             internal static NameSyntax OutReadOnlySpanArg(TypeSyntax elementType) =>
                 Generic(nameof(OutReadOnlySpanArg), elementType);
 
+            internal static NameSyntax SpanElementsComparer(TypeSyntax elementType) =>
+                Generic(nameof(SpanElementsComparer), elementType);
+
             private static QualifiedNameSyntax Generic(string name, TypeSyntax typeArgument) =>
                 QualifiedName(
                     Namespace,

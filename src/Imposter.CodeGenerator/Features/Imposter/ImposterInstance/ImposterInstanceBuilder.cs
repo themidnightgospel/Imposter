@@ -153,13 +153,16 @@ internal readonly ref struct ImposterInstanceBuilder
             .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Model))
             .ToArray();
         var parameterList = BracketedParameterList(SeparatedList(parameters));
-        var (parameterCopies, lambdaArguments) = CopyReadOnlyReferenceParametersForLambdas(indexer);
+        var lambdaCopies = CopyForLambdas(indexer);
+        var imposterArguments = indexer
+            .Core.Parameters.Select(parameter => parameter.ImposterArgument)
+            .ToArray();
 
         var accessors = new List<AccessorDeclarationSyntax>();
 
         if (indexer.Core.HasGetter)
         {
-            var getterArguments = new List<ArgumentSyntax>(indexer.Core.ParameterArguments);
+            var getterArguments = new List<ArgumentSyntax>(imposterArguments);
             var getterStatements = new List<StatementSyntax>();
 
             ExpressionSyntax? baseInvocation = indexer.Core.GetterSupportsBaseImplementation
@@ -168,9 +171,15 @@ internal readonly ref struct ImposterInstanceBuilder
 
             if (baseInvocation is not null)
             {
-                getterStatements.AddRange(parameterCopies);
+                getterStatements.AddRange(lambdaCopies.KeyCopies);
                 getterArguments.Add(
-                    Argument(EmptyParametersGoesTo(BaseIndexerAccess(lambdaArguments)))
+                    Argument(
+                        EmptyParametersGoesTo(
+                            indexer.Core.StoredValue(
+                                BaseIndexerAccess(lambdaCopies.LambdaArguments)
+                            )
+                        )
+                    )
                 );
             }
 
@@ -194,23 +203,34 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (indexer.Core.HasSetter)
         {
-            var setterArguments = new List<ArgumentSyntax>(indexer.Core.ParameterArguments)
+            var setterArguments = new List<ArgumentSyntax>(imposterArguments)
             {
-                Argument(IdentifierName("value")),
+                Argument(indexer.Core.StoredValue(IdentifierName("value"))),
             };
             var setterStatements = new List<StatementSyntax>();
 
             var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
-                ? BaseIndexerAssignment(indexer.Core.ParameterArguments)
+                ? BaseIndexerAssignment(indexer.Core.ParameterArguments, IdentifierName("value"))
                 : null;
 
             if (baseAssignment is not null)
             {
-                setterStatements.AddRange(parameterCopies);
+                setterStatements.AddRange(lambdaCopies.KeyCopies);
+                if (lambdaCopies.ValueCopy is { } valueCopy)
+                {
+                    setterStatements.Add(valueCopy);
+                }
+
                 setterArguments.Add(
                     Argument(
                         EmptyParametersGoesTo(
-                            Block(BaseIndexerAssignment(lambdaArguments).ToStatementSyntax())
+                            Block(
+                                BaseIndexerAssignment(
+                                        lambdaCopies.LambdaArguments,
+                                        lambdaCopies.LambdaValue
+                                    )
+                                    .ToStatementSyntax()
+                            )
                         )
                     )
                 );
@@ -245,30 +265,37 @@ internal readonly ref struct ImposterInstanceBuilder
         return this;
     }
 
-    // A lambda cannot capture an `in` or `ref readonly` parameter, so the base-call lambdas read local copies of
-    // those parameters.
+    // A lambda cannot capture an `in` or `ref readonly` parameter or a span, so the base-call lambdas read local copies
+    // of them. A span's copy is the array of its elements, which converts back to the span.
     private static (
-        IReadOnlyList<StatementSyntax> Copies,
-        IReadOnlyList<ArgumentSyntax> LambdaArguments
-    ) CopyReadOnlyReferenceParametersForLambdas(in ImposterIndexerMetadata indexer)
+        IReadOnlyList<StatementSyntax> KeyCopies,
+        IReadOnlyList<ArgumentSyntax> LambdaArguments,
+        StatementSyntax? ValueCopy,
+        ExpressionSyntax LambdaValue
+    ) CopyForLambdas(in ImposterIndexerMetadata indexer)
     {
         var localNames = new NameSet(
             indexer.Core.Parameters.Select(parameter => parameter.Name).Append("value")
         );
-        var copies = new List<StatementSyntax>();
+        var keyCopies = new List<StatementSyntax>();
         var lambdaArguments = new List<ArgumentSyntax>();
 
         foreach (var parameter in indexer.Core.Parameters)
         {
             var argumentName = parameter.Name;
-            if (parameter.Model.RefKind is RefKind.In or RefKinds.RefReadOnlyParameter)
+            if (
+                parameter.Model.Span is not null
+                || parameter.Model.RefKind is RefKind.In or RefKinds.RefReadOnlyParameter
+            )
             {
                 argumentName = localNames.Use($"{parameter.Name}Copy");
-                copies.Add(
+                keyCopies.Add(
                     LocalVariableDeclarationSyntax(
                         Var,
                         argumentName,
-                        IdentifierName(parameter.Name)
+                        parameter.Model.Span is null
+                            ? IdentifierName(parameter.Name)
+                            : SpanElementsCopy(IdentifierName(parameter.Name))
                     )
                 );
             }
@@ -276,7 +303,19 @@ internal readonly ref struct ImposterInstanceBuilder
             lambdaArguments.Add(parameter.ForwardingArgument(argumentName));
         }
 
-        return (copies, lambdaArguments);
+        if (!indexer.Core.HasSpanValue)
+        {
+            return (keyCopies, lambdaArguments, null, IdentifierName("value"));
+        }
+
+        var valueCopyName = localNames.Use("valueCopy");
+        var valueCopy = LocalVariableDeclarationSyntax(
+            Var,
+            valueCopyName,
+            SpanElementsCopy(IdentifierName("value"))
+        );
+
+        return (keyCopies, lambdaArguments, valueCopy, IdentifierName(valueCopyName));
     }
 
     private static ElementAccessExpressionSyntax BaseIndexerAccess(
@@ -286,8 +325,9 @@ internal readonly ref struct ImposterInstanceBuilder
             .WithArgumentList(BracketedArgumentList(SeparatedList(arguments)));
 
     private static AssignmentExpressionSyntax BaseIndexerAssignment(
-        IEnumerable<ArgumentSyntax> arguments
-    ) => BaseIndexerAccess(arguments).Assign(IdentifierName("value"));
+        IEnumerable<ArgumentSyntax> arguments,
+        ExpressionSyntax value
+    ) => BaseIndexerAccess(arguments).Assign(value);
 
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {

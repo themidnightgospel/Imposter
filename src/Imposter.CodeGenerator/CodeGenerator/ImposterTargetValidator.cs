@@ -195,8 +195,9 @@ internal static class ImposterTargetValidator
         accessor is null || memberAccess.IsAccessible(accessor);
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
-    // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> passed or returned by
-    // value, and a property's, are the exception: the imposter keeps its elements in an array.
+    // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
+    // imposter keeps its elements in an array: a method's span passed or returned by value, a property's or indexer's
+    // span value, and an indexer's span key.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -251,10 +252,18 @@ internal static class ImposterTargetValidator
         }
     }
 
-    private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property) =>
-        SpanModel.FromProperty(property) is null
-            ? ParameterTypes(property.Parameters).Prepend(property.Type)
-            : ParameterTypes(property.Parameters);
+    private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
+    {
+        if (SpanModel.FromProperty(property) is null)
+        {
+            yield return property.Type;
+        }
+
+        foreach (var parameter in property.Parameters.Where(it => SpanModel.From(it) is null))
+        {
+            yield return parameter.Type;
+        }
+    }
 
     private static IEnumerable<ITypeSymbol> ParameterTypes(
         IEnumerable<IParameterSymbol> parameters

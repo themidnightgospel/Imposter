@@ -91,7 +91,7 @@ internal static class DefaultIndexerBehaviourBuilder
             .WithDefault(EqualsValueClause(Null));
         var valueIdentifier = IdentifierName("value");
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
             .AddParameter(baseImplementationParam)
@@ -158,7 +158,7 @@ internal static class DefaultIndexerBehaviourBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParameter)
-            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareTypeSyntax, "value"))
+            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"))
             .AddParameter(baseImplementationParam)
             .WithBody(Block(baseInvocation, assignment))
             .Build();
