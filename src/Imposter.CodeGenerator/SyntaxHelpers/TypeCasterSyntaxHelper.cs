@@ -18,7 +18,10 @@ internal static class TypeCasterSyntaxHelper
     ) =>
         WellKnownTypes
             .Imposter.Abstractions.TypeCaster.Dot(
-                GenericName(Identifier("Cast"), TypeArgumentList(SeparatedList([fromType, toType])))
+                GenericName(
+                    Identifier("Cast"),
+                    SyntaxFactoryHelper.TypeArguments([fromType, toType])
+                )
             )
             .Call(Argument(value));
 }

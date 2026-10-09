@@ -139,9 +139,10 @@ internal readonly struct ImposterTargetMethodMetadata
                 SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(p.Name))
             )
             .ToArray();
-        GenericTypeArgumentListSyntax = SyntaxFactoryHelper.TypeArgumentListSyntax(
-            GenericTypeArguments
-        );
+        GenericTypeArgumentListSyntax =
+            GenericTypeArguments.Count == 0
+                ? null
+                : SyntaxFactoryHelper.TypeArguments(GenericTypeArguments);
         GenericTypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(
             GenericTypeArguments
         );

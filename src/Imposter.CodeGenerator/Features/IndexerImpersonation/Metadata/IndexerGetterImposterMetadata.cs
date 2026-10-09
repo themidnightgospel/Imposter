@@ -1,6 +1,4 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -119,16 +117,10 @@ internal readonly struct IndexerGetterImposterMetadata
             WellKnownTypes.System.Namespace,
             GenericName(
                 Identifier("Func"),
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            indexer.Arguments.TypeSyntax,
-                            Token(SyntaxKind.CommaToken),
-                            indexer.Core.NullableAwareStoredTypeSyntax,
-                        }
-                    )
-                )
+                SyntaxFactoryHelper.TypeArguments([
+                    indexer.Arguments.TypeSyntax,
+                    indexer.Core.NullableAwareStoredTypeSyntax,
+                ])
             )
         );
 
@@ -137,18 +129,11 @@ internal readonly struct IndexerGetterImposterMetadata
             WellKnownTypes.System.Namespace,
             GenericName(
                 Identifier("Func"),
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            indexer.Arguments.TypeSyntax,
-                            Token(SyntaxKind.CommaToken),
-                            indexer.Core.AsSystemFuncType.ToNullableType(),
-                            Token(SyntaxKind.CommaToken),
-                            indexer.Core.NullableAwareStoredTypeSyntax,
-                        }
-                    )
-                )
+                SyntaxFactoryHelper.TypeArguments([
+                    indexer.Arguments.TypeSyntax,
+                    indexer.Core.AsSystemFuncType.ToNullableType(),
+                    indexer.Core.NullableAwareStoredTypeSyntax,
+                ])
             )
         );
 

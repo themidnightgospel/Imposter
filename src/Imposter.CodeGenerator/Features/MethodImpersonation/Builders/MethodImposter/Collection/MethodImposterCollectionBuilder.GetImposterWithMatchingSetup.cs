@@ -50,7 +50,7 @@ internal static partial class MethodImposterCollectionBuilder
                                     .Dot(
                                         GenericName(
                                             Identifier("As"),
-                                            method.GenericTypeArguments.ToTypeArguments()
+                                            TypeArguments(method.GenericTypeArguments)
                                         )
                                     )
                                     .Call()

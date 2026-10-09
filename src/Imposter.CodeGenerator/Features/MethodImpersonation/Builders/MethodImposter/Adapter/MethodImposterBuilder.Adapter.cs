@@ -294,14 +294,10 @@ internal static class MethodImposterAdapterBuilder
                                     ? Argument(
                                             IdentifierName(argumentsParameterName)
                                                 .Dot(
-                                                    GenericName(method.ArgumentsAsMethodName)
-                                                        .WithTypeArgumentList(
-                                                            TypeArgumentList(
-                                                                SeparatedList(
-                                                                    method.GenericTypeArguments.Cast<TypeSyntax>()
-                                                                )
-                                                            )
-                                                        )
+                                                    GenericName(
+                                                        Identifier(method.ArgumentsAsMethodName),
+                                                        TypeArguments(method.GenericTypeArguments)
+                                                    )
                                                 )
                                                 .Call()
                                         )
@@ -321,12 +317,13 @@ internal static class MethodImposterAdapterBuilder
         var asMethodTypeParams = method
             .Model.TypeParameters.Select(p => TypeParameter(p.Name + "Target1"))
             .ToArray();
-        var targetTypeArgs = method
-            .Model.TypeParameters.Select(p => IdentifierName(p.Name + "Target1"))
-            .Cast<TypeSyntax>()
-            .ToArray();
-        var genericImposterInterface = GenericName(method.MethodImposter.Interface.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
+        var targetTypeArgs = method.Model.TypeParameters.Select(p =>
+            IdentifierName(p.Name + "Target1")
+        );
+        var genericImposterInterface = GenericName(
+            Identifier(method.MethodImposter.Interface.Name),
+            TypeArguments(targetTypeArgs)
+        );
 
         return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)

@@ -597,7 +597,7 @@ internal readonly ref struct ImposterInstanceBuilder
                             Identifier(
                                 MethodImposterCollectionMetadata.GetImposterWithMatchingInvocationImposterGroupMethodName
                             ),
-                            method.GenericTypeArguments.ToTypeArguments()
+                            TypeArguments(method.GenericTypeArguments)
                         )
                     )
                     .Call(GetGetImposterWithMatchingInvocationImposterGroupArguments(method));

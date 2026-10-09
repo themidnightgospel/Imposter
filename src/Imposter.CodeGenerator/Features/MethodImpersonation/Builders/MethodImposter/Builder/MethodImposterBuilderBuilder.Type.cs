@@ -42,7 +42,7 @@ internal static partial class MethodImposterBuilderBuilder
                 .Dot(
                     GenericName(
                         Identifier(MethodImposterCollectionMetadata.AddNewMethodName),
-                        method.GenericTypeArguments.ToTypeArguments()
+                        TypeArguments(method.GenericTypeArguments)
                     )
                 )
                 .Call();
