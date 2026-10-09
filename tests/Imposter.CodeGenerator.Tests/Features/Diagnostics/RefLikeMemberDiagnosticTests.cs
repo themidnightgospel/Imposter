@@ -20,10 +20,10 @@ public class RefLikeMemberDiagnosticTests
         .Id;
 
     [Fact]
-    public async Task GivenMethodWithInReadOnlySpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodWithOutSpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int Get(in System.ReadOnlySpan<byte> input); }"
+            "public interface IService { int Get(out System.ReadOnlySpan<byte> output); }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
