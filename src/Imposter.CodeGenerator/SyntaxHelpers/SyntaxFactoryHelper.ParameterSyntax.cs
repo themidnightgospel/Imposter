@@ -46,11 +46,6 @@ internal static partial class SyntaxFactoryHelper
             ? Argument(null, Token(SyntaxKind.InKeyword), IdentifierName(variableName))
             : Argument(IdentifierName(variableName));
 
-    internal static ParameterListSyntax ParameterListSyntax(
-        IEnumerable<ParameterModel> parameters,
-        bool includeRefKind = true
-    ) => ParameterList(SeparatedList(parameters.Select(it => ParameterSyntax(it, includeRefKind))));
-
     internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
         IEnumerable<MethodParameterMetadata> parameters,
         bool includeRefKind = true

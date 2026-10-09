@@ -86,7 +86,7 @@ internal static class MethodImposterAdapterBuilder
 
         foreach (var p in method.Parameters.AllParameterMetadata)
         {
-            var pType = p.TypeSyntax;
+            var pType = p.NullableAwareTypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
             var castArgument = TypeCasterSyntaxHelper.CastExpression(
                 p.Name,
@@ -195,7 +195,7 @@ internal static class MethodImposterAdapterBuilder
             );
             body.AddRange(postInvokeActions);
 
-            var returnType = method.ReturnTypeSyntax;
+            var returnType = method.NullableAwareReturnTypeSyntax;
             var returnTargetType = typeParamRenamer.Visit(returnType);
             body.Add(
                 ReturnStatement(
@@ -214,7 +214,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         return new MethodDeclarationBuilder(
-            (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax),
+            (TypeSyntax)typeParamRenamer.Visit(method.NullableAwareReturnTypeSyntax),
             "Invoke"
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))

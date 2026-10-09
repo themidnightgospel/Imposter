@@ -25,7 +25,7 @@ internal readonly struct ReturnsMethodMetadata
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        ValueParameter = new ParameterMetadata("value", core.TypeSyntax);
+        ValueParameter = new ParameterMetadata("value", core.NullableAwareTypeSyntax);
         FuncParameter = new ParameterMetadata("valueGenerator", core.AsSystemFuncType);
         DelegateParameter = new ParameterMetadata(
             "valueGenerator",

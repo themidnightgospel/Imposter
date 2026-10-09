@@ -20,9 +20,9 @@ internal readonly struct IndexerParameterMetadata
     {
         Model = model;
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(model.Type);
+        TypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(model.Type);
         ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(model);
+        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
     }
 
     // Passes this parameter, or a copy of it, to a member that declares the same parameter.

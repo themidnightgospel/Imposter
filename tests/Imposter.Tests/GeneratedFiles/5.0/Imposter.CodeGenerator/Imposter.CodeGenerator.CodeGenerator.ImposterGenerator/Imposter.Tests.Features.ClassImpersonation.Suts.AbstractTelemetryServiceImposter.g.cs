@@ -1200,7 +1200,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INameNullablePropertyGetterOutcomeBuilder
 		{
-			INameNullablePropertyGetterContinuationBuilder Returns(string value);
+			INameNullablePropertyGetterContinuationBuilder Returns(string? value);
 			INameNullablePropertyGetterContinuationBuilder Returns(global::System.Func<string?> valueGenerator);
 			INameNullablePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
 			INameNullablePropertyGetterContinuationBuilder Throws<TException>()
@@ -1333,7 +1333,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_hasConfiguredReturn = true;
 				}
 
-				INameNullablePropertyGetterContinuationBuilder INameNullablePropertyGetterOutcomeBuilder.Returns(string value)
+				INameNullablePropertyGetterContinuationBuilder INameNullablePropertyGetterOutcomeBuilder.Returns(string? value)
 				{
 					AddReturnValue((_) => value);
 					return this;
