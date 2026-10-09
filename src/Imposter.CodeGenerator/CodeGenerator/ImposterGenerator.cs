@@ -23,6 +23,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImp
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -43,52 +44,93 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
     {
-        var compilationContextProvider = context.GetCompilationContext();
+        var optionsProvider = context.GetGeneratorOptions();
 
-        context.ReportDiagnostics(compilationContextProvider.GetCompilationDiagnostics());
+        context.ReportDiagnostics(optionsProvider.GetLanguageVersionDiagnostics());
 
         context.RegisterSourceOutput(
-            compilationContextProvider,
-            static (sourceProductionContext, compilationContext) =>
+            optionsProvider,
+            static (sourceProductionContext, options) =>
                 new DiagnosticLogger(
                     sourceProductionContext,
-                    compilationContext.IsLoggingEnabled
-                ).LogCompilation(compilationContext.Compilation)
+                    options.IsLoggingEnabled
+                ).LogLanguageVersion(options.LanguageVersion)
         );
 
+        var declarations = context.GetGenerateImposterDeclarations();
+
+        // Diagnostics need the compilation to point at their source, where pragmas apply, so only declarations that
+        // have diagnostics depend on it.
         context.RegisterSourceOutput(
-            context.GetGenerateImposterDeclarations().Combine(compilationContextProvider),
-            (sourceProductionContext, contexts) =>
-                GenerateImposter(sourceProductionContext, contexts.Left, contexts.Right)
+            declarations
+                .Where(static declaration => declaration.Diagnostics.Count > 0)
+                .Combine(optionsProvider)
+                .Combine(context.CompilationProvider),
+            static (sourceProductionContext, inputs) =>
+                ReportDiagnostics(
+                    sourceProductionContext,
+                    inputs.Left.Left,
+                    inputs.Left.Right,
+                    inputs.Right
+                )
         );
+
+        // Only what generation reads is kept: a target's location moves with every edit above it in its file.
+        var targets = declarations
+            .Where(static declaration => declaration.Target is not null)
+            .Select(
+                static (declaration, _) =>
+                    (Target: declaration.Target!, declaration.PutInTheSameNamespace)
+            )
+#if ROSLYN4_4_OR_GREATER
+            .WithTrackingName("ImposterTargets")
+#endif
+        ;
+
+        context.RegisterSourceOutput(
+            targets.Combine(optionsProvider),
+            static (sourceProductionContext, inputs) =>
+                GenerateImposter(
+                    sourceProductionContext,
+                    inputs.Left.Target,
+                    inputs.Left.PutInTheSameNamespace,
+                    inputs.Right
+                )
+        );
+    }
+
+    private static void ReportDiagnostics(
+        in SourceProductionContext sourceProductionContext,
+        GenerateImposterDeclaration declaration,
+        GeneratorOptions options,
+        Compilation compilation
+    )
+    {
+        // An unsupported C# version is reported once for the compilation (IMP003) instead.
+        if (!options.IsLanguageVersionSupported)
+        {
+            return;
+        }
+
+        foreach (var diagnostic in declaration.Diagnostics)
+        {
+            sourceProductionContext.ReportDiagnostic(diagnostic.ToDiagnostic(compilation));
+        }
     }
 
     private static void GenerateImposter(
         in SourceProductionContext sourceProductionContext,
-        GenerateImposterDeclaration generateImposterDeclaration,
-        in CompilationContext compilationContext
+        ImposterTargetModel target,
+        bool putInTheSameNamespace,
+        GeneratorOptions options
     )
     {
-        if (sourceProductionContext.CancellationToken.IsCancellationRequested)
-        {
-            return;
-        }
+        // Returning instead would leave the driver a cached result without the imposter, which a later run with the
+        // same inputs would reuse; throwing makes the driver discard the cancelled run.
+        sourceProductionContext.CancellationToken.ThrowIfCancellationRequested();
 
         // An unsupported C# version is reported once for the compilation (IMP003) instead.
-        if (!compilationContext.IsLanguageVersionSupported)
-        {
-            return;
-        }
-
-        var memberAccess = new MemberAccess(compilationContext.Compilation.Assembly);
-
-        if (
-            !ImposterTargetValidator.Validate(
-                sourceProductionContext,
-                generateImposterDeclaration,
-                memberAccess
-            )
-        )
+        if (!options.IsLanguageVersionSupported)
         {
             return;
         }
@@ -96,9 +138,9 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         try
         {
             var imposterGenerationContext = new ImposterGenerationContext(
-                generateImposterDeclaration,
-                new SupportedCSharpFeatures(compilationContext.Compilation),
-                memberAccess
+                target,
+                putInTheSameNamespace,
+                new SupportedCSharpFeatures(options.LanguageVersion)
             );
 
             sourceProductionContext.AddSource(
@@ -114,10 +156,9 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 )
             );
 
-            new DiagnosticLogger(
-                sourceProductionContext,
-                compilationContext.IsLoggingEnabled
-            ).LogImposter(imposterGenerationContext);
+            new DiagnosticLogger(sourceProductionContext, options.IsLoggingEnabled).LogImposter(
+                imposterGenerationContext
+            );
         }
         // Cancellation must propagate: reporting it as a crash would leave the driver with a cached result
         // that has no source and an error.

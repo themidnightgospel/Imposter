@@ -16,16 +16,15 @@ internal readonly struct DiagnosticLogger
         _enabled = enabled;
     }
 
-    internal void LogCompilation(CSharpCompilation compilation)
+    internal void LogLanguageVersion(LanguageVersion languageVersion)
     {
         if (_enabled)
         {
-            var languageVersion = compilation.LanguageVersion.ToDisplayString();
             var imposterExtensions = DescribeImposterExtensions(
-                new SupportedCSharpFeatures(compilation)
+                new SupportedCSharpFeatures(languageVersion)
             );
 
-            Log($"C# {languageVersion}: {imposterExtensions}");
+            Log($"C# {languageVersion.ToDisplayString()}: {imposterExtensions}");
         }
     }
 

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.Features.Shared;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
@@ -7,32 +10,43 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 internal static class ImposterTypeCollisions
 {
     // Same-named types nested in different classes, for example, would get imposters of the same type in the same
-    // namespace. Each such declaration is marked with another target of its group.
+    // namespace. Each such declaration reports IMP007, naming another target of its group, and is not generated.
     internal static IEnumerable<GenerateImposterDeclaration> Mark(
         IReadOnlyList<GenerateImposterDeclaration> declarations
     )
     {
-        var sameImposterTypeAs = new Dictionary<GenerateImposterDeclaration, INamedTypeSymbol>();
+        var sameImposterTypeAs =
+            new Dictionary<GenerateImposterDeclaration, GenerateImposterDeclaration>();
 
         foreach (
             var group in declarations
-                .Where(it => ImposterTargetValidator.IsInterfaceOrNonSealedClass(it.ImposterTarget))
-                .GroupBy(GetImposterTypeName)
+                .Where(it => it.CanCollide)
+                .GroupBy(it => it.ImposterTypeName)
                 .Select(group => group.ToArray())
                 .Where(group => group.Length > 1)
         )
         {
             for (var index = 0; index < group.Length; index++)
             {
-                sameImposterTypeAs[group[index]] = group[(index + 1) % group.Length].ImposterTarget;
+                sameImposterTypeAs[group[index]] = group[(index + 1) % group.Length];
             }
         }
 
         return declarations.Select(declaration =>
-            sameImposterTypeAs.TryGetValue(declaration, out var otherTarget)
+            sameImposterTypeAs.TryGetValue(declaration, out var other)
                 ? declaration with
                 {
-                    SameImposterTypeAs = otherTarget,
+                    Diagnostics = new[]
+                    {
+                        DiagnosticModel.Create(
+                            DiagnosticDescriptors.ImposterTypeNameCollision,
+                            declaration.TargetLocation,
+                            declaration.TargetDisplayName,
+                            other.TargetDisplayName,
+                            declaration.ImposterTypeDisplayName
+                        ),
+                    }.ToEquatableArray(),
+                    Target = null,
                 }
                 : declaration
         );
@@ -40,18 +54,25 @@ internal static class ImposterTypeCollisions
 
     // The imposter's namespace-qualified name with its arity, e.g. Sample.IRepositoryImposter`1: imposters with
     // differently named type parameters are still the same type.
-    private static string GetImposterTypeName(GenerateImposterDeclaration declaration)
+    internal static string GetImposterTypeName(
+        INamedTypeSymbol target,
+        string? imposterNamespaceName
+    )
     {
-        var arity = declaration.ImposterTarget.Arity;
-        return QualifiedImposterName(declaration, arity > 0 ? $"`{arity}" : "");
+        var arity = target.Arity;
+        return QualifiedImposterName(target, imposterNamespaceName, arity > 0 ? $"`{arity}" : "");
     }
 
     // The imposter type as C# writes it, e.g. Sample.IRepositoryImposter<T>.
-    internal static string GetImposterTypeDisplayName(GenerateImposterDeclaration declaration)
+    internal static string GetImposterTypeDisplayName(
+        INamedTypeSymbol target,
+        string? imposterNamespaceName
+    )
     {
-        var typeParameters = declaration.ImposterTarget.OriginalDefinition.TypeParameters;
+        var typeParameters = target.OriginalDefinition.TypeParameters;
         return QualifiedImposterName(
-            declaration,
+            target,
+            imposterNamespaceName,
             typeParameters.Length > 0
                 ? $"<{string.Join(", ", typeParameters.Select(it => it.Name))}>"
                 : ""
@@ -59,15 +80,14 @@ internal static class ImposterTypeCollisions
     }
 
     private static string QualifiedImposterName(
-        GenerateImposterDeclaration declaration,
+        INamedTypeSymbol target,
+        string? imposterNamespaceName,
         string typeParameterSuffix
     )
     {
-        var typeName =
-            ImposterTargetMetadata.GetImposterName(declaration.ImposterTarget.Name)
-            + typeParameterSuffix;
+        var typeName = ImposterTargetMetadata.GetImposterName(target.Name) + typeParameterSuffix;
 
-        return ImposterGenerationContext.GetImposterNamespaceName(declaration) is { } namespaceName
+        return imposterNamespaceName is { } namespaceName
             ? $"{namespaceName}.{typeName}"
             : typeName;
     }
