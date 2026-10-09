@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -43,7 +44,7 @@ internal static partial class InvocationSetupBuilder
             .AddBaseType(
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )
-            .AddMembers(GetContinuationMethods(method))
+            .AddMember(BuildThenInterfaceMethod(method))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
 
@@ -61,195 +62,127 @@ internal static partial class InvocationSetupBuilder
 
     private static MethodDeclarationSyntax BuildCallbackInterfaceMethod(
         in ImposterTargetMethodMetadata method
-    ) =>
-        new MethodDeclarationBuilder(
-            method.MethodInvocationImposterGroup.CallbackMethod.ReturnType,
-            method.MethodInvocationImposterGroup.CallbackMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    InterfaceParameter(
-                        method.MethodInvocationImposterGroup.CallbackMethod.CallbackParameter,
-                        method
-                            .MethodInvocationImposterGroup
-                            .CallbackMethod
-                            .InterfaceCallbackParameterName
-                    )
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static List<MemberDeclarationSyntax> GetContinuationMethods(
-        in ImposterTargetMethodMetadata method
     )
     {
-        return new List<MemberDeclarationSyntax>
-        {
-            new MethodDeclarationBuilder(
-                method.MethodInvocationImposterGroup.ThenMethod.ReturnType,
-                method.MethodInvocationImposterGroup.ThenMethod.Name
-            )
-                .WithSemicolon()
-                .Build(),
-        };
+        var callback = method.MethodInvocationImposterGroup.CallbackMethod;
+
+        return InterfaceMethod(
+            callback.ReturnType,
+            callback.Name,
+            InterfaceParameter(callback.CallbackParameter, callback.InterfaceCallbackParameterName)
+        );
     }
+
+    private static MethodDeclarationSyntax BuildThenInterfaceMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        InterfaceMethod(
+            method.MethodInvocationImposterGroup.ThenMethod.ReturnType,
+            method.MethodInvocationImposterGroup.ThenMethod.Name
+        );
 
     private static List<MemberDeclarationSyntax> GetOutcomeMethods(
         in ImposterTargetMethodMetadata method
     )
     {
-        var methods = new List<MemberDeclarationSyntax>();
-
-        var throwsMetadata = method.MethodInvocationImposterGroup.ThrowsMethod;
-        var throwsMethodBuilder = new MethodDeclarationBuilder(
-            throwsMetadata.ReturnType,
-            throwsMetadata.Name
-        )
-            .WithTypeParameters(throwsMetadata.TypeParameterList)
-            .AddConstraintClause(throwsMetadata.TypeParameterConstraintClause);
-
-        methods.Add(throwsMethodBuilder.WithSemicolon().Build());
-
-        methods.AddRange([
-            new MethodDeclarationBuilder(
-                method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType,
-                method.MethodInvocationImposterGroup.ThrowsMethod.Name
-            )
-                .WithParameterList(
-                    SyntaxFactoryHelper
-                        .ParameterSyntax(
-                            InterfaceParameter(
-                                method
-                                    .MethodInvocationImposterGroup
-                                    .ThrowsMethod
-                                    .ExceptionParameter,
-                                method
-                                    .MethodInvocationImposterGroup
-                                    .ThrowsMethod
-                                    .InterfaceExceptionParameterName
-                            )
-                        )
-                        .ToSingleParameterListSyntax()
-                )
+        var throws = method.MethodInvocationImposterGroup.ThrowsMethod;
+        List<MemberDeclarationSyntax> methods =
+        [
+            new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
+                .WithTypeParameters(throws.TypeParameterList)
+                .AddConstraintClause(throws.TypeParameterConstraintClause)
                 .WithSemicolon()
                 .Build(),
-            new MethodDeclarationBuilder(
-                method.MethodInvocationImposterGroup.ThrowsMethod.ReturnType,
-                method.MethodInvocationImposterGroup.ThrowsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        InterfaceParameter(
-                            method
-                                .MethodInvocationImposterGroup
-                                .ThrowsMethod
-                                .ExceptionGeneratorParameter,
-                            method
-                                .MethodInvocationImposterGroup
-                                .ThrowsMethod
-                                .InterfaceExceptionGeneratorParameterName
-                        )
-                    )
+            InterfaceMethod(
+                throws.ReturnType,
+                throws.Name,
+                InterfaceParameter(
+                    throws.ExceptionParameter,
+                    throws.InterfaceExceptionParameterName
                 )
-                .WithSemicolon()
-                .Build(),
-        ]);
+            ),
+            InterfaceMethod(
+                throws.ReturnType,
+                throws.Name,
+                InterfaceParameter(
+                    throws.ExceptionGeneratorParameter,
+                    throws.InterfaceExceptionGeneratorParameterName
+                )
+            ),
+        ];
 
         if (method.HasReturnValue)
         {
-            methods.AddRange([
-                new MethodDeclarationBuilder(
-                    method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType,
-                    method.MethodInvocationImposterGroup.ReturnsMethod.Name
-                )
-                    .AddParameter(
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            InterfaceParameter(
-                                method
-                                    .MethodInvocationImposterGroup
-                                    .ReturnsMethod
-                                    .ResultGeneratorParameter,
-                                method
-                                    .MethodInvocationImposterGroup
-                                    .ReturnsMethod
-                                    .InterfaceResultGeneratorParameterName
-                            )
-                        )
-                    )
-                    .WithSemicolon()
-                    .Build(),
-                new MethodDeclarationBuilder(
-                    method.MethodInvocationImposterGroup.ReturnsMethod.ReturnType,
-                    method.MethodInvocationImposterGroup.ReturnsMethod.Name
-                )
-                    .AddParameter(
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            InterfaceParameter(
-                                method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter,
-                                method
-                                    .MethodInvocationImposterGroup
-                                    .ReturnsMethod
-                                    .InterfaceValueParameterName
-                            )
-                        )
-                    )
-                    .WithSemicolon()
-                    .Build(),
-            ]);
-        }
-
-        if (method.MethodInvocationImposterGroup.ReturnsAsyncMethod is { } returnsAsyncMethod)
-        {
+            var returns = method.MethodInvocationImposterGroup.ReturnsMethod;
             methods.Add(
-                new MethodDeclarationBuilder(returnsAsyncMethod.ReturnType, returnsAsyncMethod.Name)
-                    .AddParameter(
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            InterfaceParameter(
-                                returnsAsyncMethod.ValueParameter,
-                                returnsAsyncMethod.InterfaceValueParameterName
-                            )
-                        )
+                InterfaceMethod(
+                    returns.ReturnType,
+                    returns.Name,
+                    InterfaceParameter(
+                        returns.ResultGeneratorParameter,
+                        returns.InterfaceResultGeneratorParameterName
                     )
-                    .WithSemicolon()
-                    .Build()
+                )
+            );
+            methods.Add(
+                InterfaceMethod(
+                    returns.ReturnType,
+                    returns.Name,
+                    InterfaceParameter(returns.ValueParameter, returns.InterfaceValueParameterName)
+                )
             );
         }
 
-        if (method.MethodInvocationImposterGroup.ThrowsAsyncMethod is { } throwsAsyncMethod)
+        if (method.MethodInvocationImposterGroup.ReturnsAsyncMethod is { } returnsAsync)
         {
             methods.Add(
-                new MethodDeclarationBuilder(throwsAsyncMethod.ReturnType, throwsAsyncMethod.Name)
-                    .AddParameter(
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            InterfaceParameter(
-                                throwsAsyncMethod.ExceptionParameter,
-                                throwsAsyncMethod.InterfaceExceptionParameterName
-                            )
-                        )
+                InterfaceMethod(
+                    returnsAsync.ReturnType,
+                    returnsAsync.Name,
+                    InterfaceParameter(
+                        returnsAsync.ValueParameter,
+                        returnsAsync.InterfaceValueParameterName
                     )
-                    .WithSemicolon()
-                    .Build()
+                )
+            );
+        }
+
+        if (method.MethodInvocationImposterGroup.ThrowsAsyncMethod is { } throwsAsync)
+        {
+            methods.Add(
+                InterfaceMethod(
+                    throwsAsync.ReturnType,
+                    throwsAsync.Name,
+                    InterfaceParameter(
+                        throwsAsync.ExceptionParameter,
+                        throwsAsync.InterfaceExceptionParameterName
+                    )
+                )
             );
         }
 
         if (
             method.MethodInvocationImposterGroup.UseBaseImplementationMethod is
-            { } useBaseImplementationMethod
+            { } useBaseImplementation
         )
         {
             methods.Add(
-                new MethodDeclarationBuilder(
-                    useBaseImplementationMethod.ReturnType,
-                    useBaseImplementationMethod.Name
-                )
-                    .WithSemicolon()
-                    .Build()
+                InterfaceMethod(useBaseImplementation.ReturnType, useBaseImplementation.Name)
             );
         }
 
         return methods;
     }
+
+    private static MethodDeclarationSyntax InterfaceMethod(
+        TypeSyntax returnType,
+        string name,
+        params ParameterMetadata[] parameters
+    ) =>
+        new MethodDeclarationBuilder(returnType, name)
+            .AddParameters(parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it)))
+            .WithSemicolon()
+            .Build();
 
     private static ParameterMetadata InterfaceParameter(
         ParameterMetadata metadata,
