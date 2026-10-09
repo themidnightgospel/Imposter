@@ -15,10 +15,11 @@ internal readonly struct IndexerArgumentsMetadata
 
     internal IndexerArgumentsMetadata(in ImposterIndexerCoreMetadata core)
     {
-        Name = $"{core.UniqueName}IndexerArguments";
-        TypeSyntax = IdentifierName(Name);
-        // The class keeps each parameter in a field of the same name, which Equals and GetHashCode read by name.
+        // The class keeps each parameter in a field named after it, which can't share the class's name and which
+        // Equals and GetHashCode read by name.
         var names = core.CreateParameterNameSet();
+        Name = names.Use($"{core.UniqueName}IndexerArguments");
+        TypeSyntax = IdentifierName(Name);
         OtherVariableName = names.Use("other");
         HashVariableName = names.Use("hash");
     }

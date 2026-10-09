@@ -253,7 +253,7 @@ internal static class MethodImposterAdapterBuilder
                                     ? Argument(
                                             IdentifierName(argumentsParameterName)
                                                 .Dot(
-                                                    GenericName("As")
+                                                    GenericName(method.ArgumentsAsMethodName)
                                                         .WithTypeArgumentList(
                                                             TypeArgumentList(
                                                                 SeparatedList(

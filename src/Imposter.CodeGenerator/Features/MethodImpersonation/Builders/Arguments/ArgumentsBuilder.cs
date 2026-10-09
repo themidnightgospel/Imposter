@@ -83,7 +83,7 @@ internal static class ArgumentsBuilder
             return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));
         });
 
-        return new MethodDeclarationBuilder(returnType, "As")
+        return new MethodDeclarationBuilder(returnType, method.ArgumentsAsMethodName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
