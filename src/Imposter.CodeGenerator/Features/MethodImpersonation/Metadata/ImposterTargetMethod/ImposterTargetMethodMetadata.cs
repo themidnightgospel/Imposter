@@ -49,9 +49,9 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly NameSet GenericTypeParameterNameSet;
 
-    // Names for the imposter's fields of this method, kept apart from the method's parameter and type parameter
-    // names, which its setup member declares.
-    internal readonly NameSet FieldNames;
+    // Names for the members the imposters of this method declare, kept apart from the method's parameter and type
+    // parameter names, which their setup and invoke members declare next to them.
+    internal readonly NameSet MemberNames;
 
     internal readonly bool HasReturnValue;
 
@@ -119,7 +119,7 @@ internal readonly struct ImposterTargetMethodMetadata
             Model.Parameters.Select(p => p.Name).Concat([UniqueName, Model.ContainingNamespace])
         );
         GenericTypeParameterNameSet = new NameSet(Model.TypeParameters.Select(p => p.Name));
-        FieldNames = new NameSet(
+        MemberNames = new NameSet(
             Model
                 .Parameters.Select(parameter => parameter.Name)
                 .Concat(Model.TypeParameters.Select(typeParameter => typeParameter.Name))
@@ -186,7 +186,10 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
-        MethodInvocationImposter = new MethodInvocationImposterMetadata(ReservedParameterNames);
+        MethodInvocationImposter = new MethodInvocationImposterMetadata(
+            ReservedParameterNames,
+            MemberNames
+        );
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = method.RequiresExplicitInterfaceImplementation;

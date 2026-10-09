@@ -12,23 +12,37 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal static class InitializeOutParametersMethodBuilder
 {
-    private const string Name = "InitializeOutParametersWithDefaultValues";
-
     internal static ExpressionStatementSyntax? Invoke(in ImposterTargetMethodMetadata method) =>
-        method.Parameters.HasOutputParameters ? Invoke(method.Parameters.OutputParameters) : null;
+        method.Parameters.HasOutputParameters
+            ? Invoke(
+                method.MethodInvocationImposter.InitializeOutParametersMethodName,
+                method.Parameters.OutputParameters
+            )
+            : null;
 
-    private static ExpressionStatementSyntax Invoke(IReadOnlyList<ParameterModel> parameters) =>
-        IdentifierName(Name)
+    private static ExpressionStatementSyntax Invoke(
+        string name,
+        IReadOnlyList<ParameterModel> parameters
+    ) =>
+        IdentifierName(name)
             .Call(
                 parameters.Where(it => it.RefKind is RefKind.Out).Select(it => ArgumentSyntax(it))
             )
             .ToStatementSyntax();
 
     internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method) =>
-        method.Parameters.HasOutputParameters ? Build(method.Parameters.OutputParameters) : null;
+        method.Parameters.HasOutputParameters
+            ? Build(
+                method.MethodInvocationImposter.InitializeOutParametersMethodName,
+                method.Parameters.OutputParameters
+            )
+            : null;
 
-    private static MethodDeclarationSyntax Build(IReadOnlyList<ParameterModel> parameters) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, Name)
+    private static MethodDeclarationSyntax Build(
+        string name,
+        IReadOnlyList<ParameterModel> parameters
+    ) =>
+        new MethodDeclarationBuilder(WellKnownTypes.Void, name)
             .AddParameters(parameters.Select(ParameterSyntax))
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))

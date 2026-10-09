@@ -30,6 +30,9 @@ internal readonly struct MethodImposterMetadata
 
     internal readonly InvocationImpostersFieldMetadata InvocationImpostersField;
 
+    // The method imposter and its collection both keep the imposter's mode in a field of this name.
+    internal readonly string InvocationBehaviorFieldName;
+
     internal MethodImposterMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}MethodImposter";
@@ -49,11 +52,15 @@ internal readonly struct MethodImposterMetadata
             method.TargetGenericTypeArguments
         );
 
-        Collection = new MethodImposterCollectionMetadata($"{Name}Collection", method.FieldNames);
-        AsField = new FieldDeclarationMetadata(Name, method.FieldNames);
+        Collection = new MethodImposterCollectionMetadata($"{Name}Collection", method.MemberNames);
+        AsField = new FieldDeclarationMetadata(Name, method.MemberNames);
+        InvocationBehaviorFieldName = method.MemberNames.Use("_invocationBehavior");
         InvokeMethod = new MethodImposterInvokeMethodMetadata(method.ReservedParameterNames);
         FindMatchingInvocationImposterGroupMethod =
-            new FindMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
+            new FindMatchingInvocationImposterGroupMethodMetadata(
+                method.ReservedParameterNames,
+                method.MemberNames
+            );
         HasMatchingInvocationImposterGroupMethod =
             new HasMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
         InvocationImpostersField = new InvocationImpostersFieldMetadata(

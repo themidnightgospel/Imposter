@@ -1,3 +1,5 @@
+using Imposter.CodeGenerator.Helpers;
+
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
 internal readonly struct FindMatchingInvocationImposterGroupMethodMetadata
@@ -7,10 +9,11 @@ internal readonly struct FindMatchingInvocationImposterGroupMethodMetadata
     internal readonly string SetupVariableName;
 
     public FindMatchingInvocationImposterGroupMethodMetadata(
-        in ReservedParameterNames reservedParameterNames
+        in ReservedParameterNames reservedParameterNames,
+        NameSet memberNames
     )
     {
-        Name = "FindMatchingInvocationImposterGroup";
+        Name = memberNames.Use("FindMatchingInvocationImposterGroup");
         var nameContext = reservedParameterNames.CreateNameSet();
         SetupVariableName = nameContext.Use("invocationImposterGroup");
     }
