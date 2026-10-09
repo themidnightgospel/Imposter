@@ -116,6 +116,17 @@ public class RefKindOverloadCompilationTests
     }
 
     [Fact]
+    public async Task GivenExplicitlyImplementedMethodsNextToAnOverloadKeepingTheirName_WhenImposterIsUsed_ShouldKeepTheirSetupNames()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IA { int Get(); } public interface IB { int Get(); } public interface IC { int Get(int x); } public interface IService : IA, IB, IC { }",
+            "var imposter = new Sample.IServiceImposter(); imposter.Get().Returns(1); imposter.Get_1().Returns(2); imposter.Get(Arg<int>.Any()).Returns(3);",
+            nameof(RefKindOverloadCompilationTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenInterfaceOverloadsOnValueAndOut_WhenSetUpThroughTheView_ShouldKeepTheirNames()
     {
         await AssertInterfaceCompiles(

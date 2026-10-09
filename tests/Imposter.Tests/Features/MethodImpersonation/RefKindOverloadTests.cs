@@ -48,6 +48,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
         }
 
         [Fact]
+        public void GivenNumberedSetupOfAnExplicitlyImplementedMethod_WhenTheSecondInterfacesMethodIsInvoked_ShouldUseIt()
+        {
+            var imposter = new ISharedGetSutImposter();
+            imposter.Get().Returns(1);
+            imposter.Get_1().Returns(2);
+
+            ((ISecondGetSut)imposter.Instance()).Get().ShouldBe(2);
+        }
+
+        [Fact]
         public void GivenSetupThroughTheView_WhenTheInOverloadIsInvoked_ShouldUseIt()
         {
             _sut.For(default(IRefKindOverloadSut)).Count_1(Arg<int>.Any()).Returns(3);
