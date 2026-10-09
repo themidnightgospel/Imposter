@@ -12,6 +12,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP007](#imp007) | Error | Two targets would generate the same imposter type |
 | [IMP008](#imp008) | Error | The target class has abstract members your project cannot override |
 | [IMP009](#imp009) | Error | The target has a member whose signature uses a ref-like type |
+| [IMP012](#imp012) | Error | The target interface has a static abstract member without an implementation |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -75,6 +76,12 @@ An imposter records every argument and result of the members it impersonates, an
 IMP009 means a member the imposter would impersonate uses a ref-like type anywhere else in its signature: as a method parameter or return type of another `ref struct` type, a span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out` (a `params` span parameter is scoped implicitly), a property or indexer type, an indexer parameter, or a parameter or return type of an event's delegate. The diagnostic names the first such member and type, and no imposter is generated.
 
 Change the member to take or return a type the imposter can store, such as `ReadOnlyMemory<T>`, `Memory<T>` or an array, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a ref-like type doesn't cause IMP009.
+
+## IMP012: Static abstract member { #imp012 }
+
+An imposter passes its target interface as a type argument, as in `IHaveImposterInstance<IService>`. C# doesn't allow an interface as a type argument while one of its static abstract members, declared or inherited, has no implementation in the interface (CS8920). IMP012 names the first such member, and no imposter is generated.
+
+Register an interface without the member, such as one that declares only the instance members your tests need, or give the member a body with `static virtual`. Static virtual members don't cause IMP012, and neither does a class target that implements the interface.
 
 ## IMPLOG001: Generator log { #implog001 }
 

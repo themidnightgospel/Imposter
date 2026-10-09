@@ -85,6 +85,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp009"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTargetHasStaticAbstractMember = new(
+        "IMP012",
+        "Imposter target has a static abstract member",
+        "'{0}' has the static abstract member '{1}', so it can't be the type argument its imposter needs",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An interface whose static abstract member has no implementation in the interface can't be a type argument, and its imposter passes it as one, so no imposter is generated.",
+        helpLinkUri: HelpUrl + "#imp012"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

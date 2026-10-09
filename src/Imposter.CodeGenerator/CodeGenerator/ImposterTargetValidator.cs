@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004, IMP008 and IMP009 stop the target's generation; IMP006 only warns. Collisions between targets
-    // (IMP007) are found once all targets are known.
+    // IMP002, IMP004, IMP008, IMP009 and IMP012 stop the target's generation; IMP006 only warns. Collisions between
+    // targets (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -27,6 +27,19 @@ internal static class ImposterTargetValidator
                     location,
                     targetDisplayName,
                     target.TypeKind.ToString()
+                ),
+                false
+            );
+        }
+
+        if (FindUnimplementedStaticAbstractMember(target) is { } staticAbstractMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasStaticAbstractMember,
+                    location,
+                    targetDisplayName,
+                    staticAbstractMember.ToDisplayString()
                 ),
                 false
             );
@@ -100,6 +113,19 @@ internal static class ImposterTargetValidator
     private static bool IsClosedGenericType(INamedTypeSymbol typeSymbol) =>
         typeSymbol.IsGenericType
         && !SymbolEqualityComparer.Default.Equals(typeSymbol, typeSymbol.OriginalDefinition);
+
+    // The imposter passes its target as a type argument, which an interface can't be while one of its static abstract
+    // members, or an inherited one, has no implementation in it. A class target implements them itself.
+    private static ISymbol? FindUnimplementedStaticAbstractMember(INamedTypeSymbol target) =>
+        target.TypeKind == TypeKind.Interface
+            ? target
+                .AllInterfaces.Prepend(target)
+                .SelectMany(@interface => @interface.GetMembers())
+                .FirstOrDefault(member =>
+                    member is { IsStatic: true, IsAbstract: true }
+                    && target.FindImplementationForInterfaceMember(member) is null
+                )
+            : null;
 
     // A source class always has at least its implicit constructor. A class from another assembly can show none, when
     // the build imports only public and protected metadata and every constructor is internal.

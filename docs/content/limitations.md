@@ -29,6 +29,10 @@ This behavior is the same in implicit and explicit modes. Constructor-time calls
 callbacks or appear in invocation verification. After construction, normal setup, verification, and
 explicit-mode checks apply.
 
+## Interface targets
+
+- An interface with a static abstract member that has no implementation in it, declared or inherited, can't be impersonated: C# doesn't allow it as a type argument, which its imposter needs. Such a target reports [IMP012](diagnostics.md#imp012) and gets no imposter.
+
 ## Ref-like types
 
 - Methods with `Span<T>` or `ReadOnlySpan<T>` parameters, or that return one by value, can be impersonated. The imposter copies the elements a span argument arrives with, and you match them with `SpanArg<T>` or `ReadOnlySpanArg<T>`, or `OutSpanArg<T>` or `OutReadOnlySpanArg<T>` for an `out` span (see [Span parameters](arguments-matching.md#span-parameters)). `Returns` takes the array a returned span covers (see [Methods](methods/index.md#setup-return-values)).
