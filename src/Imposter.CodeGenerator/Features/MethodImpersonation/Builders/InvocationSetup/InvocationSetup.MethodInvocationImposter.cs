@@ -531,12 +531,6 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var returnsAsync = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
-        var lambdaBody = new BlockBuilder().AddStatement(
-            InitializeOutParametersMethodBuilder.Invoke(method)
-        );
-
-        lambdaBody.AddStatement(ReturnStatement(IdentifierName(returnsAsync.ValueParameter.Name)));
-
         var returnsAsyncBodyBuilder = new BlockBuilder();
 
         if (method.SupportsBaseImplementation)
@@ -546,7 +540,12 @@ internal static partial class InvocationSetupBuilder
 
         returnsAsyncBodyBuilder.AddStatement(
             ResultGeneratorIdentifier(method)
-                .Assign(AsyncResultGenerator(method, lambdaBody.Build()))
+                .Assign(
+                    AsyncResultGenerator(
+                        method,
+                        Block(ReturnStatement(IdentifierName(returnsAsync.ValueParameter.Name)))
+                    )
+                )
                 .ToStatementSyntax()
         );
 
@@ -596,20 +595,21 @@ internal static partial class InvocationSetupBuilder
             .Build();
     }
 
-    // A span parameter can't be declared on an async lambda (CS4012), so a method with span parameters gets a plain
-    // lambda that returns the result of an async local function.
+    // A method whose parameters an async lambda can't declare gets a plain lambda that returns the result of an async
+    // local function.
     private static ParenthesizedLambdaExpressionSyntax AsyncResultGenerator(
         in ImposterTargetMethodMetadata method,
         BlockSyntax asyncBody
     ) =>
-        method.Parameters.HasSpanParameters
+        method.Parameters.HasAsyncIncompatibleParameters
             ? Lambda(
                 method.Parameters.ParameterListSyntaxIncludingNullable,
                 AsyncResultFunctionCall(method, asyncBody)
             )
             : AsyncLambda(method.Parameters.ParameterListSyntaxIncludingNullable, asyncBody);
 
-    // Returns the result of a parameterless async local function that runs asyncBody.
+    // Assigns the out parameters, which the local function can't (CS1628), and returns the result of a parameterless
+    // async local function that runs asyncBody.
     private static BlockSyntax AsyncResultFunctionCall(
         in ImposterTargetMethodMetadata method,
         BlockSyntax asyncBody
@@ -617,12 +617,18 @@ internal static partial class InvocationSetupBuilder
     {
         var functionName = method.MethodInvocationImposter.AsyncResultFunctionName;
 
-        return Block(
-            ReturnStatement(IdentifierName(functionName).Call()),
-            LocalFunctionStatement(method.NullableAwareReturnTypeSyntax, Identifier(functionName))
-                .AddModifiers(Token(SyntaxKind.AsyncKeyword))
-                .WithBody(asyncBody)
-        );
+        return new BlockBuilder()
+            .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
+            .AddStatement(ReturnStatement(IdentifierName(functionName).Call()))
+            .AddStatement(
+                LocalFunctionStatement(
+                        method.NullableAwareReturnTypeSyntax,
+                        Identifier(functionName)
+                    )
+                    .AddModifiers(Token(SyntaxKind.AsyncKeyword))
+                    .WithBody(asyncBody)
+            )
+            .Build();
     }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement(

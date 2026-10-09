@@ -37,6 +37,9 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly bool HasByReferenceParameters;
 
+    // An async lambda or method can't declare a span (CS4012) or by-reference (CS1988) parameter.
+    internal bool HasAsyncIncompatibleParameters => HasSpanParameters || HasByReferenceParameters;
+
     public ImposterTargetMethodParametersMetadata(IReadOnlyList<ParameterModel> parameters)
     {
         AllParameters = parameters;
