@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -257,14 +258,9 @@ internal static class SetterImposterBuilder
                 var useBaseImplementationCheck = IdentifierName(
                     setterImposter.UseBaseImplementationField.Name
                 );
-                var missingBaseImplementation = ThrowStatement(
-                    WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                        Argument(
-                                IdentifierName(setterImposter.PropertyDisplayNameField.Name)
-                                    .Add(" (setter)".StringLiteral())
-                            )
-                            .AsSingleArgumentListSyntax()
-                    )
+                var missingBaseImplementation = ThrowMissingImposter(
+                    setterImposter.PropertyDisplayNameField.Name,
+                    " (setter)"
                 );
                 var baseImplementationPath = IfStatement(
                     useBaseImplementationCheck,
@@ -492,14 +488,7 @@ internal static class SetterImposterBuilder
         in PropertySetterImposterMetadata setterImposter
     )
     {
-        var condition = BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName(setterImposter.InvocationBehaviorField.Name),
-                QualifiedName(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    IdentifierName("Explicit")
-                )
-            )
+        var condition = IsExplicit(IdentifierName(setterImposter.InvocationBehaviorField.Name))
             .And(Not(IdentifierName(setterImposter.HasConfiguredSetterField.Name)));
 
         return new MethodDeclarationBuilder(
@@ -511,19 +500,9 @@ internal static class SetterImposterBuilder
                 Block(
                     IfStatement(
                         condition,
-                        ThrowStatement(
-                            ObjectCreationExpression(
-                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                                )
-                                .WithArgumentList(
-                                    Argument(
-                                            IdentifierName(
-                                                    setterImposter.PropertyDisplayNameField.Name
-                                                )
-                                                .Add(" (setter)".StringLiteral())
-                                        )
-                                        .AsSingleArgumentListSyntax()
-                                )
+                        ThrowMissingImposter(
+                            setterImposter.PropertyDisplayNameField.Name,
+                            " (setter)"
                         )
                     )
                 )

@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -59,24 +60,6 @@ internal static class IndexerImposterBuilderCommon
 
         return ArgumentList(arguments);
     }
-
-    internal static ThrowStatementSyntax BuildMissingImposterThrow(
-        string propertyDisplayNameFieldName,
-        string suffix
-    ) =>
-        ThrowStatement(
-            ObjectCreationExpression(WellKnownTypes.Imposter.Abstractions.MissingImposterException)
-                .WithArgumentList(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(
-                                IdentifierName(propertyDisplayNameFieldName)
-                                    .Add(suffix.StringLiteral())
-                            )
-                        )
-                    )
-                )
-        );
 
     internal static ExpressionSyntax BuildIndices(
         in ImposterIndexerMetadata indexer,
@@ -197,11 +180,7 @@ internal static class IndexerImposterBuilderCommon
         string suffix
     )
     {
-        var explicitCheck = BinaryExpression(
-            SyntaxKind.EqualsExpression,
-            IdentifierName(invocationBehaviorFieldName),
-            WellKnownTypes.Imposter.Abstractions.ImposterMode.Dot(IdentifierName("Explicit"))
-        );
+        var explicitCheck = IsExplicit(IdentifierName(invocationBehaviorFieldName));
 
         var configuredCheck = WellKnownTypes
             .System.Threading.Volatile.Dot(IdentifierName("Read"))
@@ -217,7 +196,7 @@ internal static class IndexerImposterBuilderCommon
                 Block(
                     IfStatement(
                         condition,
-                        Block(BuildMissingImposterThrow(propertyDisplayNameFieldName, suffix))
+                        Block(ThrowMissingImposter(propertyDisplayNameFieldName, suffix))
                     )
                 )
             )

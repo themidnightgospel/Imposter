@@ -6,6 +6,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -197,26 +198,9 @@ internal partial class MethodImposterBuilder
         return IfStatement(
             matchingIdentifier.IsDefault(),
             Block(
-                IfStatement(
-                    BinaryExpression(
-                        SyntaxKind.EqualsExpression,
-                        IdentifierName(method.MethodImposter.InvocationBehaviorFieldName),
-                        QualifiedName(
-                            WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                            IdentifierName("Explicit")
-                        )
-                    ),
-                    Block(
-                        ThrowStatement(
-                            ObjectCreationExpression(
-                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                                )
-                                .WithArgumentList(
-                                    Argument(method.DisplayName.StringLiteral())
-                                        .AsSingleArgumentListSyntax()
-                                )
-                        )
-                    )
+                ThrowIfExplicit(
+                    IdentifierName(method.MethodImposter.InvocationBehaviorFieldName),
+                    method.DisplayName.StringLiteral()
                 ),
                 matchingIdentifier.Assign(defaultGroup).ToStatementSyntax()
             )
