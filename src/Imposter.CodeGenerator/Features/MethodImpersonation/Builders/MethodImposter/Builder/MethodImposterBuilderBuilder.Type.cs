@@ -33,13 +33,13 @@ internal static partial class MethodImposterBuilderBuilder
                 .ToStatementSyntax()
         );
 
-        ExpressionSyntax methodImposterAccess;
+        ExpressionSyntax methodImposterAccess = IdentifierName(
+            method.MethodImposter.Builder.ImposterParameter.Name
+        );
 
         if (method.Model.IsGenericMethod)
         {
-            var addNewCall = IdentifierName(
-                    method.MethodImposter.Builder.ImposterCollectionParameter.Name
-                )
+            var addNewCall = methodImposterAccess
                 .Dot(
                     GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
                 )
@@ -54,12 +54,6 @@ internal static partial class MethodImposterBuilderBuilder
             );
 
             methodImposterAccess = IdentifierName("methodImposter");
-        }
-        else
-        {
-            methodImposterAccess = IdentifierName(
-                method.MethodImposter.Builder.MethodImposterParameter.Name
-            );
         }
 
         statements.Add(
