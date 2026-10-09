@@ -33,7 +33,7 @@ internal readonly struct DiagnosticLogger
     {
         if (_enabled)
         {
-            var target = imposterGenerationContext.TargetSymbol.ToDisplayString();
+            var target = imposterGenerationContext.Target.DisplayName;
 
             Log($"Generated {imposterGenerationContext.HintName} for {target}");
         }

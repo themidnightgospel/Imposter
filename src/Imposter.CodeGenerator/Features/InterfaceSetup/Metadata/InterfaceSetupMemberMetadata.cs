@@ -36,9 +36,10 @@ internal readonly struct InterfaceSetupMemberMetadata
                 : [];
     }
 
+    // Only interface targets have setup views, and their methods always carry a setup model.
     internal InterfaceSetupMemberMetadata(in ImposterTargetMethodMetadata method)
         : this(
-            InterfaceSetupMemberModel.From(method.Symbol),
+            method.InterfaceSetupMember!,
             method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Model.Name,
             method.MethodImposter.BuilderInterface.Syntax
         ) { }

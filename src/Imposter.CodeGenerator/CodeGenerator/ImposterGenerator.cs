@@ -180,7 +180,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         var compilationUnit = CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
             usings: List(
-                UsingStatements.Build(imposterGenerationContext.TargetSymbol.ContainingNamespace)
+                UsingStatements.Build(imposterGenerationContext.Target.ContainingNamespace)
             ),
             attributeLists: List<AttributeListSyntax>(),
             members: List<MemberDeclarationSyntax>(GetTopLevelMembers())
@@ -250,29 +250,19 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         in CancellationToken cancellationToken
     )
     {
-        foreach (
-            var propertySymbol in imposterGenerationContext
-                .Imposter.PropertySymbols.OrderBy(
-                    property => property.MetadataName,
-                    StringComparer.Ordinal
-                )
-                .ThenBy(
-                    property => property.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                    StringComparer.Ordinal
-                )
-        )
+        foreach (var targetProperty in imposterGenerationContext.Imposter.Properties)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var property = imposterGenerationContext.Imposter.CreatePropertyMetadata(
-                propertySymbol,
+                targetProperty,
                 imposterBuilder.MemberNameSet
             );
 
             imposterBuilder
                 .AddPropertyImposter(property)
                 .AddInterfaceSetupMember(
-                    propertySymbol,
+                    targetProperty.Setup,
                     property.RequiresExplicitInterfaceImplementation
                         ? property.Core.UniqueName
                         : property.Core.Name,
@@ -291,26 +281,16 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         in CancellationToken cancellationToken
     )
     {
-        foreach (
-            var eventSymbol in imposterGenerationContext
-                .Imposter.EventSymbols.OrderBy(
-                    @event => @event.MetadataName,
-                    StringComparer.Ordinal
-                )
-                .ThenBy(
-                    @event => @event.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                    StringComparer.Ordinal
-                )
-        )
+        foreach (var targetEvent in imposterGenerationContext.Imposter.Events)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var @event = imposterGenerationContext.Imposter.CreateEventMetadata(eventSymbol);
+            var @event = imposterGenerationContext.Imposter.CreateEventMetadata(targetEvent);
 
             imposterBuilder
                 .AddEventImposter(@event)
                 .AddInterfaceSetupMember(
-                    eventSymbol,
+                    targetEvent.Setup,
                     @event.RequiresExplicitInterfaceImplementation
                         ? @event.Core.UniqueName
                         : @event.Core.Name,
@@ -327,26 +307,16 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         in CancellationToken cancellationToken
     )
     {
-        foreach (
-            var indexerSymbol in imposterGenerationContext
-                .Imposter.IndexerSymbols.OrderBy(
-                    indexer => indexer.MetadataName,
-                    StringComparer.Ordinal
-                )
-                .ThenBy(
-                    indexer => indexer.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                    StringComparer.Ordinal
-                )
-        )
+        foreach (var targetIndexer in imposterGenerationContext.Imposter.Indexers)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(indexerSymbol);
+            var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(targetIndexer);
 
             imposterBuilder
                 .AddIndexerImposter(indexer)
                 .AddInterfaceSetupMember(
-                    indexerSymbol,
+                    targetIndexer.Setup,
                     indexer.Core.UniqueName,
                     indexer.BuilderInterface.TypeSyntax,
                     isSetUpByMethod: indexer.RequiresExplicitInterfaceImplementation

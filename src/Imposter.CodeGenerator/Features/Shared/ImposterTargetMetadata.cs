@@ -16,7 +16,7 @@ internal readonly struct ImposterTargetMetadata
 {
     internal const string IndexerMemberName = "Indexer";
 
-    internal static string GetImposterName(INamedTypeSymbol target) => target.Name + "Imposter";
+    internal static string GetImposterName(string targetName) => targetName + "Imposter";
 
     internal readonly string Name;
 
@@ -32,297 +32,73 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly List<ImposterTargetMethodMetadata> Methods;
 
-    internal readonly IReadOnlyCollection<IPropertySymbol> PropertySymbols;
+    internal readonly EquatableArray<TargetMemberModel<PropertyModel>> Properties;
 
-    internal readonly IReadOnlyCollection<IPropertySymbol> IndexerSymbols;
+    internal readonly EquatableArray<TargetMemberModel<PropertyModel>> Indexers;
 
-    internal readonly IReadOnlyCollection<IEventSymbol> EventSymbols;
-
-    private readonly HashSet<IPropertySymbol> _explicitProperties;
-
-    private readonly HashSet<IEventSymbol> _explicitEvents;
-
-    private readonly HashSet<IPropertySymbol> _explicitIndexers;
-
-    private readonly MemberAccess _memberAccess;
+    internal readonly EquatableArray<TargetMemberModel<EventModel>> Events;
 
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
 
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(
-        INamedTypeSymbol targetSymbol,
-        in SupportedCSharpFeatures supportedCSharpFeatures,
-        MemberAccess memberAccess
+        ImposterTargetModel target,
+        in SupportedCSharpFeatures supportedCSharpFeatures
     )
     {
-        _memberAccess = memberAccess;
-        Name = GetImposterName(targetSymbol);
-        TypeParameters = new ImposterTargetTypeParametersMetadata(targetSymbol);
+        Name = GetImposterName(target.Name);
+        TypeParameters = new ImposterTargetTypeParametersMetadata(target.TypeParameters);
         ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
             TypeParameters.TypeArguments,
             Name
         );
-        TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(targetSymbol);
-        Methods = GetMethods(
-            targetSymbol,
-            _symbolNameNamespace,
-            supportedCSharpFeatures,
-            memberAccess
-        );
-        IsClass = targetSymbol.TypeKind is TypeKind.Class;
-        DeclaredAccessibility = targetSymbol.DeclaredAccessibility;
-        AccessibleConstructors = GetAccessibleConstructors(targetSymbol, memberAccess);
-
-        var propertySymbols = GetPropertySymbols(targetSymbol, memberAccess);
-        PropertySymbols = propertySymbols.Where(property => !property.IsIndexer).ToArray();
-        IndexerSymbols = propertySymbols.Where(property => property.IsIndexer).ToArray();
-        EventSymbols = GetEventSymbols(targetSymbol, memberAccess);
-
-        _explicitProperties =
-            targetSymbol.TypeKind is TypeKind.Interface
-                ? DetectExplicitInterfaceProperties(PropertySymbols)
-                : new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
-        _explicitEvents =
-            targetSymbol.TypeKind is TypeKind.Interface
-                ? DetectExplicitInterfaceEvents(EventSymbols)
-                : new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
-        _explicitIndexers =
-            targetSymbol.TypeKind is TypeKind.Interface
-                ? DetectExplicitInterfaceIndexers(IndexerSymbols)
-                : new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
-    }
-
-    private static List<ImposterTargetMethodMetadata> GetMethods(
-        INamedTypeSymbol typeSymbol,
-        NameSet nameSet,
-        in SupportedCSharpFeatures supportedCSharpFeatures,
-        MemberAccess memberAccess
-    )
-    {
+        TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
+        var memberNames = _symbolNameNamespace;
         var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
-
-        if (typeSymbol.TypeKind is TypeKind.Interface)
-        {
-            var allMethods = typeSymbol.GetAllInterfaceMethods();
-            var explicitMethods = DetectExplicitInterfaceMethods(allMethods);
-
-            return allMethods
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(
-                    methodSymbol,
-                    nameSet.Use(methodSymbol.Name),
-                    supportsNullableGenericType,
-                    memberAccess,
-                    explicitMethods.Contains(methodSymbol)
-                ))
-                .ToList();
-        }
-
-        if (typeSymbol.TypeKind is TypeKind.Class)
-        {
-            return typeSymbol
-                .GetAllOverridableMethods()
-                .Where(memberAccess.IsAccessible)
-                .Select(methodSymbol => new ImposterTargetMethodMetadata(
-                    methodSymbol,
-                    nameSet.Use(methodSymbol.Name),
-                    supportsNullableGenericType,
-                    memberAccess
-                ))
-                .ToList();
-        }
-
-        return [];
-    }
-
-    private static ImposterTargetConstructorMetadata[] GetAccessibleConstructors(
-        INamedTypeSymbol typeSymbol,
-        MemberAccess memberAccess
-    )
-    {
-        if (typeSymbol.TypeKind is not TypeKind.Class)
-        {
-            return [];
-        }
-
-        var declaredConstructors = typeSymbol
-            .InstanceConstructors.Where(constructor =>
-                !constructor.IsImplicitlyDeclared && memberAccess.IsAccessible(constructor)
-            )
-            .Select(ImposterTargetConstructorMetadata.FromSymbol)
+        Methods = target
+            .Methods.Select(method => new ImposterTargetMethodMetadata(
+                method,
+                memberNames.Use(method.Member.Name),
+                supportsNullableGenericType
+            ))
+            .ToList();
+        IsClass = target.IsClass;
+        DeclaredAccessibility = target.DeclaredAccessibility;
+        AccessibleConstructors = target
+            .AccessibleConstructors.Select(constructor => new ImposterTargetConstructorMetadata(
+                constructor
+            ))
             .ToArray();
-
-        if (declaredConstructors.Length > 0)
-        {
-            return declaredConstructors;
-        }
-
-        if (!typeSymbol.InstanceConstructors.Any(constructor => !constructor.IsImplicitlyDeclared))
-        {
-            return new[] { ImposterTargetConstructorMetadata.CreateImplicitParameterless() };
-        }
-
-        return [];
-    }
-
-    private static IReadOnlyCollection<IPropertySymbol> GetPropertySymbols(
-        INamedTypeSymbol typeSymbol,
-        MemberAccess memberAccess
-    )
-    {
-        if (typeSymbol.TypeKind is TypeKind.Interface)
-        {
-            return typeSymbol.GetAllInterfaceProperties();
-        }
-
-        if (typeSymbol.TypeKind is TypeKind.Class)
-        {
-            return typeSymbol
-                .GetAllOverridableProperties()
-                .Where(memberAccess.IsAccessible)
-                .ToArray();
-        }
-
-        return [];
+        Properties = target.Properties;
+        Indexers = target.Indexers;
+        Events = target.Events;
     }
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(
-        IPropertySymbol propertySymbol,
+        TargetMemberModel<PropertyModel> property,
         NameSet memberNameSet
     ) =>
         new(
-            PropertyModel.From(propertySymbol, _memberAccess),
-            _symbolNameNamespace.Use(propertySymbol.Name),
+            property.Member,
+            _symbolNameNamespace.Use(property.Member.Name),
             memberNameSet,
-            _explicitProperties.Contains(propertySymbol)
+            property.RequiresExplicitInterfaceImplementation
         );
 
-    internal ImposterIndexerMetadata CreateIndexerMetadata(IPropertySymbol propertySymbol) =>
-        new(
-            PropertyModel.From(propertySymbol, _memberAccess),
-            _symbolNameNamespace.Use(IndexerMemberName),
-            _explicitIndexers.Contains(propertySymbol)
-        );
-
-    // Indexers of different interfaces with the same parameter types would collide on the instance, and their setup
-    // indexers, which take Arg<T> whatever the ref kind, would collide on the imposter.
-    private static HashSet<IPropertySymbol> DetectExplicitInterfaceIndexers(
-        IReadOnlyCollection<IPropertySymbol> indexers
+    internal ImposterIndexerMetadata CreateIndexerMetadata(
+        TargetMemberModel<PropertyModel> indexer
     ) =>
         new(
-            indexers
-                .GroupBy(indexer =>
-                    string.Join(
-                        ",",
-                        indexer.Parameters.Select(parameter =>
-                            parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                        )
-                    )
-                )
-                .Where(group => group.Count() > 1)
-                .SelectMany(group => group),
-            SymbolEqualityComparer.Default
+            indexer.Member,
+            _symbolNameNamespace.Use(IndexerMemberName),
+            indexer.RequiresExplicitInterfaceImplementation
         );
 
-    internal ImposterEventMetadata CreateEventMetadata(IEventSymbol eventSymbol) =>
+    internal ImposterEventMetadata CreateEventMetadata(TargetMemberModel<EventModel> @event) =>
         new(
-            EventModel.From(eventSymbol, _memberAccess),
-            _symbolNameNamespace.Use(eventSymbol.Name),
-            _explicitEvents.Contains(eventSymbol)
+            @event.Member,
+            _symbolNameNamespace.Use(@event.Member.Name),
+            @event.RequiresExplicitInterfaceImplementation
         );
-
-    private static HashSet<IPropertySymbol> DetectExplicitInterfaceProperties(
-        IReadOnlyCollection<IPropertySymbol> properties
-    )
-    {
-        var result = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
-
-        var groups = properties.GroupBy(p => p.Name);
-        foreach (var group in groups)
-        {
-            var members = group.ToList();
-            if (members.Count > 1)
-            {
-                foreach (var member in members)
-                {
-                    result.Add(member);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private static HashSet<IEventSymbol> DetectExplicitInterfaceEvents(
-        IReadOnlyCollection<IEventSymbol> events
-    )
-    {
-        var result = new HashSet<IEventSymbol>(SymbolEqualityComparer.Default);
-
-        var groups = events.GroupBy(e => e.Name);
-        foreach (var group in groups)
-        {
-            var members = group.ToList();
-            if (members.Count > 1)
-            {
-                foreach (var member in members)
-                {
-                    result.Add(member);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private static HashSet<IMethodSymbol> DetectExplicitInterfaceMethods(
-        IReadOnlyCollection<IMethodSymbol> methods
-    )
-    {
-        var result = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
-
-        var groups = methods.GroupBy(m => GetMethodSignatureKey(m));
-        foreach (var group in groups)
-        {
-            var members = group.ToList();
-            if (members.Count > 1)
-            {
-                foreach (var member in members)
-                {
-                    result.Add(member);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private static string GetMethodSignatureKey(IMethodSymbol method)
-    {
-        var paramTypes = string.Join(
-            ",",
-            method.Parameters.Select(p =>
-                p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-            )
-        );
-        return $"{method.Name}({paramTypes})";
-    }
-
-    private static IReadOnlyCollection<IEventSymbol> GetEventSymbols(
-        INamedTypeSymbol typeSymbol,
-        MemberAccess memberAccess
-    )
-    {
-        if (typeSymbol.TypeKind is TypeKind.Interface)
-        {
-            return typeSymbol.GetAllInterfaceEvents();
-        }
-
-        if (typeSymbol.TypeKind is TypeKind.Class)
-        {
-            return typeSymbol.GetAllOverridableEvents().Where(memberAccess.IsAccessible).ToArray();
-        }
-
-        return [];
-    }
 }
