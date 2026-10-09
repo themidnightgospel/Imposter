@@ -70,6 +70,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 3. Add or update tests to cover new behaviour.
 4. Run `pwsh ./build-scripts/build-and-test.ps1` and ensure all tests pass.
 5. Open a PR against `master` with a clear description of what and why.
+6. Keep the branch up to date with `master`. A PR can merge only when it contains the latest `master` and its checks passed on that. If `master` moves, merge it in, update the generated-file snapshots if the verification build changes them (see [Generated Files](#generated-files)), and let CI run again.
 
 ### Code Generation Rules
 
@@ -120,6 +121,7 @@ Open an issue describing the use case and expected API surface. Include code exa
 - [ ] Release build compiles clean (warnings treated as errors)
 - [ ] No string-based code generation introduced
 - [ ] Terminology uses "impersonate/imposter" (not "mock")
+- [ ] Branch is up to date with `master` and CI passed on it
 
 ## Architecture at a Glance
 
