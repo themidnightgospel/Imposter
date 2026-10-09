@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -18,7 +19,7 @@ internal partial class MethodImposterBuilder
             MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(BuildMethodParameters(method))
+            .WithParameterList(InvokeSignatureBuilder.MethodImposterParameters(method))
             .WithBody(
                 new BlockBuilder()
                     .AddStatement(DeclareAndInitializeArgumentsVariable(method))
@@ -137,47 +138,19 @@ internal partial class MethodImposterBuilder
         }
     }
 
-    private static ParameterListSyntax BuildMethodParameters(in ImposterTargetMethodMetadata method)
-    {
-        var parameterList = method.Parameters.ParameterListSyntaxIncludingNullable;
-
-        if (method.SupportsBaseImplementation)
-        {
-            parameterList = parameterList.AddParameters(
-                Parameter(
-                        Identifier(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
-                    )
-                    .WithType(method.Delegate.Syntax.ToNullableType())
-                    .WithDefault(EqualsValueClause(Null))
-            );
-        }
-
-        return parameterList;
-    }
-
     private static StatementSyntax InvokeMatchingSetup(in ImposterTargetMethodMetadata method)
     {
-        var invokeArguments = new List<ArgumentSyntax>
-        {
-            Argument(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
-            Argument(method.DisplayName.StringLiteral()),
-        };
-        invokeArguments.AddRange(ArgumentListSyntax(method.Parameters.AllParameters).Arguments);
-
-        if (method.SupportsBaseImplementation)
-        {
-            invokeArguments.Add(
-                Argument(
-                    IdentifierName(method.MethodImposter.InvokeMethod.BaseInvocationParameterName)
-                )
-            );
-        }
-
         var invokeExpression = IdentifierName(
                 method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
             )
             .Dot(IdentifierName("Invoke"))
-            .Call(ArgumentList(SeparatedList(invokeArguments)));
+            .Call(
+                InvokeSignatureBuilder.InvocationImposterArguments(
+                    method,
+                    IdentifierName(method.MethodImposter.InvocationBehaviorFieldName),
+                    method.DisplayName.StringLiteral()
+                )
+            );
 
         if (method.Model.ReturnType.IsVoid)
         {

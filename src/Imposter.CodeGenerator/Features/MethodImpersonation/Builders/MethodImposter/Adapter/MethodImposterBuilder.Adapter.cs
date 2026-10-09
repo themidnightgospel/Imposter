@@ -152,7 +152,7 @@ internal static class MethodImposterAdapterBuilder
             parameterList = parameterList.AddParameters(
                 ParameterSyntax(
                         baseImplementationParameterTypeNullable,
-                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameter.Name
                     )
                     .WithDefault(EqualsValueClause(Null))
             );
@@ -160,7 +160,7 @@ internal static class MethodImposterAdapterBuilder
             invokeArguments.Add(
                 Argument(
                     TypeCasterSyntaxHelper.CastExpression(
-                        method.MethodImposter.InvokeMethod.BaseInvocationParameterName,
+                        method.MethodImposter.InvokeMethod.BaseInvocationParameter.Name,
                         baseImplementationParameterTypeNullable,
                         method.Delegate.Syntax
                     )
