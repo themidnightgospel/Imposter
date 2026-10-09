@@ -49,63 +49,64 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             Token(SyntaxKind.PrivateKeyword),
             Token(SyntaxKind.ReadOnlyKeyword)
         );
+        var fieldNames = core.CreateParameterNameSet();
 
         ActiveHandlers = FieldMetadata.PrivateField(
-            "_activeHandlers",
+            fieldNames.Use("_activeHandlers"),
             core.HandlerTypeSyntax.ToNullableType()
         );
         Callbacks = new FieldMetadata(
-            "_callbacks",
+            fieldNames.Use("_callbacks"),
             handlerQueueType,
             privateReadonlyModifiers,
             handlerQueueType.New()
         );
         History = new FieldMetadata(
-            "_history",
+            fieldNames.Use("_history"),
             historyQueueType,
             privateReadonlyModifiers,
             historyQueueType.New()
         );
         SubscribeHistory = new FieldMetadata(
-            "_subscribeHistory",
+            fieldNames.Use("_subscribeHistory"),
             handlerQueueType,
             privateReadonlyModifiers,
             handlerQueueType.New()
         );
         UnsubscribeHistory = new FieldMetadata(
-            "_unsubscribeHistory",
+            fieldNames.Use("_unsubscribeHistory"),
             handlerQueueType,
             privateReadonlyModifiers,
             handlerQueueType.New()
         );
         SubscribeInterceptors = new FieldMetadata(
-            "_subscribeInterceptors",
+            fieldNames.Use("_subscribeInterceptors"),
             interceptorQueueType,
             privateReadonlyModifiers,
             interceptorQueueType.New()
         );
         UnsubscribeInterceptors = new FieldMetadata(
-            "_unsubscribeInterceptors",
+            fieldNames.Use("_unsubscribeInterceptors"),
             interceptorQueueType,
             privateReadonlyModifiers,
             interceptorQueueType.New()
         );
         HandlerInvocations = new FieldMetadata(
-            "_handlerInvocations",
+            fieldNames.Use("_handlerInvocations"),
             handlerInvocationType,
             privateReadonlyModifiers,
             handlerInvocationType.New()
         );
 
         UseBaseImplementation = new FieldMetadata(
-            "_useBaseImplementation",
+            fieldNames.Use("_useBaseImplementation"),
             WellKnownTypes.Bool,
             TokenList(Token(SyntaxKind.PrivateKeyword)),
             null
         );
 
         EventDisplayName = new FieldMetadata(
-            "_eventDisplayName",
+            fieldNames.Use("_eventDisplayName"),
             WellKnownTypes.String,
             privateReadonlyModifiers,
             core.DisplayName.StringLiteral()

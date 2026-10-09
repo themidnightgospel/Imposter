@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -54,4 +55,8 @@ internal readonly ref struct ImposterEventCoreMetadata
             .ToArray();
         SupportsBaseImplementation = @event.IsClassMember && @event.HasConcreteAccessors;
     }
+
+    // The builder's raise methods take the delegate's parameters, so the names they declare or refer to avoid these.
+    internal NameSet CreateParameterNameSet() =>
+        new(Parameters.Select(parameter => parameter.Name));
 }

@@ -1,6 +1,3 @@
-using System.Linq;
-using Imposter.CodeGenerator.Helpers;
-
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 // The raise methods declare these locals next to the delegate's parameters, so the names avoid those parameters.
@@ -16,7 +13,7 @@ internal readonly struct EventRaiseLocalNames
 
     internal EventRaiseLocalNames(in ImposterEventCoreMetadata core)
     {
-        var names = new NameSet(core.Parameters.Select(parameter => parameter.Name));
+        var names = core.CreateParameterNameSet();
         Callback = names.Use("callback");
         Handler = names.Use("handler");
         Task = names.Use("task");

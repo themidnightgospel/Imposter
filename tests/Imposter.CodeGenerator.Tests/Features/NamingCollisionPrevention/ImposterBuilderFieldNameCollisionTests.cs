@@ -10,53 +10,50 @@ public class ImposterBuilderFieldNameCollisionTests
     [Fact]
     public async Task GivenMethodParametersNamedLikeTheMethodFields_WhenImposterIsUsed_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public interface IService { int Get(int _getMethodImposter, int _getMethodInvocationHistoryCollection); }",
-            "imposter.Get(Arg<int>.Any(), Arg<int>.Any()).Returns(1); imposter.Instance().Get(1, 2); imposter.Get(Arg<int>.Any(), Arg<int>.Any()).Called(Count.Once());"
+            "imposter.Get(Arg<int>.Any(), Arg<int>.Any()).Returns(1); imposter.Instance().Get(1, 2); imposter.Get(Arg<int>.Any(), Arg<int>.Any()).Called(Count.Once());",
+            nameof(ImposterBuilderFieldNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenMethodTypeParameterNamedLikeTheMethodField_WhenImposterIsUsed_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public interface IService { int Get<_getMethodImposterCollection>(_getMethodImposterCollection key); }",
-            "imposter.Get<int>(Arg<int>.Any()).Returns(1); imposter.Instance().Get(1);"
+            "imposter.Get<int>(Arg<int>.Any()).Returns(1); imposter.Instance().Get(1);",
+            nameof(ImposterBuilderFieldNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenIndexerParameterNamedLikeTheIndexerField_WhenImposterIsUsed_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public interface IService { int this[int _IndexerIndexer] { get; set; } }",
-            "imposter[Arg<int>.Any()].Getter().Returns(1); var value = imposter.Instance()[1];"
+            "imposter[Arg<int>.Any()].Getter().Returns(1); var value = imposter.Instance()[1];",
+            nameof(ImposterBuilderFieldNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenParameterNamedLikeThePropertyField_WhenImposterIsUsed_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public interface IService { string Name { get; set; } void Rename(string _NamePropertyBuilderField); }",
-            "imposter.Name.Getter().Returns(\"name\"); imposter.Instance().Rename(imposter.Instance().Name);"
+            "imposter.Name.Getter().Returns(\"name\"); imposter.Instance().Rename(imposter.Instance().Name);",
+            nameof(ImposterBuilderFieldNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenParameterNamedLikeTheEventField_WhenImposterIsUsed_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public interface IService { event System.EventHandler Changed; void Notify(int _Changed); }",
-            "imposter.Instance().Changed += (sender, args) => { }; imposter.Changed.Raise(null, System.EventArgs.Empty); imposter.Instance().Notify(1);"
-        );
-    }
-
-    private static Task AssertServiceCompiles(string targetDeclaration, string usage) =>
-        AssertCompiles(
-            "Sample.IService",
-            targetDeclaration,
-            "var imposter = new Sample.IServiceImposter(); " + usage,
+            "imposter.Instance().Changed += (sender, args) => { }; imposter.Changed.Raise(null, System.EventArgs.Empty); imposter.Instance().Notify(1);",
             nameof(ImposterBuilderFieldNameCollisionTests)
         );
+    }
 }
