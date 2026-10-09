@@ -65,8 +65,15 @@ internal readonly struct IndexerGetterImposterMetadata
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
         EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
-        var returnGeneratorType = BuildReturnGeneratorType(indexer);
-        ReturnHandlerType = BuildReturnHandlerType(indexer);
+        var returnGeneratorType = WellKnownTypes.System.Func(
+            indexer.Arguments.TypeSyntax,
+            indexer.Core.NullableAwareStoredTypeSyntax
+        );
+        ReturnHandlerType = WellKnownTypes.System.Func(
+            indexer.Arguments.TypeSyntax,
+            indexer.Core.AsSystemFuncType.ToNullableType(),
+            indexer.Core.NullableAwareStoredTypeSyntax
+        );
         Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(
@@ -109,33 +116,6 @@ internal readonly struct IndexerGetterImposterMetadata
             WellKnownTypes.Void
         );
     }
-
-    private static QualifiedNameSyntax BuildReturnGeneratorType(
-        in ImposterIndexerMetadata indexer
-    ) =>
-        QualifiedName(
-            WellKnownTypes.System.Namespace,
-            GenericName(
-                Identifier("Func"),
-                SyntaxFactoryHelper.TypeArguments([
-                    indexer.Arguments.TypeSyntax,
-                    indexer.Core.NullableAwareStoredTypeSyntax,
-                ])
-            )
-        );
-
-    private static QualifiedNameSyntax BuildReturnHandlerType(in ImposterIndexerMetadata indexer) =>
-        QualifiedName(
-            WellKnownTypes.System.Namespace,
-            GenericName(
-                Identifier("Func"),
-                SyntaxFactoryHelper.TypeArguments([
-                    indexer.Arguments.TypeSyntax,
-                    indexer.Core.AsSystemFuncType.ToNullableType(),
-                    indexer.Core.NullableAwareStoredTypeSyntax,
-                ])
-            )
-        );
 
     internal readonly struct GetterBuilderMetadata
     {

@@ -60,7 +60,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         NullableAwareStoredTypeSyntax = span is null
             ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareStoredTypeSyntax);
+        AsSystemFuncType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
         AsArgType = span is null
             ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
