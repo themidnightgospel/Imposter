@@ -6,31 +6,28 @@ namespace Imposter.CodeGenerator.Helpers;
 
 internal static class ImposterInstanceModifierBuilder
 {
-    internal static SyntaxTokenList For(ISymbol symbol, MemberAccess memberAccess) =>
-        symbol?.ContainingType?.TypeKind == TypeKind.Class
-            ? Override(memberAccess.GetOverrideAccessibility(symbol))
-            : InterfaceImplementation();
-
     internal static SyntaxTokenList For(MethodModel method) =>
-        method.IsClassMember ? Override(method.OverrideAccessibility) : InterfaceImplementation();
+        For(method.IsClassMember, method.OverrideAccessibility);
+
+    internal static SyntaxTokenList For(PropertyModel property) =>
+        For(property.IsClassMember, property.OverrideAccessibility);
+
+    internal static SyntaxTokenList For(EventModel @event) =>
+        For(@event.IsClassMember, @event.OverrideAccessibility);
 
     // An overriding accessor restates its own accessibility when it differs from the property's.
     internal static SyntaxTokenList ForAccessor(
-        IMethodSymbol? accessor,
-        IPropertySymbol property,
-        MemberAccess memberAccess
-    )
-    {
-        if (accessor is null || property.ContainingType?.TypeKind != TypeKind.Class)
-        {
-            return default;
-        }
-
-        var accessibility = memberAccess.GetOverrideAccessibility(accessor);
-        return accessibility == memberAccess.GetOverrideAccessibility(property)
+        PropertyAccessorModel? accessor,
+        PropertyModel property
+    ) =>
+        accessor is null
+        || !property.IsClassMember
+        || accessor.OverrideAccessibility == property.OverrideAccessibility
             ? default
-            : GetAccessibilityModifiers(accessibility);
-    }
+            : GetAccessibilityModifiers(accessor.OverrideAccessibility);
+
+    private static SyntaxTokenList For(bool isClassMember, Accessibility overrideAccessibility) =>
+        isClassMember ? Override(overrideAccessibility) : InterfaceImplementation();
 
     private static SyntaxTokenList Override(Accessibility accessibility) =>
         GetAccessibilityModifiers(accessibility)

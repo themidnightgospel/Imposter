@@ -2,6 +2,7 @@ using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImpost
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.SetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -42,13 +43,12 @@ internal readonly ref struct ImposterIndexerMetadata
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
     internal ImposterIndexerMetadata(
-        IPropertySymbol propertySymbol,
+        PropertyModel indexer,
         string uniqueName,
-        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation
     )
     {
-        Core = new ImposterIndexerCoreMetadata(propertySymbol, uniqueName, memberAccess);
+        Core = new ImposterIndexerCoreMetadata(indexer, uniqueName);
         Arguments = new IndexerArgumentsMetadata(Core);
         ArgumentsCriteria = new IndexerArgumentsCriteriaMetadata(Core);
         DefaultIndexerBehaviour = new DefaultIndexerBehaviourMetadata(Core, Arguments);
@@ -72,17 +72,14 @@ internal readonly ref struct ImposterIndexerMetadata
         if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(
-                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(propertySymbol.ContainingType)
+                (NameSyntax)SyntaxFactoryHelper.TypeSyntax(indexer.ContainingType)
             );
             ImposterInstanceModifiers = default;
         }
         else
         {
             ExplicitInterfaceSpecifier = null;
-            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(
-                propertySymbol,
-                memberAccess
-            );
+            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(indexer);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -41,42 +42,27 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly SyntaxTokenList SetterModifiers;
 
-    internal ImposterPropertyCoreMetadata(
-        IPropertySymbol property,
-        string uniqueName,
-        MemberAccess memberAccess
-    )
+    internal ImposterPropertyCoreMetadata(PropertyModel property, string uniqueName)
     {
-        var getter = memberAccess.AccessibleOrNull(property.GetMethod);
-        var setter = memberAccess.AccessibleOrNull(property.SetMethod);
         UniqueName = uniqueName;
-        HasGetter = getter != null;
-        HasSetter = setter != null;
-        IsInitOnly = setter?.IsInitOnly == true;
-        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
-            getter,
-            property,
-            memberAccess
-        );
-        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
-            setter,
-            property,
-            memberAccess
-        );
+        HasGetter = property.Getter is not null;
+        HasSetter = property.Setter is not null;
+        IsInitOnly = property.Setter?.IsInitOnly == true;
+        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Getter, property);
+        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Setter, property);
         Name = property.Name;
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareTypeSyntax);
         AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareTypeSyntax);
-        var containingType = property.ContainingType;
-        var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation = containingTypeIsClass && getter is { IsAbstract: false };
-        SetterSupportsBaseImplementation = containingTypeIsClass && setter is { IsAbstract: false };
+        GetterSupportsBaseImplementation =
+            property.IsClassMember && property.Getter is { IsAbstract: false };
+        SetterSupportsBaseImplementation =
+            property.IsClassMember && property.Setter is { IsAbstract: false };
         SetterRequiresDirectBaseAssignment = IsInitOnly && SetterSupportsBaseImplementation;
         SupportsBaseImplementation =
             GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
-        DisplayName =
-            $"{containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? property.Name}.{Name}";
+        DisplayName = property.DisplayName;
     }
 }
