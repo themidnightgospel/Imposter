@@ -9,6 +9,7 @@ using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
@@ -39,6 +40,12 @@ internal readonly struct ImposterTargetMetadata
     internal readonly EquatableArray<TargetMemberModel<EventModel>> Events;
 
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
+
+    // The imposter's constructors and the Imposter() extension declare these parameters next to the parameters of the
+    // target's constructors, so they avoid those names.
+    internal readonly ParameterMetadata InvocationBehaviorParameter;
+
+    internal readonly string ExtensionParameterName;
 
     private readonly NameSet _symbolNameNamespace = new([]);
 
@@ -73,6 +80,21 @@ internal readonly struct ImposterTargetMetadata
         Properties = target.Properties;
         Indexers = target.Indexers;
         Events = target.Events;
+
+        var constructorParameterNames = new NameSet(
+            target.AccessibleConstructors.SelectMany(constructor =>
+                constructor.Parameters.Select(parameter => parameter.Name)
+            )
+        );
+        InvocationBehaviorParameter = new ParameterMetadata(
+            constructorParameterNames.Use("invocationBehavior"),
+            WellKnownTypes.Imposter.Abstractions.ImposterMode,
+            QualifiedName(
+                WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                IdentifierName("Implicit")
+            )
+        );
+        ExtensionParameterName = constructorParameterNames.Use("imposter");
     }
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(

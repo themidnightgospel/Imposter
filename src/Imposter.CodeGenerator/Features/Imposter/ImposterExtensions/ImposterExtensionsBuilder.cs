@@ -13,9 +13,7 @@ namespace Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
 
 internal static class ImposterExtensionsBuilder
 {
-    private const string ExtensionParameterName = "imposter";
     private const string MethodName = "Imposter";
-    private const string InvocationBehaviorParameterName = "invocationBehavior";
 
     internal static ClassDeclarationSyntax Build(
         in ImposterGenerationContext imposterGenerationContext,
@@ -38,7 +36,14 @@ internal static class ImposterExtensionsBuilder
             .Imposter
             .IsClass
             ? BuildClassMethods(imposterType, accessibilityModifiers, imposterGenerationContext)
-            : [BuildParameterlessMethod(imposterType, accessibilityModifiers)];
+            :
+            [
+                BuildParameterlessMethod(
+                    imposterType,
+                    accessibilityModifiers,
+                    imposterGenerationContext.Imposter.InvocationBehaviorParameter
+                ),
+            ];
 
         var extensionDeclaration =
 #if ROSLYN_5_OR_GREATER
@@ -50,7 +55,10 @@ internal static class ImposterExtensionsBuilder
             .WithParameterList(
                 ParameterList(
                     SingletonSeparatedList(
-                        SyntaxFactoryHelper.ParameterSyntax(targetType, ExtensionParameterName)
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            targetType,
+                            imposterGenerationContext.Imposter.ExtensionParameterName
+                        )
                     )
                 )
             )
@@ -91,17 +99,31 @@ internal static class ImposterExtensionsBuilder
     )
     {
         var constructors = imposterGenerationContext.Imposter.AccessibleConstructors;
+        var invocationBehaviorParameter = imposterGenerationContext
+            .Imposter
+            .InvocationBehaviorParameter;
         var methods = new List<MethodDeclarationSyntax>(constructors.Length + 1);
 
         if (constructors.Any(constructor => constructor.Parameters.Length == 0))
         {
-            methods.Add(BuildParameterlessMethod(imposterType, accessibilityModifiers));
+            methods.Add(
+                BuildParameterlessMethod(
+                    imposterType,
+                    accessibilityModifiers,
+                    invocationBehaviorParameter
+                )
+            );
         }
 
         foreach (var constructor in constructors.Where(it => it.Parameters.Length > 0))
         {
             methods.Add(
-                BuildConstructorOverload(imposterType, accessibilityModifiers, constructor)
+                BuildConstructorOverload(
+                    imposterType,
+                    accessibilityModifiers,
+                    constructor,
+                    invocationBehaviorParameter
+                )
             );
         }
 
@@ -110,31 +132,36 @@ internal static class ImposterExtensionsBuilder
 
     private static MethodDeclarationSyntax BuildParameterlessMethod(
         TypeSyntax imposterType,
-        SyntaxTokenList accessibilityModifiers
+        SyntaxTokenList accessibilityModifiers,
+        in ParameterMetadata invocationBehaviorParameter
     ) =>
         new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifiers(accessibilityModifiers)
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithExpressionBody(
                 ArrowExpressionClause(
-                    imposterType.New(ImposterModeArgument().AsSingleArgumentListSyntax())
+                    imposterType.New(
+                        ImposterModeArgument(invocationBehaviorParameter)
+                            .AsSingleArgumentListSyntax()
+                    )
                 )
             )
-            .AddParameter(CreateInvocationBehaviorParameter())
+            .AddParameter(SyntaxFactoryHelper.ParameterSyntax(invocationBehaviorParameter))
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildConstructorOverload(
         TypeSyntax imposterType,
         SyntaxTokenList accessibilityModifiers,
-        in ImposterTargetConstructorMetadata constructorMetadata
+        in ImposterTargetConstructorMetadata constructorMetadata,
+        in ParameterMetadata invocationBehaviorParameter
     )
     {
         var parameters = new List<ParameterSyntax>(
             SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
         )
         {
-            CreateInvocationBehaviorParameter(),
+            SyntaxFactoryHelper.ParameterSyntax(invocationBehaviorParameter),
         };
 
         var arguments = new List<ArgumentSyntax>(
@@ -143,7 +170,7 @@ internal static class ImposterExtensionsBuilder
             )
         )
         {
-            ImposterModeArgument(),
+            ImposterModeArgument(invocationBehaviorParameter),
         };
 
         return new MethodDeclarationBuilder(imposterType, MethodName)
@@ -159,25 +186,9 @@ internal static class ImposterExtensionsBuilder
             .Build();
     }
 
-    private static ArgumentSyntax ImposterModeArgument()
-    {
-        return Argument(IdentifierName(InvocationBehaviorParameterName));
-    }
-
-    private static ParameterSyntax CreateInvocationBehaviorParameter() =>
-        SyntaxFactoryHelper
-            .ParameterSyntax(
-                WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                InvocationBehaviorParameterName
-            )
-            .WithDefault(
-                EqualsValueClause(
-                    QualifiedName(
-                        WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                        IdentifierName("Implicit")
-                    )
-                )
-            );
+    private static ArgumentSyntax ImposterModeArgument(
+        in ParameterMetadata invocationBehaviorParameter
+    ) => Argument(IdentifierName(invocationBehaviorParameter.Name));
 
     private static SyntaxTokenList GetAccessibilityModifiers(Accessibility targetAccessibility) =>
         targetAccessibility switch
