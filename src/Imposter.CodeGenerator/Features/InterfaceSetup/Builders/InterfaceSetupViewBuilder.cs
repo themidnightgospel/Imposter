@@ -14,11 +14,18 @@ namespace Imposter.CodeGenerator.Features.InterfaceSetup.Builders;
 
 internal static class InterfaceSetupViewBuilder
 {
+    private static readonly AccessorListSyntax GetOnlyAccessorList = AccessorList(
+        SingletonList(
+            AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+        )
+    );
+
     internal static InterfaceDeclarationSyntax BuildInterface(in InterfaceSetupViewMetadata view)
     {
         var builder = new InterfaceDeclarationBuilder(view.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(view.Members.Select(member => BuildMember(member, null)));
+            .AddMembers(view.Members.Select(member => BuildDeclaration(member)));
         foreach (var baseType in view.BaseTypes)
         {
             builder.AddBaseType(baseType);
@@ -28,7 +35,12 @@ internal static class InterfaceSetupViewBuilder
 
     internal static IEnumerable<MemberDeclarationSyntax> BuildImplementations(
         InterfaceSetupViewMetadata view
-    ) => view.Members.Select(member => BuildMember(member, view.Syntax));
+    )
+    {
+        var specifier = ExplicitInterfaceSpecifier(view.Syntax);
+
+        return view.Members.Select(member => BuildImplementation(member, specifier));
+    }
 
     internal static MethodDeclarationSyntax BuildSelector(
         in InterfaceSetupViewMetadata view,
@@ -42,106 +54,139 @@ internal static class InterfaceSetupViewBuilder
             .WithBody(Block(ReturnThis))
             .Build();
 
-    private static MemberDeclarationSyntax BuildMember(
+    // The view declares each member with the setup's signature, and its getter for a property or an indexer.
+    private static MemberDeclarationSyntax BuildDeclaration(
+        in InterfaceSetupMemberMetadata member
+    ) =>
+        member.Model.Kind switch
+        {
+            InterfaceSetupMemberKind.Method => BuildMethodDeclaration(member),
+            InterfaceSetupMemberKind.Indexer => BuildIndexerDeclaration(member),
+            _ => BuildPropertyDeclaration(member),
+        };
+
+    // The imposter implements each member of the view explicitly, by forwarding it to the member's setup.
+    private static MemberDeclarationSyntax BuildImplementation(
         in InterfaceSetupMemberMetadata member,
-        NameSyntax? viewType
+        ExplicitInterfaceSpecifierSyntax specifier
+    ) =>
+        member.Model.Kind switch
+        {
+            InterfaceSetupMemberKind.Method => BuildMethodImplementation(member, specifier),
+            InterfaceSetupMemberKind.Indexer => BuildIndexerImplementation(member, specifier),
+            _ => BuildPropertyImplementation(member, specifier),
+        };
+
+    private static MethodDeclarationSyntax BuildMethodDeclaration(
+        in InterfaceSetupMemberMetadata member
+    ) =>
+        MethodSignature(member, ArgParameters(member.Model.Parameters))
+            .AddModifiers(HidingModifiers(member))
+            .AddConstraintClauses(TypeParameterConstraintClauses(member.Model.TypeParameters))
+            .WithSemicolon()
+            .Build();
+
+    private static MethodDeclarationSyntax BuildMethodImplementation(
+        in InterfaceSetupMemberMetadata member,
+        ExplicitInterfaceSpecifierSyntax specifier
     )
     {
-        var specifier = viewType is null ? null : ExplicitInterfaceSpecifier(viewType);
-        var model = member.Model;
-        if (model.Kind == InterfaceSetupMemberKind.Method)
-        {
-            var parameters = ArgParameters(model.Parameters);
-            var typeParameters = model.TypeParameters;
-            var builder = new MethodDeclarationBuilder(
-                member.ReturnType,
-                EscapeKeyword(member.ViewName)
-            )
-                .WithTypeParameters(TypeParameterListSyntax(typeParameters))
-                .WithParameterList(parameters)
-                .WithExplicitInterfaceSpecifier(specifier);
-
-            if (viewType is null)
-            {
-                if (model.HidesInheritedMember)
-                {
-                    builder.AddModifier(Token(SyntaxKind.NewKeyword));
-                }
-                return builder
-                    .AddConstraintClauses(TypeParameterConstraintClauses(typeParameters))
-                    .WithSemicolon()
-                    .Build();
-            }
-
-            // Explicit implementations inherit constraints, with annotations for nullable parameters.
-            builder.AddConstraintClauses(member.ImplementationConstraints);
-
-            var call = ThisExpression()
-                .Dot(
-                    (SimpleNameSyntax)WithMethodGenericArguments(
-                        model
-                            .TypeParameters.Select(parameter =>
-                                IdentifierName(EscapeKeyword(parameter.Name))
-                            )
-                            .ToArray(),
-                        EscapeKeyword(member.SetupName)
-                    )
-                )
-                .Call(
-                    ArgumentList(
-                        SeparatedList(
-                            parameters.Parameters.Select(parameter =>
-                                Argument(IdentifierName(parameter.Identifier))
-                            )
+        var parameters = ArgParameters(member.Model.Parameters);
+        var setup = ThisExpression()
+            .Dot(
+                (SimpleNameSyntax)WithMethodGenericArguments(
+                    member
+                        .Model.TypeParameters.Select(parameter =>
+                            IdentifierName(EscapeKeyword(parameter.Name))
                         )
-                    )
-                );
-            return builder.WithBody(Block(ReturnStatement(call))).Build();
-        }
-
-        var getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        if (model.Kind == InterfaceSetupMemberKind.Indexer)
-        {
-            var parameters = ArgParameters(model.Parameters);
-            var declaration = IndexerDeclaration(member.ReturnType)
-                .WithParameterList(BracketedParameterList(parameters.Parameters))
-                .WithExplicitInterfaceSpecifier(specifier);
-            if (viewType is null && model.HidesInheritedMember)
-            {
-                declaration = declaration.AddModifiers(Token(SyntaxKind.NewKeyword));
-            }
-
-            var arguments = SeparatedList(
-                parameters.Parameters.Select(parameter =>
-                    Argument(IdentifierName(parameter.Identifier))
+                        .ToArray(),
+                    EscapeKeyword(member.SetupName)
                 )
-            );
-            ExpressionSyntax setup = member.IsSetUpByMethod
-                ? IdentifierName(member.SetupName).Call(ArgumentList(arguments))
-                : ElementAccessExpression(ThisExpression())
-                    .WithArgumentList(BracketedArgumentList(arguments));
-            return viewType is null
-                ? declaration.WithAccessorList(AccessorList(SingletonList(getter)))
-                : declaration
-                    .WithExpressionBody(ArrowExpressionClause(setup))
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        }
+            )
+            .Call(ArgumentList(ForwardedArguments(parameters)));
 
-        var property = PropertyDeclaration(member.ReturnType, EscapeKeyword(model.Name))
-            .WithExplicitInterfaceSpecifier(specifier);
-        if (viewType is null && model.HidesInheritedMember)
-        {
-            property = property.AddModifiers(Token(SyntaxKind.NewKeyword));
-        }
-        return viewType is null
-            ? property.WithAccessorList(AccessorList(SingletonList(getter)))
-            : property
-                .WithExpressionBody(
-                    ArrowExpressionClause(
-                        ThisExpression().Dot(IdentifierName(EscapeKeyword(member.SetupName)))
-                    )
-                )
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        // Explicit implementations inherit constraints, with annotations for nullable parameters.
+        return MethodSignature(member, parameters)
+            .WithExplicitInterfaceSpecifier(specifier)
+            .AddConstraintClauses(member.ImplementationConstraints)
+            .WithBody(Block(ReturnStatement(setup)))
+            .Build();
     }
+
+    private static MethodDeclarationBuilder MethodSignature(
+        in InterfaceSetupMemberMetadata member,
+        ParameterListSyntax parameters
+    ) =>
+        new MethodDeclarationBuilder(member.ReturnType, EscapeKeyword(member.ViewName))
+            .WithTypeParameters(TypeParameterListSyntax(member.Model.TypeParameters))
+            .WithParameterList(parameters);
+
+    private static IndexerDeclarationSyntax BuildIndexerDeclaration(
+        in InterfaceSetupMemberMetadata member
+    ) =>
+        IndexerSignature(member, ArgParameters(member.Model.Parameters))
+            .WithModifiers(HidingModifiers(member))
+            .WithAccessorList(GetOnlyAccessorList);
+
+    private static IndexerDeclarationSyntax BuildIndexerImplementation(
+        in InterfaceSetupMemberMetadata member,
+        ExplicitInterfaceSpecifierSyntax specifier
+    )
+    {
+        var parameters = ArgParameters(member.Model.Parameters);
+        var arguments = ForwardedArguments(parameters);
+        ExpressionSyntax setup = member.IsSetUpByMethod
+            ? IdentifierName(member.SetupName).Call(ArgumentList(arguments))
+            : ElementAccessExpression(ThisExpression())
+                .WithArgumentList(BracketedArgumentList(arguments));
+
+        return IndexerSignature(member, parameters)
+            .WithExplicitInterfaceSpecifier(specifier)
+            .WithExpressionBody(ArrowExpressionClause(setup))
+            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+    }
+
+    private static IndexerDeclarationSyntax IndexerSignature(
+        in InterfaceSetupMemberMetadata member,
+        ParameterListSyntax parameters
+    ) =>
+        IndexerDeclaration(member.ReturnType)
+            .WithParameterList(BracketedParameterList(parameters.Parameters));
+
+    private static PropertyDeclarationSyntax BuildPropertyDeclaration(
+        in InterfaceSetupMemberMetadata member
+    ) =>
+        PropertySignature(member)
+            .WithModifiers(HidingModifiers(member))
+            .WithAccessorList(GetOnlyAccessorList);
+
+    private static PropertyDeclarationSyntax BuildPropertyImplementation(
+        in InterfaceSetupMemberMetadata member,
+        ExplicitInterfaceSpecifierSyntax specifier
+    ) =>
+        PropertySignature(member)
+            .WithExplicitInterfaceSpecifier(specifier)
+            .WithExpressionBody(
+                ArrowExpressionClause(
+                    ThisExpression().Dot(IdentifierName(EscapeKeyword(member.SetupName)))
+                )
+            )
+            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+    private static PropertyDeclarationSyntax PropertySignature(
+        in InterfaceSetupMemberMetadata member
+    ) => PropertyDeclaration(member.ReturnType, EscapeKeyword(member.Model.Name));
+
+    // A view member that hides one the view inherits declares itself `new`.
+    private static SyntaxTokenList HidingModifiers(in InterfaceSetupMemberMetadata member) =>
+        member.Model.HidesInheritedMember ? TokenList(Token(SyntaxKind.NewKeyword)) : default;
+
+    private static SeparatedSyntaxList<ArgumentSyntax> ForwardedArguments(
+        ParameterListSyntax parameters
+    ) =>
+        SeparatedList(
+            parameters.Parameters.Select(parameter =>
+                Argument(IdentifierName(parameter.Identifier))
+            )
+        );
 }
