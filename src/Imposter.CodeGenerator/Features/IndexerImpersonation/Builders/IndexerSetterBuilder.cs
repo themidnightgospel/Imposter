@@ -28,10 +28,8 @@ internal static class IndexerSetterBuilder
         if (indexer.Core.SetterSupportsBaseImplementation)
         {
             setterBaseImplementationParameter = ParameterSyntax(
-                    indexer.Core.AsSystemActionType.ToNullableType(),
-                    indexer.SetterImplementation.BaseImplementationParameterName
-                )
-                .WithDefault(EqualsValueClause(Null));
+                indexer.SetterImplementation.BaseImplementationParameter
+            );
 
             parameters.Add(setterBaseImplementationParameter);
         }
@@ -264,11 +262,7 @@ internal static class IndexerSetterBuilder
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
             ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, setter.ValueParameterName),
-            ParameterSyntax(
-                    indexer.Core.AsSystemActionType.ToNullableType(),
-                    setter.BaseImplementationParameterName
-                )
-                .WithDefault(EqualsValueClause(Null)),
+            ParameterSyntax(setter.BaseImplementationParameter),
         };
 
         var callbackMatchedIdentifier = IdentifierName(setter.MatchedCallbackVariableName);
@@ -336,7 +330,7 @@ internal static class IndexerSetterBuilder
                             .Call(Argument(argumentsVariable)),
                         Block(
                             IfStatement(
-                                IdentifierName(setter.BaseImplementationParameterName).IsNull(),
+                                IdentifierName(setter.BaseImplementationParameter.Name).IsNull(),
                                 Block(
                                     ThrowMissingImposter(
                                         setter.PropertyDisplayNameField.Name,
@@ -344,7 +338,7 @@ internal static class IndexerSetterBuilder
                                     )
                                 )
                             ),
-                            IdentifierName(setter.BaseImplementationParameterName)
+                            IdentifierName(setter.BaseImplementationParameter.Name)
                                 .Call(EmptyArgumentListSyntax)
                                 .ToStatementSyntax(),
                             invokedBaseIdentifier.Assign(True).ToStatementSyntax(),

@@ -9,6 +9,8 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly ref struct ImposterIndexerCoreMetadata
 {
+    internal const string BaseImplementationParameterName = "baseImplementation";
+
     internal readonly string UniqueName;
 
     internal readonly bool HasGetter;
@@ -81,4 +83,11 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal NameSet CreateParameterNameSet() =>
         new(Parameters.Select(parameter => parameter.Name));
+
+    // An accessor's optional base implementation, which the imposter calls when it's set up to use it.
+    internal ParameterMetadata GetterBaseImplementationParameter(string name) =>
+        new(name, AsSystemFuncType.ToNullableType(), SyntaxFactoryHelper.Null);
+
+    internal ParameterMetadata SetterBaseImplementationParameter(string name) =>
+        new(name, AsSystemActionType.ToNullableType(), SyntaxFactoryHelper.Null);
 }

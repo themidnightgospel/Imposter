@@ -23,10 +23,8 @@ internal static partial class IndexerGetterBuilder
         if (indexer.Core.GetterSupportsBaseImplementation)
         {
             getterBaseImplementationParameter = ParameterSyntax(
-                    indexer.Core.AsSystemFuncType.ToNullableType(),
-                    indexer.GetterImplementation.BaseImplementationParameterName
-                )
-                .WithDefault(EqualsValueClause(Null));
+                indexer.GetterImplementation.BaseImplementationParameter
+            );
 
             parameters.Add(getterBaseImplementationParameter);
         }
@@ -129,7 +127,7 @@ internal static partial class IndexerGetterBuilder
                 .Call(
                     ArgumentListSyntax([
                         Argument(arguments),
-                        Argument(IdentifierName(getter.BaseImplementationParameterName)),
+                        Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                     ])
                 )
         );
@@ -146,11 +144,7 @@ internal static partial class IndexerGetterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters([
                 .. indexer.Core.ParameterSyntaxes,
-                ParameterSyntax(
-                        indexer.Core.AsSystemFuncType.ToNullableType(),
-                        getter.BaseImplementationParameterName
-                    )
-                    .WithDefault(EqualsValueClause(Null)),
+                ParameterSyntax(getter.BaseImplementationParameter),
             ])
             .WithBody(
                 Block(
@@ -191,7 +185,7 @@ internal static partial class IndexerGetterBuilder
                         .Call(
                             ArgumentListSyntax([
                                 Argument(IdentifierName(getter.ArgumentsVariableName)),
-                                Argument(IdentifierName(getter.BaseImplementationParameterName)),
+                                Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                             ])
                         )
                 )
