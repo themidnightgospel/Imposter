@@ -25,12 +25,14 @@ internal readonly struct IndexerImposterBuilderMetadata
         Name = $"{core.UniqueName}IndexerBuilder";
         TypeSyntax = IdentifierName(Name);
         DefaultBehaviourField = defaultBehaviourField;
+        // The builder's getter and setter take the indexer's parameters next to these fields.
+        var fieldNames = core.CreateParameterNameSet();
         GetterImposterField = new FieldMetadata(
-            "_getterImposter",
+            fieldNames.Use("_getterImposter"),
             IdentifierName("GetterImposter")
         );
         SetterImposterField = new FieldMetadata(
-            "_setterImposter",
+            fieldNames.Use("_setterImposter"),
             IdentifierName("SetterImposter")
         );
         InvocationBuilderTypeSyntax = QualifiedName(

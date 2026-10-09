@@ -363,7 +363,9 @@ internal static class IndexerSetterBuilder
         );
 
         var bodyBuilder = new BlockBuilder()
-            .AddStatement(IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax())
+            .AddStatement(
+                IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
+            )
             .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
@@ -421,7 +423,7 @@ internal static class IndexerSetterBuilder
         var setter = indexer.SetterImplementation;
 
         return BuildEnsureConfiguredMethod(
-            "EnsureSetterConfigured",
+            setter.EnsureSetterConfiguredMethodName,
             setter.InvocationBehaviorField.Name,
             setter.HasConfiguredSetterField.Name,
             setter.PropertyDisplayNameField.Name,

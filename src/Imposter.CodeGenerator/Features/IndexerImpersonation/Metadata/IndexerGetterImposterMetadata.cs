@@ -44,49 +44,62 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly TypeSyntax ReturnHandlerType;
 
+    internal readonly string FindGetterInvocationImposterMethodName;
+
+    internal readonly string EnsureGetterConfiguredMethodName;
+
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
-        var parameterNames = indexer.Core.CreateParameterNameSet();
+        // The getter's Get takes the indexer's parameters and refers to these locals and members by name.
+        var names = indexer.Core.CreateParameterNameSet();
         Name = "GetterImposter";
         TypeSyntax = IdentifierName(Name);
-        ArgumentsVariableName = parameterNames.Use("arguments");
-        SetupVariableName = parameterNames.Use("getterInvocationImposter");
+        ArgumentsVariableName = names.Use("arguments");
+        SetupVariableName = names.Use("getterInvocationImposter");
         CriteriaParameterName = "criteria";
         CountParameterName = "count";
         GetterSuffix = " (getter)";
-        BaseImplementationParameterName = parameterNames.Use("baseImplementation");
+        BaseImplementationParameterName = names.Use("baseImplementation");
+        FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
+        EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
         var returnGeneratorType = BuildReturnGeneratorType(indexer);
         ReturnHandlerType = BuildReturnHandlerType(indexer);
         Invocation = new GetterInvocationMetadata(indexer, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(
-            "_defaultBehaviour",
+            names.Use("_defaultBehaviour"),
             indexer.DefaultIndexerBehaviour.TypeSyntax
         );
         SetupsField = new FieldMetadata(
-            "_getterInvocationImposters",
+            names.Use("_getterInvocationImposters"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(Invocation.TypeSyntax)
         );
         SetupLookupField = new FieldMetadata(
-            "_setupLookup",
+            names.Use("_setupLookup"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
                 indexer.ArgumentsCriteria.TypeSyntax,
                 Invocation.TypeSyntax
             )
         );
         InvocationHistoryField = new FieldMetadata(
-            "_invocationHistory",
+            names.Use("_invocationHistory"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
                 indexer.Arguments.TypeSyntax
             )
         );
         InvocationBehaviorField = new FieldMetadata(
-            "_invocationBehavior",
+            names.Use("_invocationBehavior"),
             WellKnownTypes.Imposter.Abstractions.ImposterMode
         );
-        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
-        HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
+        PropertyDisplayNameField = new FieldMetadata(
+            names.Use("_propertyDisplayName"),
+            WellKnownTypes.String
+        );
+        HasConfiguredReturnField = new FieldMetadata(
+            names.Use("_hasConfiguredReturn"),
+            WellKnownTypes.Bool
+        );
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
     }
