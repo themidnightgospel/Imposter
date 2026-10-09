@@ -1,6 +1,7 @@
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.SetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -45,7 +46,8 @@ internal readonly ref struct ImposterIndexerMetadata
     internal ImposterIndexerMetadata(
         PropertyModel indexer,
         string uniqueName,
-        bool requiresExplicitInterfaceImplementation
+        bool requiresExplicitInterfaceImplementation,
+        ExceptionTypeParameterMetadata exceptionTypeParameter
     )
     {
         Core = new ImposterIndexerCoreMetadata(indexer, uniqueName);
@@ -59,7 +61,11 @@ internal readonly ref struct ImposterIndexerMetadata
         Delegates = new IndexerDelegateMetadata(Core);
         GetterImplementation = new IndexerGetterImposterMetadata(this);
         SetterImplementation = new IndexerSetterImposterMetadata(this);
-        GetterBuilderInterface = new IndexerGetterImposterBuilderInterfaceMetadata(Core, Delegates);
+        GetterBuilderInterface = new IndexerGetterImposterBuilderInterfaceMetadata(
+            Core,
+            Delegates,
+            exceptionTypeParameter
+        );
         SetterBuilderInterface = new IndexerSetterImposterBuilderInterfaceMetadata(Core, Delegates);
         BuilderInterface = new IndexerImposterBuilderInterfaceMetadata(
             Core,

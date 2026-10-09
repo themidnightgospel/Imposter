@@ -101,7 +101,11 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal bool IsAsync { get; }
 
-    internal ImposterTargetMethodMetadata(TargetMemberModel<MethodModel> method, string uniqueName)
+    internal ImposterTargetMethodMetadata(
+        TargetMemberModel<MethodModel> method,
+        string uniqueName,
+        IEnumerable<string> targetTypeParameterNames
+    )
     {
         Model = method.Member;
         InterfaceSetupMember = method.Setup;
@@ -120,7 +124,11 @@ internal readonly struct ImposterTargetMethodMetadata
         ReservedParameterNames = new ReservedParameterNames(
             Model.Parameters.Select(p => p.Name).Concat([UniqueName, Model.ContainingNamespace])
         );
-        GenericTypeParameterNameSet = new NameSet(Model.TypeParameters.Select(p => p.Name));
+        // The method's generic members, such as Throws<TException>(), are declared inside the imposter and, for a
+        // generic method, inside types that take the method's type parameters, so their names avoid both.
+        GenericTypeParameterNameSet = new NameSet(
+            Model.TypeParameters.Select(p => p.Name).Concat(targetTypeParameterNames)
+        );
         MemberNames = new NameSet(
             Model
                 .Parameters.Select(parameter => parameter.Name)

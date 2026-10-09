@@ -52,7 +52,8 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
     internal readonly ThenMethodMetadata? InitialThenMethod;
 
     internal PropertyGetterImposterBuilderInterfaceMetadata(
-        in ImposterPropertyCoreMetadata property
+        in ImposterPropertyCoreMetadata property,
+        in ExceptionTypeParameterMetadata exceptionTypeParameter
     )
     {
         Name = $"I{property.UniqueName}PropertyGetterBuilder";
@@ -74,6 +75,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
             OutcomeInterfaceTypeSyntax
         );
         ThrowsMethod = new ThrowsMethodMetadata(
+            exceptionTypeParameter,
             ContinuationInterfaceTypeSyntax,
             OutcomeInterfaceTypeSyntax
         );
