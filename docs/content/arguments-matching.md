@@ -166,7 +166,7 @@ When every argument should be a wildcard and you don't want to spell out the gen
     `out` arguments are not inputs and hence they are always treated as wildcards for matching. Use `OutArg<T>.Any()` to indicate "any `out` value".
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L143"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L156"}
     var imposter = new IArgumentMatchingServiceImposter();
     var service = imposter.Instance();
 

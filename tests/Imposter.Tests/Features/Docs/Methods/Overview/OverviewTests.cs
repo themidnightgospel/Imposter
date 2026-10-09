@@ -122,5 +122,24 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
             imposter.Increment(Arg<int>.Any()).Called(Count.AtLeast(2));
             imposter.Increment(2).Called(Count.Once());
         }
+
+        [Fact]
+        public void GivenReturnsSequence_WhenItIsExhausted_ShouldRepeatTheLastOutcome()
+        {
+            var imposter = new IQuickStartServiceImposter();
+
+            imposter
+                .Increment(Arg<int>.Any())
+                .Returns(v => v + 2)
+                .Then()
+                .Returns(v => v + 3)
+                .Then()
+                .Returns(v => v + 4);
+
+            imposter.Instance().Increment(10).ShouldBe(12);
+            imposter.Instance().Increment(10).ShouldBe(13);
+            imposter.Instance().Increment(10).ShouldBe(14);
+            imposter.Instance().Increment(10).ShouldBe(14);
+        }
     }
 }

@@ -45,7 +45,7 @@ Methods without setups are implicitly stubbed and return `default(T)`.
 Missing setups throw an exception so unintended calls are caught.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/ImposterModes/ImposterModesTests.cs#L38"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/ImposterModes/ImposterModesTests.cs#L42"}
     var imposter = new IMyServiceImposter(ImposterMode.Explicit);
     var service = imposter.Instance();
 

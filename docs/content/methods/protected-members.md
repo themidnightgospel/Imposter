@@ -38,6 +38,9 @@ Target type used in examples:
     // Arrange the protected method directly on the imposter
     imposter.ProtectedAdd(Arg<int>.Is(5)).Returns(42);
 
+    // Forward the public wrapper to the real implementation so it calls the protected member
+    imposter.InvokeProtected(Arg<int>.Any()).UseBaseImplementation();
+
     var service = imposter.Instance();
     service.InvokeProtected(5).ShouldBe(42);
     ```
