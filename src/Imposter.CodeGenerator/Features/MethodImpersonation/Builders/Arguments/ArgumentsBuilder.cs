@@ -77,7 +77,7 @@ internal static class ArgumentsBuilder
         var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
         var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
         {
-            var sourceType = p.TypeSyntax;
+            var sourceType = p.NullableAwareTypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
             return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));

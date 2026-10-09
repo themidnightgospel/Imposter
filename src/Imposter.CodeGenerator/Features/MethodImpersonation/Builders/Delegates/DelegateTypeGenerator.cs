@@ -17,7 +17,12 @@ internal static class MethodDelegateTypeBuilder
 
     private static DelegateDeclarationSyntax GetMethodDelegateDeclaration(
         in ImposterTargetMethodMetadata method
-    ) => CreateDelegateDeclaration(method, method.Delegate.Name, method.ReturnTypeSyntax);
+    ) =>
+        CreateDelegateDeclaration(
+            method,
+            method.Delegate.Name,
+            method.NullableAwareReturnTypeSyntax
+        );
 
     private static DelegateDeclarationSyntax GetCallbackDelegateDeclaration(
         in ImposterTargetMethodMetadata method

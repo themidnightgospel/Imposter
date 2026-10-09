@@ -19,9 +19,7 @@ internal static class MethodImposterGenericInterfaceBuilder
         }
 
         var genericInterfaceType = method.MethodImposter.Interface;
-        var invokeMethodParameters = SyntaxFactoryHelper.ParameterListSyntax(
-            method.Parameters.AllParameters
-        );
+        var invokeMethodParameters = method.Parameters.ParameterListSyntaxIncludingNullable;
 
         if (method.SupportsBaseImplementation)
         {
@@ -34,7 +32,10 @@ internal static class MethodImposterGenericInterfaceBuilder
             );
         }
 
-        var invokeMethod = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
+        var invokeMethod = new MethodDeclarationBuilder(
+            method.NullableAwareReturnTypeSyntax,
+            "Invoke"
+        )
             .WithParameterList(invokeMethodParameters)
             .WithSemicolon()
             .Build();

@@ -71,7 +71,10 @@ internal static partial class InvocationSetupBuilder
             .Dot(IdentifierName("Invoke"))
             .Call(BuildInvokeArgumentList(method));
 
-        var methodDeclaration = new MethodDeclarationBuilder(method.ReturnTypeSyntax, "Invoke")
+        var methodDeclaration = new MethodDeclarationBuilder(
+            method.NullableAwareReturnTypeSyntax,
+            "Invoke"
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(BuildParameterList(method))
             .WithBody(

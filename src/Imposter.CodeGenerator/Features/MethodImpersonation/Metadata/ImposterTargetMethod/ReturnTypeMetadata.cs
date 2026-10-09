@@ -21,7 +21,7 @@ internal readonly struct ReturnTypeMetadata
         IsAwaitable = returnType.IsAwaitable;
 
         GenericAwaitableResultType = returnType.AwaitableResultType is { } resultType
-            ? SyntaxFactoryHelper.TypeSyntax(resultType)
+            ? SyntaxFactoryHelper.TypeSyntaxIncludingNullable(resultType)
             : null;
 
         TypeSymbolMetadata = new TypeSymbolMetadata(
