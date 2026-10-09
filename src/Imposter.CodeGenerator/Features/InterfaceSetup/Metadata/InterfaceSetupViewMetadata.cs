@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -18,28 +18,25 @@ internal readonly struct InterfaceSetupViewMetadata
     internal readonly IReadOnlyList<BaseTypeSyntax> BaseTypes;
 
     internal InterfaceSetupViewMetadata(
-        INamedTypeSymbol interfaceSymbol,
+        InterfaceSetupInterfaceModel @interface,
         IReadOnlyList<InterfaceSetupMemberMetadata> members,
-        IReadOnlyDictionary<INamedTypeSymbol, string> viewNames
+        IReadOnlyDictionary<string, string> viewNames
     )
     {
-        Name = viewNames[interfaceSymbol];
+        Name = viewNames[@interface.Type.FullyQualifiedName];
         Syntax = IdentifierName(Name);
-        SelectorType = SyntaxFactoryHelper.TypeSyntax(interfaceSymbol).ToNullableType();
+        SelectorType = SyntaxFactoryHelper.TypeSyntax(@interface.Type).ToNullableType();
         var declaredMembers = members
             .Where(member =>
-                SymbolEqualityComparer.Default.Equals(member.Symbol.ContainingType, interfaceSymbol)
+                member.Model.ContainingInterface.FullyQualifiedName
+                == @interface.Type.FullyQualifiedName
             )
             .ToList();
         // Identical interface events already share a builder in the generator. Expose that
         // same builder through every declaration's view without changing event semantics.
-        foreach (var eventSymbol in interfaceSymbol.GetMembers().OfType<IEventSymbol>())
+        foreach (var @event in @interface.Events)
         {
-            if (
-                declaredMembers.Any(member =>
-                    SymbolEqualityComparer.Default.Equals(member.Symbol, eventSymbol)
-                )
-            )
+            if (declaredMembers.Any(member => member.Model == @event))
             {
                 continue;
             }
@@ -47,29 +44,23 @@ internal readonly struct InterfaceSetupViewMetadata
             foreach (
                 var member in members
                     .Where(member =>
-                        member.Symbol is IEventSymbol existingEvent
-                        && existingEvent.Name == eventSymbol.Name
-                        && SymbolEqualityComparer.Default.Equals(
-                            existingEvent.Type,
-                            eventSymbol.Type
-                        )
+                        member.Model.Kind == InterfaceSetupMemberKind.Event
+                        && member.Model.Name == @event.Name
+                        && member.Model.EventType?.FullyQualifiedName
+                            == @event.EventType?.FullyQualifiedName
                     )
                     .Take(1)
             )
             {
                 declaredMembers.Add(
-                    new InterfaceSetupMemberMetadata(
-                        eventSymbol,
-                        member.SetupName,
-                        member.ReturnType
-                    )
+                    new InterfaceSetupMemberMetadata(@event, member.SetupName, member.ReturnType)
                 );
             }
         }
         Members = declaredMembers;
-        BaseTypes = interfaceSymbol
-            .Interfaces.Select(parent =>
-                (BaseTypeSyntax)SimpleBaseType(IdentifierName(viewNames[parent]))
+        BaseTypes = @interface
+            .Parents.Select(parent =>
+                (BaseTypeSyntax)SimpleBaseType(IdentifierName(viewNames[parent.FullyQualifiedName]))
             )
             .ToArray();
     }

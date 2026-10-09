@@ -3,7 +3,6 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -12,77 +11,45 @@ namespace Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 
 internal readonly struct InterfaceSetupMemberMetadata
 {
-    internal readonly ISymbol Symbol;
+    internal readonly InterfaceSetupMemberModel Model;
     internal readonly string SetupName;
     internal readonly TypeSyntax ReturnType;
-    internal readonly bool HidesInheritedMember;
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> ImplementationConstraints;
 
     // True for an indexer the imposter sets up with a method named SetupName instead of its own this[...].
     internal readonly bool IsSetUpByMethod;
 
     internal InterfaceSetupMemberMetadata(
-        ISymbol symbol,
+        InterfaceSetupMemberModel model,
         string setupName,
         TypeSyntax returnType,
         bool isSetUpByMethod = false
     )
     {
-        Symbol = symbol;
+        Model = model;
         SetupName = setupName;
         ReturnType = returnType;
         IsSetUpByMethod = isSetUpByMethod;
-        HidesInheritedMember = symbol
-            .ContainingType.AllInterfaces.SelectMany(parent => parent.GetMembers(symbol.Name))
-            .Any(parentMember => HidesMember(symbol, parentMember));
-        ImplementationConstraints = symbol is IMethodSymbol method
-            ? GetImplementationConstraints(method)
-            : [];
+        ImplementationConstraints =
+            model.Kind == InterfaceSetupMemberKind.Method
+                ? GetImplementationConstraints(model)
+                : [];
     }
 
     internal InterfaceSetupMemberMetadata(in ImposterTargetMethodMetadata method)
         : this(
-            method.Symbol,
+            InterfaceSetupMemberModel.From(method.Symbol),
             method.RequiresExplicitInterfaceImplementation ? method.UniqueName : method.Model.Name,
             method.MethodImposter.BuilderInterface.Syntax
         ) { }
 
-    private static bool HidesMember(ISymbol member, ISymbol inherited)
-    {
-        return (member, inherited) switch
-        {
-            (IMethodSymbol method, IMethodSymbol parent) => method.Arity == parent.Arity
-                && method.Parameters.Length == parent.Parameters.Length
-                && method
-                    .Parameters.Zip(parent.Parameters, SameArgumentType)
-                    .All(matches => matches),
-            (
-                IPropertySymbol { IsIndexer: true } indexer,
-                IPropertySymbol { IsIndexer: true } parent
-            ) => indexer.Parameters.Length == parent.Parameters.Length
-                && indexer
-                    .Parameters.Zip(parent.Parameters, SameArgumentType)
-                    .All(matches => matches),
-            (IMethodSymbol, _) or (IPropertySymbol { IsIndexer: true }, _) => false,
-            _ => true,
-        };
-    }
-
-    private static bool SameArgumentType(IParameterSymbol left, IParameterSymbol right) =>
-        (left.RefKind == RefKind.Out) == (right.RefKind == RefKind.Out)
-        && (
-            SymbolEqualityComparer.Default.Equals(left.Type, right.Type)
-            || left.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                == right.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-        );
-
     private static List<TypeParameterConstraintClauseSyntax> GetImplementationConstraints(
-        IMethodSymbol method
+        InterfaceSetupMemberModel method
     )
     {
         var result = new List<TypeParameterConstraintClauseSyntax>();
         var nullableParameters = SyntaxFactoryHelper
-            .ArgParameters(method.Parameters.Select(ParameterModel.From))
+            .ArgParameters(method.Parameters)
             .DescendantNodes()
             .OfType<NullableTypeSyntax>()
             .Select(nullable => nullable.ElementType)

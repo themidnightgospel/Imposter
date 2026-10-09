@@ -89,7 +89,12 @@ internal readonly ref struct ImposterBuilder
         if (!_isClassTarget)
         {
             _interfaceSetupMembers.Add(
-                new InterfaceSetupMemberMetadata(symbol, setupName, returnType, isSetUpByMethod)
+                new InterfaceSetupMemberMetadata(
+                    InterfaceSetupMemberModel.From(symbol),
+                    setupName,
+                    returnType,
+                    isSetUpByMethod
+                )
             );
         }
         return this;
@@ -107,7 +112,7 @@ internal readonly ref struct ImposterBuilder
             .Concat(_interfaceSetupMembers)
             .ToArray();
         var setup = new InterfaceSetupMetadata(
-            context.TargetSymbol,
+            InterfaceSetupTargetModel.From(context.TargetSymbol),
             members,
             _imposterBuilder.Members
         );

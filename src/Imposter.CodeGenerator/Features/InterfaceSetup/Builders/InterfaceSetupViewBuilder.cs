@@ -48,21 +48,19 @@ internal static class InterfaceSetupViewBuilder
     )
     {
         var specifier = viewType is null ? null : ExplicitInterfaceSpecifier(viewType);
-        if (member.Symbol is IMethodSymbol method)
+        var model = member.Model;
+        if (model.Kind == InterfaceSetupMemberKind.Method)
         {
-            var parameters = ArgParameters(method.Parameters.Select(ParameterModel.From));
-            var typeParameters = method.TypeParameters.Select(TypeParameterModel.From).ToArray();
-            var builder = new MethodDeclarationBuilder(
-                member.ReturnType,
-                EscapeKeyword(method.Name)
-            )
+            var parameters = ArgParameters(model.Parameters);
+            var typeParameters = model.TypeParameters;
+            var builder = new MethodDeclarationBuilder(member.ReturnType, EscapeKeyword(model.Name))
                 .WithTypeParameters(TypeParameterListSyntax(typeParameters))
                 .WithParameterList(parameters)
                 .WithExplicitInterfaceSpecifier(specifier);
 
             if (viewType is null)
             {
-                if (member.HidesInheritedMember)
+                if (model.HidesInheritedMember)
                 {
                     builder.AddModifier(Token(SyntaxKind.NewKeyword));
                 }
@@ -78,7 +76,7 @@ internal static class InterfaceSetupViewBuilder
             var call = ThisExpression()
                 .Dot(
                     (SimpleNameSyntax)WithMethodGenericArguments(
-                        method
+                        model
                             .TypeParameters.Select(parameter =>
                                 IdentifierName(EscapeKeyword(parameter.Name))
                             )
@@ -100,13 +98,13 @@ internal static class InterfaceSetupViewBuilder
 
         var getter = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        if (member.Symbol is IPropertySymbol { IsIndexer: true } indexer)
+        if (model.Kind == InterfaceSetupMemberKind.Indexer)
         {
-            var parameters = ArgParameters(indexer.Parameters.Select(ParameterModel.From));
+            var parameters = ArgParameters(model.Parameters);
             var declaration = IndexerDeclaration(member.ReturnType)
                 .WithParameterList(BracketedParameterList(parameters.Parameters))
                 .WithExplicitInterfaceSpecifier(specifier);
-            if (viewType is null && member.HidesInheritedMember)
+            if (viewType is null && model.HidesInheritedMember)
             {
                 declaration = declaration.AddModifiers(Token(SyntaxKind.NewKeyword));
             }
@@ -127,9 +125,9 @@ internal static class InterfaceSetupViewBuilder
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         }
 
-        var property = PropertyDeclaration(member.ReturnType, EscapeKeyword(member.Symbol.Name))
+        var property = PropertyDeclaration(member.ReturnType, EscapeKeyword(model.Name))
             .WithExplicitInterfaceSpecifier(specifier);
-        if (viewType is null && member.HidesInheritedMember)
+        if (viewType is null && model.HidesInheritedMember)
         {
             property = property.AddModifiers(Token(SyntaxKind.NewKeyword));
         }
