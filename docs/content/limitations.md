@@ -30,6 +30,10 @@ This behavior is the same in implicit and explicit modes. Constructor-time calls
 callbacks or appear in invocation verification. After construction, normal setup, verification, and
 explicit-mode checks apply.
 
+## Interface targets
+
+- Static members of an interface aren't impersonated. They're called through the interface, never through the imposter's instance, so the imposter has no setup for them.
+
 ## Ref-like types
 
 - Methods with `Span<T>` or `ReadOnlySpan<T>` parameters, or that return one by value, can be impersonated. The imposter copies the elements a span argument arrives with, and you match them with `SpanArg<T>` or `ReadOnlySpanArg<T>`, or `OutSpanArg<T>` or `OutReadOnlySpanArg<T>` for an `out` span (see [Span parameters](arguments-matching.md#span-parameters)). `Returns` takes the array a returned span covers (see [Methods](methods/index.md#setup-return-values)).
