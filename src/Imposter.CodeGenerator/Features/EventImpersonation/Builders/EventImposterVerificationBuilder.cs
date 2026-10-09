@@ -249,21 +249,13 @@ internal static class EventImposterVerificationBuilder
                         Not(expected.Dot(IdentifierName("Matches")).Call(Argument(actual))),
                         Block(
                             ThrowStatement(
-                                ObjectCreationExpression(
-                                        WellKnownTypes
-                                            .Imposter
-                                            .Abstractions
-                                            .VerificationFailedException
-                                    )
-                                    .WithArgumentList(
-                                        ArgumentList(
-                                            SeparatedList([
-                                                Argument(expected),
-                                                Argument(actual),
-                                                Argument(performedInvocationsFactory.Call()),
-                                            ])
-                                        )
-                                    )
+                                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
+                                    ArgumentListSyntax([
+                                        Argument(expected),
+                                        Argument(actual),
+                                        Argument(performedInvocationsFactory.Call()),
+                                    ])
+                                )
                             )
                         )
                     )

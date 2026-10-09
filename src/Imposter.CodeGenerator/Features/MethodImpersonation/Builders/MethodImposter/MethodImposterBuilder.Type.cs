@@ -24,16 +24,15 @@ internal static partial class MethodImposterBuilder
             );
         }
 
-        var invocationHistoryCollectionField = SyntaxFactoryHelper.SingleVariableField(
-            method.InvocationHistory.Collection.Syntax,
-            method.InvocationHistory.Collection.AsField.Name,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
-        );
+        var invocationHistoryCollectionField =
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+                method.InvocationHistory.Collection.Syntax,
+                method.InvocationHistory.Collection.AsField.Name
+            );
 
-        var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
+        var invocationBehaviorField = SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            method.MethodImposter.InvocationBehaviorFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+            method.MethodImposter.InvocationBehaviorFieldName
         );
 
         return methodImposterClassBuilder

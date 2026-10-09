@@ -18,10 +18,9 @@ internal static partial class MethodImposterCollectionBuilder
         }
 
         var historyCollectionField = BuildInvocationHistoryCollectionField(method);
-        var invocationBehaviorField = SyntaxFactoryHelper.SingleVariableField(
+        var invocationBehaviorField = SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            method.MethodImposter.InvocationBehaviorFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+            method.MethodImposter.InvocationBehaviorFieldName
         );
 
         return new ClassDeclarationBuilder(method.MethodImposter.Collection.Name)
@@ -56,10 +55,9 @@ internal static partial class MethodImposterCollectionBuilder
             method.MethodImposter.Interface.Syntax
         );
 
-        return SyntaxFactoryHelper.SingleVariableField(
+        return SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
             impostersFieldType,
             MethodImposterCollectionMetadata.ImpostersFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
             impostersFieldType.New()
         );
     }
