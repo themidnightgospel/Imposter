@@ -37,6 +37,15 @@ A compact list of the core types and fluent members you’ll use most. This is n
 - `OutArg<T>`
   - `static OutArg<T> Any()` — wildcard for `out` parameters
 
+- `SpanArg<T>` — matches the elements of a `Span<T>` parameter
+  - `static SpanArg<T> Any()`
+  - `static SpanArg<T> Is(params T[] expected)`
+  - `static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer)`
+  - `static SpanArg<T> Is(Func<T[], bool> predicate)`
+  - `static implicit operator SpanArg<T>(AnyArgMarker _)` — enables `Arg.Any` shorthand
+
+- `ReadOnlySpanArg<T>` — matches the elements of a `ReadOnlySpan<T>` parameter, with the same members as `SpanArg<T>`
+
 ## Verification Counts
 
 - `Count`

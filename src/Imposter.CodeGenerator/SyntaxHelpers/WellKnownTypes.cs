@@ -303,13 +303,7 @@ internal static class WellKnownTypes
             );
 
             internal static NameSyntax IHaveImposterInstance(TypeSyntax instanceType) =>
-                QualifiedName(
-                    Namespace,
-                    GenericName(
-                        Identifier(nameof(IHaveImposterInstance)),
-                        TypeArgumentList(SingletonSeparatedList(instanceType))
-                    )
-                );
+                Generic(nameof(IHaveImposterInstance), instanceType);
 
             internal static NameSyntax VerificationFailedException =>
                 QualifiedName(Namespace, IdentifierName("VerificationFailedException"));
@@ -325,21 +319,22 @@ internal static class WellKnownTypes
             internal static NameSyntax ImposterMode =>
                 QualifiedName(Namespace, IdentifierName("ImposterMode"));
 
-            internal static NameSyntax OutArg(TypeSyntax type) =>
-                QualifiedName(
-                    Namespace,
-                    GenericName(
-                        Identifier(nameof(OutArg)),
-                        TypeArgumentList(SingletonSeparatedList(type))
-                    )
-                );
+            internal static NameSyntax OutArg(TypeSyntax type) => Generic(nameof(OutArg), type);
 
-            internal static NameSyntax Arg(TypeSyntax type) =>
+            internal static NameSyntax Arg(TypeSyntax type) => Generic(nameof(Arg), type);
+
+            internal static NameSyntax SpanArg(TypeSyntax elementType) =>
+                Generic(nameof(SpanArg), elementType);
+
+            internal static NameSyntax ReadOnlySpanArg(TypeSyntax elementType) =>
+                Generic(nameof(ReadOnlySpanArg), elementType);
+
+            private static QualifiedNameSyntax Generic(string name, TypeSyntax typeArgument) =>
                 QualifiedName(
                     Namespace,
                     GenericName(
-                        Identifier(nameof(Arg)),
-                        TypeArgumentList(SingletonSeparatedList(type))
+                        Identifier(name),
+                        TypeArgumentList(SingletonSeparatedList(typeArgument))
                     )
                 );
         }

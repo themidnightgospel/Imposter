@@ -98,7 +98,7 @@ internal static partial class SyntaxFactoryHelper
         MethodParameterMetadata parameter
     ) =>
         SingleVariableField(
-            parameter.NullableAwareTypeSyntax,
+            parameter.NullableAwareStoredTypeSyntax,
             parameter.Name,
             TokenList(Token(SyntaxKind.PublicKeyword))
         );

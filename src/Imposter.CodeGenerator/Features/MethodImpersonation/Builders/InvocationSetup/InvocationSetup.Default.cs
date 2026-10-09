@@ -32,20 +32,25 @@ internal static partial class InvocationSetupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
+        var body = new BlockBuilder()
+            .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
+            .AddStatement(BuildDefaultReturnStatement(method))
+            .Build();
+        // A span parameter can't be declared on an async method (CS4012).
+        var runsAsyncPartInLocalFunction = method.IsAsync && method.Parameters.HasSpanParameters;
+
         return new MethodDeclarationBuilder(
             method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnType,
             method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddModifierIf(method.IsAsync, () => Token(SyntaxKind.AsyncKeyword))
-            .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
-            .WithBody(
-                new BlockBuilder()
-                    .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
-                    .AddStatement(BuildDefaultReturnStatement(method))
-                    .Build()
+            .AddModifierIf(
+                method.IsAsync && !runsAsyncPartInLocalFunction,
+                () => Token(SyntaxKind.AsyncKeyword)
             )
+            .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
+            .WithBody(runsAsyncPartInLocalFunction ? AsyncResultFunctionCall(method, body) : body)
             .Build();
 
         static StatementSyntax? BuildDefaultReturnStatement(in ImposterTargetMethodMetadata method)
