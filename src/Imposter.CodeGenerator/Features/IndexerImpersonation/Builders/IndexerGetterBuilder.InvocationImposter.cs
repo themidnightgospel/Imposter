@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -257,10 +258,7 @@ internal static partial class IndexerGetterBuilder
         var throwIfMissing = IfStatement(
             nextReturnValue.IsNull(),
             Block(
-                BuildMissingImposterThrow(
-                    invocation.PropertyDisplayNameField.Name,
-                    getter.GetterSuffix
-                )
+                ThrowMissingImposter(invocation.PropertyDisplayNameField.Name, getter.GetterSuffix)
             )
         );
 
@@ -354,8 +352,6 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var baseImplementation = IdentifierName(getter.BaseImplementationParameterName);
-        var message = IdentifierName(getter.Invocation.PropertyDisplayNameField.Name)
-            .Add(getter.GetterSuffix.StringLiteral());
 
         return ReturnHandler(getter)
             .WithBlock(
@@ -363,16 +359,9 @@ internal static partial class IndexerGetterBuilder
                     IfStatement(
                         baseImplementation.IsNull(),
                         Block(
-                            ThrowStatement(
-                                ObjectCreationExpression(
-                                        WellKnownTypes
-                                            .Imposter
-                                            .Abstractions
-                                            .MissingImposterException
-                                    )
-                                    .WithArgumentList(
-                                        ArgumentList(SingletonSeparatedList(Argument(message)))
-                                    )
+                            ThrowMissingImposter(
+                                getter.Invocation.PropertyDisplayNameField.Name,
+                                getter.GetterSuffix
                             )
                         )
                     ),

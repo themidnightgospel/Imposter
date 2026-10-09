@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -196,18 +197,9 @@ internal static partial class IndexerGetterBuilder
                 )
             ),
             IfStatement(
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    IdentifierName(getter.InvocationBehaviorField.Name),
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode.Dot(
-                        IdentifierName("Explicit")
-                    )
-                ),
+                IsExplicit(IdentifierName(getter.InvocationBehaviorField.Name)),
                 Block(
-                    BuildMissingImposterThrow(
-                        getter.PropertyDisplayNameField.Name,
-                        getter.GetterSuffix
-                    )
+                    ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix)
                 ),
                 ElseClause(Block(ReturnDefaultNonNullable))
             )

@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -337,7 +338,7 @@ internal static class IndexerSetterBuilder
                             IfStatement(
                                 IdentifierName(setter.BaseImplementationParameterName).IsNull(),
                                 Block(
-                                    BuildMissingImposterThrow(
+                                    ThrowMissingImposter(
                                         setter.PropertyDisplayNameField.Name,
                                         setter.SetterSuffix
                                     )
