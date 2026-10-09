@@ -69,11 +69,7 @@ internal static partial class InvocationSetupBuilder
             .AddStatement(
                 IdentifierName("_invocationImposters")
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(
-                        ArgumentList(
-                            SingletonSeparatedList(Argument(IdentifierName("invocationImposter")))
-                        )
-                    )
+                    .Call(Argument(IdentifierName("invocationImposter")))
                     .ToStatementSyntax()
             )
             .AddStatement(ReturnStatement(IdentifierName("invocationImposter")));

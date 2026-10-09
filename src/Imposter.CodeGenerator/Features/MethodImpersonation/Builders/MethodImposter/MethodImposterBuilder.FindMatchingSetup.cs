@@ -44,13 +44,7 @@ internal partial class MethodImposterBuilder
                                                 method.ArgumentsCriteria.MatchesMethod.Name
                                             )
                                         )
-                                        .Call(
-                                            ArgumentList(
-                                                SingletonSeparatedList(
-                                                    Argument(IdentifierName("arguments"))
-                                                )
-                                            )
-                                        ),
+                                        .Call(Argument(IdentifierName("arguments"))),
                                     ReturnStatement(setupIdentifierName)
                                 )
                             )
@@ -68,13 +62,11 @@ internal partial class MethodImposterBuilder
                         IdentifierName(method.MethodImposter.InvocationImpostersField.Name)
                             .Dot(ConcurrentStackSyntaxHelper.TryPeek)
                             .Call(
-                                ArgumentListSyntax(
-                                    OutVarArgument(
-                                        method
-                                            .MethodImposter
-                                            .FindMatchingInvocationImposterGroupMethod
-                                            .SetupVariableName
-                                    )
+                                OutVarArgument(
+                                    method
+                                        .MethodImposter
+                                        .FindMatchingInvocationImposterGroupMethod
+                                        .SetupVariableName
                                 )
                             ),
                         ReturnStatement(setupIdentifierName),

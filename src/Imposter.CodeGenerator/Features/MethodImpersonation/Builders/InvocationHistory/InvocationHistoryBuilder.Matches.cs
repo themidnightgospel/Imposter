@@ -57,8 +57,7 @@ internal static partial class InvocationHistoryBuilder
                     .Call()
                     .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
                     .Call(
-                        IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName)
-                            .ToSingleArgumentList()
+                        Argument(IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName))
                     );
 
                 return genericArgumentsMatchCriteria.And(argumentsMatchCriteria);

@@ -119,10 +119,7 @@ internal static class IndexerArgumentsBuilder
                                     SingleVariableDesignation(other.Identifier)
                                 )
                             )
-                            .And(
-                                IdentifierName("Equals")
-                                    .Call(ArgumentList(SingletonSeparatedList(Argument(other))))
-                            )
+                            .And(IdentifierName("Equals").Call(Argument(other)))
                     )
                 )
             )

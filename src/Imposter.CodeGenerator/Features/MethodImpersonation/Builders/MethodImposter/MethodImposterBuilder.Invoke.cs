@@ -92,11 +92,11 @@ internal partial class MethodImposterBuilder
         return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
             .Dot(IdentifierName("Add"))
             .Call(
-                method
-                    .InvocationHistory.Syntax.New(
+                Argument(
+                    method.InvocationHistory.Syntax.New(
                         ArgumentListSyntax(GetArguments(method, threwException))
                     )
-                    .ToSingleArgumentList()
+                )
             )
             .ToStatementSyntax();
 

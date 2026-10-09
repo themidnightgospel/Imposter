@@ -141,9 +141,7 @@ internal static partial class IndexerGetterBuilder
         var handler = ReturnHandler(getter)
             .WithExpressionBody(
                 IdentifierName(generator.Identifier)
-                    .Call(
-                        ArgumentListSyntax([Argument(IdentifierName(getter.ArgumentsVariableName))])
-                    )
+                    .Call(Argument(IdentifierName(getter.ArgumentsVariableName)))
             );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddReturnValue")
@@ -206,7 +204,7 @@ internal static partial class IndexerGetterBuilder
         var generatorDeclaration = LocalVariableDeclarationSyntax(
             getter.ReturnHandlerType,
             "generator",
-            IdentifierName("ResolveNextGenerator").Call(ArgumentListSyntax([Argument(arguments)]))
+            IdentifierName("ResolveNextGenerator").Call(Argument(arguments))
         );
 
         var returnGenerated = ReturnStatement(

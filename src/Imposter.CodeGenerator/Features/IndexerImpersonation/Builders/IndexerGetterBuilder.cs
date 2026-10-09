@@ -215,11 +215,7 @@ internal static partial class IndexerGetterBuilder
         var setupMatches = setup
             .Dot(IdentifierName(getter.Invocation.CriteriaField.Name))
             .Dot(IdentifierName("Matches"))
-            .Call(
-                ArgumentList(
-                    SingletonSeparatedList(Argument(IdentifierName(getter.ArgumentsVariableName)))
-                )
-            );
+            .Call(Argument(IdentifierName(getter.ArgumentsVariableName)));
 
         return new MethodDeclarationBuilder(
             NullableType(getter.Invocation.TypeSyntax),
@@ -321,25 +317,14 @@ internal static partial class IndexerGetterBuilder
             invocationHistory
                 .Dot(IdentifierName("Count"))
                 .Call(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(
-                                IdentifierName(getter.CriteriaParameterName)
-                                    .Dot(IdentifierName("Matches"))
-                            )
-                        )
+                    Argument(
+                        IdentifierName(getter.CriteriaParameterName).Dot(IdentifierName("Matches"))
                     )
                 )
         );
 
         var condition = Not(
-            count
-                .Dot(IdentifierName("Matches"))
-                .Call(
-                    ArgumentList(
-                        SingletonSeparatedList(Argument(IdentifierName("invocationCount")))
-                    )
-                )
+            count.Dot(IdentifierName("Matches")).Call(Argument(IdentifierName("invocationCount")))
         );
 
         var descriptionExpression = "get "

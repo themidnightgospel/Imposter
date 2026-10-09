@@ -67,13 +67,7 @@ internal static class IndexerArgumentsCriteriaBuilder
                 .Dot(IdentifierName(parameter.FieldName))
                 .Dot(IdentifierName("Matches"))
                 .Call(
-                    ArgumentList(
-                        SingletonSeparatedList(
-                            Argument(
-                                IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName))
-                            )
-                        )
-                    )
+                    Argument(IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName)))
                 );
 
             comparison = comparison is null
