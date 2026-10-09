@@ -74,6 +74,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp008"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTargetHasRefLikeMember = new(
+        "IMP009",
+        "Imposter target has a member with a ref-like type",
+        "'{0}' has the member '{1}', whose signature uses the ref-like type '{2}', which an imposter cannot store or match",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An imposter keeps arguments and results in fields, delegates and argument matchers, none of which can hold a ref-like value such as Span<T>, ReadOnlySpan<T> or another ref struct, so no imposter is generated.",
+        helpLinkUri: HelpUrl + "#imp009"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

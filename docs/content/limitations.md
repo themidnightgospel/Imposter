@@ -29,6 +29,10 @@ This behavior is the same in implicit and explicit modes. Constructor-time calls
 callbacks or appear in invocation verification. After construction, normal setup, verification, and
 explicit-mode checks apply.
 
+## Ref-like types
+
+- Members whose signature uses a ref-like type (`Span<T>`, `ReadOnlySpan<T>` or another `ref struct`) can't be impersonated, because an imposter can't store or match their values. A target with such a member reports [IMP009](diagnostics.md#imp009) and gets no imposter.
+
 ## Async behavior
 
 - Async methods without setup return `default`, which for `Task` is `null`.
