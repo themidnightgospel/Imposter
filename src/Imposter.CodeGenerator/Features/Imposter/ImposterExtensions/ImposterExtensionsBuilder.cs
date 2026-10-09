@@ -13,9 +13,7 @@ namespace Imposter.CodeGenerator.Features.Imposter.ImposterExtensions;
 
 internal static class ImposterExtensionsBuilder
 {
-    private const string ExtensionParameterName = "imposter";
     private const string MethodName = "Imposter";
-    private const string InvocationBehaviorParameterName = "invocationBehavior";
 
     internal static ClassDeclarationSyntax Build(
         in ImposterGenerationContext imposterGenerationContext,
@@ -38,7 +36,14 @@ internal static class ImposterExtensionsBuilder
             .Imposter
             .IsClass
             ? BuildClassMethods(imposterType, accessibilityModifiers, imposterGenerationContext)
-            : [BuildParameterlessMethod(imposterType, accessibilityModifiers)];
+            :
+            [
+                BuildParameterlessMethod(
+                    imposterType,
+                    accessibilityModifiers,
+                    imposterGenerationContext.Imposter.InvocationBehaviorParameterName
+                ),
+            ];
 
         var extensionDeclaration =
 #if ROSLYN_5_OR_GREATER
@@ -50,7 +55,10 @@ internal static class ImposterExtensionsBuilder
             .WithParameterList(
                 ParameterList(
                     SingletonSeparatedList(
-                        SyntaxFactoryHelper.ParameterSyntax(targetType, ExtensionParameterName)
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            targetType,
+                            imposterGenerationContext.Imposter.ExtensionParameterName
+                        )
                     )
                 )
             )
@@ -91,17 +99,31 @@ internal static class ImposterExtensionsBuilder
     )
     {
         var constructors = imposterGenerationContext.Imposter.AccessibleConstructors;
+        var invocationBehaviorParameterName = imposterGenerationContext
+            .Imposter
+            .InvocationBehaviorParameterName;
         var methods = new List<MethodDeclarationSyntax>(constructors.Length + 1);
 
         if (constructors.Any(constructor => constructor.Parameters.Length == 0))
         {
-            methods.Add(BuildParameterlessMethod(imposterType, accessibilityModifiers));
+            methods.Add(
+                BuildParameterlessMethod(
+                    imposterType,
+                    accessibilityModifiers,
+                    invocationBehaviorParameterName
+                )
+            );
         }
 
         foreach (var constructor in constructors.Where(it => it.Parameters.Length > 0))
         {
             methods.Add(
-                BuildConstructorOverload(imposterType, accessibilityModifiers, constructor)
+                BuildConstructorOverload(
+                    imposterType,
+                    accessibilityModifiers,
+                    constructor,
+                    invocationBehaviorParameterName
+                )
             );
         }
 
@@ -110,31 +132,36 @@ internal static class ImposterExtensionsBuilder
 
     private static MethodDeclarationSyntax BuildParameterlessMethod(
         TypeSyntax imposterType,
-        SyntaxTokenList accessibilityModifiers
+        SyntaxTokenList accessibilityModifiers,
+        string invocationBehaviorParameterName
     ) =>
         new MethodDeclarationBuilder(imposterType, MethodName)
             .AddModifiers(accessibilityModifiers)
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .WithExpressionBody(
                 ArrowExpressionClause(
-                    imposterType.New(ImposterModeArgument().AsSingleArgumentListSyntax())
+                    imposterType.New(
+                        ImposterModeArgument(invocationBehaviorParameterName)
+                            .AsSingleArgumentListSyntax()
+                    )
                 )
             )
-            .AddParameter(CreateInvocationBehaviorParameter())
+            .AddParameter(CreateInvocationBehaviorParameter(invocationBehaviorParameterName))
             .WithSemicolon()
             .Build();
 
     private static MethodDeclarationSyntax BuildConstructorOverload(
         TypeSyntax imposterType,
         SyntaxTokenList accessibilityModifiers,
-        in ImposterTargetConstructorMetadata constructorMetadata
+        in ImposterTargetConstructorMetadata constructorMetadata,
+        string invocationBehaviorParameterName
     )
     {
         var parameters = new List<ParameterSyntax>(
             SyntaxFactoryHelper.ParameterSyntaxes(constructorMetadata.Parameters)
         )
         {
-            CreateInvocationBehaviorParameter(),
+            CreateInvocationBehaviorParameter(invocationBehaviorParameterName),
         };
 
         var arguments = new List<ArgumentSyntax>(
@@ -143,7 +170,7 @@ internal static class ImposterExtensionsBuilder
             )
         )
         {
-            ImposterModeArgument(),
+            ImposterModeArgument(invocationBehaviorParameterName),
         };
 
         return new MethodDeclarationBuilder(imposterType, MethodName)
@@ -159,16 +186,18 @@ internal static class ImposterExtensionsBuilder
             .Build();
     }
 
-    private static ArgumentSyntax ImposterModeArgument()
+    private static ArgumentSyntax ImposterModeArgument(string invocationBehaviorParameterName)
     {
-        return Argument(IdentifierName(InvocationBehaviorParameterName));
+        return Argument(IdentifierName(invocationBehaviorParameterName));
     }
 
-    private static ParameterSyntax CreateInvocationBehaviorParameter() =>
+    private static ParameterSyntax CreateInvocationBehaviorParameter(
+        string invocationBehaviorParameterName
+    ) =>
         SyntaxFactoryHelper
             .ParameterSyntax(
                 WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                InvocationBehaviorParameterName
+                invocationBehaviorParameterName
             )
             .WithDefault(
                 EqualsValueClause(

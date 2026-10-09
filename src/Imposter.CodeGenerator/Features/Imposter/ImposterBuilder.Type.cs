@@ -202,7 +202,9 @@ internal readonly ref struct ImposterBuilder
         var memberNameSet = GetImposterNameSet(imposterGenerationContext, imposterBuilder.Members);
         var typeMetadata = new TypeMetadata(memberNameSet);
 
-        var constructorParameterName = "invocationBehavior";
+        var constructorParameterName = imposterGenerationContext
+            .Imposter
+            .InvocationBehaviorParameterName;
         var isClassTarget = imposterGenerationContext.Imposter.IsClass;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
 

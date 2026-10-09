@@ -40,6 +40,12 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly ImposterTargetTypeParametersMetadata TypeParameters;
 
+    // The imposter's constructors and the Imposter() extension declare these parameters next to the parameters of the
+    // target's constructors, so they avoid those names.
+    internal readonly string InvocationBehaviorParameterName;
+
+    internal readonly string ExtensionParameterName;
+
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(
@@ -73,6 +79,14 @@ internal readonly struct ImposterTargetMetadata
         Properties = target.Properties;
         Indexers = target.Indexers;
         Events = target.Events;
+
+        var constructorParameterNames = new NameSet(
+            target.AccessibleConstructors.SelectMany(constructor =>
+                constructor.Parameters.Select(parameter => parameter.Name)
+            )
+        );
+        InvocationBehaviorParameterName = constructorParameterNames.Use("invocationBehavior");
+        ExtensionParameterName = constructorParameterNames.Use("imposter");
     }
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(
