@@ -150,7 +150,7 @@ internal static class ImposterTargetValidator
     {
         foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
         {
-            if (FindRefLikeType(UncopiedTypes(method)) is { } type)
+            if (FindMethodRefLikeType(method) is { } type)
             {
                 return (method, type);
             }
@@ -180,6 +180,11 @@ internal static class ImposterTargetValidator
 
         return null;
     }
+
+    // A type parameter that allows ref structs may stand for a ref struct.
+    private static ITypeSymbol? FindMethodRefLikeType(IMethodSymbol method) =>
+        FindRefLikeType(UncopiedTypes(method))
+        ?? method.TypeParameters.FirstOrDefault(AllowsRefStruct.AllowsRefStructs);
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IMethodSymbol method)
     {
