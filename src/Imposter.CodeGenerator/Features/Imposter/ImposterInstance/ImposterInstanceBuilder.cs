@@ -44,93 +44,15 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (property.Core.HasGetter)
         {
-            var getterInvocation = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name))
-                .Dot(IdentifierName(property.GetterImposterBuilder.GetMethod.Name));
-
-            InvocationExpressionSyntax getterCall;
-            ExpressionSyntax? baseGetterInvocation = property.Core.GetterSupportsBaseImplementation
-                ? BaseExpression().Dot(IdentifierName(property.Core.Name))
-                : null;
-
-            if (baseGetterInvocation is not null)
-            {
-                getterCall = getterInvocation.Call(
-                    Argument(EmptyParametersGoesTo(property.Core.StoredValue(baseGetterInvocation)))
-                );
-            }
-            else
-            {
-                getterCall = getterInvocation.Call();
-            }
-
-            var getterBody = Block(ReturnStatement(getterCall));
-            getterBody = WithConstructorFallback(
-                getterBody,
-                Block(ReturnStatement(baseGetterInvocation ?? DefaultNonNullable))
-            );
-
             propertyBuilder = propertyBuilder.WithGetterBody(
-                getterBody,
+                PropertyGetterBody(property),
                 property.Core.GetterModifiers
             );
         }
 
         if (property.Core.HasSetter)
         {
-            var setterInvocation = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name))
-                .Dot(IdentifierName(property.SetterImposter.SetMethod.Name));
-
-            var setterArguments = new List<ArgumentSyntax>
-            {
-                Argument(property.Core.StoredValue(IdentifierName("value"))),
-            };
-            var basePropertyAccess = property.Core.SetterSupportsBaseImplementation
-                ? BaseExpression().Dot(IdentifierName(property.Core.Name))
-                : null;
-
-            if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
-            {
-                const string BaseSetterValueParameterName = "baseSetterValue";
-                var baseSetterValueIdentifier = IdentifierName(BaseSetterValueParameterName);
-                var baseAssignment = basePropertyAccess.Assign(baseSetterValueIdentifier);
-
-                setterArguments.Add(
-                    Argument(
-                        ParenthesizedLambdaExpression()
-                            .WithParameterList(
-                                ParameterList(
-                                    SingletonSeparatedList(
-                                        Parameter(Identifier(BaseSetterValueParameterName))
-                                    )
-                                )
-                            )
-                            .WithBlock(Block(baseAssignment.ToStatementSyntax()))
-                    )
-                );
-            }
-
-            var setterCall = setterInvocation.Call(ArgumentListSyntax(setterArguments));
-            var setterBody = property.Core.SetterRequiresDirectBaseAssignment
-                ? Block(
-                    IfStatement(
-                        setterCall,
-                        Block(
-                            basePropertyAccess!.Assign(IdentifierName("value")).ToStatementSyntax()
-                        )
-                    )
-                )
-                : Block(setterCall.ToStatementSyntax());
-            setterBody = WithConstructorFallback(
-                setterBody,
-                ConstructorDispatchBuilder.SetterFallback(
-                    basePropertyAccess?.Assign(IdentifierName("value"))
-                )
-            );
-
+            var setterBody = PropertySetterBody(property);
             propertyBuilder = property.Core.IsInitOnly
                 ? propertyBuilder.WithInitBody(setterBody, property.Core.SetterModifiers)
                 : propertyBuilder.WithSetterBody(setterBody, property.Core.SetterModifiers);
@@ -140,132 +62,220 @@ internal readonly ref struct ImposterInstanceBuilder
         return this;
     }
 
+    // The getter asks the property's getter imposter for the value, passing the base getter when there is one.
+    private BlockSyntax PropertyGetterBody(in ImposterPropertyMetadata property)
+    {
+        var getter = MemberBuilder(property.BuilderField.Name)
+            .Dot(IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name))
+            .Dot(IdentifierName(property.GetterImposterBuilder.GetMethod.Name));
+        ExpressionSyntax? baseGetter = property.Core.GetterSupportsBaseImplementation
+            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+            : null;
+        var getterCall = baseGetter is null
+            ? getter.Call()
+            : getter.Call(Argument(EmptyParametersGoesTo(property.Core.StoredValue(baseGetter))));
+
+        return WithConstructorFallback(
+            Block(ReturnStatement(getterCall)),
+            Block(ReturnStatement(baseGetter ?? DefaultNonNullable))
+        );
+    }
+
+    // The setter passes the value to the property's setter imposter. When the base setter has to be assigned directly,
+    // the imposter returns whether to, and the setter does it; otherwise the imposter gets a lambda that calls it.
+    private BlockSyntax PropertySetterBody(in ImposterPropertyMetadata property)
+    {
+        var basePropertyAccess = property.Core.SetterSupportsBaseImplementation
+            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+            : null;
+        var setterArguments = new List<ArgumentSyntax>
+        {
+            Argument(property.Core.StoredValue(IdentifierName("value"))),
+        };
+        if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
+        {
+            setterArguments.Add(Argument(BaseSetterLambda(basePropertyAccess)));
+        }
+
+        var setterCall = MemberBuilder(property.BuilderField.Name)
+            .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name))
+            .Dot(IdentifierName(property.SetterImposter.SetMethod.Name))
+            .Call(ArgumentListSyntax(setterArguments));
+        var setterBody = property.Core.SetterRequiresDirectBaseAssignment
+            ? Block(
+                IfStatement(
+                    setterCall,
+                    Block(basePropertyAccess!.Assign(IdentifierName("value")).ToStatementSyntax())
+                )
+            )
+            : Block(setterCall.ToStatementSyntax());
+
+        return WithConstructorFallback(
+            setterBody,
+            ConstructorDispatchBuilder.SetterFallback(
+                basePropertyAccess?.Assign(IdentifierName("value"))
+            )
+        );
+    }
+
+    private static ParenthesizedLambdaExpressionSyntax BaseSetterLambda(
+        ExpressionSyntax basePropertyAccess
+    )
+    {
+        const string BaseSetterValueParameterName = "baseSetterValue";
+
+        return ParenthesizedLambdaExpression()
+            .WithParameterList(
+                ParameterList(
+                    SingletonSeparatedList(Parameter(Identifier(BaseSetterValueParameterName)))
+                )
+            )
+            .WithBlock(
+                Block(
+                    basePropertyAccess
+                        .Assign(IdentifierName(BaseSetterValueParameterName))
+                        .ToStatementSyntax()
+                )
+            );
+    }
+
     internal ImposterInstanceBuilder AddIndexer(in ImposterIndexerMetadata indexer)
     {
-        var parameters = indexer
-            .Core.Parameters.Select(parameter => ParameterSyntaxIncludingNullable(parameter.Model))
-            .ToArray();
-        var parameterList = BracketedParameterList(SeparatedList(parameters));
         var lambdaCopies = CopyForLambdas(indexer);
-        var imposterArguments = indexer
-            .Core.Parameters.Select(parameter => parameter.ImposterArgument)
-            .ToArray();
-
         var accessors = new List<AccessorDeclarationSyntax>();
-
         if (indexer.Core.HasGetter)
         {
-            var getterArguments = new List<ArgumentSyntax>(imposterArguments);
-            var getterStatements = new List<StatementSyntax>();
-
-            ExpressionSyntax? baseInvocation = indexer.Core.GetterSupportsBaseImplementation
-                ? BaseIndexerAccess(indexer.Core.ParameterArguments)
-                : null;
-
-            if (baseInvocation is not null)
-            {
-                getterStatements.AddRange(lambdaCopies.KeyCopies);
-                getterArguments.Add(
-                    Argument(
-                        EmptyParametersGoesTo(
-                            indexer.Core.StoredValue(
-                                BaseIndexerAccess(lambdaCopies.LambdaArguments)
-                            )
-                        )
-                    )
-                );
-            }
-
-            var getterCall = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(indexer.BuilderField.Name))
-                .Dot(IdentifierName("Get"))
-                .Call(ArgumentListSyntax(getterArguments));
-            getterStatements.Add(ReturnStatement(getterCall));
-
-            accessors.Add(
-                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithModifiers(indexer.Core.GetterModifiers)
-                    .WithBody(
-                        WithConstructorFallback(
-                            Block(getterStatements),
-                            Block(ReturnStatement(baseInvocation ?? DefaultNonNullable))
-                        )
-                    )
-            );
+            accessors.Add(IndexerGetter(indexer, lambdaCopies));
         }
 
         if (indexer.Core.HasSetter)
         {
-            var setterArguments = new List<ArgumentSyntax>(imposterArguments)
-            {
-                Argument(indexer.Core.StoredValue(IdentifierName("value"))),
-            };
-            var setterStatements = new List<StatementSyntax>();
-
-            var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
-                ? BaseIndexerAssignment(indexer.Core.ParameterArguments, IdentifierName("value"))
-                : null;
-
-            if (baseAssignment is not null)
-            {
-                setterStatements.AddRange(lambdaCopies.KeyCopies);
-                if (lambdaCopies.ValueCopy is { } valueCopy)
-                {
-                    setterStatements.Add(valueCopy);
-                }
-
-                setterArguments.Add(
-                    Argument(
-                        EmptyParametersGoesTo(
-                            Block(
-                                BaseIndexerAssignment(
-                                        lambdaCopies.LambdaArguments,
-                                        lambdaCopies.LambdaValue
-                                    )
-                                    .ToStatementSyntax()
-                            )
-                        )
-                    )
-                );
-            }
-
-            var setterCall = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(indexer.BuilderField.Name))
-                .Dot(IdentifierName("Set"))
-                .Call(ArgumentListSyntax(setterArguments));
-            setterStatements.Add(setterCall.ToStatementSyntax());
-
-            accessors.Add(
-                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithModifiers(indexer.Core.SetterModifiers)
-                    .WithBody(
-                        WithConstructorFallback(
-                            Block(setterStatements),
-                            ConstructorDispatchBuilder.SetterFallback(baseAssignment)
-                        )
-                    )
-            );
+            accessors.Add(IndexerSetter(indexer, lambdaCopies));
         }
 
-        var indexerDeclaration = IndexerDeclaration(indexer.Core.NullableAwareTypeSyntax)
-            .WithModifiers(indexer.ImposterInstanceModifiers)
-            .WithExplicitInterfaceSpecifier(indexer.ExplicitInterfaceSpecifier)
-            .WithParameterList(parameterList)
-            .WithAccessorList(AccessorList(List(accessors)));
-
-        _imposterInstanceBuilder.AddMember(indexerDeclaration);
+        var parameters = indexer.Core.Parameters.Select(parameter =>
+            ParameterSyntaxIncludingNullable(parameter.Model)
+        );
+        _imposterInstanceBuilder.AddMember(
+            IndexerDeclaration(indexer.Core.NullableAwareTypeSyntax)
+                .WithModifiers(indexer.ImposterInstanceModifiers)
+                .WithExplicitInterfaceSpecifier(indexer.ExplicitInterfaceSpecifier)
+                .WithParameterList(BracketedParameterList(SeparatedList(parameters)))
+                .WithAccessorList(AccessorList(List(accessors)))
+        );
 
         return this;
     }
 
+    // The getter asks the indexer's builder for the value, passing the base getter when there is one.
+    private AccessorDeclarationSyntax IndexerGetter(
+        in ImposterIndexerMetadata indexer,
+        LambdaCopies lambdaCopies
+    )
+    {
+        var statements = new List<StatementSyntax>();
+        var arguments = new List<ArgumentSyntax>(ImposterArguments(indexer));
+        ExpressionSyntax? baseGetter = indexer.Core.GetterSupportsBaseImplementation
+            ? BaseIndexerAccess(indexer.Core.ParameterArguments)
+            : null;
+        if (baseGetter is not null)
+        {
+            statements.AddRange(lambdaCopies.KeyCopies);
+            arguments.Add(
+                Argument(
+                    EmptyParametersGoesTo(
+                        indexer.Core.StoredValue(BaseIndexerAccess(lambdaCopies.LambdaArguments))
+                    )
+                )
+            );
+        }
+
+        statements.Add(
+            ReturnStatement(
+                MemberBuilder(indexer.BuilderField.Name)
+                    .Dot(IdentifierName("Get"))
+                    .Call(ArgumentListSyntax(arguments))
+            )
+        );
+
+        return AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+            .WithModifiers(indexer.Core.GetterModifiers)
+            .WithBody(
+                WithConstructorFallback(
+                    Block(statements),
+                    Block(ReturnStatement(baseGetter ?? DefaultNonNullable))
+                )
+            );
+    }
+
+    // The setter passes the value to the indexer's builder, with the base setter when there is one.
+    private AccessorDeclarationSyntax IndexerSetter(
+        in ImposterIndexerMetadata indexer,
+        LambdaCopies lambdaCopies
+    )
+    {
+        var statements = new List<StatementSyntax>();
+        var arguments = new List<ArgumentSyntax>(ImposterArguments(indexer))
+        {
+            Argument(indexer.Core.StoredValue(IdentifierName("value"))),
+        };
+        var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
+            ? BaseIndexerAssignment(indexer.Core.ParameterArguments, IdentifierName("value"))
+            : null;
+        if (baseAssignment is not null)
+        {
+            statements.AddRange(lambdaCopies.KeyCopies);
+            if (lambdaCopies.ValueCopy is { } valueCopy)
+            {
+                statements.Add(valueCopy);
+            }
+
+            arguments.Add(
+                Argument(
+                    EmptyParametersGoesTo(
+                        Block(
+                            BaseIndexerAssignment(
+                                    lambdaCopies.LambdaArguments,
+                                    lambdaCopies.LambdaValue
+                                )
+                                .ToStatementSyntax()
+                        )
+                    )
+                )
+            );
+        }
+
+        statements.Add(
+            MemberBuilder(indexer.BuilderField.Name)
+                .Dot(IdentifierName("Set"))
+                .Call(ArgumentListSyntax(arguments))
+                .ToStatementSyntax()
+        );
+
+        return AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+            .WithModifiers(indexer.Core.SetterModifiers)
+            .WithBody(
+                WithConstructorFallback(
+                    Block(statements),
+                    ConstructorDispatchBuilder.SetterFallback(baseAssignment)
+                )
+            );
+    }
+
+    private static IEnumerable<ArgumentSyntax> ImposterArguments(
+        in ImposterIndexerMetadata indexer
+    ) => indexer.Core.Parameters.Select(parameter => parameter.ImposterArgument);
+
     // A lambda cannot capture an `in` or `ref readonly` parameter or a span, so the base-call lambdas read local copies
     // of them. A span's copy is the array of its elements, which converts back to the span.
-    private static (
+    private readonly record struct LambdaCopies(
         IReadOnlyList<StatementSyntax> KeyCopies,
         IReadOnlyList<ArgumentSyntax> LambdaArguments,
         StatementSyntax? ValueCopy,
         ExpressionSyntax LambdaValue
-    ) CopyForLambdas(in ImposterIndexerMetadata indexer)
+    );
+
+    private static LambdaCopies CopyForLambdas(in ImposterIndexerMetadata indexer)
     {
         var localNames = new NameSet(
             indexer.Core.Parameters.Select(parameter => parameter.Name).Append("value")
@@ -298,7 +308,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
         if (!indexer.Core.HasSpanValue)
         {
-            return (keyCopies, lambdaArguments, null, IdentifierName("value"));
+            return new LambdaCopies(keyCopies, lambdaArguments, null, IdentifierName("value"));
         }
 
         var valueCopyName = localNames.Use("valueCopy");
@@ -308,7 +318,12 @@ internal readonly ref struct ImposterInstanceBuilder
             SpanElementsCopy(IdentifierName("value"))
         );
 
-        return (keyCopies, lambdaArguments, valueCopy, IdentifierName(valueCopyName));
+        return new LambdaCopies(
+            keyCopies,
+            lambdaArguments,
+            valueCopy,
+            IdentifierName(valueCopyName)
+        );
     }
 
     private static ElementAccessExpressionSyntax BaseIndexerAccess(
@@ -324,58 +339,70 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
-        var baseSubscribeAssignment = BuildBaseEventAccessorAssignment(@event, isSubscribe: true);
-        var baseUnsubscribeAssignment = BuildBaseEventAccessorAssignment(
-            @event,
-            isSubscribe: false
-        );
-        var eventDeclaration = EventDeclaration(
-                @event.Core.DeclaredTypeSyntax,
-                Identifier(@event.Core.Name)
-            )
-            .WithModifiers(@event.ImposterInstanceModifiers)
-            .WithExplicitInterfaceSpecifier(@event.ExplicitInterfaceSpecifier)
-            .WithAccessorList(
-                AccessorList(
-                    List([
-                        AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
-                            .WithBody(
-                                WithConstructorFallback(
-                                    BuildEventAccessorBody(
-                                        @event,
-                                        isSubscribe: true,
-                                        _imposterFieldName,
-                                        baseSubscribeAssignment
-                                    ),
-                                    ConstructorDispatchBuilder.SetterFallback(
-                                        baseSubscribeAssignment
-                                    )
-                                )
-                            ),
-                        AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
-                            .WithBody(
-                                WithConstructorFallback(
-                                    BuildEventAccessorBody(
-                                        @event,
-                                        isSubscribe: false,
-                                        _imposterFieldName,
-                                        baseUnsubscribeAssignment
-                                    ),
-                                    ConstructorDispatchBuilder.SetterFallback(
-                                        baseUnsubscribeAssignment
-                                    )
-                                )
-                            ),
-                    ])
+        _imposterInstanceBuilder.AddMember(
+            EventDeclaration(@event.Core.DeclaredTypeSyntax, Identifier(@event.Core.Name))
+                .WithModifiers(@event.ImposterInstanceModifiers)
+                .WithExplicitInterfaceSpecifier(@event.ExplicitInterfaceSpecifier)
+                .WithAccessorList(
+                    AccessorList(
+                        List([
+                            EventAccessor(@event, SyntaxKind.AddAccessorDeclaration),
+                            EventAccessor(@event, SyntaxKind.RemoveAccessorDeclaration),
+                        ])
+                    )
                 )
-            );
-
-        _imposterInstanceBuilder.AddMember(eventDeclaration);
+        );
 
         return this;
     }
 
+    // The add and remove accessors subscribe and unsubscribe the handler through the event's builder, which also
+    // passes it on to the base event when the target has one.
+    private AccessorDeclarationSyntax EventAccessor(
+        in ImposterEventMetadata @event,
+        SyntaxKind accessorKind
+    )
+    {
+        var isAdd = accessorKind == SyntaxKind.AddAccessorDeclaration;
+        var baseAssignment = @event.Core.SupportsBaseImplementation
+            ? AssignmentExpression(
+                isAdd
+                    ? SyntaxKind.AddAssignmentExpression
+                    : SyntaxKind.SubtractAssignmentExpression,
+                BaseExpression().Dot(IdentifierName(@event.Core.Name)),
+                IdentifierName("value")
+            )
+            : null;
+        var arguments = new List<ArgumentSyntax> { Argument(IdentifierName("value")) };
+        if (baseAssignment is not null)
+        {
+            arguments.Add(
+                Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
+            );
+        }
+
+        var body = Block(
+            ThrowIfNull("value"),
+            MemberBuilder(@event.BuilderField.Name)
+                .Dot(IdentifierName(isAdd ? "Subscribe" : "Unsubscribe"))
+                .Call(arguments)
+                .ToStatementSyntax()
+        );
+
+        return AccessorDeclaration(accessorKind)
+            .WithBody(
+                WithConstructorFallback(
+                    body,
+                    ConstructorDispatchBuilder.SetterFallback(baseAssignment)
+                )
+            );
+    }
+
     internal ClassDeclarationSyntax Build() => _imposterInstanceBuilder.Build();
+
+    // The imposter's builder of a member, which the instance's accessors forward to.
+    private MemberAccessExpressionSyntax MemberBuilder(string builderFieldName) =>
+        IdentifierName(_imposterFieldName).Dot(IdentifierName(builderFieldName));
 
     private BlockSyntax WithConstructorFallback(BlockSyntax body, BlockSyntax fallback) =>
         _isClass
@@ -626,45 +653,4 @@ internal readonly ref struct ImposterInstanceBuilder
             }
         }
     }
-
-    private static BlockSyntax BuildEventAccessorBody(
-        in ImposterEventMetadata @event,
-        bool isSubscribe,
-        string imposterFieldName,
-        ExpressionSyntax? baseAssignment
-    )
-    {
-        var builderAccess = IdentifierName(imposterFieldName)
-            .Dot(IdentifierName(@event.BuilderField.Name));
-        var arguments = new List<ArgumentSyntax> { Argument(IdentifierName("value")) };
-
-        if (baseAssignment is not null)
-        {
-            arguments.Add(
-                Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
-            );
-        }
-
-        return Block(
-            ThrowIfNull("value"),
-            builderAccess
-                .Dot(IdentifierName(isSubscribe ? "Subscribe" : "Unsubscribe"))
-                .Call(arguments)
-                .ToStatementSyntax()
-        );
-    }
-
-    private static AssignmentExpressionSyntax? BuildBaseEventAccessorAssignment(
-        in ImposterEventMetadata @event,
-        bool isSubscribe
-    ) =>
-        @event.Core.SupportsBaseImplementation
-            ? AssignmentExpression(
-                isSubscribe
-                    ? SyntaxKind.AddAssignmentExpression
-                    : SyntaxKind.SubtractAssignmentExpression,
-                BaseExpression().Dot(IdentifierName(@event.Core.Name)),
-                IdentifierName("value")
-            )
-            : null;
 }
