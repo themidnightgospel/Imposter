@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Text;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Helpers;
-using Microsoft.CodeAnalysis;
+using Imposter.CodeGenerator.Models;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct ImposterGenerationContext
 {
-    internal readonly GenerateImposterDeclaration GenerateImposterDeclaration;
-
-    internal INamedTypeSymbol TargetSymbol => GenerateImposterDeclaration.ImposterTarget;
+    internal readonly ImposterTargetModel Target;
 
     internal readonly ImposterTargetMetadata Imposter;
 
@@ -28,19 +26,20 @@ internal readonly struct ImposterGenerationContext
         MemberAccess memberAccess
     )
     {
-        GenerateImposterDeclaration = generateImposterDeclaration;
-        Imposter = new ImposterTargetMetadata(
-            generateImposterDeclaration.ImposterTarget,
-            supportedCSharpFeatures,
-            memberAccess
-        );
+        Target = ImposterTargetModel.From(generateImposterDeclaration.ImposterTarget, memberAccess);
+        Imposter = new ImposterTargetMetadata(Target, supportedCSharpFeatures);
 
-        var targetName = GetTargetName(TargetSymbol);
+        var targetName = GetTargetName(Target.Type);
         var sanitizedTargetName = SanitizeForNamespace(targetName);
         var hintNameSuffix = GetHintNameSuffix(targetName, sanitizedTargetName);
+        var putInTheSameNamespace = generateImposterDeclaration.PutInTheSameNamespace;
 
-        ImposterNamespaceName = GetImposterNamespaceName(generateImposterDeclaration);
-        HintName = generateImposterDeclaration.PutInTheSameNamespace
+        ImposterNamespaceName = GetImposterNamespaceName(
+            putInTheSameNamespace,
+            Target.Type,
+            Target.ContainingNamespace
+        );
+        HintName = putInTheSameNamespace
             ? $"{sanitizedTargetName}{hintNameSuffix}"
             : $"{DedicatedNamespacePrefix}.{sanitizedTargetName}{hintNameSuffix}";
 
@@ -50,24 +49,26 @@ internal readonly struct ImposterGenerationContext
     private const string DedicatedNamespacePrefix = "Imposters";
 
     // Null for the global namespace.
-    internal static string? GetImposterNamespaceName(GenerateImposterDeclaration declaration)
-    {
-        var target = declaration.ImposterTarget;
+    internal static string? GetImposterNamespaceName(GenerateImposterDeclaration declaration) =>
+        GetImposterNamespaceName(
+            declaration.PutInTheSameNamespace,
+            TypeModel.From(declaration.ImposterTarget),
+            NamespaceModel.From(declaration.ImposterTarget.ContainingNamespace)
+        );
 
-        if (!declaration.PutInTheSameNamespace)
-        {
-            return $"{DedicatedNamespacePrefix}.{SanitizeForNamespace(GetTargetName(target))}";
-        }
-
-        return target.ContainingNamespace.IsGlobalNamespace
-            ? null
-            : target.ContainingNamespace.ToDisplayString();
-    }
+    private static string? GetImposterNamespaceName(
+        bool putInTheSameNamespace,
+        TypeModel target,
+        NamespaceModel targetNamespace
+    ) =>
+        putInTheSameNamespace
+            ? targetNamespace.DisplayName
+            : $"{DedicatedNamespacePrefix}.{SanitizeForNamespace(GetTargetName(target))}";
 
     // The target's fully qualified name without `global::`, e.g. `Sample.IPair<int, string>`.
-    private static string GetTargetName(INamedTypeSymbol targetSymbol)
+    private static string GetTargetName(TypeModel target)
     {
-        var display = targetSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        var display = target.FullyQualifiedName;
 
         const string globalPrefix = "global::";
         return display.StartsWith(globalPrefix, StringComparison.Ordinal)

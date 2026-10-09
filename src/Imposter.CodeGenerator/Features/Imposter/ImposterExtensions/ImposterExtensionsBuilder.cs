@@ -22,8 +22,7 @@ internal static class ImposterExtensionsBuilder
         string? imposterNamespaceName
     )
     {
-        var extensionClassName =
-            $"{imposterGenerationContext.TargetSymbol.Name}{MethodName}Extensions";
+        var extensionClassName = $"{imposterGenerationContext.Target.Name}{MethodName}Extensions";
         var targetType = imposterGenerationContext.Imposter.TargetTypeSyntax;
 
         var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(
@@ -31,7 +30,7 @@ internal static class ImposterExtensionsBuilder
             imposterGenerationContext.Imposter.ImposterTypeSyntax.ToString()
         );
         var accessibilityModifiers = GetAccessibilityModifiers(
-            imposterGenerationContext.TargetSymbol
+            imposterGenerationContext.Imposter.DeclaredAccessibility
         );
         var targetTypeParameters = imposterGenerationContext.Imposter.TypeParameters;
 
@@ -180,8 +179,8 @@ internal static class ImposterExtensionsBuilder
                 )
             );
 
-    private static SyntaxTokenList GetAccessibilityModifiers(INamedTypeSymbol targetSymbol) =>
-        targetSymbol.DeclaredAccessibility switch
+    private static SyntaxTokenList GetAccessibilityModifiers(Accessibility targetAccessibility) =>
+        targetAccessibility switch
         {
             Accessibility.Public => TokenList(Token(SyntaxKind.PublicKeyword)),
             _ => TokenList(Token(SyntaxKind.InternalKeyword)),

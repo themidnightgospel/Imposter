@@ -14,8 +14,8 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterT
 
 internal readonly struct ImposterTargetMethodMetadata
 {
-    // Read only by the interface setup views, which move to the model in a later stage.
-    internal readonly IMethodSymbol Symbol;
+    // How the setup views declare this method; null for a class target, which has no setup views.
+    internal readonly InterfaceSetupMemberModel? InterfaceSetupMember;
 
     internal readonly MethodModel Model;
 
@@ -88,15 +88,13 @@ internal readonly struct ImposterTargetMethodMetadata
     internal bool IsAsync { get; }
 
     internal ImposterTargetMethodMetadata(
-        IMethodSymbol symbol,
+        TargetMemberModel<MethodModel> method,
         string uniqueName,
-        bool supportsNullableGenericType,
-        MemberAccess memberAccess,
-        bool requiresExplicitInterfaceImplementation = false
+        bool supportsNullableGenericType
     )
     {
-        Symbol = symbol;
-        Model = MethodModel.From(symbol, memberAccess);
+        Model = method.Member;
+        InterfaceSetupMember = method.Setup;
         UniqueName = uniqueName;
         DisplayName = Model.DisplayName;
         ReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntax(Model.ReturnType.Type);
@@ -182,15 +180,15 @@ internal readonly struct ImposterTargetMethodMetadata
         MethodInvocationImposter = new MethodInvocationImposterMetadata(ReservedParameterNames);
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
-        RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        RequiresExplicitInterfaceImplementation = method.RequiresExplicitInterfaceImplementation;
         ImposterInstanceMethodConstraintClauses =
-            Model.IsClassMember || requiresExplicitInterfaceImplementation
+            Model.IsClassMember || RequiresExplicitInterfaceImplementation
                 ? SyntaxFactoryHelper.RestatableConstraintClauses(
                     Model.TypeParameters,
                     TypeParametersUsedAsNullable(Parameters, Model.ReturnType)
                 )
                 : GenericTypeConstraintClauses;
-        if (requiresExplicitInterfaceImplementation)
+        if (RequiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(
                 (NameSyntax)SyntaxFactoryHelper.TypeSyntax(Model.ContainingType)

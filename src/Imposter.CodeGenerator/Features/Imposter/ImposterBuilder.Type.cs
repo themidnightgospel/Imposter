@@ -79,22 +79,18 @@ internal readonly ref struct ImposterBuilder
         return this;
     }
 
+    // Null for a class target's members: only interface targets have setup views.
     internal ImposterBuilder AddInterfaceSetupMember(
-        ISymbol symbol,
+        InterfaceSetupMemberModel? member,
         string setupName,
         TypeSyntax returnType,
         bool isSetUpByMethod = false
     )
     {
-        if (!_isClassTarget)
+        if (member is not null)
         {
             _interfaceSetupMembers.Add(
-                new InterfaceSetupMemberMetadata(
-                    InterfaceSetupMemberModel.From(symbol),
-                    setupName,
-                    returnType,
-                    isSetUpByMethod
-                )
+                new InterfaceSetupMemberMetadata(member, setupName, returnType, isSetUpByMethod)
             );
         }
         return this;
@@ -112,7 +108,7 @@ internal readonly ref struct ImposterBuilder
             .Concat(_interfaceSetupMembers)
             .ToArray();
         var setup = new InterfaceSetupMetadata(
-            InterfaceSetupTargetModel.From(context.TargetSymbol),
+            context.Target.InterfaceSetup!,
             members,
             _imposterBuilder.Members
         );
@@ -278,17 +274,19 @@ internal readonly ref struct ImposterBuilder
         var memberNames = new List<string>();
 
         memberNames.AddRange(
-            imposterGenerationContext.Imposter.PropertySymbols.Select(it => it.Name)
+            imposterGenerationContext.Imposter.Properties.Select(it => it.Member.Name)
         );
         memberNames.AddRange(
-            imposterGenerationContext.Imposter.IndexerSymbols.Select(_ =>
+            imposterGenerationContext.Imposter.Indexers.Select(_ =>
                 ImposterTargetMetadata.IndexerMemberName
             )
         );
         memberNames.AddRange(
             imposterGenerationContext.Imposter.Methods.Select(it => it.Model.Name)
         );
-        memberNames.AddRange(imposterGenerationContext.Imposter.EventSymbols.Select(it => it.Name));
+        memberNames.AddRange(
+            imposterGenerationContext.Imposter.Events.Select(it => it.Member.Name)
+        );
 
         return memberNames;
     }

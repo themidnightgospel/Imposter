@@ -16,10 +16,10 @@ internal readonly struct ImposterTargetTypeParametersMetadata
 
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> ConstraintClauses;
 
-    internal ImposterTargetTypeParametersMetadata(INamedTypeSymbol targetSymbol)
+    internal ImposterTargetTypeParametersMetadata(IReadOnlyList<TypeParameterModel> typeParameters)
     {
-        TypeArguments = targetSymbol
-            .TypeParameters.Select(parameter =>
+        TypeArguments = typeParameters
+            .Select(parameter =>
                 (NameSyntax)
                     SyntaxFactory.IdentifierName(
                         SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
@@ -27,8 +27,6 @@ internal readonly struct ImposterTargetTypeParametersMetadata
             )
             .ToArray();
         TypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TypeArguments);
-        ConstraintClauses = SyntaxFactoryHelper.TypeParameterConstraintClauses(
-            targetSymbol.TypeParameters.Select(TypeParameterModel.From)
-        );
+        ConstraintClauses = SyntaxFactoryHelper.TypeParameterConstraintClauses(typeParameters);
     }
 }

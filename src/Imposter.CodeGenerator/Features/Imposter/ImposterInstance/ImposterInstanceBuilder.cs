@@ -386,12 +386,7 @@ internal readonly ref struct ImposterInstanceBuilder
         in ImposterGenerationContext imposterGenerationContext
     )
     {
-        var targetMemberNames = imposterGenerationContext
-            .TargetSymbol.GetMembers()
-            .Select(member => member.Name)
-            .Where(name => !string.IsNullOrWhiteSpace(name));
-
-        var nameSet = new NameSet(targetMemberNames);
+        var nameSet = new NameSet(imposterGenerationContext.Target.MemberNames);
         return nameSet.Use("_imposter");
     }
 

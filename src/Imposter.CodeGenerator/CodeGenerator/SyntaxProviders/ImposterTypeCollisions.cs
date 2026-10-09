@@ -64,7 +64,7 @@ internal static class ImposterTypeCollisions
     )
     {
         var typeName =
-            ImposterTargetMetadata.GetImposterName(declaration.ImposterTarget)
+            ImposterTargetMetadata.GetImposterName(declaration.ImposterTarget.Name)
             + typeParameterSuffix;
 
         return ImposterGenerationContext.GetImposterNamespaceName(declaration) is { } namespaceName

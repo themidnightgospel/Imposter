@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -21,23 +21,12 @@ internal static class UsingStatements
         UsingDirective(WellKnownTypes.System.Collections.Concurrent.Namespace),
     ];
 
-    internal static List<UsingDirectiveSyntax> Build(INamespaceSymbol imposterTargetNamespace)
+    internal static List<UsingDirectiveSyntax> Build(NamespaceModel imposterTargetNamespace)
     {
-        if (
-            !imposterTargetNamespace.IsGlobalNamespace
-            && !imposterTargetNamespace.ContainingNamespace.IsGlobalNamespace
-        )
+        if (imposterTargetNamespace.IsNested)
         {
             return DefaultUsings
-                .Concat([
-                    UsingDirective(
-                        ParseName(
-                            imposterTargetNamespace.ToDisplayString(
-                                SymbolDisplayFormat.FullyQualifiedFormat
-                            )
-                        )
-                    ),
-                ])
+                .Concat([UsingDirective(ParseName(imposterTargetNamespace.FullyQualifiedName))])
                 .ToList();
         }
 
