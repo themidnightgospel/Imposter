@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -13,7 +14,11 @@ internal static partial class MethodImposterCollectionBuilder
 {
     private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
-        var methodBuilder = new MethodDeclarationBuilder(method.MethodImposter.Syntax, "AddNew")
+        var imposter = IdentifierName("imposter");
+        var methodBuilder = new MethodDeclarationBuilder(
+            method.MethodImposter.Syntax,
+            MethodImposterCollectionMetadata.AddNewMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
@@ -21,14 +26,14 @@ internal static partial class MethodImposterCollectionBuilder
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
-                        "imposter",
+                        imposter.Identifier.Text,
                         NewMethodImposterExpression(method)
                     ),
-                    IdentifierName("_imposters")
+                    IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName)
                         .Dot(ConcurrentStackSyntaxHelper.Push)
-                        .Call(Argument(IdentifierName("imposter")).AsSingleArgumentListSyntax())
+                        .Call(Argument(imposter).AsSingleArgumentListSyntax())
                         .ToStatementSyntax(),
-                    ReturnStatement(IdentifierName("imposter"))
+                    ReturnStatement(imposter)
                 )
             );
 

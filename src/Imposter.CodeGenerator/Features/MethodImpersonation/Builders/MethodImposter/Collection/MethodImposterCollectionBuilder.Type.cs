@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -57,7 +58,7 @@ internal static partial class MethodImposterCollectionBuilder
 
         return SyntaxFactoryHelper.SingleVariableField(
             impostersFieldType,
-            "_imposters",
+            MethodImposterCollectionMetadata.ImpostersFieldName,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
             impostersFieldType.New()
         );

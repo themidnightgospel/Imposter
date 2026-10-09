@@ -6,6 +6,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImp
 
 internal readonly struct MethodImposterMetadata
 {
+    // A generic method imposter's nested class, which As returns to impersonate the method for other type arguments.
+    internal const string AdapterName = "Adapter";
+
     internal readonly string Name;
 
     internal readonly TypeMetadata BuilderInterface;

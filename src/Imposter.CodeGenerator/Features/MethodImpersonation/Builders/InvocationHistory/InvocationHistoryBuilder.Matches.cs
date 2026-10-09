@@ -56,7 +56,10 @@ internal static partial class InvocationHistoryBuilder
                     )
                     .Call()
                     .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                    .Call(IdentifierName("Arguments").ToSingleArgumentList());
+                    .Call(
+                        IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName)
+                            .ToSingleArgumentList()
+                    );
 
                 return genericArgumentsMatchCriteria.And(argumentsMatchCriteria);
             }
@@ -70,7 +73,7 @@ internal static partial class InvocationHistoryBuilder
                     InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
                 )
                 .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                .Call(Argument(IdentifierName("Arguments")));
+                .Call(Argument(IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName)));
         }
     }
 }

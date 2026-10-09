@@ -3,6 +3,7 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -550,7 +551,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             var invokeMethodInvocationExpression =
                 GetImposterWithMatchingInvocationImposterGroupExpression(imposterMethod)
-                    .Dot(IdentifierName("Invoke"))
+                    .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
                     .Call(ArgumentList(SeparatedList(invokeArguments)));
 
             var body = Block(
@@ -601,7 +602,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 return imposterField
                     .Dot(
                         GenericName(
-                            Identifier("GetImposterWithMatchingInvocationImposterGroup"),
+                            Identifier(
+                                MethodImposterCollectionMetadata.GetImposterWithMatchingInvocationImposterGroupMethodName
+                            ),
                             method.GenericTypeArguments.ToTypeArguments()
                         )
                     )

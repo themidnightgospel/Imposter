@@ -7,6 +7,8 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly record struct MethodInvocationImposterGroupMetadata
 {
+    internal const string AddInvocationImposterMethodName = "AddInvocationImposter";
+
     internal readonly string Name;
 
     internal readonly string MethodInvocationImposterTypeName;

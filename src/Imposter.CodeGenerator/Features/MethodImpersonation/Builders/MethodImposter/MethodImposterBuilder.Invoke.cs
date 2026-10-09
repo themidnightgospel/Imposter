@@ -143,7 +143,7 @@ internal partial class MethodImposterBuilder
         var invokeExpression = IdentifierName(
                 method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
             )
-            .Dot(IdentifierName("Invoke"))
+            .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
             .Call(
                 InvokeSignatureBuilder.InvocationImposterArguments(
                     method,

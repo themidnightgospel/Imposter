@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -77,7 +78,10 @@ internal static partial class InvocationSetupBuilder
             )
             .AddStatement(ReturnStatement(IdentifierName("invocationImposter")));
 
-        return new MethodDeclarationBuilder(invocationImposterType, "AddInvocationImposter")
+        return new MethodDeclarationBuilder(
+            invocationImposterType,
+            MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(bodyBuilder.Build())
             .Build();
