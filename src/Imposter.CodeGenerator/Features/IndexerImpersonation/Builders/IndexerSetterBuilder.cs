@@ -203,7 +203,9 @@ internal static class IndexerSetterBuilder
 
         var entryIdentifier = IdentifierName("entry");
         var argumentsIdentifier = entryIdentifier.Dot(IdentifierName("Arguments"));
-        var prefix = "set ".StringLiteral().Add(IdentifierName("_propertyDisplayName"));
+        var prefix = "set "
+            .StringLiteral()
+            .Add(IdentifierName(indexer.SetterImplementation.PropertyDisplayNameField.Name));
         var indices = BuildIndices(indexer, argumentsIdentifier);
         var withIndices = prefix.Add(indices);
         var assignment = withIndices.Add(" = ".StringLiteral());

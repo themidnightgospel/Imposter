@@ -64,6 +64,16 @@ public class IndexerImposterMemberNameCollisionTests
     }
 
     [Fact]
+    public async Task GivenParameterNamedLikeThePropertyDisplayNameField_WhenIndexerIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int this[int _propertyDisplayName, int key] { get; set; } }",
+            Usage,
+            nameof(IndexerImposterMemberNameCollisionTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenClassIndexerParameterNamedLikeTheBaseCriteriaField_WhenBaseImplementationIsUsed_ShouldCompile()
     {
         await AssertCompiles(

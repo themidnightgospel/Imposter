@@ -1270,7 +1270,7 @@ internal static class IndexerGetterBuilder
         var entryIdentifier = IdentifierName("entry");
         var descriptionExpression = "get "
             .StringLiteral()
-            .Add(IdentifierName("_propertyDisplayName"))
+            .Add(IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name))
             .Add(BuildIndices(indexer, entryIdentifier));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
