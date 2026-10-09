@@ -28,7 +28,7 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly PropertySetterImposterMetadata SetterImposter;
 
-    internal readonly FieldMetadata AsField;
+    internal readonly FieldMetadata BuilderField;
 
     internal readonly DefaultPropertyBehaviourMetadata DefaultPropertyBehaviour;
 
@@ -52,9 +52,6 @@ internal readonly ref struct ImposterPropertyMetadata
             "_defaultPropertyBehaviour",
             DefaultPropertyBehaviour.TypeSyntax
         );
-        var propertyFieldBaseName = $"_{Core.UniqueName}PropertyBuilderField";
-        AsField = new FieldMetadata(memberNameSet.Use(propertyFieldBaseName), Core.TypeSyntax);
-
         GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
         GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(
             Core,
@@ -74,6 +71,10 @@ internal readonly ref struct ImposterPropertyMetadata
             defaultPropertyBehaviourField,
             SetterImposter,
             GetterImposterBuilder
+        );
+        BuilderField = new FieldMetadata(
+            memberNameSet.Use($"_{Core.UniqueName}PropertyBuilderField"),
+            ImposterBuilder.Syntax
         );
 
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
