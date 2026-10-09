@@ -32,6 +32,16 @@ public class ImposterExtensionsClassNameCollisionTests
     }
 
     [Fact]
+    public async Task GivenAnotherTargetNamedWithTheArity_WhenImposterExtensionsAreUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "[assembly: GenerateImposter(typeof(Sample.IFoo))] [assembly: GenerateImposter(typeof(Sample.IFoo<>))] [assembly: GenerateImposter(typeof(Sample.IFoo1))]",
+            "public interface IFoo { int Get(); } public interface IFoo<T> { T Get(); } public interface IFoo1 { int Get(); }",
+            "Sample.IFoo.Imposter().Instance().Get(); Sample.IFoo<int>.Imposter().Instance().Get(); Sample.IFoo1.Imposter().Instance().Get();"
+        );
+    }
+
+    [Fact]
     public async Task GivenGenericAndNonGenericClassesOfTheSameName_WhenImpostersAreGenerated_ShouldCompile()
     {
         await AssertCompiles(

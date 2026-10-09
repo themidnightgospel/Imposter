@@ -57,8 +57,8 @@ internal static class ImposterTypeCollisions
     }
 
     // A target's Imposter() extensions go into a non-generic static class named after it, so same-named targets of
-    // different arity in one namespace, such as IFoo and IFoo<T>, would declare the same class. The generic ones add
-    // their arity to its name.
+    // different arity in one namespace, such as IFoo and IFoo<T>, would declare the same class. The generic ones end
+    // its name in their arity.
     private static IEnumerable<GenerateImposterDeclaration> NameExtensionClassesApart(
         IReadOnlyList<GenerateImposterDeclaration> declarations
     )

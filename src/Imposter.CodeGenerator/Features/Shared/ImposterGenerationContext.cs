@@ -20,8 +20,8 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
-    // The static class of the target's Imposter() extensions. It has the target's arity when a same-named target of
-    // another arity shares the namespace.
+    // The static class of the target's Imposter() extensions. It ends in the target's arity when a same-named target of
+    // another arity shares the namespace, e.g. IFooImposterExtensions1: no other target's class name can end that way.
     internal readonly string ExtensionClassName;
 
     internal ImposterGenerationContext(
@@ -32,9 +32,10 @@ internal readonly struct ImposterGenerationContext
         Target = generationTarget.Target;
         var putInTheSameNamespace = generationTarget.PutInTheSameNamespace;
         Imposter = new ImposterTargetMetadata(Target, supportedCSharpFeatures);
-        ExtensionClassName = generationTarget.ExtensionClassNameIncludesArity
-            ? $"{Target.Name}{Target.TypeParameters.Count.ToString(CultureInfo.InvariantCulture)}ImposterExtensions"
-            : $"{Target.Name}ImposterExtensions";
+        var arity = generationTarget.ExtensionClassNameIncludesArity
+            ? Target.TypeParameters.Count.ToString(CultureInfo.InvariantCulture)
+            : "";
+        ExtensionClassName = $"{Target.Name}ImposterExtensions{arity}";
 
         var targetName = GetTargetName(Target.Type);
         var sanitizedTargetName = SanitizeForNamespace(targetName);
