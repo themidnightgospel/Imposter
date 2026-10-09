@@ -121,6 +121,16 @@ public class RefReturnDiagnosticTests
     }
 
     [Fact]
+    public async Task GivenStaticInterfaceMethodReturningByReference_WhenGeneratorRuns_ShouldNotReportDiagnostics()
+    {
+        var result = await RunGenerator(
+            "public interface IService { private static int s_value; static ref int Shared() => ref s_value; int Get(); }"
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task GivenEventWhoseDelegateReturnsByReference_WhenGeneratorRuns_ShouldNotReportDiagnostics()
     {
         var result = await RunGenerator(
