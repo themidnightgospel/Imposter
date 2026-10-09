@@ -111,10 +111,7 @@ internal static class EventImposterRaiseBuilder
     )
     {
         var taskType = WellKnownTypes.System.Threading.Tasks.Task;
-        var taskListType = QualifiedName(
-            WellKnownTypes.System.Collections.Generic.Namespace,
-            GenericName(Identifier("List"), TypeArgumentList(SingletonSeparatedList(taskType)))
-        );
+        var taskListType = WellKnownTypes.System.Collections.Generic.List(taskType);
 
         return new MethodDeclarationBuilder(
             @event.Builder.Methods.RaiseCoreAsync.ReturnType,
@@ -179,10 +176,7 @@ internal static class EventImposterRaiseBuilder
     {
         var enumerableType = QualifiedName(
             WellKnownTypes.System.Collections.Generic.Namespace,
-            GenericName(
-                Identifier("IEnumerable"),
-                TypeArgumentList(SingletonSeparatedList(@event.Core.HandlerTypeSyntax))
-            )
+            GenericName(Identifier("IEnumerable"), TypeArguments([@event.Core.HandlerTypeSyntax]))
         );
 
         return new MethodDeclarationBuilder(

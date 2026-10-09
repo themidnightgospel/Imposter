@@ -37,7 +37,7 @@ internal static class ConstructorDispatchBuilder
             SimpleNameSyntax name = method.Model.IsGenericMethod
                 ? GenericName(
                     Identifier(method.Model.Name),
-                    method.GenericTypeArguments.ToTypeArguments()
+                    TypeArguments(method.GenericTypeArguments)
                 )
                 : IdentifierName(method.Model.Name);
             var call = BaseExpression()

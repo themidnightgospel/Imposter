@@ -29,9 +29,9 @@ internal static partial class MethodImposterBuilder
         );
 
         var returnAdapter = ReturnStatement(
-            GenericName(MethodImposterMetadata.AdapterName)
-                .WithTypeArgumentList(
-                    TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
+            GenericName(
+                    Identifier(MethodImposterMetadata.AdapterName),
+                    TypeArguments(method.TargetGenericTypeArguments)
                 )
                 .New(Argument(ThisExpression()).ToSingleArgumentList())
         );

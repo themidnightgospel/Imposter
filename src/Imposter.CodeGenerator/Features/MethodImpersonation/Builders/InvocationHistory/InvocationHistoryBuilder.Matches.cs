@@ -51,7 +51,7 @@ internal static partial class InvocationHistoryBuilder
                     .Dot(
                         GenericName(
                             Identifier(method.ArgumentsCriteria.AsMethod.Name),
-                            method.GenericTypeArguments.ToTypeArguments()
+                            TypeArguments(method.GenericTypeArguments)
                         )
                     )
                     .Call()

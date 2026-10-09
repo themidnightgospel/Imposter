@@ -33,10 +33,7 @@ internal static partial class SyntaxFactoryHelper
     {
         if (genericArguments.Count > 0)
         {
-            return GenericName(
-                Identifier(typeName),
-                TypeArgumentList(SeparatedList<TypeSyntax>(genericArguments))
-            );
+            return GenericName(Identifier(typeName), TypeArguments(genericArguments));
         }
 
         return IdentifierName(typeName);

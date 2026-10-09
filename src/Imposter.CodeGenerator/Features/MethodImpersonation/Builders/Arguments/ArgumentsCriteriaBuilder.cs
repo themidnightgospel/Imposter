@@ -136,10 +136,7 @@ public static class ArgumentsCriteriaBuilder
             var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
             var tryCastInvocation = WellKnownTypes
                 .Imposter.Abstractions.TypeCaster.Dot(
-                    GenericName("TryCast")
-                        .WithTypeArgumentList(
-                            TypeArgumentList(SeparatedList<TypeSyntax>([targetType, sourceType]))
-                        )
+                    GenericName(Identifier("TryCast"), TypeArguments([targetType, sourceType]))
                 )
                 .Call(
                     ArgumentList(

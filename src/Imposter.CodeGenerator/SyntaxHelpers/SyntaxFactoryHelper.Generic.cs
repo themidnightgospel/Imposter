@@ -6,13 +6,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    public static TypeArgumentListSyntax ToTypeArguments(this IEnumerable<NameSyntax> typeNames) =>
-        TypeArgumentList(SeparatedList<TypeSyntax>(typeNames));
-
-    public static TypeArgumentListSyntax? TypeArgumentListSyntax(
-        IReadOnlyList<NameSyntax> typeArguments
-    ) =>
-        typeArguments.Count == 0
-            ? null
-            : TypeArgumentList(SeparatedList<TypeSyntax>(typeArguments));
+    internal static TypeArgumentListSyntax TypeArguments(IEnumerable<TypeSyntax> types) =>
+        TypeArgumentList(SeparatedList(types));
 }
