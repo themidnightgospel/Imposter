@@ -44,17 +44,21 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string InvokedBaseImplementationVariableName;
 
+    internal readonly string EnsureSetterConfiguredMethodName;
+
     internal IndexerSetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
-        var parameterNames = indexer.Core.CreateParameterNameSet();
+        // The setter's Set takes the indexer's parameters and refers to these locals and members by name.
+        var names = indexer.Core.CreateParameterNameSet();
         Name = "SetterImposter";
         TypeSyntax = IdentifierName(Name);
 
-        ValueParameterName = parameterNames.Use("value");
-        CriteriaParameterName = parameterNames.Use("criteria");
+        ValueParameterName = names.Use("value");
+        CriteriaParameterName = names.Use("criteria");
         SetterSuffix = " (setter)";
+        EnsureSetterConfiguredMethodName = names.Use("EnsureSetterConfigured");
         CallbacksField = new FieldMetadata(
-            "_callbacks",
+            names.Use("_callbacks"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
                 BuildRegistrationTuple(indexer)
             )
@@ -72,32 +76,38 @@ internal readonly struct IndexerSetterImposterMetadata
             )
         );
         InvocationHistoryField = new FieldMetadata(
-            "_invocationHistory",
+            names.Use("_invocationHistory"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
         );
         DefaultBehaviourField = new FieldMetadata(
-            "_defaultBehaviour",
+            names.Use("_defaultBehaviour"),
             indexer.DefaultIndexerBehaviour.TypeSyntax
         );
         InvocationBehaviorField = new FieldMetadata(
-            "_invocationBehavior",
+            names.Use("_invocationBehavior"),
             WellKnownTypes.Imposter.Abstractions.ImposterMode
         );
-        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
-        HasConfiguredSetterField = new FieldMetadata("_hasConfiguredSetter", WellKnownTypes.Bool);
+        PropertyDisplayNameField = new FieldMetadata(
+            names.Use("_propertyDisplayName"),
+            WellKnownTypes.String
+        );
+        HasConfiguredSetterField = new FieldMetadata(
+            names.Use("_hasConfiguredSetter"),
+            WellKnownTypes.Bool
+        );
         BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
             ? new FieldMetadata(
-                "_baseCriteria",
+                names.Use("_baseCriteria"),
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
                     indexer.ArgumentsCriteria.TypeSyntax
                 )
             )
             : null;
-        BaseImplementationParameterName = parameterNames.Use("baseImplementation");
-        ArgumentsVariableName = parameterNames.Use("arguments");
-        MatchedCallbackVariableName = parameterNames.Use("matchedCallback");
-        RegistrationVariableName = parameterNames.Use("registration");
-        InvokedBaseImplementationVariableName = parameterNames.Use("invokedBaseImplementation");
+        BaseImplementationParameterName = names.Use("baseImplementation");
+        ArgumentsVariableName = names.Use("arguments");
+        MatchedCallbackVariableName = names.Use("matchedCallback");
+        RegistrationVariableName = names.Use("registration");
+        InvokedBaseImplementationVariableName = names.Use("invokedBaseImplementation");
 
         Builder = new SetterBuilderMetadata();
     }

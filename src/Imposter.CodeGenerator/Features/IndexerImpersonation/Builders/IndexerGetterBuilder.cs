@@ -1016,7 +1016,8 @@ internal static class IndexerGetterBuilder
             LocalVariableDeclarationSyntax(
                 Var,
                 indexer.GetterImplementation.SetupVariableName,
-                IdentifierName("FindGetterInvocationImposter").Call(Argument(argumentsIdentifier))
+                IdentifierName(indexer.GetterImplementation.FindGetterInvocationImposterMethodName)
+                    .Call(Argument(argumentsIdentifier))
             ),
             IfStatement(
                 IsPatternExpression(
@@ -1024,7 +1025,9 @@ internal static class IndexerGetterBuilder
                     ConstantPattern(Null)
                 ),
                 Block(
-                    IdentifierName("EnsureGetterConfigured").Call().ToStatementSyntax(),
+                    IdentifierName(indexer.GetterImplementation.EnsureGetterConfiguredMethodName)
+                        .Call()
+                        .ToStatementSyntax(),
                     IfStatement(
                         IdentifierName(indexer.GetterImplementation.DefaultBehaviourField.Name)
                             .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
@@ -1096,7 +1099,10 @@ internal static class IndexerGetterBuilder
             IdentifierName(indexer.GetterImplementation.Invocation.Name)
         );
 
-        return new MethodDeclarationBuilder(getterInvocationType, "FindGetterInvocationImposter")
+        return new MethodDeclarationBuilder(
+            getterInvocationType,
+            indexer.GetterImplementation.FindGetterInvocationImposterMethodName
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
                 ParameterSyntax(
@@ -1264,7 +1270,7 @@ internal static class IndexerGetterBuilder
         var entryIdentifier = IdentifierName("entry");
         var descriptionExpression = "get "
             .StringLiteral()
-            .Add(IdentifierName("_propertyDisplayName"))
+            .Add(IdentifierName(indexer.GetterImplementation.PropertyDisplayNameField.Name))
             .Add(BuildIndices(indexer, entryIdentifier));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
@@ -1307,7 +1313,7 @@ internal static class IndexerGetterBuilder
         in ImposterIndexerMetadata indexer
     ) =>
         BuildEnsureConfiguredMethod(
-            "EnsureGetterConfigured",
+            indexer.GetterImplementation.EnsureGetterConfiguredMethodName,
             indexer.GetterImplementation.InvocationBehaviorField.Name,
             indexer.GetterImplementation.HasConfiguredReturnField.Name,
             indexer.GetterImplementation.PropertyDisplayNameField.Name,
