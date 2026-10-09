@@ -11,6 +11,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
     {
         public virtual string? Describe(string? value) => value;
 
+        public virtual string? Name { get; set; }
+
         public virtual string? this[string? key]
         {
             get => key;

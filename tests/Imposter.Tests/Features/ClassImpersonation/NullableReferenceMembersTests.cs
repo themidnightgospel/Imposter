@@ -8,13 +8,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 {
     public class NullableReferenceMembersTests
     {
+        // A typed null picks the value overload of Returns; a bare null would also fit the delegate overload.
+        private const string? NoValue = null;
+
         private readonly NullableReferenceMembersClassImposter _sut =
             new NullableReferenceMembersClassImposter();
 
         [Fact]
         public void GivenNullReturnValue_WhenInvoked_ShouldReturnNull()
         {
-            _sut.Describe(Arg<string?>.Any()).Returns((string?)null);
+            _sut.Describe(Arg<string?>.Any()).Returns(NoValue);
 
             _sut.Instance().Describe("value").ShouldBeNull();
         }
@@ -38,7 +41,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
         [Fact]
         public void GivenIndexerGetterReturningNull_WhenReadWithNullKey_ShouldReturnNull()
         {
-            _sut[Arg<string?>.Any()].Getter().Returns((string?)null);
+            _sut[Arg<string?>.Any()].Getter().Returns(NoValue);
 
             _sut.Instance()[null].ShouldBeNull();
         }
@@ -52,10 +55,26 @@ namespace Imposter.Tests.Features.ClassImpersonation
         }
 
         [Fact]
+        public void GivenPropertyGetterReturningNull_WhenRead_ShouldReturnNull()
+        {
+            _sut.Name.Getter().Returns(NoValue);
+
+            _sut.Instance().Name.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenPropertyGetterGeneratorReturningNull_WhenRead_ShouldReturnNull()
+        {
+            _sut.Name.Getter().Returns(() => null);
+
+            _sut.Instance().Name.ShouldBeNull();
+        }
+
+        [Fact]
         public void GivenInterfaceMethodReturningNull_WhenInvokedWithNull_ShouldReturnNull()
         {
             var imposter = new INullableReferenceMembersImposter();
-            imposter.Find(Arg<string?>.Is(key => key == null)).Returns((string?)null);
+            imposter.Find(Arg<string?>.Is(key => key == null)).Returns(NoValue);
 
             imposter.Instance().Find(null).ShouldBeNull();
         }
@@ -64,7 +83,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
         public async Task GivenAsyncInterfaceMethodReturningNull_WhenAwaited_ShouldReturnNull()
         {
             var imposter = new INullableReferenceMembersImposter();
-            imposter.FindAsync(Arg<string?>.Any()).ReturnsAsync((string?)null);
+            imposter.FindAsync(Arg<string?>.Any()).ReturnsAsync(NoValue);
 
             (await imposter.Instance().FindAsync("key")).ShouldBeNull();
         }

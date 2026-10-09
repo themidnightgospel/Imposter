@@ -430,6 +430,405 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			}
 		}
 
+		public INamePropertyBuilder Name => _NamePropertyBuilderField;
+
+		private readonly NamePropertyBuilder _NamePropertyBuilderField;
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterOutcomeBuilder
+		{
+			INamePropertyGetterContinuationBuilder Returns(string? value);
+			INamePropertyGetterContinuationBuilder Returns(global::System.Func<string?> valueGenerator);
+			INamePropertyGetterContinuationBuilder Throws(global::System.Exception exception);
+			INamePropertyGetterContinuationBuilder Throws<TException>()
+				where TException : global::System.Exception, new();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterCallbackBuilder
+		{
+			INamePropertyGetterContinuationBuilder Callback(global::System.Action callback);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterContinuationBuilder : INamePropertyGetterCallbackBuilder
+		{
+			INamePropertyGetterFluentBuilder Then();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterVerifier
+		{
+			void Called(global::Imposter.Abstractions.Count count);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterFluentBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterContinuationBuilder
+		{
+			INamePropertyGetterFluentBuilder UseBaseImplementation();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterBuilder : INamePropertyGetterOutcomeBuilder, INamePropertyGetterCallbackBuilder, INamePropertyGetterVerifier, INamePropertyGetterUseBaseImplementationBuilder
+		{
+			INamePropertyGetterUseBaseImplementationBuilder Then();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyGetterUseBaseImplementationBuilder
+		{
+			INamePropertyGetterFluentBuilder UseBaseImplementation();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterCallbackBuilder
+		{
+			INamePropertySetterContinuationBuilder Callback(global::System.Action<string?> callback);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterContinuationBuilder : INamePropertySetterCallbackBuilder
+		{
+			INamePropertySetterUseBaseImplementationBuilder Then();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterFluentBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterContinuationBuilder
+		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterVerifier
+		{
+			void Called(global::Imposter.Abstractions.Count count);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterBuilder : INamePropertySetterCallbackBuilder, INamePropertySetterVerifier, INamePropertySetterUseBaseImplementationBuilder
+		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertySetterUseBaseImplementationBuilder : INamePropertySetterFluentBuilder
+		{
+			INamePropertySetterFluentBuilder UseBaseImplementation();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface INamePropertyBuilder
+		{
+			INamePropertyGetterBuilder Getter();
+			INamePropertySetterBuilder Setter(global::Imposter.Abstractions.Arg<string?> criteria);
+			INamePropertyBuilder UseBaseImplementation();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class NamePropertyBuilder : INamePropertyBuilder
+		{
+			private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+			internal SetterImposter _setterImposter;
+			internal GetterImposterBuilder _getterImposterBuilder;
+			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			{
+				_defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+				_invocationBehavior = invocationBehavior;
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.Name");
+				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.Name");
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class DefaultPropertyBehaviour
+			{
+				internal volatile bool IsOn = true;
+				internal volatile bool HasValueSet = false;
+				internal string? BackingField = default !;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder, INamePropertyGetterUseBaseImplementationBuilder
+			{
+				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string?>?, string?>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<string?>?, string?>>();
+				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private volatile global::System.Func<global::System.Func<string?>?, string?> _lastReturnValue = _ => default !;
+				private int _invocationCount;
+				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+				private readonly string _propertyDisplayName;
+				private bool _hasConfiguredReturn;
+				internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				{
+					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+					this._invocationBehavior = invocationBehavior;
+					this._propertyDisplayName = propertyDisplayName;
+				}
+
+				private void AddReturnValue(global::System.Func<global::System.Func<string?>?, string?> valueGenerator)
+				{
+					_defaultPropertyBehaviour.IsOn = false;
+					_returnValues.Enqueue(valueGenerator);
+					_hasConfiguredReturn = true;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(string? value)
+				{
+					AddReturnValue((_) => value);
+					return this;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(global::System.Func<string?> valueGenerator)
+				{
+					AddReturnValue((_) => valueGenerator());
+					return this;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws(global::System.Exception exception)
+				{
+					AddReturnValue((_) => throw exception);
+					return this;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws<TException>()
+				{
+					AddReturnValue((_) => throw new TException());
+					return this;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
+				{
+					_callbacks.Enqueue(callback);
+					return this;
+				}
+
+				void INamePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
+				{
+					if (!count.Matches(_invocationCount))
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+				}
+
+				INamePropertyGetterFluentBuilder INamePropertyGetterContinuationBuilder.Then()
+				{
+					return this;
+				}
+
+				INamePropertyGetterUseBaseImplementationBuilder INamePropertyGetterBuilder.Then()
+				{
+					return this;
+				}
+
+				internal void EnableBaseImplementation()
+				{
+					AddReturnValue((global::System.Func<string?>? baseImplementation) =>
+					{
+						if (baseImplementation != null)
+							return baseImplementation();
+						else
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+					});
+				}
+
+				INamePropertyGetterFluentBuilder INamePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
+				{
+					EnableBaseImplementation();
+					return this;
+				}
+
+				INamePropertyGetterFluentBuilder INamePropertyGetterFluentBuilder.UseBaseImplementation()
+				{
+					EnableBaseImplementation();
+					return this;
+				}
+
+				internal string? Get(global::System.Func<string?>? baseImplementation = null)
+				{
+					EnsureGetterConfigured();
+					global::System.Threading.Interlocked.Increment(ref _invocationCount);
+					foreach (var getterCallback in _callbacks)
+					{
+						getterCallback();
+					}
+
+					if (_defaultPropertyBehaviour.IsOn)
+					{
+						if (((_invocationCount == 1) && (baseImplementation != null)) && !_defaultPropertyBehaviour.HasValueSet)
+						{
+							_defaultPropertyBehaviour.BackingField = baseImplementation();
+						}
+
+						return _defaultPropertyBehaviour.BackingField;
+					}
+
+					var nextReturnValue = NextReturnValue();
+					return nextReturnValue(baseImplementation);
+				}
+
+				private global::System.Func<global::System.Func<string?>?, string?> NextReturnValue()
+				{
+					if (_returnValues.IsEmpty)
+					{
+						return _lastReturnValue;
+					}
+
+					lock (_returnValues)
+					{
+						if (!_returnValues.TryPeek(out var returnValue))
+						{
+							return _lastReturnValue;
+						}
+
+						_lastReturnValue = returnValue;
+						_returnValues.TryDequeue(out _);
+						return returnValue;
+					}
+				}
+
+				private void EnsureGetterConfigured()
+				{
+					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+				}
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class SetterImposter
+			{
+				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>>();
+				private readonly global::System.Collections.Concurrent.ConcurrentStack<string?> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<string?>();
+				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+				private readonly string _propertyDisplayName;
+				private bool _hasConfiguredSetter;
+				private bool _useBaseImplementation;
+				internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				{
+					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
+					this._invocationBehavior = invocationBehavior;
+					this._propertyDisplayName = propertyDisplayName;
+				}
+
+				internal void Callback(global::Imposter.Abstractions.Arg<string?> criteria, global::System.Action<string?> callback)
+				{
+					_callbacks.Enqueue(new global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>(criteria, callback));
+				}
+
+				void Called(global::Imposter.Abstractions.Arg<string?> criteria, global::Imposter.Abstractions.Count count)
+				{
+					var invocationCount = _invocationHistory.Count(criteria.Matches);
+					if (!count.Matches(invocationCount))
+					{
+						var performedInvocations = new global::System.Collections.Generic.List<string>();
+						foreach (var value in _invocationHistory)
+						{
+							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+						}
+
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
+					}
+				}
+
+				internal void UseBaseImplementation()
+				{
+					_hasConfiguredSetter = true;
+					_useBaseImplementation = true;
+				}
+
+				internal void Set(string? value, global::System.Action<string?>? baseImplementation = null)
+				{
+					EnsureSetterConfigured();
+					_invocationHistory.Push(value);
+					foreach (var(criteria, setterCallback)in _callbacks)
+					{
+						if (criteria.Matches(value))
+							setterCallback(value);
+					}
+
+					if (_useBaseImplementation)
+					{
+						if (baseImplementation != null)
+						{
+							baseImplementation(value);
+							return;
+						}
+						else
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+					}
+
+					if (_defaultPropertyBehaviour.IsOn)
+					{
+						_defaultPropertyBehaviour.BackingField = value;
+						_defaultPropertyBehaviour.HasValueSet = true;
+					}
+				}
+
+				private void EnsureSetterConfigured()
+				{
+					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredSetter)
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+				}
+
+				internal void MarkConfigured()
+				{
+					_hasConfiguredSetter = true;
+				}
+
+				private static string FormatValue(object? value)
+				{
+					return "<" + (value?.ToString() ?? "null") + ">";
+				}
+
+				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+				internal class Builder : INamePropertySetterBuilder, INamePropertySetterFluentBuilder, INamePropertySetterUseBaseImplementationBuilder
+				{
+					private readonly SetterImposter _setterImposter;
+					private readonly global::Imposter.Abstractions.Arg<string?> _criteria;
+					internal Builder(SetterImposter _setterImposter, global::Imposter.Abstractions.Arg<string?> _criteria)
+					{
+						this._setterImposter = _setterImposter;
+						this._criteria = _criteria;
+					}
+
+					INamePropertySetterContinuationBuilder INamePropertySetterCallbackBuilder.Callback(global::System.Action<string?> callback)
+					{
+						_setterImposter.Callback(_criteria, callback);
+						return this;
+					}
+
+					void INamePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
+					{
+						_setterImposter.Called(_criteria, count);
+					}
+
+					INamePropertySetterUseBaseImplementationBuilder INamePropertySetterContinuationBuilder.Then()
+					{
+						return this;
+					}
+
+					INamePropertySetterFluentBuilder INamePropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
+					{
+						_setterImposter.UseBaseImplementation();
+						return this;
+					}
+				}
+			}
+
+			INamePropertyGetterBuilder INamePropertyBuilder.Getter()
+			{
+				return _getterImposterBuilder;
+			}
+
+			INamePropertySetterBuilder INamePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string?> criteria)
+			{
+				_setterImposter.MarkConfigured();
+				return new SetterImposter.Builder(_setterImposter, criteria);
+			}
+
+			INamePropertyBuilder INamePropertyBuilder.UseBaseImplementation()
+			{
+				_getterImposterBuilder.EnableBaseImplementation();
+				_setterImposter.UseBaseImplementation();
+				return this;
+			}
+		}
+
 		private readonly IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<string?> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate string? IndexerIndexerDelegate(string? key);
@@ -1062,6 +1461,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public NullableReferenceMembersClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._describeMethodImposter = new DescribeMethodImposter(_describeMethodInvocationHistoryCollection, invocationBehavior);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
 			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.this[string? key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -1083,6 +1483,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return _imposter._describeMethodImposter.Invoke(value, base.Describe);
+			}
+
+			public override string? Name
+			{
+				get
+				{
+					if (this._imposter == null)
+					{
+						return base.Name;
+					}
+
+					return _imposter._NamePropertyBuilderField._getterImposterBuilder.Get(() => base.Name);
+				}
+
+				set
+				{
+					if (this._imposter == null)
+					{
+						base.Name = value;
+						return;
+					}
+
+					_imposter._NamePropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
+					{
+						base.Name = baseSetterValue;
+					});
+				}
 			}
 
 			public override string? this[string? key]
