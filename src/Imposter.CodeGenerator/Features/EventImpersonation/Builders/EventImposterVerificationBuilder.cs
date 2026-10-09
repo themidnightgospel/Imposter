@@ -156,7 +156,9 @@ internal static class EventImposterVerificationBuilder
             {
                 var matchCall = IdentifierName($"{parameter.Name}Criteria")
                     .Dot(IdentifierName("Matches"))
-                    .Call(Argument(entryIdentifier.Dot(IdentifierName(parameter.Name))));
+                    .Call(
+                        Argument(entryIdentifier.Dot(IdentifierName(parameter.TupleElementName)))
+                    );
 
                 predicateBody = predicateBody is null ? matchCall : predicateBody.And(matchCall);
             }
@@ -173,6 +175,7 @@ internal static class EventImposterVerificationBuilder
         var criteriaName = method.HandlerCriteriaParameter.Name;
         var eventName = @event.Core.Name;
         var parameters = @event.Core.Parameters;
+        var handlerElementName = @event.Core.HandlerTupleElementName;
 
         Func<ExpressionSyntax, ExpressionSyntax> predicateFactory =
             @event.Core.Parameters.Length == 0
@@ -183,7 +186,7 @@ internal static class EventImposterVerificationBuilder
                 : entry =>
                     IdentifierName(criteriaName)
                         .Dot(IdentifierName("Matches"))
-                        .Call(Argument(entry.Dot(IdentifierName("Handler"))));
+                        .Call(Argument(entry.Dot(IdentifierName(handlerElementName))));
 
         return new MethodDeclarationBuilder(
             @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -199,7 +202,12 @@ internal static class EventImposterVerificationBuilder
                     criteriaParameterName: criteriaName,
                     predicateFactory: predicateFactory,
                     descriptionFactory: entry =>
-                        BuildHandlerInvocationDescription(eventName, parameters, entry)
+                        BuildHandlerInvocationDescription(
+                            eventName,
+                            parameters,
+                            handlerElementName,
+                            entry
+                        )
                 )
             )
             .Build();
@@ -377,12 +385,13 @@ internal static class EventImposterVerificationBuilder
     private static ExpressionSyntax BuildHandlerInvocationDescription(
         string eventName,
         EventParameterMetadata[] parameters,
+        string handlerElementName,
         ExpressionSyntax entry
     )
     {
         ExpressionSyntax description = BuildActionDescription(eventName, "handler invoked");
         var handlerExpression =
-            parameters.Length == 0 ? entry : entry.Dot(IdentifierName("Handler"));
+            parameters.Length == 0 ? entry : entry.Dot(IdentifierName(handlerElementName));
 
         description = AppendDetail(description, "handler", handlerExpression);
 
@@ -391,7 +400,7 @@ internal static class EventImposterVerificationBuilder
             description = AppendDetail(
                 description,
                 parameter.Name,
-                entry.Dot(IdentifierName(parameter.Name))
+                entry.Dot(IdentifierName(parameter.TupleElementName))
             );
         }
 
@@ -421,7 +430,7 @@ internal static class EventImposterVerificationBuilder
             description = AppendDetail(
                 description,
                 parameter.Name,
-                entry.Dot(IdentifierName(parameter.Name))
+                entry.Dot(IdentifierName(parameter.TupleElementName))
             );
         }
 
