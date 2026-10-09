@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
 using System.Text;
-using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 
 namespace Imposter.CodeGenerator.Features.Shared;

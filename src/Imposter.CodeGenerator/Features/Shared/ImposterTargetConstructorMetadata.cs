@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Linq;
 using Imposter.CodeGenerator.Models;
 
 namespace Imposter.CodeGenerator.Features.Shared;

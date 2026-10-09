@@ -11,13 +11,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol) =>
-        ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
-
     internal static TypeSyntax TypeSyntax(TypeModel type) => ParseTypeName(type.FullyQualifiedName);
-
-    internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
-        ParseTypeName(typeSymbol.ToDisplayString(TypeModel.FullyQualifiedFormatIncludingNullable));
 
     internal static TypeSyntax TypeSyntaxIncludingNullable(TypeModel type) =>
         ParseTypeName(type.FullyQualifiedNameIncludingNullable);

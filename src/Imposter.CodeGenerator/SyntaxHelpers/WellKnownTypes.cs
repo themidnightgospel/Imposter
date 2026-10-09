@@ -96,11 +96,6 @@ internal static class WellKnownTypes
                 )
             );
 
-        internal static readonly TypeSyntax HashCode = QualifiedName(
-            Namespace,
-            IdentifierName("HashCode")
-        );
-
         internal static TypeSyntax Tuple(TypeSyntax item1Type, TypeSyntax item2Type) =>
             QualifiedName(
                 Namespace,
@@ -195,24 +190,6 @@ internal static class WellKnownTypes
                         GenericName(
                             Identifier("EqualityComparer"),
                             TypeArgumentList(SingletonSeparatedList(typeArgument))
-                        )
-                    );
-
-                internal static TypeSyntax Dictionary(TypeSyntax keyType, TypeSyntax valueType) =>
-                    QualifiedName(
-                        Namespace,
-                        GenericName(
-                            Identifier("Dictionary"),
-                            TypeArgumentList(
-                                SeparatedList<TypeSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        keyType,
-                                        Token(SyntaxKind.CommaToken),
-                                        valueType,
-                                    }
-                                )
-                            )
                         )
                     );
             }

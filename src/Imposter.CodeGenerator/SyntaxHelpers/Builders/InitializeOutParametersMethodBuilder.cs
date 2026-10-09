@@ -22,12 +22,10 @@ internal static class InitializeOutParametersMethodBuilder
 
     private static ExpressionStatementSyntax Invoke(
         string name,
-        IReadOnlyList<ParameterModel> parameters
+        IReadOnlyList<ParameterModel> outParameters
     ) =>
         IdentifierName(name)
-            .Call(
-                parameters.Where(it => it.RefKind is RefKind.Out).Select(it => ArgumentSyntax(it))
-            )
+            .Call(outParameters.Select(it => ArgumentSyntax(it)))
             .ToStatementSyntax();
 
     internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method) =>
@@ -40,18 +38,12 @@ internal static class InitializeOutParametersMethodBuilder
 
     private static MethodDeclarationSyntax Build(
         string name,
-        IReadOnlyList<ParameterModel> parameters
+        IReadOnlyList<ParameterModel> outParameters
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, name)
-            .AddParameters(parameters.Select(ParameterSyntax))
+            .AddParameters(outParameters.Select(ParameterSyntax))
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithBody(
-                Block(
-                    parameters
-                        .Where(it => it.RefKind is RefKind.Out)
-                        .Select(AssignDefaultValueStatementSyntax)
-                )
-            )
+            .WithBody(Block(outParameters.Select(AssignDefaultValueStatementSyntax)))
             .Build();
 }
