@@ -22,6 +22,16 @@ public class SpanInParameterCompilationTests
     }
 
     [Fact]
+    public async Task GivenMethodsOverloadedOnSpanByValueAndIn_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Count(System.ReadOnlySpan<byte> data); int Count(in System.ReadOnlySpan<byte> data); }",
+            "imposter.Count(ReadOnlySpanArg<byte>.Any()).Returns(1); imposter.Count_1(ReadOnlySpanArg<byte>.Any()).Returns(2); var data = new System.ReadOnlySpan<byte>(new byte[1]); imposter.Instance().Count(in data);",
+            nameof(SpanInParameterCompilationTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenGenericMethodWithInSpanParameter_WhenImposterIsUsed_ShouldCompile()
     {
         await AssertInterfaceCompiles(
