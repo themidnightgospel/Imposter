@@ -13,6 +13,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP008](#imp008) | Error | The target class has abstract members your project cannot override |
 | [IMP009](#imp009) | Error | The target has a member whose signature uses a ref-like type |
 | [IMP010](#imp010) | Error | The target class has required members, and `SetsRequiredMembersAttribute` is missing |
+| [IMP012](#imp012) | Error | The target interface has a static abstract member without an implementation |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -91,6 +92,12 @@ Target .NET 7 or later, or declare the attribute in your project, as polyfill pa
         internal sealed class SetsRequiredMembersAttribute : Attribute { }
     }
     ```
+
+## IMP012: Static abstract member { #imp012 }
+
+An imposter passes its target interface as a type argument, as in `IHaveImposterInstance<IService>`. C# doesn't allow an interface as a type argument while one of its static abstract members, declared or inherited, has no implementation in the interface (CS8920). IMP012 names the first such member, and no imposter is generated.
+
+Register an interface without the member, such as one that declares only the instance members your tests need, or give the member a body with `static virtual`. Static virtual members don't cause IMP012, and neither does a class target that implements the interface.
 
 ## IMPLOG001: Generator log { #implog001 }
 
