@@ -1605,7 +1605,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public interface IStreamAdvancedEventImposterSetupBuilder
 		{
 			IStreamAdvancedEventImposterSetupBuilder Callback(global::System.EventHandler callback);
-			IStreamAdvancedEventImposterSetupBuilder Raise(object sender, global::System.EventArgs e);
+			IStreamAdvancedEventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			IStreamAdvancedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
 			IStreamAdvancedEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor);
 		}
@@ -1615,7 +1615,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			IStreamAdvancedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			IStreamAdvancedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
-			IStreamAdvancedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+			IStreamAdvancedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
 			IStreamAdvancedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -1628,8 +1628,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>();
 			internal StreamAdvancedEventImposterBuilder()
 			{
 			}
@@ -1699,7 +1699,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.Raise(object sender, global::System.EventArgs e)
+			IStreamAdvancedEventImposterSetupBuilder IStreamAdvancedEventImposterSetupBuilder.Raise(object? sender, global::System.EventArgs e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -1785,7 +1785,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
+			IStreamAdvancedEventImposterVerificationBuilder IStreamAdvancedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -1848,7 +1848,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::System.EventArgs e)
+			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)

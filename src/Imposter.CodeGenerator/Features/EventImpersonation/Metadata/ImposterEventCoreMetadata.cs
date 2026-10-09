@@ -16,7 +16,8 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly TypeSyntax HandlerTypeSyntax;
 
-    internal readonly TypeSyntax NullableAwareHandlerTypeSyntax;
+    // The type the event is declared with, including its own nullable annotation, which a handler's type drops.
+    internal readonly TypeSyntax DeclaredTypeSyntax;
 
     internal readonly TypeSyntax HandlerArgTypeSyntax;
 
@@ -40,10 +41,8 @@ internal readonly ref struct ImposterEventCoreMetadata
         UniqueName = uniqueName;
         Name = @event.Name;
         DisplayName = @event.DisplayName;
-        HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntax(@event.Type);
-        NullableAwareHandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
-            @event.Type
-        );
+        HandlerTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(@event.HandlerType);
+        DeclaredTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(@event.Type);
         HandlerArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(HandlerTypeSyntax);
         var tupleElementNames = new NameSet(
             @event.DelegateParameters.Select(model => SyntaxFactoryHelper.EscapeKeyword(model.Name))
@@ -60,7 +59,7 @@ internal readonly ref struct ImposterEventCoreMetadata
         var includeRefKind = !IsAsync;
         RaiseParameterSyntaxes = @event
             .DelegateParameters.Select(model =>
-                SyntaxFactoryHelper.ParameterSyntax(model, includeRefKind)
+                SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model, includeRefKind)
             )
             .ToArray();
         SupportsBaseImplementation = @event.IsClassMember && @event.HasConcreteAccessors;

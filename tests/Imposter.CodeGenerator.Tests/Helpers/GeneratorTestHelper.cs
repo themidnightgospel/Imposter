@@ -151,7 +151,15 @@ internal sealed class GeneratorTestContext
         _generatorResult = new Lazy<GeneratorRunResult>(CreateGeneratorResult);
     }
 
-    internal ImmutableArray<Diagnostic> CompileSnippet(string snippet)
+    internal ImmutableArray<Diagnostic> CompileSnippet(string snippet) =>
+        CompileSnippet(snippet, DiagnosticSeverity.Error);
+
+    // Compiles the snippet with the source and the generated imposters, and returns the diagnostics of at least this
+    // severity.
+    internal ImmutableArray<Diagnostic> CompileSnippet(
+        string snippet,
+        DiagnosticSeverity minimumSeverity
+    )
     {
         var generatorResult = _generatorResult.Value;
 
@@ -180,7 +188,7 @@ internal sealed class GeneratorTestContext
         [
             .. compilation
                 .GetDiagnostics()
-                .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error),
+                .Where(diagnostic => diagnostic.Severity >= minimumSeverity),
         ];
     }
 

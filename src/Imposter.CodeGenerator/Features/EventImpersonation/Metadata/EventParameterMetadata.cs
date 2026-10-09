@@ -30,19 +30,18 @@ internal readonly struct EventParameterMetadata
     internal EventParameterMetadata(ParameterModel model, NameSet tupleElementNames)
     {
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
+        TypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model);
         if (model.Span is { } span)
         {
-            TypeSyntax = SyntaxFactoryHelper.SpanElementsArrayType(span);
             ArgTypeSyntax = SyntaxFactoryHelper.SpanArgType(span);
             StoredValue = SyntaxFactoryHelper.SpanElementsCopy(IdentifierName(Name));
         }
         else
         {
-            TypeSyntax = SyntaxFactoryHelper.TypeSyntax(model.Type);
             ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
             StoredValue = IdentifierName(Name);
         }
-        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntax(model);
+        ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
         ForwardingArgument = SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
         TupleElementName = TupleElementNames.IsReserved(Name) ? tupleElementNames.Use(Name) : Name;
     }

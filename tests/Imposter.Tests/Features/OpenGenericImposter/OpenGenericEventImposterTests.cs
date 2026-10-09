@@ -37,7 +37,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
             received.ShouldBe(new[] { "alpha" });
             Should.NotThrow(() =>
                 sut.PayloadAvailable.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<string>>.Is(args => args.Payload == "alpha"),
                     Count.Once()
                 )
@@ -96,7 +96,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             Should.Throw<VerificationFailedException>(() =>
                 sut.PayloadAvailable.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<string>>.Is(args => args.Payload == "beta"),
                     Count.Once()
                 )
@@ -117,21 +117,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             Should.NotThrow(() =>
                 stringEvents.PayloadAvailable.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<string>>.Is(args => args.Payload == "alpha"),
                     Count.Once()
                 )
             );
             Should.NotThrow(() =>
                 customEvents.PayloadAvailable.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<EventPayload>>.Is(args => args.Payload.Value == "custom"),
                     Count.Once()
                 )
             );
             Should.Throw<VerificationFailedException>(() =>
                 stringEvents.PayloadAvailable.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<string>>.Is(args => args.Payload == "missing"),
                     Count.Once()
                 )
@@ -148,7 +148,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             Should.NotThrow(() =>
                 sut.DiagnosticPayloadPublished.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<GenericEventArgs<string>>.Any(),
                     Count.Exactly(2)
                 )

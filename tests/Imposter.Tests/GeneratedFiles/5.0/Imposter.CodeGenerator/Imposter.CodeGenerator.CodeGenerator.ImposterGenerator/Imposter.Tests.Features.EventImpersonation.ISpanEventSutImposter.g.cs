@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		public interface IBufferFilledEventImposterSetupBuilder
 		{
 			IBufferFilledEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler callback);
-			IBufferFilledEventImposterSetupBuilder Raise(object sender, global::System.Span<byte> buffer);
+			IBufferFilledEventImposterSetupBuilder Raise(object? sender, global::System.Span<byte> buffer);
 			IBufferFilledEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> interceptor);
 			IBufferFilledEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> interceptor);
 		}
@@ -43,7 +43,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		{
 			IBufferFilledEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> criteria, global::Imposter.Abstractions.Count count);
 			IBufferFilledEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> criteria, global::Imposter.Abstractions.Count count);
-			IBufferFilledEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.SpanArg<byte> bufferCriteria, global::Imposter.Abstractions.Count count);
+			IBufferFilledEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.SpanArg<byte> bufferCriteria, global::Imposter.Abstractions.Count count);
 			IBufferFilledEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -56,8 +56,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, byte[] buffer)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, byte[] buffer)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object sender, byte[] buffer)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object sender, byte[] buffer)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, byte[] buffer)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, byte[] buffer)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object? sender, byte[] buffer)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object? sender, byte[] buffer)>();
 			internal BufferFilledEventImposterBuilder()
 			{
 			}
@@ -127,7 +127,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				return this;
 			}
 
-			IBufferFilledEventImposterSetupBuilder IBufferFilledEventImposterSetupBuilder.Raise(object sender, global::System.Span<byte> buffer)
+			IBufferFilledEventImposterSetupBuilder IBufferFilledEventImposterSetupBuilder.Raise(object? sender, global::System.Span<byte> buffer)
 			{
 				RaiseInternal(sender, buffer);
 				return this;
@@ -213,7 +213,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				return this;
 			}
 
-			IBufferFilledEventImposterVerificationBuilder IBufferFilledEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.SpanArg<byte> bufferCriteria, global::Imposter.Abstractions.Count count)
+			IBufferFilledEventImposterVerificationBuilder IBufferFilledEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.SpanArg<byte> bufferCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -276,7 +276,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::System.Span<byte> buffer)
+			private void RaiseInternal(object? sender, global::System.Span<byte> buffer)
 			{
 				_history.Enqueue((sender, buffer.ToArray()));
 				foreach (var callback in _callbacks)
