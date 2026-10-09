@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -13,10 +14,10 @@ internal readonly record struct InvocationHistoryCollectionMetadata
 
     internal readonly FieldDeclarationMetadata AsField;
 
-    public InvocationHistoryCollectionMetadata(string name)
+    public InvocationHistoryCollectionMetadata(string name, NameSet fieldNames)
     {
         Name = name;
         Syntax = SyntaxFactory.IdentifierName(Name);
-        AsField = new FieldDeclarationMetadata(Name);
+        AsField = new FieldDeclarationMetadata(Name, fieldNames);
     }
 }
