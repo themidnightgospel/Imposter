@@ -27,7 +27,7 @@ internal readonly struct ImposterGenerationContext
     )
     {
         Target = target;
-        Imposter = new ImposterTargetMetadata(Target, supportedCSharpFeatures);
+        Imposter = new ImposterTargetMetadata(Target);
 
         var targetName = GetTargetName(Target.Type);
         var sanitizedTargetName = SanitizeForNamespace(targetName);
