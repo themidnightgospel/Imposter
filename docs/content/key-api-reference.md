@@ -46,6 +46,9 @@ A compact list of the core types and fluent members you’ll use most. This is n
 
 - `ReadOnlySpanArg<T>` — matches the elements of a `ReadOnlySpan<T>` parameter, with the same members as `SpanArg<T>`
 
+- `OutSpanArg<T>` / `OutReadOnlySpanArg<T>`
+  - `static Any()` — wildcard for `out Span<T>` / `out ReadOnlySpan<T>` parameters
+
 ## Verification Counts
 
 - `Count`

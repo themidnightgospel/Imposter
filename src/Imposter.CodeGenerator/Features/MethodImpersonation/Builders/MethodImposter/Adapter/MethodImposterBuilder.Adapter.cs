@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -108,13 +109,7 @@ internal static class MethodImposterAdapterBuilder
                     );
                     postInvokeActions.Add(
                         IdentifierName(p.Name)
-                            .Assign(
-                                TypeCasterSyntaxHelper.CastExpression(
-                                    adaptedName,
-                                    pType,
-                                    (TypeSyntax)pTargetType
-                                )
-                            )
+                            .Assign(CastBack(p, adaptedName, typeParamRenamer))
                             .ToStatementSyntax()
                     );
                     break;
@@ -129,13 +124,7 @@ internal static class MethodImposterAdapterBuilder
                     );
                     postInvokeActions.Add(
                         IdentifierName(p.Name)
-                            .Assign(
-                                TypeCasterSyntaxHelper.CastExpression(
-                                    adaptedName,
-                                    pType,
-                                    (TypeSyntax)pTargetType
-                                )
-                            )
+                            .Assign(CastBack(p, adaptedName, typeParamRenamer))
                             .ToStatementSyntax()
                     );
                     break;
@@ -213,6 +202,31 @@ internal static class MethodImposterAdapterBuilder
             .WithParameterList(parameterList)
             .WithBody(Block(body))
             .Build();
+    }
+
+    // A ref or out argument goes back to the caller's type from the adapter's local.
+    private static ExpressionSyntax CastBack(
+        in MethodParameterMetadata parameter,
+        string adaptedName,
+        TypeParameterRenamer typeParamRenamer
+    )
+    {
+        if (parameter.IsSpan)
+        {
+            var elementsType = parameter.NullableAwareStoredTypeSyntax;
+            return AdaptedSpan(
+                IdentifierName(adaptedName),
+                elementsType,
+                (TypeSyntax)typeParamRenamer.Visit(elementsType)
+            );
+        }
+
+        var type = parameter.NullableAwareTypeSyntax;
+        return TypeCasterSyntaxHelper.CastExpression(
+            adaptedName,
+            type,
+            (TypeSyntax)typeParamRenamer.Visit(type)
+        );
     }
 
     private static ExpressionSyntax AdaptedResult(

@@ -35,6 +35,9 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
   - `implicit operator` from `AnyArgMarker` — enables `Arg.Any` shorthand
   - Share their element checks through the internal `SpanElementMatchers`.
 
+- `OutSpanArg<T>` and `OutReadOnlySpanArg<T>` (`src/Imposter.Abstractions/OutSpanArg.cs`, `OutReadOnlySpanArg.cs`)
+  - `Any()` for matching `out Span<T>` / `out ReadOnlySpan<T>` parameters.
+
 - `Count` (`src/Imposter.Abstractions/Count.cs`)
   - Verification counts: `Exactly(n)`, `AtLeast(n)`, `AtMost(n)`, `Never()`, `Any`, `Once()`.
   - `Matches(int)` helper used by generated verifiers.

@@ -13,15 +13,21 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static partial class SyntaxFactoryHelper
 {
     // Each span kind has a matcher type of its own, so a method overloaded on T[], Span<T> and ReadOnlySpan<T> keeps
-    // distinct setups.
+    // distinct setups. An out span, like any out argument, has a wildcard matcher of its own.
     internal static TypeSyntax ArgType(ParameterModel parameter)
     {
         if (parameter.Span is { } span)
         {
             var elementType = TypeSyntaxIncludingNullable(span.ElementType);
-            return span.IsReadOnly
-                ? WellKnownTypes.Imposter.Abstractions.ReadOnlySpanArg(elementType)
-                : WellKnownTypes.Imposter.Abstractions.SpanArg(elementType);
+            return (span.IsReadOnly, parameter.RefKind == RefKind.Out) switch
+            {
+                (true, true) => WellKnownTypes.Imposter.Abstractions.OutReadOnlySpanArg(
+                    elementType
+                ),
+                (true, false) => WellKnownTypes.Imposter.Abstractions.ReadOnlySpanArg(elementType),
+                (false, true) => WellKnownTypes.Imposter.Abstractions.OutSpanArg(elementType),
+                (false, false) => WellKnownTypes.Imposter.Abstractions.SpanArg(elementType),
+            };
         }
 
         var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
@@ -55,9 +61,6 @@ internal static partial class SyntaxFactoryHelper
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
             );
-
-    internal static InvocationExpressionSyntax OutArgAny(TypeSyntax type) =>
-        WellKnownTypes.Imposter.Abstractions.OutArg(type).Dot(IdentifierName("Any")).Call();
 
     internal static ArgumentListSyntax ArgAnyArgumentList(
         IEnumerable<MethodParameterMetadata> parameters

@@ -186,7 +186,7 @@ When every argument should be a wildcard and you don't want to spell out the gen
 
 ## Span parameters
 
-An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is called it copies the elements of each span argument, passed by value, `in` or `ref readonly`, into an array. Match those elements with `SpanArg<T>` for a `Span<T>` parameter and `ReadOnlySpanArg<T>` for a `ReadOnlySpan<T>` parameter. Both work the same way: `Is(params T[] expected)` matches the same elements in the same order, `Is(Func<T[], bool> predicate)` matches when the predicate returns `true` for them, and `Any()` or `Arg.Any` matches any elements. Verification sees the elements as they were when the method was called. The delegates you pass to `Returns` or `Callback` receive the span itself.
+An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is called it copies the elements each span argument arrives with into an array. Match those elements with `SpanArg<T>` for a `Span<T>` parameter and `ReadOnlySpanArg<T>` for a `ReadOnlySpan<T>` parameter. Both work the same way: `Is(params T[] expected)` matches the same elements in the same order, `Is(Func<T[], bool> predicate)` matches when the predicate returns `true` for them, and `Any()` or `Arg.Any` matches any elements. Verification sees the elements as they were when the method was called. The delegates you pass to `Returns` or `Callback` receive the span itself.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L195"}
@@ -200,8 +200,24 @@ An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is cal
     service.Parse("123"); // -1
     ```
 
+A span passed by `ref` is matched by the elements it arrives with, and the delegates you pass to `Returns` or `Callback` receive it by reference, so they can write to it or replace it. An `out` span is an output: match it with `OutSpanArg<T>.Any()` or `OutReadOnlySpanArg<T>.Any()`, and assign it in the delegate:
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L208"}
+    // bool TryRead(out ReadOnlySpan<byte> data);
+    imposter
+        .TryRead(OutReadOnlySpanArg<byte>.Any())
+        .Returns((out ReadOnlySpan<byte> data) =>
+        {
+            data = new byte[] { 1, 2 };
+            return true;
+        });
+
+    reader.TryRead(out var data); // true, data holds 1, 2
+    ```
+
 !!! warning
-    Imposters support only spans that a method takes by value, `in` or `ref readonly`, or [returns](methods/index.md#setup-return-values) by value. A span taken by `ref` or `out`, a span returned by reference or by a method with a `scoped` parameter, a span in a property, an indexer or an event's delegate, and any other `ref struct` still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support span parameters and spans a method [returns](methods/index.md#setup-return-values) by value. A span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out`, a span in a property, an indexer or an event's delegate, and any other `ref struct` still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
 
 ## Arg API reference
 
@@ -217,3 +233,4 @@ An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is cal
 - `SpanArg<T>.Any()` / `ReadOnlySpanArg<T>.Any()` — wildcard for a `Span<T>` / `ReadOnlySpan<T>` argument.
 - `SpanArg<T>.Is(params T[] expected)` / `SpanArg<T>.Is(T[] expected, IEqualityComparer<T> comparer)`, and the same on `ReadOnlySpanArg<T>` — matches when the span holds the same elements in the same order (optionally using a custom comparer).
 - `SpanArg<T>.Is(Func<T[], bool> predicate)`, and the same on `ReadOnlySpanArg<T>` — matches when the predicate returns `true` for the span's elements.
+- `OutSpanArg<T>.Any()` / `OutReadOnlySpanArg<T>.Any()` — wildcard for an `out Span<T>` / `out ReadOnlySpan<T>` argument.
