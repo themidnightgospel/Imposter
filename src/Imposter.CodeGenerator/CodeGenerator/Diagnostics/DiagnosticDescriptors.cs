@@ -81,7 +81,7 @@ public static class DiagnosticDescriptors
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Error,
         true,
-        description: "An imposter keeps arguments and results in fields, delegates and argument matchers, none of which can hold a ref-like value. It keeps Span<T> and ReadOnlySpan<T> parameters, results, property values and indexer keys and values as arrays of their elements, except a span returned by reference or ruled out by a scoped parameter. Any other ref struct, a span in an event's delegate, or a type parameter that allows ref structs still means no imposter is generated.",
+        description: "An imposter keeps arguments and results in fields, delegates and argument matchers, none of which can hold a ref-like value. It keeps Span<T> and ReadOnlySpan<T> parameters, results, property values, indexer keys and values, and event arguments as arrays of their elements, except a span returned by reference, one a scoped parameter rules out, and a span an async event takes or an event takes by ref or out. Any other ref struct, or a type parameter that allows ref structs, still means no imposter is generated.",
         helpLinkUri: HelpUrl + "#imp009"
     );
 

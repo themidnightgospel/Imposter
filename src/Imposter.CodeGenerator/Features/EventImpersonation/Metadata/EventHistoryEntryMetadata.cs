@@ -36,11 +36,9 @@ internal readonly struct EventHistoryEntryMetadata
         _parameters.Length switch
         {
             0 => SyntaxFactoryHelper.True,
-            1 => IdentifierName(_parameters[0].Name),
+            1 => _parameters[0].StoredValue,
             _ => TupleExpression(
-                SeparatedList(
-                    _parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-                )
+                SeparatedList(_parameters.Select(parameter => Argument(parameter.StoredValue)))
             ),
         };
 

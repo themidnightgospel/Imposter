@@ -73,10 +73,32 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenEventWhoseDelegateTakesReadOnlySpan_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenEventWhoseDelegateTakesCustomRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { event SpanHandler Received; }"
+            "public delegate void RefLikeHandler(RefLike value); public interface IService { event RefLikeHandler Received; }"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    // The async raise can't take a span (CS4012).
+    [Fact]
+    public async Task GivenAsyncEventWhoseDelegateTakesSpan_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public delegate System.Threading.Tasks.Task AsyncSpanHandler(System.ReadOnlySpan<byte> data); public interface IService { event AsyncSpanHandler Received; }"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    // A handler's change to a ref span can't reach the raise's caller through a copy of its elements.
+    [Fact]
+    public async Task GivenEventWhoseDelegateTakesRefSpan_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public delegate void RefSpanHandler(ref System.Span<byte> data); public interface IService { event RefSpanHandler Received; }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -326,8 +348,6 @@ public class RefLikeMemberDiagnosticTests
             namespace Sample
             {
                 public ref struct RefLike { public int Value; }
-
-                public delegate void SpanHandler(System.ReadOnlySpan<byte> data);
 
                 {{targetDeclaration}}
             }
