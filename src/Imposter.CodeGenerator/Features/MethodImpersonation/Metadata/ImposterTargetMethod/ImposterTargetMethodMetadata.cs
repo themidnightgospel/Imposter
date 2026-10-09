@@ -185,7 +185,8 @@ internal readonly struct ImposterTargetMethodMetadata
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         ArgumentsCriteriaAsMethod = new AsMethodMetadata(
             Model.TypeParameters,
-            GenericTypeParameterNameSet
+            GenericTypeParameterNameSet,
+            ReservedParameterNames
         );
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
@@ -242,7 +243,15 @@ internal readonly struct ImposterTargetMethodMetadata
         internal readonly NameSyntax[] TargetTypeArguments;
         internal readonly TypeParameterSyntax[] TypeParameters;
 
-        internal AsMethodMetadata(IReadOnlyList<TypeParameterModel> typeParameters, NameSet nameSet)
+        // The parameter of the lambdas that convert each matcher. It can't hide the criteria's fields, which are named
+        // after the method's parameters.
+        internal readonly IdentifierNameSyntax MatcherLambdaParameter;
+
+        internal AsMethodMetadata(
+            IReadOnlyList<TypeParameterModel> typeParameters,
+            NameSet nameSet,
+            in ReservedParameterNames reservedParameterNames
+        )
         {
             var allocatedNames = typeParameters
                 .Select(p => nameSet.Use($"{p.Name}Target"))
@@ -253,6 +262,10 @@ internal readonly struct ImposterTargetMethodMetadata
                 .ToArray();
 
             TypeParameters = allocatedNames.Select(SyntaxFactory.TypeParameter).ToArray();
+
+            MatcherLambdaParameter = SyntaxFactory.IdentifierName(
+                reservedParameterNames.CreateNameSet().Use("it")
+            );
         }
     }
 }
