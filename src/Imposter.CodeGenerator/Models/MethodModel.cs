@@ -7,7 +7,9 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A method the imposter implements or overrides. <see cref="OverrideAccessibility"/> is the accessibility an
-/// override in the imposter's assembly must declare.
+/// override in the imposter's assembly must declare. <see cref="HasRefKindOverload"/> is true when an overload set up
+/// beside it, on a class's imposter or in its interface's setup view, differs from it only in passing a parameter by
+/// value or by in, ref or ref readonly, which their setups can't tell apart.
 /// </summary>
 internal sealed record MethodModel(
     string Name,
@@ -22,12 +24,17 @@ internal sealed record MethodModel(
     Accessibility OverrideAccessibility,
     EquatableArray<TypeParameterModel> TypeParameters,
     EquatableArray<ParameterModel> Parameters,
-    ReturnTypeModel ReturnType
+    ReturnTypeModel ReturnType,
+    bool HasRefKindOverload
 )
 {
     internal bool IsGenericMethod => TypeParameters.Count > 0;
 
-    internal static MethodModel From(IMethodSymbol method, MemberAccess memberAccess) =>
+    internal static MethodModel From(
+        IMethodSymbol method,
+        MemberAccess memberAccess,
+        bool hasRefKindOverload
+    ) =>
         new(
             method.Name,
             method.MetadataName,
@@ -41,6 +48,7 @@ internal sealed record MethodModel(
             memberAccess.GetOverrideAccessibility(method),
             method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
             method.Parameters.Select(ParameterModel.From).ToEquatableArray(),
-            ReturnTypeModel.From(method)
+            ReturnTypeModel.From(method),
+            hasRefKindOverload
         );
 }

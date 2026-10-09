@@ -63,10 +63,12 @@ internal readonly struct ImposterTargetMetadata
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
         var memberNames = _symbolNameNamespace;
         var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
+        var ownMethodSetups = OwnMethodSetups(target);
+        var ownPropertyAndEventSetupNames = OwnPropertyAndEventSetupNames(target);
         Methods = target
             .Methods.Select(method => new ImposterTargetMethodMetadata(
                 method,
-                memberNames.Use(method.Member.Name),
+                UniqueName(method),
                 supportsNullableGenericType
             ))
             .ToList();
@@ -95,7 +97,48 @@ internal readonly struct ImposterTargetMetadata
             )
         );
         ExtensionParameterName = constructorParameterNames.Use("imposter");
+
+        // A method set up by its unique name skips a name another setup keeps as its own when the two would clash: a
+        // method's setup with the same signature, or a property's or an event's of any kind.
+        string UniqueName(TargetMemberModel<MethodModel> method)
+        {
+            var name = memberNames.Use(method.Member.Name);
+            if (!ImposterTargetMethodMetadata.NeedsNumberedSetup(method))
+            {
+                return name;
+            }
+
+            var signature = MethodSetupSignature.Of(method.Member);
+            while (
+                ownPropertyAndEventSetupNames.Contains(name)
+                || ownMethodSetups.Contains((name, signature))
+            )
+            {
+                name = memberNames.Use(method.Member.Name);
+            }
+
+            return name;
+        }
     }
+
+    private static HashSet<(string Name, string Signature)> OwnMethodSetups(
+        ImposterTargetModel target
+    ) =>
+        [
+            .. target
+                .Methods.Where(method => !ImposterTargetMethodMetadata.NeedsNumberedSetup(method))
+                .Select(method => (method.Member.Name, MethodSetupSignature.Of(method.Member))),
+        ];
+
+    private static HashSet<string> OwnPropertyAndEventSetupNames(ImposterTargetModel target) =>
+        [
+            .. target
+                .Properties.Where(property => !property.RequiresExplicitInterfaceImplementation)
+                .Select(property => property.Member.Name),
+            .. target
+                .Events.Where(@event => !@event.RequiresExplicitInterfaceImplementation)
+                .Select(@event => @event.Member.Name),
+        ];
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(
         TargetMemberModel<PropertyModel> property,

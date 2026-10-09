@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using System.Linq;
 #endif
 
-
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>

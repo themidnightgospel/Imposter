@@ -56,6 +56,10 @@ public class MethodModelTests
             .OfType<IMethodSymbol>()
             .Single();
 
-        return MethodModel.From(method, new MemberAccess(compilation.Assembly));
+        return MethodModel.From(
+            method,
+            new MemberAccess(compilation.Assembly),
+            hasRefKindOverload: false
+        );
     }
 }
