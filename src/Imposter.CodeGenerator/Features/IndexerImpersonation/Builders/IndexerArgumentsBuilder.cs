@@ -62,7 +62,7 @@ internal static class IndexerArgumentsBuilder
 
     private static MethodDeclarationSyntax BuildEqualsMethod(in ImposterIndexerMetadata indexer)
     {
-        var otherIdentifier = Identifier("other");
+        var otherIdentifier = Identifier(indexer.Arguments.OtherVariableName);
         var otherIdentifierName = IdentifierName(otherIdentifier);
         var otherParameter = Parameter(otherIdentifier)
             .WithType(NullableType(indexer.Arguments.TypeSyntax));
@@ -102,6 +102,8 @@ internal static class IndexerArgumentsBuilder
         in ImposterIndexerMetadata indexer
     )
     {
+        var other = IdentifierName(indexer.Arguments.OtherVariableName);
+
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
@@ -118,18 +120,12 @@ internal static class IndexerArgumentsBuilder
                                 IdentifierName("obj"),
                                 DeclarationPattern(
                                     indexer.Arguments.TypeSyntax,
-                                    SingleVariableDesignation(Identifier("other"))
+                                    SingleVariableDesignation(other.Identifier)
                                 )
                             )
                             .And(
                                 IdentifierName("Equals")
-                                    .Call(
-                                        ArgumentList(
-                                            SingletonSeparatedList(
-                                                Argument(IdentifierName("other"))
-                                            )
-                                        )
-                                    )
+                                    .Call(ArgumentList(SingletonSeparatedList(Argument(other))))
                             )
                     )
                 )
@@ -143,7 +139,7 @@ internal static class IndexerArgumentsBuilder
         in ImposterIndexerMetadata indexer
     )
     {
-        var hash = IdentifierName("hash");
+        var hash = IdentifierName(indexer.Arguments.HashVariableName);
         var statements = new List<StatementSyntax>
         {
             LocalVariableDeclarationSyntax(
