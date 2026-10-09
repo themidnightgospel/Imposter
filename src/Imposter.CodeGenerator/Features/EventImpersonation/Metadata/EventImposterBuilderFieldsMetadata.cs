@@ -126,7 +126,8 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         }
 
         var tupleElements = core.Parameters.Select(parameter =>
-            TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name))
+            TupleElement(parameter.TypeSyntax)
+                .WithIdentifier(Identifier(parameter.TupleElementName))
         );
 
         return TupleType(SeparatedList(tupleElements));
@@ -141,12 +142,14 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
         var elements = new List<TupleElementSyntax>
         {
-            TupleElement(core.HandlerTypeSyntax).WithIdentifier(Identifier("Handler")),
+            TupleElement(core.HandlerTypeSyntax)
+                .WithIdentifier(Identifier(core.HandlerTupleElementName)),
         };
 
         elements.AddRange(
             core.Parameters.Select(parameter =>
-                TupleElement(parameter.TypeSyntax).WithIdentifier(Identifier(parameter.Name))
+                TupleElement(parameter.TypeSyntax)
+                    .WithIdentifier(Identifier(parameter.TupleElementName))
             )
         );
 
