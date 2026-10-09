@@ -88,8 +88,8 @@ internal static partial class InvocationSetupBuilder
         List<MemberDeclarationSyntax> methods =
         [
             new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
-                .WithTypeParameters(throws.TypeParameterList)
-                .AddConstraintClause(throws.TypeParameterConstraintClause)
+                .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
+                .AddConstraintClause(throws.ExceptionTypeParameter.ConstraintClause)
                 .WithSemicolon()
                 .Build(),
             InterfaceMethod(
