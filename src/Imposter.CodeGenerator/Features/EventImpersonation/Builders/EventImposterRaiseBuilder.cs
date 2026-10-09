@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -90,18 +89,21 @@ internal static class EventImposterRaiseBuilder
 
     private static BlockSyntax BuildRaiseInternalBody(in ImposterEventMetadata @event)
     {
-        var blockBuilder = new BlockBuilder();
-        var fields = @event.Builder.Fields;
-        blockBuilder.AddExpression(
-            FieldIdentifier(fields.History)
-                .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                .Call(Argument(BuildHistoryEntryExpression(@event)))
-        );
+        var localNames = @event.Builder.Methods.RaiseLocalNames;
+        var callback = IdentifierName(localNames.Callback);
+        var handler = IdentifierName(localNames.Handler);
 
-        blockBuilder.AddStatement(ForEachInvocation(fields.Callbacks, @event));
-        blockBuilder.AddStatement(ForEachHandlerInvocation(@event));
-
-        return blockBuilder.Build();
+        return new BlockBuilder()
+            .AddExpression(EnqueueHistoryEntry(@event))
+            .AddStatement(ForEachCallback(@event, InvokeStatement(callback, @event)))
+            .AddStatement(
+                ForEachActiveHandler(
+                    @event,
+                    EnqueueHandlerInvocation(@event, handler),
+                    InvokeStatement(handler, @event)
+                )
+            )
+            .Build();
     }
 
     internal static MethodDeclarationSyntax BuildRaiseCoreAsyncMethod(
@@ -130,16 +132,14 @@ internal static class EventImposterRaiseBuilder
         TypeSyntax taskListType
     )
     {
-        var fields = @event.Builder.Fields;
         var usesValueTask = @event.Core.ReturnsNonGenericValueTask;
-        var pendingTasks = IdentifierName(@event.Builder.Methods.RaiseLocalNames.PendingTasks);
+        var localNames = @event.Builder.Methods.RaiseLocalNames;
+        var pendingTasks = IdentifierName(localNames.PendingTasks);
+        var callback = IdentifierName(localNames.Callback);
+        var handler = IdentifierName(localNames.Handler);
 
         return new BlockBuilder()
-            .AddExpression(
-                FieldIdentifier(fields.History)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(BuildHistoryEntryExpression(@event)))
-            )
+            .AddExpression(EnqueueHistoryEntry(@event))
             .AddStatement(
                 LocalVariableDeclarationSyntax(
                     taskListType,
@@ -147,10 +147,23 @@ internal static class EventImposterRaiseBuilder
                     taskListType.New()
                 )
             )
-            .AddStatement(ForEachAsyncInvocation(fields.Callbacks, @event, usesValueTask))
+            .AddStatement(
+                ForEachCallback(
+                    @event,
+                    InvokeAndCollectTaskStatements(callback, @event, usesValueTask)
+                )
+            )
             .AddStatement(AwaitPendingTasksStatement(pendingTasks))
             .AddStatement(pendingTasks.Dot(IdentifierName("Clear")).Call().ToStatementSyntax())
-            .AddStatement(ForEachAsyncHandlerInvocation(@event, usesValueTask))
+            .AddStatement(
+                ForEachActiveHandler(
+                    @event,
+                    [
+                        EnqueueHandlerInvocation(@event, handler),
+                        .. InvokeAndCollectTaskStatements(handler, @event, usesValueTask),
+                    ]
+                )
+            )
             .AddStatement(AwaitPendingTasksStatement(pendingTasks))
             .Build();
     }
@@ -213,119 +226,53 @@ internal static class EventImposterRaiseBuilder
         );
     }
 
-    private static ExpressionSyntax BuildHistoryEntryExpression(in ImposterEventMetadata @event)
-    {
-        if (@event.Core.Parameters.Length == 0)
-        {
-            return True;
-        }
-
-        if (@event.Core.Parameters.Length == 1)
-        {
-            return IdentifierName(@event.Core.Parameters[0].Name);
-        }
-
-        return TupleExpression(
-            SeparatedList(
-                @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-            )
-        );
-    }
-
-    private static ExpressionSyntax BuildHandlerInvocationTuple(
-        ExpressionSyntax handlerExpression,
+    private static InvocationExpressionSyntax EnqueueHistoryEntry(
         in ImposterEventMetadata @event
-    )
-    {
-        if (@event.Core.Parameters.Length == 0)
-        {
-            return handlerExpression;
-        }
+    ) =>
+        FieldIdentifier(@event.Builder.Fields.History)
+            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+            .Call(Argument(@event.Builder.Fields.HistoryEntry.Entry));
 
-        var arguments = new List<ArgumentSyntax> { Argument(handlerExpression) };
-        arguments.AddRange(
-            @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-        );
-        return TupleExpression(SeparatedList(arguments));
-    }
+    private static ExpressionStatementSyntax EnqueueHandlerInvocation(
+        in ImposterEventMetadata @event,
+        IdentifierNameSyntax handler
+    ) =>
+        FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
+            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+            .Call(Argument(@event.Builder.Fields.HandlerInvocationEntry.Entry(handler)))
+            .ToStatementSyntax();
 
-    private static ForEachStatementSyntax ForEachInvocation(
-        in FieldMetadata field,
+    private static ExpressionStatementSyntax InvokeStatement(
+        IdentifierNameSyntax invoked,
         in ImposterEventMetadata @event
-    )
-    {
-        var callback = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Callback);
+    ) =>
+        invoked
+            .Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument))
+            .ToStatementSyntax();
 
-        return ForEachStatement(
-            Var,
-            callback.Identifier,
-            FieldIdentifier(field),
-            Block(
-                callback
-                    .Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument))
-                    .ToStatementSyntax()
-            )
-        );
-    }
-
-    private static ForEachStatementSyntax ForEachHandlerInvocation(in ImposterEventMetadata @event)
-    {
-        var handler = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Handler);
-
-        return ForEachStatement(
-            Var,
-            handler.Identifier,
-            IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
-            Block(
-                FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(BuildHandlerInvocationTuple(handler, @event)))
-                    .ToStatementSyntax(),
-                handler
-                    .Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument))
-                    .ToStatementSyntax()
-            )
-        );
-    }
-
-    private static ForEachStatementSyntax ForEachAsyncInvocation(
-        in FieldMetadata field,
+    // Runs the body for each callback, which it reads as RaiseLocalNames.Callback.
+    private static ForEachStatementSyntax ForEachCallback(
         in ImposterEventMetadata @event,
-        bool usesValueTask
-    )
-    {
-        var callback = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Callback);
-
-        return ForEachStatement(
+        params StatementSyntax[] body
+    ) =>
+        ForEachStatement(
             Var,
-            callback.Identifier,
-            FieldIdentifier(field),
-            Block(InvokeAndCollectTaskStatements(callback, @event, usesValueTask))
+            Identifier(@event.Builder.Methods.RaiseLocalNames.Callback),
+            FieldIdentifier(@event.Builder.Fields.Callbacks),
+            Block(body)
         );
-    }
 
-    private static ForEachStatementSyntax ForEachAsyncHandlerInvocation(
+    // Runs the body for each subscribed handler, which it reads as RaiseLocalNames.Handler.
+    private static ForEachStatementSyntax ForEachActiveHandler(
         in ImposterEventMetadata @event,
-        bool usesValueTask
-    )
-    {
-        var handler = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Handler);
-        StatementSyntax[] body =
-        [
-            FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                .Call(Argument(BuildHandlerInvocationTuple(handler, @event)))
-                .ToStatementSyntax(),
-            .. InvokeAndCollectTaskStatements(handler, @event, usesValueTask),
-        ];
-
-        return ForEachStatement(
+        params StatementSyntax[] body
+    ) =>
+        ForEachStatement(
             Var,
-            handler.Identifier,
+            Identifier(@event.Builder.Methods.RaiseLocalNames.Handler),
             IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
             Block(body)
         );
-    }
 
     private static StatementSyntax[] InvokeAndCollectTaskStatements(
         IdentifierNameSyntax invoked,

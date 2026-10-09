@@ -1,16 +1,24 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
-internal readonly struct SubscribeMethodMetadata
+// Subscribe or Unsubscribe. DelegateOperation is the System.Delegate method that adds the handler to the active
+// handlers or removes it.
+internal readonly struct SubscriptionMethodMetadata
 {
     internal readonly string Name;
+    internal readonly string DelegateOperation;
     internal readonly ParameterMetadata HandlerParameter;
     internal readonly ParameterMetadata? BaseImplementationParameter;
 
-    internal SubscribeMethodMetadata(in ImposterEventCoreMetadata core)
+    internal SubscriptionMethodMetadata(
+        string name,
+        string delegateOperation,
+        in ImposterEventCoreMetadata core
+    )
     {
-        Name = "Subscribe";
+        Name = name;
+        DelegateOperation = delegateOperation;
         HandlerParameter = new ParameterMetadata("handler", core.HandlerTypeSyntax);
         BaseImplementationParameter = core.SupportsBaseImplementation
             ? new ParameterMetadata(

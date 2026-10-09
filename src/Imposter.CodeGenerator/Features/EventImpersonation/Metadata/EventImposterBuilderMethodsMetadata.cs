@@ -5,9 +5,9 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct EventImposterBuilderMethodsMetadata
 {
-    internal readonly SubscribeMethodMetadata Subscribe;
+    internal readonly SubscriptionMethodMetadata Subscribe;
 
-    internal readonly UnsubscribeMethodMetadata Unsubscribe;
+    internal readonly SubscriptionMethodMetadata Unsubscribe;
 
     internal readonly CallbackMethodMetadata Callback;
 
@@ -39,8 +39,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
 
     internal EventImposterBuilderMethodsMetadata(in ImposterEventCoreMetadata core)
     {
-        Subscribe = new SubscribeMethodMetadata(core);
-        Unsubscribe = new UnsubscribeMethodMetadata(core);
+        Subscribe = new SubscriptionMethodMetadata("Subscribe", "Combine", core);
+        Unsubscribe = new SubscriptionMethodMetadata("Unsubscribe", "Remove", core);
         Callback = new CallbackMethodMetadata(core);
         OnSubscribe = new InterceptorMethodMetadata("OnSubscribe", core);
         OnUnsubscribe = new InterceptorMethodMetadata("OnUnsubscribe", core);
