@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImpos
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -44,7 +45,8 @@ internal readonly ref struct ImposterPropertyMetadata
         PropertyModel property,
         string uniqueName,
         NameSet memberNameSet,
-        bool requiresExplicitInterfaceImplementation
+        bool requiresExplicitInterfaceImplementation,
+        ExceptionTypeParameterMetadata exceptionTypeParameter
     )
     {
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
@@ -54,7 +56,10 @@ internal readonly ref struct ImposterPropertyMetadata
             "_defaultPropertyBehaviour",
             DefaultPropertyBehaviour.TypeSyntax
         );
-        GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(Core);
+        GetterImposterBuilderInterface = new PropertyGetterImposterBuilderInterfaceMetadata(
+            Core,
+            exceptionTypeParameter
+        );
         GetterImposterBuilder = new PropertyGetterImposterBuilderMetadata(
             Core,
             defaultPropertyBehaviourField

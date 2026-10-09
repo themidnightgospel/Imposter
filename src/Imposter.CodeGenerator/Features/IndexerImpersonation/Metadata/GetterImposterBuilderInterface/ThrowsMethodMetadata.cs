@@ -8,9 +8,7 @@ internal readonly struct ThrowsMethodMetadata
 {
     internal readonly string Name = "Throws";
 
-    internal readonly ExceptionTypeParameterMetadata ExceptionTypeParameter = new(
-        ExceptionTypeParameterMetadata.PreferredName
-    );
+    internal readonly ExceptionTypeParameterMetadata ExceptionTypeParameter;
 
     internal readonly TypeSyntax ReturnType;
 
@@ -22,10 +20,12 @@ internal readonly struct ThrowsMethodMetadata
 
     internal ThrowsMethodMetadata(
         in IndexerDelegateMetadata delegatesMetadata,
+        in ExceptionTypeParameterMetadata exceptionTypeParameter,
         TypeSyntax returnType,
         NameSyntax interfaceSyntax
     )
     {
+        ExceptionTypeParameter = exceptionTypeParameter;
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
         ExceptionParameter = new ParameterMetadata("exception", WellKnownTypes.System.Exception);
