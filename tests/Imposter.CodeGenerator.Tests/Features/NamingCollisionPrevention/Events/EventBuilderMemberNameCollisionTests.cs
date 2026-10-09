@@ -10,35 +10,30 @@ public class EventBuilderMemberNameCollisionTests
     [Fact]
     public async Task GivenDelegateParametersNamedLikeTheBuilderFields_WhenEventIsRaisedAndVerified_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public delegate void Handler(int _callbacks, int _history, int _handlerInvocations); public interface IService { event Handler Happened; }",
-            "imposter.Instance().Happened += (_callbacks, _history, _handlerInvocations) => { }; imposter.Happened.Callback((_callbacks, _history, _handlerInvocations) => { }).Raise(1, 2, 3); imposter.Happened.Raised(Arg<int>.Is(1), Arg<int>.Is(2), Arg<int>.Is(3), Count.Once());"
+            "imposter.Instance().Happened += (_callbacks, _history, _handlerInvocations) => { }; imposter.Happened.Callback((_callbacks, _history, _handlerInvocations) => { }).Raise(1, 2, 3); imposter.Happened.Raised(Arg<int>.Is(1), Arg<int>.Is(2), Arg<int>.Is(3), Count.Once());",
+            nameof(EventBuilderMemberNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenDelegateParametersNamedLikeTheBuilderMethods_WhenEventIsRaised_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public delegate void Handler(int RaiseInternal, int EnumerateActiveHandlers); public interface IService { event Handler Happened; }",
-            "imposter.Instance().Happened += (RaiseInternal, EnumerateActiveHandlers) => { }; imposter.Happened.Raise(1, 2);"
+            "imposter.Instance().Happened += (RaiseInternal, EnumerateActiveHandlers) => { }; imposter.Happened.Raise(1, 2);",
+            nameof(EventBuilderMemberNameCollisionTests)
         );
     }
 
     [Fact]
     public async Task GivenAsyncDelegateParameterNamedLikeTheBuilderMethod_WhenEventIsRaised_ShouldCompile()
     {
-        await AssertServiceCompiles(
+        await AssertInterfaceCompiles(
             "public delegate System.Threading.Tasks.Task Handler(int RaiseCoreAsync, int EnumerateActiveHandlers); public interface IService { event Handler Happened; }",
-            "imposter.Instance().Happened += (RaiseCoreAsync, EnumerateActiveHandlers) => System.Threading.Tasks.Task.CompletedTask; imposter.Happened.RaiseAsync(1, 2).GetAwaiter().GetResult();"
-        );
-    }
-
-    private static Task AssertServiceCompiles(string targetDeclaration, string usage) =>
-        AssertCompiles(
-            "Sample.IService",
-            targetDeclaration,
-            "var imposter = new Sample.IServiceImposter(); " + usage,
+            "imposter.Instance().Happened += (RaiseCoreAsync, EnumerateActiveHandlers) => System.Threading.Tasks.Task.CompletedTask; imposter.Happened.RaiseAsync(1, 2).GetAwaiter().GetResult();",
             nameof(EventBuilderMemberNameCollisionTests)
         );
+    }
 }

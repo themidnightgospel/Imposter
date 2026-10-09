@@ -6,6 +6,19 @@ namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention;
 
 internal static class CollisionCompilation
 {
+    // Compiles a usage snippet against the imposter of interface Sample.IService, reachable as `imposter`.
+    internal static Task AssertInterfaceCompiles(
+        string targetDeclaration,
+        string usage,
+        string assemblyName
+    ) =>
+        AssertCompiles(
+            "Sample.IService",
+            targetDeclaration,
+            "var imposter = new Sample.IServiceImposter(); " + usage,
+            assemblyName
+        );
+
     // Generates the imposter of a target declared in namespace Sample and compiles a snippet that uses it.
     internal static async Task AssertCompiles(
         string targetType,
