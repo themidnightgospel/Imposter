@@ -23,6 +23,12 @@ internal static class DefaultAttributes
     private static readonly AssemblyName ImposterGeneratorAssembly =
         typeof(SyntaxFactoryHelper).Assembly.GetName();
 
+    internal static readonly AttributeListSyntax SetsRequiredMembersAttribute = AttributeList(
+        SingletonSeparatedList(
+            Attribute(ParseName("global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers"))
+        )
+    );
+
     internal static readonly AttributeListSyntax GeneratedCodeAttribute = AttributeList(
         SingletonSeparatedList(
             Attribute(IdentifierName(GeneratedCodeAttributeName))
