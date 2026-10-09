@@ -27,6 +27,8 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly bool IsClass;
 
+    internal readonly bool HasRequiredMembers;
+
     internal readonly Accessibility DeclaredAccessibility;
 
     internal readonly ImposterTargetConstructorMetadata[] AccessibleConstructors;
@@ -73,6 +75,7 @@ internal readonly struct ImposterTargetMetadata
             ))
             .ToList();
         IsClass = target.IsClass;
+        HasRequiredMembers = target.HasRequiredMembers;
         DeclaredAccessibility = target.DeclaredAccessibility;
         AccessibleConstructors = target
             .AccessibleConstructors.Select(constructor => new ImposterTargetConstructorMetadata(
