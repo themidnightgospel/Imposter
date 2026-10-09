@@ -32,8 +32,7 @@ public static class InterfaceSymbolExtensions
 
         foreach (
             var methodSymbol in interfaceSymbol
-                .GetMembers()
-                .OfType<IMethodSymbol>()
+                .GetInstanceMembers<IMethodSymbol>()
                 .Where(m => m.MethodKind == MethodKind.Ordinary)
         )
         {
@@ -69,7 +68,7 @@ public static class InterfaceSymbolExtensions
             return;
         }
 
-        foreach (var propertySymbol in interfaceSymbol.GetMembers().OfType<IPropertySymbol>())
+        foreach (var propertySymbol in interfaceSymbol.GetInstanceMembers<IPropertySymbol>())
         {
             properties.Add(propertySymbol);
         }
@@ -107,7 +106,7 @@ public static class InterfaceSymbolExtensions
             return;
         }
 
-        foreach (var eventSymbol in interfaceSymbol.GetMembers().OfType<IEventSymbol>())
+        foreach (var eventSymbol in interfaceSymbol.GetInstanceMembers<IEventSymbol>())
         {
             events.Add(eventSymbol);
         }
@@ -137,4 +136,11 @@ public static class InterfaceSymbolExtensions
 
         return result;
     }
+
+    // A static member is called through its interface, never through the imposter's instance, so it isn't impersonated.
+    internal static IEnumerable<TMember> GetInstanceMembers<TMember>(
+        this INamedTypeSymbol interfaceSymbol
+    )
+        where TMember : ISymbol =>
+        interfaceSymbol.GetMembers().OfType<TMember>().Where(member => !member.IsStatic);
 }
