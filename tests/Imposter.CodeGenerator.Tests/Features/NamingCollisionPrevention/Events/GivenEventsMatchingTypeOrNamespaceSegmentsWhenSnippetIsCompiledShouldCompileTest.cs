@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Events;
 
-public partial class EventAdditionalCollisionPreventionTests : EventNamingCollisionPreventionTestsBase
+public partial class EventAdditionalCollisionPreventionTests
+    : EventNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenEventsMatchingTypeOrNamespaceSegments_WhenSnippetIsCompiled_ShouldCompile()
@@ -35,6 +36,4 @@ namespace Sample.NamingCollisionUsage
 
         AssertNoDiagnostics(diagnostics);
     }
-
 }
-

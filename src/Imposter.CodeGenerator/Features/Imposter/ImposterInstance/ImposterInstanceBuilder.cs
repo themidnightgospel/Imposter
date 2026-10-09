@@ -382,11 +382,32 @@ internal readonly ref struct ImposterInstanceBuilder
             ),
         ];
 
+    // The instance's members reach the field by its bare name, so a parameter or method type parameter with that name
+    // would shadow it, and a constructor parameter would duplicate the constructor's imposter parameter.
     private static string CreateImposterFieldName(
         in ImposterGenerationContext imposterGenerationContext
     )
     {
-        var nameSet = new NameSet(imposterGenerationContext.Target.MemberNames);
+        var target = imposterGenerationContext.Target;
+        var methodScopeNames = target.Methods.SelectMany(method =>
+            method
+                .Member.Parameters.Select(parameter => parameter.Name)
+                .Concat(method.Member.TypeParameters.Select(typeParameter => typeParameter.Name))
+        );
+        var indexerScopeNames = target.Indexers.SelectMany(indexer =>
+            indexer.Member.Parameters.Select(parameter => parameter.Name)
+        );
+        // The instance constructors take the imposter under the field's name next to the target's own parameters.
+        var constructorParameterNames = target.AccessibleConstructors.SelectMany(constructor =>
+            constructor.Parameters.Select(parameter => parameter.Name)
+        );
+
+        var nameSet = new NameSet(
+            target
+                .MemberNames.Concat(methodScopeNames)
+                .Concat(indexerScopeNames)
+                .Concat(constructorParameterNames)
+        );
         return nameSet.Use("_imposter");
     }
 

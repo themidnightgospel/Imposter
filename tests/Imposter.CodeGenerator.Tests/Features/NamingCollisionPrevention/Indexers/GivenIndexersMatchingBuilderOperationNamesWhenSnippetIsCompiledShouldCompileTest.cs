@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.Indexers;
 
-public partial class IndexerBuilderOperationCollisionPreventionTests : IndexerNamingCollisionPreventionTestsBase
+public partial class IndexerBuilderOperationCollisionPreventionTests
+    : IndexerNamingCollisionPreventionTestsBase
 {
     [Fact]
     public async Task GivenIndexersMatchingBuilderOperationNames_WhenSnippetIsCompiled_ShouldCompile()
@@ -53,6 +54,4 @@ namespace Sample.NamingCollisionUsage
 
         AssertNoDiagnostics(diagnostics);
     }
-
 }
-
