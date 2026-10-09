@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +22,7 @@ internal static class MethodImposterGenericInterfaceBuilder
         var genericInterfaceType = method.MethodImposter.Interface;
         var invokeMethod = new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
-            "Invoke"
+            MethodImposterInvokeMethodMetadata.Name
         )
             .WithParameterList(InvokeSignatureBuilder.MethodImposterParameters(method))
             .WithSemicolon()

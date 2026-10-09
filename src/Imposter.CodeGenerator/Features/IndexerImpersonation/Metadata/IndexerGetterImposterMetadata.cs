@@ -48,6 +48,8 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly string EnsureGetterConfiguredMethodName;
 
+    internal readonly MethodMetadata MarkReturnConfiguredMethod;
+
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
         // The getter's Get takes the indexer's parameters and refers to these locals and members by name.
@@ -65,7 +67,7 @@ internal readonly struct IndexerGetterImposterMetadata
 
         var returnGeneratorType = BuildReturnGeneratorType(indexer);
         ReturnHandlerType = BuildReturnHandlerType(indexer);
-        Invocation = new GetterInvocationMetadata(indexer, ReturnHandlerType);
+        Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(
             names.Use("_defaultBehaviour"),
@@ -102,6 +104,10 @@ internal readonly struct IndexerGetterImposterMetadata
         );
 
         Builder = new GetterBuilderMetadata(returnGeneratorType);
+        MarkReturnConfiguredMethod = new MethodMetadata(
+            "MarkReturnConfigured",
+            WellKnownTypes.Void
+        );
     }
 
     private static QualifiedNameSyntax BuildReturnGeneratorType(
@@ -190,12 +196,13 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal GetterInvocationMetadata(
             in ImposterIndexerMetadata indexer,
+            NameSyntax getterImposterType,
             TypeSyntax returnHandlerType
         )
         {
             Name = "GetterInvocationImposter";
             TypeSyntax = IdentifierName(Name);
-            ParentField = new FieldMetadata("_parent", IdentifierName("GetterImposter"));
+            ParentField = new FieldMetadata("_parent", getterImposterType);
             DefaultBehaviourField = new FieldMetadata(
                 "_defaultBehaviour",
                 indexer.DefaultIndexerBehaviour.TypeSyntax

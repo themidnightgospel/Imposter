@@ -250,7 +250,7 @@ internal static class IndexerSetterBuilder
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
                         .ToStatementSyntax(),
-                    IdentifierName("MarkConfigured").Call().ToStatementSyntax()
+                    IdentifierName(setter.MarkConfiguredMethod.Name).Call().ToStatementSyntax()
                 )
             )
             .Build();
@@ -279,12 +279,20 @@ internal static class IndexerSetterBuilder
             Block(
                 IfStatement(
                     IdentifierName(setter.RegistrationVariableName)
-                        .Dot(IdentifierName("Criteria"))
+                        .Dot(
+                            IdentifierName(
+                                IndexerSetterImposterMetadata.RegistrationCriteriaElementName
+                            )
+                        )
                         .Dot(IdentifierName("Matches"))
                         .Call(Argument(argumentsVariable)),
                     Block(
                         IdentifierName(setter.RegistrationVariableName)
-                            .Dot(IdentifierName("Callback"))
+                            .Dot(
+                                IdentifierName(
+                                    IndexerSetterImposterMetadata.RegistrationCallbackElementName
+                                )
+                            )
                             .Call(
                                 BuildDelegateInvocationArgumentsWithValue(
                                     argumentsVariable,
@@ -439,7 +447,10 @@ internal static class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return BuildMarkConfiguredMethod("MarkConfigured", setter.HasConfiguredSetterField.Name);
+        return BuildMarkConfiguredMethod(
+            setter.MarkConfiguredMethod.Name,
+            setter.HasConfiguredSetterField.Name
+        );
     }
 
     private static ClassDeclarationSyntax BuildSetterBuilder(in ImposterIndexerMetadata indexer)

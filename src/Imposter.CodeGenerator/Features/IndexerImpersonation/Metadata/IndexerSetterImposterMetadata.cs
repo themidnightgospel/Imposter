@@ -30,6 +30,8 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string CriteriaParameterName;
 
+    internal readonly MethodMetadata MarkConfiguredMethod;
+
     internal readonly string SetterSuffix;
 
     internal readonly FieldMetadata? BaseImplementationCriteriaField;
@@ -110,18 +112,27 @@ internal readonly struct IndexerSetterImposterMetadata
         InvokedBaseImplementationVariableName = names.Use("invokedBaseImplementation");
 
         Builder = new SetterBuilderMetadata();
+        MarkConfiguredMethod = new MethodMetadata("MarkConfigured", WellKnownTypes.Void);
     }
+
+    // The elements of a callback registration: the criteria a set must match, and the callback.
+    internal const string RegistrationCriteriaElementName = "Criteria";
+
+    internal const string RegistrationCallbackElementName = "Callback";
 
     private static TupleTypeSyntax BuildRegistrationTuple(in ImposterIndexerMetadata indexer) =>
         TupleType(
             SeparatedList<TupleElementSyntax>(
                 new SyntaxNodeOrToken[]
                 {
-                    TupleElement(indexer.ArgumentsCriteria.TypeSyntax, Identifier("Criteria")),
+                    TupleElement(
+                        indexer.ArgumentsCriteria.TypeSyntax,
+                        Identifier(RegistrationCriteriaElementName)
+                    ),
                     Token(SyntaxKind.CommaToken),
                     TupleElement(
                         indexer.Delegates.SetterCallbackDelegateType,
-                        Identifier("Callback")
+                        Identifier(RegistrationCallbackElementName)
                     ),
                 }
             )

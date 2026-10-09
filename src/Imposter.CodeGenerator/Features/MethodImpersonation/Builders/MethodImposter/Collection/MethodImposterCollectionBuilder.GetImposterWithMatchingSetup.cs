@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -29,7 +30,7 @@ internal static partial class MethodImposterCollectionBuilder
 
         var methodBuilder = new MethodDeclarationBuilder(
             method.MethodImposter.GenericInterface.Syntax,
-            "GetImposterWithMatchingInvocationImposterGroup"
+            MethodImposterCollectionMetadata.GetImposterWithMatchingInvocationImposterGroupMethodName
         )
             .AddParameter(GetParameter(method, parameterName))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -40,7 +41,7 @@ internal static partial class MethodImposterCollectionBuilder
                     ForEachStatement(
                         Var,
                         storedImposterIdentifier,
-                        IdentifierName("_imposters"),
+                        IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName),
                         Block(
                             LocalVariableDeclarationSyntax(
                                 Var,

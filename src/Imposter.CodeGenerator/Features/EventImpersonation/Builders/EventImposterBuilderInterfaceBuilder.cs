@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
@@ -111,7 +112,7 @@ internal static class EventImposterBuilderInterfaceBuilder
                     @event.Builder.Methods.Subscribed.CriteriaParameter
                 )
             )
-            .AddParameter(CountParameter())
+            .AddParameter(CountParameter(@event))
             .WithSemicolon()
             .Build();
 
@@ -127,7 +128,7 @@ internal static class EventImposterBuilderInterfaceBuilder
                     @event.Builder.Methods.Unsubscribed.CriteriaParameter
                 )
             )
-            .AddParameter(CountParameter())
+            .AddParameter(CountParameter(@event))
             .WithSemicolon()
             .Build();
 
@@ -141,7 +142,7 @@ internal static class EventImposterBuilderInterfaceBuilder
                     SyntaxFactoryHelper.ParameterSyntax(it)
                 )
             )
-            .AddParameter(CountParameter())
+            .AddParameter(CountParameter(@event))
             .WithSemicolon()
             .Build();
 
@@ -157,7 +158,7 @@ internal static class EventImposterBuilderInterfaceBuilder
                     @event.Builder.Methods.HandlerInvoked.HandlerCriteriaParameter
                 )
             )
-            .AddParameter(CountParameter())
+            .AddParameter(CountParameter(@event))
             .WithSemicolon()
             .Build();
 
@@ -174,7 +175,4 @@ internal static class EventImposterBuilderInterfaceBuilder
             .WithSemicolon()
             .Build();
     }
-
-    private static ParameterSyntax CountParameter() =>
-        SyntaxFactoryHelper.ParameterSyntax(WellKnownTypes.Imposter.Abstractions.Count, "count");
 }

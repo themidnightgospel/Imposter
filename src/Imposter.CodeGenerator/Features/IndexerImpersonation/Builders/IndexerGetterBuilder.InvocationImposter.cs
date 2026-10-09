@@ -156,7 +156,7 @@ internal static partial class IndexerGetterBuilder
                         .Call(Argument(handler))
                         .ToStatementSyntax(),
                     IdentifierName(invocation.ParentField.Name)
-                        .Dot(IdentifierName("MarkReturnConfigured"))
+                        .Dot(IdentifierName(getter.MarkReturnConfiguredMethod.Name))
                         .Call()
                         .ToStatementSyntax()
                 )
@@ -328,7 +328,11 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 Block(
                     IdentifierName(invocation.ParentField.Name)
-                        .Dot(IdentifierName("MarkReturnConfigured"))
+                        .Dot(
+                            IdentifierName(
+                                indexer.GetterImplementation.MarkReturnConfiguredMethod.Name
+                            )
+                        )
                         .Call()
                         .ToStatementSyntax(),
                     TurnDefaultBehaviourOff(indexer),

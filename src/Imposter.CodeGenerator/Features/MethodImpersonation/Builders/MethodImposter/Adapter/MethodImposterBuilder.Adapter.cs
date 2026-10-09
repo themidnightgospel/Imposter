@@ -2,6 +2,7 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -27,7 +28,7 @@ internal static class MethodImposterAdapterBuilder
         );
 
         var adapterClass = new ClassDeclarationBuilder(
-            "Adapter",
+            MethodImposterMetadata.AdapterName,
             method.TargetGenericTypeParameterListSyntax
         )
             .WithTypeParameterConstraintClauses(method.TargetGenericTypeConstraintClauses)
@@ -40,7 +41,7 @@ internal static class MethodImposterAdapterBuilder
                 )
             )
             .AddMember(
-                new ConstructorBuilder("Adapter")
+                new ConstructorBuilder(MethodImposterMetadata.AdapterName)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .AddParameter(
                         ParameterSyntax(
@@ -169,7 +170,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         var invokeExpression = IdentifierName(adapterNames.TargetFieldName)
-            .Dot(IdentifierName("Invoke"))
+            .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
             .Call(ArgumentList(SeparatedList(invokeArguments)));
 
         if (method.HasReturnValue)
@@ -193,7 +194,7 @@ internal static class MethodImposterAdapterBuilder
 
         return new MethodDeclarationBuilder(
             (TypeSyntax)typeParamRenamer.Visit(method.NullableAwareReturnTypeSyntax),
-            "Invoke"
+            MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
