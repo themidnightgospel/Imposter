@@ -22,8 +22,6 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposte
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
-using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;

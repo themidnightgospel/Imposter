@@ -38,8 +38,6 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly SetterUseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
 
-    internal readonly PropertySetterThenMethodMetadata? InitialThenMethod;
-
     internal PropertySetterImposterBuilderInterfaceMetadata(
         in ImposterPropertyCoreMetadata property
     )
@@ -75,9 +73,6 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
                 ContinuationInterfaceTypeSyntax,
                 UseBaseImplementationEntryInterfaceTypeSyntax
             );
-            // Setter builders already inherit the fluent chain via the use-base interface, so emitting
-            // another Then() on the builder would only hide the inherited member.
-            InitialThenMethod = null;
         }
         else
         {
@@ -88,7 +83,6 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
                 ContinuationInterfaceTypeSyntax,
                 FluentInterfaceTypeSyntax
             );
-            InitialThenMethod = null;
         }
     }
 }

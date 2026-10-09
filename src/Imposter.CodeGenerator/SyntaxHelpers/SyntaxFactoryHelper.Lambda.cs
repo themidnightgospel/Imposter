@@ -29,10 +29,8 @@ internal static partial class SyntaxFactoryHelper
         CSharpSyntaxNode body
     ) => ParenthesizedLambdaExpression(ParameterList(), body);
 
-    public static SimpleLambdaExpressionSyntax DiscardParameterGoesTo(
-        CSharpSyntaxNode body,
-        string parameterName = "_"
-    ) => Identifier(parameterName).Lambda(body);
+    public static SimpleLambdaExpressionSyntax DiscardParameterGoesTo(CSharpSyntaxNode body) =>
+        Identifier("_").Lambda(body);
 
     public static SimpleLambdaExpressionSyntax Lambda(
         this ParameterSyntax lambdaParameter,
