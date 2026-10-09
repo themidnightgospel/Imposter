@@ -76,6 +76,10 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly bool RequiresExplicitInterfaceImplementation;
 
+    // The imposter method that sets this method up: named after it, or by its unique name when another member would
+    // take the same setup signature.
+    internal readonly string SetupName;
+
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
     internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
@@ -200,6 +204,10 @@ internal readonly struct ImposterTargetMethodMetadata
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
         RequiresExplicitInterfaceImplementation = method.RequiresExplicitInterfaceImplementation;
+        SetupName =
+            RequiresExplicitInterfaceImplementation || Model.HasRefKindOverload
+                ? UniqueName
+                : Model.Name;
         ImposterInstanceMethodConstraintClauses =
             Model.IsClassMember || RequiresExplicitInterfaceImplementation
                 ? SyntaxFactoryHelper.RestatableConstraintClauses(

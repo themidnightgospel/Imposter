@@ -53,7 +53,10 @@ internal static class InterfaceSetupViewBuilder
         {
             var parameters = ArgParameters(model.Parameters);
             var typeParameters = model.TypeParameters;
-            var builder = new MethodDeclarationBuilder(member.ReturnType, EscapeKeyword(model.Name))
+            var builder = new MethodDeclarationBuilder(
+                member.ReturnType,
+                EscapeKeyword(member.ViewName)
+            )
                 .WithTypeParameters(TypeParameterListSyntax(typeParameters))
                 .WithParameterList(parameters)
                 .WithExplicitInterfaceSpecifier(specifier);

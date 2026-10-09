@@ -123,6 +123,20 @@ Returns and callbacks can specify `out/ref/in` in the delegate signature:
         .Callback((out int o, ref string r, in double d, bool[] args) => { o = 5; });
     ```
 
+### Overloads that differ only in passing a parameter by reference
+
+`Arg<T>` matches a parameter whether it's passed by value, `in`, `ref` or `ref readonly`, so overloads such as `int Count(int value)` and `int Count(in int value)` can't share a setup method. The overload declared first keeps the name and the others get a numbered one (`Count_1`), on the imposter and in its [setup views](../interface-setup.md):
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Overview/OverviewTests.cs#L164"}
+    imposter.Count(Arg<int>.Any()).Returns(1); // int Count(int value)
+    imposter.Count_1(Arg<int>.Any()).Returns(2); // int Count(in int value)
+
+    var value = 5;
+    imposter.Instance().Count(value); // 1
+    imposter.Instance().Count(in value); // 2
+    ```
+
 ## Base Implementation (Class Targets)
 
 !!! info

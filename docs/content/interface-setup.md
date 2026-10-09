@@ -1,6 +1,6 @@
 # Interface-specific setup
 
-When an interface hides a parent's member with `new`, use `For(default(TInterface))` to select which declaration to configure. Each view exposes the original member names, so you do not need to identify a member by a numbered suffix.
+When an interface hides a parent's member with `new`, use `For(default(TInterface))` to select which declaration to configure. Each view exposes the original member names, so you do not need to identify a member by a numbered suffix. The exception is overloads of one interface that differ only in passing a parameter by reference, whose setups can't share a name (see [Methods](methods/index.md#overloads-that-differ-only-in-passing-a-parameter-by-reference)).
 
 ```csharp
 public interface IBaseQueryNames
