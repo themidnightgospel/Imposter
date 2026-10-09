@@ -17,7 +17,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	{
 		private readonly CountMethodImposter _countMethodImposter;
 		private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
-		public ICountMethodImposterBuilder Count(global::Imposter.Abstractions.SpanArg<char> text)
+		public ICountMethodImposterBuilder Count(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new CountMethodImposter.Builder(_countMethodImposter, _countMethodInvocationHistoryCollection, new CountArgumentsCriteria(text));
 		}
@@ -44,9 +44,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class CountArgumentsCriteria
 		{
-			public global::Imposter.Abstractions.SpanArg<char> text { get; }
+			public global::Imposter.Abstractions.ReadOnlySpanArg<char> text { get; }
 
-			public CountArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char> text)
+			public CountArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 			{
 				this.text = text;
 			}
@@ -115,7 +115,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class CountMethodInvocationImposterGroup
 		{
-			internal static CountMethodInvocationImposterGroup Default = new CountMethodInvocationImposterGroup(new CountArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char>.Any()));
+			internal static CountMethodInvocationImposterGroup Default = new CountMethodInvocationImposterGroup(new CountArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char>.Any()));
 			internal CountArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();

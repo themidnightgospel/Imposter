@@ -34,7 +34,7 @@ internal readonly struct MethodParameterMetadata
         ArgTypeSyntax = SyntaxFactoryHelper.ArgType(model);
     }
 
-    internal bool IsSpan => Model.SpanElementType is not null;
+    internal bool IsSpan => Model.Span is not null;
 
     // The parameter's value as the stored type: a copy of a span's elements, or the parameter itself.
     internal ExpressionSyntax StoredValue =>

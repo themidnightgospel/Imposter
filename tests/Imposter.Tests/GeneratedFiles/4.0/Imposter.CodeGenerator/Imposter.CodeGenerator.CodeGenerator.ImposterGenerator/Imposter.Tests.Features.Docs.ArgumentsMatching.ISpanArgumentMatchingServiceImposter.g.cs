@@ -17,7 +17,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	{
 		private readonly ParseMethodImposter _parseMethodImposter;
 		private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
-		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.SpanArg<char> text)
+		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new ParseMethodImposter.Builder(_parseMethodImposter, _parseMethodInvocationHistoryCollection, new ParseArgumentsCriteria(text));
 		}
@@ -44,9 +44,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ParseArgumentsCriteria
 		{
-			public global::Imposter.Abstractions.SpanArg<char> text { get; }
+			public global::Imposter.Abstractions.ReadOnlySpanArg<char> text { get; }
 
-			public ParseArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char> text)
+			public ParseArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 			{
 				this.text = text;
 			}
@@ -115,7 +115,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class ParseMethodInvocationImposterGroup
 		{
-			internal static ParseMethodInvocationImposterGroup Default = new ParseMethodInvocationImposterGroup(new ParseArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char>.Any()));
+			internal static ParseMethodInvocationImposterGroup Default = new ParseMethodInvocationImposterGroup(new ParseArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char>.Any()));
 			internal ParseArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -411,10 +411,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISpanArgumentMatchingServiceSetup
 		{
-			IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.SpanArg<char> text);
+			IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text);
 		}
 
-		IParseMethodImposterBuilder ISpanArgumentMatchingServiceSetup.Parse(global::Imposter.Abstractions.SpanArg<char> text)
+		IParseMethodImposterBuilder ISpanArgumentMatchingServiceSetup.Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return this.Parse(text);
 		}

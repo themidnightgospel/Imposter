@@ -12,15 +12,16 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    // A span parameter is matched with SpanArg<T>, which has a type of its own, so a method overloaded on T[] and on
-    // Span<T> keeps distinct setups.
+    // Each span kind has a matcher type of its own, so a method overloaded on T[], Span<T> and ReadOnlySpan<T> keeps
+    // distinct setups.
     internal static TypeSyntax ArgType(ParameterModel parameter)
     {
-        if (parameter.SpanElementType is { } elementType)
+        if (parameter.Span is { } span)
         {
-            return WellKnownTypes.Imposter.Abstractions.SpanArg(
-                TypeSyntaxIncludingNullable(elementType)
-            );
+            var elementType = TypeSyntaxIncludingNullable(span.ElementType);
+            return span.IsReadOnly
+                ? WellKnownTypes.Imposter.Abstractions.ReadOnlySpanArg(elementType)
+                : WellKnownTypes.Imposter.Abstractions.SpanArg(elementType);
         }
 
         var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
@@ -32,9 +33,9 @@ internal static partial class SyntaxFactoryHelper
 
     // A span argument is kept as an array of its elements.
     internal static TypeSyntax StoredTypeSyntaxIncludingNullable(ParameterModel parameter) =>
-        parameter.SpanElementType is { } elementType
+        parameter.Span is { } span
             ? ArrayType(
-                TypeSyntaxIncludingNullable(elementType),
+                TypeSyntaxIncludingNullable(span.ElementType),
                 SingletonList(ArrayRankSpecifier())
             )
             : TypeSyntaxIncludingNullable(parameter.Type);

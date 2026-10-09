@@ -186,15 +186,15 @@ When every argument should be a wildcard and you don't want to spell out the gen
 
 ## Span parameters
 
-An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is called it copies the elements of each span argument into an array. Match those elements with `SpanArg<T>`: `SpanArg<T>.Is(params T[] expected)` matches the same elements in the same order, `SpanArg<T>.Is(Func<T[], bool> predicate)` matches when the predicate returns `true` for them, and `SpanArg<T>.Any()` or `Arg.Any` matches any elements. Verification sees the elements as they were when the method was called. The delegates you pass to `Returns` or `Callback` receive the span itself.
+An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is called it copies the elements of each span argument into an array. Match those elements with `SpanArg<T>` for a `Span<T>` parameter and `ReadOnlySpanArg<T>` for a `ReadOnlySpan<T>` parameter. Both work the same way: `Is(params T[] expected)` matches the same elements in the same order, `Is(Func<T[], bool> predicate)` matches when the predicate returns `true` for them, and `Any()` or `Arg.Any` matches any elements. Verification sees the elements as they were when the method was called. The delegates you pass to `Returns` or `Callback` receive the span itself.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L195"}
     var imposter = new ISpanArgumentMatchingServiceImposter();
     var service = imposter.Instance();
 
-    imposter.Parse(SpanArg<char>.Is('4', '2')).Returns(42);
-    imposter.Parse(SpanArg<char>.Is(text => text.Length > 2)).Returns(-1);
+    imposter.Parse(ReadOnlySpanArg<char>.Is('4', '2')).Returns(42);
+    imposter.Parse(ReadOnlySpanArg<char>.Is(text => text.Length > 2)).Returns(-1);
 
     service.Parse("42"); // 42
     service.Parse("123"); // -1
@@ -214,6 +214,6 @@ An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is cal
 - `Arg<T>.IsDefault()` — matches `default(T)`.
 - `Arg<T>.IsIn(IEnumerable<T> values)` / `Arg<T>.IsIn(IEnumerable<T> values, IEqualityComparer<T> comparer)` — matches when the argument is contained in the supplied set.
 - `Arg<T>.IsNotIn(IEnumerable<T> values)` / `Arg<T>.IsNotIn(IEnumerable<T> values, IEqualityComparer<T> comparer)` — matches when the argument is not contained in the supplied set.
-- `SpanArg<T>.Any()` — wildcard for a `Span<T>` or `ReadOnlySpan<T>` argument.
-- `SpanArg<T>.Is(params T[] expected)` / `SpanArg<T>.Is(T[] expected, IEqualityComparer<T> comparer)` — matches when the span holds the same elements in the same order (optionally using a custom comparer).
-- `SpanArg<T>.Is(Func<T[], bool> predicate)` — matches when the predicate returns `true` for the span's elements.
+- `SpanArg<T>.Any()` / `ReadOnlySpanArg<T>.Any()` — wildcard for a `Span<T>` / `ReadOnlySpan<T>` argument.
+- `SpanArg<T>.Is(params T[] expected)` / `SpanArg<T>.Is(T[] expected, IEqualityComparer<T> comparer)`, and the same on `ReadOnlySpanArg<T>` — matches when the span holds the same elements in the same order (optionally using a custom comparer).
+- `SpanArg<T>.Is(Func<T[], bool> predicate)`, and the same on `ReadOnlySpanArg<T>` — matches when the predicate returns `true` for the span's elements.

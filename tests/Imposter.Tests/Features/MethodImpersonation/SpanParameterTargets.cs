@@ -5,6 +5,7 @@ using Imposter.Tests.Features.MethodImpersonation;
 
 [assembly: GenerateImposter(typeof(ISpanParameterSut))]
 [assembly: GenerateImposter(typeof(SpanParameterClass))]
+[assembly: GenerateImposter(typeof(ISpanOverloadSut))]
 
 namespace Imposter.Tests.Features.MethodImpersonation
 {
@@ -24,5 +25,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
     public class SpanParameterClass
     {
         public virtual int Count(ReadOnlySpan<char> text) => text.Length;
+    }
+
+    public interface ISpanOverloadSut
+    {
+        int Write(Span<byte> buffer);
+
+        int Write(ReadOnlySpan<byte> data);
     }
 }

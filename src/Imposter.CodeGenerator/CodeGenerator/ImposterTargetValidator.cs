@@ -151,7 +151,7 @@ internal static class ImposterTargetValidator
         foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
         {
             var uncopiedParameters = method.Parameters.Where(parameter =>
-                ParameterModel.CopiedSpanElementType(parameter) is null
+                SpanModel.From(parameter) is null
             );
 
             if (FindRefLikeType(method.ReturnType, uncopiedParameters) is { } type)

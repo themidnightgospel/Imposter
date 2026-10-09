@@ -7,7 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
-// An imposter keeps a copy of each Span<T> or ReadOnlySpan<T> argument as an array and matches it with SpanArg<T>.
+// An imposter keeps a copy of each Span<T> or ReadOnlySpan<T> argument as an array and matches it with SpanArg<T> or
+// ReadOnlySpanArg<T>.
 public class SpanParameterCompilationTests
 {
     [Fact]
@@ -15,7 +16,17 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { void Write(System.ReadOnlySpan<byte> data); void Write(byte[] data); }",
-            "imposter.Write(SpanArg<byte>.Is(1)).Called(Count.Never()); imposter.Write(new byte[] { 1 }).Called(Count.Never()); imposter.Instance().Write(new byte[1]); imposter.Instance().Write(new System.Span<byte>(new byte[1]));",
+            "imposter.Write(ReadOnlySpanArg<byte>.Is(1)).Called(Count.Never()); imposter.Write(new byte[] { 1 }).Called(Count.Never()); imposter.Instance().Write(new byte[1]); imposter.Instance().Write(new System.Span<byte>(new byte[1]));",
+            nameof(SpanParameterCompilationTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenMethodsOverloadedOnSpanAndReadOnlySpan_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Write(System.Span<int> data); int Write(System.ReadOnlySpan<int> data); }",
+            "imposter.Write(SpanArg<int>.Is(1)).Returns(1); imposter.Write(ReadOnlySpanArg<int>.Is(1)).Returns(2); imposter.Instance().Write(new System.Span<int>(new int[1])); imposter.Instance().Write(new System.ReadOnlySpan<int>(new int[1]));",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -25,7 +36,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { bool TryParse(System.ReadOnlySpan<char> text, out int value); }",
-            "imposter.TryParse(SpanArg<char>.Any(), OutArg<int>.Any()).Returns(true); imposter.Instance().TryParse(System.MemoryExtensions.AsSpan(\"1\"), out var value);",
+            "imposter.TryParse(ReadOnlySpanArg<char>.Any(), OutArg<int>.Any()).Returns(true); imposter.Instance().TryParse(System.MemoryExtensions.AsSpan(\"1\"), out var value);",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -35,7 +46,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { int Sum(System.ReadOnlySpan<int> left, System.Span<int> right, ref int total); }",
-            "imposter.Sum(SpanArg<int>.Any(), SpanArg<int>.Any(), Arg<int>.Any()).Returns(1); var total = 0; imposter.Instance().Sum(new int[1], new int[1], ref total);",
+            "imposter.Sum(ReadOnlySpanArg<int>.Any(), SpanArg<int>.Any(), Arg<int>.Any()).Returns(1); var total = 0; imposter.Instance().Sum(new int[1], new int[1], ref total);",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -45,7 +56,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { T First<T>(System.ReadOnlySpan<T> items) where T : class; }",
-            "imposter.First<string>(SpanArg<string>.Any()).Returns(\"a\"); imposter.Instance().First<string>(new[] { \"x\" });",
+            "imposter.First<string>(ReadOnlySpanArg<string>.Any()).Returns(\"a\"); imposter.Instance().First<string>(new[] { \"x\" });",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -56,7 +67,7 @@ public class SpanParameterCompilationTests
         await AssertCompiles(
             "Sample.IService<>",
             "public interface IService<TItem> { int Count(System.ReadOnlySpan<TItem> items); }",
-            "var imposter = new Sample.IServiceImposter<string>(); imposter.Count(SpanArg<string>.Is(\"a\")).Returns(1); imposter.Instance().Count(new[] { \"a\" });",
+            "var imposter = new Sample.IServiceImposter<string>(); imposter.Count(ReadOnlySpanArg<string>.Is(\"a\")).Returns(1); imposter.Instance().Count(new[] { \"a\" });",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -66,7 +77,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { System.Threading.Tasks.Task<int> CountAsync(System.ReadOnlySpan<byte> data); System.Threading.Tasks.Task FlushAsync(System.Span<byte> buffer); System.Threading.Tasks.ValueTask<int> PeekAsync(System.ReadOnlySpan<byte> data); }",
-            "imposter.CountAsync(SpanArg<byte>.Any()).ReturnsAsync(1); imposter.FlushAsync(SpanArg<byte>.Any()).ThrowsAsync(new System.Exception()); imposter.PeekAsync(SpanArg<byte>.Any()).ReturnsAsync(2); imposter.Instance().CountAsync(new byte[1]);",
+            "imposter.CountAsync(ReadOnlySpanArg<byte>.Any()).ReturnsAsync(1); imposter.FlushAsync(SpanArg<byte>.Any()).ThrowsAsync(new System.Exception()); imposter.PeekAsync(ReadOnlySpanArg<byte>.Any()).ReturnsAsync(2); imposter.Instance().CountAsync(new byte[1]);",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -76,7 +87,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { System.Threading.Tasks.Task<int> CountAsync(System.ReadOnlySpan<byte> data, int AsyncResult); }",
-            "imposter.CountAsync(SpanArg<byte>.Any(), Arg<int>.Any()).ReturnsAsync(1); imposter.CountAsync(SpanArg<byte>.Any(), Arg<int>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().CountAsync(new byte[1], 0);",
+            "imposter.CountAsync(ReadOnlySpanArg<byte>.Any(), Arg<int>.Any()).ReturnsAsync(1); imposter.CountAsync(ReadOnlySpanArg<byte>.Any(), Arg<int>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().CountAsync(new byte[1], 0);",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -86,7 +97,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { System.Threading.Tasks.Task<AsyncResult> GetAsync<AsyncResult>(System.ReadOnlySpan<byte> data); }",
-            "imposter.GetAsync<int>(SpanArg<byte>.Any()).ReturnsAsync(1); imposter.GetAsync<int>(SpanArg<byte>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().GetAsync<int>(new byte[1]);",
+            "imposter.GetAsync<int>(ReadOnlySpanArg<byte>.Any()).ReturnsAsync(1); imposter.GetAsync<int>(ReadOnlySpanArg<byte>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().GetAsync<int>(new byte[1]);",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -97,7 +108,7 @@ public class SpanParameterCompilationTests
         await AssertCompiles(
             "Sample.Service",
             "public abstract class Service { public abstract int Get(System.ReadOnlySpan<char> text); protected virtual void Log(System.Span<char> buffer) { } public virtual int Count(System.ReadOnlySpan<char> text) => text.Length; }",
-            "var imposter = new Sample.ServiceImposter(); imposter.Get(SpanArg<char>.Any()).Returns(1); imposter.Count(SpanArg<char>.Any()).UseBaseImplementation(); imposter.Instance().Get(System.MemoryExtensions.AsSpan(\"a\"));",
+            "var imposter = new Sample.ServiceImposter(); imposter.Get(ReadOnlySpanArg<char>.Any()).Returns(1); imposter.Count(ReadOnlySpanArg<char>.Any()).UseBaseImplementation(); imposter.Log(SpanArg<char>.Any()).Called(Count.Never()); imposter.Instance().Get(System.MemoryExtensions.AsSpan(\"a\"));",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -107,7 +118,7 @@ public class SpanParameterCompilationTests
     {
         await AssertInterfaceCompiles(
             "public interface IService { int Get(System.ReadOnlySpan<string?> items); }",
-            "imposter.Get(SpanArg<string?>.Is(new string?[] { null })).Returns(1); imposter.Instance().Get(new string?[] { null });",
+            "imposter.Get(ReadOnlySpanArg<string?>.Is(new string?[] { null })).Returns(1); imposter.Instance().Get(new string?[] { null });",
             nameof(SpanParameterCompilationTests)
         );
     }
@@ -119,7 +130,7 @@ public class SpanParameterCompilationTests
         await AssertCompiles(
             "Sample.IService",
             "public interface IService { int Count(scoped System.ReadOnlySpan<char> text); }",
-            "var imposter = new Sample.IServiceImposter(); imposter.Count(SpanArg<char>.Any()).Returns(1); imposter.Instance().Count(System.MemoryExtensions.AsSpan(\"a\"));",
+            "var imposter = new Sample.IServiceImposter(); imposter.Count(ReadOnlySpanArg<char>.Any()).Returns(1); imposter.Instance().Count(System.MemoryExtensions.AsSpan(\"a\"));",
             nameof(SpanParameterCompilationTests),
             LanguageVersion.CSharp11
         );
@@ -133,7 +144,7 @@ public class SpanParameterCompilationTests
         await AssertCompiles(
             "Sample.IService",
             "public interface IService { int Sum(params System.ReadOnlySpan<int> values); }",
-            "var imposter = new Sample.IServiceImposter(); imposter.Sum(SpanArg<int>.Is(1, 2)).Returns(3); imposter.Instance().Sum(1, 2);",
+            "var imposter = new Sample.IServiceImposter(); imposter.Sum(ReadOnlySpanArg<int>.Is(1, 2)).Returns(3); imposter.Instance().Sum(1, 2);",
             nameof(SpanParameterCompilationTests),
             LanguageVersion.Preview
         );

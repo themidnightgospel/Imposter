@@ -13,7 +13,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenSetupForSpanElements_WhenInvokedWithThoseElements_ShouldReturnSetupValue()
         {
-            _sut.Parse(SpanArg<char>.Is('4', '2'), Arg<int>.Any()).Returns(42);
+            _sut.Parse(ReadOnlySpanArg<char>.Is('4', '2'), Arg<int>.Any()).Returns(42);
 
             _sut.Instance().Parse("42".AsSpan(), 0).ShouldBe(42);
         }
@@ -21,7 +21,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenSetupForSpanElements_WhenInvokedWithOtherElements_ShouldReturnDefault()
         {
-            _sut.Parse(SpanArg<char>.Is('4', '2'), Arg<int>.Any()).Returns(42);
+            _sut.Parse(ReadOnlySpanArg<char>.Is('4', '2'), Arg<int>.Any()).Returns(42);
 
             _sut.Instance().Parse("7".AsSpan(), 0).ShouldBe(0);
         }
@@ -37,7 +37,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenReturnsDelegate_WhenInvoked_ShouldPassTheSpanToTheDelegate()
         {
-            _sut.Parse(SpanArg<char>.Any(), Arg<int>.Any())
+            _sut.Parse(ReadOnlySpanArg<char>.Any(), Arg<int>.Any())
                 .Returns((text, start) => text.Length + start);
 
             _sut.Instance().Parse("abc".AsSpan(), 10).ShouldBe(13);
@@ -82,7 +82,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
         {
             _sut.Instance().Parse("abc".AsSpan(), 1);
 
-            _sut.Parse(SpanArg<char>.Is('a', 'b', 'c'), Arg<int>.Is(1)).Called(Count.Once());
+            _sut.Parse(ReadOnlySpanArg<char>.Is('a', 'b', 'c'), Arg<int>.Is(1))
+                .Called(Count.Once());
         }
 
         [Fact]
@@ -98,7 +99,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenSpanPredicate_WhenInvoked_ShouldMatchByPredicate()
         {
-            _sut.Parse(SpanArg<char>.Is(text => text.Length > 2), Arg<int>.Any()).Returns(1);
+            _sut.Parse(ReadOnlySpanArg<char>.Is(text => text.Length > 2), Arg<int>.Any())
+                .Returns(1);
 
             _sut.Instance().Parse("abcd".AsSpan(), 0).ShouldBe(1);
         }
@@ -106,7 +108,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenGenericSpanSetup_WhenInvoked_ShouldReturnSetupValue()
         {
-            _sut.Contains<int>(SpanArg<int>.Is(1, 2), Arg<int>.Is(2)).Returns(true);
+            _sut.Contains<int>(ReadOnlySpanArg<int>.Is(1, 2), Arg<int>.Is(2)).Returns(true);
 
             _sut.Instance().Contains(new[] { 1, 2 }.AsSpan(), 2).ShouldBeTrue();
         }
@@ -122,7 +124,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public async Task GivenReturnsAsync_WhenAsyncMethodIsInvoked_ShouldReturnTheValue()
         {
-            _sut.CountAsync(SpanArg<byte>.Any()).ReturnsAsync(5);
+            _sut.CountAsync(ReadOnlySpanArg<byte>.Any()).ReturnsAsync(5);
 
             var count = await _sut.Instance().CountAsync(new byte[] { 1 });
 
@@ -132,7 +134,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public async Task GivenThrowsAsync_WhenAsyncMethodIsInvoked_ShouldReturnAFaultedTask()
         {
-            _sut.CountAsync(SpanArg<byte>.Any()).ThrowsAsync(new InvalidOperationException("boom"));
+            _sut.CountAsync(ReadOnlySpanArg<byte>.Any())
+                .ThrowsAsync(new InvalidOperationException("boom"));
 
             var task = _sut.Instance().CountAsync(new byte[] { 1 });
 
@@ -140,10 +143,30 @@ namespace Imposter.Tests.Features.MethodImpersonation
         }
 
         [Fact]
+        public void GivenOverloadsOnSpanAndReadOnlySpan_WhenTheSpanOverloadIsInvoked_ShouldUseItsSetup()
+        {
+            var imposter = new ISpanOverloadSutImposter();
+            imposter.Write(SpanArg<byte>.Any()).Returns(1);
+            imposter.Write(ReadOnlySpanArg<byte>.Any()).Returns(2);
+
+            imposter.Instance().Write(new Span<byte>(new byte[1])).ShouldBe(1);
+        }
+
+        [Fact]
+        public void GivenOverloadsOnSpanAndReadOnlySpan_WhenTheReadOnlySpanOverloadIsInvoked_ShouldUseItsSetup()
+        {
+            var imposter = new ISpanOverloadSutImposter();
+            imposter.Write(SpanArg<byte>.Any()).Returns(1);
+            imposter.Write(ReadOnlySpanArg<byte>.Any()).Returns(2);
+
+            imposter.Instance().Write(new ReadOnlySpan<byte>(new byte[1])).ShouldBe(2);
+        }
+
+        [Fact]
         public void GivenClassMethodWithUseBaseImplementation_WhenInvoked_ShouldPassTheSpanToTheBaseMethod()
         {
             var imposter = new SpanParameterClassImposter();
-            imposter.Count(SpanArg<char>.Any()).UseBaseImplementation();
+            imposter.Count(ReadOnlySpanArg<char>.Any()).UseBaseImplementation();
 
             imposter.Instance().Count("abcd".AsSpan()).ShouldBe(4);
         }

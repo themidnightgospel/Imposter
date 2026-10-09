@@ -197,8 +197,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
             var imposter = new ISpanArgumentMatchingServiceImposter();
             var service = imposter.Instance();
 
-            imposter.Parse(SpanArg<char>.Is('4', '2')).Returns(42);
-            imposter.Parse(SpanArg<char>.Is(text => text.Length > 2)).Returns(-1);
+            imposter.Parse(ReadOnlySpanArg<char>.Is('4', '2')).Returns(42);
+            imposter.Parse(ReadOnlySpanArg<char>.Is(text => text.Length > 2)).Returns(-1);
 
             service.Parse("42").ShouldBe(42);
             service.Parse("123").ShouldBe(-1);

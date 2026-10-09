@@ -1,26 +1,27 @@
 namespace Imposter.Abstractions;
 
 /// <summary>
-/// Matches a <c>Span&lt;T&gt;</c> parameter. An imposter keeps a copy of each span argument as an array, so the
-/// matcher compares that copy. <see cref="ReadOnlySpanArg{T}"/> matches a <c>ReadOnlySpan&lt;T&gt;</c> parameter.
+/// Matches a <c>ReadOnlySpan&lt;T&gt;</c> parameter. An imposter keeps a copy of each span argument as an array, so
+/// the matcher compares that copy. It's a type of its own, apart from <see cref="SpanArg{T}"/>, so a method
+/// overloaded on <c>Span&lt;T&gt;</c> and on <c>ReadOnlySpan&lt;T&gt;</c> keeps distinct setups.
 /// </summary>
 /// <typeparam name="T">The span's element type.</typeparam>
 /// <remarks>
 /// Example:
 /// <code>
-/// // void Write(Span&lt;byte&gt; buffer);
-/// imposter.Write(SpanArg&lt;byte&gt;.Is(1, 2)).Callback(buffer =&gt; buffer[0] = 0);
-/// imposter.Write(SpanArg&lt;byte&gt;.Is(buffer =&gt; buffer.Length &gt; 2)).Throws&lt;ArgumentException&gt;();
-/// imposter.Write(SpanArg&lt;byte&gt;.Any()).Called(Count.Once());
+/// // int Parse(ReadOnlySpan&lt;char&gt; text);
+/// imposter.Parse(ReadOnlySpanArg&lt;char&gt;.Is('4', '2')).Returns(42);
+/// imposter.Parse(ReadOnlySpanArg&lt;char&gt;.Is(text =&gt; text.Length &gt; 2)).Returns(3);
+/// imposter.Parse(ReadOnlySpanArg&lt;char&gt;.Any()).Called(Count.Once());
 /// </code>
 /// </remarks>
-public sealed class SpanArg<T>
+public sealed class ReadOnlySpanArg<T>
 {
-    private static readonly SpanArg<T> AnyInstance = new(_ => true);
+    private static readonly ReadOnlySpanArg<T> AnyInstance = new(_ => true);
 
     private readonly Func<T[], bool> _matches;
 
-    private SpanArg(Func<T[], bool> matches)
+    private ReadOnlySpanArg(Func<T[], bool> matches)
     {
         _matches = matches;
     }
@@ -34,14 +35,15 @@ public sealed class SpanArg<T>
     /// <summary>
     /// Matches any span.
     /// </summary>
-    public static SpanArg<T> Any() => AnyInstance;
+    public static ReadOnlySpanArg<T> Any() => AnyInstance;
 
     /// <summary>
     /// Matches a span whose elements equal <paramref name="expected"/>, in order.
     /// </summary>
     /// <param name="expected">The elements to compare with; the matcher keeps its own copy.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="expected"/> is <see langword="null"/>.</exception>
-    public static SpanArg<T> Is(params T[] expected) => Is(expected, EqualityComparer<T>.Default);
+    public static ReadOnlySpanArg<T> Is(params T[] expected) =>
+        Is(expected, EqualityComparer<T>.Default);
 
     /// <summary>
     /// Matches a span whose elements equal <paramref name="expected"/>, in order, using <paramref name="comparer"/>.
@@ -51,7 +53,7 @@ public sealed class SpanArg<T>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="expected"/> or <paramref name="comparer"/> is <see langword="null"/>.
     /// </exception>
-    public static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer) =>
+    public static ReadOnlySpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer) =>
         new(SpanElementMatchers.SequenceEqualTo(expected, comparer));
 
     /// <summary>
@@ -59,11 +61,11 @@ public sealed class SpanArg<T>
     /// </summary>
     /// <param name="predicate">Evaluates a copy of the span argument's elements.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
-    public static SpanArg<T> Is(Func<T[], bool> predicate) =>
+    public static ReadOnlySpanArg<T> Is(Func<T[], bool> predicate) =>
         new(SpanElementMatchers.Satisfying(predicate));
 
     /// <summary>
     /// Implicitly converts <see cref="Arg.Any"/> to a matcher for any span.
     /// </summary>
-    public static implicit operator SpanArg<T>(AnyArgMarker _) => Any();
+    public static implicit operator ReadOnlySpanArg<T>(AnyArgMarker _) => Any();
 }

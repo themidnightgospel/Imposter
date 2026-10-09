@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		private readonly ContainsMethodInvocationHistoryCollection _containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
 		private readonly CountAsyncMethodInvocationHistoryCollection _countAsyncMethodInvocationHistoryCollection = new CountAsyncMethodInvocationHistoryCollection();
 		private readonly FillMethodInvocationHistoryCollection _fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
-		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.SpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
+		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
 		{
 			return new ParseMethodImposter.Builder(_parseMethodImposter, _parseMethodInvocationHistoryCollection, new ParseArgumentsCriteria(text, start));
 		}
@@ -35,12 +35,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new WriteMethodImposter.Builder(_writeMethodImposter, _writeMethodInvocationHistoryCollection, new WriteArgumentsCriteria(buffer));
 		}
 
-		public IContainsMethodImposterBuilder<T> Contains<T>(global::Imposter.Abstractions.SpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
+		public IContainsMethodImposterBuilder<T> Contains<T>(global::Imposter.Abstractions.ReadOnlySpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
 		{
 			return new ContainsMethodImposter<T>.Builder(_containsMethodImposterCollection, _containsMethodInvocationHistoryCollection, new ContainsArgumentsCriteria<T>(items, item));
 		}
 
-		public ICountAsyncMethodImposterBuilder CountAsync(global::Imposter.Abstractions.SpanArg<byte> data)
+		public ICountAsyncMethodImposterBuilder CountAsync(global::Imposter.Abstractions.ReadOnlySpanArg<byte> data)
 		{
 			return new CountAsyncMethodImposter.Builder(_countAsyncMethodImposter, _countAsyncMethodInvocationHistoryCollection, new CountAsyncArgumentsCriteria(data));
 		}
@@ -79,10 +79,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ContainsArgumentsCriteria<T>
 		{
-			public global::Imposter.Abstractions.SpanArg<T> items { get; }
+			public global::Imposter.Abstractions.ReadOnlySpanArg<T> items { get; }
 			public global::Imposter.Abstractions.Arg<T> item { get; }
 
-			public ContainsArgumentsCriteria(global::Imposter.Abstractions.SpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
+			public ContainsArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
 			{
 				this.items = items;
 				this.item = item;
@@ -95,7 +95,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public ContainsArgumentsCriteria<TTarget> As<TTarget>()
 			{
-				return new ContainsArgumentsCriteria<TTarget>(global::Imposter.Abstractions.SpanArg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget[], T[]>(it, out T[] itemsTarget) && items.Matches(itemsTarget)), global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)));
+				return new ContainsArgumentsCriteria<TTarget>(global::Imposter.Abstractions.ReadOnlySpanArg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget[], T[]>(it, out T[] itemsTarget) && items.Matches(itemsTarget)), global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)));
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class ContainsMethodInvocationImposterGroup<T>
 		{
-			internal static ContainsMethodInvocationImposterGroup<T> Default = new ContainsMethodInvocationImposterGroup<T>(new ContainsArgumentsCriteria<T>(global::Imposter.Abstractions.SpanArg<T>.Any(), global::Imposter.Abstractions.Arg<T>.Any()));
+			internal static ContainsMethodInvocationImposterGroup<T> Default = new ContainsMethodInvocationImposterGroup<T>(new ContainsArgumentsCriteria<T>(global::Imposter.Abstractions.ReadOnlySpanArg<T>.Any(), global::Imposter.Abstractions.Arg<T>.Any()));
 			internal ContainsArgumentsCriteria<T> ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -553,9 +553,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class CountAsyncArgumentsCriteria
 		{
-			public global::Imposter.Abstractions.SpanArg<byte> data { get; }
+			public global::Imposter.Abstractions.ReadOnlySpanArg<byte> data { get; }
 
-			public CountAsyncArgumentsCriteria(global::Imposter.Abstractions.SpanArg<byte> data)
+			public CountAsyncArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<byte> data)
 			{
 				this.data = data;
 			}
@@ -624,7 +624,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class CountAsyncMethodInvocationImposterGroup
 		{
-			internal static CountAsyncMethodInvocationImposterGroup Default = new CountAsyncMethodInvocationImposterGroup(new CountAsyncArgumentsCriteria(global::Imposter.Abstractions.SpanArg<byte>.Any()));
+			internal static CountAsyncMethodInvocationImposterGroup Default = new CountAsyncMethodInvocationImposterGroup(new CountAsyncArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<byte>.Any()));
 			internal CountAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -1430,10 +1430,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ParseArgumentsCriteria
 		{
-			public global::Imposter.Abstractions.SpanArg<char> text { get; }
+			public global::Imposter.Abstractions.ReadOnlySpanArg<char> text { get; }
 			public global::Imposter.Abstractions.Arg<int> start { get; }
 
-			public ParseArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
+			public ParseArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
 			{
 				this.text = text;
 				this.start = start;
@@ -1503,7 +1503,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class ParseMethodInvocationImposterGroup
 		{
-			internal static ParseMethodInvocationImposterGroup Default = new ParseMethodInvocationImposterGroup(new ParseArgumentsCriteria(global::Imposter.Abstractions.SpanArg<char>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
+			internal static ParseMethodInvocationImposterGroup Default = new ParseMethodInvocationImposterGroup(new ParseArgumentsCriteria(global::Imposter.Abstractions.ReadOnlySpanArg<char>.Any(), global::Imposter.Abstractions.Arg<int>.Any()));
 			internal ParseArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -2152,14 +2152,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISpanParameterSutSetup
 		{
-			IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.SpanArg<char> text, global::Imposter.Abstractions.Arg<int> start);
+			IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text, global::Imposter.Abstractions.Arg<int> start);
 			IWriteMethodImposterBuilder Write(global::Imposter.Abstractions.SpanArg<byte> buffer);
-			IContainsMethodImposterBuilder<T> Contains<T>(global::Imposter.Abstractions.SpanArg<T> items, global::Imposter.Abstractions.Arg<T> item);
-			ICountAsyncMethodImposterBuilder CountAsync(global::Imposter.Abstractions.SpanArg<byte> data);
+			IContainsMethodImposterBuilder<T> Contains<T>(global::Imposter.Abstractions.ReadOnlySpanArg<T> items, global::Imposter.Abstractions.Arg<T> item);
+			ICountAsyncMethodImposterBuilder CountAsync(global::Imposter.Abstractions.ReadOnlySpanArg<byte> data);
 			IFillMethodImposterBuilder<T> Fill<T>(global::Imposter.Abstractions.SpanArg<byte> buffer, global::Imposter.Abstractions.Arg<T> value);
 		}
 
-		IParseMethodImposterBuilder ISpanParameterSutSetup.Parse(global::Imposter.Abstractions.SpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
+		IParseMethodImposterBuilder ISpanParameterSutSetup.Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
 		{
 			return this.Parse(text, start);
 		}
@@ -2169,12 +2169,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return this.Write(buffer);
 		}
 
-		IContainsMethodImposterBuilder<T> ISpanParameterSutSetup.Contains<T>(global::Imposter.Abstractions.SpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
+		IContainsMethodImposterBuilder<T> ISpanParameterSutSetup.Contains<T>(global::Imposter.Abstractions.ReadOnlySpanArg<T> items, global::Imposter.Abstractions.Arg<T> item)
 		{
 			return this.Contains<T>(items, item);
 		}
 
-		ICountAsyncMethodImposterBuilder ISpanParameterSutSetup.CountAsync(global::Imposter.Abstractions.SpanArg<byte> data)
+		ICountAsyncMethodImposterBuilder ISpanParameterSutSetup.CountAsync(global::Imposter.Abstractions.ReadOnlySpanArg<byte> data)
 		{
 			return this.CountAsync(data);
 		}
