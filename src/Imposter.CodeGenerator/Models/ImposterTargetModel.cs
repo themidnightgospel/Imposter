@@ -9,6 +9,8 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// Everything the generator reads from a target to build its imposter. Members are in the order the imposter emits
 /// them, and only the ones the imposter's assembly can override or implement are included.
+/// <see cref="HasRequiredMembers"/> is true for a class with C# 11 required members, which the imposter's
+/// <c>new</c> of its instance can skip only through <c>[SetsRequiredMembers]</c>.
 /// </summary>
 internal sealed record ImposterTargetModel(
     string Name,
@@ -16,6 +18,7 @@ internal sealed record ImposterTargetModel(
     TypeModel Type,
     NamespaceModel ContainingNamespace,
     bool IsClass,
+    bool HasRequiredMembers,
     Accessibility DeclaredAccessibility,
     EquatableArray<TypeParameterModel> TypeParameters,
     EquatableArray<string> MemberNames,
@@ -50,6 +53,7 @@ internal sealed record ImposterTargetModel(
             TypeModel.From(target),
             NamespaceModel.From(target.ContainingNamespace),
             target.TypeKind is TypeKind.Class,
+            target.TypeKind is TypeKind.Class && target.HasRequiredMembers(),
             target.DeclaredAccessibility,
             target.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
             target
