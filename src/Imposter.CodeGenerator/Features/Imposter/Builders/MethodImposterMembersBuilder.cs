@@ -68,10 +68,22 @@ internal static class MethodImposterMembersBuilder
 
             if (method.Parameters.HasInputParameters)
             {
-                arguments.Add(Argument(SyntaxFactoryHelper.NewArgumentsCriteria(method)));
+                arguments.Add(Argument(NewArgumentsCriteria(method)));
             }
 
             return arguments;
         }
     }
+
+    // Criteria of the setup method's Arg<T> parameters, which have the target method's parameter names.
+    private static ObjectCreationExpressionSyntax NewArgumentsCriteria(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        method.ArgumentsCriteria.Syntax.New(
+            SyntaxFactoryHelper.ArgumentListSyntax(
+                method.Parameters.AllParameterMetadata.Select(parameter =>
+                    Argument(IdentifierName(parameter.Name))
+                )
+            )
+        );
 }

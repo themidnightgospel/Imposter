@@ -16,9 +16,7 @@ internal static partial class InvocationSetupBuilder
             .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Name)
             .AddMember(DefaultInstanceLazyInitializer(method))
             .AddMember(
-                method.Parameters.HasInputParameters
-                    ? SyntaxFactoryHelper.ArgumentsCriteriaProperty(method.ArgumentsCriteria.Syntax)
-                    : null
+                method.Parameters.HasInputParameters ? ArgumentsCriteriaProperty(method) : null
             )
             .AddMember(InvocationImpostersFieldDeclaration(method))
             .AddMember(LastInvocationImposterFieldDeclaration(method))
@@ -33,6 +31,16 @@ internal static partial class InvocationSetupBuilder
 #endif
         ;
     }
+
+    private static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        PropertyDeclaration(method.ArgumentsCriteria.Syntax, Identifier("ArgumentsCriteria"))
+            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddAccessorListAccessors(
+                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+            );
 
     private static ConstructorDeclarationSyntax Constructor(in ImposterTargetMethodMetadata method)
     {

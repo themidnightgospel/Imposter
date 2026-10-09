@@ -32,9 +32,8 @@ internal static partial class InvocationHistoryCollectionBuilder
                                 Parameter(Identifier("it"))
                                     .Lambda(
                                         It.Dot(
-                                                WithMethodGenericArguments(
-                                                    InvocationHistoryMatchesMethodMetadata.Name,
-                                                    method
+                                                method.WithGenericArguments(
+                                                    InvocationHistoryMatchesMethodMetadata.Name
                                                 )
                                             )
                                             .Call(

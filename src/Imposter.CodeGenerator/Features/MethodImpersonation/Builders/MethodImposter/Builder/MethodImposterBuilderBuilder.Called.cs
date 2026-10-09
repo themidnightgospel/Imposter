@@ -25,12 +25,7 @@ internal static partial class MethodImposterBuilderBuilder
         in ImposterTargetMethodMetadata method
     ) =>
         IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-            .Dot(
-                WithMethodGenericArguments(
-                    InvocationHistoryCollectionCountMethodMetadata.Name,
-                    method
-                )
-            )
+            .Dot(method.WithGenericArguments(InvocationHistoryCollectionCountMethodMetadata.Name))
             .Call(
                 method.Parameters.HasInputParameters
                     ? Argument(

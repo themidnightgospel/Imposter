@@ -544,7 +544,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 // Type arguments are explicit because a type parameter that only appears in the
                 // return type, or not in the signature at all, cannot be inferred.
                 var baseMethodExpression = BaseExpression()
-                    .Dot(WithMethodGenericArguments(imposterMethod.Model.Name, imposterMethod));
+                    .Dot(imposterMethod.WithGenericArguments(imposterMethod.Model.Name));
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
@@ -573,8 +573,8 @@ internal readonly ref struct ImposterInstanceBuilder
             )
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Model.TypeParameters))
                 .AddParameters(
-                    imposterMethod.Parameters.AllParameterMetadata.Select(p =>
-                        ParameterSyntaxWithoutDefaultValue(p)
+                    imposterMethod.Parameters.AllParameters.Select(it =>
+                        ParameterSyntaxWithoutDefaultValue(it)
                     )
                 )
                 .WithBody(body)
