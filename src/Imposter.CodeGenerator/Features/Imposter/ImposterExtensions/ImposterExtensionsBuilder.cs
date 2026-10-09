@@ -141,8 +141,7 @@ internal static class ImposterExtensionsBuilder
             .WithExpressionBody(
                 ArrowExpressionClause(
                     imposterType.New(
-                        ImposterModeArgument(invocationBehaviorParameter)
-                            .AsSingleArgumentListSyntax()
+                        ImposterModeArgument(invocationBehaviorParameter).ToSingleArgumentList()
                     )
                 )
             )

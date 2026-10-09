@@ -12,12 +12,6 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<ArgumentSyntax> arguments) =>
         ArgumentList(SeparatedList(arguments));
 
-    internal static ArgumentListSyntax AsSingleArgumentListSyntax(this ArgumentSyntax argument) =>
-        ArgumentList(SeparatedList([argument]));
-
-    internal static ArgumentListSyntax ArgumentListSyntax(ArgumentSyntax? argument) =>
-        argument is null ? ArgumentList() : ArgumentListSyntax(SingletonSeparatedList(argument));
-
     internal static ArgumentSyntax OutDiscardArgument() =>
         Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("_"));
 
@@ -29,10 +23,10 @@ internal static partial class SyntaxFactoryHelper
         );
 
     internal static ArgumentListSyntax ToSingleArgumentList(this ExpressionSyntax expression) =>
-        ArgumentList(SingletonSeparatedList(Argument(expression)));
+        Argument(expression).ToSingleArgumentList();
 
     internal static ArgumentListSyntax ToSingleArgumentList(this ArgumentSyntax argument) =>
-        ArgumentListSyntax([argument]);
+        ArgumentList(SingletonSeparatedList(argument));
 
     internal static ArgumentSyntax ToArgument(this string argumentName) =>
         Argument(IdentifierName(argumentName));

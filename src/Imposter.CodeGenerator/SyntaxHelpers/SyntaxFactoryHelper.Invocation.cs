@@ -9,7 +9,7 @@ internal static partial class SyntaxFactoryHelper
     internal static InvocationExpressionSyntax Call(
         this ExpressionSyntax source,
         ArgumentSyntax argumentSyntax
-    ) => source.Call(argumentSyntax.AsSingleArgumentListSyntax());
+    ) => source.Call(argumentSyntax.ToSingleArgumentList());
 
     internal static InvocationExpressionSyntax Call(
         this ExpressionSyntax source,

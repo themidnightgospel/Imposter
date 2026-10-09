@@ -31,7 +31,7 @@ internal static partial class MethodImposterCollectionBuilder
                     ),
                     IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName)
                         .Dot(ConcurrentStackSyntaxHelper.Push)
-                        .Call(Argument(imposter).AsSingleArgumentListSyntax())
+                        .Call(Argument(imposter))
                         .ToStatementSyntax(),
                     ReturnStatement(imposter)
                 )

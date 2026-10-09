@@ -102,13 +102,7 @@ internal static partial class IndexerGetterBuilder
                 ArrowExpressionClause(
                     IdentifierName(getter.Builder.ImposterFieldName)
                         .Dot(IdentifierName("GetOrCreate"))
-                        .Call(
-                            ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(IdentifierName(getter.Builder.CriteriaFieldName))
-                                )
-                            )
-                        )
+                        .Call(Argument(IdentifierName(getter.Builder.CriteriaFieldName)))
                 )
             )
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
