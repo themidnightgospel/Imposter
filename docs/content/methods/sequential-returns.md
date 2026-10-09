@@ -36,7 +36,7 @@ Target type used in examples:
 You can interleave `Throws` within a sequence. Separate each step with `Then()`.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/SequentialReturns/SequentialReturnsTests.cs#L71"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/SequentialReturns/SequentialReturnsTests.cs#L63"}
     imposter.GetNumber()
         .Returns(1)
         .Then().Throws<InvalidOperationException>()

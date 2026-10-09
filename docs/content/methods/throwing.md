@@ -21,21 +21,21 @@ Target type used in examples:
 
 - Generic type:
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L26"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L27"}
     imposter.GetNumber().Throws<InvalidOperationException>();
 
     service.GetNumber(); // throws InvalidOperationException
     ```
 - Specific instance:
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L32"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L31"}
     imposter.GetNumber().Throws(new Exception("boom"));
 
     service.GetNumber(); // throws Exception("boom")
     ```
 - Factory delegate:
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L40"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L36"}
     imposter.GetNumber().Throws(() => new Exception("deferred"));
 
     service.GetNumber(); // throws Exception("deferred")
@@ -46,7 +46,7 @@ Target type used in examples:
 Mix `Throws` with `Returns` using `Then()`:
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L52"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L47"}
     imposter.GetNumber()
         .Returns(1)
         .Then().Throws<InvalidOperationException>()
@@ -62,7 +62,7 @@ Mix `Throws` with `Returns` using `Then()`:
 For Task/Task<T> or ValueTask/ValueTask<T>, `Throws` raises the exception when the method is invoked, just like synchronous methods. Use async-aware assertions in tests when appropriate.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L62"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Throw/ThrowingTests.cs#L66"}
     imposter.GetNumberAsync().Throws<TimeoutException>();
     await Assert.ThrowsAsync<TimeoutException>(() => service.GetNumberAsync());
     ```

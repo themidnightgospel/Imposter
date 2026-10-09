@@ -164,7 +164,7 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
     ```
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L281"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L283"}
     public void GivenOutputParameterSetupOnBase_WhenMethodIsInvokedWithDerivedType_ShouldNotInvoke()
     {
         var baseCallbackInvoked = false;
@@ -186,7 +186,7 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
 - For **ref parameters**, setups are matched by the exact static generic argument: a setup declared on a base type (like `IAnimal`) does not match when the method is invoked with a `ref` argument of a derived type (like `Cat`), but a setup declared on `Dog` matches a `ref Dog` argument.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L321"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L325"}
     public void GivenRefParameterSetupOnBase_WhenInvokedWithDerivedType_ShouldNotInvoke()
     {
         var animalCallback = false;
@@ -202,7 +202,7 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
     ```
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L335"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L339"}
     public void GivenRefParameterSetup_WhenInvokedWithSameType_ShouldInvoke()
     {
         var dogCallbackInvoked = false;
@@ -220,7 +220,7 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
 - For **generic return types**, setups declared for a more specific derived type (like `Cat`) can be used when the method is invoked with a base return type (like `IAnimal`), but setups declared for a base type (like `IAnimal`) are not used when the method is invoked with a more specific derived return type (like `Cat`), so the call returns the default value instead.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L299"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L303"}
     public void GivenGenericReturnTypeSetupForDerived_WhenInvokedAsBase_ShouldReturnDerivedInstance()
     {
         var providedCat = new Cat("mittens");
@@ -234,7 +234,7 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
     ```
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L311"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/ReturnValueSetupTests.cs#L315"}
     public void GivenGenericReturnTypeSetupForBase_WhenInvokedAsDerived_ShouldReturnDefault()
     {
         _sut.GenericReturnType<IAnimal>().Returns(new Animal("base"));

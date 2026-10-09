@@ -21,7 +21,7 @@ Target type used in examples:
 ## Ordering relative to results
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L29"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L27"}
     var stages = new List<string>();
 
     imposter.GetNumber()
@@ -62,7 +62,7 @@ Callbacks can work with `out`, `ref`, and `in` parameters. Use `OutArg<T>.Any()`
 Callbacks are scoped to the sequence step they’re defined on. Use `Then()` to create a new step with independent callbacks.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L72"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L91"}
     var seen = new List<string>();
 
     imposter.Increment(Arg<int>.Any())
@@ -81,7 +81,7 @@ Callbacks are scoped to the sequence step they’re defined on. Use `Then()` to 
 If a callback throws, the exception is propagated to the caller after the result has been produced.
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L99"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/CallbacksTests.cs#L112"}
     // See more examples in repo tests
     imposter.GetNumber()
         .Returns(1)

@@ -5,7 +5,7 @@ Virtual and abstract protected properties can be configured on the imposter.
 ## Getter/Setter with wrapper
 
 !!! example
-    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Properties/ProtectedMembersTests.cs#L5"}
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/Properties/ProtectedMembersTests.cs#L21"}
     [assembly: GenerateImposter(typeof(MyService))]
 
     public class MyService
@@ -19,5 +19,14 @@ Virtual and abstract protected properties can be configured on the imposter.
 
     // Arrange getter
     imposter.ProtectedAge.Getter().Returns(33);
+
+    // Forward the public wrappers to the real implementation so they use the protected property
+    imposter.ReadProtected().UseBaseImplementation();
+    imposter.WriteProtected(Arg<int>.Any()).UseBaseImplementation();
+
+    var service = imposter.Instance();
+    service.WriteProtected(10);
+
+    service.ReadProtected(); // 33
     imposter.ProtectedAge.Setter(Arg<int>.Is(10)).Called(Count.Once());
     ```
