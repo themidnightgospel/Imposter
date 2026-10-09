@@ -161,105 +161,27 @@ internal static partial class InvocationSetupBuilder
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
 
+    // Produces the result and runs the callbacks of one invocation.
     private static MethodDeclarationSyntax InvokeInvocationMethod(
         in ImposterTargetMethodMetadata method
     )
     {
         var arguments = ArgumentListSyntax(method.Parameters.AllParameters);
-        var resultInvocation = ResultGeneratorIdentifier(method)
-            .Dot(IdentifierName("Invoke"))
-            .Call(arguments);
-        var resultVariableIdentifier = IdentifierName(
-            method.MethodInvocationImposter.ResultVariableName
-        );
-
-        var defaultBlockBuilder = new BlockBuilder().AddStatement(
-            IfStatement(
-                ResultGeneratorIdentifier(method).IsNull(),
-                Block(
-                    ThrowIfExplicit(
-                        IdentifierName(
-                            method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
-                        ),
-                        IdentifierName(
-                            method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
-                        )
-                    ),
-                    ResultGeneratorIdentifier(method)
-                        .Assign(DefaultResultGeneratorDelegate(method))
-                        .ToStatementSyntax()
-                )
+        var body = new BlockBuilder()
+            .AddStatement(
+                method.SupportsBaseImplementation ? UseBaseImplementationAsResult(method) : null
             )
-        );
-
-        if (method.Model.ReturnType.IsVoid)
-        {
-            defaultBlockBuilder.AddStatement(resultInvocation.ToStatementSyntax());
-        }
-        else
-        {
-            defaultBlockBuilder.AddStatement(
-                LocalVariableDeclarationSyntax(
-                    method.NullableAwareReturnTypeSyntax,
-                    method.MethodInvocationImposter.ResultVariableName,
-                    resultInvocation
-                )
-            );
-        }
-
-        var callbackIdentifier = Identifier(
-            method.MethodImposter.InvokeMethod.CallbackIterationVariableName
-        );
-        var callbackInvocation = ForEachStatement(
-            Var,
-            callbackIdentifier,
-            CallbacksIdentifier(method),
-            Block(
-                IdentifierName(method.MethodImposter.InvokeMethod.CallbackIterationVariableName)
-                    .Call(arguments)
-                    .ToStatementSyntax()
+            .AddStatement(EnsureResultGenerator(method))
+            .AddStatement(GenerateResult(method, arguments))
+            .AddStatement(InvokeCallbacks(method, arguments))
+            .AddStatement(
+                method.HasReturnValue
+                    ? ReturnStatement(
+                        IdentifierName(method.MethodInvocationImposter.ResultVariableName)
+                    )
+                    : null
             )
-        );
-
-        defaultBlockBuilder.AddStatement(callbackInvocation);
-
-        if (!method.Model.ReturnType.IsVoid)
-        {
-            defaultBlockBuilder.AddStatement(ReturnStatement(resultVariableIdentifier));
-        }
-
-        var defaultBlock = defaultBlockBuilder.Build();
-        BlockSyntax body;
-
-        if (method.SupportsBaseImplementation)
-        {
-            var missingImposterException = MissingImposterException(
-                IdentifierName(method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName)
-            );
-
-            var assignBaseImplementation = IfStatement(
-                UseBaseImplementationIdentifier(method),
-                Block(
-                    ResultGeneratorIdentifier(method)
-                        .Assign(
-                            IdentifierName(
-                                    method.MethodImposter.InvokeMethod.BaseInvocationParameter.Name
-                                )
-                                .Coalesce(ThrowExpression(missingImposterException))
-                        )
-                        .ToStatementSyntax()
-                )
-            );
-
-            body = new BlockBuilder()
-                .AddStatement(assignBaseImplementation)
-                .AddStatements(defaultBlock.Statements)
-                .Build();
-        }
-        else
-        {
-            body = defaultBlock;
-        }
+            .Build();
 
         return new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
@@ -269,6 +191,89 @@ internal static partial class InvocationSetupBuilder
             .WithParameterList(InvokeSignatureBuilder.InvocationImposterParameters(method))
             .WithBody(body)
             .Build();
+    }
+
+    // Set up to use the base implementation, the invocation calls the base invocation, or throws if none was passed.
+    private static IfStatementSyntax UseBaseImplementationAsResult(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        IfStatement(
+            UseBaseImplementationIdentifier(method),
+            Block(
+                ResultGeneratorIdentifier(method)
+                    .Assign(
+                        IdentifierName(
+                                method.MethodImposter.InvokeMethod.BaseInvocationParameter.Name
+                            )
+                            .Coalesce(
+                                ThrowExpression(
+                                    MissingImposterException(
+                                        IdentifierName(
+                                            method
+                                                .MethodImposter
+                                                .InvokeMethod
+                                                .MethodDisplayNameParameterName
+                                        )
+                                    )
+                                )
+                            )
+                    )
+                    .ToStatementSyntax()
+            )
+        );
+
+    // Without a result set up, an Explicit-mode imposter throws and an Implicit one returns the default result.
+    private static IfStatementSyntax EnsureResultGenerator(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        IfStatement(
+            ResultGeneratorIdentifier(method).IsNull(),
+            Block(
+                ThrowIfExplicit(
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
+                    ),
+                    IdentifierName(
+                        method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
+                    )
+                ),
+                ResultGeneratorIdentifier(method)
+                    .Assign(DefaultResultGeneratorDelegate(method))
+                    .ToStatementSyntax()
+            )
+        );
+
+    private static StatementSyntax GenerateResult(
+        in ImposterTargetMethodMetadata method,
+        ArgumentListSyntax arguments
+    )
+    {
+        var result = ResultGeneratorIdentifier(method)
+            .Dot(IdentifierName("Invoke"))
+            .Call(arguments);
+
+        return method.HasReturnValue
+            ? LocalVariableDeclarationSyntax(
+                method.NullableAwareReturnTypeSyntax,
+                method.MethodInvocationImposter.ResultVariableName,
+                result
+            )
+            : result.ToStatementSyntax();
+    }
+
+    private static ForEachStatementSyntax InvokeCallbacks(
+        in ImposterTargetMethodMetadata method,
+        ArgumentListSyntax arguments
+    )
+    {
+        var callback = method.MethodImposter.InvokeMethod.CallbackIterationVariableName;
+
+        return ForEachStatement(
+            Var,
+            Identifier(callback),
+            CallbacksIdentifier(method),
+            Block(IdentifierName(callback).Call(arguments).ToStatementSyntax())
+        );
     }
 
     private static MethodDeclarationSyntax CallbackMethod(in ImposterTargetMethodMetadata method)
