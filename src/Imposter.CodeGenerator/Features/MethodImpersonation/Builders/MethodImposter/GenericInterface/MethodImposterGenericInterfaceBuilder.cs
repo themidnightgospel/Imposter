@@ -19,7 +19,6 @@ internal static class MethodImposterGenericInterfaceBuilder
             return null;
         }
 
-        var genericInterfaceType = method.MethodImposter.Interface;
         var invokeMethod = new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
             MethodImposterInvokeMethodMetadata.Name
@@ -32,14 +31,14 @@ internal static class MethodImposterGenericInterfaceBuilder
             .MethodImposter
             .HasMatchingInvocationImposterGroupMethod;
 
-        var hasMatchingSetupMethodBuilder = new MethodDeclarationBuilder(
+        var hasMatchingGroupMethodBuilder = new MethodDeclarationBuilder(
             hasMatchingMethodMetadata.ReturnType,
             hasMatchingMethodMetadata.Name
         );
 
         if (method.Parameters.HasInputParameters)
         {
-            hasMatchingSetupMethodBuilder = hasMatchingSetupMethodBuilder.AddParameter(
+            hasMatchingGroupMethodBuilder = hasMatchingGroupMethodBuilder.AddParameter(
                 ParameterSyntax(
                     method.Arguments.Syntax,
                     hasMatchingMethodMetadata.ArgumentsParameterName
@@ -47,14 +46,14 @@ internal static class MethodImposterGenericInterfaceBuilder
             );
         }
 
-        var hasMatchingSetupMethod = hasMatchingSetupMethodBuilder.WithSemicolon().Build();
+        var hasMatchingGroupMethod = hasMatchingGroupMethodBuilder.WithSemicolon().Build();
 
         return InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Model, genericInterfaceType.Name)
+            .CreateForMethod(method.Model, method.MethodImposter.Interface.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)
-            .AddMember(hasMatchingSetupMethod)
+            .AddMember(hasMatchingGroupMethod)
             .Build();
     }
 }

@@ -269,8 +269,10 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddMember(InvocationHistoryBuilder.Build(method))
                 .AddMember(InvocationHistoryCollectionBuilder.Build(method))
                 .AddMember(MethodImposterCollectionBuilder.Build(method))
-                .AddMember(InvocationSetupBuilder.Build(method))
-                .AddMembers(InvocationSetupBuilder.BuildInvocationSetupInterfaces(method))
+                .AddMember(InvocationImposterGroupBuilder.Build(method))
+                .AddMembers(
+                    InvocationImposterGroupBuilder.BuildInvocationImposterGroupInterfaces(method)
+                )
                 .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
                 .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))

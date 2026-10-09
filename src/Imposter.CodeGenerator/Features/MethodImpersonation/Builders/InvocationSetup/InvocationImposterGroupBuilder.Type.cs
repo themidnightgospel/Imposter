@@ -8,13 +8,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationSetup;
 
-internal static partial class InvocationSetupBuilder
+internal static partial class InvocationImposterGroupBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
         return ClassDeclarationBuilderFactory
             .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Name)
-            .AddMember(DefaultInstanceLazyInitializer(method))
+            .AddMember(DefaultInstanceField(method))
             .AddMember(
                 method.Parameters.HasInputParameters ? ArgumentsCriteriaProperty(method) : null
             )

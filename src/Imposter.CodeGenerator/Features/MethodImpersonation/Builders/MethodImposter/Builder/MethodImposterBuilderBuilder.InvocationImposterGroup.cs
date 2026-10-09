@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static List<MemberDeclarationSyntax> ImplementInvocationSetupBuilderInterface(
+    private static List<MemberDeclarationSyntax> ImplementInvocationImposterGroupInterface(
         in ImposterTargetMethodMetadata method
     )
     {

@@ -7,19 +7,19 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterBuilder
 {
-    internal static FieldDeclarationSyntax BuildInvocationSetupsField(
+    internal static FieldDeclarationSyntax BuildInvocationImposterGroupsField(
         in ImposterTargetMethodMetadata method
     )
     {
-        var invocationSetupsFieldType =
+        var invocationImposterGroupsFieldType =
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
                 method.MethodInvocationImposterGroup.Syntax
             );
 
         return SinglePrivateReadonlyVariableField(
-            invocationSetupsFieldType,
-            method.MethodImposter.InvocationImpostersField.Name,
-            invocationSetupsFieldType.New()
+            invocationImposterGroupsFieldType,
+            method.MethodImposter.InvocationImposterGroupsField.Name,
+            invocationImposterGroupsFieldType.New()
         );
     }
 }

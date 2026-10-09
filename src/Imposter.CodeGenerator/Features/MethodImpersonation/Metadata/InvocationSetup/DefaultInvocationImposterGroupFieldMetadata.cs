@@ -1,10 +1,10 @@
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
-internal readonly struct DefaultInvocationSetupFieldMetadata
+internal readonly struct DefaultInvocationImposterGroupFieldMetadata
 {
     internal readonly string Name;
 
-    public DefaultInvocationSetupFieldMetadata()
+    public DefaultInvocationImposterGroupFieldMetadata()
     {
         Name = "Default";
     }

@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterBuilderBuilder
 {
-    private static List<StatementSyntax> BuildInvocationSetupInitializationStatements(
+    private static List<StatementSyntax> BuildInvocationImposterGroupInitializationStatements(
         in ImposterTargetMethodMetadata method
     )
     {
@@ -60,7 +60,7 @@ internal static partial class MethodImposterBuilderBuilder
 
         statements.Add(
             methodImposterAccess
-                .Dot(IdentifierName(method.MethodImposter.InvocationImpostersField.Name))
+                .Dot(IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name))
                 .Dot(ConcurrentStackSyntaxHelper.Push)
                 .Call(
                     Argument(

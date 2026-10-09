@@ -6,7 +6,7 @@ internal readonly struct FindMatchingInvocationImposterGroupMethodMetadata
 {
     internal readonly string Name;
 
-    internal readonly string SetupVariableName;
+    internal readonly string GroupVariableName;
 
     public FindMatchingInvocationImposterGroupMethodMetadata(
         in ReservedParameterNames reservedParameterNames,
@@ -15,6 +15,6 @@ internal readonly struct FindMatchingInvocationImposterGroupMethodMetadata
     {
         Name = memberNames.Use("FindMatchingInvocationImposterGroup");
         var nameContext = reservedParameterNames.CreateNameSet();
-        SetupVariableName = nameContext.Use("invocationImposterGroup");
+        GroupVariableName = nameContext.Use("invocationImposterGroup");
     }
 }
