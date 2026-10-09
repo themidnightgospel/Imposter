@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationSetup;
@@ -173,16 +172,6 @@ internal static partial class InvocationSetupBuilder
 
         return methods;
     }
-
-    private static MethodDeclarationSyntax InterfaceMethod(
-        TypeSyntax returnType,
-        string name,
-        params ParameterMetadata[] parameters
-    ) =>
-        new MethodDeclarationBuilder(returnType, name)
-            .AddParameters(parameters.Select(it => SyntaxFactoryHelper.ParameterSyntax(it)))
-            .WithSemicolon()
-            .Build();
 
     private static ParameterMetadata InterfaceParameter(
         ParameterMetadata metadata,

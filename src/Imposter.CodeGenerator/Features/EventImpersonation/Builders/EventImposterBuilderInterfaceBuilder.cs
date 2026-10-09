@@ -1,10 +1,8 @@
-using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
@@ -25,44 +23,89 @@ internal static class EventImposterBuilderInterfaceBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
-            .AddMember(BuildUseBaseImplementationInterfaceMethod(@event))
+            .AddMember(
+                @event.BuilderInterface.UseBaseImplementationMethod is { } useBaseImplementation
+                    ? InterfaceMethod(useBaseImplementation.ReturnType, useBaseImplementation.Name)
+                    : null
+            )
             .Build();
 
-    private static InterfaceDeclarationSyntax BuildSetupInterface(
-        in ImposterEventMetadata @event
-    ) =>
-        new InterfaceDeclarationBuilder(@event.BuilderInterface.SetupInterfaceName)
+    private static InterfaceDeclarationSyntax BuildSetupInterface(in ImposterEventMetadata @event)
+    {
+        var setupInterface = @event.BuilderInterface.SetupInterfaceTypeSyntax;
+        var methods = @event.Builder.Methods;
+
+        return new InterfaceDeclarationBuilder(@event.BuilderInterface.SetupInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildCallbackMethod(@event))
+            .AddMember(
+                InterfaceMethod(
+                    setupInterface,
+                    methods.Callback.Name,
+                    methods.Callback.CallbackParameter
+                )
+            )
             .AddMember(BuildRaiseMethod(@event))
-            .AddMember(BuildOnSubscribeMethod(@event))
-            .AddMember(BuildOnUnsubscribeMethod(@event))
+            .AddMember(
+                InterfaceMethod(
+                    setupInterface,
+                    methods.OnSubscribe.Name,
+                    methods.OnSubscribe.InterceptorParameter
+                )
+            )
+            .AddMember(
+                InterfaceMethod(
+                    setupInterface,
+                    methods.OnUnsubscribe.Name,
+                    methods.OnUnsubscribe.InterceptorParameter
+                )
+            )
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildVerificationInterface(
         in ImposterEventMetadata @event
-    ) =>
-        new InterfaceDeclarationBuilder(@event.BuilderInterface.VerificationInterfaceName)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildSubscribedMethod(@event))
-            .AddMember(BuildUnsubscribedMethod(@event))
-            .AddMember(BuildRaisedMethod(@event))
-            .AddMember(BuildHandlerInvokedMethod(@event))
-            .Build();
+    )
+    {
+        var verificationInterface = @event.BuilderInterface.VerificationInterfaceTypeSyntax;
+        var methods = @event.Builder.Methods;
 
-    private static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.SetupInterfaceTypeSyntax,
-            @event.Builder.Methods.Callback.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.Callback.CallbackParameter
+        return new InterfaceDeclarationBuilder(@event.BuilderInterface.VerificationInterfaceName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(
+                InterfaceMethod(
+                    verificationInterface,
+                    methods.Subscribed.Name,
+                    methods.Subscribed.CriteriaParameter,
+                    methods.CountParameter
                 )
             )
-            .WithSemicolon()
+            .AddMember(
+                InterfaceMethod(
+                    verificationInterface,
+                    methods.Unsubscribed.Name,
+                    methods.Unsubscribed.CriteriaParameter,
+                    methods.CountParameter
+                )
+            )
+            .AddMember(
+                InterfaceMethod(
+                    verificationInterface,
+                    methods.RaisedVerification.Name,
+                    [.. methods.RaisedCriteriaParameters, methods.CountParameter]
+                )
+            )
+            .AddMember(
+                InterfaceMethod(
+                    verificationInterface,
+                    methods.HandlerInvoked.Name,
+                    methods.HandlerInvoked.HandlerCriteriaParameter,
+                    methods.CountParameter
+                )
+            )
             .Build();
+    }
 
+    // Raise takes the event delegate's parameters, which the core metadata holds as syntax.
     private static MethodDeclarationSyntax BuildRaiseMethod(in ImposterEventMetadata @event) =>
         new MethodDeclarationBuilder(
             @event.BuilderInterface.RaiseMethod.ReturnType,
@@ -71,108 +114,4 @@ internal static class EventImposterBuilderInterfaceBuilder
             .AddParameters(@event.Core.RaiseParameterSyntaxes)
             .WithSemicolon()
             .Build();
-
-    private static MethodDeclarationSyntax BuildOnSubscribeMethod(
-        in ImposterEventMetadata @event
-    ) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.SetupInterfaceTypeSyntax,
-            @event.Builder.Methods.OnSubscribe.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.OnSubscribe.InterceptorParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildOnUnsubscribeMethod(
-        in ImposterEventMetadata @event
-    ) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.SetupInterfaceTypeSyntax,
-            @event.Builder.Methods.OnUnsubscribe.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.OnUnsubscribe.InterceptorParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildSubscribedMethod(in ImposterEventMetadata @event) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            @event.Builder.Methods.Subscribed.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.Subscribed.CriteriaParameter
-                )
-            )
-            .AddParameter(CountParameter(@event))
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildUnsubscribedMethod(
-        in ImposterEventMetadata @event
-    ) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            @event.Builder.Methods.Unsubscribed.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.Unsubscribed.CriteriaParameter
-                )
-            )
-            .AddParameter(CountParameter(@event))
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildRaisedMethod(in ImposterEventMetadata @event) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            @event.Builder.Methods.RaisedVerification.Name
-        )
-            .AddParameters(
-                @event.Builder.Methods.RaisedCriteriaParameters.Select(it =>
-                    SyntaxFactoryHelper.ParameterSyntax(it)
-                )
-            )
-            .AddParameter(CountParameter(@event))
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildHandlerInvokedMethod(
-        in ImposterEventMetadata @event
-    ) =>
-        new MethodDeclarationBuilder(
-            @event.BuilderInterface.VerificationInterfaceTypeSyntax,
-            @event.Builder.Methods.HandlerInvoked.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    @event.Builder.Methods.HandlerInvoked.HandlerCriteriaParameter
-                )
-            )
-            .AddParameter(CountParameter(@event))
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax? BuildUseBaseImplementationInterfaceMethod(
-        in ImposterEventMetadata @event
-    )
-    {
-        if (@event.BuilderInterface.UseBaseImplementationMethod is not { } methodMetadata)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
-            .WithSemicolon()
-            .Build();
-    }
 }

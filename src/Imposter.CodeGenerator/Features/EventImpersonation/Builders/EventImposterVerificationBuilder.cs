@@ -54,7 +54,7 @@ internal static class EventImposterVerificationBuilder
         )
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
-            .AddParameter(CountParameter(@event))
+            .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
             .WithBody(
                 BuildHistoryVerificationBody(
                     @event,
@@ -85,7 +85,7 @@ internal static class EventImposterVerificationBuilder
                     ParameterSyntax(criteria)
                 )
             )
-            .AddParameter(CountParameter(@event));
+            .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter));
 
         return methodBuilder.WithBody(BuildRaisedBody(@event)).Build();
     }
@@ -155,7 +155,7 @@ internal static class EventImposterVerificationBuilder
         )
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.HandlerCriteriaParameter))
-            .AddParameter(CountParameter(@event))
+            .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
             .WithBody(
                 BuildHistoryVerificationBody(
                     @event,

@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -28,7 +29,7 @@ internal readonly struct PropertyImposterBuilderInterfaceMetadata
         SetterMethod = new SetterMethodMetadata(property, setterInterfaceMetadata);
         GetterMethod = new GetterMethodMetadata(getterInterfaceMetadata);
         UseBaseImplementationMethod = property.SupportsBaseImplementation
-            ? new UseBaseImplementationMethodMetadata(Syntax)
+            ? new UseBaseImplementationMethodMetadata(Syntax, Syntax)
             : null;
     }
 }

@@ -1,6 +1,7 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PropertyGetterThenMethodMetadata = Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.Common.ThenMethodMetadata;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 
@@ -38,17 +39,17 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
 
     internal readonly CalledMethodMetadata CalledMethod;
 
-    internal readonly PropertyGetterThenMethodMetadata ThenMethod;
+    internal readonly ThenMethodMetadata ThenMethod;
 
-    internal readonly GetterUseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
 
     internal readonly string? UseBaseImplementationEntryInterfaceName;
 
     internal readonly NameSyntax? UseBaseImplementationEntryInterfaceTypeSyntax;
 
-    internal readonly GetterUseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
 
-    internal readonly PropertyGetterThenMethodMetadata? InitialThenMethod;
+    internal readonly ThenMethodMetadata? InitialThenMethod;
 
     internal PropertyGetterImposterBuilderInterfaceMetadata(
         in ImposterPropertyCoreMetadata property
@@ -78,16 +79,17 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
         );
         CallbackMethod = new CallbackMethodMetadata(
             ContinuationInterfaceTypeSyntax,
-            CallbackInterfaceTypeSyntax
+            CallbackInterfaceTypeSyntax,
+            WellKnownTypes.System.Action
         );
         CalledMethod = new CalledMethodMetadata();
-        ThenMethod = new PropertyGetterThenMethodMetadata(
-            ContinuationInterfaceTypeSyntax,
-            FluentInterfaceTypeSyntax
+        ThenMethod = new ThenMethodMetadata(
+            FluentInterfaceTypeSyntax,
+            ContinuationInterfaceTypeSyntax
         );
         if (property.GetterSupportsBaseImplementation)
         {
-            UseBaseImplementationMethod = new GetterUseBaseImplementationMethodMetadata(
+            UseBaseImplementationMethod = new UseBaseImplementationMethodMetadata(
                 FluentInterfaceTypeSyntax,
                 FluentInterfaceTypeSyntax
             );
@@ -97,13 +99,13 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
             UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.IdentifierName(
                 UseBaseImplementationEntryInterfaceName
             );
-            UseBaseImplementationEntryMethod = new GetterUseBaseImplementationMethodMetadata(
-                UseBaseImplementationEntryInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax
-            );
-            InitialThenMethod = new PropertyGetterThenMethodMetadata(
-                TypeSyntax,
+            UseBaseImplementationEntryMethod = new UseBaseImplementationMethodMetadata(
+                FluentInterfaceTypeSyntax,
                 UseBaseImplementationEntryInterfaceTypeSyntax
+            );
+            InitialThenMethod = new ThenMethodMetadata(
+                UseBaseImplementationEntryInterfaceTypeSyntax,
+                TypeSyntax
             );
         }
         else

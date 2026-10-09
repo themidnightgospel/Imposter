@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -28,6 +29,7 @@ internal readonly struct InvocationVerifierInterfaceMetadata
         CalledMethod = new CalledMethodMetadata();
 
         // A type parameter cannot share the name of a member declared on this interface.
+        var calledMethodName = CalledMethod.Name;
         var names = new NameSet(
             method
                 .Model.TypeParameters.Select(parameter => parameter.Name)
@@ -36,7 +38,7 @@ internal readonly struct InvocationVerifierInterfaceMetadata
         var declarationTypeArguments = method
             .Model.TypeParameters.Select(parameter =>
                 IdentifierName(
-                    parameter.Name is CallCountMethodName or CalledMethodMetadata.Name
+                    parameter.Name == CallCountMethodName || parameter.Name == calledMethodName
                         ? Identifier(names.Use(parameter.Name))
                         : SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
                 )
