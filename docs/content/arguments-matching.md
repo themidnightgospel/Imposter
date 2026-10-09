@@ -217,7 +217,7 @@ A span passed by `ref` is matched by the elements it arrives with, and the deleg
     ```
 
 !!! warning
-    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, and [span properties](properties/index.md#span-properties). A span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out`, a span in an indexer or an event's delegate, and any other `ref struct` still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, and [span properties](properties/index.md#span-properties). A span returned by reference, a span a method with a `scoped` parameter returns or takes by `ref` or `out`, a span in an indexer or an event's delegate, any other `ref struct`, and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
 
 ## Arg API reference
 
