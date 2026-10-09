@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -49,6 +50,10 @@ internal readonly struct ImposterTargetMetadata
 
     internal readonly string ExtensionParameterName;
 
+    // The property and indexer getters' Throws<TException>() is declared inside the imposter, so its type parameter
+    // avoids the names of the target's.
+    private readonly ExceptionTypeParameterMetadata _getterExceptionTypeParameter;
+
     private readonly NameSet _symbolNameNamespace = new([]);
 
     internal ImposterTargetMetadata(ImposterTargetModel target)
@@ -63,9 +68,17 @@ internal readonly struct ImposterTargetMetadata
         var memberNames = _symbolNameNamespace;
         var ownMethodSetups = OwnMethodSetups(target);
         var ownPropertyAndEventSetupNames = OwnPropertyAndEventSetupNames(target);
+        var typeParameterNames = target.TypeParameters.Select(it => it.Name).ToArray();
         Methods = target
-            .Methods.Select(method => new ImposterTargetMethodMetadata(method, UniqueName(method)))
+            .Methods.Select(method => new ImposterTargetMethodMetadata(
+                method,
+                UniqueName(method),
+                typeParameterNames
+            ))
             .ToList();
+        _getterExceptionTypeParameter = new ExceptionTypeParameterMetadata(
+            new NameSet(typeParameterNames).Use(ExceptionTypeParameterMetadata.PreferredName)
+        );
         IsClass = target.IsClass;
         HasRequiredMembers = target.HasRequiredMembers;
         DeclaredAccessibility = target.DeclaredAccessibility;
@@ -143,7 +156,8 @@ internal readonly struct ImposterTargetMetadata
             property.Member,
             _symbolNameNamespace.Use(property.Member.Name),
             memberNameSet,
-            property.RequiresExplicitInterfaceImplementation
+            property.RequiresExplicitInterfaceImplementation,
+            _getterExceptionTypeParameter
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(
@@ -152,7 +166,8 @@ internal readonly struct ImposterTargetMetadata
         new(
             indexer.Member,
             _symbolNameNamespace.Use(IndexerMemberName),
-            indexer.RequiresExplicitInterfaceImplementation
+            indexer.RequiresExplicitInterfaceImplementation,
+            _getterExceptionTypeParameter
         );
 
     internal ImposterEventMetadata CreateEventMetadata(TargetMemberModel<EventModel> @event) =>

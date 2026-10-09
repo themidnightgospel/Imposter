@@ -44,7 +44,8 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
 
     internal IndexerGetterImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
-        in IndexerDelegateMetadata delegatesMetadata
+        in IndexerDelegateMetadata delegatesMetadata,
+        in ExceptionTypeParameterMetadata exceptionTypeParameter
     )
     {
         Name = $"I{core.UniqueName}IndexerGetterBuilder";
@@ -73,6 +74,7 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
         );
         ThrowsMethod = new ThrowsMethodMetadata(
             delegatesMetadata,
+            exceptionTypeParameter,
             ContinuationInterfaceTypeSyntax,
             OutcomeInterfaceTypeSyntax
         );
