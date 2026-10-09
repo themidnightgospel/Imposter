@@ -49,6 +49,10 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly NameSet GenericTypeParameterNameSet;
 
+    // Names for the imposter's fields of this method, kept apart from the method's parameter and type parameter
+    // names, which its setup member declares.
+    internal readonly NameSet FieldNames;
+
     internal readonly bool HasReturnValue;
 
     internal readonly bool SupportsBaseImplementation;
@@ -115,6 +119,11 @@ internal readonly struct ImposterTargetMethodMetadata
             Model.Parameters.Select(p => p.Name).Concat([UniqueName, Model.ContainingNamespace])
         );
         GenericTypeParameterNameSet = new NameSet(Model.TypeParameters.Select(p => p.Name));
+        FieldNames = new NameSet(
+            Model
+                .Parameters.Select(parameter => parameter.Name)
+                .Concat(Model.TypeParameters.Select(typeParameter => typeParameter.Name))
+        );
         GenericTypeArguments = Model
             .TypeParameters.Select(p =>
                 SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(p.Name))

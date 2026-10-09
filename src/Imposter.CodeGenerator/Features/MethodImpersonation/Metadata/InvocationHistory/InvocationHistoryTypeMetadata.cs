@@ -24,7 +24,10 @@ internal readonly record struct InvocationHistoryTypeMetadata
     {
         Name = $"{method.UniqueName}MethodInvocationHistory";
         Interface = new TypeMetadata($"I{Name}");
-        Collection = new InvocationHistoryCollectionMetadata($"{Name}Collection");
+        Collection = new InvocationHistoryCollectionMetadata(
+            $"{Name}Collection",
+            method.FieldNames
+        );
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
     }
 }

@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -9,6 +10,10 @@ internal readonly record struct MethodImposterCollectionMetadata(
     FieldDeclarationMetadata AsField
 )
 {
-    public MethodImposterCollectionMetadata(string name)
-        : this(name, SyntaxFactory.IdentifierName(name), new FieldDeclarationMetadata(name)) { }
+    public MethodImposterCollectionMetadata(string name, NameSet methodNames)
+        : this(
+            name,
+            SyntaxFactory.IdentifierName(name),
+            new FieldDeclarationMetadata(name, methodNames)
+        ) { }
 }

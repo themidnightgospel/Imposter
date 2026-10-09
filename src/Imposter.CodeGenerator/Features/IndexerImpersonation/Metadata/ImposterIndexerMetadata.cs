@@ -67,7 +67,11 @@ internal readonly ref struct ImposterIndexerMetadata
             GetterBuilderInterface
         );
         Builder = new IndexerImposterBuilderMetadata(Core, defaultIndexerBehaviourField);
-        BuilderField = new FieldMetadata($"_{Core.UniqueName}Indexer", Builder.TypeSyntax);
+        // The setup indexer uses the field by its bare name, so the name avoids the indexer's parameter names.
+        BuilderField = new FieldMetadata(
+            Core.CreateParameterNameSet().Use($"_{Core.UniqueName}Indexer"),
+            Builder.TypeSyntax
+        );
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
         if (requiresExplicitInterfaceImplementation)
         {

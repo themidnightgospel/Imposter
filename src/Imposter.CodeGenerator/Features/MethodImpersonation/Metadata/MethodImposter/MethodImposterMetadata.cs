@@ -49,8 +49,8 @@ internal readonly struct MethodImposterMetadata
             method.TargetGenericTypeArguments
         );
 
-        Collection = new MethodImposterCollectionMetadata($"{Name}Collection");
-        AsField = new FieldDeclarationMetadata(Name);
+        Collection = new MethodImposterCollectionMetadata($"{Name}Collection", method.FieldNames);
+        AsField = new FieldDeclarationMetadata(Name, method.FieldNames);
         InvokeMethod = new MethodImposterInvokeMethodMetadata(method.ReservedParameterNames);
         FindMatchingInvocationImposterGroupMethod =
             new FindMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
