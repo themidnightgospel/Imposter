@@ -24,20 +24,17 @@ internal readonly ref struct PropertyImposterMembersBuilder(
                 property.RequiresExplicitInterfaceImplementation
                     ? property.Core.UniqueName
                     : property.Core.Name,
-                IdentifierName(property.AsField.Name)
+                IdentifierName(property.BuilderField.Name)
             )
         );
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-                property.ImposterBuilder.Syntax,
-                property.AsField.Name
-            )
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(property.BuilderField)
         );
 
         constructorBodyBuilder.AddStatement(
             ThisExpression()
-                .Dot(IdentifierName(property.AsField.Name))
+                .Dot(IdentifierName(property.BuilderField.Name))
                 .Assign(
                     property.ImposterBuilder.Syntax.New(
                         SyntaxFactoryHelper.ArgumentListSyntax([

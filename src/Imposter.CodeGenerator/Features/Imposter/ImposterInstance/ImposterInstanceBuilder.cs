@@ -44,7 +44,7 @@ internal readonly ref struct ImposterInstanceBuilder
         if (property.Core.HasGetter)
         {
             var getterInvocation = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(property.AsField.Name))
+                .Dot(IdentifierName(property.BuilderField.Name))
                 .Dot(IdentifierName("_getterImposterBuilder"))
                 .Dot(IdentifierName("Get"));
 
@@ -83,7 +83,7 @@ internal readonly ref struct ImposterInstanceBuilder
         if (property.Core.HasSetter)
         {
             var setterInvocation = IdentifierName(_imposterFieldName)
-                .Dot(IdentifierName(property.AsField.Name))
+                .Dot(IdentifierName(property.BuilderField.Name))
                 .Dot(IdentifierName("_setterImposter"))
                 .Dot(IdentifierName("Set"));
 

@@ -20,8 +20,6 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly string UniqueName;
 
-    internal readonly TypeSyntax TypeSyntax;
-
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
     internal readonly string DisplayName;
@@ -51,7 +49,6 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Getter, property);
         SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Setter, property);
         Name = property.Name;
-        TypeSyntax = SyntaxFactoryHelper.TypeSyntax(property.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareTypeSyntax);
