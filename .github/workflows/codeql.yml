@@ -59,9 +59,9 @@ jobs:
           upload: failure-only
           output: sarif-results
 
-      # The build also compiles the imposters the generator emits for the test, benchmark and playground projects
-      # (under obj/). Their results would bury the ones in checked-in code, and paths-ignore doesn't apply to a built
-      # C# analysis, so they are dropped from the SARIF before upload.
+      # The build also compiles source-generator output under obj/: the imposters generated for the test and sample
+      # projects, and PolySharp's polyfills. Their results would bury the ones in checked-in code, and paths-ignore
+      # doesn't apply to a built C# analysis, so they are dropped from the SARIF before upload.
       - name: Drop results in generated output
         run: |
           for sarif in sarif-results/*.sarif; do
