@@ -21,7 +21,7 @@ internal static class ArgumentsBuilder
 
         var argumentsClassBuilder = new ClassDeclarationBuilder(
             method.Arguments.Name,
-            SyntaxFactoryHelper.TypeParameterListSyntax(method.GenericTypeArguments)
+            method.GenericTypeParameterListSyntax
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddPublicModifier()
@@ -61,20 +61,14 @@ internal static class ArgumentsBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var typeParameters = method.Model.TypeParameters;
-        var targetGenericTypeArguments = method.TargetGenericTypeArguments;
-        var targetTypeArgumentSimpleNames = targetGenericTypeArguments
-            .Select(SyntaxFactoryHelper.AsSimpleName)
-            .ToArray();
-        var asMethodTypeParams = targetTypeArgumentSimpleNames
-            .Select(simpleName => TypeParameter(simpleName.Identifier.Text))
-            .ToArray();
-        var targetTypeArgs = targetTypeArgumentSimpleNames.Cast<TypeSyntax>().ToArray();
-
-        var returnType = GenericName(method.Arguments.Name)
-            .WithTypeArgumentList(TypeArgumentList(SeparatedList(targetTypeArgs)));
-
-        var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
+        var returnType = SyntaxFactoryHelper.WithMethodGenericArguments(
+            method.TargetGenericTypeArguments,
+            method.Arguments.Name
+        );
+        var renamer = new TypeParameterRenamer(
+            method.Model.TypeParameters,
+            method.TargetGenericTypeArguments
+        );
         var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
         {
             var sourceType = p.NullableAwareStoredTypeSyntax;
@@ -85,7 +79,7 @@ internal static class ArgumentsBuilder
 
         return new MethodDeclarationBuilder(returnType, method.ArgumentsAsMethodName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
+            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(
                 Block(ReturnStatement(returnType.New(ArgumentList(SeparatedList(constructorArgs)))))

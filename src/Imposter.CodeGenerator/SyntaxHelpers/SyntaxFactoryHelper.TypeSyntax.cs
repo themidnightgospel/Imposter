@@ -160,14 +160,6 @@ internal static partial class SyntaxFactoryHelper
             .WithConstraints(SeparatedList(constraints));
     }
 
-    internal static SimpleNameSyntax AsSimpleName(NameSyntax nameSyntax) =>
-        nameSyntax switch
-        {
-            SimpleNameSyntax simpleName => simpleName,
-            QualifiedNameSyntax qualifiedName => qualifiedName.Right,
-            _ => IdentifierName(nameSyntax.ToString()),
-        };
-
     internal static NameSyntax GlobalQualifiedName(string? @namespace, string type)
     {
         return ParseName(
