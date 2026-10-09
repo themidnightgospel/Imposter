@@ -1,8 +1,9 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
+namespace Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 
+// A builder's Called(count) verification.
 internal readonly struct CalledMethodMetadata
 {
     internal readonly string Name = "Called";

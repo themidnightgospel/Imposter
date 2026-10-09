@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -103,8 +104,8 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ThenMethod = new ThenMethodMetadata(Interface.Syntax, ContinuationInterface.Syntax);
         UseBaseImplementationMethod = method.SupportsBaseImplementation
             ? new UseBaseImplementationMethodMetadata(
-                Interface.Syntax,
-                ContinuationInterface.Syntax
+                ContinuationInterface.Syntax,
+                Interface.Syntax
             )
             : null;
         DefaultInvocationSetupField = new DefaultInvocationSetupFieldMetadata();

@@ -1,6 +1,6 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PropertySetterThenMethodMetadata = Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.Common.ThenMethodMetadata;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
 
@@ -30,13 +30,13 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
 
     internal readonly CallbackMethodMetadata CallbackMethod;
 
-    internal readonly PropertySetterThenMethodMetadata ThenMethod;
+    internal readonly ThenMethodMetadata ThenMethod;
 
     internal readonly string? UseBaseImplementationEntryInterfaceName;
 
     internal readonly NameSyntax? UseBaseImplementationEntryInterfaceTypeSyntax;
 
-    internal readonly SetterUseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
+    internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationEntryMethod;
 
     internal PropertySetterImposterBuilderInterfaceMetadata(
         in ImposterPropertyCoreMetadata property
@@ -54,9 +54,9 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         VerificationInterfaceTypeSyntax = SyntaxFactory.IdentifierName(VerificationInterfaceName);
         CalledMethod = new CalledMethodMetadata();
         CallbackMethod = new CallbackMethodMetadata(
-            property,
             ContinuationInterfaceTypeSyntax,
-            CallbackInterfaceTypeSyntax
+            CallbackInterfaceTypeSyntax,
+            property.AsSystemActionType
         );
         if (property.SetterSupportsBaseImplementation)
         {
@@ -65,13 +65,13 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
             UseBaseImplementationEntryInterfaceTypeSyntax = SyntaxFactory.IdentifierName(
                 UseBaseImplementationEntryInterfaceName
             );
-            UseBaseImplementationEntryMethod = new SetterUseBaseImplementationMethodMetadata(
-                UseBaseImplementationEntryInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax
-            );
-            ThenMethod = new PropertySetterThenMethodMetadata(
-                ContinuationInterfaceTypeSyntax,
+            UseBaseImplementationEntryMethod = new UseBaseImplementationMethodMetadata(
+                FluentInterfaceTypeSyntax,
                 UseBaseImplementationEntryInterfaceTypeSyntax
+            );
+            ThenMethod = new ThenMethodMetadata(
+                UseBaseImplementationEntryInterfaceTypeSyntax,
+                ContinuationInterfaceTypeSyntax
             );
         }
         else
@@ -79,9 +79,9 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
             UseBaseImplementationEntryInterfaceName = null;
             UseBaseImplementationEntryInterfaceTypeSyntax = null;
             UseBaseImplementationEntryMethod = null;
-            ThenMethod = new PropertySetterThenMethodMetadata(
-                ContinuationInterfaceTypeSyntax,
-                FluentInterfaceTypeSyntax
+            ThenMethod = new ThenMethodMetadata(
+                FluentInterfaceTypeSyntax,
+                ContinuationInterfaceTypeSyntax
             );
         }
     }

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
@@ -61,7 +63,11 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
         }
 
         return builder
-            .AddMember(BuildInitialThenMethod(property))
+            .AddMember(
+                property.GetterImposterBuilderInterface.InitialThenMethod is { } initialThen
+                    ? InterfaceMethod(initialThen.ReturnType, initialThen.Name)
+                    : null
+            )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
     }
@@ -79,7 +85,11 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 )
             )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildUseBaseImplementationMethod(property))
+            .AddMember(
+                property.GetterImposterBuilderInterface.UseBaseImplementationMethod is { } method
+                    ? InterfaceMethod(method.ReturnType, method.Name)
+                    : null
+            )
             .Build();
 
     private static InterfaceDeclarationSyntax BuildUseBaseImplementationEntryInterface(
@@ -95,9 +105,7 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             property.GetterImposterBuilderInterface.UseBaseImplementationEntryInterfaceName!
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(
-                new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build()
-            )
+            .AddMember(InterfaceMethod(method.ReturnType, method.Name))
             .Build();
     }
 
@@ -108,85 +116,79 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             property.GetterImposterBuilderInterface.OutcomeInterfaceName
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(BuildReturnsValueMethod(property))
-            .AddMembers(BuildThrowsValueMethod(property))
+            .AddMembers(BuildReturnsMethods(property.GetterImposterBuilderInterface))
+            .AddMembers(BuildThrowsMethods(property.GetterImposterBuilderInterface))
             .Build();
 
     private static InterfaceDeclarationSyntax BuildCallbackInterface(
         in ImposterPropertyMetadata property
-    ) =>
-        new InterfaceDeclarationBuilder(
+    )
+    {
+        var callback = property.GetterImposterBuilderInterface.CallbackMethod;
+
+        return new InterfaceDeclarationBuilder(
             property.GetterImposterBuilderInterface.CallbackInterfaceName
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildGetterCallbackMethod(property))
+            .AddMember(
+                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
+            )
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildContinuationInterface(
         in ImposterPropertyMetadata property
-    ) =>
-        new InterfaceDeclarationBuilder(
+    )
+    {
+        var then = property.GetterImposterBuilderInterface.ThenMethod;
+
+        return new InterfaceDeclarationBuilder(
             property.GetterImposterBuilderInterface.ContinuationInterfaceName
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(
                 SimpleBaseType(property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax)
             )
-            .AddMember(BuildThenMethod(property))
+            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildVerificationInterface(
         in ImposterPropertyMetadata property
-    ) =>
-        new InterfaceDeclarationBuilder(
+    )
+    {
+        var called = property.GetterImposterBuilderInterface.CalledMethod;
+
+        return new InterfaceDeclarationBuilder(
             property.GetterImposterBuilderInterface.VerificationInterfaceName
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildGetterCalledMethod(property))
+            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
             .Build();
+    }
 
-    internal static MethodDeclarationSyntax BuildGetterCalledMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        new MethodDeclarationBuilder(
-            property.GetterImposterBuilderInterface.CalledMethod.ReturnType,
-            property.GetterImposterBuilderInterface.CalledMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    property.GetterImposterBuilderInterface.CalledMethod.CountParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    internal static MethodDeclarationSyntax BuildGetterCallbackMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        new MethodDeclarationBuilder(
-            property.GetterImposterBuilderInterface.CallbackMethod.ReturnType,
-            property.GetterImposterBuilderInterface.CallbackMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    property.GetterImposterBuilderInterface.CallbackMethod.CallbackParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    internal static MethodDeclarationSyntax[] BuildThrowsValueMethod(
-        in ImposterPropertyMetadata property
+    private static MethodDeclarationSyntax[] BuildReturnsMethods(
+        PropertyGetterImposterBuilderInterfaceMetadata getterInterface
     )
     {
-        var throws = property.GetterImposterBuilderInterface.ThrowsMethod;
+        var returns = getterInterface.ReturnsMethod;
 
         return
         [
-            new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
-                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(throws.ExceptionParameter))
-                .WithSemicolon()
-                .Build(),
+            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueParameter),
+            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueGeneratorParameter),
+        ];
+    }
+
+    private static MethodDeclarationSyntax[] BuildThrowsMethods(
+        PropertyGetterImposterBuilderInterfaceMetadata getterInterface
+    )
+    {
+        var throws = getterInterface.ThrowsMethod;
+
+        return
+        [
+            InterfaceMethod(throws.ReturnType, throws.Name, throws.ExceptionParameter),
             new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
                 .WithTypeParameters(
                     TypeParameterList(
@@ -203,68 +205,5 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 .WithSemicolon()
                 .Build(),
         ];
-    }
-
-    internal static MethodDeclarationSyntax[] BuildReturnsValueMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        [
-            new MethodDeclarationBuilder(
-                property.GetterImposterBuilderInterface.ReturnsMethod.ReturnType,
-                property.GetterImposterBuilderInterface.ReturnsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        property.GetterImposterBuilderInterface.ReturnsMethod.ValueParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
-            new MethodDeclarationBuilder(
-                property.GetterImposterBuilderInterface.ReturnsMethod.ReturnType,
-                property.GetterImposterBuilderInterface.ReturnsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        property
-                            .GetterImposterBuilderInterface
-                            .ReturnsMethod
-                            .ValueGeneratorParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
-        ];
-
-    internal static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
-        new MethodDeclarationBuilder(
-            property.GetterImposterBuilderInterface.ThenMethod.ReturnType,
-            property.GetterImposterBuilderInterface.ThenMethod.Name
-        )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax? BuildInitialThenMethod(
-        in ImposterPropertyMetadata property
-    )
-    {
-        if (property.GetterImposterBuilderInterface.InitialThenMethod is not { } method)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build();
-    }
-
-    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
-        in ImposterPropertyMetadata property
-    )
-    {
-        if (property.GetterImposterBuilderInterface.UseBaseImplementationMethod is not { } method)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build();
     }
 }

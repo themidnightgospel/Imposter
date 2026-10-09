@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -53,20 +54,32 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
 
     private static InterfaceDeclarationSyntax BuildContinuationInterface(
         in ImposterIndexerMetadata indexer
-    ) =>
-        new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.ContinuationInterfaceName)
+    )
+    {
+        var then = indexer.GetterBuilderInterface.ThenMethod;
+
+        return new InterfaceDeclarationBuilder(
+            indexer.GetterBuilderInterface.ContinuationInterfaceName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax))
-            .AddMember(BuildThenMethod(indexer.GetterBuilderInterface))
+            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildCallbackInterface(
         in ImposterIndexerMetadata indexer
-    ) =>
-        new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.CallbackInterfaceName)
+    )
+    {
+        var callback = indexer.GetterBuilderInterface.CallbackMethod;
+
+        return new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.CallbackInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildCallbackMethod(indexer.GetterBuilderInterface))
+            .AddMember(
+                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
+            )
             .Build();
+    }
 
     private static InterfaceDeclarationSyntax BuildOutcomeInterface(
         in ImposterIndexerMetadata indexer
@@ -79,9 +92,11 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
             .AddMembers(BuildReturnsMethods(indexer.GetterBuilderInterface))
             .AddMembers(BuildThrowsMethods(indexer.GetterBuilderInterface));
 
-        if (indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null)
+        if (indexer.GetterBuilderInterface.UseBaseImplementationMethod is { } useBaseImplementation)
         {
-            builder.AddMember(BuildUseBaseImplementationMethod(indexer.GetterBuilderInterface));
+            builder.AddMember(
+                InterfaceMethod(useBaseImplementation.ReturnType, useBaseImplementation.Name)
+            );
         }
 
         return builder.Build();
@@ -89,79 +104,49 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
 
     private static InterfaceDeclarationSyntax BuildVerificationInterface(
         in ImposterIndexerMetadata indexer
-    ) =>
-        new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.VerificationInterfaceName)
+    )
+    {
+        var called = indexer.GetterBuilderInterface.CalledMethod;
+
+        return new InterfaceDeclarationBuilder(
+            indexer.GetterBuilderInterface.VerificationInterfaceName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(BuildCalledMethod(indexer.GetterBuilderInterface))
+            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
             .Build();
+    }
 
     private static MethodDeclarationSyntax[] BuildReturnsMethods(
         IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    ) =>
+    )
+    {
+        var returns = getterInterface.ReturnsMethod;
+
+        return
         [
-            new MethodDeclarationBuilder(
-                getterInterface.ReturnsMethod.ReturnType,
-                getterInterface.ReturnsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        getterInterface.ReturnsMethod.ValueParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
-            new MethodDeclarationBuilder(
-                getterInterface.ReturnsMethod.ReturnType,
-                getterInterface.ReturnsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(getterInterface.ReturnsMethod.FuncParameter)
-                )
-                .WithSemicolon()
-                .Build(),
-            new MethodDeclarationBuilder(
-                getterInterface.ReturnsMethod.ReturnType,
-                getterInterface.ReturnsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        getterInterface.ReturnsMethod.DelegateParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
+            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueParameter),
+            InterfaceMethod(returns.ReturnType, returns.Name, returns.FuncParameter),
+            InterfaceMethod(returns.ReturnType, returns.Name, returns.DelegateParameter),
         ];
+    }
 
     private static MethodDeclarationSyntax[] BuildThrowsMethods(
         IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    ) =>
+    )
+    {
+        var throws = getterInterface.ThrowsMethod;
+
+        return
         [
-            new MethodDeclarationBuilder(
-                getterInterface.ThrowsMethod.ReturnType,
-                getterInterface.ThrowsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        getterInterface.ThrowsMethod.ExceptionParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
-            new MethodDeclarationBuilder(
-                getterInterface.ThrowsMethod.ReturnType,
-                getterInterface.ThrowsMethod.Name
-            )
+            InterfaceMethod(throws.ReturnType, throws.Name, throws.ExceptionParameter),
+            new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
                 .WithTypeParameters(
                     TypeParameterList(
-                        SingletonSeparatedList(
-                            TypeParameter(getterInterface.ThrowsMethod.GenericTypeParameterName)
-                        )
+                        SingletonSeparatedList(TypeParameter(throws.GenericTypeParameterName))
                     )
                 )
                 .AddConstraintClause(
-                    TypeParameterConstraintClause(
-                            getterInterface.ThrowsMethod.GenericTypeParameterName
-                        )
+                    TypeParameterConstraintClause(throws.GenericTypeParameterName)
                         .AddConstraints(
                             TypeConstraint(WellKnownTypes.System.Exception),
                             ConstructorConstraint()
@@ -169,65 +154,7 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
                 )
                 .WithSemicolon()
                 .Build(),
-            new MethodDeclarationBuilder(
-                getterInterface.ThrowsMethod.ReturnType,
-                getterInterface.ThrowsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        getterInterface.ThrowsMethod.DelegateParameter
-                    )
-                )
-                .WithSemicolon()
-                .Build(),
+            InterfaceMethod(throws.ReturnType, throws.Name, throws.DelegateParameter),
         ];
-
-    private static MethodDeclarationSyntax BuildCallbackMethod(
-        IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    ) =>
-        new MethodDeclarationBuilder(
-            getterInterface.CallbackMethod.ReturnType,
-            getterInterface.CallbackMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    getterInterface.CallbackMethod.CallbackParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildCalledMethod(
-        IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    ) =>
-        new MethodDeclarationBuilder(
-            getterInterface.CalledMethod.ReturnType,
-            getterInterface.CalledMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(getterInterface.CalledMethod.CountParameter)
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildThenMethod(
-        IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    ) =>
-        new MethodDeclarationBuilder(
-            getterInterface.ThenMethod.ReturnType,
-            getterInterface.ThenMethod.Name
-        )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
-        IndexerGetterImposterBuilderInterfaceMetadata getterInterface
-    )
-    {
-        var metadata = getterInterface.UseBaseImplementationMethod!.Value;
-
-        return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
-            .WithSemicolon()
-            .Build();
     }
 }
