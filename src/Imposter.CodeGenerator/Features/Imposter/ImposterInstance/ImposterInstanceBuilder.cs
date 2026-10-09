@@ -35,7 +35,7 @@ internal readonly ref struct ImposterInstanceBuilder
     internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
     {
         var propertyBuilder = new PropertyDeclarationBuilder(
-            property.Core.DeclaredTypeSyntax,
+            property.Core.NullableAwareTypeSyntax,
             property.Core.Name
         )
             .AddModifiers(property.ImposterInstanceModifiers)

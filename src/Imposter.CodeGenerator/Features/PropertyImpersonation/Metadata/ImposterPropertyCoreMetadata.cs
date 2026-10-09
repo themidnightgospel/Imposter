@@ -20,12 +20,12 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly string UniqueName;
 
-    internal readonly TypeSyntax DeclaredTypeSyntax;
+    internal readonly TypeSyntax NullableAwareTypeSyntax;
 
     private readonly bool _isSpan;
 
     // The type the imposter gets and sets the value as: the property's type, or the array that keeps a span's elements.
-    internal readonly TypeSyntax NullableAwareTypeSyntax;
+    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
 
     internal readonly string DisplayName;
 
@@ -54,16 +54,16 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Getter, property);
         SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Setter, property);
         Name = property.Name;
-        DeclaredTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
+        NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         var span = property.Span;
         _isSpan = span is not null;
-        NullableAwareTypeSyntax = span is null
-            ? DeclaredTypeSyntax
+        NullableAwareStoredTypeSyntax = span is null
+            ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
-        AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareTypeSyntax);
+        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareStoredTypeSyntax);
+        AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
         AsArgType = span is null
-            ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareTypeSyntax)
+            ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
             : SyntaxFactoryHelper.SpanArgType(span);
         GetterSupportsBaseImplementation =
             property.IsClassMember && property.Getter is { IsAbstract: false };
