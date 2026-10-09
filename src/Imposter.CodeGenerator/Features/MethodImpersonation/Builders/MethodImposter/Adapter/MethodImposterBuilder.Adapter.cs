@@ -83,65 +83,55 @@ internal static class MethodImposterAdapterBuilder
         var parameterList = (ParameterListSyntax)
             typeParamRenamer.Visit(method.Parameters.ParameterListSyntaxIncludingNullable);
 
-        foreach (var p in method.Parameters.AllParameterMetadata)
+        var adaptedParameterNames = adapterNames.AdaptedParameterNames;
+        foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
-            var pType = p.NullableAwareTypeSyntax;
-            var pTargetType = typeParamRenamer.Visit(pType);
-            var castArgument = p.IsSpan
+            var parameterType = parameter.NullableAwareTypeSyntax;
+            var castArgument = parameter.IsSpan
                 ? AdaptedSpan(
-                    IdentifierName(p.Name),
-                    (TypeSyntax)typeParamRenamer.Visit(p.NullableAwareStoredTypeSyntax),
-                    p.NullableAwareStoredTypeSyntax
+                    IdentifierName(parameter.Name),
+                    (TypeSyntax)typeParamRenamer.Visit(parameter.NullableAwareStoredTypeSyntax),
+                    parameter.NullableAwareStoredTypeSyntax
                 )
-                : TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType);
+                : TypeCasterSyntaxHelper.CastExpression(
+                    parameter.Name,
+                    (TypeSyntax)typeParamRenamer.Visit(parameterType),
+                    parameterType
+                );
 
-            switch (p.Model.RefKind)
+            switch (parameter.Model.RefKind)
             {
                 case RefKind.Ref:
-                {
-                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
-                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName, castArgument));
-                    invokeArguments.Add(
-                        Argument(IdentifierName(adaptedName))
-                            .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
-                    );
-                    postInvokeActions.Add(
-                        IdentifierName(p.Name)
-                            .Assign(CastBack(p, adaptedName, typeParamRenamer))
-                            .ToStatementSyntax()
-                    );
+                    invokeArguments.Add(PassThroughLocal(SyntaxKind.RefKeyword, castArgument));
+                    postInvokeActions.Add(CastBackToCaller());
                     break;
-                }
                 case RefKind.Out:
-                {
-                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
-                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName));
-                    invokeArguments.Add(
-                        Argument(IdentifierName(adaptedName))
-                            .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
-                    );
-                    postInvokeActions.Add(
-                        IdentifierName(p.Name)
-                            .Assign(CastBack(p, adaptedName, typeParamRenamer))
-                            .ToStatementSyntax()
-                    );
+                    invokeArguments.Add(PassThroughLocal(SyntaxKind.OutKeyword, initializer: null));
+                    postInvokeActions.Add(CastBackToCaller());
                     break;
-                }
                 case RefKinds.RefReadOnlyParameter:
-                {
                     // A `ref readonly` parameter takes a variable, not the cast itself (CS9193).
-                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
-                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName, castArgument));
-                    invokeArguments.Add(
-                        Argument(IdentifierName(adaptedName))
-                            .WithRefOrOutKeyword(Token(SyntaxKind.InKeyword))
-                    );
+                    invokeArguments.Add(PassThroughLocal(SyntaxKind.InKeyword, castArgument));
                     break;
-                }
                 default:
                     invokeArguments.Add(Argument(castArgument));
                     break;
             }
+
+            // The target takes the argument by reference, so it goes through a local of the target's type.
+            ArgumentSyntax PassThroughLocal(SyntaxKind keyword, ExpressionSyntax? initializer)
+            {
+                var adaptedName = adaptedParameterNames[parameter.Name];
+                body.Add(LocalVariableDeclarationSyntax(parameterType, adaptedName, initializer));
+                return Argument(IdentifierName(adaptedName)).WithRefOrOutKeyword(Token(keyword));
+            }
+
+            StatementSyntax CastBackToCaller() =>
+                IdentifierName(parameter.Name)
+                    .Assign(
+                        CastBack(parameter, adaptedParameterNames[parameter.Name], typeParamRenamer)
+                    )
+                    .ToStatementSyntax();
         }
 
         if (method.SupportsBaseImplementation)
