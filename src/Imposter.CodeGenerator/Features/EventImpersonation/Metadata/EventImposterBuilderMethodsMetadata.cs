@@ -29,6 +29,8 @@ internal readonly struct EventImposterBuilderMethodsMetadata
 
     internal readonly MethodMetadata RaiseCoreAsync;
 
+    internal readonly EventRaiseLocalNames RaiseLocalNames;
+
     internal readonly MethodMetadata EnumerateHandlers;
 
     internal readonly MethodMetadata EnsureCountMatches;
@@ -67,6 +69,7 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             "RaiseCoreAsync",
             WellKnownTypes.System.Threading.Tasks.Task
         );
+        RaiseLocalNames = new EventRaiseLocalNames(core);
         EnumerateHandlers = new MethodMetadata("EnumerateActiveHandlers", WellKnownTypes.Void);
         EnsureCountMatches = new MethodMetadata("EnsureCountMatches", WellKnownTypes.Void);
         RaisedVerification = new MethodMetadata("Raised", WellKnownTypes.Void);
