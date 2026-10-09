@@ -255,22 +255,11 @@ internal static class SetterImposterBuilder
                         )
                     )
                 );
-                var useBaseImplementationCheck = IdentifierName(
-                    setterImposter.UseBaseImplementationField.Name
-                );
-                var missingBaseImplementation = ThrowMissingImposter(
-                    setterImposter.PropertyDisplayNameField.Name,
-                    " (setter)"
-                );
-                var baseImplementationPath = IfStatement(
-                    useBaseImplementationCheck,
-                    Block(
-                        IfStatement(
-                            baseImplementationIdentifier.IsNotNull(),
-                            Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
-                            ElseClause(missingBaseImplementation)
-                        )
-                    )
+                var baseImplementationPath = CallBaseImplementationIfUsed(
+                    IdentifierName(setterImposter.UseBaseImplementationField.Name),
+                    baseImplementationIdentifier,
+                    Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
+                    ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")
                 );
 
                 statements.Add(baseImplementationPath);
