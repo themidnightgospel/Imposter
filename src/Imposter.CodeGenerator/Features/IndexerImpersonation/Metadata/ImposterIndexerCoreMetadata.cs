@@ -48,8 +48,13 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(indexer.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
+        var fieldNames = new NameSet(
+            indexer.Parameters.Select(parameter =>
+                SyntaxFactoryHelper.EscapeKeyword(parameter.Name)
+            )
+        );
         Parameters = indexer
-            .Parameters.Select(parameter => new IndexerParameterMetadata(parameter))
+            .Parameters.Select(parameter => new IndexerParameterMetadata(parameter, fieldNames))
             .ToArray();
         ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
         ParameterArguments = Parameters

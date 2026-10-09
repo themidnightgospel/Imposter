@@ -174,7 +174,8 @@ internal readonly struct ImposterTargetMethodMetadata
             GenericTypeArguments
         );
 
-        var argumentsTypeName = $"{uniqueName}Arguments";
+        // The arguments class keeps each parameter in a field named after it, which can't share the class's name.
+        var argumentsTypeName = MemberNames.Use($"{uniqueName}Arguments");
         Arguments = new TypeMetadata(
             argumentsTypeName,
             SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName)

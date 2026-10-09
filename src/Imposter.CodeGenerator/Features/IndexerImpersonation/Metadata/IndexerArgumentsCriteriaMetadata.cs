@@ -11,7 +11,8 @@ internal readonly struct IndexerArgumentsCriteriaMetadata
 
     internal IndexerArgumentsCriteriaMetadata(in ImposterIndexerCoreMetadata core)
     {
-        Name = $"{core.UniqueName}IndexerArgumentsCriteria";
+        // The class keeps each parameter in a field named after it, which can't share the class's name.
+        Name = core.CreateParameterNameSet().Use($"{core.UniqueName}IndexerArgumentsCriteria");
         TypeSyntax = IdentifierName(Name);
     }
 }

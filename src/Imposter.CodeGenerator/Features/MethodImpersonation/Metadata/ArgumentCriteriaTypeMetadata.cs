@@ -20,7 +20,8 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
 
     public ArgumentCriteriaTypeMetadata(in ImposterTargetMethodMetadata method)
     {
-        var argumentsCriteriaName = $"{method.UniqueName}ArgumentsCriteria";
+        // The class keeps each parameter in a field named after it, which can't share the class's name.
+        var argumentsCriteriaName = method.MemberNames.Use($"{method.UniqueName}ArgumentsCriteria");
         Name = argumentsCriteriaName;
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(
             method.GenericTypeArguments,

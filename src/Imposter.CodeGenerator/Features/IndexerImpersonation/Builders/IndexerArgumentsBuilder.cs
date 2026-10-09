@@ -24,7 +24,7 @@ internal static class IndexerArgumentsBuilder
         {
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
-                    new FieldMetadata(parameter.Name, parameter.TypeSyntax),
+                    new FieldMetadata(parameter.FieldName, parameter.TypeSyntax),
                     SyntaxKind.PublicKeyword
                 )
             );
@@ -51,7 +51,7 @@ internal static class IndexerArgumentsBuilder
             constructorBuilder = constructorBuilder.AddParameter(parameter.ParameterSyntax);
             bodyBuilder.AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName(parameter.Name))
+                    .Dot(IdentifierName(parameter.FieldName))
                     .Assign(IdentifierName(parameter.Name))
                     .ToStatementSyntax()
             );
@@ -77,8 +77,8 @@ internal static class IndexerArgumentsBuilder
                 .Dot(IdentifierName("Default"))
                 .Dot(IdentifierName("Equals"))
                 .Call([
-                    Argument(IdentifierName(parameter.Name)),
-                    Argument(otherIdentifierName.Dot(IdentifierName(parameter.Name))),
+                    Argument(IdentifierName(parameter.FieldName)),
+                    Argument(otherIdentifierName.Dot(IdentifierName(parameter.FieldName))),
                 ]);
 
             comparison = comparison is null ? equalsExpression : comparison.And(equalsExpression);
@@ -167,7 +167,7 @@ internal static class IndexerArgumentsBuilder
                                     Argument(
                                         PostfixUnaryExpression(
                                             SyntaxKind.SuppressNullableWarningExpression,
-                                            IdentifierName(parameter.Name)
+                                            IdentifierName(parameter.FieldName)
                                         )
                                     )
                                 )

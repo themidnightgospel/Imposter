@@ -27,4 +27,34 @@ public class IndexerArgumentsNameCollisionTests
             nameof(IndexerArgumentsNameCollisionTests)
         );
     }
+
+    [Fact]
+    public async Task GivenIndexerParametersNamedLikeTheArgumentsMembers_WhenIndexerIsUsed_ShouldCompile()
+    {
+        await AssertTwoParameterIndexerCompiles("int Equals, int GetHashCode");
+    }
+
+    [Fact]
+    public async Task GivenIndexerParameterNamedLikeTheCriteriaMatchesMethod_WhenIndexerIsUsed_ShouldCompile()
+    {
+        await AssertTwoParameterIndexerCompiles("int Matches, int key");
+    }
+
+    [Fact]
+    public async Task GivenIndexerParametersNamedLikeTheArgumentsClasses_WhenIndexerIsUsed_ShouldCompile()
+    {
+        await AssertTwoParameterIndexerCompiles(
+            "int IndexerIndexerArguments, int IndexerIndexerArgumentsCriteria"
+        );
+    }
+
+    private static Task AssertTwoParameterIndexerCompiles(string parameters) =>
+        AssertInterfaceCompiles(
+            $"public interface IService {{ int this[{parameters}] {{ get; set; }} }}",
+            "imposter[Arg<int>.Any(), Arg<int>.Is(2)].Getter().Returns(1); "
+                + "imposter[Arg<int>.Any(), Arg<int>.Any()].Setter().Callback((a, b, value) => { }); "
+                + "var instance = imposter.Instance(); instance[1, 2] = instance[3, 2]; "
+                + "imposter[Arg<int>.Any(), Arg<int>.Is(2)].Getter().Called(Count.Once());",
+            nameof(IndexerArgumentsNameCollisionTests)
+        );
 }

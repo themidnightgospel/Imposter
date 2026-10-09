@@ -42,7 +42,7 @@ internal static class IndexerImposterBuilderCommon
     )
     {
         var arguments = indexer.Core.Parameters.Select(parameter =>
-            Argument(source.Dot(IdentifierName(parameter.Name)))
+            Argument(source.Dot(IdentifierName(parameter.FieldName)))
         );
 
         return ArgumentList(SeparatedList(arguments));
@@ -100,7 +100,9 @@ internal static class IndexerImposterBuilderCommon
                                             indexer.Core.Parameters.Select(
                                                 ExpressionSyntax (parameter) =>
                                                     Invocation(
-                                                        source.Dot(IdentifierName(parameter.Name))
+                                                        source.Dot(
+                                                            IdentifierName(parameter.FieldName)
+                                                        )
                                                     )
                                             )
                                         )

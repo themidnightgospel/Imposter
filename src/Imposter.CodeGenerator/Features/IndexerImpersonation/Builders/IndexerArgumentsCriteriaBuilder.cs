@@ -20,7 +20,7 @@ internal static class IndexerArgumentsCriteriaBuilder
         {
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
-                    new FieldMetadata(parameter.Name, parameter.ArgTypeSyntax),
+                    new FieldMetadata(parameter.FieldName, parameter.ArgTypeSyntax),
                     SyntaxKind.PublicKeyword
                 )
             );
@@ -47,7 +47,7 @@ internal static class IndexerArgumentsCriteriaBuilder
             );
             bodyBuilder.AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName(parameter.Name))
+                    .Dot(IdentifierName(parameter.FieldName))
                     .Assign(IdentifierName(parameter.Name))
                     .ToStatementSyntax()
             );
@@ -64,13 +64,13 @@ internal static class IndexerArgumentsCriteriaBuilder
         foreach (var parameter in indexer.Core.Parameters)
         {
             var parameterComparison = ThisExpression()
-                .Dot(IdentifierName(parameter.Name))
+                .Dot(IdentifierName(parameter.FieldName))
                 .Dot(IdentifierName("Matches"))
                 .Call(
                     ArgumentList(
                         SingletonSeparatedList(
                             Argument(
-                                IdentifierName("arguments").Dot(IdentifierName(parameter.Name))
+                                IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName))
                             )
                         )
                     )
