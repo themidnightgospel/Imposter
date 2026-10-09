@@ -25,88 +25,64 @@ internal static class EventImposterSubscriptionsBuilder
         ];
     }
 
-    internal static MethodDeclarationSyntax BuildSubscribeMethod(in ImposterEventMetadata @event)
+    internal static MethodDeclarationSyntax BuildSubscribeMethod(in ImposterEventMetadata @event) =>
+        BuildSubscriptionMethod(
+            @event,
+            @event.Builder.Methods.Subscribe,
+            @event.Builder.Fields.SubscribeHistory,
+            @event.Builder.Fields.SubscribeInterceptors
+        );
+
+    internal static MethodDeclarationSyntax BuildUnsubscribeMethod(
+        in ImposterEventMetadata @event
+    ) =>
+        BuildSubscriptionMethod(
+            @event,
+            @event.Builder.Methods.Unsubscribe,
+            @event.Builder.Fields.UnsubscribeHistory,
+            @event.Builder.Fields.UnsubscribeInterceptors
+        );
+
+    private static MethodDeclarationSyntax BuildSubscriptionMethod(
+        in ImposterEventMetadata @event,
+        in SubscriptionMethodMetadata method,
+        in FieldMetadata history,
+        in FieldMetadata interceptors
+    )
     {
-        var fields = @event.Builder.Fields;
-        var method = @event.Builder.Methods.Subscribe;
         var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
 
         var methodBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(method.HandlerParameter));
 
-        if (method.BaseImplementationParameter is { } subscribeBaseParameter)
+        if (method.BaseImplementationParameter is { } baseImplementationParameter)
         {
-            methodBuilder = methodBuilder.AddParameter(ParameterSyntax(subscribeBaseParameter));
+            methodBuilder = methodBuilder.AddParameter(
+                ParameterSyntax(baseImplementationParameter)
+            );
         }
 
         var blockBuilder = new BlockBuilder()
             .AddStatement(ThrowIfNull(method.HandlerParameter.Name))
-            .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Combine"))
+            .AddStatements(
+                UpdateActiveHandlers(@event, handlerIdentifier, method.DelegateOperation)
+            )
             .AddExpression(
-                FieldIdentifier(fields.SubscribeHistory)
+                FieldIdentifier(history)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(handlerIdentifier))
             )
-            .AddStatement(
-                ForEachInterceptor(fields.SubscribeInterceptors, method.HandlerParameter.Name)
-            );
+            .AddStatement(ForEachInterceptor(interceptors, method.HandlerParameter.Name));
 
-        if (method.BaseImplementationParameter is { } subscribeBaseImplementationParameter)
+        if (method.BaseImplementationParameter is { } baseImplementation)
         {
             blockBuilder.AddStatement(
-                BuildBaseImplementationInvocation(
-                    @event,
-                    IdentifierName(subscribeBaseImplementationParameter.Name)
-                )
+                BuildBaseImplementationInvocation(@event, IdentifierName(baseImplementation.Name))
             );
         }
 
         return methodBuilder.WithBody(blockBuilder.Build()).Build();
-    }
-
-    internal static MethodDeclarationSyntax BuildUnsubscribeMethod(in ImposterEventMetadata @event)
-    {
-        var method = @event.Builder.Methods.Unsubscribe;
-        var handlerIdentifier = IdentifierName(method.HandlerParameter.Name);
-
-        var unsubscribeBuilder = new MethodDeclarationBuilder(WellKnownTypes.Void, method.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(method.HandlerParameter));
-
-        if (method.BaseImplementationParameter is { } unsubscribeBaseParameter)
-        {
-            unsubscribeBuilder = unsubscribeBuilder.AddParameter(
-                ParameterSyntax(unsubscribeBaseParameter)
-            );
-        }
-
-        var unsubscribeBlockBuilder = new BlockBuilder()
-            .AddStatement(ThrowIfNull(method.HandlerParameter.Name))
-            .AddStatements(UpdateActiveHandlers(@event, handlerIdentifier, "Remove"))
-            .AddExpression(
-                FieldIdentifier(@event.Builder.Fields.UnsubscribeHistory)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(handlerIdentifier))
-            )
-            .AddStatement(
-                ForEachInterceptor(
-                    @event.Builder.Fields.UnsubscribeInterceptors,
-                    method.HandlerParameter.Name
-                )
-            );
-
-        if (method.BaseImplementationParameter is { } unsubscribeBaseImplementationParameter)
-        {
-            unsubscribeBlockBuilder.AddStatement(
-                BuildBaseImplementationInvocation(
-                    @event,
-                    IdentifierName(unsubscribeBaseImplementationParameter.Name)
-                )
-            );
-        }
-
-        return unsubscribeBuilder.WithBody(unsubscribeBlockBuilder.Build()).Build();
     }
 
     internal static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
