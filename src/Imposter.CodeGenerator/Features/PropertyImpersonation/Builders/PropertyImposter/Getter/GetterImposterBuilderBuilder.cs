@@ -1,6 +1,7 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -461,7 +462,7 @@ internal static class GetterImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationInterfaceMethod(
         in PropertyGetterImposterBuilderMetadata builder,
-        GetterUseBaseImplementationMethodMetadata methodMetadata
+        UseBaseImplementationMethodMetadata methodMetadata
     ) =>
         new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
             .WithExplicitInterfaceSpecifier(methodMetadata.InterfaceSyntax)

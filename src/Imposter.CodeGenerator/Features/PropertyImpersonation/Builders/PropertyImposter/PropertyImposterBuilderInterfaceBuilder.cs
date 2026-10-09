@@ -1,56 +1,35 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 
 internal static class PropertyImposterBuilderInterfaceBuilder
 {
-    internal static InterfaceDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
-        new InterfaceDeclarationBuilder(property.ImposterBuilderInterface.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(property.Core.HasGetter ? BuildGetterMethod(property) : null)
-            .AddMember(property.Core.HasSetter ? BuildSetterMethod(property) : null)
-            .AddMember(BuildUseBaseImplementationMethod(property))
-            .Build();
-
-    internal static MethodDeclarationSyntax? BuildGetterMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        new MethodDeclarationBuilder(
-            property.ImposterBuilderInterface.GetterMethod.ReturnType,
-            property.ImposterBuilderInterface.GetterMethod.Name
-        )
-            .WithSemicolon()
-            .Build();
-
-    internal static MethodDeclarationSyntax? BuildSetterMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        new MethodDeclarationBuilder(
-            property.ImposterBuilderInterface.SetterMethod.ReturnType,
-            property.ImposterBuilderInterface.SetterMethod.Name
-        )
-            .AddParameter(
-                SyntaxFactoryHelper.ParameterSyntax(
-                    property.ImposterBuilderInterface.SetterMethod.CriteriaParameter
-                )
-            )
-            .WithSemicolon()
-            .Build();
-
-    private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
-        in ImposterPropertyMetadata property
-    )
+    internal static InterfaceDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
-        if (property.ImposterBuilderInterface.UseBaseImplementationMethod is not { } method)
-        {
-            return null;
-        }
+        var builderInterface = property.ImposterBuilderInterface;
+        var getter = builderInterface.GetterMethod;
+        var setter = builderInterface.SetterMethod;
 
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build();
+        return new InterfaceDeclarationBuilder(builderInterface.Name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(
+                property.Core.HasGetter ? InterfaceMethod(getter.ReturnType, getter.Name) : null
+            )
+            .AddMember(
+                property.Core.HasSetter
+                    ? InterfaceMethod(setter.ReturnType, setter.Name, setter.CriteriaParameter)
+                    : null
+            )
+            .AddMember(
+                builderInterface.UseBaseImplementationMethod is { } useBaseImplementation
+                    ? InterfaceMethod(useBaseImplementation.ReturnType, useBaseImplementation.Name)
+                    : null
+            )
+            .Build();
     }
 }

@@ -1,7 +1,8 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.SetterImposterBuilderInterface;
+namespace Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 
+// A builder's UseBaseImplementation(), for a class member with a base implementation.
 internal readonly struct UseBaseImplementationMethodMetadata
 {
     internal readonly string Name = "UseBaseImplementation";
@@ -10,9 +11,9 @@ internal readonly struct UseBaseImplementationMethodMetadata
 
     internal readonly NameSyntax InterfaceSyntax;
 
-    internal UseBaseImplementationMethodMetadata(NameSyntax interfaceSyntax, TypeSyntax returnType)
+    internal UseBaseImplementationMethodMetadata(TypeSyntax returnType, NameSyntax interfaceSyntax)
     {
-        InterfaceSyntax = interfaceSyntax;
         ReturnType = returnType;
+        InterfaceSyntax = interfaceSyntax;
     }
 }

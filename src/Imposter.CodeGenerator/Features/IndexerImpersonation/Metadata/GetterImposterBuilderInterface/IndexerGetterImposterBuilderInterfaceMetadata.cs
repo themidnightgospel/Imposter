@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -76,19 +77,19 @@ internal readonly struct IndexerGetterImposterBuilderInterfaceMetadata
             OutcomeInterfaceTypeSyntax
         );
         CallbackMethod = new CallbackMethodMetadata(
-            delegatesMetadata,
             ContinuationInterfaceTypeSyntax,
-            CallbackInterfaceTypeSyntax
+            CallbackInterfaceTypeSyntax,
+            delegatesMetadata.GetterCallbackDelegateType
         );
         CalledMethod = new CalledMethodMetadata();
         ThenMethod = new ThenMethodMetadata(
-            ContinuationInterfaceTypeSyntax,
-            FluentInterfaceTypeSyntax
+            FluentInterfaceTypeSyntax,
+            ContinuationInterfaceTypeSyntax
         );
         UseBaseImplementationMethod = core.GetterSupportsBaseImplementation
             ? new UseBaseImplementationMethodMetadata(
-                OutcomeInterfaceTypeSyntax,
-                ContinuationInterfaceTypeSyntax
+                ContinuationInterfaceTypeSyntax,
+                OutcomeInterfaceTypeSyntax
             )
             : null;
     }

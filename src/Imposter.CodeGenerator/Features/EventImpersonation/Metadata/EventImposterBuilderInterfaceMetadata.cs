@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -38,7 +39,7 @@ internal readonly struct EventImposterBuilderInterfaceMetadata
 
         RaiseMethod = new MethodMetadata(raiseMethodName, raiseMethodReturnType);
         UseBaseImplementationMethod = core.SupportsBaseImplementation
-            ? new UseBaseImplementationMethodMetadata(TypeSyntax)
+            ? new UseBaseImplementationMethodMetadata(TypeSyntax, TypeSyntax)
             : null;
     }
 }

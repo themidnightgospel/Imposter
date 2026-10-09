@@ -39,10 +39,10 @@ internal static partial class MethodImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, CalledMethodMetadata.Name)
-            .AddParameter(
-                ParameterSyntax(method.InvocationVerifierInterface.CalledMethod.CountParameter)
-            )
+        var called = method.InvocationVerifierInterface.CalledMethod;
+
+        return new MethodDeclarationBuilder(called.ReturnType, called.Name)
+            .AddParameter(ParameterSyntax(called.CountParameter))
             .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(
                 Block(
