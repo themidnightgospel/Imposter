@@ -34,7 +34,9 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
-    internal readonly bool RequiresExplicitInterfaceImplementation;
+    // The imposter property that sets this property up: named after it, or by its unique name when it's implemented
+    // explicitly.
+    internal readonly string SetupName;
 
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
@@ -77,7 +79,7 @@ internal readonly ref struct ImposterPropertyMetadata
             ImposterBuilder.Syntax
         );
 
-        RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        SetupName = requiresExplicitInterfaceImplementation ? Core.UniqueName : Core.Name;
         if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = ExplicitInterfaceSpecifier(

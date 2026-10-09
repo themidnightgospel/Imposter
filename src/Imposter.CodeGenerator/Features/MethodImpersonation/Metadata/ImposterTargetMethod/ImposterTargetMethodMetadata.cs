@@ -47,6 +47,10 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly MethodImposterMetadata MethodImposter;
 
+    // The imposter's field for this method: its method imposter, or for a generic method the collection that keeps a
+    // method imposter per type argument.
+    internal readonly FieldMetadata ImposterField;
+
     internal readonly ReturnTypeMetadata ReturnType;
 
     internal readonly NameSet GenericTypeParameterNameSet;
@@ -188,6 +192,12 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         InvocationVerifierInterface = new InvocationVerifierInterfaceMetadata(this);
         MethodImposter = new MethodImposterMetadata(this);
+        ImposterField = Model.IsGenericMethod
+            ? new FieldMetadata(
+                MethodImposter.Collection.AsField.Name,
+                MethodImposter.Collection.Syntax
+            )
+            : new FieldMetadata(MethodImposter.AsField.Name, MethodImposter.Syntax);
         RequiresExplicitInterfaceImplementation = method.RequiresExplicitInterfaceImplementation;
         SetupName = NeedsNumberedSetup(method) ? UniqueName : Model.Name;
         ImposterInstanceMethodConstraintClauses =
@@ -210,6 +220,15 @@ internal readonly struct ImposterTargetMethodMetadata
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
     }
+
+    // A member name followed by this method's type arguments, when it has any.
+    internal SimpleNameSyntax WithGenericArguments(string identifier) =>
+        GenericTypeArgumentListSyntax is not null
+            ? SyntaxFactory.GenericName(
+                SyntaxFactory.Identifier(identifier),
+                GenericTypeArgumentListSyntax
+            )
+            : SyntaxFactory.IdentifierName(identifier);
 
     // A method another member's setup would collide with is set up by its unique name.
     internal static bool NeedsNumberedSetup(TargetMemberModel<MethodModel> method) =>

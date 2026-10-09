@@ -22,8 +22,6 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposte
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
-using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -300,9 +298,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddPropertyImposter(property)
                 .AddInterfaceSetupMember(
                     targetProperty.Setup,
-                    property.RequiresExplicitInterfaceImplementation
-                        ? property.Core.UniqueName
-                        : property.Core.Name,
+                    property.SetupName,
                     property.ImposterBuilderInterface.Syntax
                 )
                 .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
@@ -328,9 +324,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .AddEventImposter(@event)
                 .AddInterfaceSetupMember(
                     targetEvent.Setup,
-                    @event.RequiresExplicitInterfaceImplementation
-                        ? @event.Core.UniqueName
-                        : @event.Core.Name,
+                    @event.SetupName,
                     @event.BuilderInterface.TypeSyntax
                 )
                 .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))

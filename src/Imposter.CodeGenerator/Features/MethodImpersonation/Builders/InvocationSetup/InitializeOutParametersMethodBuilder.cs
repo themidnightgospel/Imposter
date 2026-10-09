@@ -2,13 +2,15 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Models;
+using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
+namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationSetup;
 
 internal static class InitializeOutParametersMethodBuilder
 {
@@ -22,12 +24,10 @@ internal static class InitializeOutParametersMethodBuilder
 
     private static ExpressionStatementSyntax Invoke(
         string name,
-        IReadOnlyList<ParameterModel> parameters
+        IReadOnlyList<ParameterModel> outParameters
     ) =>
         IdentifierName(name)
-            .Call(
-                parameters.Where(it => it.RefKind is RefKind.Out).Select(it => ArgumentSyntax(it))
-            )
+            .Call(outParameters.Select(it => ArgumentSyntax(it)))
             .ToStatementSyntax();
 
     internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method) =>
@@ -40,18 +40,12 @@ internal static class InitializeOutParametersMethodBuilder
 
     private static MethodDeclarationSyntax Build(
         string name,
-        IReadOnlyList<ParameterModel> parameters
+        IReadOnlyList<ParameterModel> outParameters
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, name)
-            .AddParameters(parameters.Select(ParameterSyntax))
+            .AddParameters(outParameters.Select(ParameterSyntax))
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .WithBody(
-                Block(
-                    parameters
-                        .Where(it => it.RefKind is RefKind.Out)
-                        .Select(AssignDefaultValueStatementSyntax)
-                )
-            )
+            .WithBody(Block(outParameters.Select(AssignDefaultValueStatementSyntax)))
             .Build();
 }

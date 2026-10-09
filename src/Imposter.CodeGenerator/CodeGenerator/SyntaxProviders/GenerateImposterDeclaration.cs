@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Imposter.CodeGenerator.Features.Shared;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;

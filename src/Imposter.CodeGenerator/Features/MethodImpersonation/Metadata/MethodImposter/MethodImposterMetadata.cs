@@ -71,7 +71,7 @@ internal readonly struct MethodImposterMetadata
         );
         Builder = new MethodImposterBuilderMetadata(
             Syntax,
-            Collection.Syntax,
+            method.Model.IsGenericMethod ? Collection.Syntax : null,
             method.ArgumentsCriteria.Syntax,
             method.MethodInvocationImposterGroup.Syntax,
             method.MethodInvocationImposterGroup.MethodInvocationImposterSyntax

@@ -61,7 +61,7 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
             builder = builder.AddBaseType(SimpleBaseType(useBaseImplementationInterface));
         }
 
-        return builder.AddMember(BuildInitialThenMethod(property)).Build();
+        return builder.Build();
     }
 
     private static InterfaceDeclarationSyntax BuildFluentInterface(
@@ -171,16 +171,4 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
         )
             .WithSemicolon()
             .Build();
-
-    private static MethodDeclarationSyntax? BuildInitialThenMethod(
-        in ImposterPropertyMetadata property
-    )
-    {
-        if (property.SetterImposterBuilderInterface.InitialThenMethod is not { } method)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name).WithSemicolon().Build();
-    }
 }

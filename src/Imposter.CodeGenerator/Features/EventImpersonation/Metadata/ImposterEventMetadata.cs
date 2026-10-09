@@ -19,7 +19,9 @@ internal readonly ref struct ImposterEventMetadata
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
 
-    internal readonly bool RequiresExplicitInterfaceImplementation;
+    // The imposter property that sets this event up: named after it, or by its unique name when it's implemented
+    // explicitly.
+    internal readonly string SetupName;
 
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
@@ -34,7 +36,7 @@ internal readonly ref struct ImposterEventMetadata
         Builder = new EventImposterBuilderMetadata(Core);
         BuilderField = new FieldMetadata($"_{Core.UniqueName}", Builder.TypeSyntax);
 
-        RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        SetupName = requiresExplicitInterfaceImplementation ? Core.UniqueName : Core.Name;
         if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = ExplicitInterfaceSpecifier(

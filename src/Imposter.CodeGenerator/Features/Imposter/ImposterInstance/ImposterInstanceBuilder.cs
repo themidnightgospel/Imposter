@@ -45,8 +45,8 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var getterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName("_getterImposterBuilder"))
-                .Dot(IdentifierName("Get"));
+                .Dot(IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name))
+                .Dot(IdentifierName(property.GetterImposterBuilder.GetMethod.Name));
 
             InvocationExpressionSyntax getterCall;
             ExpressionSyntax? baseGetterInvocation = property.Core.GetterSupportsBaseImplementation
@@ -88,8 +88,8 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var setterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName("_setterImposter"))
-                .Dot(IdentifierName("Set"));
+                .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name))
+                .Dot(IdentifierName(property.SetterImposter.SetMethod.Name));
 
             var setterArguments = new List<ArgumentSyntax>
             {
@@ -544,7 +544,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 // Type arguments are explicit because a type parameter that only appears in the
                 // return type, or not in the signature at all, cannot be inferred.
                 var baseMethodExpression = BaseExpression()
-                    .Dot(WithMethodGenericArguments(imposterMethod.Model.Name, imposterMethod));
+                    .Dot(imposterMethod.WithGenericArguments(imposterMethod.Model.Name));
                 invokeArguments.Add(Argument(baseMethodExpression));
             }
 
@@ -573,8 +573,8 @@ internal readonly ref struct ImposterInstanceBuilder
             )
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Model.TypeParameters))
                 .AddParameters(
-                    imposterMethod.Parameters.AllParameterMetadata.Select(p =>
-                        ParameterSyntaxWithoutDefaultValue(p)
+                    imposterMethod.Parameters.AllParameters.Select(it =>
+                        ParameterSyntaxWithoutDefaultValue(it)
                     )
                 )
                 .WithBody(body)
@@ -593,10 +593,12 @@ internal readonly ref struct ImposterInstanceBuilder
             in ImposterTargetMethodMetadata method
         )
         {
+            var imposterField = IdentifierName(imposterFieldName)
+                .Dot(IdentifierName(method.ImposterField.Name));
+
             if (method.Model.IsGenericMethod)
             {
-                return IdentifierName(imposterFieldName)
-                    .Dot(IdentifierName(method.MethodImposter.Collection.AsField.Name))
+                return imposterField
                     .Dot(
                         GenericName(
                             Identifier("GetImposterWithMatchingInvocationImposterGroup"),
@@ -606,8 +608,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     .Call(GetGetImposterWithMatchingInvocationImposterGroupArguments(method));
             }
 
-            return IdentifierName(imposterFieldName)
-                .Dot(IdentifierName(method.MethodImposter.AsField.Name));
+            return imposterField;
 
             static ArgumentListSyntax? GetGetImposterWithMatchingInvocationImposterGroupArguments(
                 in ImposterTargetMethodMetadata method

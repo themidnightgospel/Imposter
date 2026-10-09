@@ -29,11 +29,4 @@ internal static partial class MethodImposterBuilderBuilder
 
         return fields;
     }
-
-    private static ParameterSyntax GetImposterParameter(in ImposterTargetMethodMetadata method) =>
-        ParameterSyntax(
-            method.Model.IsGenericMethod
-                ? method.MethodImposter.Builder.ImposterCollectionParameter
-                : method.MethodImposter.Builder.MethodImposterParameter
-        );
 }

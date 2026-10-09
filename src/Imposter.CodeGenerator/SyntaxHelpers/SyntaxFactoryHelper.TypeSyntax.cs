@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,13 +10,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static TypeSyntax TypeSyntax(ITypeSymbol typeSymbol) =>
-        ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
-
     internal static TypeSyntax TypeSyntax(TypeModel type) => ParseTypeName(type.FullyQualifiedName);
-
-    internal static TypeSyntax TypeSyntaxIncludingNullable(ITypeSymbol typeSymbol) =>
-        ParseTypeName(typeSymbol.ToDisplayString(TypeModel.FullyQualifiedFormatIncludingNullable));
 
     internal static TypeSyntax TypeSyntaxIncludingNullable(TypeModel type) =>
         ParseTypeName(type.FullyQualifiedNameIncludingNullable);
@@ -32,14 +25,6 @@ internal static partial class SyntaxFactoryHelper
         typeParameters.Count > 0
             ? TypeParameterList(SeparatedList(TypeParametersSyntax(typeParameters)))
             : null;
-
-    internal static SimpleNameSyntax WithMethodGenericArguments(
-        string identifier,
-        in ImposterTargetMethodMetadata method
-    ) =>
-        method.GenericTypeArgumentListSyntax is not null
-            ? GenericName(Identifier(identifier), method.GenericTypeArgumentListSyntax)
-            : IdentifierName(identifier);
 
     internal static NameSyntax WithMethodGenericArguments(
         IReadOnlyList<NameSyntax> genericArguments,

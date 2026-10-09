@@ -15,15 +15,7 @@ internal static class MethodImposterMembersBuilder
         in ImposterGenerationContext imposterGenerationContext
     ) =>
         imposterGenerationContext.Imposter.Methods.Select(method =>
-            method.Model.IsGenericMethod
-                ? SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Collection.Syntax,
-                    method.MethodImposter.Collection.AsField.Name
-                )
-                : SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Syntax,
-                    method.MethodImposter.AsField.Name
-                )
+            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(method.ImposterField)
         );
 
     internal static IEnumerable<FieldDeclarationSyntax> BuildInvocationHistoryFields(
@@ -68,15 +60,7 @@ internal static class MethodImposterMembersBuilder
         {
             var arguments = new List<ArgumentSyntax>();
 
-            arguments.Add(
-                Argument(
-                    IdentifierName(
-                        method.Model.IsGenericMethod
-                            ? method.MethodImposter.Collection.AsField.Name
-                            : method.MethodImposter.AsField.Name
-                    )
-                )
-            );
+            arguments.Add(Argument(IdentifierName(method.ImposterField.Name)));
 
             arguments.Add(
                 Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name))
@@ -84,10 +68,22 @@ internal static class MethodImposterMembersBuilder
 
             if (method.Parameters.HasInputParameters)
             {
-                arguments.Add(Argument(SyntaxFactoryHelper.NewArgumentsCriteria(method)));
+                arguments.Add(Argument(NewArgumentsCriteria(method)));
             }
 
             return arguments;
         }
     }
+
+    // Criteria of the setup method's Arg<T> parameters, which have the target method's parameter names.
+    private static ObjectCreationExpressionSyntax NewArgumentsCriteria(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        method.ArgumentsCriteria.Syntax.New(
+            SyntaxFactoryHelper.ArgumentListSyntax(
+                method.Parameters.AllParameterMetadata.Select(parameter =>
+                    Argument(IdentifierName(parameter.Name))
+                )
+            )
+        );
 }
