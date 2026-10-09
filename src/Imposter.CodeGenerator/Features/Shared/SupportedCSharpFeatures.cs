@@ -8,10 +8,10 @@ internal readonly struct SupportedCSharpFeatures
 
     internal bool SupportsNullableGenericType { get; }
 
-    internal SupportedCSharpFeatures(CSharpCompilation compilation)
+    internal SupportedCSharpFeatures(LanguageVersion languageVersion)
     {
-        SupportsTypeExtensions = SupportsTypeExtensionsCore(compilation.LanguageVersion);
-        SupportsNullableGenericType = SupportsNullableGenericTypeCore(compilation.LanguageVersion);
+        SupportsTypeExtensions = SupportsTypeExtensionsCore(languageVersion);
+        SupportsNullableGenericType = SupportsNullableGenericTypeCore(languageVersion);
     }
 
     private static bool SupportsTypeExtensionsCore(LanguageVersion languageVersion)

@@ -21,18 +21,17 @@ internal readonly struct ImposterGenerationContext
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
     internal ImposterGenerationContext(
-        GenerateImposterDeclaration generateImposterDeclaration,
-        in SupportedCSharpFeatures supportedCSharpFeatures,
-        MemberAccess memberAccess
+        ImposterTargetModel target,
+        bool putInTheSameNamespace,
+        in SupportedCSharpFeatures supportedCSharpFeatures
     )
     {
-        Target = ImposterTargetModel.From(generateImposterDeclaration.ImposterTarget, memberAccess);
+        Target = target;
         Imposter = new ImposterTargetMetadata(Target, supportedCSharpFeatures);
 
         var targetName = GetTargetName(Target.Type);
         var sanitizedTargetName = SanitizeForNamespace(targetName);
         var hintNameSuffix = GetHintNameSuffix(targetName, sanitizedTargetName);
-        var putInTheSameNamespace = generateImposterDeclaration.PutInTheSameNamespace;
 
         ImposterNamespaceName = GetImposterNamespaceName(
             putInTheSameNamespace,
@@ -49,14 +48,7 @@ internal readonly struct ImposterGenerationContext
     private const string DedicatedNamespacePrefix = "Imposters";
 
     // Null for the global namespace.
-    internal static string? GetImposterNamespaceName(GenerateImposterDeclaration declaration) =>
-        GetImposterNamespaceName(
-            declaration.PutInTheSameNamespace,
-            TypeModel.From(declaration.ImposterTarget),
-            NamespaceModel.From(declaration.ImposterTarget.ContainingNamespace)
-        );
-
-    private static string? GetImposterNamespaceName(
+    internal static string? GetImposterNamespaceName(
         bool putInTheSameNamespace,
         TypeModel target,
         NamespaceModel targetNamespace

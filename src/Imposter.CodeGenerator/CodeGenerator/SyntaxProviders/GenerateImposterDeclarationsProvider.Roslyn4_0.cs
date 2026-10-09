@@ -1,9 +1,10 @@
-﻿#if !ROSLYN4_4_OR_GREATER
+#if !ROSLYN4_4_OR_GREATER
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
@@ -19,8 +20,8 @@ internal static class GenerateImposterDeclarationsProvider
     {
         // Roslyn 4.0 does not expose ForAttributeWithMetadataName. GenerateImposterAttribute only targets the
         // assembly, so its usages are read from the assembly's bound attributes once per compilation: binding
-        // resolves aliases, and the cost is linear in the number of attributes. No caching is lost, because the
-        // generated output is combined with the compilation anyway.
+        // resolves aliases, and the cost is linear in the number of attributes. The declarations compare by value,
+        // so the outputs of unchanged ones are reused.
         return context.CompilationProvider.SelectMany(
             static (compilation, cancellationToken) =>
                 GetImposterDeclarations(compilation, cancellationToken)
@@ -32,8 +33,9 @@ internal static class GenerateImposterDeclarationsProvider
         CancellationToken cancellationToken
     )
     {
+        var memberAccess = new MemberAccess(compilation.Assembly);
         var declarations = ImmutableArray.CreateBuilder<GenerateImposterDeclaration>();
-        var seenDeclarations = new HashSet<GenerateImposterDeclaration>();
+        var seenRegistrations = new HashSet<(INamedTypeSymbol, bool)>();
 
         foreach (var attribute in compilation.Assembly.GetAttributes())
         {
@@ -46,14 +48,18 @@ internal static class GenerateImposterDeclarationsProvider
                     is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType
             )
             {
-                var declaration = new GenerateImposterDeclaration(
-                    NormalizeImposterTarget(imposterType),
-                    GetPutInTheSameNamespaceValue(attribute)
-                );
+                var target = NormalizeImposterTarget(imposterType);
+                var putInTheSameNamespace = GetPutInTheSameNamespaceValue(attribute);
 
-                if (seenDeclarations.Add(declaration))
+                if (seenRegistrations.Add((target, putInTheSameNamespace)))
                 {
-                    declarations.Add(declaration);
+                    declarations.Add(
+                        GenerateImposterDeclaration.From(
+                            target,
+                            putInTheSameNamespace,
+                            memberAccess
+                        )
+                    );
                 }
             }
         }

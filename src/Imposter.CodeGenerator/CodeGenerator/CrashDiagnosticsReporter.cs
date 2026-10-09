@@ -1,5 +1,6 @@
 using System;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator;
@@ -21,6 +22,13 @@ internal static class CrashDiagnosticsReporter
             )
         );
     }
+
+    internal static DiagnosticModel ToDiagnosticModel(Exception exception) =>
+        DiagnosticModel.Create(
+            DiagnosticDescriptors.GeneratorCrash,
+            location: null,
+            FormatCrashDiagnostic(exception)
+        );
 
     private static string FormatCrashDiagnostic(Exception exception)
     {
