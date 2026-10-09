@@ -11,6 +11,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP006](#imp006) | Warning | A closed generic type is registered as a target |
 | [IMP007](#imp007) | Error | Two targets would generate the same imposter type |
 | [IMP008](#imp008) | Error | The target class has abstract members your project cannot override |
+| [IMP009](#imp009) | Error | The target has a member whose signature uses a ref-like type |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -66,6 +67,12 @@ Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter
 The generated imposter derives from the target class, so it must override every abstract member the class leaves abstract. IMP008 means one of them is not accessible from your project: the class is in another assembly, and the member, or one of its property accessors, is `internal` or `private protected` without `InternalsVisibleTo` for your project. Only its own assembly, or one it grants `InternalsVisibleTo`, can derive from such a class, so no imposter is generated.
 
 Register an interface the class implements instead, or ask the class's owner to grant your project `InternalsVisibleTo`.
+
+## IMP009: Member with a ref-like type { #imp009 }
+
+An imposter records every argument and result of the members it impersonates, and matches arguments with `Arg<T>`. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: `Span<T>`, `ReadOnlySpan<T>` or another `ref struct`. IMP009 means a member the imposter would impersonate uses such a type in its signature: as a method parameter or return type, a property or indexer type, an indexer parameter, or a parameter or return type of an event's delegate. The diagnostic names the first such member and type, and no imposter is generated.
+
+Change the member to take or return a type the imposter can store, such as `ReadOnlyMemory<T>`, `Memory<T>` or an array, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a ref-like type doesn't cause IMP009.
 
 ## IMPLOG001: Generator log { #implog001 }
 

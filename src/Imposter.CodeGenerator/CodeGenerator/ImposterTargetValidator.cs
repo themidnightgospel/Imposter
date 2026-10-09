@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Helpers;
@@ -8,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004 and IMP008 stop the target's generation; IMP006 only warns. Collisions between targets (IMP007)
-    // are found once all targets are known.
+    // IMP002, IMP004, IMP008 and IMP009 stop the target's generation; IMP006 only warns. Collisions between targets
+    // (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -54,6 +55,20 @@ internal static class ImposterTargetValidator
                     location,
                     targetDisplayName,
                     abstractMember.ToDisplayString()
+                ),
+                false
+            );
+        }
+
+        if (FindRefLikeMember(target, memberAccess) is { } refLikeMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasRefLikeMember,
+                    location,
+                    targetDisplayName,
+                    refLikeMember.Member.ToDisplayString(),
+                    refLikeMember.Type.ToDisplayString()
                 ),
                 false
             );
@@ -124,4 +139,49 @@ internal static class ImposterTargetValidator
 
     private static bool IsAbsentOrAccessible(IMethodSymbol? accessor, MemberAccess memberAccess) =>
         accessor is null || memberAccess.IsAccessible(accessor);
+
+    // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
+    // matchers, none of which can hold a ref-like value.
+    private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    )
+    {
+        foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
+        {
+            if (FindRefLikeType(method.ReturnType, method.Parameters) is { } type)
+            {
+                return (method, type);
+            }
+        }
+
+        foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
+        {
+            if (FindRefLikeType(property.Type, property.Parameters) is { } type)
+            {
+                return (property, type);
+            }
+        }
+
+        foreach (var @event in ImposterTargetModel.GetEvents(target, memberAccess))
+        {
+            if (
+                @event.Type is INamedTypeSymbol { DelegateInvokeMethod: { } invoke }
+                && FindRefLikeType(invoke.ReturnType, invoke.Parameters) is { } type
+            )
+            {
+                return (@event, type);
+            }
+        }
+
+        return null;
+    }
+
+    private static ITypeSymbol? FindRefLikeType(
+        ITypeSymbol type,
+        ImmutableArray<IParameterSymbol> parameters
+    ) =>
+        type.IsRefLikeType
+            ? type
+            : parameters.Select(parameter => parameter.Type).FirstOrDefault(it => it.IsRefLikeType);
 }
