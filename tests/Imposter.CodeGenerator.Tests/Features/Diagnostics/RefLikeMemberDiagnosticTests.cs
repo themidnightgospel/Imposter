@@ -63,10 +63,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenIndexerWithReadOnlySpanKey_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int this[System.ReadOnlySpan<char> key] { get; } }"
+            "public interface IService { int this[RefLike key] { get; } }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -146,9 +146,32 @@ public class RefLikeMemberDiagnosticTests
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
+
+    // The implementation has to repeat the key's scoped modifier, and then can't return a span the imposter hands back.
+    [Fact]
+    public async Task GivenIndexerOfSpanValueWithScopedSpanKey_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { System.ReadOnlySpan<char> this[scoped System.ReadOnlySpan<char> key] { get; } }",
+            languageVersion: LanguageVersion.CSharp11
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
 #endif
 
 #if ROSLYN4_14_OR_GREATER
+    [Fact]
+    public async Task GivenIndexerOfSpanValueWithParamsSpanKey_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { System.Span<int> this[params System.ReadOnlySpan<int> keys] { get; set; } }",
+            languageVersion: LanguageVersion.CSharp13
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
     [Fact]
     public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
     {

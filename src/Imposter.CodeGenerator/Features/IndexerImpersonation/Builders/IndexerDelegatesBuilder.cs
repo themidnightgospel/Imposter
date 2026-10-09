@@ -21,7 +21,7 @@ internal static class IndexerDelegatesBuilder
         in ImposterIndexerMetadata indexer
     ) =>
         DelegateDeclaration(
-                indexer.Core.NullableAwareTypeSyntax,
+                indexer.Core.NullableAwareStoredTypeSyntax,
                 Identifier(indexer.Delegates.ValueDelegateName)
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
@@ -49,7 +49,7 @@ internal static class IndexerDelegatesBuilder
                 IndexerParameters(indexer)
                     .Concat([
                         SyntaxFactoryHelper.ParameterSyntax(
-                            indexer.Core.NullableAwareTypeSyntax,
+                            indexer.Core.NullableAwareStoredTypeSyntax,
                             indexer.SetterImplementation.ValueParameterName
                         ),
                     ])

@@ -75,12 +75,15 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 )
         );
 
-        // Only what generation reads is kept: a target's location moves with every edit above it in its file.
         var targets = declarations
             .Where(static declaration => declaration.Target is not null)
             .Select(
                 static (declaration, _) =>
-                    (Target: declaration.Target!, declaration.PutInTheSameNamespace)
+                    new ImposterGenerationTarget(
+                        declaration.Target!,
+                        declaration.PutInTheSameNamespace,
+                        declaration.ExtensionClassNameIncludesArity
+                    )
             )
 #if ROSLYN4_4_OR_GREATER
             .WithTrackingName("ImposterTargets")
@@ -90,12 +93,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             targets.Combine(optionsProvider),
             static (sourceProductionContext, inputs) =>
-                GenerateImposter(
-                    sourceProductionContext,
-                    inputs.Left.Target,
-                    inputs.Left.PutInTheSameNamespace,
-                    inputs.Right
-                )
+                GenerateImposter(sourceProductionContext, inputs.Left, inputs.Right)
         );
     }
 
@@ -120,8 +118,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static void GenerateImposter(
         in SourceProductionContext sourceProductionContext,
-        ImposterTargetModel target,
-        bool putInTheSameNamespace,
+        in ImposterGenerationTarget target,
         GeneratorOptions options
     )
     {
@@ -139,7 +136,6 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         {
             var imposterGenerationContext = new ImposterGenerationContext(
                 target,
-                putInTheSameNamespace,
                 new SupportedCSharpFeatures(options.LanguageVersion)
             );
 

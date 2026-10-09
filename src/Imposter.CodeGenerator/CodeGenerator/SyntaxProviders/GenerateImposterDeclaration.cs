@@ -23,6 +23,12 @@ internal sealed record GenerateImposterDeclaration(
     ImposterTargetModel? Target
 )
 {
+    /// <summary>
+    /// Whether the class of the target's <c>Imposter()</c> extensions is named with the target's arity, because a
+    /// same-named target of another arity shares its namespace.
+    /// </summary>
+    internal bool ExtensionClassNameIncludesArity { get; init; }
+
     internal static GenerateImposterDeclaration From(
         INamedTypeSymbol target,
         bool putInTheSameNamespace,

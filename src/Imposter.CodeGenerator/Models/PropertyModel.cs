@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A property or indexer the imposter implements or overrides. <see cref="Parameters"/> is empty for a property.
-/// <see cref="Span"/> is set for a property whose type is a span.
+/// <see cref="Span"/> is set for a property or indexer whose type is a span.
 /// <see cref="OverrideAccessibility"/> is the accessibility an override in the imposter's assembly must declare.
 /// <see cref="IsRequired"/> is true for a C# 11 <c>required</c> property, whose override must be required too.
 /// </summary>
