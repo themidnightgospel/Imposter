@@ -97,6 +97,17 @@ public static class DiagnosticDescriptors
             helpLinkUri: HelpUrl + "#imp010"
         );
 
+    public static readonly DiagnosticDescriptor ImposterTargetHasRefReturningMember = new(
+        "IMP011",
+        "Imposter target has a member that returns by reference",
+        "'{0}' has the member '{1}', which returns by reference, so an imposter cannot impersonate it",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An imposter returns the results it is set up with by value, so it cannot implement or override a method, property or indexer that returns by ref or ref readonly, and no imposter is generated.",
+        helpLinkUri: HelpUrl + "#imp011"
+    );
+
     public static readonly DiagnosticDescriptor ImposterTargetHasStaticAbstractMember = new(
         "IMP012",
         "Imposter target has a static abstract member",

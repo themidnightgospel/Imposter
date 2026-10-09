@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004, IMP008, IMP009, IMP010 and IMP012 stop the target's generation; IMP006 only warns. Collisions
-    // between targets (IMP007) are found once all targets are known.
+    // IMP002, IMP004 and IMP008 to IMP012 stop the target's generation; IMP006 only warns. Collisions between targets
+    // (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -94,6 +94,19 @@ internal static class ImposterTargetValidator
                     targetDisplayName,
                     refLikeMember.Member.ToDisplayString(),
                     refLikeMember.Type.ToDisplayString()
+                ),
+                false
+            );
+        }
+
+        if (FindRefReturningMember(target, memberAccess) is { } refReturningMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasRefReturningMember,
+                    location,
+                    targetDisplayName,
+                    refReturningMember.ToDisplayString()
                 ),
                 false
             );
@@ -183,7 +196,7 @@ internal static class ImposterTargetValidator
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
     // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> passed or returned by
-    // value is the exception: the imposter keeps its elements in an array.
+    // value, and a property's, are the exception: the imposter keeps its elements in an array.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -199,9 +212,7 @@ internal static class ImposterTargetValidator
 
         foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
         {
-            if (
-                FindRefLikeType([property.Type, .. ParameterTypes(property.Parameters)]) is { } type
-            )
+            if (FindRefLikeType(UncopiedTypes(property)) is { } type)
             {
                 return (property, type);
             }
@@ -235,10 +246,30 @@ internal static class ImposterTargetValidator
         }
     }
 
+    private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property) =>
+        SpanModel.FromProperty(property) is null
+            ? ParameterTypes(property.Parameters).Prepend(property.Type)
+            : ParameterTypes(property.Parameters);
+
     private static IEnumerable<ITypeSymbol> ParameterTypes(
         IEnumerable<IParameterSymbol> parameters
     ) => parameters.Select(parameter => parameter.Type);
 
     private static ITypeSymbol? FindRefLikeType(IEnumerable<ITypeSymbol> types) =>
         types.FirstOrDefault(it => it.IsRefLikeType);
+
+    // An imposter returns the results it is set up with by value, so it can't implement or override a member that
+    // returns by ref or ref readonly.
+    private static ISymbol? FindRefReturningMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    ) =>
+        ImposterTargetModel
+            .GetMethods(target, memberAccess)
+            .Concat<ISymbol>(ImposterTargetModel.GetProperties(target, memberAccess))
+            .FirstOrDefault(member =>
+                member
+                    is IMethodSymbol { RefKind: not RefKind.None }
+                        or IPropertySymbol { RefKind: not RefKind.None }
+            );
 }

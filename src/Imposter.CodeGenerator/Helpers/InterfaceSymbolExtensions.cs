@@ -33,7 +33,7 @@ public static class InterfaceSymbolExtensions
         foreach (
             var methodSymbol in interfaceSymbol
                 .GetInstanceMembers<IMethodSymbol>()
-                .Where(m => m.MethodKind == MethodKind.Ordinary)
+                .Where(m => m.MethodKind == MethodKind.Ordinary && !KeepsItsDefaultBody(m))
         )
         {
             methods.Add(methodSymbol);
@@ -68,7 +68,11 @@ public static class InterfaceSymbolExtensions
             return;
         }
 
-        foreach (var propertySymbol in interfaceSymbol.GetInstanceMembers<IPropertySymbol>())
+        foreach (
+            var propertySymbol in interfaceSymbol
+                .GetInstanceMembers<IPropertySymbol>()
+                .Where(p => !KeepsItsDefaultBody(p))
+        )
         {
             properties.Add(propertySymbol);
         }
@@ -143,4 +147,11 @@ public static class InterfaceSymbolExtensions
     )
         where TMember : ISymbol =>
         interfaceSymbol.GetMembers().OfType<TMember>().Where(member => !member.IsStatic);
+
+    // The imposter returns by value, so it can't implement a member that returns by reference. One with a default body
+    // keeps it, and calls reach that body; an abstract one reports IMP011.
+    private static bool KeepsItsDefaultBody(ISymbol member) =>
+        member
+            is IMethodSymbol { RefKind: not RefKind.None, IsAbstract: false }
+                or IPropertySymbol { RefKind: not RefKind.None, IsAbstract: false };
 }

@@ -1,13 +1,10 @@
-using System.Linq;
 using System.Threading.Tasks;
-using Imposter.CodeGenerator.CodeGenerator;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using Xunit;
-using static Imposter.CodeGenerator.Tests.Features.ClassImpersonation.ClassImpersonationTestShared;
 
 namespace Imposter.CodeGenerator.Tests.Features.Diagnostics;
 
@@ -56,10 +53,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenPropertyOfSpanType_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenPropertyReturningSpanByReference_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { System.Span<byte> Buffer { get; } }"
+            "public interface IService { ref System.Span<byte> Buffer { get; } }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -209,25 +206,16 @@ public class RefLikeMemberDiagnosticTests
         result.Diagnostics.ShouldBeEmpty();
     }
 
-    // GeneratorTestHelper expects a generator run without errors, so the IMP009 cases run the generator directly.
-    private static async Task<GeneratorRunResult> RunGenerator(
+    private static Task<GeneratorRunResult> RunGenerator(
         string targetDeclaration,
         string targetType = "Sample.IService",
         LanguageVersion languageVersion = LanguageVersion.CSharp9
-    )
-    {
-        var compilation = await CreateCompilationAsync(
-            languageVersion,
+    ) =>
+        TargetGeneratorRun.RunAsync(
             Source(targetDeclaration, targetType),
-            nameof(RefLikeMemberDiagnosticTests)
+            nameof(RefLikeMemberDiagnosticTests),
+            languageVersion
         );
-
-        return CSharpGeneratorDriver
-            .Create(new ImposterGenerator())
-            .RunGenerators(compilation)
-            .GetRunResult()
-            .Results.Single();
-    }
 
     private static Task<GeneratorTestContext> CreateContext(
         string targetDeclaration,

@@ -91,6 +91,34 @@ doesn't grant yours `InternalsVisibleTo`. The imposter leaves such an accessor t
     var value = imposter.Instance().PrivateSetter; // 5
     ```
 
+## Span properties
+
+A property of type `Span<T>` or `ReadOnlySpan<T>` can be impersonated. A span can't be kept, so the imposter keeps the elements in an array:
+
+- `Getter().Returns` takes the array the returned span covers. Every read returns a span over that same array, so writes to a returned `Span<T>` land in it. A delegate passed to `Returns` returns an array too.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/SpanPropertyTests.cs#L23"}
+    // Span<byte> Buffer { get; set; }
+    var buffer = new byte[1];
+    imposter.Buffer.Getter().Returns(buffer);
+
+    imposter.Instance().Buffer[0] = 7; // buffer[0] is now 7
+    ```
+
+- `Setter(...)` matches the elements with `SpanArg<T>` or `ReadOnlySpanArg<T>` (see [Span parameters](../arguments-matching.md#span-parameters)), and callbacks get a copy of them as an array.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/SpanPropertyTests.cs#L67"}
+    byte[]? received = null;
+    imposter.Buffer.Setter(SpanArg<byte>.Is(1, 2)).Callback(value => received = value);
+
+    imposter.Instance().Buffer = new byte[] { 1, 2 }; // received is a copy: { 1, 2 }
+    ```
+
+- Without a setup, the property keeps a copy of the elements it's set to, and a read returns a span over that copy.
+- With `UseBaseImplementation()`, the getter returns a copy of the base property's span, so writes to it don't reach the base class's memory.
+
 ## Base Implementation
 
 Forward to the base implementation for overridable class members:

@@ -22,7 +22,7 @@ internal readonly struct ReturnsMethodMetadata
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        ValueParameter = new ParameterMetadata("value", property.NullableAwareTypeSyntax);
+        ValueParameter = new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
         ValueGeneratorParameter = new ParameterMetadata(
             "valueGenerator",
             property.AsSystemFuncType

@@ -58,7 +58,11 @@ internal readonly ref struct ImposterInstanceBuilder
                 getterCall = getterInvocation.Call(
                     ArgumentList(
                         SingletonSeparatedList(
-                            Argument(EmptyParametersGoesTo(baseGetterInvocation))
+                            Argument(
+                                EmptyParametersGoesTo(
+                                    property.Core.StoredValue(baseGetterInvocation)
+                                )
+                            )
                         )
                     )
                 );
@@ -87,7 +91,10 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("_setterImposter"))
                 .Dot(IdentifierName("Set"));
 
-            var setterArguments = new List<ArgumentSyntax> { Argument(IdentifierName("value")) };
+            var setterArguments = new List<ArgumentSyntax>
+            {
+                Argument(property.Core.StoredValue(IdentifierName("value"))),
+            };
             var basePropertyAccess = property.Core.SetterSupportsBaseImplementation
                 ? BaseExpression().Dot(IdentifierName(property.Core.Name))
                 : null;
