@@ -33,7 +33,7 @@ internal static partial class MethodImposterCollectionBuilder
         )
             .AddParameter(GetParameter(method, parameterName))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddTypeParameters(TypeParametersSyntax(method.Model.TypeParameters).ToArray())
+            .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(

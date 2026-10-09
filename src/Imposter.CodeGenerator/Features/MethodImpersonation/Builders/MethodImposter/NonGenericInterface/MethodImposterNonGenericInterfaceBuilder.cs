@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,11 +24,7 @@ internal static class MethodImposterNonGenericInterfaceBuilder
                     ),
                     "As"
                 )
-                    .WithTypeParameters(
-                        SyntaxFactoryHelper.TypeParameterListSyntax(
-                            method.TargetGenericTypeArguments
-                        )
-                    )
+                    .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
                     .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
                     .WithSemicolon()
                     .Build()

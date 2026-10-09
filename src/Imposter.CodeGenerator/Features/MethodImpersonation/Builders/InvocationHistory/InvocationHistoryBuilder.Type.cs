@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.Features.Shared.Builders;
@@ -27,39 +26,16 @@ internal static partial class InvocationHistoryBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
             .AddMembers(fields)
-            .AddMember(BuildConstructor(method.InvocationHistory.Name, fields))
+            .AddMember(
+                SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
+                    method.InvocationHistory.Name,
+                    fields
+                )
+            )
             .AddMember(BuildMatchesMethod(method))
             .AddMember(BuildToStringMethod(method))
             .AddMember(FormatValueMethodBuilder.Build())
             .Build();
-
-        static ConstructorDeclarationSyntax BuildConstructor(
-            in string className,
-            IReadOnlyList<FieldDeclarationSyntax> fields
-        ) =>
-            new ConstructorBuilder(className)
-                .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                .AddParameters(
-                    fields.Select(field =>
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            field.Declaration.Type,
-                            field.Declaration.Variables[0].Identifier.Text
-                        )
-                    )
-                )
-                .WithBody(
-                    Block(
-                        fields.Select(field =>
-                            ThisExpression()
-                                .Dot(IdentifierName(field.Declaration.Variables[0].Identifier.Text))
-                                .Assign(
-                                    IdentifierName(field.Declaration.Variables[0].Identifier.Text)
-                                )
-                                .ToStatementSyntax()
-                        )
-                    )
-                )
-                .Build();
     }
 
     private static MethodDeclarationSyntax BuildToStringMethod(

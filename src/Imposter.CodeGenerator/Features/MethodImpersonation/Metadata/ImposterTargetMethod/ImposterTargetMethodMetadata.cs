@@ -35,11 +35,10 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly ArgumentCriteriaTypeMetadata ArgumentsCriteria;
 
-    internal readonly AsMethodMetadata ArgumentsCriteriaAsMethod;
-
     internal readonly TypeMetadata Arguments;
 
-    // A generic method's arguments class converts itself with this method, next to a field per parameter.
+    // A generic method's arguments class converts itself with this method. Like the criteria, it keeps a field per
+    // parameter, so it takes the criteria's As name.
     internal readonly string ArgumentsAsMethodName;
 
     internal readonly InvocationHistoryTypeMetadata InvocationHistory;
@@ -179,15 +178,8 @@ internal readonly struct ImposterTargetMethodMetadata
             argumentsTypeName,
             SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName)
         );
-        ArgumentsAsMethodName = new NameSet(
-            Model.Parameters.Select(parameter => parameter.Name)
-        ).Use("As");
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
-        ArgumentsCriteriaAsMethod = new AsMethodMetadata(
-            Model.TypeParameters,
-            GenericTypeParameterNameSet,
-            ReservedParameterNames
-        );
+        ArgumentsAsMethodName = ArgumentsCriteria.AsMethod.Name;
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         MethodInvocationImposter = new MethodInvocationImposterMetadata(
@@ -237,35 +229,4 @@ internal readonly struct ImposterTargetMethodMetadata
                 .OfType<IdentifierNameSyntax>()
                 .Select(name => name.Identifier.ValueText)
         );
-
-    internal readonly struct AsMethodMetadata
-    {
-        internal readonly NameSyntax[] TargetTypeArguments;
-        internal readonly TypeParameterSyntax[] TypeParameters;
-
-        // The parameter of the lambdas that convert each matcher. It can't hide the criteria's fields, which are named
-        // after the method's parameters.
-        internal readonly IdentifierNameSyntax MatcherLambdaParameter;
-
-        internal AsMethodMetadata(
-            IReadOnlyList<TypeParameterModel> typeParameters,
-            NameSet nameSet,
-            in ReservedParameterNames reservedParameterNames
-        )
-        {
-            var allocatedNames = typeParameters
-                .Select(p => nameSet.Use($"{p.Name}Target"))
-                .ToArray();
-
-            TargetTypeArguments = allocatedNames
-                .Select(name => (NameSyntax)SyntaxFactory.IdentifierName(name))
-                .ToArray();
-
-            TypeParameters = allocatedNames.Select(SyntaxFactory.TypeParameter).ToArray();
-
-            MatcherLambdaParameter = SyntaxFactory.IdentifierName(
-                reservedParameterNames.CreateNameSet().Use("it")
-            );
-        }
-    }
 }

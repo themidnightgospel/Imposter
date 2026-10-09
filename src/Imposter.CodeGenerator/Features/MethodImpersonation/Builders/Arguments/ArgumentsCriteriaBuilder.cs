@@ -22,7 +22,7 @@ public static class ArgumentsCriteriaBuilder
 
         var argumentsCriteriaClass = new ClassDeclarationBuilder(
             method.ArgumentsCriteria.Name,
-            TypeParameterListSyntax(method.GenericTypeArguments)
+            method.GenericTypeParameterListSyntax
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
@@ -64,38 +64,26 @@ public static class ArgumentsCriteriaBuilder
 
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
-        var returnType = BuildReturnType(method);
+        var returnType = method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments;
         var typeParameterRenamer = new TypeParameterRenamer(
             method.Model.TypeParameters,
-            method.ArgumentsCriteriaAsMethod.TargetTypeArguments
+            method.TargetGenericTypeArguments
         );
         var constructorArgs = BuildConstructorArgs(method, typeParameterRenamer);
 
         return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithTypeParameters(
-                TypeParameterList(SeparatedList(method.ArgumentsCriteriaAsMethod.TypeParameters))
-            )
+            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(Block(ReturnStatement(returnType.New(ArgumentList(constructorArgs)))))
             .Build();
-
-        static TypeSyntax BuildReturnType(in ImposterTargetMethodMetadata metadata) =>
-            GenericName(metadata.ArgumentsCriteria.Name)
-                .WithTypeArgumentList(
-                    TypeArgumentList(
-                        SeparatedList<TypeSyntax>(
-                            metadata.ArgumentsCriteriaAsMethod.TargetTypeArguments
-                        )
-                    )
-                );
 
         static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(
             in ImposterTargetMethodMetadata metadata,
             TypeParameterRenamer renamer
         )
         {
-            var matcherLambdaParameter = metadata.ArgumentsCriteriaAsMethod.MatcherLambdaParameter;
+            var matcherLambdaParameter = metadata.ArgumentsCriteria.AsMethod.MatcherLambdaParameter;
 
             return SeparatedList(
                 metadata.Parameters.AllParameterMetadata.Select(parameter =>
