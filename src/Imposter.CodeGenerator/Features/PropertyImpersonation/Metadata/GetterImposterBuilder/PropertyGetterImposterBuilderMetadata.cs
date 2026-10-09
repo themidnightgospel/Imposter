@@ -26,6 +26,20 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly NextReturnValueMethodMetadata NextReturnValueMethod;
 
+    internal readonly FieldMetadata InvocationBehaviorField;
+
+    internal readonly FieldMetadata PropertyDisplayNameField;
+
+    internal readonly FieldMetadata HasConfiguredReturnField;
+
+    internal readonly ParameterMetadata InvocationBehaviorParameter;
+
+    internal readonly ParameterMetadata PropertyDisplayNameParameter;
+
+    internal readonly MethodMetadata EnableBaseImplementationMethod;
+
+    internal readonly MethodMetadata EnsureConfiguredMethod;
+
     internal PropertyGetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
         in FieldMetadata defaultPropertyBehaviourMetadata
@@ -45,5 +59,24 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         AddReturnValueMethod = new AddReturnValueMethodMetadata(returnHandlerType);
         GetMethod = new GetMethodMetadata(property);
         NextReturnValueMethod = new NextReturnValueMethodMetadata(returnHandlerType);
+        InvocationBehaviorField = new FieldMetadata(
+            "_invocationBehavior",
+            WellKnownTypes.Imposter.Abstractions.ImposterMode
+        );
+        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
+        HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
+        InvocationBehaviorParameter = new ParameterMetadata(
+            "invocationBehavior",
+            WellKnownTypes.Imposter.Abstractions.ImposterMode
+        );
+        PropertyDisplayNameParameter = new ParameterMetadata(
+            "propertyDisplayName",
+            WellKnownTypes.String
+        );
+        EnableBaseImplementationMethod = new MethodMetadata(
+            "EnableBaseImplementation",
+            WellKnownTypes.Void
+        );
+        EnsureConfiguredMethod = new MethodMetadata("EnsureGetterConfigured", WellKnownTypes.Void);
     }
 }

@@ -27,10 +27,7 @@ internal static class PropertyImposterBuilder
                     : null
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "_invocationBehavior"
-                )
+                SinglePrivateReadonlyVariableField(property.ImposterBuilder.InvocationBehaviorField)
             )
             .AddMember(
                 property.Core.HasSetter
@@ -81,7 +78,7 @@ internal static class PropertyImposterBuilder
             .WithBody(
                 Block(
                     IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
-                        .Dot(IdentifierName("MarkConfigured"))
+                        .Dot(IdentifierName(property.SetterImposter.MarkConfiguredMethod.Name))
                         .Call()
                         .ToStatementSyntax(),
                     ReturnStatement(
@@ -146,7 +143,11 @@ internal static class PropertyImposterBuilder
         {
             statements.Add(
                 IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
-                    .Dot(IdentifierName("EnableBaseImplementation"))
+                    .Dot(
+                        IdentifierName(
+                            property.GetterImposterBuilder.EnableBaseImplementationMethod.Name
+                        )
+                    )
                     .Call()
                     .ToStatementSyntax()
             );
@@ -156,7 +157,7 @@ internal static class PropertyImposterBuilder
         {
             statements.Add(
                 IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
-                    .Dot(IdentifierName("UseBaseImplementation"))
+                    .Dot(IdentifierName(property.SetterImposter.UseBaseImplementationMethod.Name))
                     .Call()
                     .ToStatementSyntax()
             );
@@ -174,15 +175,14 @@ internal static class PropertyImposterBuilder
         in ImposterPropertyMetadata property
     )
     {
-        var invocationBehaviorParameter = ParameterSyntax(
-            WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            "invocationBehavior"
+        var invocationBehaviorField = IdentifierName(
+            property.ImposterBuilder.InvocationBehaviorField.Name
         );
         var propertyDisplayLiteral = property.Core.DisplayName.StringLiteral();
 
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(invocationBehaviorParameter);
+            .AddParameter(ParameterSyntax(property.ImposterBuilder.InvocationBehaviorParameter));
 
         var bodyBuilder = new BlockBuilder();
 
@@ -195,7 +195,9 @@ internal static class PropertyImposterBuilder
         }
 
         bodyBuilder.AddExpression(
-            IdentifierName("_invocationBehavior").Assign(IdentifierName("invocationBehavior"))
+            invocationBehaviorField.Assign(
+                IdentifierName(property.ImposterBuilder.InvocationBehaviorParameter.Name)
+            )
         );
 
         if (property.Core.HasGetter)
@@ -211,7 +213,7 @@ internal static class PropertyImposterBuilder
                                     property.ImposterBuilder.DefaultPropertyBehaviourField.Name
                                 )
                             ),
-                            Argument(IdentifierName("_invocationBehavior")),
+                            Argument(invocationBehaviorField),
                             Argument(propertyDisplayLiteral),
                         ])
                     )
@@ -233,7 +235,7 @@ internal static class PropertyImposterBuilder
                 );
             }
 
-            setterArguments.Add(Argument(IdentifierName("_invocationBehavior")));
+            setterArguments.Add(Argument(invocationBehaviorField));
             setterArguments.Add(Argument(propertyDisplayLiteral));
 
             var setterInitialization = IdentifierName(

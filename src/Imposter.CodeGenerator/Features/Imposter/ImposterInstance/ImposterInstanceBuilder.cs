@@ -45,8 +45,8 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var getterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName("_getterImposterBuilder"))
-                .Dot(IdentifierName("Get"));
+                .Dot(IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name))
+                .Dot(IdentifierName(property.GetterImposterBuilder.GetMethod.Name));
 
             InvocationExpressionSyntax getterCall;
             ExpressionSyntax? baseGetterInvocation = property.Core.GetterSupportsBaseImplementation
@@ -88,8 +88,8 @@ internal readonly ref struct ImposterInstanceBuilder
         {
             var setterInvocation = IdentifierName(_imposterFieldName)
                 .Dot(IdentifierName(property.BuilderField.Name))
-                .Dot(IdentifierName("_setterImposter"))
-                .Dot(IdentifierName("Set"));
+                .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name))
+                .Dot(IdentifierName(property.SetterImposter.SetMethod.Name));
 
             var setterArguments = new List<ArgumentSyntax>
             {

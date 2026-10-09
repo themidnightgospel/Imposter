@@ -45,26 +45,21 @@ internal static class SetterImposterBuilder
                     : null
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "_invocationBehavior"
-                )
+                SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationBehaviorField)
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(WellKnownTypes.String, "_propertyDisplayName")
+                SinglePrivateReadonlyVariableField(property.SetterImposter.PropertyDisplayNameField)
             )
             .AddMember(
                 SingleVariableField(
-                    WellKnownTypes.Bool,
-                    "_hasConfiguredSetter",
+                    property.SetterImposter.HasConfiguredSetterField,
                     SyntaxKind.PrivateKeyword
                 )
             )
             .AddMember(
                 property.Core.SetterSupportsBaseImplementation
                     ? SingleVariableField(
-                        WellKnownTypes.Bool,
-                        "_useBaseImplementation",
+                        property.SetterImposter.UseBaseImplementationField,
                         SyntaxKind.PrivateKeyword
                     )
                     : null
@@ -74,7 +69,7 @@ internal static class SetterImposterBuilder
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
             .AddMember(
                 property.Core.SetterSupportsBaseImplementation
-                    ? BuildUseBaseImplementationMethod()
+                    ? BuildUseBaseImplementationMethod(property.SetterImposter)
                     : null
             )
             .AddMember(
@@ -85,8 +80,8 @@ internal static class SetterImposterBuilder
                     property.Core.HasGetter
                 )
             )
-            .AddMember(BuildEnsureSetterConfiguredMethod())
-            .AddMember(BuildMarkConfiguredMethod())
+            .AddMember(BuildEnsureSetterConfiguredMethod(property.SetterImposter))
+            .AddMember(BuildMarkConfiguredMethod(property.SetterImposter))
             .AddMember(FormatValueMethodBuilder.Build())
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
@@ -119,38 +114,43 @@ internal static class SetterImposterBuilder
             );
         }
 
+        var setterImposter = property.SetterImposter;
         constructor
-            .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "invocationBehavior"
-                )
-            )
-            .AddParameter(ParameterSyntax(WellKnownTypes.String, "propertyDisplayName"));
+            .AddParameter(ParameterSyntax(setterImposter.InvocationBehaviorParameter))
+            .AddParameter(ParameterSyntax(setterImposter.PropertyDisplayNameParameter));
 
         body.AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName("_invocationBehavior"))
-                    .Assign(IdentifierName("invocationBehavior"))
+                    .Dot(IdentifierName(setterImposter.InvocationBehaviorField.Name))
+                    .Assign(IdentifierName(setterImposter.InvocationBehaviorParameter.Name))
                     .ToStatementSyntax()
             )
             .AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName("_propertyDisplayName"))
-                    .Assign(IdentifierName("propertyDisplayName"))
+                    .Dot(IdentifierName(setterImposter.PropertyDisplayNameField.Name))
+                    .Assign(IdentifierName(setterImposter.PropertyDisplayNameParameter.Name))
                     .ToStatementSyntax()
             );
 
         return constructor.WithBody(body.Build()).Build();
     }
 
-    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod() =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
+        in PropertySetterImposterMetadata setterImposter
+    ) =>
+        new MethodDeclarationBuilder(
+            setterImposter.UseBaseImplementationMethod.ReturnType,
+            setterImposter.UseBaseImplementationMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    IdentifierName("_hasConfiguredSetter").Assign(True).ToStatementSyntax(),
-                    IdentifierName("_useBaseImplementation").Assign(True).ToStatementSyntax()
+                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
+                        .Assign(True)
+                        .ToStatementSyntax(),
+                    IdentifierName(setterImposter.UseBaseImplementationField.Name)
+                        .Assign(True)
+                        .ToStatementSyntax()
                 )
             )
             .Build();
@@ -167,7 +167,7 @@ internal static class SetterImposterBuilder
         );
         var bodyStatements = new List<StatementSyntax>
         {
-            IdentifierName("EnsureSetterConfigured").Call().ToStatementSyntax(),
+            IdentifierName(setterImposter.EnsureConfiguredMethod.Name).Call().ToStatementSyntax(),
             TrackSetterInvocation(setterImposter),
             InvokeCallbacks(setterImposter),
         };
@@ -240,7 +240,7 @@ internal static class SetterImposterBuilder
                 // after configuration checks, invocation tracking and callbacks have completed.
                 statements.Add(
                     IfStatement(
-                        IdentifierName("_useBaseImplementation"),
+                        IdentifierName(setterImposter.UseBaseImplementationField.Name),
                         Block(ReturnStatement(True))
                     )
                 );
@@ -254,11 +254,13 @@ internal static class SetterImposterBuilder
                         )
                     )
                 );
-                var useBaseImplementationCheck = IdentifierName("_useBaseImplementation");
+                var useBaseImplementationCheck = IdentifierName(
+                    setterImposter.UseBaseImplementationField.Name
+                );
                 var missingBaseImplementation = ThrowStatement(
                     WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
                         Argument(
-                                IdentifierName("_propertyDisplayName")
+                                IdentifierName(setterImposter.PropertyDisplayNameField.Name)
                                     .Add(" (setter)".StringLiteral())
                             )
                             .AsSingleArgumentListSyntax()
@@ -343,6 +345,7 @@ internal static class SetterImposterBuilder
             setterImposter.InvocationHistoryField.Name
         );
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
+        var propertyDisplayName = IdentifierName(setterImposter.PropertyDisplayNameField.Name);
 
         return new MethodDeclarationBuilder(
             setterImposter.CalledMethod.ReturnType,
@@ -432,7 +435,7 @@ internal static class SetterImposterBuilder
 
         ExpressionSyntax BuildInvocationDescription(IdentifierNameSyntax valueIdentifier)
         {
-            var prefix = "set ".StringLiteral().Add(IdentifierName("_propertyDisplayName"));
+            var prefix = "set ".StringLiteral().Add(propertyDisplayName);
 
             var assignment = prefix.Add(" = ".StringLiteral());
 
@@ -485,19 +488,24 @@ internal static class SetterImposterBuilder
             )
             .Build();
 
-    private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod()
+    private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
+        in PropertySetterImposterMetadata setterImposter
+    )
     {
         var condition = BinaryExpression(
                 SyntaxKind.EqualsExpression,
-                IdentifierName("_invocationBehavior"),
+                IdentifierName(setterImposter.InvocationBehaviorField.Name),
                 QualifiedName(
                     WellKnownTypes.Imposter.Abstractions.ImposterMode,
                     IdentifierName("Explicit")
                 )
             )
-            .And(Not(IdentifierName("_hasConfiguredSetter")));
+            .And(Not(IdentifierName(setterImposter.HasConfiguredSetterField.Name)));
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureSetterConfigured")
+        return new MethodDeclarationBuilder(
+            setterImposter.EnsureConfiguredMethod.ReturnType,
+            setterImposter.EnsureConfiguredMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
@@ -509,7 +517,9 @@ internal static class SetterImposterBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            IdentifierName("_propertyDisplayName")
+                                            IdentifierName(
+                                                    setterImposter.PropertyDisplayNameField.Name
+                                                )
                                                 .Add(" (setter)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()
@@ -521,11 +531,20 @@ internal static class SetterImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildMarkConfiguredMethod() =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkConfigured")
+    private static MethodDeclarationSyntax BuildMarkConfiguredMethod(
+        in PropertySetterImposterMetadata setterImposter
+    ) =>
+        new MethodDeclarationBuilder(
+            setterImposter.MarkConfiguredMethod.ReturnType,
+            setterImposter.MarkConfiguredMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
-                Block(IdentifierName("_hasConfiguredSetter").Assign(True).ToStatementSyntax())
+                Block(
+                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
+                        .Assign(True)
+                        .ToStatementSyntax()
+                )
             )
             .Build();
 }
