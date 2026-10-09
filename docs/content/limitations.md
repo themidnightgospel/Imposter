@@ -13,6 +13,7 @@ Imposter keeps the source generator and runtime focused on common impersonation 
 - Only non-sealed classes can be impersonated.
 - Only virtual or abstract members can be impersonated on class imposters.
 - `UseBaseImplementation()` applies only to non-abstract, virtual class members and is not available for interfaces.
+- The imposter creates its instance without setting C# 11 `required` members. A required field or non-virtual property keeps its default value. A virtual or abstract required property is impersonated like any other. Before .NET 7, the project needs its own `SetsRequiredMembersAttribute` (see [IMP010](diagnostics.md#imp010)).
 
 ### Virtual calls during construction
 

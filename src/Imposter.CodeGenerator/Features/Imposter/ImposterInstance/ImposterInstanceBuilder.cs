@@ -419,6 +419,7 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         var imposterTypeSyntax = imposterGenerationContext.Imposter.ImposterTypeSyntax;
         var accessibleConstructors = imposterGenerationContext.Imposter.AccessibleConstructors;
+        var hasRequiredMembers = imposterGenerationContext.Imposter.HasRequiredMembers;
 
         return accessibleConstructors
             .Select(constructorMetadata =>
@@ -447,7 +448,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         .ToStatementSyntax()
                 );
 
-                return new ConstructorBuilder(name)
+                var constructor = new ConstructorBuilder(name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                     .WithParameterList(ParameterListSyntax(constructorParameters))
                     .AddInitializer(
@@ -458,9 +459,23 @@ internal readonly ref struct ImposterInstanceBuilder
                     )
                     .WithBody(constructorBody)
                     .Build();
+
+                return hasRequiredMembers
+                    ? LeavingRequiredMembersAtDefaults(constructor)
+                    : constructor;
             })
             .ToList();
     }
+
+    // The imposter creates its instance with new and leaves C# 11 required members at their defaults, which
+    // [SetsRequiredMembers] allows. Nullable analysis still reports the non-nullable ones (CS8618).
+    private static ConstructorDeclarationSyntax LeavingRequiredMembersAtDefaults(
+        ConstructorDeclarationSyntax constructor
+    ) =>
+        constructor
+            .AddAttributeLists(DefaultAttributes.SetsRequiredMembersAttribute)
+            .WithLeadingTrivia(Trivia(DisableWarning("CS8618")))
+            .WithTrailingTrivia(Trivia(RestoreWarning("CS8618")));
 
     private static IEnumerable<MethodDeclarationSyntax> ImposterMethods(
         in ImposterGenerationContext imposterGenerationContext,

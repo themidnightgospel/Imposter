@@ -9,8 +9,15 @@ internal static class ImposterInstanceModifierBuilder
     internal static SyntaxTokenList For(MethodModel method) =>
         For(method.IsClassMember, method.OverrideAccessibility);
 
+    // An override of a required property must be required too. Only the Roslyn 4.4+ builds see required members.
     internal static SyntaxTokenList For(PropertyModel property) =>
-        For(property.IsClassMember, property.OverrideAccessibility);
+#if ROSLYN4_4_OR_GREATER
+        property.IsRequired
+            ? For(property.IsClassMember, property.OverrideAccessibility)
+                .Add(SyntaxFactory.Token(SyntaxKind.RequiredKeyword))
+            :
+#endif
+            For(property.IsClassMember, property.OverrideAccessibility);
 
     internal static SyntaxTokenList For(EventModel @event) =>
         For(@event.IsClassMember, @event.OverrideAccessibility);
