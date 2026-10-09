@@ -22,6 +22,11 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
+    private readonly bool _isSpan;
+
+    // The type the imposter gets and sets the value as: the property's type, or the array that keeps a span's elements.
+    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
+
     internal readonly string DisplayName;
 
     internal readonly TypeSyntax AsSystemActionType;
@@ -50,9 +55,16 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(property.Setter, property);
         Name = property.Name;
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
-        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
-        AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareTypeSyntax);
-        AsArgType = WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareTypeSyntax);
+        var span = property.Span;
+        _isSpan = span is not null;
+        NullableAwareStoredTypeSyntax = span is null
+            ? NullableAwareTypeSyntax
+            : SyntaxFactoryHelper.SpanElementsArrayType(span);
+        AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareStoredTypeSyntax);
+        AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
+        AsArgType = span is null
+            ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
+            : SyntaxFactoryHelper.SpanArgType(span);
         GetterSupportsBaseImplementation =
             property.IsClassMember && property.Getter is { IsAbstract: false };
         SetterSupportsBaseImplementation =
@@ -62,4 +74,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
             GetterSupportsBaseImplementation || SetterSupportsBaseImplementation;
         DisplayName = property.DisplayName;
     }
+
+    // The property's value as the imposter keeps it: a copy of a span's elements, or the value itself.
+    internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
+        _isSpan ? SyntaxFactoryHelper.SpanElementsCopy(value) : value;
 }

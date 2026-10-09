@@ -6,8 +6,9 @@ using System.Linq;
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> parameter, or one returned by value. A span itself can't be
-/// kept, so an imposter keeps the elements a span argument arrives with, or a span result has, in an array.
+/// A <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> parameter, one returned by value, or a property's. A span
+/// itself can't be kept, so an imposter keeps the elements a span argument or value arrives with, or a span result
+/// has, in an array.
 /// </summary>
 internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
 {
@@ -22,6 +23,9 @@ internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
         method.RefKind == RefKind.None && !HasScopedParameter(method)
             ? From(method.ReturnType)
             : null;
+
+    internal static SpanModel? FromProperty(IPropertySymbol property) =>
+        property is { IsIndexer: false, RefKind: RefKind.None } ? From(property.Type) : null;
 
     private static SpanModel? From(ITypeSymbol type) =>
         type is INamedTypeSymbol { IsRefLikeType: true, TypeArguments.Length: 1 } span

@@ -36,7 +36,7 @@ internal readonly struct PropertySetterImposterMetadata
         InvocationHistoryField = new FieldMetadata(
             "_invocationHistory",
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
-                property.NullableAwareTypeSyntax
+                property.NullableAwareStoredTypeSyntax
             )
         );
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
