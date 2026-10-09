@@ -70,7 +70,9 @@ Register an interface the class implements instead, or ask the class's owner to 
 
 ## IMP009: Member with a ref-like type { #imp009 }
 
-An imposter records every argument and result of the members it impersonates, and matches arguments with `Arg<T>`. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: `Span<T>`, `ReadOnlySpan<T>` or another `ref struct`. IMP009 means a member the imposter would impersonate uses such a type in its signature: as a method parameter or return type, a property or indexer type, an indexer parameter, or a parameter or return type of an event's delegate. The diagnostic names the first such member and type, and no imposter is generated.
+An imposter records every argument and result of the members it impersonates, and matches arguments with `Arg<T>`. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: `Span<T>`, `ReadOnlySpan<T>` or another `ref struct`. The exception is a `Span<T>` or `ReadOnlySpan<T>` passed by value to a method: the imposter copies its elements into an array and matches them with `SpanArg<T>` (see [Span parameters](arguments-matching.md#span-parameters)).
+
+IMP009 means a member the imposter would impersonate uses a ref-like type anywhere else in its signature: as a method parameter passed by `ref`, `out`, `in` or `ref readonly`, a method parameter of another `ref struct` type, a method's return type, a property or indexer type, an indexer parameter, or a parameter or return type of an event's delegate. The diagnostic names the first such member and type, and no imposter is generated.
 
 Change the member to take or return a type the imposter can store, such as `ReadOnlyMemory<T>`, `Memory<T>` or an array, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a ref-like type doesn't cause IMP009.
 

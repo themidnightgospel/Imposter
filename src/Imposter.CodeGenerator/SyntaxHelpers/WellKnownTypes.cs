@@ -342,6 +342,15 @@ internal static class WellKnownTypes
                         TypeArgumentList(SingletonSeparatedList(type))
                     )
                 );
+
+            internal static NameSyntax SpanArg(TypeSyntax elementType) =>
+                QualifiedName(
+                    Namespace,
+                    GenericName(
+                        Identifier(nameof(SpanArg)),
+                        TypeArgumentList(SingletonSeparatedList(elementType))
+                    )
+                );
         }
     }
 }

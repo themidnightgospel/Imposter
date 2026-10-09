@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Helpers;
@@ -141,7 +141,8 @@ internal static class ImposterTargetValidator
         accessor is null || memberAccess.IsAccessible(accessor);
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
-    // matchers, none of which can hold a ref-like value.
+    // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> parameter taken by
+    // value is the exception: the imposter keeps a copy of its elements.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -149,7 +150,11 @@ internal static class ImposterTargetValidator
     {
         foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
         {
-            if (FindRefLikeType(method.ReturnType, method.Parameters) is { } type)
+            var uncopiedParameters = method.Parameters.Where(parameter =>
+                ParameterModel.CopiedSpanElementType(parameter) is null
+            );
+
+            if (FindRefLikeType(method.ReturnType, uncopiedParameters) is { } type)
             {
                 return (method, type);
             }
@@ -179,7 +184,7 @@ internal static class ImposterTargetValidator
 
     private static ITypeSymbol? FindRefLikeType(
         ITypeSymbol type,
-        ImmutableArray<IParameterSymbol> parameters
+        IEnumerable<IParameterSymbol> parameters
     ) =>
         type.IsRefLikeType
             ? type

@@ -9,12 +9,16 @@ internal static class TypeCasterSyntaxHelper
         string varName,
         TypeSyntax fromType,
         TypeSyntax toType
-    )
-    {
-        return WellKnownTypes
+    ) => CastExpression(IdentifierName(varName), fromType, toType);
+
+    internal static ExpressionSyntax CastExpression(
+        ExpressionSyntax value,
+        TypeSyntax fromType,
+        TypeSyntax toType
+    ) =>
+        WellKnownTypes
             .Imposter.Abstractions.TypeCaster.Dot(
                 GenericName(Identifier("Cast"), TypeArgumentList(SeparatedList([fromType, toType])))
             )
-            .Call(Argument(IdentifierName(varName)));
-    }
+            .Call(Argument(value));
 }

@@ -105,19 +105,21 @@ public static class ArgumentsCriteriaBuilder
             TypeParameterRenamer renamer
         )
         {
-            var targetType = (TypeSyntax)renamer.Visit(parameter.NullableAwareTypeSyntax);
+            var targetType = (TypeSyntax)renamer.Visit(parameter.NullableAwareStoredTypeSyntax);
 
             if (parameter.Model.RefKind is RefKind.Out)
             {
                 return Argument(OutArgAny(targetType));
             }
 
-            var sourceType = parameter.NullableAwareTypeSyntax;
-            return BuildIsPredicateArg(parameter, targetType, sourceType);
+            var sourceType = parameter.NullableAwareStoredTypeSyntax;
+            var targetMatcherType = (TypeSyntax)renamer.Visit(parameter.ArgTypeSyntax);
+            return BuildIsPredicateArg(parameter, targetMatcherType, targetType, sourceType);
         }
 
         static ArgumentSyntax BuildIsPredicateArg(
             MethodParameterMetadata parameter,
+            TypeSyntax targetMatcherType,
             TypeSyntax targetType,
             TypeSyntax sourceType
         )
@@ -125,8 +127,7 @@ public static class ArgumentsCriteriaBuilder
             var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
 
             return Argument(
-                WellKnownTypes
-                    .Imposter.Abstractions.Arg(targetType)
+                targetMatcherType
                     .Dot(IdentifierName("Is"))
                     .Call(
                         ArgumentList(

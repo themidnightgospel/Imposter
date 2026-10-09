@@ -549,12 +549,7 @@ internal static partial class InvocationSetupBuilder
 
         returnsAsyncBodyBuilder.AddStatement(
             ResultGeneratorIdentifier(method)
-                .Assign(
-                    AsyncLambda(
-                        method.Parameters.ParameterListSyntaxIncludingNullable,
-                        lambdaBody.Build()
-                    )
-                )
+                .Assign(AsyncResultGenerator(method, lambdaBody.Build()))
                 .ToStatementSyntax()
         );
 
@@ -581,8 +576,8 @@ internal static partial class InvocationSetupBuilder
         blockBuilder.AddStatement(
             ResultGeneratorIdentifier(method)
                 .Assign(
-                    AsyncLambda(
-                        method.Parameters.ParameterListSyntaxIncludingNullable,
+                    AsyncResultGenerator(
+                        method,
                         Block(
                             ThrowExpression(IdentifierName(throwsAsync.ExceptionParameter.Name))
                                 .ToStatementSyntax()
@@ -602,6 +597,35 @@ internal static partial class InvocationSetupBuilder
             )
             .WithBody(blockBuilder.Build())
             .Build();
+    }
+
+    // A span parameter can't be declared on an async lambda (CS4012), so a method with span parameters gets a plain
+    // lambda that returns the result of an async local function.
+    private static ParenthesizedLambdaExpressionSyntax AsyncResultGenerator(
+        in ImposterTargetMethodMetadata method,
+        BlockSyntax asyncBody
+    ) =>
+        method.Parameters.HasSpanParameters
+            ? Lambda(
+                method.Parameters.ParameterListSyntaxIncludingNullable,
+                AsyncResultFunctionCall(method, asyncBody)
+            )
+            : AsyncLambda(method.Parameters.ParameterListSyntaxIncludingNullable, asyncBody);
+
+    // Returns the result of a parameterless async local function that runs asyncBody.
+    private static BlockSyntax AsyncResultFunctionCall(
+        in ImposterTargetMethodMetadata method,
+        BlockSyntax asyncBody
+    )
+    {
+        var functionName = method.MethodInvocationImposter.AsyncResultFunctionName;
+
+        return Block(
+            ReturnStatement(IdentifierName(functionName).Call()),
+            LocalFunctionStatement(method.NullableAwareReturnTypeSyntax, Identifier(functionName))
+                .AddModifiers(Token(SyntaxKind.AsyncKeyword))
+                .WithBody(asyncBody)
+        );
     }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement(

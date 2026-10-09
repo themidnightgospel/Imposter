@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -41,7 +42,7 @@ internal static class ArgumentsBuilder
                             method.Parameters.InputParameterMetadata.Select(parameter =>
                                 ThisExpression()
                                     .Dot(IdentifierName(parameter.Name))
-                                    .Assign(IdentifierName(parameter.Name))
+                                    .Assign(parameter.StoredValue)
                                     .ToStatementSyntax()
                             )
                         )
@@ -77,7 +78,7 @@ internal static class ArgumentsBuilder
         var renamer = new TypeParameterRenamer(typeParameters, targetGenericTypeArguments);
         var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
         {
-            var sourceType = p.NullableAwareTypeSyntax;
+            var sourceType = p.NullableAwareStoredTypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
             return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));

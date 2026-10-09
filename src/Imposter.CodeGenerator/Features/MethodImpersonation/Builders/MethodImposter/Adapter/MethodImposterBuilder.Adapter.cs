@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -88,11 +89,9 @@ internal static class MethodImposterAdapterBuilder
         {
             var pType = p.NullableAwareTypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
-            var castArgument = TypeCasterSyntaxHelper.CastExpression(
-                p.Name,
-                (TypeSyntax)pTargetType,
-                pType
-            );
+            var castArgument = p.IsSpan
+                ? AdaptedSpanArgument(p, typeParamRenamer)
+                : TypeCasterSyntaxHelper.CastExpression(p.Name, (TypeSyntax)pTargetType, pType);
 
             switch (p.Model.RefKind)
             {
@@ -221,6 +220,25 @@ internal static class MethodImposterAdapterBuilder
             .WithParameterList(parameterList)
             .WithBody(Block(body))
             .Build();
+    }
+
+    // A span can't go through TypeCaster. One whose type uses none of the method's type parameters passes on as it
+    // is, so writes to it reach the caller; any other passes as a cast copy, which converts back to a span.
+    private static ExpressionSyntax AdaptedSpanArgument(
+        in MethodParameterMetadata parameter,
+        TypeParameterRenamer typeParamRenamer
+    )
+    {
+        var storedType = parameter.NullableAwareStoredTypeSyntax;
+        var adaptedStoredType = (TypeSyntax)typeParamRenamer.Visit(storedType);
+
+        return adaptedStoredType.IsEquivalentTo(storedType)
+            ? IdentifierName(parameter.Name)
+            : TypeCasterSyntaxHelper.CastExpression(
+                parameter.StoredValue,
+                adaptedStoredType,
+                storedType
+            );
     }
 
     private static MethodDeclarationSyntax BuildAdapterHasMatchingInvocationImposterGroupMethod(

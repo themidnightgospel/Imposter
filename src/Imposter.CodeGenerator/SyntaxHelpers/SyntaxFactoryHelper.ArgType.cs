@@ -12,14 +12,32 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
+    // A span parameter is matched with SpanArg<T>, which has a type of its own, so a method overloaded on T[] and on
+    // Span<T> keeps distinct setups.
     internal static TypeSyntax ArgType(ParameterModel parameter)
     {
+        if (parameter.SpanElementType is { } elementType)
+        {
+            return WellKnownTypes.Imposter.Abstractions.SpanArg(
+                TypeSyntaxIncludingNullable(elementType)
+            );
+        }
+
         var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
 
         return parameter.RefKind == RefKind.Out
             ? WellKnownTypes.Imposter.Abstractions.OutArg(parameterType)
             : WellKnownTypes.Imposter.Abstractions.Arg(parameterType);
     }
+
+    // A span argument is kept as an array of its elements.
+    internal static TypeSyntax StoredTypeSyntaxIncludingNullable(ParameterModel parameter) =>
+        parameter.SpanElementType is { } elementType
+            ? ArrayType(
+                TypeSyntaxIncludingNullable(elementType),
+                SingletonList(ArrayRankSpecifier())
+            )
+            : TypeSyntaxIncludingNullable(parameter.Type);
 
     internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
         TypeSyntax argArgumentTypeSyntax

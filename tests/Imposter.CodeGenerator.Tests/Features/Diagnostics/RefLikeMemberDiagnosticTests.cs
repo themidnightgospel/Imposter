@@ -20,11 +20,19 @@ public class RefLikeMemberDiagnosticTests
         .Id;
 
     [Fact]
-    public async Task GivenMethodWithReadOnlySpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodWithInReadOnlySpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int Get(System.ReadOnlySpan<byte> input); }"
+            "public interface IService { int Get(in System.ReadOnlySpan<byte> input); }"
         );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    [Fact]
+    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
@@ -76,10 +84,10 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenVirtualClassMethodWithSpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenVirtualClassMethodWithRefSpanParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public class Service { public virtual int Get(System.Span<byte> input) => 0; }",
+            "public class Service { public virtual int Get(ref System.Span<byte> input) => 0; }",
             "Sample.Service"
         );
 
@@ -87,28 +95,34 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenMethodWithReadOnlySpanParameter_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
+    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
     {
-        var result = await RunGenerator(
-            "public interface IService { int Get(System.ReadOnlySpan<byte> input); }"
-        );
+        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
 
         result
             .Diagnostics.ShouldHaveSingleItem()
             .GetMessage()
             .ShouldBe(
-                "'Sample.IService' has the member 'Sample.IService.Get(System.ReadOnlySpan<byte>)', whose signature uses the ref-like type 'System.ReadOnlySpan<byte>', which an imposter cannot store or match"
+                "'Sample.IService' has the member 'Sample.IService.Get(Sample.RefLike)', whose signature uses the ref-like type 'Sample.RefLike', which an imposter cannot store or match"
             );
     }
 
     [Fact]
-    public async Task GivenMethodWithReadOnlySpanParameter_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
+    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
     {
-        var result = await RunGenerator(
-            "public interface IService { int Get(System.ReadOnlySpan<byte> input); }"
-        );
+        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
 
         result.GeneratedSources.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GivenMethodsWithSpanParametersTakenByValue_WhenGeneratorRuns_ShouldNotReportDiagnostics()
+    {
+        var result = await RunGenerator(
+            "public interface IService { int Get(System.ReadOnlySpan<byte> input); void Fill(System.Span<char> buffer); }"
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
     }
 
     [Fact]
