@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004, IMP008, IMP009, IMP010 and IMP012 stop the target's generation; IMP006 only warns. Collisions
-    // between targets (IMP007) are found once all targets are known.
+    // IMP002, IMP004 and IMP008 to IMP012 stop the target's generation; IMP006 only warns. Collisions between targets
+    // (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -94,6 +94,19 @@ internal static class ImposterTargetValidator
                     targetDisplayName,
                     refLikeMember.Member.ToDisplayString(),
                     refLikeMember.Type.ToDisplayString()
+                ),
+                false
+            );
+        }
+
+        if (FindRefReturningMember(target, memberAccess) is { } refReturningMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasRefReturningMember,
+                    location,
+                    targetDisplayName,
+                    refReturningMember.ToDisplayString()
                 ),
                 false
             );
@@ -249,4 +262,19 @@ internal static class ImposterTargetValidator
 
     private static ITypeSymbol? FindRefLikeType(IEnumerable<ITypeSymbol> types) =>
         types.FirstOrDefault(it => it.IsRefLikeType);
+
+    // An imposter returns the results it is set up with by value, so it can't implement or override a member that
+    // returns by ref or ref readonly.
+    private static ISymbol? FindRefReturningMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    ) =>
+        ImposterTargetModel
+            .GetMethods(target, memberAccess)
+            .Concat<ISymbol>(ImposterTargetModel.GetProperties(target, memberAccess))
+            .FirstOrDefault(member =>
+                member
+                    is IMethodSymbol { RefKind: not RefKind.None }
+                        or IPropertySymbol { RefKind: not RefKind.None }
+            );
 }
