@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -176,37 +177,12 @@ internal static partial class InvocationSetupBuilder
             IfStatement(
                 ResultGeneratorIdentifier(method).IsNull(),
                 Block(
-                    IfStatement(
-                        BinaryExpression(
-                            SyntaxKind.EqualsExpression,
-                            IdentifierName(
-                                method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
-                            ),
-                            QualifiedName(
-                                WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                                IdentifierName("Explicit")
-                            )
+                    ThrowIfExplicit(
+                        IdentifierName(
+                            method.MethodImposter.InvokeMethod.InvocationBehaviorParameterName
                         ),
-                        Block(
-                            ThrowStatement(
-                                ObjectCreationExpression(
-                                        WellKnownTypes
-                                            .Imposter
-                                            .Abstractions
-                                            .MissingImposterException
-                                    )
-                                    .WithArgumentList(
-                                        Argument(
-                                                IdentifierName(
-                                                    method
-                                                        .MethodImposter
-                                                        .InvokeMethod
-                                                        .MethodDisplayNameParameterName
-                                                )
-                                            )
-                                            .AsSingleArgumentListSyntax()
-                                    )
-                            )
+                        IdentifierName(
+                            method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
                         )
                     ),
                     ResultGeneratorIdentifier(method)
@@ -257,17 +233,9 @@ internal static partial class InvocationSetupBuilder
 
         if (method.SupportsBaseImplementation)
         {
-            var missingImposterException = ObjectCreationExpression(
-                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                )
-                .WithArgumentList(
-                    Argument(
-                            IdentifierName(
-                                method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName
-                            )
-                        )
-                        .AsSingleArgumentListSyntax()
-                );
+            var missingImposterException = MissingImposterException(
+                IdentifierName(method.MethodImposter.InvokeMethod.MethodDisplayNameParameterName)
+            );
 
             var assignBaseImplementation = IfStatement(
                 UseBaseImplementationIdentifier(method),

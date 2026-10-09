@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -240,17 +241,9 @@ internal static class EventImposterSubscriptionsBuilder
                     baseImplementationIdentifier.IsNotNull(),
                     Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
                     ElseClause(
-                        ThrowStatement(
-                            ObjectCreationExpression(
-                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                                )
-                                .WithArgumentList(
-                                    Argument(
-                                            FieldIdentifier(@event.Builder.Fields.EventDisplayName)
-                                                .Add(" (event)".StringLiteral())
-                                        )
-                                        .AsSingleArgumentListSyntax()
-                                )
+                        ThrowMissingImposter(
+                            @event.Builder.Fields.EventDisplayName.Name,
+                            " (event)"
                         )
                     )
                 )

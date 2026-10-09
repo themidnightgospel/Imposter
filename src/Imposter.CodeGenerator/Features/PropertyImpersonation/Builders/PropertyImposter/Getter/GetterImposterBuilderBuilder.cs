@@ -6,6 +6,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -506,10 +507,6 @@ internal static class GetterImposterBuilderBuilder
             baseImplementation.Name
         );
         var baseImplementationIdentifier = IdentifierName(baseImplementation.Name);
-        var messageExpression = IdentifierName(
-                property.GetterImposterBuilder.PropertyDisplayNameField.Name
-            )
-            .Add(" (getter)".StringLiteral());
 
         return ParenthesizedLambdaExpression()
             .WithParameterList(ParameterList(SingletonSeparatedList(baseImplementationParameter)))
@@ -519,10 +516,9 @@ internal static class GetterImposterBuilderBuilder
                         baseImplementationIdentifier.IsNotNull(),
                         ReturnStatement(baseImplementationIdentifier.Call()),
                         ElseClause(
-                            ThrowStatement(
-                                WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                                    Argument(messageExpression).AsSingleArgumentListSyntax()
-                                )
+                            ThrowMissingImposter(
+                                property.GetterImposterBuilder.PropertyDisplayNameField.Name,
+                                " (getter)"
                             )
                         )
                     )
@@ -668,14 +664,7 @@ internal static class GetterImposterBuilderBuilder
         in PropertyGetterImposterBuilderMetadata builder
     )
     {
-        var condition = BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                IdentifierName(builder.InvocationBehaviorField.Name),
-                QualifiedName(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    IdentifierName("Explicit")
-                )
-            )
+        var condition = IsExplicit(IdentifierName(builder.InvocationBehaviorField.Name))
             .And(Not(IdentifierName(builder.HasConfiguredReturnField.Name)));
 
         return new MethodDeclarationBuilder(
@@ -687,18 +676,7 @@ internal static class GetterImposterBuilderBuilder
                 Block(
                     IfStatement(
                         condition,
-                        ThrowStatement(
-                            ObjectCreationExpression(
-                                    WellKnownTypes.Imposter.Abstractions.MissingImposterException
-                                )
-                                .WithArgumentList(
-                                    Argument(
-                                            IdentifierName(builder.PropertyDisplayNameField.Name)
-                                                .Add(" (getter)".StringLiteral())
-                                        )
-                                        .AsSingleArgumentListSyntax()
-                                )
-                        )
+                        ThrowMissingImposter(builder.PropertyDisplayNameField.Name, " (getter)")
                     )
                 )
             )
