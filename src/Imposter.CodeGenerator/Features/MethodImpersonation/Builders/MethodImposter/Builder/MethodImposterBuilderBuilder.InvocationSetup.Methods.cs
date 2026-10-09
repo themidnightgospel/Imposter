@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -227,6 +228,14 @@ internal static partial class MethodImposterBuilderBuilder
     ) =>
         ThisExpression()
             .Dot(IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name))
-            .Assign(invocationImposterGroup.Dot(IdentifierName("AddInvocationImposter")).Call())
+            .Assign(
+                invocationImposterGroup
+                    .Dot(
+                        IdentifierName(
+                            MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
+                        )
+                    )
+                    .Call()
+            )
             .ToStatementSyntax();
 }

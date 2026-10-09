@@ -29,7 +29,7 @@ internal readonly ref struct IndexerImposterMembersBuilder(
             )
         );
 
-        var invocationBuilderCreation = indexer.Builder.InvocationBuilderTypeSyntax.New(
+        var invocationBuilderCreation = indexer.Builder.InvocationBuilder.TypeSyntax.New(
             SyntaxFactoryHelper.ArgumentListSyntax([
                 Argument(IdentifierName(indexer.BuilderField.Name)),
                 Argument(

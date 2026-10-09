@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -41,7 +42,10 @@ internal static partial class MethodImposterBuilderBuilder
         {
             var addNewCall = methodImposterAccess
                 .Dot(
-                    GenericName(Identifier("AddNew"), method.GenericTypeArguments.ToTypeArguments())
+                    GenericName(
+                        Identifier(MethodImposterCollectionMetadata.AddNewMethodName),
+                        method.GenericTypeArguments.ToTypeArguments()
+                    )
                 )
                 .Call();
 

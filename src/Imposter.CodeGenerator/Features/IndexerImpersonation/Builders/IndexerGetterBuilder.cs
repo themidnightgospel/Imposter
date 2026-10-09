@@ -61,7 +61,7 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
 
-        return new ClassDeclarationBuilder("GetterImposter")
+        return new ClassDeclarationBuilder(getter.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddMember(SinglePrivateReadonlyVariableField(getter.DefaultBehaviourField))
@@ -105,7 +105,7 @@ internal static partial class IndexerGetterBuilder
         in ImposterIndexerMetadata indexer
     ) =>
         BuildImposterConstructor(
-            "GetterImposter",
+            indexer.GetterImplementation.Name,
             indexer.DefaultIndexerBehaviour.TypeSyntax,
             indexer.GetterImplementation.DefaultBehaviourField.Name,
             indexer.GetterImplementation.InvocationBehaviorField.Name,
@@ -221,7 +221,7 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var setup = IdentifierName(getter.SetupVariableName);
         var setupMatches = setup
-            .Dot(IdentifierName("Criteria"))
+            .Dot(IdentifierName(getter.Invocation.CriteriaField.Name))
             .Dot(IdentifierName("Matches"))
             .Call(
                 ArgumentList(
@@ -394,7 +394,11 @@ internal static partial class IndexerGetterBuilder
 
     private static MethodDeclarationSyntax BuildMarkReturnConfiguredMethod(
         in IndexerGetterImposterMetadata getter
-    ) => BuildMarkConfiguredMethod("MarkReturnConfigured", getter.HasConfiguredReturnField.Name);
+    ) =>
+        BuildMarkConfiguredMethod(
+            getter.MarkReturnConfiguredMethod.Name,
+            getter.HasConfiguredReturnField.Name
+        );
 
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
         in IndexerGetterImposterMetadata getter

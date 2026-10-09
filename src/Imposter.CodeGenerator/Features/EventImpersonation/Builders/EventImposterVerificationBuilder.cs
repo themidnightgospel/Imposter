@@ -14,6 +14,10 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
 internal static class EventImposterVerificationBuilder
 {
+    // A history entry, as the verification predicates read it. The performed-invocations description reuses a
+    // predicate's body inside its own loop over the history, so both declare the entry by this one name.
+    private static readonly IdentifierNameSyntax Entry = IdentifierName("entry");
+
     internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
         in ImposterEventMetadata @event
     ) =>
@@ -119,22 +123,20 @@ internal static class EventImposterVerificationBuilder
         in ImposterEventMetadata @event
     )
     {
-        var entry = IdentifierName("entry");
         var historyEntry = @event.Builder.Fields.HistoryEntry;
-        var parameters = @event.Core.Parameters;
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
-        ExpressionSyntax? predicateBody = null;
+        var predicateBody = @event
+            .Core.Parameters.Select(
+                (parameter, index) =>
+                    (ExpressionSyntax)
+                        IdentifierName(criteria[index].Name)
+                            .Dot(IdentifierName("Matches"))
+                            .Call(Argument(historyEntry.ParameterValue(Entry, parameter)))
+            )
+            .DefaultIfEmpty(True)
+            .Aggregate((current, next) => current.And(next));
 
-        for (var index = 0; index < parameters.Length; index++)
-        {
-            var matchCall = IdentifierName(criteria[index].Name)
-                .Dot(IdentifierName("Matches"))
-                .Call(Argument(historyEntry.ParameterValue(entry, parameters[index])));
-
-            predicateBody = predicateBody is null ? matchCall : predicateBody.And(matchCall);
-        }
-
-        return SimpleLambdaExpression(Parameter(entry.Identifier), predicateBody ?? True);
+        return SimpleLambdaExpression(Parameter(Entry.Identifier), predicateBody);
     }
 
     internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
@@ -190,10 +192,9 @@ internal static class EventImposterVerificationBuilder
             .AddStatement(ThrowIfNull(criteriaParameterName))
             .AddStatement(ThrowIfNull(countParameterName));
 
-        var entryIdentifier = IdentifierName("entry");
         var predicateLambda = SimpleLambdaExpression(
-            Parameter(Identifier("entry")),
-            predicateFactory(entryIdentifier)
+            Parameter(Entry.Identifier),
+            predicateFactory(Entry)
         );
 
         AddEnsureCountMatchesStatements(
@@ -217,29 +218,35 @@ internal static class EventImposterVerificationBuilder
 
     internal static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(
         in EventImposterBuilderMethodsMetadata methods
-    ) =>
-        new MethodDeclarationBuilder(
+    )
+    {
+        var actual = IdentifierName("actual");
+        var expected = IdentifierName("expected");
+        var performedInvocationsFactory = IdentifierName("performedInvocationsFactory");
+
+        return new MethodDeclarationBuilder(
             methods.EnsureCountMatches.ReturnType,
             methods.EnsureCountMatches.Name
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddParameter(ParameterSyntax(WellKnownTypes.Int, "actual"))
-            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.Count, "expected"))
+            .AddParameter(ParameterSyntax(WellKnownTypes.Int, actual.Identifier.Text))
+            .AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.Count,
+                    expected.Identifier.Text
+                )
+            )
             .AddParameter(
                 ParameterSyntax(
                     WellKnownTypes.System.FuncOfT(WellKnownTypes.String),
-                    "performedInvocationsFactory"
+                    performedInvocationsFactory.Identifier.Text
                 )
             )
             .WithBody(
                 Block(
                     IfStatement(
-                        Not(
-                            IdentifierName("expected")
-                                .Dot(IdentifierName("Matches"))
-                                .Call(Argument(IdentifierName("actual")))
-                        ),
+                        Not(expected.Dot(IdentifierName("Matches")).Call(Argument(actual))),
                         Block(
                             ThrowStatement(
                                 ObjectCreationExpression(
@@ -251,12 +258,9 @@ internal static class EventImposterVerificationBuilder
                                     .WithArgumentList(
                                         ArgumentList(
                                             SeparatedList([
-                                                Argument(IdentifierName("expected")),
-                                                Argument(IdentifierName("actual")),
-                                                Argument(
-                                                    IdentifierName("performedInvocationsFactory")
-                                                        .Call()
-                                                ),
+                                                Argument(expected),
+                                                Argument(actual),
+                                                Argument(performedInvocationsFactory.Call()),
                                             ])
                                         )
                                     )
@@ -266,6 +270,7 @@ internal static class EventImposterVerificationBuilder
                 )
             )
             .Build();
+    }
 
     private static void AddEnsureCountMatchesStatements(
         BlockBuilder blockBuilder,
@@ -275,14 +280,20 @@ internal static class EventImposterVerificationBuilder
         ExpressionSyntax performedInvocationsFactoryExpression
     )
     {
+        var actual = IdentifierName("actual");
+
         blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(WellKnownTypes.Int, "actual", actualValueExpression)
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.Int,
+                actual.Identifier.Text,
+                actualValueExpression
+            )
         );
 
         blockBuilder.AddExpression(
             IdentifierName(ensureCountMatchesName)
                 .Call([
-                    Argument(IdentifierName("actual")),
+                    Argument(actual),
                     Argument(IdentifierName(countParameterName)),
                     Argument(performedInvocationsFactoryExpression),
                 ])
@@ -296,28 +307,32 @@ internal static class EventImposterVerificationBuilder
     )
     {
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
-        var entryIdentifier = IdentifierName("entry");
+        var performedInvocations = IdentifierName("performedInvocations");
 
         return EmptyParametersGoesTo(
             Block(
-                LocalVariableDeclarationSyntax(Var, "performedInvocations", stringListType.New()),
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    performedInvocations.Identifier.Text,
+                    stringListType.New()
+                ),
                 ForEachStatement(
                     Var,
-                    Identifier("entry"),
+                    Entry.Identifier,
                     FieldIdentifier(historyField),
                     Block(
                         IfStatement(
                             predicateBody,
                             Block(
-                                IdentifierName("performedInvocations")
+                                performedInvocations
                                     .Dot(IdentifierName("Add"))
-                                    .Call(Argument(descriptionFactory(entryIdentifier)))
+                                    .Call(Argument(descriptionFactory(Entry)))
                                     .ToStatementSyntax()
                             )
                         )
                     )
                 ),
-                ReturnStatement(JoinWithNewLines(IdentifierName("performedInvocations")))
+                ReturnStatement(JoinWithNewLines(performedInvocations))
             )
         );
     }
@@ -405,7 +420,4 @@ internal static class EventImposterVerificationBuilder
     private static ExpressionSyntax GetPredicateBody(SimpleLambdaExpressionSyntax predicate) =>
         predicate.Body as ExpressionSyntax
         ?? throw new InvalidOperationException("Predicate body must be an expression.");
-
-    internal static ParameterSyntax CountParameter(in ImposterEventMetadata @event) =>
-        ParameterSyntax(@event.Builder.Methods.CountParameter);
 }

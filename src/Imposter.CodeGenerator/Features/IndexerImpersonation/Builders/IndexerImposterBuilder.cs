@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -57,31 +58,24 @@ internal static class IndexerImposterBuilder
     {
         var invocationBehaviorParameter = ParameterSyntax(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            "invocationBehavior"
+            InvocationBehaviorParameterName
         );
         var propertyDisplayNameParameter = ParameterSyntax(
             WellKnownTypes.String,
-            "propertyDisplayName"
+            PropertyDisplayNameParameterName
         );
 
         var getterInitialization = indexer.Core.HasGetter
             ? ThisExpression()
                 .Dot(IdentifierName(indexer.Builder.GetterImposterField.Name))
                 .Assign(
-                    IdentifierName("GetterImposter")
-                        .New(
-                            ArgumentListSyntax([
-                                Argument(
-                                    IdentifierName(indexer.Builder.DefaultBehaviourField.Name)
-                                ),
-                                Argument(
-                                    IdentifierName(invocationBehaviorParameter.Identifier.Text)
-                                ),
-                                Argument(
-                                    IdentifierName(propertyDisplayNameParameter.Identifier.Text)
-                                ),
-                            ])
-                        )
+                    indexer.GetterImplementation.TypeSyntax.New(
+                        ArgumentListSyntax([
+                            Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
+                            Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
+                            Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)),
+                        ])
+                    )
                 )
                 .ToStatementSyntax()
             : null;
@@ -90,20 +84,13 @@ internal static class IndexerImposterBuilder
             ? ThisExpression()
                 .Dot(IdentifierName(indexer.Builder.SetterImposterField.Name))
                 .Assign(
-                    IdentifierName("SetterImposter")
-                        .New(
-                            ArgumentListSyntax([
-                                Argument(
-                                    IdentifierName(indexer.Builder.DefaultBehaviourField.Name)
-                                ),
-                                Argument(
-                                    IdentifierName(invocationBehaviorParameter.Identifier.Text)
-                                ),
-                                Argument(
-                                    IdentifierName(propertyDisplayNameParameter.Identifier.Text)
-                                ),
-                            ])
-                        )
+                    indexer.SetterImplementation.TypeSyntax.New(
+                        ArgumentListSyntax([
+                            Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
+                            Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
+                            Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)),
+                        ])
+                    )
                 )
                 .ToStatementSyntax()
             : null;
@@ -124,24 +111,26 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer
     )
     {
+        var builder = indexer.Builder;
+        var getter = indexer.GetterImplementation;
         var body = Block(
             ReturnStatement(
-                QualifiedName(IdentifierName("GetterImposter"), IdentifierName("Builder"))
+                QualifiedName(getter.TypeSyntax, IdentifierName(getter.Builder.Name))
                     .New(
                         ArgumentListSyntax([
-                            Argument(IdentifierName(indexer.Builder.GetterImposterField.Name)),
-                            Argument(IdentifierName("criteria")),
+                            Argument(IdentifierName(builder.GetterImposterField.Name)),
+                            Argument(IdentifierName(builder.CriteriaParameter.Name)),
                         ])
                     )
             )
         );
 
         return new MethodDeclarationBuilder(
-            indexer.GetterBuilderInterface.TypeSyntax,
-            "CreateGetter"
+            builder.CreateGetterMethod.ReturnType,
+            builder.CreateGetterMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
+            .AddParameter(ParameterSyntax(builder.CriteriaParameter))
             .WithBody(body)
             .Build();
     }
@@ -150,13 +139,15 @@ internal static class IndexerImposterBuilder
         in ImposterIndexerMetadata indexer
     )
     {
+        var builder = indexer.Builder;
+        var setter = indexer.SetterImplementation;
         var bodyBuilder = new BlockBuilder();
 
         if (indexer.Core.HasSetter)
         {
             bodyBuilder.AddStatement(
-                IdentifierName(indexer.Builder.SetterImposterField.Name)
-                    .Dot(IdentifierName("MarkConfigured"))
+                IdentifierName(builder.SetterImposterField.Name)
+                    .Dot(IdentifierName(setter.MarkConfiguredMethod.Name))
                     .Call()
                     .ToStatementSyntax()
             );
@@ -164,104 +155,97 @@ internal static class IndexerImposterBuilder
 
         bodyBuilder.AddStatement(
             ReturnStatement(
-                QualifiedName(IdentifierName("SetterImposter"), IdentifierName("Builder"))
+                QualifiedName(setter.TypeSyntax, IdentifierName(setter.Builder.Name))
                     .New(
                         ArgumentListSyntax([
-                            Argument(IdentifierName(indexer.Builder.SetterImposterField.Name)),
-                            Argument(IdentifierName("criteria")),
+                            Argument(IdentifierName(builder.SetterImposterField.Name)),
+                            Argument(IdentifierName(builder.CriteriaParameter.Name)),
                         ])
                     )
             )
         );
 
         return new MethodDeclarationBuilder(
-            indexer.SetterBuilderInterface.TypeSyntax,
-            "CreateSetter"
+            builder.CreateSetterMethod.ReturnType,
+            builder.CreateSetterMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
+            .AddParameter(ParameterSyntax(builder.CriteriaParameter))
             .WithBody(bodyBuilder.Build())
             .Build();
     }
 
     private static ClassDeclarationSyntax BuildInvocationBuilder(in ImposterIndexerMetadata indexer)
     {
-        var invocationBuilder = new ClassDeclarationBuilder("InvocationBuilder")
+        var invocationBuilder = indexer.Builder.InvocationBuilder;
+        var builderParameter = ParameterSyntax(invocationBuilder.BuilderField.Type, "builder");
+        var criteriaParameter = ParameterSyntax(invocationBuilder.CriteriaField.Type, "criteria");
+
+        return new ClassDeclarationBuilder(invocationBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.BuilderInterface.TypeSyntax))
-            .AddMember(SinglePrivateReadonlyVariableField(indexer.Builder.TypeSyntax, "_builder"))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationBuilder.BuilderField))
+            .AddMember(SinglePrivateReadonlyVariableField(invocationBuilder.CriteriaField))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.ArgumentsCriteria.TypeSyntax,
-                    "_criteria"
-                )
-            )
-            .AddMember(
-                new ConstructorBuilder("InvocationBuilder")
+                new ConstructorBuilder(invocationBuilder.Name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .AddParameter(ParameterSyntax(indexer.Builder.TypeSyntax, "builder"))
-                    .AddParameter(ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "criteria"))
+                    .AddParameter(builderParameter)
+                    .AddParameter(criteriaParameter)
                     .WithBody(
                         new BlockBuilder()
                             .AddStatement(
                                 ThisExpression()
-                                    .Dot(IdentifierName("_builder"))
-                                    .Assign(IdentifierName("builder"))
+                                    .Dot(IdentifierName(invocationBuilder.BuilderField.Name))
+                                    .Assign(IdentifierName(builderParameter.Identifier))
                                     .ToStatementSyntax()
                             )
                             .AddStatement(
                                 ThisExpression()
-                                    .Dot(IdentifierName("_criteria"))
-                                    .Assign(IdentifierName("criteria"))
+                                    .Dot(IdentifierName(invocationBuilder.CriteriaField.Name))
+                                    .Assign(IdentifierName(criteriaParameter.Identifier))
                                     .ToStatementSyntax()
                             )
                             .Build()
                     )
                     .Build()
-            );
-
-        if (indexer.Core.HasGetter)
-        {
-            invocationBuilder = invocationBuilder.AddMember(
-                new MethodDeclarationBuilder(
-                    indexer.GetterBuilderInterface.TypeSyntax,
-                    indexer.BuilderInterface.GetterMethod.Name
-                )
-                    .AddModifier(Token(SyntaxKind.PublicKeyword))
-                    .WithBody(
-                        Block(
-                            ReturnStatement(
-                                IdentifierName("_builder")
-                                    .Dot(IdentifierName("CreateGetter"))
-                                    .Call(Argument(IdentifierName("_criteria")))
-                            )
-                        )
+            )
+            .AddMember(
+                indexer.Core.HasGetter
+                    ? BuildInvocationBuilderAccessorMethod(
+                        indexer.BuilderInterface.GetterMethod.Name,
+                        indexer.Builder.CreateGetterMethod,
+                        invocationBuilder
                     )
-                    .Build()
-            );
-        }
-
-        if (indexer.Core.HasSetter)
-        {
-            invocationBuilder = invocationBuilder.AddMember(
-                new MethodDeclarationBuilder(
-                    indexer.SetterBuilderInterface.TypeSyntax,
-                    indexer.BuilderInterface.SetterMethod.Name
-                )
-                    .AddModifier(Token(SyntaxKind.PublicKeyword))
-                    .WithBody(
-                        Block(
-                            ReturnStatement(
-                                IdentifierName("_builder")
-                                    .Dot(IdentifierName("CreateSetter"))
-                                    .Call(Argument(IdentifierName("_criteria")))
-                            )
-                        )
+                    : null
+            )
+            .AddMember(
+                indexer.Core.HasSetter
+                    ? BuildInvocationBuilderAccessorMethod(
+                        indexer.BuilderInterface.SetterMethod.Name,
+                        indexer.Builder.CreateSetterMethod,
+                        invocationBuilder
                     )
-                    .Build()
-            );
-        }
-
-        return invocationBuilder.Build();
+                    : null
+            )
+            .Build();
     }
+
+    // Getter() or Setter(): the builder of the accessor for the criteria this invocation builder keeps.
+    private static MethodDeclarationSyntax BuildInvocationBuilderAccessorMethod(
+        string name,
+        in MethodMetadata createMethod,
+        in IndexerImposterBuilderMetadata.InvocationBuilderMetadata invocationBuilder
+    ) =>
+        new MethodDeclarationBuilder(createMethod.ReturnType, name)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IdentifierName(invocationBuilder.BuilderField.Name)
+                            .Dot(IdentifierName(createMethod.Name))
+                            .Call(Argument(IdentifierName(invocationBuilder.CriteriaField.Name)))
+                    )
+                )
+            )
+            .Build();
 }

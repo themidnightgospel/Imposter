@@ -1,5 +1,6 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -68,7 +69,7 @@ internal static partial class InvocationSetupBuilder
         );
 
         var invokeCall = invocationImposterIdentifier
-            .Dot(IdentifierName("Invoke"))
+            .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
             .Call(
                 InvokeSignatureBuilder.InvocationImposterArguments(
                     method,
@@ -83,7 +84,7 @@ internal static partial class InvocationSetupBuilder
 
         var methodDeclaration = new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
-            "Invoke"
+            MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(InvokeSignatureBuilder.InvocationImposterParameters(method))

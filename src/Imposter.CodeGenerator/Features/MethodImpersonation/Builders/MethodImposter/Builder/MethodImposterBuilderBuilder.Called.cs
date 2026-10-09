@@ -41,10 +41,7 @@ internal static partial class MethodImposterBuilderBuilder
     {
         return new MethodDeclarationBuilder(WellKnownTypes.Void, CalledMethodMetadata.Name)
             .AddParameter(
-                ParameterSyntax(
-                    method.InvocationVerifierInterface.CalledMethod.CountParameter.Type,
-                    method.InvocationVerifierInterface.CalledMethod.CountParameter.Name
-                )
+                ParameterSyntax(method.InvocationVerifierInterface.CalledMethod.CountParameter)
             )
             .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(
@@ -64,10 +61,13 @@ internal static partial class MethodImposterBuilderBuilder
             var invocationHistoryIdentifier = IdentifierName(
                 method.InvocationHistory.Collection.AsField.Name
             );
+            var count = IdentifierName(
+                method.InvocationVerifierInterface.CalledMethod.CountParameter.Name
+            );
 
             return IfStatement(
                 Not(
-                    IdentifierName("count")
+                    count
                         .Dot(IdentifierName("Matches"))
                         .Call(
                             ArgumentList(
@@ -80,7 +80,7 @@ internal static partial class MethodImposterBuilderBuilder
                         WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
                             ArgumentList(
                                 SeparatedList<ArgumentSyntax>([
-                                    Argument(IdentifierName("count")),
+                                    Argument(count),
                                     Argument(IdentifierName("invocationCount")),
                                     Argument(
                                         invocationHistoryIdentifier
