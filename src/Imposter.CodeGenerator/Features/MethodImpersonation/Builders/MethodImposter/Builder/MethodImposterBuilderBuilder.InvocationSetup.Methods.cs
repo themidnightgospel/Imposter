@@ -17,11 +17,11 @@ internal static partial class MethodImposterBuilderBuilder
         var throws = method.MethodInvocationImposterGroup.ThrowsMethod;
         var throwNewException = Lambda(
             method.Parameters.ParameterListSyntaxIncludingNullable,
-            Block(ThrowStatement(IdentifierName(throws.GenericTypeParameterName).New()))
+            Block(ThrowStatement(IdentifierName(throws.ExceptionTypeParameter.Name).New()))
         );
 
         return new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
-            .WithTypeParameters(throws.TypeParameterList)
+            .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
             .WithExplicitInterfaceSpecifier(throws.InterfaceSyntax)
             .WithBody(
                 ForwardToCurrentInvocationImposter(method, throws.Name, Argument(throwNewException))

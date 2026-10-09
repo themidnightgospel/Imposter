@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -190,18 +189,8 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
         [
             InterfaceMethod(throws.ReturnType, throws.Name, throws.ExceptionParameter),
             new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
-                .WithTypeParameters(
-                    TypeParameterList(
-                        SingletonSeparatedList(TypeParameter(throws.GenericTypeParameterName))
-                    )
-                )
-                .AddConstraintClause(
-                    TypeParameterConstraintClause(throws.GenericTypeParameterName)
-                        .AddConstraints(
-                            TypeConstraint(WellKnownTypes.System.Exception),
-                            ConstructorConstraint()
-                        )
-                )
+                .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
+                .AddConstraintClause(throws.ExceptionTypeParameter.ConstraintClause)
                 .WithSemicolon()
                 .Build(),
         ];
