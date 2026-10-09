@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -20,8 +21,7 @@ internal sealed record InterfaceSetupInterfaceModel(
             @interface.Name,
             @interface.Interfaces.Select(TypeModel.From).ToEquatableArray(),
             @interface
-                .GetMembers()
-                .OfType<IEventSymbol>()
+                .GetInstanceMembers<IEventSymbol>()
                 .Select(InterfaceSetupMemberModel.From)
                 .ToEquatableArray()
         );

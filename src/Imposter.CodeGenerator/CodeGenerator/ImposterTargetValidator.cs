@@ -9,8 +9,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004, IMP008, IMP009 and IMP012 stop the target's generation; IMP006 only warns. Collisions between
-    // targets (IMP007) are found once all targets are known.
+    // IMP002, IMP004, IMP008, IMP009, IMP010 and IMP012 stop the target's generation; IMP006 only warns. Collisions
+    // between targets (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -50,6 +50,18 @@ internal static class ImposterTargetValidator
             return (
                 Single(
                     DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
+                    location,
+                    targetDisplayName
+                ),
+                false
+            );
+        }
+
+        if (target.HasRequiredMembers() && memberAccess.LacksSetsRequiredMembersAttribute())
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetRequiredMembersNeedSetsRequiredMembers,
                     location,
                     targetDisplayName
                 ),

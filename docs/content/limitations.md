@@ -13,6 +13,7 @@ Imposter keeps the source generator and runtime focused on common impersonation 
 - Only non-sealed classes can be impersonated.
 - Only virtual or abstract members can be impersonated on class imposters.
 - `UseBaseImplementation()` applies only to non-abstract, virtual class members and is not available for interfaces.
+- The imposter creates its instance without setting C# 11 `required` members. A required field or non-virtual property keeps its default value. A virtual or abstract required property is impersonated like any other. Before .NET 7, the project needs its own `SetsRequiredMembersAttribute` (see [IMP010](diagnostics.md#imp010)).
 
 ### Virtual calls during construction
 
@@ -31,6 +32,7 @@ explicit-mode checks apply.
 
 ## Interface targets
 
+- Static members of an interface aren't impersonated. They're called through the interface, never through the imposter's instance, so the imposter has no setup for them.
 - An interface with a static abstract member that has no implementation in it, declared or inherited, can't be impersonated: C# doesn't allow it as a type argument, which its imposter needs. Such a target reports [IMP012](diagnostics.md#imp012) and gets no imposter.
 
 ## Ref-like types

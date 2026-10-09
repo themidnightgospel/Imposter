@@ -7,6 +7,7 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// A property or indexer the imposter implements or overrides. <see cref="Parameters"/> is empty for a property.
 /// <see cref="OverrideAccessibility"/> is the accessibility an override in the imposter's assembly must declare.
+/// <see cref="IsRequired"/> is true for a C# 11 <c>required</c> property, whose override must be required too.
 /// </summary>
 internal sealed record PropertyModel(
     string Name,
@@ -17,7 +18,8 @@ internal sealed record PropertyModel(
     Accessibility OverrideAccessibility,
     PropertyAccessorModel? Getter,
     PropertyAccessorModel? Setter,
-    EquatableArray<ParameterModel> Parameters
+    EquatableArray<ParameterModel> Parameters,
+    bool IsRequired
 )
 {
     internal static PropertyModel From(IPropertySymbol property, MemberAccess memberAccess) =>
@@ -30,7 +32,8 @@ internal sealed record PropertyModel(
             memberAccess.GetOverrideAccessibility(property),
             PropertyAccessorModel.FromAccessible(property.GetMethod, memberAccess),
             PropertyAccessorModel.FromAccessible(property.SetMethod, memberAccess),
-            property.Parameters.Select(ParameterModel.From).ToEquatableArray()
+            property.Parameters.Select(ParameterModel.From).ToEquatableArray(),
+            property.IsRequiredMember()
         );
 
     private static string GetDisplayName(IPropertySymbol property)

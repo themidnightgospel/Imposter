@@ -9,6 +9,7 @@ IMP006 | Imposter | Warning  | Imposter.CodeGenerator
 IMP007 | Imposter | Error    | Imposter.CodeGenerator
 IMP008 | Imposter | Error    | Imposter.CodeGenerator
 IMP009 | Imposter | Error    | Imposter.CodeGenerator
+IMP010 | Imposter | Error    | Imposter.CodeGenerator
 IMP012 | Imposter | Error    | Imposter.CodeGenerator
 
 ### Removed Rules
