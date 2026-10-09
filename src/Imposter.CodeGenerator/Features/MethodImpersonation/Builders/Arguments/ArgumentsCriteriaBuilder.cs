@@ -93,16 +93,21 @@ public static class ArgumentsCriteriaBuilder
         static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(
             in ImposterTargetMethodMetadata metadata,
             TypeParameterRenamer renamer
-        ) =>
-            SeparatedList(
+        )
+        {
+            var matcherLambdaParameter = metadata.ArgumentsCriteriaAsMethod.MatcherLambdaParameter;
+
+            return SeparatedList(
                 metadata.Parameters.AllParameterMetadata.Select(parameter =>
-                    BuildArgForParameter(parameter, renamer)
+                    BuildArgForParameter(parameter, renamer, matcherLambdaParameter)
                 )
             );
+        }
 
         static ArgumentSyntax BuildArgForParameter(
             MethodParameterMetadata parameter,
-            TypeParameterRenamer renamer
+            TypeParameterRenamer renamer,
+            IdentifierNameSyntax matcherLambdaParameter
         )
         {
             var targetMatcherType = (TypeSyntax)renamer.Visit(parameter.ArgTypeSyntax);
@@ -114,18 +119,6 @@ public static class ArgumentsCriteriaBuilder
 
             var sourceType = parameter.NullableAwareStoredTypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
-            return BuildIsPredicateArg(parameter, targetMatcherType, targetType, sourceType);
-        }
-
-        static ArgumentSyntax BuildIsPredicateArg(
-            MethodParameterMetadata parameter,
-            TypeSyntax targetMatcherType,
-            TypeSyntax targetType,
-            TypeSyntax sourceType
-        )
-        {
-            var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
-
             return Argument(
                 targetMatcherType
                     .Dot(IdentifierName("Is"))
@@ -137,7 +130,7 @@ public static class ArgumentsCriteriaBuilder
                                         parameter,
                                         targetType,
                                         sourceType,
-                                        tryCastVarIdentifier
+                                        matcherLambdaParameter
                                     )
                                 )
                             )
@@ -150,9 +143,10 @@ public static class ArgumentsCriteriaBuilder
             MethodParameterMetadata parameter,
             TypeSyntax targetType,
             TypeSyntax sourceType,
-            SyntaxToken tryCastVarIdentifier
+            IdentifierNameSyntax matcherLambdaParameter
         )
         {
+            var tryCastVarIdentifier = Identifier(parameter.Name + "Target");
             var tryCastInvocation = WellKnownTypes
                 .Imposter.Abstractions.TypeCaster.Dot(
                     GenericName("TryCast")
@@ -163,7 +157,7 @@ public static class ArgumentsCriteriaBuilder
                 .Call(
                     ArgumentList(
                         SeparatedList([
-                            Argument(It),
+                            Argument(matcherLambdaParameter),
                             Argument(
                                     DeclarationExpression(
                                         sourceType,
@@ -184,7 +178,7 @@ public static class ArgumentsCriteriaBuilder
                 );
 
             return SimpleLambdaExpression(
-                Parameter(It.Identifier),
+                Parameter(matcherLambdaParameter.Identifier),
                 tryCastInvocation.And(matchesCall)
             );
         }
