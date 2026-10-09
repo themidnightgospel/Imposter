@@ -69,20 +69,18 @@ internal static class IndexerArgumentsBuilder
 
         // A comparer keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and works for type
         // parameters and structs without ==.
-        ExpressionSyntax? comparison = null;
-        foreach (var parameter in indexer.Core.Parameters)
-        {
-            var equalsExpression = parameter
-                .EqualityComparer.Dot(IdentifierName("Equals"))
-                .Call([
-                    Argument(IdentifierName(parameter.FieldName)),
-                    Argument(otherIdentifierName.Dot(IdentifierName(parameter.FieldName))),
-                ]);
-
-            comparison = comparison is null ? equalsExpression : comparison.And(equalsExpression);
-        }
-
-        comparison ??= True;
+        var comparison = indexer
+            .Core.Parameters.Select(parameter =>
+                (ExpressionSyntax)
+                    parameter
+                        .EqualityComparer.Dot(IdentifierName("Equals"))
+                        .Call([
+                            Argument(IdentifierName(parameter.FieldName)),
+                            Argument(otherIdentifierName.Dot(IdentifierName(parameter.FieldName))),
+                        ])
+            )
+            .DefaultIfEmpty(True)
+            .Aggregate((current, next) => current.And(next));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
