@@ -94,7 +94,7 @@ internal sealed record ImposterTargetModel(
             ))
             .ToEquatableArray();
 
-    private static IReadOnlyCollection<IMethodSymbol> GetMethods(
+    internal static IReadOnlyCollection<IMethodSymbol> GetMethods(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
@@ -108,7 +108,7 @@ internal sealed record ImposterTargetModel(
             _ => [],
         };
 
-    private static IReadOnlyCollection<IPropertySymbol> GetProperties(
+    internal static IReadOnlyCollection<IPropertySymbol> GetProperties(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
@@ -122,7 +122,7 @@ internal sealed record ImposterTargetModel(
             _ => [],
         };
 
-    private static IReadOnlyCollection<IEventSymbol> GetEvents(
+    internal static IReadOnlyCollection<IEventSymbol> GetEvents(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
