@@ -98,11 +98,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal bool IsAsync { get; }
 
-    internal ImposterTargetMethodMetadata(
-        TargetMemberModel<MethodModel> method,
-        string uniqueName,
-        bool supportsNullableGenericType
-    )
+    internal ImposterTargetMethodMetadata(TargetMemberModel<MethodModel> method, string uniqueName)
     {
         Model = method.Member;
         InterfaceSetupMember = method.Setup;
@@ -112,11 +108,7 @@ internal readonly struct ImposterTargetMethodMetadata
         NullableAwareReturnTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(
             Model.ReturnType.Type
         );
-        ReturnType = new ReturnTypeMetadata(
-            Model.ReturnType,
-            NullableAwareReturnTypeSyntax,
-            supportsNullableGenericType
-        );
+        ReturnType = new ReturnTypeMetadata(Model.ReturnType, NullableAwareReturnTypeSyntax);
         HasReturnValue = !Model.ReturnType.IsVoid;
         SupportsBaseImplementation = Model.IsClassMember && !Model.IsAbstract;
         IsAsync = Model.IsAsync;

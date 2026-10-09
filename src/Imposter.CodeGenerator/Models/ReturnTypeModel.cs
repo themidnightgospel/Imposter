@@ -11,7 +11,6 @@ namespace Imposter.CodeGenerator.Models;
 internal sealed record ReturnTypeModel(
     TypeModel Type,
     bool IsVoid,
-    bool IsTypeParameter,
     bool IsAwaitable,
     TypeModel? AwaitableResultType,
     bool ReferencesMethodTypeParameter,
@@ -26,7 +25,6 @@ internal sealed record ReturnTypeModel(
         return new ReturnTypeModel(
             TypeModel.From(returnType),
             method.ReturnsVoid,
-            returnType.TypeKind == TypeKind.TypeParameter,
             taskLike.IsAwaitable,
             taskLike.GenericAwaitableResultType is { } resultType
                 ? TypeModel.From(resultType)

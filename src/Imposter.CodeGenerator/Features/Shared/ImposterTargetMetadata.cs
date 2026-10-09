@@ -51,10 +51,7 @@ internal readonly struct ImposterTargetMetadata
 
     private readonly NameSet _symbolNameNamespace = new([]);
 
-    internal ImposterTargetMetadata(
-        ImposterTargetModel target,
-        in SupportedCSharpFeatures supportedCSharpFeatures
-    )
+    internal ImposterTargetMetadata(ImposterTargetModel target)
     {
         Name = GetImposterName(target.Name);
         TypeParameters = new ImposterTargetTypeParametersMetadata(target.TypeParameters);
@@ -64,15 +61,10 @@ internal readonly struct ImposterTargetMetadata
         );
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
         var memberNames = _symbolNameNamespace;
-        var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
         var ownMethodSetups = OwnMethodSetups(target);
         var ownPropertyAndEventSetupNames = OwnPropertyAndEventSetupNames(target);
         Methods = target
-            .Methods.Select(method => new ImposterTargetMethodMetadata(
-                method,
-                UniqueName(method),
-                supportsNullableGenericType
-            ))
+            .Methods.Select(method => new ImposterTargetMethodMetadata(method, UniqueName(method)))
             .ToList();
         IsClass = target.IsClass;
         HasRequiredMembers = target.HasRequiredMembers;

@@ -31,7 +31,7 @@ internal readonly struct ImposterGenerationContext
     {
         Target = generationTarget.Target;
         var putInTheSameNamespace = generationTarget.PutInTheSameNamespace;
-        Imposter = new ImposterTargetMetadata(Target, supportedCSharpFeatures);
+        Imposter = new ImposterTargetMetadata(Target);
         var arity = generationTarget.ExtensionClassNameIncludesArity
             ? Target.TypeParameters.Count.ToString(CultureInfo.InvariantCulture)
             : "";
