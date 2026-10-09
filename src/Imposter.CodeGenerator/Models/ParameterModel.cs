@@ -6,7 +6,8 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// A parameter as generated code declares and passes it. <see cref="ReferencesMethodTypeParameter"/> is true
 /// when the type uses a type parameter of the generic method that declares the parameter.
-/// <see cref="Span"/> is set when the parameter is a <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> taken by value.
+/// <see cref="Span"/> is set for a <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> parameter of any ref kind,
+/// except a <c>ref</c> or <c>out</c> one of a method with a <c>scoped</c> parameter.
 /// </summary>
 internal sealed record ParameterModel(
     string Name,
