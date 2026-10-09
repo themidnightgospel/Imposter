@@ -167,7 +167,6 @@ public static class ArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
     {
         var matchesParameterName = method.ArgumentsCriteria.MatchesMethod.ParameterName;
-        var matchesParameterIdentifier = Identifier(matchesParameterName);
         var matchesParameterExpression = IdentifierName(matchesParameterName);
 
         return new MethodDeclarationBuilder(
@@ -175,13 +174,7 @@ public static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.MatchesMethod.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(
-                ParameterList(
-                    SingletonSeparatedList(
-                        Parameter(matchesParameterIdentifier).WithType(method.Arguments.Syntax)
-                    )
-                )
-            )
+            .AddParameter(ParameterSyntax(method.Arguments.Syntax, matchesParameterName))
             .WithBody(
                 Block(
                     ReturnStatement(

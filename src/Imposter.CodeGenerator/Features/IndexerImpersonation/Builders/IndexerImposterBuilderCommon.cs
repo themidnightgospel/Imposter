@@ -228,25 +228,13 @@ internal static class IndexerImposterBuilderCommon
                     )
                 ),
                 ThrowStatement(
-                    ObjectCreationExpression(
-                            WellKnownTypes.Imposter.Abstractions.VerificationFailedException
-                        )
-                        .WithArgumentList(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(countParameterIdentifier),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(IdentifierName("invocationCount")),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(
-                                            JoinWithNewLines(IdentifierName("performedInvocations"))
-                                        ),
-                                    }
-                                )
-                            )
-                        )
+                    WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
+                        ArgumentListSyntax([
+                            Argument(countParameterIdentifier),
+                            Argument(IdentifierName("invocationCount")),
+                            Argument(JoinWithNewLines(IdentifierName("performedInvocations"))),
+                        ])
+                    )
                 )
             )
         );
