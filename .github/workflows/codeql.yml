@@ -56,3 +56,21 @@ jobs:
         uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           category: "/language:csharp"
+          upload: failure-only
+          output: sarif-results
+
+      # The build also compiles the imposters the generator emits for the test, benchmark and playground projects
+      # (under obj/). Their results would bury the ones in checked-in code, and paths-ignore doesn't apply to a built
+      # C# analysis, so they are dropped from the SARIF before upload.
+      - name: Drop results in generated output
+        run: |
+          for sarif in sarif-results/*.sarif; do
+            jq '.runs[].results |= map(select(all(.locations[]?; .physicalLocation.artifactLocation.uri | test("(^|/)obj/.*/generated/") | not)))' "$sarif" > "$sarif.filtered"
+            mv "$sarif.filtered" "$sarif"
+          done
+
+      - name: Upload CodeQL results
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: sarif-results
+          category: "/language:csharp"
