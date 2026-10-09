@@ -294,32 +294,13 @@ internal static class EventImposterRaiseBuilder
         bool usesValueTask
     )
     {
-        var localNames = @event.Builder.Methods.RaiseLocalNames;
-        var callback = IdentifierName(localNames.Callback);
-        var task = IdentifierName(localNames.Task);
+        var callback = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Callback);
 
         return ForEachStatement(
             Var,
             callback.Identifier,
             FieldIdentifier(field),
-            Block(
-                LocalVariableDeclarationSyntax(
-                    Var,
-                    task.Identifier.Text,
-                    callback.Call(
-                        @event.Core.Parameters.Select(parameter => parameter.ForwardingArgument)
-                    )
-                ),
-                IfStatement(
-                    task.IsNotDefault(),
-                    Block(
-                        IdentifierName(localNames.PendingTasks)
-                            .Dot(IdentifierName("Add"))
-                            .Call(Argument(ToTaskExpression(task, usesValueTask)))
-                            .ToStatementSyntax()
-                    )
-                )
-            )
+            Block(InvokeAndCollectTaskStatements(callback, @event, usesValueTask))
         );
     }
 
@@ -328,37 +309,52 @@ internal static class EventImposterRaiseBuilder
         bool usesValueTask
     )
     {
-        var localNames = @event.Builder.Methods.RaiseLocalNames;
-        var handler = IdentifierName(localNames.Handler);
-        var task = IdentifierName(localNames.Task);
+        var handler = IdentifierName(@event.Builder.Methods.RaiseLocalNames.Handler);
+        StatementSyntax[] body =
+        [
+            FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
+                .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                .Call(Argument(BuildHandlerInvocationTuple(handler, @event)))
+                .ToStatementSyntax(),
+            .. InvokeAndCollectTaskStatements(handler, @event, usesValueTask),
+        ];
 
         return ForEachStatement(
             Var,
             handler.Identifier,
             IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
-            Block(
-                FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(BuildHandlerInvocationTuple(handler, @event)))
-                    .ToStatementSyntax(),
-                LocalVariableDeclarationSyntax(
-                    Var,
-                    task.Identifier.Text,
-                    handler.Call(
-                        @event.Core.Parameters.Select(parameter => parameter.ForwardingArgument)
-                    )
-                ),
-                IfStatement(
-                    task.IsNotDefault(),
-                    Block(
-                        IdentifierName(localNames.PendingTasks)
-                            .Dot(IdentifierName("Add"))
-                            .Call(Argument(ToTaskExpression(task, usesValueTask)))
-                            .ToStatementSyntax()
-                    )
-                )
-            )
+            Block(body)
         );
+    }
+
+    private static StatementSyntax[] InvokeAndCollectTaskStatements(
+        IdentifierNameSyntax invoked,
+        in ImposterEventMetadata @event,
+        bool usesValueTask
+    )
+    {
+        var localNames = @event.Builder.Methods.RaiseLocalNames;
+        var task = IdentifierName(localNames.Task);
+
+        return
+        [
+            LocalVariableDeclarationSyntax(
+                Var,
+                task.Identifier.Text,
+                invoked.Call(
+                    @event.Core.Parameters.Select(parameter => parameter.ForwardingArgument)
+                )
+            ),
+            IfStatement(
+                task.IsNotDefault(),
+                Block(
+                    IdentifierName(localNames.PendingTasks)
+                        .Dot(IdentifierName("Add"))
+                        .Call(Argument(ToTaskExpression(task, usesValueTask)))
+                        .ToStatementSyntax()
+                )
+            ),
+        ];
     }
 
     private static IfStatementSyntax AwaitPendingTasksStatement(
