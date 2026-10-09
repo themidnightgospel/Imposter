@@ -5,7 +5,8 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A method's return type. <see cref="AwaitableResultType"/> is the T of an awaited Task&lt;T&gt; or
-/// ValueTask&lt;T&gt;.
+/// ValueTask&lt;T&gt;. <see cref="Span"/> is set when the method returns a <c>Span&lt;T&gt;</c> or
+/// <c>ReadOnlySpan&lt;T&gt;</c> by value.
 /// </summary>
 internal sealed record ReturnTypeModel(
     TypeModel Type,
@@ -13,7 +14,8 @@ internal sealed record ReturnTypeModel(
     bool IsTypeParameter,
     bool IsAwaitable,
     TypeModel? AwaitableResultType,
-    bool ReferencesMethodTypeParameter
+    bool ReferencesMethodTypeParameter,
+    SpanModel? Span
 )
 {
     internal static ReturnTypeModel From(IMethodSymbol method)
@@ -29,7 +31,8 @@ internal sealed record ReturnTypeModel(
             taskLike.GenericAwaitableResultType is { } resultType
                 ? TypeModel.From(resultType)
                 : null,
-            returnType.ReferencesTypeParameterOf(method)
+            returnType.ReferencesTypeParameterOf(method),
+            SpanModel.FromReturnType(method)
         );
     }
 }

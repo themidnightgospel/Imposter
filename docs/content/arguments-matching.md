@@ -201,7 +201,7 @@ An imposter can't keep a `Span<T>` or `ReadOnlySpan<T>`, so when a method is cal
     ```
 
 !!! warning
-    Imposters support only spans that a method takes by value. A span taken by `ref`, `out`, `in` or `ref readonly`, a span return type, a span in a property, an indexer or an event's delegate, and any other `ref struct` still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support only spans that a method takes or [returns](methods/index.md#setup-return-values) by value. A span taken by `ref`, `out`, `in` or `ref readonly`, a span returned by reference or by a method with a `scoped` parameter, a span in a property, an indexer or an event's delegate, and any other `ref struct` still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
 
 ## Arg API reference
 

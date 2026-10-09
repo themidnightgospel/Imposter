@@ -34,11 +34,17 @@ internal static partial class SyntaxFactoryHelper
     // A span argument is kept as an array of its elements.
     internal static TypeSyntax StoredTypeSyntaxIncludingNullable(ParameterModel parameter) =>
         parameter.Span is { } span
-            ? ArrayType(
-                TypeSyntaxIncludingNullable(span.ElementType),
-                SingletonList(ArrayRankSpecifier())
-            )
+            ? SpanElementsArrayType(span)
             : TypeSyntaxIncludingNullable(parameter.Type);
+
+    internal static ArrayTypeSyntax SpanElementsArrayType(SpanModel span) =>
+        ArrayType(
+            TypeSyntaxIncludingNullable(span.ElementType),
+            SingletonList(ArrayRankSpecifier())
+        );
+
+    internal static ExpressionSyntax SpanElementsCopy(ExpressionSyntax span) =>
+        span.Dot(IdentifierName("ToArray")).Call();
 
     internal static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
         TypeSyntax argArgumentTypeSyntax

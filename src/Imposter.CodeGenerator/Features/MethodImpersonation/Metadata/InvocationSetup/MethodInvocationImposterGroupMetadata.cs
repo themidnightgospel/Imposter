@@ -63,7 +63,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         );
         ReturnsMethod = new ReturnsMethodMetadata(
             method.ReservedParameterNames,
-            method.NullableAwareReturnTypeSyntax,
+            method.ReturnType.ValueTypeSyntax,
             Interface.Syntax,
             ContinuationInterface.Syntax,
             method.Delegate.Syntax

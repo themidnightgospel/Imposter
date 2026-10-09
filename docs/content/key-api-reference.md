@@ -65,7 +65,7 @@ A compact list of the core types and fluent members you’ll use most. This is n
 ## Method Setups (generated)
 
 - Typical fluent members on a method setup builder:
-  - `Returns(TResult value)`
+  - `Returns(TResult value)` — for a method returning `Span<T>` or `ReadOnlySpan<T>`, `Returns(T[] value)`: each call returns a span over the array
   - `Returns(Func<TResult> factory)`
   - `Returns(Func<...parameters..., TResult> factory)` — delegate receives in/ref/out/in params
   - `ReturnsAsync(TResult value)`

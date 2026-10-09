@@ -444,10 +444,7 @@ internal static partial class InvocationSetupBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                ParameterSyntax(
-                    method.NullableAwareReturnTypeSyntax,
-                    method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter.Name
-                )
+                ParameterSyntax(method.MethodInvocationImposterGroup.ReturnsMethod.ValueParameter)
             )
             .WithBody(blockBuilder.Build())
             .Build();

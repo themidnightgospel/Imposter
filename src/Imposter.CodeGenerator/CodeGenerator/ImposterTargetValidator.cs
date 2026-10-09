@@ -141,8 +141,8 @@ internal static class ImposterTargetValidator
         accessor is null || memberAccess.IsAccessible(accessor);
 
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
-    // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> parameter taken by
-    // value is the exception: the imposter keeps a copy of its elements.
+    // matchers, none of which can hold a ref-like value. A method's Span<T> or ReadOnlySpan<T> passed or returned by
+    // value is the exception: the imposter keeps its elements in an array.
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -150,11 +150,7 @@ internal static class ImposterTargetValidator
     {
         foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
         {
-            var uncopiedParameters = method.Parameters.Where(parameter =>
-                SpanModel.From(parameter) is null
-            );
-
-            if (FindRefLikeType(method.ReturnType, uncopiedParameters) is { } type)
+            if (FindRefLikeType(UncopiedTypes(method)) is { } type)
             {
                 return (method, type);
             }
@@ -162,7 +158,9 @@ internal static class ImposterTargetValidator
 
         foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
         {
-            if (FindRefLikeType(property.Type, property.Parameters) is { } type)
+            if (
+                FindRefLikeType([property.Type, .. ParameterTypes(property.Parameters)]) is { } type
+            )
             {
                 return (property, type);
             }
@@ -172,7 +170,8 @@ internal static class ImposterTargetValidator
         {
             if (
                 @event.Type is INamedTypeSymbol { DelegateInvokeMethod: { } invoke }
-                && FindRefLikeType(invoke.ReturnType, invoke.Parameters) is { } type
+                && FindRefLikeType([invoke.ReturnType, .. ParameterTypes(invoke.Parameters)])
+                    is { } type
             )
             {
                 return (@event, type);
@@ -182,11 +181,23 @@ internal static class ImposterTargetValidator
         return null;
     }
 
-    private static ITypeSymbol? FindRefLikeType(
-        ITypeSymbol type,
+    private static IEnumerable<ITypeSymbol> UncopiedTypes(IMethodSymbol method)
+    {
+        if (SpanModel.FromReturnType(method) is null)
+        {
+            yield return method.ReturnType;
+        }
+
+        foreach (var parameter in method.Parameters.Where(it => SpanModel.From(it) is null))
+        {
+            yield return parameter.Type;
+        }
+    }
+
+    private static IEnumerable<ITypeSymbol> ParameterTypes(
         IEnumerable<IParameterSymbol> parameters
-    ) =>
-        type.IsRefLikeType
-            ? type
-            : parameters.Select(parameter => parameter.Type).FirstOrDefault(it => it.IsRefLikeType);
+    ) => parameters.Select(parameter => parameter.Type);
+
+    private static ITypeSymbol? FindRefLikeType(IEnumerable<ITypeSymbol> types) =>
+        types.FirstOrDefault(it => it.IsRefLikeType);
 }

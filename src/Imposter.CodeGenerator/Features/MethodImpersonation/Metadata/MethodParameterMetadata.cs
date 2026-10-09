@@ -38,5 +38,5 @@ internal readonly struct MethodParameterMetadata
 
     // The parameter's value as the stored type: a copy of a span's elements, or the parameter itself.
     internal ExpressionSyntax StoredValue =>
-        IsSpan ? IdentifierName(Name).Dot(IdentifierName("ToArray")).Call() : IdentifierName(Name);
+        IsSpan ? SyntaxFactoryHelper.SpanElementsCopy(IdentifierName(Name)) : IdentifierName(Name);
 }

@@ -31,9 +31,9 @@ explicit-mode checks apply.
 
 ## Ref-like types
 
-- Methods that take a `Span<T>` or `ReadOnlySpan<T>` by value can be impersonated: the imposter copies the span's elements, and you match them with `SpanArg<T>` or `ReadOnlySpanArg<T>` (see [Span parameters](arguments-matching.md#span-parameters)).
-- In a generic method, a `Span<T>` argument whose element type uses one of the method's type parameters reaches the delegates you pass to `Returns` and `Callback` as a copy, so writes to it don't reach the caller's memory.
-- Members that use a ref-like type (`Span<T>`, `ReadOnlySpan<T>` or another `ref struct`) in any other way can't be impersonated, because an imposter can't store or match its values: a span passed by `ref`, `out`, `in` or `ref readonly`, a span return type, a span in a property, indexer or event, or a custom `ref struct` anywhere. A target with such a member reports [IMP009](diagnostics.md#imp009) and gets no imposter.
+- Methods that take or return a `Span<T>` or `ReadOnlySpan<T>` by value can be impersonated. The imposter copies a span argument's elements, and you match them with `SpanArg<T>` or `ReadOnlySpanArg<T>` (see [Span parameters](arguments-matching.md#span-parameters)). `Returns` takes the array a returned span covers (see [Methods](methods/index.md#setup-return-values)).
+- In a generic method, a span whose element type uses one of the method's type parameters passes as a copy. A `Span<T>` argument reaches the delegates you pass to `Returns` and `Callback` as a copy, so their writes don't reach the caller's memory, and a returned `Span<T>` is a copy of the array given to `Returns`, so the caller's writes don't reach that array.
+- Members that use a ref-like type (`Span<T>`, `ReadOnlySpan<T>` or another `ref struct`) in any other way can't be impersonated, because an imposter can't store or match its values: a span passed by `ref`, `out`, `in` or `ref readonly`, a span returned by reference or by a method with a `scoped` parameter, a span in a property, indexer or event, or a custom `ref struct` anywhere. A target with such a member reports [IMP009](diagnostics.md#imp009) and gets no imposter.
 
 ## Async behavior
 

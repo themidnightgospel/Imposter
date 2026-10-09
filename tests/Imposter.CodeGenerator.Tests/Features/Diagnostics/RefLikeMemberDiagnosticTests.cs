@@ -46,9 +46,11 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenMethodReturningSpan_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodReturningSpanByReference_WhenGeneratorRuns_ShouldReportIMP009()
     {
-        var result = await RunGenerator("public interface IService { System.Span<byte> Get(); }");
+        var result = await RunGenerator(
+            "public interface IService { ref System.Span<byte> Get(); }"
+        );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
@@ -125,6 +127,29 @@ public class RefLikeMemberDiagnosticTests
         result.Diagnostics.ShouldBeEmpty();
     }
 
+#if ROSLYN4_4_OR_GREATER
+    [Fact]
+    public async Task GivenMethodReturningSpanWithScopedParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { System.ReadOnlySpan<char> Name(scoped System.ReadOnlySpan<char> text); }",
+            languageVersion: LanguageVersion.CSharp11
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+#endif
+
+    [Fact]
+    public async Task GivenMethodsReturningSpansByValue_WhenGeneratorRuns_ShouldNotReportDiagnostics()
+    {
+        var result = await RunGenerator(
+            "public interface IService { System.Span<byte> Rent(); System.ReadOnlySpan<char> Name(); }"
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
     [Fact]
     public async Task GivenNonVirtualClassMethodWithSpanParameter_WhenImposterIsUsed_ShouldCompile()
     {
@@ -166,11 +191,12 @@ public class RefLikeMemberDiagnosticTests
     // GeneratorTestHelper expects a generator run without errors, so the IMP009 cases run the generator directly.
     private static async Task<GeneratorRunResult> RunGenerator(
         string targetDeclaration,
-        string targetType = "Sample.IService"
+        string targetType = "Sample.IService",
+        LanguageVersion languageVersion = LanguageVersion.CSharp9
     )
     {
         var compilation = await CreateCompilationAsync(
-            LanguageVersion.CSharp9,
+            languageVersion,
             Source(targetDeclaration, targetType),
             nameof(RefLikeMemberDiagnosticTests)
         );
