@@ -273,16 +273,12 @@ internal static class ImposterTargetValidator
         yield return invoke.ReturnType;
 
         var copiesSpans = !invoke.ReturnType.IsAwaitable();
-        foreach (var parameter in invoke.Parameters)
+        var uncopiedParameters = invoke.Parameters.Where(it =>
+            !copiesSpans || it.RefKind is RefKind.Ref or RefKind.Out || SpanModel.From(it) is null
+        );
+        foreach (var parameter in uncopiedParameters)
         {
-            if (
-                !copiesSpans
-                || parameter.RefKind is RefKind.Ref or RefKind.Out
-                || SpanModel.From(parameter) is null
-            )
-            {
-                yield return parameter.Type;
-            }
+            yield return parameter.Type;
         }
     }
 
