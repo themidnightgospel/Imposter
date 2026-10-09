@@ -177,28 +177,24 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
 
     internal static MethodDeclarationSyntax[] BuildThrowsValueMethod(
         in ImposterPropertyMetadata property
-    ) =>
+    )
+    {
+        var throws = property.GetterImposterBuilderInterface.ThrowsMethod;
+
+        return
         [
-            new MethodDeclarationBuilder(
-                property.GetterImposterBuilderInterface.ThrowsMethod.ReturnType,
-                property.GetterImposterBuilderInterface.ThrowsMethod.Name
-            )
-                .AddParameter(
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        property.GetterImposterBuilderInterface.ThrowsMethod.ExceptionParameter
-                    )
-                )
+            new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
+                .AddParameter(SyntaxFactoryHelper.ParameterSyntax(throws.ExceptionParameter))
                 .WithSemicolon()
                 .Build(),
-            new MethodDeclarationBuilder(
-                property.GetterImposterBuilderInterface.ThrowsMethod.ReturnType,
-                property.GetterImposterBuilderInterface.ThrowsMethod.Name
-            )
+            new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
                 .WithTypeParameters(
-                    TypeParameterList(SingletonSeparatedList(TypeParameter("TException")))
+                    TypeParameterList(
+                        SingletonSeparatedList(TypeParameter(throws.GenericTypeParameterName))
+                    )
                 )
                 .AddConstraintClause(
-                    TypeParameterConstraintClause("TException")
+                    TypeParameterConstraintClause(throws.GenericTypeParameterName)
                         .AddConstraints(
                             TypeConstraint(WellKnownTypes.System.Exception),
                             ConstructorConstraint()
@@ -207,6 +203,7 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 .WithSemicolon()
                 .Build(),
         ];
+    }
 
     internal static MethodDeclarationSyntax[] BuildReturnsValueMethod(
         in ImposterPropertyMetadata property

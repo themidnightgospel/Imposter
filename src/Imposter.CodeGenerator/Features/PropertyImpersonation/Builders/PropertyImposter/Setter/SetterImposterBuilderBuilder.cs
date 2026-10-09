@@ -186,7 +186,9 @@ internal static class SetterImposterBuilderBuilder
             .WithBody(
                 Block(
                     IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
-                        .Dot(IdentifierName("UseBaseImplementation"))
+                        .Dot(
+                            IdentifierName(property.SetterImposter.UseBaseImplementationMethod.Name)
+                        )
                         .Call()
                         .ToStatementSyntax(),
                     ReturnThis
