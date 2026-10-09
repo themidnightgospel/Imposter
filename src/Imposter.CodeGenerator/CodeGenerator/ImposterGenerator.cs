@@ -67,7 +67,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 .Combine(optionsProvider)
                 .Combine(context.CompilationProvider),
             static (sourceProductionContext, inputs) =>
-                ReportDiagnostics(
+                ReportDeclarationDiagnostics(
                     sourceProductionContext,
                     inputs.Left.Left,
                     inputs.Left.Right,
@@ -99,7 +99,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         );
     }
 
-    private static void ReportDiagnostics(
+    private static void ReportDeclarationDiagnostics(
         in SourceProductionContext sourceProductionContext,
         GenerateImposterDeclaration declaration,
         GeneratorOptions options,
