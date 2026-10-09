@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct MethodMetadata
 {

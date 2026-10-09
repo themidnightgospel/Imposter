@@ -46,17 +46,17 @@ internal static class GetterImposterBuilderBuilder
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "_invocationBehavior"
+                    property.GetterImposterBuilder.InvocationBehaviorField
                 )
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(WellKnownTypes.String, "_propertyDisplayName")
+                SinglePrivateReadonlyVariableField(
+                    property.GetterImposterBuilder.PropertyDisplayNameField
+                )
             )
             .AddMember(
                 SingleVariableField(
-                    WellKnownTypes.Bool,
-                    "_hasConfiguredReturn",
+                    property.GetterImposterBuilder.HasConfiguredReturnField,
                     SyntaxKind.PrivateKeyword
                 )
             )
@@ -105,6 +105,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(
                 property.GetterImposterBuilderInterface.UseBaseImplementationEntryMethod is not null
                     ? BuildUseBaseImplementationInterfaceMethod(
+                        property.GetterImposterBuilder,
                         property
                             .GetterImposterBuilderInterface
                             .UseBaseImplementationEntryMethod
@@ -115,6 +116,7 @@ internal static class GetterImposterBuilderBuilder
             .AddMember(
                 property.GetterImposterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildUseBaseImplementationInterfaceMethod(
+                        property.GetterImposterBuilder,
                         property.GetterImposterBuilderInterface.UseBaseImplementationMethod.Value
                     )
                     : null
@@ -123,7 +125,7 @@ internal static class GetterImposterBuilderBuilder
                 BuildGetMethod(property.GetterImposterBuilder, property.DefaultPropertyBehaviour)
             )
             .AddMember(BuildNextReturnValueMethod(property.GetterImposterBuilder))
-            .AddMember(BuildEnsureGetterConfiguredMethod());
+            .AddMember(BuildEnsureGetterConfiguredMethod(property.GetterImposterBuilder));
 
         return builder.Build();
     }
@@ -132,47 +134,35 @@ internal static class GetterImposterBuilderBuilder
         in ImposterPropertyMetadata property
     )
     {
-        var constructor = new ConstructorBuilder(property.GetterImposterBuilder.Name)
+        var builder = property.GetterImposterBuilder;
+        var constructor = new ConstructorBuilder(builder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(
                 ParameterSyntax(
-                    property.GetterImposterBuilder.DefaultPropertyBehaviourField.Type,
-                    property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name
+                    builder.DefaultPropertyBehaviourField.Type,
+                    builder.DefaultPropertyBehaviourField.Name
                 )
             )
-            .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    "invocationBehavior"
-                )
-            )
-            .AddParameter(ParameterSyntax(WellKnownTypes.String, "propertyDisplayName"));
+            .AddParameter(ParameterSyntax(builder.InvocationBehaviorParameter))
+            .AddParameter(ParameterSyntax(builder.PropertyDisplayNameParameter));
 
         var body = new BlockBuilder()
             .AddStatement(
                 ThisExpression()
-                    .Dot(
-                        IdentifierName(
-                            property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name
-                        )
-                    )
-                    .Assign(
-                        IdentifierName(
-                            property.GetterImposterBuilder.DefaultPropertyBehaviourField.Name
-                        )
-                    )
+                    .Dot(IdentifierName(builder.DefaultPropertyBehaviourField.Name))
+                    .Assign(IdentifierName(builder.DefaultPropertyBehaviourField.Name))
                     .ToStatementSyntax()
             )
             .AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName("_invocationBehavior"))
-                    .Assign(IdentifierName("invocationBehavior"))
+                    .Dot(IdentifierName(builder.InvocationBehaviorField.Name))
+                    .Assign(IdentifierName(builder.InvocationBehaviorParameter.Name))
                     .ToStatementSyntax()
             )
             .AddStatement(
                 ThisExpression()
-                    .Dot(IdentifierName("_propertyDisplayName"))
-                    .Assign(IdentifierName("propertyDisplayName"))
+                    .Dot(IdentifierName(builder.PropertyDisplayNameField.Name))
+                    .Assign(IdentifierName(builder.PropertyDisplayNameParameter.Name))
                     .ToStatementSyntax()
             );
 
@@ -247,7 +237,9 @@ internal static class GetterImposterBuilderBuilder
                             )
                         )
                         .ToStatementSyntax(),
-                    IdentifierName("_hasConfiguredReturn").Assign(True).ToStatementSyntax()
+                    IdentifierName(getterImposterBuilder.HasConfiguredReturnField.Name)
+                        .Assign(True)
+                        .ToStatementSyntax()
                 )
             )
             .Build();
@@ -468,13 +460,16 @@ internal static class GetterImposterBuilderBuilder
     }
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationInterfaceMethod(
+        in PropertyGetterImposterBuilderMetadata builder,
         GetterUseBaseImplementationMethodMetadata methodMetadata
     ) =>
         new MethodDeclarationBuilder(methodMetadata.ReturnType, methodMetadata.Name)
             .WithExplicitInterfaceSpecifier(methodMetadata.InterfaceSyntax)
             .WithBody(
                 Block(
-                    IdentifierName("EnableBaseImplementation").Call().ToStatementSyntax(),
+                    IdentifierName(builder.EnableBaseImplementationMethod.Name)
+                        .Call()
+                        .ToStatementSyntax(),
                     ReturnThis
                 )
             )
@@ -483,7 +478,10 @@ internal static class GetterImposterBuilderBuilder
     private static MethodDeclarationSyntax BuildEnableBaseImplementationMethod(
         in ImposterPropertyMetadata property
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "EnableBaseImplementation")
+        new MethodDeclarationBuilder(
+            property.GetterImposterBuilder.EnableBaseImplementationMethod.ReturnType,
+            property.GetterImposterBuilder.EnableBaseImplementationMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
@@ -498,14 +496,18 @@ internal static class GetterImposterBuilderBuilder
         in ImposterPropertyMetadata property
     )
     {
-        const string BaseImplementationParameterName = "baseImplementation";
-
+        var baseImplementation = property
+            .GetterImposterBuilder
+            .GetMethod
+            .BaseImplementationParameter;
         var baseImplementationParameter = ParameterSyntax(
-            property.Core.AsSystemFuncType.ToNullableType(),
-            BaseImplementationParameterName
+            baseImplementation.Type,
+            baseImplementation.Name
         );
-        var baseImplementationIdentifier = IdentifierName(BaseImplementationParameterName);
-        var messageExpression = IdentifierName("_propertyDisplayName")
+        var baseImplementationIdentifier = IdentifierName(baseImplementation.Name);
+        var messageExpression = IdentifierName(
+                property.GetterImposterBuilder.PropertyDisplayNameField.Name
+            )
             .Add(" (getter)".StringLiteral());
 
         return ParenthesizedLambdaExpression()
@@ -548,7 +550,7 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builder.GetMethod.BaseImplementationParameter))
             .WithBody(
                 Block(
-                    IdentifierName("EnsureGetterConfigured").Call().ToStatementSyntax(),
+                    IdentifierName(builder.EnsureConfiguredMethod.Name).Call().ToStatementSyntax(),
                     TrackGetterInvocation(builder),
                     InvokeGetterCallbacks(builder),
                     IfAutoPropertyBehaviourReturnBackingField(
@@ -661,19 +663,24 @@ internal static class GetterImposterBuilderBuilder
             )
             .Build();
 
-    private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod()
+    private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
+        in PropertyGetterImposterBuilderMetadata builder
+    )
     {
         var condition = BinaryExpression(
                 SyntaxKind.EqualsExpression,
-                IdentifierName("_invocationBehavior"),
+                IdentifierName(builder.InvocationBehaviorField.Name),
                 QualifiedName(
                     WellKnownTypes.Imposter.Abstractions.ImposterMode,
                     IdentifierName("Explicit")
                 )
             )
-            .And(Not(IdentifierName("_hasConfiguredReturn")));
+            .And(Not(IdentifierName(builder.HasConfiguredReturnField.Name)));
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "EnsureGetterConfigured")
+        return new MethodDeclarationBuilder(
+            builder.EnsureConfiguredMethod.ReturnType,
+            builder.EnsureConfiguredMethod.Name
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(
@@ -685,7 +692,7 @@ internal static class GetterImposterBuilderBuilder
                                 )
                                 .WithArgumentList(
                                     Argument(
-                                            IdentifierName("_propertyDisplayName")
+                                            IdentifierName(builder.PropertyDisplayNameField.Name)
                                                 .Add(" (getter)".StringLiteral())
                                         )
                                         .AsSingleArgumentListSyntax()
