@@ -179,15 +179,11 @@ internal static partial class IndexerGetterBuilder
     ) =>
         new MethodDeclarationBuilder(throws.ReturnType, throws.Name)
             .WithExplicitInterfaceSpecifier(throws.InterfaceSyntax)
-            .WithTypeParameters(
-                TypeParameterList(
-                    SingletonSeparatedList(TypeParameter(throws.GenericTypeParameterName))
-                )
-            )
+            .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
             .WithBody(
                 AddReturnValueAndReturnThis(
                     indexer.GetterImplementation,
-                    ThrowExpression(IdentifierName(throws.GenericTypeParameterName).New())
+                    ThrowExpression(IdentifierName(throws.ExceptionTypeParameter.Name).New())
                 )
             )
             .Build();

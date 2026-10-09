@@ -342,11 +342,7 @@ internal static class GetterImposterBuilderBuilder
                 builderInterface.ThrowsMethod.Name
             )
                 .WithTypeParameters(
-                    TypeParameterList(
-                        SingletonSeparatedList(
-                            TypeParameter(builderInterface.ThrowsMethod.GenericTypeParameterName)
-                        )
-                    )
+                    builderInterface.ThrowsMethod.ExceptionTypeParameter.TypeParameterList
                 )
                 .WithExplicitInterfaceSpecifier(builderInterface.ThrowsMethod.InterfaceSyntax)
                 .WithBody(
@@ -359,7 +355,8 @@ internal static class GetterImposterBuilderBuilder
                                             IdentifierName(
                                                     builderInterface
                                                         .ThrowsMethod
-                                                        .GenericTypeParameterName
+                                                        .ExceptionTypeParameter
+                                                        .Name
                                                 )
                                                 .New()
                                         )

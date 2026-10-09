@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -7,7 +8,9 @@ internal readonly struct ThrowsMethodMetadata
 {
     internal readonly string Name = "Throws";
 
-    internal readonly string GenericTypeParameterName = "TException";
+    internal readonly ExceptionTypeParameterMetadata ExceptionTypeParameter = new(
+        ExceptionTypeParameterMetadata.PreferredName
+    );
 
     internal readonly TypeSyntax ReturnType;
 
