@@ -1251,7 +1251,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface IValueChangedEventImposterSetupBuilder
 		{
 			IValueChangedEventImposterSetupBuilder Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback);
-			IValueChangedEventImposterSetupBuilder Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
+			IValueChangedEventImposterSetupBuilder Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
 			IValueChangedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 			IValueChangedEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 		}
@@ -1261,7 +1261,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			IValueChangedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
 			IValueChangedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
-			IValueChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
+			IValueChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
 			IValueChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -1274,8 +1274,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.OpenGenericImposter.OpenGenericClass<T>.ValueChanged";
 			internal ValueChangedEventImposterBuilder()
@@ -1367,7 +1367,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IValueChangedEventImposterSetupBuilder IValueChangedEventImposterSetupBuilder.Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			IValueChangedEventImposterSetupBuilder IValueChangedEventImposterSetupBuilder.Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -1453,7 +1453,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IValueChangedEventImposterVerificationBuilder IValueChangedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
+			IValueChangedEventImposterVerificationBuilder IValueChangedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -1516,7 +1516,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			private void RaiseInternal(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)

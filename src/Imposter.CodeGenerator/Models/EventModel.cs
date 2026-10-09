@@ -9,11 +9,13 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// An event the imposter implements or overrides, with the parameters and return type of its delegate.
 /// <see cref="OverrideAccessibility"/> is the accessibility an override in the imposter's assembly must declare.
+/// <see cref="HandlerType"/> is the type of a subscribed handler: the event's type without its own nullable annotation.
 /// </summary>
 internal sealed record EventModel(
     string Name,
     string DisplayName,
     TypeModel Type,
+    TypeModel HandlerType,
     TypeModel ContainingType,
     bool IsClassMember,
     Accessibility OverrideAccessibility,
@@ -37,6 +39,7 @@ internal sealed record EventModel(
             @event.Name,
             $"{@event.ContainingType.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}.{@event.Name}",
             TypeModel.From(@event.Type),
+            TypeModel.From(@event.Type.WithNullableAnnotation(NullableAnnotation.NotAnnotated)),
             TypeModel.From(@event.ContainingType),
             @event.ContainingType.TypeKind == TypeKind.Class,
             memberAccess.GetOverrideAccessibility(@event),

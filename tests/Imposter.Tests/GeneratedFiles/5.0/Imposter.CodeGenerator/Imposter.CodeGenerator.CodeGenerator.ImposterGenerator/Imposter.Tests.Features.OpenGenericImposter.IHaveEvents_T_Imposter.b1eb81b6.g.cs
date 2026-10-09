@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface IDiagnosticPayloadPublishedEventImposterSetupBuilder
 		{
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback);
-			IDiagnosticPayloadPublishedEventImposterSetupBuilder Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
+			IDiagnosticPayloadPublishedEventImposterSetupBuilder Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 		}
@@ -43,7 +43,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
-			IDiagnosticPayloadPublishedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
+			IDiagnosticPayloadPublishedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
 			IDiagnosticPayloadPublishedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -56,8 +56,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
 			internal DiagnosticPayloadPublishedEventImposterBuilder()
 			{
 			}
@@ -127,7 +127,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -213,7 +213,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
+			IDiagnosticPayloadPublishedEventImposterVerificationBuilder IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -276,7 +276,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			private void RaiseInternal(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)
@@ -329,7 +329,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface ILegacyPayloadAvailableEventImposterSetupBuilder
 		{
 			ILegacyPayloadAvailableEventImposterSetupBuilder Callback(global::System.EventHandler callback);
-			ILegacyPayloadAvailableEventImposterSetupBuilder Raise(object sender, global::System.EventArgs e);
+			ILegacyPayloadAvailableEventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			ILegacyPayloadAvailableEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
 			ILegacyPayloadAvailableEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor);
 		}
@@ -339,7 +339,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			ILegacyPayloadAvailableEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			ILegacyPayloadAvailableEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
-			ILegacyPayloadAvailableEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+			ILegacyPayloadAvailableEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
 			ILegacyPayloadAvailableEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -352,8 +352,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>();
 			internal LegacyPayloadAvailableEventImposterBuilder()
 			{
 			}
@@ -423,7 +423,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.Raise(object sender, global::System.EventArgs e)
+			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.Raise(object? sender, global::System.EventArgs e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -509,7 +509,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
+			ILegacyPayloadAvailableEventImposterVerificationBuilder ILegacyPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -572,7 +572,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::System.EventArgs e)
+			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)
@@ -625,7 +625,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface IPayloadAvailableEventImposterSetupBuilder
 		{
 			IPayloadAvailableEventImposterSetupBuilder Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback);
-			IPayloadAvailableEventImposterSetupBuilder Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
+			IPayloadAvailableEventImposterSetupBuilder Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
 			IPayloadAvailableEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 			IPayloadAvailableEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
 		}
@@ -635,7 +635,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			IPayloadAvailableEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
 			IPayloadAvailableEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> criteria, global::Imposter.Abstractions.Count count);
-			IPayloadAvailableEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
+			IPayloadAvailableEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count);
 			IPayloadAvailableEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -648,8 +648,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>();
 			internal PayloadAvailableEventImposterBuilder()
 			{
 			}
@@ -719,7 +719,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.Raise(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -805,7 +805,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
+			IPayloadAvailableEventImposterVerificationBuilder IPayloadAvailableEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -868,7 +868,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
+			private void RaiseInternal(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)

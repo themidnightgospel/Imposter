@@ -52,7 +52,7 @@ namespace Imposter.Tests.Features.EventImpersonation
             await Task.WhenAll(tasks);
 
             _sut.SomethingHappened.Raised(
-                Arg<object>.Any(),
+                Arg<object?>.Any(),
                 Arg<EventArgs>.Any(),
                 Count.Exactly(raises)
             );
@@ -144,7 +144,7 @@ namespace Imposter.Tests.Features.EventImpersonation
             await Task.WhenAll(tasks);
 
             _sut.AsyncSomethingHappened.Raised(
-                Arg<object>.Any(),
+                Arg<object?>.Any(),
                 Arg<EventArgs>.Any(),
                 Count.Exactly(raises)
             );

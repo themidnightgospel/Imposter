@@ -34,7 +34,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public interface ICustomAsyncEventEventImposterSetupBuilder
 		{
 			ICustomAsyncEventEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> callback);
-			global::System.Threading.Tasks.Task<ICustomAsyncEventEventImposterSetupBuilder> RaiseAsync(object sender, global::System.EventArgs args);
+			global::System.Threading.Tasks.Task<ICustomAsyncEventEventImposterSetupBuilder> RaiseAsync(object? sender, global::System.EventArgs args);
 			ICustomAsyncEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor);
 			ICustomAsyncEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor);
 		}
@@ -44,7 +44,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			ICustomAsyncEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
 			ICustomAsyncEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
-			ICustomAsyncEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count);
+			ICustomAsyncEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count);
 			ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -57,8 +57,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs args)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs args)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object sender, global::System.EventArgs args)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs args)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs args)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>();
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
 			internal CustomAsyncEventEventImposterBuilder()
@@ -150,7 +150,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			async global::System.Threading.Tasks.Task<ICustomAsyncEventEventImposterSetupBuilder> ICustomAsyncEventEventImposterSetupBuilder.RaiseAsync(object sender, global::System.EventArgs args)
+			async global::System.Threading.Tasks.Task<ICustomAsyncEventEventImposterSetupBuilder> ICustomAsyncEventEventImposterSetupBuilder.RaiseAsync(object? sender, global::System.EventArgs args)
 			{
 				await RaiseCoreAsync(sender, args).ConfigureAwait(false);
 				return this;
@@ -236,7 +236,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count)
+			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -299,7 +299,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object sender, global::System.EventArgs args)
+			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object? sender, global::System.EventArgs args)
 			{
 				_history.Enqueue((sender, args));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
@@ -378,39 +378,39 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITaskBasedEventEventImposterSetupBuilder
 		{
-			ITaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> callback);
-			global::System.Threading.Tasks.Task<ITaskBasedEventEventImposterSetupBuilder> RaiseAsync(object arg1, global::System.EventArgs arg2);
-			ITaskBasedEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
-			ITaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
+			ITaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> callback);
+			global::System.Threading.Tasks.Task<ITaskBasedEventEventImposterSetupBuilder> RaiseAsync(object? arg1, global::System.EventArgs arg2);
+			ITaskBasedEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
+			ITaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITaskBasedEventEventImposterVerificationBuilder
 		{
-			ITaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
-			ITaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
-			ITaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
-			ITaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
+			ITaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
+			ITaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
+			ITaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
+			ITaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterBuilder, ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
 		{
-			private global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>? _activeHandlers;
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object arg1, global::System.EventArgs arg2)>();
+			private global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>? _activeHandlers;
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? arg1, global::System.EventArgs arg2)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>();
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.TaskBasedEvent";
 			internal TaskBasedEventEventImposterBuilder()
 			{
 			}
 
-			internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, global::System.Action? baseImplementation = null)
+			internal void Subscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, global::System.Action? baseImplementation = null)
 			{
 				if (handler is null)
 				{
@@ -420,7 +420,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				var handlers = _activeHandlers;
 				while (true)
 				{
-					var updated = (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>?)global::System.Delegate.Combine(handlers, handler);
+					var updated = (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>?)global::System.Delegate.Combine(handlers, handler);
 					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
 					if (object.ReferenceEquals(observed, handlers))
 					{
@@ -447,7 +447,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, global::System.Action? baseImplementation = null)
+			internal void Unsubscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> handler, global::System.Action? baseImplementation = null)
 			{
 				if (handler is null)
 				{
@@ -457,7 +457,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				var handlers = _activeHandlers;
 				while (true)
 				{
-					var updated = (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>?)global::System.Delegate.Remove(handlers, handler);
+					var updated = (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>?)global::System.Delegate.Remove(handlers, handler);
 					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
 					if (object.ReferenceEquals(observed, handlers))
 					{
@@ -484,7 +484,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task> callback)
+			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> callback)
 			{
 				if (callback is null)
 				{
@@ -495,13 +495,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			async global::System.Threading.Tasks.Task<ITaskBasedEventEventImposterSetupBuilder> ITaskBasedEventEventImposterSetupBuilder.RaiseAsync(object arg1, global::System.EventArgs arg2)
+			async global::System.Threading.Tasks.Task<ITaskBasedEventEventImposterSetupBuilder> ITaskBasedEventEventImposterSetupBuilder.RaiseAsync(object? arg1, global::System.EventArgs arg2)
 			{
 				await RaiseCoreAsync(arg1, arg2).ConfigureAwait(false);
 				return this;
 			}
 
-			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (criteria is null)
 				{
@@ -530,7 +530,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (criteria is null)
 				{
@@ -559,7 +559,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
+			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
 			{
 				if (interceptor is null)
 				{
@@ -570,7 +570,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
+			ITaskBasedEventEventImposterSetupBuilder ITaskBasedEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor)
 			{
 				if (interceptor is null)
 				{
@@ -581,7 +581,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (arg1Criteria is null)
 				{
@@ -615,7 +615,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count)
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (handlerCriteria is null)
 				{
@@ -644,7 +644,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object arg1, global::System.EventArgs arg2)
+			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object? arg1, global::System.EventArgs arg2)
 			{
 				_history.Enqueue((arg1, arg2));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
@@ -679,14 +679,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			private global::System.Collections.Generic.IEnumerable<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>> EnumerateActiveHandlers()
+			private global::System.Collections.Generic.IEnumerable<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> EnumerateActiveHandlers()
 			{
 				var handlers = _activeHandlers;
 				if (handlers != null)
 				{
 					foreach (var handler in handlers.GetInvocationList())
 					{
-						yield return (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.Task>)handler;
+						yield return (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>)handler;
 					}
 				}
 			}
@@ -723,39 +723,39 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskBasedEventEventImposterSetupBuilder
 		{
-			IValueTaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback);
-			global::System.Threading.Tasks.Task<IValueTaskBasedEventEventImposterSetupBuilder> RaiseAsync(object arg1, global::System.EventArgs arg2);
-			IValueTaskBasedEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
-			IValueTaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
+			IValueTaskBasedEventEventImposterSetupBuilder Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback);
+			global::System.Threading.Tasks.Task<IValueTaskBasedEventEventImposterSetupBuilder> RaiseAsync(object? arg1, global::System.EventArgs arg2);
+			IValueTaskBasedEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
+			IValueTaskBasedEventEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskBasedEventEventImposterVerificationBuilder
 		{
-			IValueTaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
-			IValueTaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
-			IValueTaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
-			IValueTaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
+			IValueTaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
+			IValueTaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
+			IValueTaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
+			IValueTaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterBuilder, IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
 		{
-			private global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>? _activeHandlers;
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object arg1, global::System.EventArgs arg2)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object arg1, global::System.EventArgs arg2)>();
+			private global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>? _activeHandlers;
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? arg1, global::System.EventArgs arg2)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? arg1, global::System.EventArgs arg2)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>();
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
 			internal ValueTaskBasedEventEventImposterBuilder()
 			{
 			}
 
-			internal void Subscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, global::System.Action? baseImplementation = null)
+			internal void Subscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, global::System.Action? baseImplementation = null)
 			{
 				if (handler is null)
 				{
@@ -765,7 +765,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				var handlers = _activeHandlers;
 				while (true)
 				{
-					var updated = (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>?)global::System.Delegate.Combine(handlers, handler);
+					var updated = (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>?)global::System.Delegate.Combine(handlers, handler);
 					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
 					if (object.ReferenceEquals(observed, handlers))
 					{
@@ -792,7 +792,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			internal void Unsubscribe(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, global::System.Action? baseImplementation = null)
+			internal void Unsubscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler, global::System.Action? baseImplementation = null)
 			{
 				if (handler is null)
 				{
@@ -802,7 +802,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				var handlers = _activeHandlers;
 				while (true)
 				{
-					var updated = (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>?)global::System.Delegate.Remove(handlers, handler);
+					var updated = (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>?)global::System.Delegate.Remove(handlers, handler);
 					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
 					if (object.ReferenceEquals(observed, handlers))
 					{
@@ -829,7 +829,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.Callback(global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback)
+			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback)
 			{
 				if (callback is null)
 				{
@@ -840,13 +840,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			async global::System.Threading.Tasks.Task<IValueTaskBasedEventEventImposterSetupBuilder> IValueTaskBasedEventEventImposterSetupBuilder.RaiseAsync(object arg1, global::System.EventArgs arg2)
+			async global::System.Threading.Tasks.Task<IValueTaskBasedEventEventImposterSetupBuilder> IValueTaskBasedEventEventImposterSetupBuilder.RaiseAsync(object? arg1, global::System.EventArgs arg2)
 			{
 				await RaiseCoreAsync(arg1, arg2).ConfigureAwait(false);
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (criteria is null)
 				{
@@ -875,7 +875,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (criteria is null)
 				{
@@ -904,7 +904,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
+			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
 			{
 				if (interceptor is null)
 				{
@@ -915,7 +915,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
+			IValueTaskBasedEventEventImposterSetupBuilder IValueTaskBasedEventEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor)
 			{
 				if (interceptor is null)
 				{
@@ -926,7 +926,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count)
 			{
 				if (arg1Criteria is null)
 				{
@@ -960,7 +960,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count)
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (handlerCriteria is null)
 				{
@@ -989,7 +989,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return this;
 			}
 
-			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object arg1, global::System.EventArgs arg2)
+			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object? arg1, global::System.EventArgs arg2)
 			{
 				_history.Enqueue((arg1, arg2));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
@@ -1024,14 +1024,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			private global::System.Collections.Generic.IEnumerable<global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> EnumerateActiveHandlers()
+			private global::System.Collections.Generic.IEnumerable<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> EnumerateActiveHandlers()
 			{
 				var handlers = _activeHandlers;
 				if (handlers != null)
 				{
 					foreach (var handler in handlers.GetInvocationList())
 					{
-						yield return (global::System.Func<object, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>)handler;
+						yield return (global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>)handler;
 					}
 				}
 			}

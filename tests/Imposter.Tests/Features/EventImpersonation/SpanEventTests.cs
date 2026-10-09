@@ -58,7 +58,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
             buffer[0] = 9;
 
-            _sut.BufferFilled.Raised(Arg<object>.Is(this), SpanArg<byte>.Is(1, 2), Count.Once());
+            _sut.BufferFilled.Raised(Arg<object?>.Is(this), SpanArg<byte>.Is(1, 2), Count.Once());
         }
 
         [Fact]
