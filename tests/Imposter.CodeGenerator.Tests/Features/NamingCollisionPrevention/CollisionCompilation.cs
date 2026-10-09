@@ -35,7 +35,6 @@ internal static class CollisionCompilation
                 /*lang=csharp*/
                 $$"""
                 using Imposter.Abstractions;
-                using Sample;
 
                 public static class Usage
                 {
