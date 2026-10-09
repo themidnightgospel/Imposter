@@ -21,6 +21,24 @@ internal static class MissingImposterBuilder
             WellKnownTypes.Imposter.Abstractions.ImposterMode.Dot(IdentifierName("Explicit"))
         );
 
+    // When the imposter is set up to use the base implementation, it calls it, or throws when there's none to call.
+    internal static IfStatementSyntax CallBaseImplementationIfUsed(
+        ExpressionSyntax useBaseImplementation,
+        ExpressionSyntax baseImplementation,
+        BlockSyntax callBaseImplementation,
+        ThrowStatementSyntax throwMissingImposter
+    ) =>
+        IfStatement(
+            useBaseImplementation,
+            Block(
+                IfStatement(
+                    baseImplementation.IsNotNull(),
+                    callBaseImplementation,
+                    ElseClause(throwMissingImposter)
+                )
+            )
+        );
+
     // Names the member by its display name, read from a field, followed by a suffix such as " (getter)" or " (event)".
     internal static ThrowStatementSyntax ThrowMissingImposter(
         string displayNameFieldName,
