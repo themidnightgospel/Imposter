@@ -214,7 +214,7 @@ internal static partial class IndexerGetterBuilder
                 .Call(
                     ArgumentListSyntax([
                         Argument(arguments),
-                        Argument(IdentifierName(getter.BaseImplementationParameterName)),
+                        Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                     ])
                 )
         );
@@ -224,13 +224,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
             )
-            .AddParameter(
-                ParameterSyntax(
-                        indexer.Core.AsSystemFuncType.ToNullableType(),
-                        getter.BaseImplementationParameterName
-                    )
-                    .WithDefault(EqualsValueClause(Null))
-            )
+            .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
             .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
             .Build();
     }
@@ -293,7 +287,7 @@ internal static partial class IndexerGetterBuilder
                     .Call(
                         ArgumentListSyntax([
                             Argument(IdentifierName(getter.ArgumentsVariableName)),
-                            Argument(IdentifierName(getter.BaseImplementationParameterName)),
+                            Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                         ])
                     )
             );
@@ -351,7 +345,7 @@ internal static partial class IndexerGetterBuilder
         in IndexerGetterImposterMetadata getter
     )
     {
-        var baseImplementation = IdentifierName(getter.BaseImplementationParameterName);
+        var baseImplementation = IdentifierName(getter.BaseImplementationParameter.Name);
 
         return ReturnHandler(getter)
             .WithBlock(
@@ -382,7 +376,7 @@ internal static partial class IndexerGetterBuilder
                         {
                             Parameter(Identifier(getter.ArgumentsVariableName)),
                             Token(SyntaxKind.CommaToken),
-                            Parameter(Identifier(getter.BaseImplementationParameterName)),
+                            Parameter(Identifier(getter.BaseImplementationParameter.Name)),
                         }
                     )
                 )
