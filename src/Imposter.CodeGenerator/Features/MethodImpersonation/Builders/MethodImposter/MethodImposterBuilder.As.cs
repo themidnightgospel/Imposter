@@ -93,16 +93,12 @@ internal static partial class MethodImposterBuilder
                 )
                 : Block(returnAdapter);
 
-        var asMethodTypeParams = method.TargetGenericTypeParameterListSyntax;
-
-        var genericImposterInterfaceWithTargets = GenericName(method.MethodImposter.Interface.Name)
-            .WithTypeArgumentList(
-                TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
-            );
-
-        return new MethodDeclarationBuilder(NullableType(genericImposterInterfaceWithTargets), "As")
+        return new MethodDeclarationBuilder(
+            NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
+            "As"
+        )
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
-            .WithTypeParameters(asMethodTypeParams)
+            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .WithBody(body)
             .Build();
     }

@@ -23,15 +23,12 @@ internal static class MethodImposterAdapterBuilder
         }
         var adapterNames = new AdapterNames(method);
         var adapterBaseType = SimpleBaseType(
-            GenericName(method.MethodImposter.Interface.Name)
-                .WithTypeArgumentList(
-                    TypeArgumentList(SeparatedList<TypeSyntax>(method.TargetGenericTypeArguments))
-                )
+            method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments
         );
 
         var adapterClass = new ClassDeclarationBuilder(
             "Adapter",
-            TypeParameterListSyntax(method.TargetGenericTypeArguments)
+            method.TargetGenericTypeParameterListSyntax
         )
             .WithTypeParameterConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
