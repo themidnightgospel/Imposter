@@ -9,9 +9,13 @@ namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
 internal static class ImposterTypeCollisions
 {
+    internal static IEnumerable<GenerateImposterDeclaration> Mark(
+        IReadOnlyList<GenerateImposterDeclaration> declarations
+    ) => NameExtensionClassesApart(MarkSameImposterTypes(declarations).ToArray());
+
     // Same-named types nested in different classes, for example, would get imposters of the same type in the same
     // namespace. Each such declaration reports IMP007, naming another target of its group, and is not generated.
-    internal static IEnumerable<GenerateImposterDeclaration> Mark(
+    private static IEnumerable<GenerateImposterDeclaration> MarkSameImposterTypes(
         IReadOnlyList<GenerateImposterDeclaration> declarations
     )
     {
@@ -52,6 +56,35 @@ internal static class ImposterTypeCollisions
         );
     }
 
+    // A target's Imposter() extensions go into a non-generic static class named after it, so same-named targets of
+    // different arity in one namespace, such as IFoo and IFoo<T>, would declare the same class. The generic ones add
+    // their arity to its name.
+    private static IEnumerable<GenerateImposterDeclaration> NameExtensionClassesApart(
+        IReadOnlyList<GenerateImposterDeclaration> declarations
+    )
+    {
+        var imposterTypeNamesWithArity = new HashSet<string>(
+            declarations
+                .Where(it => it.Target is not null)
+                .Select(it => it.ImposterTypeName)
+                .Distinct()
+                .GroupBy(name => name.Split(ArityMark)[0])
+                .Where(group => group.Count() > 1)
+                .SelectMany(group => group.Where(name => name.IndexOf(ArityMark) >= 0))
+        );
+
+        return declarations.Select(declaration =>
+            imposterTypeNamesWithArity.Contains(declaration.ImposterTypeName)
+                ? declaration with
+                {
+                    ExtensionClassNameIncludesArity = true,
+                }
+                : declaration
+        );
+    }
+
+    private const char ArityMark = '`';
+
     // The imposter's namespace-qualified name with its arity, e.g. Sample.IRepositoryImposter`1: imposters with
     // differently named type parameters are still the same type.
     internal static string GetImposterTypeName(
@@ -60,7 +93,11 @@ internal static class ImposterTypeCollisions
     )
     {
         var arity = target.Arity;
-        return QualifiedImposterName(target, imposterNamespaceName, arity > 0 ? $"`{arity}" : "");
+        return QualifiedImposterName(
+            target,
+            imposterNamespaceName,
+            arity > 0 ? $"{ArityMark}{arity}" : ""
+        );
     }
 
     // The imposter type as C# writes it, e.g. Sample.IRepositoryImposter<T>.
