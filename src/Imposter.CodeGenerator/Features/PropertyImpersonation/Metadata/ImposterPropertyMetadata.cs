@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBui
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -38,14 +39,13 @@ internal readonly ref struct ImposterPropertyMetadata
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
     public ImposterPropertyMetadata(
-        IPropertySymbol property,
+        PropertyModel property,
         string uniqueName,
         NameSet memberNameSet,
-        MemberAccess memberAccess,
         bool requiresExplicitInterfaceImplementation
     )
     {
-        Core = new ImposterPropertyCoreMetadata(property, uniqueName, memberAccess);
+        Core = new ImposterPropertyCoreMetadata(property, uniqueName);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
         var defaultPropertyBehaviourField = new FieldMetadata(
@@ -77,7 +77,7 @@ internal readonly ref struct ImposterPropertyMetadata
         );
 
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
-        if (requiresExplicitInterfaceImplementation && property.ContainingType is not null)
+        if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = ExplicitInterfaceSpecifier(
                 (NameSyntax)SyntaxFactoryHelper.TypeSyntax(property.ContainingType)
@@ -87,7 +87,7 @@ internal readonly ref struct ImposterPropertyMetadata
         else
         {
             ExplicitInterfaceSpecifier = null;
-            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property, memberAccess);
+            ImposterInstanceModifiers = ImposterInstanceModifierBuilder.For(property);
         }
     }
 }

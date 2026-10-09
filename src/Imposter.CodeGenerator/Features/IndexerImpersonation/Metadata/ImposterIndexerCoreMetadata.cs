@@ -38,57 +38,28 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly SyntaxTokenList SetterModifiers;
 
-    internal ImposterIndexerCoreMetadata(
-        IPropertySymbol property,
-        string uniqueName,
-        MemberAccess memberAccess
-    )
+    internal ImposterIndexerCoreMetadata(PropertyModel indexer, string uniqueName)
     {
-        var getter = memberAccess.AccessibleOrNull(property.GetMethod);
-        var setter = memberAccess.AccessibleOrNull(property.SetMethod);
         UniqueName = uniqueName;
-        HasGetter = getter is not null;
-        HasSetter = setter is not null;
-        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
-            getter,
-            property,
-            memberAccess
-        );
-        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(
-            setter,
-            property,
-            memberAccess
-        );
-        NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
+        HasGetter = indexer.Getter is not null;
+        HasSetter = indexer.Setter is not null;
+        GetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(indexer.Getter, indexer);
+        SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(indexer.Setter, indexer);
+        NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(indexer.Type);
         AsSystemFuncType = WellKnownTypes.System.FuncOfT(NullableAwareTypeSyntax);
         AsSystemActionType = WellKnownTypes.System.Action;
-        Parameters = property
-            .Parameters.Select(parameter => new IndexerParameterMetadata(
-                ParameterModel.From(parameter)
-            ))
+        Parameters = indexer
+            .Parameters.Select(parameter => new IndexerParameterMetadata(parameter))
             .ToArray();
         ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
         ParameterArguments = Parameters
             .Select(parameter => parameter.ForwardingArgument(parameter.Name))
             .ToArray();
-        var containingType = property.ContainingType;
-        var containingTypeIsClass = containingType?.TypeKind == TypeKind.Class;
-        GetterSupportsBaseImplementation = containingTypeIsClass && getter is { IsAbstract: false };
-        SetterSupportsBaseImplementation = containingTypeIsClass && setter is { IsAbstract: false };
-
-        var parametersDisplay = string.Join(
-            ", ",
-            property.Parameters.Select(parameter =>
-                parameter.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
-            )
-        );
-        var containingTypeDisplay =
-            containingType?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)
-            ?? property.ContainingSymbol?.ToDisplayString(
-                SymbolDisplayFormat.CSharpErrorMessageFormat
-            )
-            ?? property.Name;
-        DisplayName = $"{containingTypeDisplay}.this[{parametersDisplay}]";
+        GetterSupportsBaseImplementation =
+            indexer.IsClassMember && indexer.Getter is { IsAbstract: false };
+        SetterSupportsBaseImplementation =
+            indexer.IsClassMember && indexer.Setter is { IsAbstract: false };
+        DisplayName = indexer.DisplayName;
     }
 
     internal NameSet CreateParameterNameSet() =>
