@@ -29,12 +29,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
             handlerInvoked.ShouldBeTrue();
             imposter.TaskBasedEvent.Raised(
-                Arg<object>.Is(instance),
+                Arg<object?>.Is(instance),
                 Arg<EventArgs>.Any(),
                 Count.Once()
             );
             imposter.TaskBasedEvent.HandlerInvoked(
-                Arg<Func<object, EventArgs, Task>>.Is(h => h == handler),
+                Arg<Func<object?, EventArgs, Task>>.Is(h => h == handler),
                 Count.Once()
             );
         }
@@ -58,12 +58,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
             handlerInvocationCount.ShouldBe(1);
             imposter.ValueTaskBasedEvent.Raised(
-                Arg<object>.Is(instance),
+                Arg<object?>.Is(instance),
                 Arg<EventArgs>.Any(),
                 Count.Once()
             );
             imposter.ValueTaskBasedEvent.HandlerInvoked(
-                Arg<Func<object, EventArgs, ValueTask>>.Is(h => h == handler),
+                Arg<Func<object?, EventArgs, ValueTask>>.Is(h => h == handler),
                 Count.Once()
             );
         }
@@ -87,7 +87,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
             callbackCount.ShouldBe(1);
             imposter.CustomAsyncEvent.Raised(
-                Arg<object>.Is(instance),
+                Arg<object?>.Is(instance),
                 Arg<EventArgs>.Any(),
                 Count.Once()
             );

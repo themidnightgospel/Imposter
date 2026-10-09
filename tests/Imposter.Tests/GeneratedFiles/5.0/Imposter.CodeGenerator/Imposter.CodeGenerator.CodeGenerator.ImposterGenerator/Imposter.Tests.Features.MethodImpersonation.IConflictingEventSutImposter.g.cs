@@ -319,7 +319,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IChanged_1EventImposterSetupBuilder
 		{
 			IChanged_1EventImposterSetupBuilder Callback(global::System.EventHandler callback);
-			IChanged_1EventImposterSetupBuilder Raise(object sender, global::System.EventArgs e);
+			IChanged_1EventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			IChanged_1EventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
 			IChanged_1EventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::System.EventHandler> interceptor);
 		}
@@ -329,7 +329,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			IChanged_1EventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			IChanged_1EventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
-			IChanged_1EventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
+			IChanged_1EventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
 			IChanged_1EventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
 		}
 
@@ -342,8 +342,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::System.EventHandler>>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.EventHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object sender, global::System.EventArgs e)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, global::System.EventArgs e)>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>();
 			internal Changed_1EventImposterBuilder()
 			{
 			}
@@ -413,7 +413,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return this;
 			}
 
-			IChanged_1EventImposterSetupBuilder IChanged_1EventImposterSetupBuilder.Raise(object sender, global::System.EventArgs e)
+			IChanged_1EventImposterSetupBuilder IChanged_1EventImposterSetupBuilder.Raise(object? sender, global::System.EventArgs e)
 			{
 				RaiseInternal(sender, e);
 				return this;
@@ -499,7 +499,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return this;
 			}
 
-			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count)
 			{
 				if (senderCriteria is null)
 				{
@@ -562,7 +562,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return this;
 			}
 
-			private void RaiseInternal(object sender, global::System.EventArgs e)
+			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				_history.Enqueue((sender, e));
 				foreach (var callback in _callbacks)

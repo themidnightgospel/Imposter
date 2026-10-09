@@ -25,7 +25,7 @@ namespace Imposter.Tests.Features.EventImpersonation
             );
 
             // Raised and invocation are recorded before throwing
-            _sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), Count.Once());
+            _sut.SomethingHappened.Raised(Arg<object?>.Any(), Arg<EventArgs>.Any(), Count.Once());
             _sut.SomethingHappened.HandlerInvoked(Arg<EventHandler>.Is(h), Count.Once());
         }
     }

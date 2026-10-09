@@ -43,7 +43,7 @@ namespace Imposter.Tests.Features.EventImpersonation
                 .Raise(this, EventArgs.Empty);
 
             _sut.SomethingHappened.Raised(
-                Arg<object>.Any(),
+                Arg<object?>.Any(),
                 Arg<EventArgs>.Any(),
                 Count.AtLeast(3)
             );
@@ -56,7 +56,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
             Should.Throw<VerificationFailedException>(() =>
                 _sut.SomethingHappened.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<EventArgs>.Any(),
                     Count.Exactly(2)
                 )

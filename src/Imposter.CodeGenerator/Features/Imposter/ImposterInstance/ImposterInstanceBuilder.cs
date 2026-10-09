@@ -338,7 +338,7 @@ internal readonly ref struct ImposterInstanceBuilder
             isSubscribe: false
         );
         var eventDeclaration = EventDeclaration(
-                @event.Core.NullableAwareHandlerTypeSyntax,
+                @event.Core.DeclaredTypeSyntax,
                 Identifier(@event.Core.Name)
             )
             .WithModifiers(@event.ImposterInstanceModifiers)

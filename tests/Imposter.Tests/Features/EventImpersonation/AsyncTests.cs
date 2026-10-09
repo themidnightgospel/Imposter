@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.EventImpersonation
             await _sut.AsyncSomethingHappened.RaiseAsync(this, EventArgs.Empty);
 
             _sut.AsyncSomethingHappened.Raised(
-                Arg<object>.Any(),
+                Arg<object?>.Any(),
                 Arg<EventArgs>.Any(),
                 Count.Once()
             );

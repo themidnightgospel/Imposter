@@ -21,7 +21,11 @@ namespace Imposter.Tests.Features.Verification
 
             var expectedCount = Count.Exactly(3);
             var exception = Should.Throw<VerificationFailedException>(() =>
-                sut.SomethingHappened.Raised(Arg<object>.Any(), Arg<EventArgs>.Any(), expectedCount)
+                sut.SomethingHappened.Raised(
+                    Arg<object?>.Any(),
+                    Arg<EventArgs>.Any(),
+                    expectedCount
+                )
             );
 
             var entries = exception.ReadEntries();
@@ -112,7 +116,7 @@ namespace Imposter.Tests.Features.Verification
             var expectedCount = Count.AtLeast(2);
             var exception = Should.Throw<VerificationFailedException>(() =>
                 sut.AsyncSomethingHappened.Raised(
-                    Arg<object>.Any(),
+                    Arg<object?>.Any(),
                     Arg<EventArgs>.Any(),
                     expectedCount
                 )
