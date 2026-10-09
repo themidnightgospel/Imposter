@@ -62,10 +62,11 @@ internal static class IndexerArgumentsBuilder
 
     private static MethodDeclarationSyntax BuildEqualsMethod(in ImposterIndexerMetadata indexer)
     {
-        var otherIdentifier = Identifier(indexer.Arguments.OtherVariableName);
-        var otherIdentifierName = IdentifierName(otherIdentifier);
-        var otherParameter = Parameter(otherIdentifier)
-            .WithType(NullableType(indexer.Arguments.TypeSyntax));
+        var otherIdentifierName = IdentifierName(indexer.Arguments.OtherVariableName);
+        var otherParameter = ParameterSyntax(
+            NullableType(indexer.Arguments.TypeSyntax),
+            indexer.Arguments.OtherVariableName
+        );
 
         // A comparer keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and works for type
         // parameters and structs without ==.
