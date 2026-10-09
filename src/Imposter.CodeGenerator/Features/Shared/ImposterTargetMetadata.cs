@@ -63,10 +63,11 @@ internal readonly struct ImposterTargetMetadata
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
         var memberNames = _symbolNameNamespace;
         var supportsNullableGenericType = supportedCSharpFeatures.SupportsNullableGenericType;
+        var ownSetupNames = OwnSetupNames(target);
         Methods = target
             .Methods.Select(method => new ImposterTargetMethodMetadata(
                 method,
-                memberNames.Use(method.Member.Name),
+                UniqueName(method),
                 supportsNullableGenericType
             ))
             .ToList();
@@ -95,7 +96,36 @@ internal readonly struct ImposterTargetMetadata
             )
         );
         ExtensionParameterName = constructorParameterNames.Use("imposter");
+
+        // A method set up by its unique name skips the names other setups keep as their own.
+        string UniqueName(TargetMemberModel<MethodModel> method)
+        {
+            var name = memberNames.Use(method.Member.Name);
+            while (
+                ImposterTargetMethodMetadata.NeedsNumberedSetup(method)
+                && ownSetupNames.Contains(name)
+            )
+            {
+                name = memberNames.Use(method.Member.Name);
+            }
+
+            return name;
+        }
     }
+
+    // The imposter's setup members named after their target members, which no unique name may take.
+    private static HashSet<string> OwnSetupNames(ImposterTargetModel target) =>
+        [
+            .. target
+                .Methods.Where(method => !ImposterTargetMethodMetadata.NeedsNumberedSetup(method))
+                .Select(method => method.Member.Name),
+            .. target
+                .Properties.Where(property => !property.RequiresExplicitInterfaceImplementation)
+                .Select(property => property.Member.Name),
+            .. target
+                .Events.Where(@event => !@event.RequiresExplicitInterfaceImplementation)
+                .Select(@event => @event.Member.Name),
+        ];
 
     internal ImposterPropertyMetadata CreatePropertyMetadata(
         TargetMemberModel<PropertyModel> property,

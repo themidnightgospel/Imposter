@@ -95,6 +95,27 @@ public class RefKindOverloadCompilationTests
     }
 
     [Fact]
+    public async Task GivenClassOverloadsNextToAMethodNamedLikeTheNumberedSetup_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public class Service { public virtual int Count(int v) => 0; public virtual int Count(in int v) => 0; public virtual int Count_1(int v) => 0; }",
+            "var imposter = new Sample.ServiceImposter(); imposter.Count(Arg<int>.Any()).Returns(1); imposter.Count_2(Arg<int>.Any()).Returns(2); imposter.Count_1(Arg<int>.Any()).Returns(3);",
+            nameof(RefKindOverloadCompilationTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenInterfaceOverloadsNextToAMethodNamedLikeTheNumberedSetup_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Count(int v); int Count(in int v); int Count_1(int v); }",
+            "imposter.Count(Arg<int>.Any()).Returns(1); imposter.Count_2(Arg<int>.Any()).Returns(2); imposter.Count_1(Arg<int>.Any()).Returns(3); imposter.For(default(Sample.IService)).Count_2(Arg<int>.Any());",
+            nameof(RefKindOverloadCompilationTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenInterfaceOverloadsOnValueAndOut_WhenSetUpThroughTheView_ShouldKeepTheirNames()
     {
         await AssertInterfaceCompiles(
