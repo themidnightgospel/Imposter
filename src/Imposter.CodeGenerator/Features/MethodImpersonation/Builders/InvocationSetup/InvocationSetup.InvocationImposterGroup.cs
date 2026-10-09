@@ -11,10 +11,12 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Invocatio
 
 internal static partial class InvocationSetupBuilder
 {
-    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration()
+    internal static FieldDeclarationSyntax InvocationImpostersFieldDeclaration(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var invocationImposterType = IdentifierName(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         );
         var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
             invocationImposterType
@@ -27,9 +29,11 @@ internal static partial class InvocationSetupBuilder
         );
     }
 
-    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration() =>
+    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(
+        in ImposterTargetMethodMetadata method
+    ) =>
         SingleVariableField(
-            IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName)
+            IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName)
                 .ToNullableType(),
             "_lastestInvocationImposter",
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))
@@ -40,7 +44,7 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var invocationImposterType = IdentifierName(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         );
 
         var bodyBuilder = new BlockBuilder().AddStatement(
@@ -80,15 +84,17 @@ internal static partial class InvocationSetupBuilder
             .Build();
     }
 
-    internal static MethodDeclarationSyntax GetInvocationImposterMethod()
+    internal static MethodDeclarationSyntax GetInvocationImposterMethod(
+        in ImposterTargetMethodMetadata method
+    )
     {
         var invocationImposterType = IdentifierName(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         );
 
         return new MethodDeclarationBuilder(
             invocationImposterType.ToNullableType(),
-            "GetInvocationImposter"
+            method.MethodInvocationImposterGroup.GetInvocationImposterMethodName
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(

@@ -7,9 +7,11 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly record struct MethodInvocationImposterGroupMetadata
 {
-    internal const string MethodInvocationImposterTypeName = "MethodInvocationImposter";
-
     internal readonly string Name;
+
+    internal readonly string MethodInvocationImposterTypeName;
+
+    internal readonly string GetInvocationImposterMethodName;
 
     internal readonly TypeMetadata Interface;
 
@@ -52,6 +54,9 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
             method.GenericTypeArguments
         );
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
+        // The group's Invoke takes the method's parameters and refers to these members by name.
+        MethodInvocationImposterTypeName = method.MemberNames.Use("MethodInvocationImposter");
+        GetInvocationImposterMethodName = method.MemberNames.Use("GetInvocationImposter");
         MethodInvocationImposterSyntax = SyntaxFactory.QualifiedName(
             Syntax,
             SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName)

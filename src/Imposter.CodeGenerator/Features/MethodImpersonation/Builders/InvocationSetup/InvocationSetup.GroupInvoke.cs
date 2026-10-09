@@ -17,7 +17,7 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var invocationImposterType = IdentifierName(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         );
         var invocationImposterIdentifier = IdentifierName(
             method.MethodImposter.InvokeMethod.InvocationImposterVariableName
@@ -25,7 +25,8 @@ internal static partial class InvocationSetupBuilder
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
             Var,
             method.MethodImposter.InvokeMethod.InvocationImposterVariableName,
-            IdentifierName("GetInvocationImposter").Call()
+            IdentifierName(method.MethodInvocationImposterGroup.GetInvocationImposterMethodName)
+                .Call()
         );
 
         var guardMissingImposter = IfStatement(

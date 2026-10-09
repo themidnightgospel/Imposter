@@ -79,6 +79,26 @@ public class MethodImposterMemberNameCollisionTests
     }
 
     [Fact]
+    public async Task GivenParametersNamedLikeTheInvocationImposterGroupMembers_WhenMethodIsInvoked_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get(int GetInvocationImposter, int MethodInvocationImposter); }",
+            "imposter.Get(Arg<int>.Any(), Arg<int>.Any()).Returns(1); imposter.Instance().Get(1, 2);",
+            nameof(MethodImposterMemberNameCollisionTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenTypeParameterNamedLikeTheInvocationImposterType_WhenMethodIsInvoked_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<MethodInvocationImposter>(MethodInvocationImposter value); }",
+            "imposter.Get<int>(Arg<int>.Any()).Returns(1); imposter.Instance().Get(1);",
+            nameof(MethodImposterMemberNameCollisionTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenVoidMethodParametersNamedLikeTheImposterMethods_WhenMethodIsInvokedWithoutSetup_ShouldCompile()
     {
         await AssertInterfaceCompiles(

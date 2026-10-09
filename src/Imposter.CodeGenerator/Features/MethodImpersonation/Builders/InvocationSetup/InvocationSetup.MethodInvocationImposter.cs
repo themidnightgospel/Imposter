@@ -17,10 +17,10 @@ internal static partial class InvocationSetupBuilder
     )
     {
         var classBuilder = new ClassDeclarationBuilder(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(DefaultInvocationImposterField())
+            .AddMember(DefaultInvocationImposterField(method))
             .AddMember(MethodInvocationImposterStaticConstructor(method))
             .AddMember(ResultGeneratorField(method))
             .AddMember(CallbacksField(method))
@@ -53,9 +53,11 @@ internal static partial class InvocationSetupBuilder
         return classBuilder.Build();
     }
 
-    private static FieldDeclarationSyntax DefaultInvocationImposterField() =>
+    private static FieldDeclarationSyntax DefaultInvocationImposterField(
+        in ImposterTargetMethodMetadata method
+    ) =>
         SingleVariableField(
-            IdentifierName(MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName),
+            IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName),
             "Default",
             TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword))
         );
@@ -68,7 +70,7 @@ internal static partial class InvocationSetupBuilder
             IdentifierName("Default")
                 .Assign(
                     IdentifierName(
-                            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+                            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
                         )
                         .New(ArgumentList())
                 )
@@ -95,7 +97,7 @@ internal static partial class InvocationSetupBuilder
         }
 
         return new ConstructorBuilder(
-            MethodInvocationImposterGroupMetadata.MethodInvocationImposterTypeName
+            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
         )
             .WithModifiers(TokenList(Token(SyntaxKind.StaticKeyword)))
             .WithBody(body.Build())
