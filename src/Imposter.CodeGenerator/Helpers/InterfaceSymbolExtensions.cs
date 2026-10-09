@@ -5,119 +5,57 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Helpers;
 
-public static class InterfaceSymbolExtensions
+internal static class InterfaceSymbolExtensions
 {
     internal static IReadOnlyCollection<IMethodSymbol> GetAllInterfaceMethods(
         this INamedTypeSymbol interfaceSymbol
-    )
-    {
-        var methods = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
-        var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-
-        CollectInterfaceMethodsRecursive(interfaceSymbol, methods, visitedInterfaces);
-
-        return methods;
-    }
-
-    private static void CollectInterfaceMethodsRecursive(
-        INamedTypeSymbol interfaceSymbol,
-        HashSet<IMethodSymbol> methods,
-        HashSet<INamedTypeSymbol> visitedInterfaces
-    )
-    {
-        if (!visitedInterfaces.Add(interfaceSymbol))
-        {
-            return;
-        }
-
-        foreach (
-            var methodSymbol in interfaceSymbol
-                .GetInstanceMembers<IMethodSymbol>()
-                .Where(m => m.MethodKind == MethodKind.Ordinary && !KeepsItsDefaultBody(m))
-        )
-        {
-            methods.Add(methodSymbol);
-        }
-
-        foreach (var implementedInterface in interfaceSymbol.Interfaces)
-        {
-            CollectInterfaceMethodsRecursive(implementedInterface, methods, visitedInterfaces);
-        }
-    }
+    ) =>
+        CollectMembers<IMethodSymbol>(
+            interfaceSymbol,
+            static method =>
+                method.MethodKind == MethodKind.Ordinary && !KeepsItsDefaultBody(method)
+        );
 
     internal static IReadOnlyCollection<IPropertySymbol> GetAllInterfaceProperties(
         this INamedTypeSymbol interfaceSymbol
-    )
-    {
-        var properties = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
-        var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-
-        CollectInterfacePropertiesRecursive(interfaceSymbol, properties, visitedInterfaces);
-
-        return properties;
-    }
-
-    private static void CollectInterfacePropertiesRecursive(
-        INamedTypeSymbol interfaceSymbol,
-        HashSet<IPropertySymbol> properties,
-        HashSet<INamedTypeSymbol> visitedInterfaces
-    )
-    {
-        if (!visitedInterfaces.Add(interfaceSymbol))
-        {
-            return;
-        }
-
-        foreach (
-            var propertySymbol in interfaceSymbol
-                .GetInstanceMembers<IPropertySymbol>()
-                .Where(p => !KeepsItsDefaultBody(p))
-        )
-        {
-            properties.Add(propertySymbol);
-        }
-
-        foreach (var implementedInterface in interfaceSymbol.Interfaces)
-        {
-            CollectInterfacePropertiesRecursive(
-                implementedInterface,
-                properties,
-                visitedInterfaces
-            );
-        }
-    }
+    ) =>
+        CollectMembers<IPropertySymbol>(
+            interfaceSymbol,
+            static property => !KeepsItsDefaultBody(property)
+        );
 
     internal static IReadOnlyCollection<IEventSymbol> GetAllInterfaceEvents(
         this INamedTypeSymbol interfaceSymbol
+    ) => Deduplicate(CollectMembers<IEventSymbol>(interfaceSymbol, static _ => true));
+
+    // The interface's members, then those of each interface it inherits, depth first. An interface inherited along
+    // several paths is visited once.
+    private static List<TMember> CollectMembers<TMember>(
+        INamedTypeSymbol interfaceSymbol,
+        Func<TMember, bool> isImpersonated
     )
+        where TMember : ISymbol
     {
-        var events = new List<IEventSymbol>();
+        var members = new List<TMember>();
         var visitedInterfaces = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
-        CollectInterfaceEventsRecursive(interfaceSymbol, events, visitedInterfaces);
+        Collect(interfaceSymbol);
 
-        return Deduplicate(events);
-    }
+        return members;
 
-    private static void CollectInterfaceEventsRecursive(
-        INamedTypeSymbol interfaceSymbol,
-        ICollection<IEventSymbol> events,
-        HashSet<INamedTypeSymbol> visitedInterfaces
-    )
-    {
-        if (!visitedInterfaces.Add(interfaceSymbol))
+        void Collect(INamedTypeSymbol @interface)
         {
-            return;
-        }
+            if (!visitedInterfaces.Add(@interface))
+            {
+                return;
+            }
 
-        foreach (var eventSymbol in interfaceSymbol.GetInstanceMembers<IEventSymbol>())
-        {
-            events.Add(eventSymbol);
-        }
+            members.AddRange(@interface.GetInstanceMembers<TMember>().Where(isImpersonated));
 
-        foreach (var implementedInterface in interfaceSymbol.Interfaces)
-        {
-            CollectInterfaceEventsRecursive(implementedInterface, events, visitedInterfaces);
+            foreach (var inheritedInterface in @interface.Interfaces)
+            {
+                Collect(inheritedInterface);
+            }
         }
     }
 
