@@ -10,7 +10,7 @@ internal sealed record TypeModel(
     string FullyQualifiedNameIncludingNullable
 )
 {
-    internal static readonly SymbolDisplayFormat FullyQualifiedFormatIncludingNullable =
+    private static readonly SymbolDisplayFormat FullyQualifiedFormatIncludingNullable =
         SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
                 | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier

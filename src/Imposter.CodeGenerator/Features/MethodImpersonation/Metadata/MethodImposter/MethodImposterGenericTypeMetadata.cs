@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
 internal readonly record struct MethodImposterGenericTypeMetadata(
-    string Name,
     NameSyntax Syntax,
     NameSyntax SyntaxWithTargetGenericArguments
 )
@@ -16,7 +15,6 @@ internal readonly record struct MethodImposterGenericTypeMetadata(
         IReadOnlyList<NameSyntax> targetGenericTypeArguments
     )
         : this(
-            name,
             SyntaxFactoryHelper.WithMethodGenericArguments(genericTypeArguments, name),
             SyntaxFactoryHelper.WithMethodGenericArguments(targetGenericTypeArguments, name)
         ) { }

@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -46,7 +45,6 @@ internal static class SetterImposterBuilderBuilder
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
             .AddMember(BuildThenMethod(property))
-            .AddMember(BuildInitialThenMethod(property))
             .AddMember(BuildUseBaseImplementationEntryMethod(property))
             .Build();
     }
@@ -153,21 +151,6 @@ internal static class SetterImposterBuilderBuilder
             )
             .WithBody(Block(ReturnThis))
             .Build();
-
-    private static MethodDeclarationSyntax? BuildInitialThenMethod(
-        in ImposterPropertyMetadata property
-    )
-    {
-        if (property.SetterImposterBuilderInterface.InitialThenMethod is not { } method)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name)
-            .WithExplicitInterfaceSpecifier(method.InterfaceSyntax)
-            .WithBody(Block(ReturnThis))
-            .Build();
-    }
 
     private static MethodDeclarationSyntax? BuildUseBaseImplementationEntryMethod(
         in ImposterPropertyMetadata property

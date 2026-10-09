@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
-using Imposter.CodeGenerator.Features.Shared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -19,10 +18,10 @@ internal static class GeneratorOptionsProvider
             static (options, _) =>
                 options.GlobalOptions.TryGetValue(
                     "build_property.IMPOSTER_LOG",
-                    out var imposterLogPoperty
+                    out var imposterLogProperty
                 )
                 && string.Equals(
-                    imposterLogPoperty.Trim(),
+                    imposterLogProperty.Trim(),
                     "true",
                     System.StringComparison.OrdinalIgnoreCase
                 )

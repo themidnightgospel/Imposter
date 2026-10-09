@@ -25,16 +25,4 @@ internal readonly struct FieldMetadata(
         TypeSyntax type,
         ExpressionSyntax? initializer = null
     ) => new(name, type, TokenList(Token(SyntaxKind.PrivateKeyword)), initializer);
-
-    internal static FieldMetadata PrivateReadonlyField(
-        string name,
-        TypeSyntax type,
-        ExpressionSyntax? initializer = null
-    ) =>
-        new(
-            name,
-            type,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
-            initializer
-        );
 }
