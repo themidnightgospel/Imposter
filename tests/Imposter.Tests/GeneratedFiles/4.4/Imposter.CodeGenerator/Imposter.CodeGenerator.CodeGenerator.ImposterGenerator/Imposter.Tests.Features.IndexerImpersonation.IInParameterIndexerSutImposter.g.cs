@@ -110,14 +110,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					return default !;
 				}
 
-				internal void Set(IndexerIndexerArguments arguments, int value, global::System.Action? baseImplementation = null)
+				internal void Set(IndexerIndexerArguments arguments, int value)
 				{
-					if (baseImplementation != null)
-					{
-						baseImplementation();
-						return;
-					}
-
 					BackingField[arguments] = value;
 				}
 			}
@@ -470,7 +464,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					if (!matchedCallback && _defaultBehaviour.IsOn)
 					{
-						_defaultBehaviour.Set(arguments, value, null);
+						_defaultBehaviour.Set(arguments, value);
 					}
 				}
 

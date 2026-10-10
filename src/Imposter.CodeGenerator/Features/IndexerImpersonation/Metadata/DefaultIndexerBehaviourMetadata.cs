@@ -19,8 +19,6 @@ internal readonly struct DefaultIndexerBehaviourMetadata
 
     internal readonly ParameterMetadata GetBaseImplementationParameter;
 
-    internal readonly ParameterMetadata SetBaseImplementationParameter;
-
     internal DefaultIndexerBehaviourMetadata(
         in ImposterIndexerCoreMetadata core,
         in IndexerArgumentsMetadata arguments
@@ -40,9 +38,6 @@ internal readonly struct DefaultIndexerBehaviourMetadata
                 )
             );
         GetBaseImplementationParameter = core.GetterBaseImplementationParameter(
-            ImposterIndexerCoreMetadata.BaseImplementationParameterName
-        );
-        SetBaseImplementationParameter = core.SetterBaseImplementationParameter(
             ImposterIndexerCoreMetadata.BaseImplementationParameterName
         );
     }
