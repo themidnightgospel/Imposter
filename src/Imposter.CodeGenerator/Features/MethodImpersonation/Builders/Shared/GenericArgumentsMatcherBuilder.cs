@@ -30,8 +30,8 @@ internal static class GenericArgumentsMatcherBuilder
             conditions.Add(
                 BinaryExpression(
                     SyntaxKind.EqualsExpression,
-                    TypeOfExpression(targetTypeSyntax),
-                    TypeOfExpression(sourceTypeSyntax)
+                    RuntimeTypeOf(targetTypeSyntax),
+                    RuntimeTypeOf(sourceTypeSyntax)
                 )
             );
         }
@@ -44,8 +44,8 @@ internal static class GenericArgumentsMatcherBuilder
             conditions.Add(
                 BinaryExpression(
                     SyntaxKind.EqualsExpression,
-                    TypeOfExpression(sourceTypeSyntax),
-                    TypeOfExpression(targetTypeSyntax)
+                    RuntimeTypeOf(sourceTypeSyntax),
+                    RuntimeTypeOf(targetTypeSyntax)
                 )
             );
         }

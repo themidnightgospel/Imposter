@@ -39,6 +39,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly bool HasSpanValue;
 
+    private readonly TypeModel? _dynamicValueType;
+
     // The type the imposter gets and sets the value as: the indexer's type, or the array that keeps a span's elements.
     internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
 
@@ -79,6 +81,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         SetterModifiers = ImposterInstanceModifierBuilder.ForAccessor(indexer.Setter, indexer);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(indexer.Type);
         HasSpanValue = indexer.Span is not null;
+        _dynamicValueType = indexer.Type.IsDynamic ? indexer.Type : null;
         NullableAwareStoredTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
@@ -118,9 +121,13 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         DisplayName = indexer.DisplayName;
     }
 
-    // The indexer's value as the imposter keeps it: a copy of a span's elements, or the value itself.
+    // The indexer's value as the imposter keeps it: a copy of a span's elements, the object a dynamic value is (see
+    // SyntaxFactoryHelper.AsObject), or the value itself.
     internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
-        HasSpanValue ? SyntaxFactoryHelper.SpanElementsCopy(value) : value;
+        HasSpanValue ? SyntaxFactoryHelper.SpanElementsCopy(value)
+        : _dynamicValueType is { } dynamicValueType
+            ? SyntaxFactoryHelper.AsObject(value, dynamicValueType)
+        : value;
 
     internal NameSet CreateParameterNameSet() =>
         new(Parameters.Select(parameter => parameter.Name));

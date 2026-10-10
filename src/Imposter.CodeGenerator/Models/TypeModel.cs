@@ -4,10 +4,12 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A type as generated code writes it. It holds no symbols, so equal types compare equal across compilations.
+/// <see cref="IsDynamic"/> is true for <c>dynamic</c>, which is <c>object</c> at runtime.
 /// </summary>
 internal sealed record TypeModel(
     string FullyQualifiedName,
-    string FullyQualifiedNameIncludingNullable
+    string FullyQualifiedNameIncludingNullable,
+    bool IsDynamic
 )
 {
     private static readonly SymbolDisplayFormat FullyQualifiedFormatIncludingNullable =
@@ -19,6 +21,7 @@ internal sealed record TypeModel(
     internal static TypeModel From(ITypeSymbol type) =>
         new(
             type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            type.ToDisplayString(FullyQualifiedFormatIncludingNullable)
+            type.ToDisplayString(FullyQualifiedFormatIncludingNullable),
+            type.TypeKind == TypeKind.Dynamic
         );
 }

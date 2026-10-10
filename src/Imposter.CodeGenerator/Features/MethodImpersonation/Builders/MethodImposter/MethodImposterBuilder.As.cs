@@ -89,8 +89,8 @@ internal static partial class MethodImposterBuilder
             )
         )
         {
-            var sourceTypeOf = TypeOfExpression(parameter.TypeSyntax);
-            var targetTypeOf = TypeOfExpression(
+            var sourceTypeOf = RuntimeTypeOf(parameter.TypeSyntax);
+            var targetTypeOf = RuntimeTypeOf(
                 (TypeSyntax)typeParamRenamer.Visit(parameter.TypeSyntax)
             );
 
@@ -110,8 +110,8 @@ internal static partial class MethodImposterBuilder
 
         if (method.HasReturnValue && method.Model.ReturnType.ReferencesMethodTypeParameter)
         {
-            var sourceTypeOf = TypeOfExpression(method.ReturnTypeSyntax);
-            var targetTypeOf = TypeOfExpression(
+            var sourceTypeOf = RuntimeTypeOf(method.ReturnTypeSyntax);
+            var targetTypeOf = RuntimeTypeOf(
                 (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax)
             );
 
