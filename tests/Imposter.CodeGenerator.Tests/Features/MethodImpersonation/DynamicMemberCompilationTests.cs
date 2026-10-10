@@ -77,6 +77,29 @@ public class DynamicMemberCompilationTests
         source.ShouldNotContain("typeof(object)");
     }
 
+    // A constructor initializer can't bind at runtime (CS1975), so the imposter's constructor passes base the object.
+    [Fact]
+    public async Task GivenClassConstructorWithDynamicParameter_WhenImposterIsCreated_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public class Service { public Service(dynamic value) { } public virtual int Get() => 0; }",
+            "var imposter = new Sample.ServiceImposter(1); _ = imposter.Instance().Get();",
+            nameof(DynamicMemberCompilationTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenClassAwaitableMethodsOfDynamic_WhenBaseImplementationIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public class Service { public virtual System.Threading.Tasks.Task<dynamic> Get(dynamic value) => System.Threading.Tasks.Task.FromResult<dynamic>(value); public virtual System.Threading.Tasks.ValueTask<dynamic?> Find(dynamic? value) => new System.Threading.Tasks.ValueTask<dynamic?>(value); }",
+            "var imposter = new Sample.ServiceImposter(); imposter.Get(Arg<dynamic>.Any()).UseBaseImplementation(); imposter.Find(Arg<dynamic?>.Any()).UseBaseImplementation(); _ = imposter.Instance().Get(1); _ = imposter.Instance().Find(2);",
+            nameof(DynamicMemberCompilationTests)
+        );
+    }
+
     [Fact]
     public async Task GivenClassPropertyAndIndexerOfDynamicType_WhenBaseImplementationIsUsed_ShouldCompile()
     {
