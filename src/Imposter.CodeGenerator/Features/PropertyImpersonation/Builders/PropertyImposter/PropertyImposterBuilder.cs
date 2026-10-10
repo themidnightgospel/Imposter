@@ -17,10 +17,9 @@ internal static class PropertyImposterBuilder
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
-            // The default (auto-property) behaviour stores the last value set so the getter can return it;
-            // without a getter nothing would ever read it.
+            // The default (auto-property) behaviour stores the last value set so the getter can return it.
             .AddMember(
-                property.Core.HasGetter
+                property.Core.KeepsValue
                     ? SinglePrivateReadonlyVariableField(
                         property.ImposterBuilder.DefaultPropertyBehaviourField
                     )
@@ -47,7 +46,7 @@ internal static class PropertyImposterBuilder
             )
             .AddMember(BuildConstructor(property))
             .AddMember(
-                property.Core.HasGetter
+                property.Core.KeepsValue
                     ? DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour)
                     : null
             )
@@ -67,14 +66,22 @@ internal static class PropertyImposterBuilder
             return null;
         }
 
+        var criteria = property.ImposterBuilderInterface.SetterMethod.CriteriaParameter;
+        var builderArguments = new List<ArgumentSyntax>
+        {
+            Argument(IdentifierName(property.ImposterBuilder.SetterImposterField.Name)),
+        };
+        if (criteria is not null)
+        {
+            builderArguments.Add(Argument(IdentifierName(criteria.Value.Name)));
+        }
+
         return new MethodDeclarationBuilder(
             property.ImposterBuilderInterface.SetterMethod.ReturnType,
             property.ImposterBuilderInterface.SetterMethod.Name
         )
             .WithExplicitInterfaceSpecifier(property.ImposterBuilderInterface.Syntax)
-            .AddParameter(
-                ParameterSyntax(property.ImposterBuilderInterface.SetterMethod.CriteriaParameter)
-            )
+            .AddParameter(criteria is null ? null : ParameterSyntax(criteria.Value))
             .WithBody(
                 Block(
                     IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
@@ -83,22 +90,7 @@ internal static class PropertyImposterBuilder
                         .ToStatementSyntax(),
                     ReturnStatement(
                         property.SetterImposter.Builder.TypeSyntax.New(
-                            ArgumentListSyntax([
-                                Argument(
-                                    IdentifierName(
-                                        property.ImposterBuilder.SetterImposterField.Name
-                                    )
-                                ),
-                                Argument(
-                                    IdentifierName(
-                                        property
-                                            .ImposterBuilderInterface
-                                            .SetterMethod
-                                            .CriteriaParameter
-                                            .Name
-                                    )
-                                ),
-                            ])
+                            ArgumentListSyntax(builderArguments)
                         )
                     )
                 )
@@ -186,7 +178,7 @@ internal static class PropertyImposterBuilder
 
         var bodyBuilder = new BlockBuilder();
 
-        if (property.Core.HasGetter)
+        if (property.Core.KeepsValue)
         {
             bodyBuilder.AddExpression(
                 IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
@@ -200,6 +192,20 @@ internal static class PropertyImposterBuilder
             )
         );
 
+        // The getter and setter imposters share the default behaviour, when there is one.
+        var accessorImposterArguments = new List<ArgumentSyntax>();
+        if (property.Core.KeepsValue)
+        {
+            accessorImposterArguments.Add(
+                Argument(
+                    IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
+                )
+            );
+        }
+
+        accessorImposterArguments.Add(Argument(invocationBehaviorField));
+        accessorImposterArguments.Add(Argument(propertyDisplayLiteral));
+
         if (property.Core.HasGetter)
         {
             var getterInitialization = IdentifierName(
@@ -207,15 +213,7 @@ internal static class PropertyImposterBuilder
                 )
                 .Assign(
                     property.ImposterBuilder.GetterImposterBuilderField.Type.New(
-                        ArgumentListSyntax([
-                            Argument(
-                                IdentifierName(
-                                    property.ImposterBuilder.DefaultPropertyBehaviourField.Name
-                                )
-                            ),
-                            Argument(invocationBehaviorField),
-                            Argument(propertyDisplayLiteral),
-                        ])
+                        ArgumentListSyntax(accessorImposterArguments)
                     )
                 );
 
@@ -224,26 +222,12 @@ internal static class PropertyImposterBuilder
 
         if (property.Core.HasSetter)
         {
-            var setterArguments = new List<ArgumentSyntax>();
-
-            if (property.Core.HasGetter)
-            {
-                setterArguments.Add(
-                    Argument(
-                        IdentifierName(property.ImposterBuilder.DefaultPropertyBehaviourField.Name)
-                    )
-                );
-            }
-
-            setterArguments.Add(Argument(invocationBehaviorField));
-            setterArguments.Add(Argument(propertyDisplayLiteral));
-
             var setterInitialization = IdentifierName(
                     property.ImposterBuilder.SetterImposterField.Name
                 )
                 .Assign(
                     property.ImposterBuilder.SetterImposterField.Type.New(
-                        ArgumentListSyntax(setterArguments)
+                        ArgumentListSyntax(accessorImposterArguments)
                     )
                 );
 

@@ -13,7 +13,11 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly CallbacksFieldMetadata CallbacksField;
 
-    internal readonly FieldMetadata InvocationHistoryField;
+    // The values set, which Called matches against its criteria. A value passed through can't be kept, so the setter
+    // only counts the sets in InvocationCountField instead.
+    internal readonly FieldMetadata? InvocationHistoryField;
+
+    internal readonly FieldMetadata InvocationCountField;
 
     internal readonly FieldMetadata DefaultPropertyBehaviourField;
 
@@ -51,12 +55,15 @@ internal readonly struct PropertySetterImposterMetadata
         Name = "SetterImposter";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
         CallbacksField = new CallbacksFieldMetadata(property);
-        InvocationHistoryField = new FieldMetadata(
-            "_invocationHistory",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
-                property.NullableAwareStoredTypeSyntax
-            )
-        );
+        InvocationHistoryField = property.IsPassedThrough
+            ? null
+            : new FieldMetadata(
+                "_invocationHistory",
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+                    property.NullableAwareStoredTypeSyntax
+                )
+            );
+        InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
         CallbackMethod = new CallbackMethodMetadata(property);
         CalledMethod = new CalledMethodMetadata(property);

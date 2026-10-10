@@ -29,11 +29,28 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly string DisplayName;
 
-    internal readonly TypeSyntax AsSystemActionType;
+    internal readonly bool IsPassedThrough;
 
-    internal readonly TypeSyntax AsSystemFuncType;
+    // The default behaviour keeps the last value set for the getter to return: not without a getter, or for a value
+    // passed through.
+    internal readonly bool KeepsValue;
 
-    internal readonly TypeSyntax AsArgType;
+    internal readonly PropertyDelegateMetadata? Delegates;
+
+    // Action<T>, or the generated setter callback delegate for a value passed through.
+    internal readonly TypeSyntax SetterCallbackType;
+
+    // Func<T>, or the generated value delegate for a value passed through.
+    internal readonly TypeSyntax ValueGeneratorType;
+
+    // The getter's outcomes, Func<Func<T>?, T> or the generated return handler delegate: each gets the base getter, if
+    // there is one.
+    internal readonly TypeSyntax ReturnHandlerType;
+
+    // The setter's value criteria: none for a value passed through, which it can't match.
+    internal readonly TypeSyntax? AsArgType;
+
+    internal readonly ParameterMetadata? SetterCriteriaParameter;
 
     internal readonly bool GetterSupportsBaseImplementation;
 
@@ -60,11 +77,34 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         NullableAwareStoredTypeSyntax = span is null
             ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
-        AsSystemFuncType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
-        AsSystemActionType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
-        AsArgType = span is null
-            ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
-            : SyntaxFactoryHelper.SpanArgType(span);
+        IsPassedThrough = property.IsPassedThrough;
+        KeepsValue = HasGetter && !IsPassedThrough;
+        if (IsPassedThrough)
+        {
+            var delegates = new PropertyDelegateMetadata(uniqueName);
+            Delegates = delegates;
+            SetterCallbackType = delegates.SetterCallbackDelegateType;
+            ValueGeneratorType = delegates.ValueDelegateType;
+            ReturnHandlerType = delegates.ReturnHandlerDelegateType;
+            AsArgType = null;
+        }
+        else
+        {
+            Delegates = null;
+            SetterCallbackType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
+            ValueGeneratorType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
+            ReturnHandlerType = WellKnownTypes.System.Func(
+                ValueGeneratorType.ToNullableType(),
+                NullableAwareStoredTypeSyntax
+            );
+            AsArgType = span is null
+                ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
+                : SyntaxFactoryHelper.SpanArgType(span);
+        }
+
+        SetterCriteriaParameter = AsArgType is null
+            ? null
+            : new ParameterMetadata("criteria", AsArgType);
         GetterSupportsBaseImplementation =
             property.IsClassMember && property.Getter is { IsAbstract: false };
         SetterSupportsBaseImplementation =

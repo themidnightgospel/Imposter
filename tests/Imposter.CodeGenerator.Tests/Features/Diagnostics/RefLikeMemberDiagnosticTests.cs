@@ -78,6 +78,26 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
+    public async Task GivenPropertyReturningCustomRefStructByReference_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { ref RefLike Current { get; } }"
+        );
+
+        result.Diagnostics.ShouldContain(diagnostic => diagnostic.Id == RefLikeMemberId);
+    }
+
+    [Fact]
+    public async Task GivenIndexerOfCustomRefStructType_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public interface IService { RefLike this[int index] { get; } }"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    [Fact]
     public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(

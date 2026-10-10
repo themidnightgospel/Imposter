@@ -56,7 +56,7 @@ internal readonly struct PropertySetterImposterBuilderInterfaceMetadata
         CallbackMethod = new CallbackMethodMetadata(
             ContinuationInterfaceTypeSyntax,
             CallbackInterfaceTypeSyntax,
-            property.AsSystemActionType
+            property.SetterCallbackType
         );
         if (property.SetterSupportsBaseImplementation)
         {

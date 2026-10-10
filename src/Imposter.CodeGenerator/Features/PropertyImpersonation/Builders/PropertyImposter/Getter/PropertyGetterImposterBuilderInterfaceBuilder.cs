@@ -171,12 +171,15 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
     )
     {
         var returns = getterInterface.ReturnsMethod;
+        var returnsGeneratedValue = InterfaceMethod(
+            returns.ReturnType,
+            returns.Name,
+            returns.ValueGeneratorParameter
+        );
 
-        return
-        [
-            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueParameter),
-            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueGeneratorParameter),
-        ];
+        return returns.ValueParameter is { } value
+            ? [InterfaceMethod(returns.ReturnType, returns.Name, value), returnsGeneratedValue]
+            : [returnsGeneratedValue];
     }
 
     private static MethodDeclarationSyntax[] BuildThrowsMethods(

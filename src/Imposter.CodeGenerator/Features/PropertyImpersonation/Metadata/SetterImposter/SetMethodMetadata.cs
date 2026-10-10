@@ -23,7 +23,7 @@ internal readonly struct SetMethodMetadata
         ValueParameter = new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
-            property.AsSystemActionType.ToNullableType(),
+            property.SetterCallbackType.ToNullableType(),
             Null
         );
     }

@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -39,7 +40,9 @@ internal static class SetterImposterBuilderBuilder
                 )
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.CriteriaField)
+                property.SetterImposter.Builder.CriteriaField is { } criteriaField
+                    ? SinglePrivateReadonlyVariableField(criteriaField)
+                    : null
             )
             .AddMember(BuildConstructor(property))
             .AddMember(BuildCallbackMethod(property))
@@ -51,12 +54,21 @@ internal static class SetterImposterBuilderBuilder
 
     private static ConstructorDeclarationSyntax BuildConstructor(
         in ImposterPropertyMetadata property
-    ) =>
-        new ConstructorWithFieldInitializationBuilder(property.SetterImposter.Builder.Name)
+    )
+    {
+        var constructor = new ConstructorWithFieldInitializationBuilder(
+            property.SetterImposter.Builder.Name
+        )
             .WithModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(property.SetterImposter.Builder.SetterImposterField)
-            .AddParameter(property.SetterImposter.Builder.CriteriaField)
-            .Build();
+            .AddParameter(property.SetterImposter.Builder.SetterImposterField);
+
+        if (property.SetterImposter.Builder.CriteriaField is { } criteriaField)
+        {
+            constructor.AddParameter(criteriaField);
+        }
+
+        return constructor.Build();
+    }
 
     internal static MethodDeclarationSyntax BuildCalledMethod(
         in ImposterPropertyMetadata property
@@ -76,22 +88,14 @@ internal static class SetterImposterBuilderBuilder
                     IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
                         .Dot(IdentifierName(property.SetterImposter.CalledMethod.Name))
                         .Call(
-                            ArgumentListSyntax([
-                                Argument(
-                                    IdentifierName(
-                                        property.SetterImposter.Builder.CriteriaField.Name
-                                    )
-                                ),
-                                Argument(
-                                    IdentifierName(
-                                        property
-                                            .SetterImposterBuilderInterface
-                                            .CalledMethod
-                                            .CountParameter
-                                            .Name
-                                    )
-                                ),
-                            ])
+                            SetterImposterArguments(
+                                property,
+                                property
+                                    .SetterImposterBuilderInterface
+                                    .CalledMethod
+                                    .CountParameter
+                                    .Name
+                            )
                         )
                         .ToStatementSyntax()
                 )
@@ -118,28 +122,36 @@ internal static class SetterImposterBuilderBuilder
                     IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
                         .Dot(IdentifierName(property.SetterImposter.CallbackMethod.Name))
                         .Call(
-                            ArgumentListSyntax([
-                                Argument(
-                                    IdentifierName(
-                                        property.SetterImposter.Builder.CriteriaField.Name
-                                    )
-                                ),
-                                Argument(
-                                    IdentifierName(
-                                        property
-                                            .SetterImposterBuilderInterface
-                                            .CallbackMethod
-                                            .CallbackParameter
-                                            .Name
-                                    )
-                                ),
-                            ])
+                            SetterImposterArguments(
+                                property,
+                                property
+                                    .SetterImposterBuilderInterface
+                                    .CallbackMethod
+                                    .CallbackParameter
+                                    .Name
+                            )
                         )
                         .ToStatementSyntax(),
                     ReturnThis
                 )
             )
             .Build();
+
+    // The setter imposter's methods take the builder's criteria first, when it has any.
+    private static ArgumentListSyntax SetterImposterArguments(
+        in ImposterPropertyMetadata property,
+        string argumentName
+    )
+    {
+        var arguments = new List<ArgumentSyntax>();
+        if (property.SetterImposter.Builder.CriteriaField is { } criteriaField)
+        {
+            arguments.Add(Argument(IdentifierName(criteriaField.Name)));
+        }
+
+        arguments.Add(Argument(IdentifierName(argumentName)));
+        return ArgumentListSyntax(arguments);
+    }
 
     private static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
         new MethodDeclarationBuilder(

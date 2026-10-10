@@ -9,14 +9,14 @@ internal readonly struct CallbackMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal readonly ParameterMetadata CriteriaParameter;
+    internal readonly ParameterMetadata? CriteriaParameter;
 
     internal readonly ParameterMetadata CallbackParameter;
 
     internal CallbackMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
         ReturnType = WellKnownTypes.Void;
-        CallbackParameter = new ParameterMetadata("callback", property.AsSystemActionType);
-        CriteriaParameter = new ParameterMetadata("criteria", property.AsArgType);
+        CallbackParameter = new ParameterMetadata("callback", property.SetterCallbackType);
+        CriteriaParameter = property.SetterCriteriaParameter;
     }
 }
