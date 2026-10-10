@@ -55,9 +55,7 @@ namespace Imposter.Tests.Features.EventImpersonation
         [Fact]
         public void GivenNoHandler_WhenRaisedWithOutValue_ShouldAssignTheDefault()
         {
-            var value = 1;
-
-            _sut.Requested.Raise(out value);
+            _sut.Requested.Raise(out var value);
 
             value.ShouldBe(0);
         }
