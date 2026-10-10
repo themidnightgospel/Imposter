@@ -35,6 +35,16 @@ internal static class TypeSymbolExtensions
         symbol is INamedTypeSymbol { MetadataName: "ValueTask" } named
         && named.IsInNamespace("System", "Threading", "Tasks");
 
+    // A pointer or function pointer, or a type built from one, such as an array of pointers.
+    internal static bool ContainsPointer(this ITypeSymbol type) =>
+        type switch
+        {
+            IPointerTypeSymbol or IFunctionPointerTypeSymbol => true,
+            IArrayTypeSymbol arrayType => arrayType.ElementType.ContainsPointer(),
+            INamedTypeSymbol namedType => namedType.TypeArguments.Any(it => it.ContainsPointer()),
+            _ => false,
+        };
+
     internal static bool ReferencesTypeParameterOf(this ITypeSymbol type, IMethodSymbol method) =>
         method.TypeParameters.Any(typeParameter => type.Contains(typeParameter));
 
@@ -49,9 +59,9 @@ internal static class TypeSymbolExtensions
             _ => false,
         };
 
-    // A type's fully qualified name with a method's own type parameters written by position (!!0, as in IL), and dynamic
-    // written as the object it is at runtime, so the parameter types of two methods compare the same whatever the
-    // methods call them.
+    // A type's fully qualified name with a method's own type parameters written by position (!!0, as in IL), and
+    // dynamic written as the object it is at runtime, so the parameter types of two methods compare the same whatever
+    // the methods call them.
     internal static string ToSignatureKey(this ITypeSymbol type) =>
         type switch
         {

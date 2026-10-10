@@ -52,6 +52,11 @@ explicit-mode checks apply.
 
 - Methods, properties and indexers that return by `ref` or `ref readonly` can't be impersonated, because an imposter returns its results by value. A target with such a member reports [IMP011](diagnostics.md#imp011) and gets no imposter. An interface member of this kind with a default body is left out instead: it has no setup, and calls reach its body.
 
+## Pointer types
+
+- Methods, properties, indexers and events whose signature uses a pointer or function pointer type, such as `int*` or `delegate*<int, void>`, can't be impersonated, because a pointer can't be a type argument. A target with such a member reports [IMP013](diagnostics.md#imp013) and gets no imposter.
+- A class imposter has no constructor for a target constructor that takes a pointer. A class whose accessible constructors all take one reports [IMP013](diagnostics.md#imp013).
+
 ## Async behavior
 
 - Async methods without setup return `default`, which for `Task` is `null`.

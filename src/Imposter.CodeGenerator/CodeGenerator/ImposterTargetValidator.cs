@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
@@ -10,7 +11,7 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004 and IMP008 to IMP012 stop the target's generation; IMP006 only warns. Collisions between targets
+    // IMP002, IMP004 and IMP008 to IMP013 stop the target's generation; IMP006 only warns. Collisions between targets
     // (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
@@ -113,6 +114,20 @@ internal static class ImposterTargetValidator
             );
         }
 
+        if (FindPointerMember(target, memberAccess) is { } pointerMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasPointerMember,
+                    location,
+                    targetDisplayName,
+                    pointerMember.Member.ToDisplayString(),
+                    pointerMember.Type.ToDisplayString()
+                ),
+                false
+            );
+        }
+
         return IsClosedGenericType(target)
             ? (
                 Single(
@@ -206,32 +221,41 @@ internal static class ImposterTargetValidator
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
+    ) =>
+        FindMemberType(
+            target,
+            memberAccess,
+            member =>
+                member switch
+                {
+                    IMethodSymbol method => FindMethodRefLikeType(method),
+                    IPropertySymbol property => FindRefLikeType(UncopiedTypes(property)),
+                    IEventSymbol { Type: INamedTypeSymbol { DelegateInvokeMethod: { } invoke } } =>
+                        FindRefLikeType(UncopiedEventTypes(invoke)),
+                    _ => null,
+                }
+        );
+
+    // The first member the imposter would impersonate, among its methods, then its properties, then its events, in
+    // whose signature findType finds a type, with that type.
+    private static (ISymbol Member, ITypeSymbol Type)? FindMemberType(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess,
+        Func<ISymbol, ITypeSymbol?> findType
     )
     {
-        foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
-        {
-            if (FindMethodRefLikeType(method) is { } type)
-            {
-                return (method, type);
-            }
-        }
+        IEnumerable<ISymbol> members =
+        [
+            .. ImposterTargetModel.GetMethods(target, memberAccess),
+            .. ImposterTargetModel.GetProperties(target, memberAccess),
+            .. ImposterTargetModel.GetEvents(target, memberAccess),
+        ];
 
-        foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
+        foreach (var member in members)
         {
-            if (FindRefLikeType(UncopiedTypes(property)) is { } type)
+            if (findType(member) is { } type)
             {
-                return (property, type);
-            }
-        }
-
-        foreach (var @event in ImposterTargetModel.GetEvents(target, memberAccess))
-        {
-            if (
-                @event.Type is INamedTypeSymbol { DelegateInvokeMethod: { } invoke }
-                && FindRefLikeType(UncopiedEventTypes(invoke)) is { } type
-            )
-            {
-                return (@event, type);
+                return (member, type);
             }
         }
 
@@ -350,12 +374,62 @@ internal static class ImposterTargetValidator
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
-        ImposterTargetModel
-            .GetMethods(target, memberAccess)
-            .Concat<ISymbol>(ImposterTargetModel.GetProperties(target, memberAccess))
-            .FirstOrDefault(member =>
-                member
-                    is IMethodSymbol { RefKind: not RefKind.None }
-                        or IPropertySymbol { RefKind: not RefKind.None }
-            );
+        FindMemberType(
+            target,
+            memberAccess,
+            member =>
+                member switch
+                {
+                    IMethodSymbol { RefKind: not RefKind.None } method => method.ReturnType,
+                    IPropertySymbol { RefKind: not RefKind.None } property => property.Type,
+                    _ => null,
+                }
+        )?.Member;
+
+    // A pointer or function pointer can't be a type argument, as the imposter's matchers and history need, and the
+    // imposter's code isn't unsafe, so it can't impersonate a member whose signature uses one. It leaves out a
+    // constructor that takes one, so a class whose accessible constructors all do has none it can call.
+    private static (ISymbol Member, ITypeSymbol Type)? FindPointerMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    ) =>
+        FindMemberType(
+            target,
+            memberAccess,
+            member => SignatureTypes(member).FirstOrDefault(type => type.ContainsPointer())
+        ) ?? FindPointerOnlyConstructor(target, memberAccess);
+
+    private static (ISymbol Member, ITypeSymbol Type)? FindPointerOnlyConstructor(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    )
+    {
+        if (
+            target.TypeKind != TypeKind.Class
+            || target.InstanceConstructors.Any(it =>
+                ImposterTargetModel.IsCallableConstructor(it, memberAccess)
+            )
+        )
+        {
+            return null;
+        }
+
+        // IMP004 reports a class without an accessible constructor first, so each accessible one takes a pointer.
+        var constructor = target.InstanceConstructors.First(memberAccess.IsAccessible);
+        return (constructor, SignatureTypes(constructor).First(type => type.ContainsPointer()));
+    }
+
+    private static IEnumerable<ITypeSymbol> SignatureTypes(ISymbol member) =>
+        member switch
+        {
+            IMethodSymbol method => method
+                .Parameters.Select(it => it.Type)
+                .Prepend(method.ReturnType),
+            IPropertySymbol property => property
+                .Parameters.Select(it => it.Type)
+                .Prepend(property.Type),
+            IEventSymbol { Type: INamedTypeSymbol { DelegateInvokeMethod: { } invoke } } =>
+                SignatureTypes(invoke),
+            _ => [],
+        };
 }
