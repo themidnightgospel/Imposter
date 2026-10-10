@@ -1,0 +1,1290 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Imposter — Mocking library that's using roslyn source generators to achieve high performance and low memory footprint">
+      
+      
+      
+        <link rel="canonical" href="https://themidnightgospel.github.io/Imposter/0.2.9/diagnostics/">
+      
+      
+        <link rel="prev" href="../key-api-reference/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/imposter_logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Diagnostics - Imposter</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=system-ui,+-apple-system,+BlinkMacSystemFont,+"Segoe+UI",+Roboto,+"Helvetica+Neue",+Arial,+sans-serif:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/overrides.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#diagnostics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Imposter" class="md-header__button md-logo" aria-label="Imposter" data-md-component="logo">
+      
+  <img src="../assets/imposter_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Imposter
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diagnostics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/themidnightgospel/Imposter" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    themidnightgospel/Imposter
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Imposter" class="md-nav__button md-logo" aria-label="Imposter" data-md-component="logo">
+      
+  <img src="../assets/imposter_logo.png" alt="logo">
+
+    </a>
+    Imposter
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/themidnightgospel/Imposter" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    themidnightgospel/Imposter
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../methods/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Method Impersonation
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../properties/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Impersonation
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../indexers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Indexer Impersonation
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../events/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Impersonation
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arguments-matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arguments Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interface-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interface-specific Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implicit-vs-explicit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implicit vs Explicit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../base-implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheat-sheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cheat Sheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../key-api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagnostics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagnostics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#imp002" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP002: Invalid imposter target
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp003" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP003: C# version not supported
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp004" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP004: No accessible constructor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp005" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP005: Generator crash
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp006" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP006: Closed generic imposter target
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP007: Imposter type name collision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP008: Abstract members the project cannot override
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp009" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP009: Member with a ref-like type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp010" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP010: Required members without SetsRequiredMembersAttribute
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp011" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP011: Member that returns by reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imp012" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMP012: Static abstract member
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implog001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPLOG001: Generator log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retired-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retired diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="diagnostics">Diagnostics<a class="headerlink" href="#diagnostics" title="Permanent link">&para;</a></h1>
+<p>What each Imposter diagnostic means and how to resolve it. The help link of every diagnostic points to its section on this page.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Severity</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#imp002">IMP002</a></td>
+<td>Error</td>
+<td>The target is not an interface or a non-sealed class</td>
+</tr>
+<tr>
+<td><a href="#imp003">IMP003</a></td>
+<td>Error</td>
+<td>The project's C# version is older than 9.0</td>
+</tr>
+<tr>
+<td><a href="#imp004">IMP004</a></td>
+<td>Error</td>
+<td>The target class has no constructor the imposter can call</td>
+</tr>
+<tr>
+<td><a href="#imp005">IMP005</a></td>
+<td>Error</td>
+<td>The generator failed unexpectedly</td>
+</tr>
+<tr>
+<td><a href="#imp006">IMP006</a></td>
+<td>Warning</td>
+<td>A closed generic type is registered as a target</td>
+</tr>
+<tr>
+<td><a href="#imp007">IMP007</a></td>
+<td>Error</td>
+<td>Two targets would generate the same imposter type</td>
+</tr>
+<tr>
+<td><a href="#imp008">IMP008</a></td>
+<td>Error</td>
+<td>The target class has abstract members your project cannot override</td>
+</tr>
+<tr>
+<td><a href="#imp009">IMP009</a></td>
+<td>Error</td>
+<td>The target has a member whose signature uses a ref-like type</td>
+</tr>
+<tr>
+<td><a href="#imp010">IMP010</a></td>
+<td>Error</td>
+<td>The target class has required members, and <code>SetsRequiredMembersAttribute</code> is missing</td>
+</tr>
+<tr>
+<td><a href="#imp011">IMP011</a></td>
+<td>Error</td>
+<td>The target has a member that returns by reference</td>
+</tr>
+<tr>
+<td><a href="#imp012">IMP012</a></td>
+<td>Error</td>
+<td>The target interface has a static abstract member without an implementation</td>
+</tr>
+<tr>
+<td><a href="#implog001">IMPLOG001</a></td>
+<td>Info</td>
+<td>Generator log message</td>
+</tr>
+</tbody>
+</table>
+<h2 id="imp002">IMP002: Invalid imposter target<a class="headerlink" href="#imp002" title="Permanent link">&para;</a></h2>
+<p><code>[GenerateImposter]</code> was applied to a type that cannot be impersonated, such as a sealed class, a struct, an enum or a delegate. No imposter is generated for it.</p>
+<p>Register an interface or a non-sealed class instead. If you own the class, remove <code>sealed</code>, or extract an interface and register that.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only virtual and abstract members of a class can be impersonated.</p>
+</div>
+<h2 id="imp003">IMP003: C# version not supported<a class="headerlink" href="#imp003" title="Permanent link">&para;</a></h2>
+<p>Generated imposters use C# 9.0 features. When the project compiles with an older language version, the generator reports IMP003 once and generates no imposters.</p>
+<p>Set the language version to 9.0 or later in the project file, for example <code>&lt;LangVersion&gt;9.0&lt;/LangVersion&gt;</code>. Projects that target .NET Framework, .NET Standard or .NET Core 3.x or earlier default to C# 7.3 or 8.0, so they need this setting.</p>
+<h2 id="imp004">IMP004: No accessible constructor<a class="headerlink" href="#imp004" title="Permanent link">&para;</a></h2>
+<p>The generated imposter derives from the target class, so it must call one of the class's constructors. IMP004 means none of them is accessible from your project: every constructor is private, or the class is in another assembly and its constructors are internal or private protected without <code>InternalsVisibleTo</code> for your project.</p>
+<p>Add a public or protected constructor to the class, or an internal one if the class is in your project or its assembly grants your project <code>InternalsVisibleTo</code>.</p>
+<h2 id="imp005">IMP005: Generator crash<a class="headerlink" href="#imp005" title="Permanent link">&para;</a></h2>
+<p>The generator hit an unexpected exception. The message includes the exception, and no imposter is generated for the affected target.</p>
+<p>This is a bug in Imposter. Please <a href="https://github.com/themidnightgospel/Imposter/issues/new?labels=bug&amp;title=Generator%20crash:%20IMP005">open an issue</a> with the full message and, if possible, the target type that triggers it.</p>
+<h2 id="imp006">IMP006: Closed generic imposter target<a class="headerlink" href="#imp006" title="Permanent link">&para;</a></h2>
+<p>A closed generic type such as <code>typeof(IRepository&lt;User&gt;)</code> was registered. It generates the same generic imposter as the open type, <code>IRepositoryImposter&lt;T&gt;</code>, and the type arguments in the registration have no effect.</p>
+<p>Register the open generic type instead, for example <code>typeof(IRepository&lt;&gt;)</code>, and choose the type arguments where you create the imposter. See <a href="../generics/">Generics</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>With <code>TreatWarningsAsErrors</code>, IMP006 fails the build. Switch to the open registration, or suppress IMP006 with <code>#pragma warning disable IMP006</code> or <code>&lt;NoWarn&gt;</code>.</p>
+</div>
+<h2 id="imp007">IMP007: Imposter type name collision<a class="headerlink" href="#imp007" title="Permanent link">&para;</a></h2>
+<p>An imposter is named after its target, <code>IServiceImposter</code> for <code>IService</code>, and by default goes into the target's namespace. Two registered targets that share a name and namespace, such as interfaces nested in different classes, would therefore get the same imposter type. The generator reports IMP007 for both and generates neither.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.CodeGenerator.Tests/Generators/ImposterTypeNameCollisionTests.cs#L150"><pre><span></span><code><span class="na">[assembly: GenerateImposter(typeof(Sample.A.IService))]</span>
+<span class="na">[assembly: GenerateImposter(typeof(Sample.B.IService), putInTheSameNamespace: false)]</span>
+</code></pre></div>
+</div>
+<p>Register one of them, or both, with <code>putInTheSameNamespace: false</code>. Its imposter then goes into a namespace of its own, such as <code>Imposters.Sample.B.IService</code>. Two closed registrations of one generic type, such as <code>IRepository&lt;int&gt;</code> and <code>IRepository&lt;string&gt;</code>, collide too; register the open type instead (see <a href="#imp006">IMP006</a>).</p>
+<h2 id="imp008">IMP008: Abstract members the project cannot override<a class="headerlink" href="#imp008" title="Permanent link">&para;</a></h2>
+<p>The generated imposter derives from the target class, so it must override every abstract member the class leaves abstract. IMP008 means one of them is not accessible from your project: the class is in another assembly, and the member, or one of its property accessors, is <code>internal</code> or <code>private protected</code> without <code>InternalsVisibleTo</code> for your project. Only its own assembly, or one it grants <code>InternalsVisibleTo</code>, can derive from such a class, so no imposter is generated.</p>
+<p>Register an interface the class implements instead, or ask the class's owner to grant your project <code>InternalsVisibleTo</code>.</p>
+<h2 id="imp009">IMP009: Member with a ref-like type<a class="headerlink" href="#imp009" title="Permanent link">&para;</a></h2>
+<p>An imposter records every argument and result of the members it impersonates, and matches arguments with <code>Arg&lt;T&gt;</code>. It keeps them in fields, delegates and matchers, and none of these can hold a ref-like value: <code>Span&lt;T&gt;</code>, <code>ReadOnlySpan&lt;T&gt;</code> or another <code>ref struct</code>. The exception is a method's <code>Span&lt;T&gt;</code> or <code>ReadOnlySpan&lt;T&gt;</code> parameter, a span it returns by value, the span value or keys of a property or indexer, and a span an event's delegate takes (see <a href="../properties/#span-properties">Span properties</a>, <a href="../indexers/#span-keys-and-values">Span keys and values</a> and <a href="../events/#span-parameters">Span parameters of events</a>). The imposter copies the elements a span argument arrives with into an array and matches them with <code>SpanArg&lt;T&gt;</code> or <code>ReadOnlySpanArg&lt;T&gt;</code>, or <code>OutSpanArg&lt;T&gt;</code> or <code>OutReadOnlySpanArg&lt;T&gt;</code> for an <code>out</code> span (see <a href="../arguments-matching/#span-parameters">Span parameters</a>), and <code>Returns</code> takes the array a returned span covers (see <a href="../methods/#setup-return-values">Methods</a>). A method's parameter or by-value result, a property's or indexer's value, or an event delegate's parameter, of another <code>ref struct</code> type isn't kept or matched at all: the imposter only passes it between the caller and its delegates (see <a href="../arguments-matching/#ref-struct-parameters">Ref struct parameters</a>, <a href="../methods/#setup-return-values">Methods</a>, <a href="../properties/#ref-struct-properties">Ref struct properties</a> and <a href="../indexers/#ref-struct-values">Ref struct values of indexers</a>).</p>
+<p>IMP009 means a member the imposter would impersonate uses a ref-like type anywhere else in its signature: as an indexer parameter of another <code>ref struct</code> type, a class indexer's value of one next to a key taken by <code>in</code> or <code>ref readonly</code> when its getter has a base implementation, a method's parameter or result of a <code>ref struct</code> type that uses the method's type parameters, a generic method's <code>ref struct</code> result next to a <code>ref</code>, <code>in</code> or <code>ref readonly</code> parameter, a span returned by reference, a property or indexer returned by reference, another <code>ref struct</code> as the return type of an event's delegate or as a parameter of an async one, a span an async event's delegate takes by <code>ref</code>, <code>out</code> or <code>ref readonly</code>, or a method's type parameter that allows ref structs (<code>where T : allows ref struct</code>). The diagnostic names the first such member and type, and no imposter is generated.</p>
+<p>Change the member to take or return a type the imposter can store, such as <code>ReadOnlyMemory&lt;T&gt;</code>, <code>Memory&lt;T&gt;</code> or an array, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a ref-like type doesn't cause IMP009.</p>
+<h2 id="imp010">IMP010: Required members without SetsRequiredMembersAttribute<a class="headerlink" href="#imp010" title="Permanent link">&para;</a></h2>
+<p>The imposter creates its instance without setting the target's C# 11 <code>required</code> members. Its constructors allow that with <code>System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute</code>, which is built into .NET 7 and later. IMP010 means the target class has required members, and your project can't use that attribute: it targets an older framework, such as .NET Standard, .NET Framework or .NET 6, and declares only the attributes the compiler needs for required members. No imposter is generated.</p>
+<p>Target .NET 7 or later, or declare the attribute in your project, as polyfill packages do:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight" data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.CodeGenerator.Tests/Features/ClassImpersonation/RequiredMemberTests.cs#L100"><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">System.Diagnostics.CodeAnalysis</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[AttributeUsage(AttributeTargets.Constructor)]</span>
+<span class="w">    </span><span class="k">internal</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">SetsRequiredMembersAttribute</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Attribute</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="imp011">IMP011: Member that returns by reference<a class="headerlink" href="#imp011" title="Permanent link">&para;</a></h2>
+<p>An imposter returns the results you set up with <code>Returns</code>, or <code>default</code>, by value. It has no storage of its own to hand out a reference to, so it can't implement or override a method, property or indexer that returns by <code>ref</code> or <code>ref readonly</code>. IMP011 names the first such member, and no imposter is generated. A ref-like type returned by reference reports <a href="#imp009">IMP009</a> instead.</p>
+<p>Change the member to return by value, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member that returns by reference doesn't cause IMP011. On an interface target, a member that returns by reference and has a default body doesn't cause it either: the imposter leaves it out, and calls reach that body.</p>
+<h2 id="imp012">IMP012: Static abstract member<a class="headerlink" href="#imp012" title="Permanent link">&para;</a></h2>
+<p>An imposter passes its target interface as a type argument, as in <code>IHaveImposterInstance&lt;IService&gt;</code>. C# doesn't allow an interface as a type argument while one of its static abstract members, declared or inherited, has no implementation in the interface (CS8920). IMP012 names the first such member, and no imposter is generated.</p>
+<p>Register an interface without the member, such as one that declares only the instance members your tests need, or give the member a body with <code>static virtual</code>. Static virtual members don't cause IMP012, and neither does a class target that implements the interface.</p>
+<h2 id="implog001">IMPLOG001: Generator log<a class="headerlink" href="#implog001" title="Permanent link">&para;</a></h2>
+<p>Log messages from the generator, written only when the <code>IMPOSTER_LOG</code> MSBuild property is <code>true</code>. They show the language version, whether the static <code>Imposter()</code> extensions are generated, and each generated imposter with its file name.</p>
+<p><code>dotnet build</code> shows these messages only at detailed verbosity: <code>dotnet build -v:d -p:IMPOSTER_LOG=true</code>. See the tip on <a href="../">Getting Started</a>.</p>
+<h2 id="retired-diagnostics">Retired diagnostics<a class="headerlink" href="#retired-diagnostics" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>IMP001</strong> (unsupported language) was removed. The generator only runs for C# projects, so it could never be reported.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Next steps</p>
+<ul>
+<li><a href="../">Getting Started</a></li>
+<li><a href="../generics/">Generics</a></li>
+<li><a href="../key-api-reference/">Key API Reference</a></li>
+<li><a href="../limitations/">Limitations</a></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.prune", "navigation.indexes", "navigation.instant", "toc.follow", "toc.integrate", "content.code.copy", "search.suggest", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../scripts/code-links.js"></script>
+      
+    
+  </body>
+</html>
