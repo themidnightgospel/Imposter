@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Imposter.CodeGenerator.SyntaxHelpers.VolatileSyntaxHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -37,38 +38,10 @@ internal static class DefaultIndexerBehaviourBuilder
 
     private static PropertyDeclarationSyntax BuildIsOnProperty(in ImposterIndexerMetadata indexer)
     {
-        var getBody = Block(
-            ReturnStatement(
-                WellKnownTypes
-                    .System.Threading.Volatile.Dot(IdentifierName("Read"))
-                    .Call(
-                        ArgumentListSyntax([
-                            Argument(
-                                null,
-                                Token(SyntaxKind.RefKeyword),
-                                IdentifierName(
-                                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Name
-                                )
-                            ),
-                        ])
-                    )
-            )
-        );
-
+        var isOnBackingField = indexer.DefaultIndexerBehaviour.IsOnBackingField.Name;
+        var getBody = Block(ReturnStatement(VolatileRead(isOnBackingField)));
         var setBody = Block(
-            WellKnownTypes
-                .System.Threading.Volatile.Dot(IdentifierName("Write"))
-                .Call(
-                    ArgumentListSyntax([
-                        Argument(
-                            null,
-                            Token(SyntaxKind.RefKeyword),
-                            IdentifierName(indexer.DefaultIndexerBehaviour.IsOnBackingField.Name)
-                        ),
-                        Argument(IdentifierName("value")),
-                    ])
-                )
-                .ToStatementSyntax()
+            VolatileWrite(isOnBackingField, IdentifierName("value")).ToStatementSyntax()
         );
 
         return new PropertyDeclarationBuilder(

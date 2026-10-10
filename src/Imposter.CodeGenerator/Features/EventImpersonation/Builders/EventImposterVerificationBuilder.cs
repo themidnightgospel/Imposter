@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -246,16 +247,12 @@ internal static class EventImposterVerificationBuilder
             .WithBody(
                 Block(
                     IfStatement(
-                        Not(expected.Dot(IdentifierName("Matches")).Call(Argument(actual))),
+                        CountDoesNotMatch(expected, actual),
                         Block(
-                            ThrowStatement(
-                                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                                    ArgumentListSyntax([
-                                        Argument(expected),
-                                        Argument(actual),
-                                        Argument(performedInvocationsFactory.Call()),
-                                    ])
-                                )
+                            ThrowVerificationFailed(
+                                expected,
+                                actual,
+                                performedInvocationsFactory.Call()
                             )
                         )
                     )

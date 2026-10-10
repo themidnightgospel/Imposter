@@ -8,7 +8,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Imposter.CodeGenerator.SyntaxHelpers.VolatileSyntaxHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -172,10 +174,11 @@ internal static class IndexerSetterBuilder
             indexer.SetterBuilderInterface.CalledMethod.CountParameter
         );
         var invocationHistoryIdentifier = IdentifierName(setter.InvocationHistoryField.Name);
+        var invocationCount = IdentifierName("invocationCount");
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
-            "invocationCount",
+            invocationCount.Identifier.Text,
             invocationHistoryIdentifier
                 .Dot(IdentifierName("Count"))
                 .Call(
@@ -192,12 +195,6 @@ internal static class IndexerSetterBuilder
                         )
                     )
                 )
-        );
-
-        var condition = Not(
-            IdentifierName(countParameter.Identifier)
-                .Dot(IdentifierName("Matches"))
-                .Call(Argument(IdentifierName("invocationCount")))
         );
 
         var entryIdentifier = IdentifierName("entry");
@@ -221,11 +218,14 @@ internal static class IndexerSetterBuilder
             .WithBody(
                 Block(
                     invocationCountDeclaration,
-                    BuildCalledVerificationBlock(
-                        condition,
-                        invocationHistoryIdentifier,
+                    ThrowIfCountDoesNotMatch(
                         IdentifierName(countParameter.Identifier),
-                        descriptionExpression
+                        invocationCount,
+                        new PerformedInvocations(
+                            invocationHistoryIdentifier,
+                            entryIdentifier,
+                            descriptionExpression
+                        )
                     )
                 )
             )
@@ -427,12 +427,11 @@ internal static class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return BuildEnsureConfiguredMethod(
+        return EnsureConfiguredMethod(
             setter.EnsureSetterConfiguredMethodName,
             setter.InvocationBehaviorField.Name,
-            setter.HasConfiguredSetterField.Name,
-            setter.PropertyDisplayNameField.Name,
-            setter.SetterSuffix
+            VolatileRead(setter.HasConfiguredSetterField.Name),
+            Block(ThrowMissingImposter(setter.PropertyDisplayNameField.Name, setter.SetterSuffix))
         );
     }
 

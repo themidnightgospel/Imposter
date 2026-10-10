@@ -6,8 +6,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
-using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Imposter.CodeGenerator.SyntaxHelpers.VolatileSyntaxHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -107,37 +107,22 @@ internal static class IndexerImposterBuilderCommon
         string invocationBehaviorFieldName,
         string propertyDisplayNameFieldName
     ) =>
-        new ConstructorBuilder(className)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(ParameterSyntax(defaultBehaviourType, DefaultBehaviourParameterName))
+        new ConstructorWithFieldInitializationBuilder(className)
+            .WithModifiers(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
-                    InvocationBehaviorParameterName
-                )
+                new ParameterMetadata(DefaultBehaviourParameterName, defaultBehaviourType),
+                defaultBehaviourFieldName
             )
-            .AddParameter(ParameterSyntax(WellKnownTypes.String, PropertyDisplayNameParameterName))
-            .WithBody(
-                new BlockBuilder()
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(defaultBehaviourFieldName))
-                            .Assign(IdentifierName(DefaultBehaviourParameterName))
-                            .ToStatementSyntax()
-                    )
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(invocationBehaviorFieldName))
-                            .Assign(IdentifierName(InvocationBehaviorParameterName))
-                            .ToStatementSyntax()
-                    )
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(propertyDisplayNameFieldName))
-                            .Assign(IdentifierName(PropertyDisplayNameParameterName))
-                            .ToStatementSyntax()
-                    )
-                    .Build()
+            .AddParameter(
+                new ParameterMetadata(
+                    InvocationBehaviorParameterName,
+                    WellKnownTypes.Imposter.Abstractions.ImposterMode
+                ),
+                invocationBehaviorFieldName
+            )
+            .AddParameter(
+                new ParameterMetadata(PropertyDisplayNameParameterName, WellKnownTypes.String),
+                propertyDisplayNameFieldName
             )
             .Build();
 
@@ -147,96 +132,6 @@ internal static class IndexerImposterBuilderCommon
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithBody(
-                Block(
-                    WellKnownTypes
-                        .System.Threading.Volatile.Dot(IdentifierName("Write"))
-                        .Call(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            null,
-                                            Token(SyntaxKind.RefKeyword),
-                                            IdentifierName(fieldName)
-                                        ),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(True),
-                                    }
-                                )
-                            )
-                        )
-                        .ToStatementSyntax()
-                )
-            )
+            .WithBody(Block(VolatileWrite(fieldName, True).ToStatementSyntax()))
             .Build();
-
-    internal static MethodDeclarationSyntax BuildEnsureConfiguredMethod(
-        string methodName,
-        string invocationBehaviorFieldName,
-        string hasConfiguredFieldName,
-        string propertyDisplayNameFieldName,
-        string suffix
-    )
-    {
-        var explicitCheck = IsExplicit(IdentifierName(invocationBehaviorFieldName));
-
-        var configuredCheck = WellKnownTypes
-            .System.Threading.Volatile.Dot(IdentifierName("Read"))
-            .Call(
-                Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(hasConfiguredFieldName))
-            );
-
-        var condition = explicitCheck.And(Not(configuredCheck));
-
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithBody(
-                Block(
-                    IfStatement(
-                        condition,
-                        Block(ThrowMissingImposter(propertyDisplayNameFieldName, suffix))
-                    )
-                )
-            )
-            .Build();
-    }
-
-    internal static IfStatementSyntax BuildCalledVerificationBlock(
-        ExpressionSyntax condition,
-        ExpressionSyntax invocationHistoryIdentifier,
-        ExpressionSyntax countParameterIdentifier,
-        ExpressionSyntax entryDescriptionExpression
-    )
-    {
-        var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
-
-        return IfStatement(
-            condition,
-            Block(
-                LocalVariableDeclarationSyntax(Var, "performedInvocations", stringListType.New()),
-                ForEachStatement(
-                    Var,
-                    Identifier("entry"),
-                    invocationHistoryIdentifier,
-                    Block(
-                        IdentifierName("performedInvocations")
-                            .Dot(IdentifierName("Add"))
-                            .Call(Argument(entryDescriptionExpression))
-                            .ToStatementSyntax()
-                    )
-                ),
-                ThrowStatement(
-                    WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                        ArgumentListSyntax([
-                            Argument(countParameterIdentifier),
-                            Argument(IdentifierName("invocationCount")),
-                            Argument(JoinWithNewLines(IdentifierName("performedInvocations"))),
-                        ])
-                    )
-                )
-            )
-        );
-    }
 }
