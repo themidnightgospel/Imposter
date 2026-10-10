@@ -82,23 +82,12 @@ public class RefLikeMemberDiagnosticTests
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
 
-    // The async raise can't take a span (CS4012).
+    // The async raise takes the span's array, and can't declare the span variable a ref argument needs (CS4012).
     [Fact]
-    public async Task GivenAsyncEventWhoseDelegateTakesSpan_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenAsyncEventWhoseDelegateTakesRefSpan_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public delegate System.Threading.Tasks.Task AsyncSpanHandler(System.ReadOnlySpan<byte> data); public interface IService { event AsyncSpanHandler Received; }"
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    // A handler's change to a ref span can't reach the raise's caller through a copy of its elements.
-    [Fact]
-    public async Task GivenEventWhoseDelegateTakesRefSpan_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public delegate void RefSpanHandler(ref System.Span<byte> data); public interface IService { event RefSpanHandler Received; }"
+            "public delegate System.Threading.Tasks.Task AsyncSpanHandler(ref System.Span<byte> data); public interface IService { event AsyncSpanHandler Received; }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -147,6 +136,17 @@ public class RefLikeMemberDiagnosticTests
     }
 
 #if ROSLYN4_14_OR_GREATER
+    [Fact]
+    public async Task GivenAsyncEventWhoseDelegateTakesRefReadOnlySpan_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public delegate System.Threading.Tasks.Task AsyncSpanHandler(ref readonly System.ReadOnlySpan<byte> data); public interface IService { event AsyncSpanHandler Received; }",
+            languageVersion: LanguageVersion.CSharp12
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
     [Fact]
     public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
     {
