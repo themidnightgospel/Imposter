@@ -249,6 +249,15 @@ internal sealed record ImposterTargetModel(
     private static string ParameterTypesKey(IEnumerable<IParameterSymbol> parameters) =>
         string.Join(",", parameters.Select(parameter => parameter.Type.ToSignatureKey()));
 
+    // A constructor the imposter forwards: an accessible one without a pointer parameter, which the imposter's own
+    // constructor couldn't take outside unsafe code.
+    internal static bool IsCallableConstructor(
+        IMethodSymbol constructor,
+        MemberAccess memberAccess
+    ) =>
+        memberAccess.IsAccessible(constructor)
+        && !constructor.Parameters.Any(parameter => parameter.Type.ContainsPointer());
+
     private static EquatableArray<ConstructorModel> GetAccessibleConstructors(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -261,7 +270,8 @@ internal sealed record ImposterTargetModel(
 
         var declaredConstructors = target
             .InstanceConstructors.Where(constructor =>
-                !constructor.IsImplicitlyDeclared && memberAccess.IsAccessible(constructor)
+                !constructor.IsImplicitlyDeclared
+                && IsCallableConstructor(constructor, memberAccess)
             )
             .Select(constructor => new ConstructorModel(
                 constructor.Parameters.Select(ParameterModel.From).ToEquatableArray()
