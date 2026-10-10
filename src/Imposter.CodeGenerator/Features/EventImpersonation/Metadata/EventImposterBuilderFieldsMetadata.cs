@@ -33,7 +33,7 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
     internal EventImposterBuilderFieldsMetadata(in ImposterEventCoreMetadata core)
     {
-        HistoryEntry = new EventHistoryEntryMetadata(core.Parameters);
+        HistoryEntry = new EventHistoryEntryMetadata(core.MatchedParameters);
         HandlerInvocationEntry = new EventHandlerInvocationEntryMetadata(core);
         var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
             core.HandlerTypeSyntax

@@ -127,7 +127,7 @@ internal static class EventImposterVerificationBuilder
         var historyEntry = @event.Builder.Fields.HistoryEntry;
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
         var predicateBody = @event
-            .Core.Parameters.Select(
+            .Core.MatchedParameters.Select(
                 (parameter, index) =>
                     (ExpressionSyntax)
                         IdentifierName(criteria[index].Name)
@@ -147,7 +147,7 @@ internal static class EventImposterVerificationBuilder
         var method = @event.Builder.Methods.HandlerInvoked;
         var criteriaName = method.HandlerCriteriaParameter.Name;
         var eventName = @event.Core.Name;
-        var parameters = @event.Core.Parameters;
+        var parameters = @event.Core.MatchedParameters;
         var handlerInvocationEntry = @event.Builder.Fields.HandlerInvocationEntry;
 
         return new MethodDeclarationBuilder(
@@ -332,7 +332,7 @@ internal static class EventImposterVerificationBuilder
     )
     {
         var eventName = @event.Core.Name;
-        var parameters = @event.Core.Parameters;
+        var parameters = @event.Core.MatchedParameters;
         var historyEntry = @event.Builder.Fields.HistoryEntry;
 
         return BuildHistoryPerformedInvocationsFactory(

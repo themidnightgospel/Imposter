@@ -92,3 +92,7 @@ An async method can't take a span, so for an async delegate `RaiseAsync` takes t
 
 !!! warning
     An async delegate can't take the span by `ref`, `out` or `ref readonly`: passing a span by reference needs a span variable, which an async method can't declare. Such an event reports [IMP009](../diagnostics.md#imp009).
+
+## Ref struct parameters
+
+An event whose delegate takes another `ref struct` can be impersonated too. `Raise` passes the argument on to the callbacks and the subscribed handlers, by reference when the delegate takes it by `ref` or `out`. The imposter can't keep or match it, so the raise and handler-invocation histories leave it out, and `Raised` matches the other arguments only (see [Ref struct parameters](../arguments-matching.md#ref-struct-parameters)). An async delegate can't take one, because `RaiseAsync` can't, so such an event reports [IMP009](../diagnostics.md#imp009).

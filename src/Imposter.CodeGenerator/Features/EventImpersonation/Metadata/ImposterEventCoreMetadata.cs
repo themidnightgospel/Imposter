@@ -23,6 +23,10 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal readonly EventParameterMetadata[] Parameters;
 
+    // The parameters the raise and handler-invocation histories keep and Raised matches: all but the ref structs the
+    // raise only passes through.
+    internal readonly EventParameterMetadata[] MatchedParameters;
+
     // The handler's element in the handler-invocation history tuple, next to the parameters' elements.
     internal readonly string HandlerTupleElementName;
 
@@ -54,6 +58,7 @@ internal readonly ref struct ImposterEventCoreMetadata
                 tupleElementNames
             ))
             .ToArray();
+        MatchedParameters = Parameters.Where(parameter => !parameter.IsPassedThrough).ToArray();
         HandlerTupleElementName = tupleElementNames.Use("Handler");
         IsAsync = @event.IsAsync;
         ReturnsNonGenericValueTask = @event.ReturnsNonGenericValueTask;
