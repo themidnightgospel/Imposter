@@ -94,12 +94,20 @@ internal static class MethodImposterAdapterBuilder
             }
 
             var parameterType = parameter.NullableAwareTypeSyntax;
-            var castArgument = parameter.IsSpan
-                ? AdaptedSpan(
-                    IdentifierName(parameter.Name),
-                    (TypeSyntax)typeParamRenamer.Visit(parameter.NullableAwareStoredTypeSyntax),
-                    parameter.NullableAwareStoredTypeSyntax
-                )
+            var castArgument =
+                parameter.IsSpan
+                    ? AdaptedSpan(
+                        IdentifierName(parameter.Name),
+                        (TypeSyntax)typeParamRenamer.Visit(parameter.NullableAwareKeptTypeSyntax),
+                        parameter.NullableAwareKeptTypeSyntax
+                    )
+                // dynamic uses none of the method's type parameters, so it passes on as the object it is: TypeCaster
+                // would take it as a dynamic argument, which binds at runtime.
+                : parameter.Model.Type.IsDynamic
+                    ? SyntaxFactoryHelper.AsObject(
+                        IdentifierName(parameter.Name),
+                        parameter.Model.Type
+                    )
                 : TypeCasterSyntaxHelper.CastExpression(
                     parameter.Name,
                     (TypeSyntax)typeParamRenamer.Visit(parameterType),
@@ -196,7 +204,7 @@ internal static class MethodImposterAdapterBuilder
             .Build();
     }
 
-    // A ref or out argument goes back to the caller's type from the adapter's local.
+    // A ref or out argument goes back to the caller's type from the adapter's local, which a dynamic one already has.
     private static ExpressionSyntax CastBack(
         in MethodParameterMetadata parameter,
         string adaptedName,
@@ -205,12 +213,17 @@ internal static class MethodImposterAdapterBuilder
     {
         if (parameter.IsSpan)
         {
-            var elementsType = parameter.NullableAwareStoredTypeSyntax;
+            var elementsType = parameter.NullableAwareKeptTypeSyntax;
             return AdaptedSpan(
                 IdentifierName(adaptedName),
                 elementsType,
                 (TypeSyntax)typeParamRenamer.Visit(elementsType)
             );
+        }
+
+        if (parameter.Model.Type.IsDynamic)
+        {
+            return IdentifierName(adaptedName);
         }
 
         var type = parameter.NullableAwareTypeSyntax;
@@ -241,8 +254,8 @@ internal static class MethodImposterAdapterBuilder
         }
 
         // A ref struct result passes back as it is: its type doesn't use the method's type parameters (IMP009
-        // otherwise).
-        if (method.Model.ReturnType.IsPassedThrough)
+        // otherwise). So does a dynamic one, which uses none, and which TypeCaster would bind at runtime.
+        if (method.Model.ReturnType.IsPassedThrough || method.Model.ReturnType.Type.IsDynamic)
         {
             return IdentifierName(adapterNames.InvokeResultVariableName);
         }

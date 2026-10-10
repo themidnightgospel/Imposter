@@ -11,17 +11,23 @@ internal readonly struct EventParameterMetadata
 {
     internal readonly string Name;
 
-    // The type the raise and handler-invocation histories keep this parameter as: the array of a span's elements.
+    // The type the raise and handler-invocation histories keep this parameter as: the array of a span's elements, or
+    // the object a dynamic is.
     internal readonly TypeSyntax TypeSyntax;
 
     internal readonly TypeSyntax ArgTypeSyntax;
 
-    // This parameter's value as the histories keep it: a copy of a span's elements, since the span can't be kept.
-    internal readonly ExpressionSyntax StoredValue;
+    // This parameter's value as the histories keep it: a copy of a span's elements, since the span can't be kept, or
+    // the object a dynamic is.
+    internal readonly ExpressionSyntax KeptValue;
+
+    // This parameter by value, as the object a dynamic is (see SyntaxFactoryHelper.RuntimeValue).
+    internal readonly ExpressionSyntax RuntimeValue;
 
     internal readonly ParameterSyntax ParameterSyntax;
 
-    // Passes this parameter on to a member that declares it the same way: a handler, a callback or the sync raise.
+    // Passes this parameter on to a member that declares it the same way: a handler, a callback or the sync raise. A
+    // dynamic passes as the object it is.
     internal readonly ArgumentSyntax ForwardingArgument;
 
     internal readonly bool IsOut;
@@ -36,19 +42,18 @@ internal readonly struct EventParameterMetadata
     internal EventParameterMetadata(ParameterModel model, NameSet tupleElementNames)
     {
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
-        TypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model);
-        if (model.Span is { } span)
-        {
-            ArgTypeSyntax = SyntaxFactoryHelper.SpanArgType(span);
-            StoredValue = SyntaxFactoryHelper.SpanElementsCopy(IdentifierName(Name));
-        }
-        else
-        {
-            ArgTypeSyntax = WellKnownTypes.Imposter.Abstractions.Arg(TypeSyntax);
-            StoredValue = IdentifierName(Name);
-        }
+        TypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(model.Span, model.Type);
+        ArgTypeSyntax = model.Span is { } span
+            ? SyntaxFactoryHelper.SpanArgType(span)
+            : WellKnownTypes.Imposter.Abstractions.Arg(
+                SyntaxFactoryHelper.TypeSyntaxIncludingNullable(model.Type)
+            );
+        KeptValue = SyntaxFactoryHelper.KeptValue(IdentifierName(Name), model.Span, model.Type);
+        RuntimeValue = SyntaxFactoryHelper.RuntimeValue(IdentifierName(Name), model.Type);
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
-        ForwardingArgument = SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
+        ForwardingArgument = SyntaxFactoryHelper.PassesAsObject(model)
+            ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(Name), model.Type))
+            : SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
         IsOut = model.RefKind == RefKind.Out;
         IsPassedThrough = model.IsPassedThrough;
         TupleElementName = TupleElementNames.IsReserved(Name) ? tupleElementNames.Use(Name) : Name;

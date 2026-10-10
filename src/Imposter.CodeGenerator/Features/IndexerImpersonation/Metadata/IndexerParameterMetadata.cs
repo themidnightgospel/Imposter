@@ -15,6 +15,9 @@ internal readonly struct IndexerParameterMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
+    // The type the arguments class keeps this parameter as: TypeSyntax, or the object a dynamic is.
+    internal readonly TypeSyntax KeptTypeSyntax;
+
     internal readonly TypeSyntax ArgTypeSyntax;
 
     internal readonly ParameterSyntax ParameterSyntax;
@@ -31,6 +34,10 @@ internal readonly struct IndexerParameterMetadata
         Model = model;
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
         TypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model);
+        KeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
+            model.Span,
+            model.Type
+        );
         ArgTypeSyntax = SyntaxFactoryHelper.ArgType(model);
         ParameterSyntax = model.Span is null
             ? SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model)
@@ -46,7 +53,7 @@ internal readonly struct IndexerParameterMetadata
                 ? WellKnownTypes.Imposter.Abstractions.SpanElementsComparer(
                     SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
                 )
-                : WellKnownTypes.System.Collections.Generic.EqualityComparer(TypeSyntax)
+                : WellKnownTypes.System.Collections.Generic.EqualityComparer(KeptTypeSyntax)
         ).Dot(IdentifierName("Default"));
 
     // The indexer's argument as the imposter's members take it: a copy of a span's elements, or the argument itself.

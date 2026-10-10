@@ -29,6 +29,10 @@ internal readonly ref struct ImposterPropertyCoreMetadata
     // The type the imposter gets and sets the value as: the property's type, or the array that keeps a span's elements.
     internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
 
+    // The type the setter passes a set value on and keeps it as: the stored type, or the object a dynamic is, so the
+    // setter's own calls bind when the imposter compiles (see SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable).
+    internal readonly TypeSyntax NullableAwareKeptTypeSyntax;
+
     internal readonly string DisplayName;
 
     internal readonly bool IsPassedThrough;
@@ -80,6 +84,10 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         NullableAwareStoredTypeSyntax = span is null
             ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
+        NullableAwareKeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
+            span,
+            property.Type
+        );
         IsPassedThrough = property.IsPassedThrough;
         KeepsValue = HasGetter && !IsPassedThrough;
         if (IsPassedThrough)
@@ -118,6 +126,6 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         DisplayName = property.DisplayName;
     }
 
-    internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
-        SyntaxFactoryHelper.StoredValue(value, _span, _type);
+    internal ExpressionSyntax KeptValue(ExpressionSyntax value) =>
+        SyntaxFactoryHelper.KeptValue(value, _span, _type);
 }

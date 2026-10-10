@@ -18,12 +18,13 @@ internal static partial class SyntaxFactoryHelper
             return parameter.RefKind == RefKind.Out ? OutSpanArgType(span) : SpanArgType(span);
         }
 
-        var parameterType = TypeSyntaxIncludingNullable(parameter.Type);
+        return ArgType(parameter.RefKind, TypeSyntaxIncludingNullable(parameter.Type));
+    }
 
-        return parameter.RefKind == RefKind.Out
+    private static NameSyntax ArgType(RefKind refKind, TypeSyntax parameterType) =>
+        refKind == RefKind.Out
             ? WellKnownTypes.Imposter.Abstractions.OutArg(parameterType)
             : WellKnownTypes.Imposter.Abstractions.Arg(parameterType);
-    }
 
     internal static NameSyntax SpanArgType(SpanModel span)
     {
@@ -48,6 +49,13 @@ internal static partial class SyntaxFactoryHelper
         parameter.Span is { } span
             ? SpanElementsArrayType(span)
             : TypeSyntaxIncludingNullable(parameter.Type);
+
+    // The matcher the imposter's own code builds for a parameter: of the type it keeps the argument as, so a matcher
+    // for a dynamic parameter takes the object it is.
+    internal static TypeSyntax KeptArgType(ParameterModel parameter) =>
+        parameter.Type.IsDynamic
+            ? ArgType(parameter.RefKind, RuntimeTypeSyntax(parameter.Type))
+            : ArgType(parameter);
 
     internal static ArrayTypeSyntax SpanElementsArrayType(SpanModel span) =>
         ArrayType(

@@ -11,16 +11,21 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 // default literal argument has no type to bind to there.
 internal static partial class SyntaxFactoryHelper
 {
-    // As object, or object? for a dynamic?, so the value keeps its nullability.
+    // The type a value of the type is at runtime: object for a dynamic, or object? for a dynamic?, so the value keeps
+    // its nullability, and the type itself otherwise.
+    internal static TypeSyntax RuntimeTypeSyntax(TypeModel type) =>
+        type.IsDynamic
+            ? (TypeSyntax)new DynamicAsObjectRewriter().Visit(TypeSyntaxIncludingNullable(type))
+            : TypeSyntaxIncludingNullable(type);
+
+    // The value as the object a dynamic is, or the value itself.
+    internal static ExpressionSyntax RuntimeValue(ExpressionSyntax value, TypeModel type) =>
+        type.IsDynamic ? AsObject(value, type) : value;
+
     internal static ExpressionSyntax AsObject(
         ExpressionSyntax dynamicValue,
         TypeModel dynamicType
-    ) =>
-        CastExpression(
-            (TypeSyntax)
-                new DynamicAsObjectRewriter().Visit(TypeSyntaxIncludingNullable(dynamicType)),
-            dynamicValue
-        );
+    ) => CastExpression(RuntimeTypeSyntax(dynamicType), dynamicValue);
 
     // A dynamic passed by value, or to an in parameter, which takes a value too, passes as an object. One passed by
     // ref or out stays dynamic.
@@ -28,16 +33,18 @@ internal static partial class SyntaxFactoryHelper
         parameter.Type.IsDynamic
         && (!includeRefKind || parameter.RefKind is RefKind.None or RefKind.In);
 
+    // The type the imposter keeps a value as: the array of a span's elements, the object a dynamic is, or the type
+    // itself.
+    internal static TypeSyntax KeptTypeSyntaxIncludingNullable(SpanModel? span, TypeModel type) =>
+        span is not null ? SpanElementsArrayType(span) : RuntimeTypeSyntax(type);
+
     // A value as the imposter keeps it: a copy of a span's elements, the object a dynamic value is, or the value
     // itself.
-    internal static ExpressionSyntax StoredValue(
+    internal static ExpressionSyntax KeptValue(
         ExpressionSyntax value,
         SpanModel? span,
         TypeModel type
-    ) =>
-        span is not null ? SpanElementsCopy(value)
-        : type.IsDynamic ? AsObject(value, type)
-        : value;
+    ) => span is not null ? SpanElementsCopy(value) : RuntimeValue(value, type);
 
     // typeof doesn't take dynamic (CS1962). Only a type the model says contains dynamic is rewritten: written in
     // syntax, a type parameter named dynamic looks the same.
