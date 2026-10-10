@@ -26,10 +26,11 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     private readonly TypeModel _type;
 
-    // The type the imposter gets and sets the value as: the property's type, or the array that keeps a span's elements.
-    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
+    // The type the getter returns and setups take the value as: the property's type, or the array that keeps a span's
+    // elements.
+    internal readonly TypeSyntax NullableAwareValueTypeSyntax;
 
-    // The type the setter passes a set value on and keeps it as: the stored type, or the object a dynamic is, so the
+    // The type the setter passes a set value on and keeps it as: the value type, or the object a dynamic is, so the
     // setter's own calls bind when the imposter compiles (see SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable).
     internal readonly TypeSyntax NullableAwareKeptTypeSyntax;
 
@@ -81,7 +82,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         var span = property.Span;
         _span = span;
         _type = property.Type;
-        NullableAwareStoredTypeSyntax = span is null
+        NullableAwareValueTypeSyntax = span is null
             ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
         NullableAwareKeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
@@ -102,14 +103,14 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         else
         {
             Delegates = null;
-            SetterCallbackType = WellKnownTypes.System.ActionOfT(NullableAwareStoredTypeSyntax);
-            ValueGeneratorType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
+            SetterCallbackType = WellKnownTypes.System.ActionOfT(NullableAwareValueTypeSyntax);
+            ValueGeneratorType = WellKnownTypes.System.Func(NullableAwareValueTypeSyntax);
             ReturnHandlerType = WellKnownTypes.System.Func(
                 ValueGeneratorType.ToNullableType(),
-                NullableAwareStoredTypeSyntax
+                NullableAwareValueTypeSyntax
             );
             AsArgType = span is null
-                ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareStoredTypeSyntax)
+                ? WellKnownTypes.Imposter.Abstractions.Arg(NullableAwareValueTypeSyntax)
                 : SyntaxFactoryHelper.SpanArgType(span);
         }
 

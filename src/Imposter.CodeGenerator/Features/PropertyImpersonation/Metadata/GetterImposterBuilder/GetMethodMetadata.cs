@@ -13,7 +13,7 @@ internal readonly struct GetMethodMetadata
 
     internal GetMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
-        ReturnType = property.NullableAwareStoredTypeSyntax;
+        ReturnType = property.NullableAwareValueTypeSyntax;
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
             property.ValueGeneratorType.ToNullableType(),

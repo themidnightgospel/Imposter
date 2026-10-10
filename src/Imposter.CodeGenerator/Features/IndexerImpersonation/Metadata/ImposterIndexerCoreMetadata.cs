@@ -43,10 +43,11 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     private readonly TypeModel _valueType;
 
-    // The type the imposter gets and sets the value as: the indexer's type, or the array that keeps a span's elements.
-    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
+    // The type the getter returns and setups take the value as: the indexer's type, or the array that keeps a span's
+    // elements.
+    internal readonly TypeSyntax NullableAwareValueTypeSyntax;
 
-    // The type the setter passes a set value on and keeps it as: the stored type, or the object a dynamic is, so the
+    // The type the setter passes a set value on and keeps it as: the value type, or the object a dynamic is, so the
     // setter's own calls bind when the imposter compiles (see SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable).
     internal readonly TypeSyntax NullableAwareKeptTypeSyntax;
 
@@ -89,7 +90,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         HasSpanValue = indexer.Span is not null;
         _valueSpan = indexer.Span;
         _valueType = indexer.Type;
-        NullableAwareStoredTypeSyntax = indexer.Span is { } span
+        NullableAwareValueTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
         NullableAwareKeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
@@ -117,7 +118,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         HasGeneratedValueDelegates = IsValuePassedThrough || PassedThroughParameters.Length > 0;
         BaseGetterType = HasGeneratedValueDelegates
             ? Delegates.BaseGetterDelegateType
-            : WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
+            : WellKnownTypes.System.Func(NullableAwareValueTypeSyntax);
         BaseSetterType = HasGeneratedValueDelegates
             ? Delegates.BaseSetterDelegateType
             : WellKnownTypes.System.Action;

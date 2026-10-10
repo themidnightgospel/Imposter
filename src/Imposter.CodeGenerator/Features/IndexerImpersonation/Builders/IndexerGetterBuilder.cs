@@ -43,7 +43,7 @@ internal static partial class IndexerGetterBuilder
             );
         }
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(
@@ -141,7 +141,7 @@ internal static partial class IndexerGetterBuilder
             )
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters([
                 .. indexer.Core.ParameterSyntaxes,

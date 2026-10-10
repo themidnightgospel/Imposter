@@ -75,14 +75,14 @@ internal readonly struct IndexerGetterImposterMetadata
             ? indexer.Delegates.ReturnGeneratorDelegateType
             : WellKnownTypes.System.Func(
                 indexer.Arguments.TypeSyntax,
-                indexer.Core.NullableAwareStoredTypeSyntax
+                indexer.Core.NullableAwareValueTypeSyntax
             );
         ReturnHandlerType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnHandlerDelegateType
             : WellKnownTypes.System.Func(
                 indexer.Arguments.TypeSyntax,
                 indexer.Core.BaseGetterType.ToNullableType(),
-                indexer.Core.NullableAwareStoredTypeSyntax
+                indexer.Core.NullableAwareValueTypeSyntax
             );
         Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);
 
