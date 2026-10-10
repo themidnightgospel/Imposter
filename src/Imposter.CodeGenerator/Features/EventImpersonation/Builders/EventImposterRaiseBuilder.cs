@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -94,6 +95,7 @@ internal static class EventImposterRaiseBuilder
         var handler = IdentifierName(localNames.Handler);
 
         return new BlockBuilder()
+            .AddStatements(AssignOutParametersDefault(@event))
             .AddExpression(EnqueueHistoryEntry(@event))
             .AddStatement(ForEachCallback(@event, InvokeStatement(callback, @event)))
             .AddStatement(
@@ -105,6 +107,17 @@ internal static class EventImposterRaiseBuilder
             )
             .Build();
     }
+
+    // An out argument starts as the default: the history records it before the callbacks and handlers assign it, and
+    // it stays the default when none does.
+    private static IEnumerable<StatementSyntax> AssignOutParametersDefault(
+        in ImposterEventMetadata @event
+    ) =>
+        @event
+            .Core.Parameters.Where(parameter => parameter.IsOut)
+            .Select(parameter =>
+                IdentifierName(parameter.Name).Assign(DefaultNonNullable).ToStatementSyntax()
+            );
 
     internal static MethodDeclarationSyntax BuildRaiseCoreAsyncMethod(
         in ImposterEventMetadata @event

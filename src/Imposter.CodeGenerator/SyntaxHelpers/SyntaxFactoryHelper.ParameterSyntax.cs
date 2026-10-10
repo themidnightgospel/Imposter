@@ -38,12 +38,19 @@ internal static partial class SyntaxFactoryHelper
         return Argument(null, Token(refKindKeyword), IdentifierName(EscapeKeyword(parameter.Name)));
     }
 
-    // Passes a variable on to a parameter of the given kind. A `ref readonly` parameter needs the `in` written out
-    // (CS9192, CS9195); an `in` parameter takes the bare variable.
+    // Passes a variable on to a parameter of the given kind, with its `ref` or `out`. A `ref readonly` parameter needs
+    // the `in` written out (CS9192, CS9195); an `in` parameter takes the bare variable.
     internal static ArgumentSyntax ForwardingArgument(string variableName, RefKind refKind) =>
-        refKind == RefKinds.RefReadOnlyParameter
-            ? Argument(null, Token(SyntaxKind.InKeyword), IdentifierName(variableName))
-            : Argument(IdentifierName(variableName));
+        Argument(null, Token(ForwardingKeyword(refKind)), IdentifierName(variableName));
+
+    private static SyntaxKind ForwardingKeyword(RefKind refKind) =>
+        refKind switch
+        {
+            RefKind.Ref => SyntaxKind.RefKeyword,
+            RefKind.Out => SyntaxKind.OutKeyword,
+            RefKinds.RefReadOnlyParameter => SyntaxKind.InKeyword,
+            _ => SyntaxKind.None,
+        };
 
     internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
         IEnumerable<ParameterModel> parameters,
