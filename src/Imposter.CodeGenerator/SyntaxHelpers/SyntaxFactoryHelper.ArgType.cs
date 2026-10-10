@@ -44,8 +44,9 @@ internal static partial class SyntaxFactoryHelper
             : WellKnownTypes.Imposter.Abstractions.OutSpanArg(elementType);
     }
 
-    // A span argument is kept as an array of its elements.
-    internal static TypeSyntax StoredTypeSyntaxIncludingNullable(ParameterModel parameter) =>
+    // The type the imposter's delegates and methods take an argument as: its type, or the array of a span's elements
+    // (see KeptTypeSyntaxIncludingNullable for the type the imposter keeps it as).
+    internal static TypeSyntax ValueTypeSyntaxIncludingNullable(ParameterModel parameter) =>
         parameter.Span is { } span
             ? SpanElementsArrayType(span)
             : TypeSyntaxIncludingNullable(parameter.Type);

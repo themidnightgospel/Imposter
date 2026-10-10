@@ -30,12 +30,12 @@ internal readonly struct ReturnsMethodMetadata
         InterfaceSyntax = interfaceSyntax;
         ValueParameter = core.IsValuePassedThrough
             ? null
-            : new ParameterMetadata("value", core.NullableAwareStoredTypeSyntax);
+            : new ParameterMetadata("value", core.NullableAwareValueTypeSyntax);
         FuncParameter = core.IsValuePassedThrough
             ? null
             : new ParameterMetadata(
                 "valueGenerator",
-                WellKnownTypes.System.Func(core.NullableAwareStoredTypeSyntax)
+                WellKnownTypes.System.Func(core.NullableAwareValueTypeSyntax)
             );
         DelegateParameter = new ParameterMetadata(
             "valueGenerator",

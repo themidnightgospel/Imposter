@@ -33,7 +33,7 @@ internal readonly struct IndexerParameterMetadata
     {
         Model = model;
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
-        TypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model);
+        TypeSyntax = SyntaxFactoryHelper.ValueTypeSyntaxIncludingNullable(model);
         KeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
             model.Span,
             model.Type

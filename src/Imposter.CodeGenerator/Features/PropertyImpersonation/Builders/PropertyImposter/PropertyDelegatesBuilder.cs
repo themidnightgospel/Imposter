@@ -37,7 +37,7 @@ internal static class PropertyDelegatesBuilder
         in PropertyDelegateMetadata delegates
     ) =>
         DelegateDeclaration(
-                property.Core.NullableAwareStoredTypeSyntax,
+                property.Core.NullableAwareValueTypeSyntax,
                 Identifier(delegates.ValueDelegateName)
             )
             .AddModifiers(Token(SyntaxKind.PublicKeyword));
@@ -47,7 +47,7 @@ internal static class PropertyDelegatesBuilder
         in PropertyDelegateMetadata delegates
     ) =>
         DelegateDeclaration(
-                property.Core.NullableAwareStoredTypeSyntax,
+                property.Core.NullableAwareValueTypeSyntax,
                 Identifier(delegates.ReturnHandlerDelegateName)
             )
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
@@ -66,7 +66,7 @@ internal static class PropertyDelegatesBuilder
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(
                 SyntaxFactoryHelper.ParameterSyntax(
-                    property.Core.NullableAwareStoredTypeSyntax,
+                    property.Core.NullableAwareValueTypeSyntax,
                     property.SetterImposter.SetMethod.ValueParameter.Name
                 )
             );

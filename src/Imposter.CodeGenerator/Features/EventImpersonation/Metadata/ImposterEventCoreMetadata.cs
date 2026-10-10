@@ -76,7 +76,7 @@ internal readonly ref struct ImposterEventCoreMetadata
         model.Span is null
             ? SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model, includeRefKind: false)
             : SyntaxFactoryHelper.ParameterSyntax(
-                SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model),
+                SyntaxFactoryHelper.ValueTypeSyntaxIncludingNullable(model),
                 SyntaxFactoryHelper.EscapeKeyword(model.Name)
             );
 

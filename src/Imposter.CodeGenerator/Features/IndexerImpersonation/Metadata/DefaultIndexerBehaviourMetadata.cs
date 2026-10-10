@@ -34,7 +34,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
                 "BackingField",
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
                     arguments.TypeSyntax,
-                    core.NullableAwareStoredTypeSyntax
+                    core.NullableAwareValueTypeSyntax
                 )
             );
         GetBaseImplementationParameter = core.GetterBaseImplementationParameter(

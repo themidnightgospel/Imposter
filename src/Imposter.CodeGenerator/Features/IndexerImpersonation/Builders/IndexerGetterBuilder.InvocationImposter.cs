@@ -230,7 +230,7 @@ internal static partial class IndexerGetterBuilder
                 )
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Invoke")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Invoke")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)

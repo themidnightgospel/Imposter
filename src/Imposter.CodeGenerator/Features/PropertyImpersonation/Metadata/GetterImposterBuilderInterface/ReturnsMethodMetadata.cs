@@ -25,7 +25,7 @@ internal readonly struct ReturnsMethodMetadata
         InterfaceSyntax = interfaceSyntax;
         ValueParameter = property.IsPassedThrough
             ? null
-            : new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
+            : new ParameterMetadata("value", property.NullableAwareValueTypeSyntax);
         ValueGeneratorParameter = new ParameterMetadata(
             "valueGenerator",
             property.ValueGeneratorType

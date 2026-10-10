@@ -106,7 +106,7 @@ internal static class DefaultIndexerBehaviourBuilder
             )
             .ToArray();
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
             .AddParameters(passedThroughKeys)
@@ -143,7 +143,7 @@ internal static class DefaultIndexerBehaviourBuilder
         new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments"))
-            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"))
+            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareValueTypeSyntax, "value"))
             .WithBody(
                 Block(
                     ElementAccessExpression(IdentifierName(backingField.Name))
