@@ -34,8 +34,11 @@ internal static partial class SyntaxFactoryHelper
             (_, RefKind.In or RefKinds.RefReadOnlyParameter) => SyntaxKind.InKeyword,
             _ => SyntaxKind.None,
         };
+        var name = IdentifierName(EscapeKeyword(parameter.Name));
 
-        return Argument(null, Token(refKindKeyword), IdentifierName(EscapeKeyword(parameter.Name)));
+        return PassesAsObject(parameter, includeRefKind)
+            ? Argument(AsObject(name, parameter.Type))
+            : Argument(null, Token(refKindKeyword), name);
     }
 
     // Passes a variable on to a parameter of the given kind, with its `ref` or `out`. A `ref readonly` parameter needs

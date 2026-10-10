@@ -62,9 +62,10 @@ internal readonly struct IndexerParameterMetadata
             : Argument(IdentifierName(Name));
 
     // Passes this parameter, or a copy of it, to a member that declares the same parameter. A span key's array
-    // converts to the span by itself.
+    // converts to the span by itself, and a dynamic key passes as an object (see SyntaxFactoryHelper.AsObject).
     internal ArgumentSyntax ForwardingArgument(string variableName) =>
-        Model.Span is null
-            ? SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind)
-            : Argument(IdentifierName(variableName));
+        Model.Span is not null ? Argument(IdentifierName(variableName))
+        : SyntaxFactoryHelper.PassesAsObject(Model)
+            ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(variableName), Model.Type))
+        : SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind);
 }

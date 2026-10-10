@@ -35,6 +35,17 @@ internal static class TypeSymbolExtensions
         symbol is INamedTypeSymbol { MetadataName: "ValueTask" } named
         && named.IsInNamespace("System", "Threading", "Tasks");
 
+    // dynamic, or a type built from it, such as List<dynamic>. A type parameter named dynamic isn't.
+    internal static bool ContainsDynamic(this ITypeSymbol type) =>
+        type switch
+        {
+            { TypeKind: TypeKind.Dynamic } => true,
+            IArrayTypeSymbol arrayType => arrayType.ElementType.ContainsDynamic(),
+            INamedTypeSymbol namedType => AllTypeArguments(namedType)
+                .Any(it => it.ContainsDynamic()),
+            _ => false,
+        };
+
     // A pointer or function pointer, or a type built from one, such as an array of pointers.
     internal static bool ContainsPointer(this ITypeSymbol type) =>
         type switch
