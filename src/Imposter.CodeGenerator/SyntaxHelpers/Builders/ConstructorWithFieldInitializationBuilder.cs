@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -24,6 +25,40 @@ internal class ConstructorWithFieldInitializationBuilder
         in ParameterMetadata parameter,
         string fieldName
     ) => AddParameter(ParameterSyntax(parameter), fieldName);
+
+    // A parameter of the same name and type for each variable the field declarations declare.
+    internal ConstructorWithFieldInitializationBuilder AddParameters(
+        IEnumerable<FieldDeclarationSyntax> fields
+    )
+    {
+        foreach (var field in fields)
+        {
+            foreach (var variable in field.Declaration.Variables)
+            {
+                AddParameter(new FieldMetadata(variable.Identifier.Text, field.Declaration.Type));
+            }
+        }
+
+        return this;
+    }
+
+    // A parameter that isn't stored, for the statements added with AddStatements to read.
+    internal ConstructorWithFieldInitializationBuilder AddParameterWithoutField(
+        in ParameterMetadata parameter
+    )
+    {
+        _constructorBuilder.AddParameter(ParameterSyntax(parameter));
+        return this;
+    }
+
+    // Statements that run after the parameters are stored.
+    internal ConstructorWithFieldInitializationBuilder AddStatements(
+        IEnumerable<StatementSyntax> statements
+    )
+    {
+        _bodyBuilder.AddStatements(statements);
+        return this;
+    }
 
     private ConstructorWithFieldInitializationBuilder AddParameter(
         ParameterSyntax parameter,

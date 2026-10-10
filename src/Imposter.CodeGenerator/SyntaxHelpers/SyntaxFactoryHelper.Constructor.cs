@@ -8,43 +8,13 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
+    // A public constructor that takes a parameter for each field and stores it.
     internal static ConstructorDeclarationSyntax BuildConstructorAndInitializeMembers(
         string className,
-        IEnumerable<FieldDeclarationSyntax> fields,
-        IEnumerable<ParameterSyntax>? leadingParameters = null
-    )
-    {
-        var constructorBuilder = new ConstructorBuilder(className).WithModifiers(
-            TokenList(Token(SyntaxKind.PublicKeyword))
-        );
-
-        if (leadingParameters is not null)
-        {
-            constructorBuilder.AddParameters(leadingParameters);
-        }
-
-        var constructorBody = new BlockBuilder();
-
-        foreach (var field in fields)
-        {
-            var fieldType = field.Declaration.Type;
-
-            foreach (var fieldVariable in field.Declaration.Variables)
-            {
-                var fieldName = fieldVariable.Identifier.Text;
-
-                constructorBuilder.AddParameter(ParameterSyntax(fieldType, fieldName));
-                constructorBody.AddStatement(
-                    ThisExpression()
-                        .Dot(IdentifierName(fieldName))
-                        .Assign(IdentifierName(fieldName))
-                        .ToStatementSyntax()
-                );
-            }
-        }
-
-        constructorBuilder.WithBody(constructorBody.Build());
-
-        return constructorBuilder.Build();
-    }
+        IEnumerable<FieldDeclarationSyntax> fields
+    ) =>
+        new ConstructorWithFieldInitializationBuilder(className)
+            .WithModifiers(Token(SyntaxKind.PublicKeyword))
+            .AddParameters(fields)
+            .Build();
 }
