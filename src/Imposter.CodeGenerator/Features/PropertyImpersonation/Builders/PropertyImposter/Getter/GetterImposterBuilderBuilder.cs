@@ -41,7 +41,7 @@ internal static class GetterImposterBuilderBuilder
         builder = builder
             .AddMember(BuildGetterReturnValuesField(property.GetterImposterBuilder))
             .AddMember(BuildGetterCallbacksField(property.GetterImposterBuilder))
-            .AddMember(BuildLastGetterReturnValueField(property.GetterImposterBuilder))
+            .AddMember(BuildLastGetterReturnValueField(property))
             .AddMember(BuildGetterInvocationCountField(property.GetterImposterBuilder))
             .AddMember(
                 property.Core.KeepsValue
@@ -165,15 +165,41 @@ internal static class GetterImposterBuilderBuilder
             getterImposterBuilder.CallbacksField.TypeSyntax.New()
         );
 
+    // A value passed through can't be kept like the default behaviour keeps one, so until a setup says otherwise the
+    // getter reads the base getter, if there is one, every time.
     private static FieldDeclarationSyntax BuildLastGetterReturnValueField(
-        in PropertyGetterImposterBuilderMetadata getterImposterBuilder
-    ) =>
-        SingleVariableField(
+        in ImposterPropertyMetadata property
+    )
+    {
+        var getterImposterBuilder = property.GetterImposterBuilder;
+
+        return SingleVariableField(
             getterImposterBuilder.LastReturnValueField.TypeSyntax,
             getterImposterBuilder.LastReturnValueField.Name,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword)),
-            DiscardParameterGoesTo(DefaultNonNullable)
+            property.Core.IsPassedThrough && property.Core.GetterSupportsBaseImplementation
+                ? BaseImplementationOrDefault(
+                    getterImposterBuilder.GetMethod.BaseImplementationParameter.Name
+                )
+                : DiscardParameterGoesTo(DefaultNonNullable)
         );
+    }
+
+    private static SimpleLambdaExpressionSyntax BaseImplementationOrDefault(
+        string baseImplementationName
+    )
+    {
+        var baseImplementation = IdentifierName(baseImplementationName);
+
+        return Identifier(baseImplementationName)
+            .Lambda(
+                ConditionalExpression(
+                    baseImplementation.IsNotNull(),
+                    baseImplementation.Call(),
+                    DefaultNonNullable
+                )
+            );
+    }
 
     private static FieldDeclarationSyntax BuildGetterInvocationCountField(
         in PropertyGetterImposterBuilderMetadata getterImposterBuilder

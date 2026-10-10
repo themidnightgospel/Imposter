@@ -110,11 +110,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         }
 
         [Fact]
-        public void GivenNoSetup_WhenClassPropertyIsRead_ShouldReturnTheDefault()
+        public void GivenNoSetup_WhenClassPropertyIsRead_ShouldReturnTheBaseValue()
         {
             var imposter = new RefStructPropertyClassImposter();
 
-            imposter.Instance().Current.Page.ShouldBe(0);
+            imposter.Instance().Current.Page.ShouldBe(7);
         }
 
         [Fact]
@@ -146,6 +146,28 @@ namespace Imposter.Tests.Features.PropertyImpersonation
             imposter.Instance().Current = new Bookmark(8);
 
             imposter.Instance().Current.Page.ShouldBe(8);
+        }
+
+        // The imposter can't keep the value set, and without a setup the setter doesn't reach the base setter.
+        [Fact]
+        public void GivenValueSetWithoutSetup_WhenClassPropertyIsRead_ShouldReturnTheBaseValue()
+        {
+            var imposter = new RefStructPropertyClassImposter();
+
+            imposter.Instance().Current = new Bookmark(5);
+
+            imposter.Instance().Current.Page.ShouldBe(7);
+        }
+
+        [Fact]
+        public void GivenGetterCallbackOnly_WhenClassPropertyIsRead_ShouldReturnTheBaseValue()
+        {
+            var imposter = new RefStructPropertyClassImposter();
+            var reads = 0;
+            imposter.Current.Getter().Callback(() => reads++);
+
+            imposter.Instance().Current.Page.ShouldBe(7);
+            reads.ShouldBe(1);
         }
     }
 }

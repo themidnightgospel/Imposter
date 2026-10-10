@@ -132,7 +132,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertyReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertyReturnHandler>();
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
-				private volatile CurrentPropertyReturnHandler _lastReturnValue = _ => default !;
+				private volatile CurrentPropertyReturnHandler _lastReturnValue = baseImplementation => baseImplementation != null ? baseImplementation() : default !;
 				private int _invocationCount;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;

@@ -143,7 +143,7 @@ A property of another `ref struct` type can be impersonated too. The imposter ca
     imposter.Instance().Current = new Bookmark(4); // pages is { 4 }
     ```
 
-- Without a setup, the getter returns the default, even after the property is set, because there's nowhere to keep the value. A class property doesn't fall back to its base implementation either; set up `UseBaseImplementation()` for that.
+- Without a setup, the getter returns what the base getter returns, for a class property that has one, or the default otherwise. There's nowhere to keep a value, so the getter reads the base getter on every read, and setting the property doesn't change what it returns.
 
 An indexer of another `ref struct` type still reports [IMP009](../diagnostics.md#imp009).
 
