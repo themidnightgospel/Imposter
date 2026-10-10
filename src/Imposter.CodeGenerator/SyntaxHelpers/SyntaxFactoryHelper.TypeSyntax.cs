@@ -133,6 +133,19 @@ internal static partial class SyntaxFactoryHelper
             constraints.Add(ConstructorConstraint());
         }
 
+#if ROSLYN4_14_OR_GREATER
+        // The builds older than 4.14 can't declare the anti-constraint, so they don't impersonate a method that has it
+        // (see ImposterTargetValidator).
+        if (typeParameter.AllowsRefStructs)
+        {
+            constraints.Add(
+                AllowsConstraintClause(
+                    SingletonSeparatedList<AllowsConstraintSyntax>(RefStructConstraint())
+                )
+            );
+        }
+#endif
+
         if (constraints.Count == 0)
         {
             return null;

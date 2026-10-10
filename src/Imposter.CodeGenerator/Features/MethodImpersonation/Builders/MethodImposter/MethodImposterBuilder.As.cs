@@ -23,6 +23,31 @@ internal static partial class MethodImposterBuilder
             return null;
         }
 
+        return new MethodDeclarationBuilder(
+            NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
+            "As"
+        )
+            .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
+            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
+            .WithBody(method.HasAdapter ? AdapterBody(method) : SameTypeArgumentsBody(method))
+            .Build();
+    }
+
+    // Without an adapter, the imposter serves calls with its own type arguments only: as its generic interface over
+    // the target type arguments, which it implements only when they're the same.
+    private static BlockSyntax SameTypeArgumentsBody(in ImposterTargetMethodMetadata method) =>
+        Block(
+            ReturnStatement(
+                BinaryExpression(
+                    SyntaxKind.AsExpression,
+                    ThisExpression(),
+                    method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments
+                )
+            )
+        );
+
+    private static BlockSyntax AdapterBody(in ImposterTargetMethodMetadata method)
+    {
         var conditions = TypeCompatibilityConditions(
             method,
             new TypeParameterRenamer(method.Model.TypeParameters, method.TargetGenericTypeArguments)
@@ -38,25 +63,15 @@ internal static partial class MethodImposterBuilder
 
         // Without a type to check, the adapter always applies, and an if (true) would leave the
         // trailing return null unreachable.
-        var body =
-            conditions.Count > 0
-                ? Block(
-                    IfStatement(
-                        conditions.Aggregate((current, next) => current.And(next)),
-                        Block(returnAdapter)
-                    ),
-                    ReturnStatement(Null)
-                )
-                : Block(returnAdapter);
-
-        return new MethodDeclarationBuilder(
-            NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
-            "As"
-        )
-            .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
-            .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
-            .WithBody(body)
-            .Build();
+        return conditions.Count > 0
+            ? Block(
+                IfStatement(
+                    conditions.Aggregate((current, next) => current.And(next)),
+                    Block(returnAdapter)
+                ),
+                ReturnStatement(Null)
+            )
+            : Block(returnAdapter);
     }
 
     // The checks that the target type arguments fit each type using the method's type parameters: an input parameter

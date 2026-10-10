@@ -245,6 +245,27 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
     }
     ```
 
+## Type parameters that allow ref structs
+
+A method's type parameter can allow ref structs (`where T : allows ref struct`, C# 13). A value of it may be a `ref struct`, which an imposter can't keep or match, so the imposter passes it through like a [ref struct parameter](arguments-matching.md#ref-struct-parameters), whatever the type argument:
+
+- Setups and verification take matchers for the method's other parameters only. The delegates passed to `Returns`, `Callback` and `Throws`, and the base implementation, get the value.
+- A result of that type comes only from a `Returns` delegate or the base implementation, and the invocation history leaves it out.
+- A setup applies only to calls with the same type arguments. The type matching above doesn't apply to such a method.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/AllowsRefStructTests.cs#L16"}
+    // int Measure<T>(T value, int scale) where T : allows ref struct, where Gauge is a ref struct
+    imposter.Measure<Gauge>(Arg<int>.Any()).Returns((value, scale) => value.Level * scale);
+
+    var measured = imposter.Instance().Measure(new Gauge(2), 3); // 6
+    ```
+
+!!! note
+    The imposter repeats the anti-constraint, which needs the Roslyn 4.14 compiler or later, as in the .NET 9.0.300 SDK and Visual Studio 17.14. An older compiler reports [IMP009](diagnostics.md#imp009) for such a method.
+
+The imposter of a generic target keeps values of the target's own type parameters, so it leaves out their anti-constraint: for a target's type parameter that allows ref structs, the imposter takes only type arguments that aren't ref structs.
+
 ## Open Generics
 
 Open generics let you register a generic interface or class once (for example, `typeof(IAsyncObservable<>)`) and then create imposters for any concrete type you close it with at call site.

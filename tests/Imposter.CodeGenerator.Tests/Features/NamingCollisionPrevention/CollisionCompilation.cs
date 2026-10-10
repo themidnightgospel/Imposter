@@ -10,13 +10,15 @@ internal static class CollisionCompilation
     internal static Task AssertInterfaceCompiles(
         string targetDeclaration,
         string usage,
-        string assemblyName
+        string assemblyName,
+        LanguageVersion languageVersion = LanguageVersion.CSharp9
     ) =>
         AssertCompiles(
             "Sample.IService",
             targetDeclaration,
             "var imposter = new Sample.IServiceImposter(); " + usage,
-            assemblyName
+            assemblyName,
+            languageVersion
         );
 
     // Generates the imposter of a target declared in namespace Sample and compiles a snippet that uses it.

@@ -66,6 +66,11 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly bool SupportsBaseImplementation;
 
+    // A generic method's imposter serves calls with other type arguments through an adapter, which converts the values
+    // between them. It can't convert a value that may be a ref struct, so a method with a type parameter that allows
+    // ref structs has no adapter, and its setups apply to calls with the same type arguments only.
+    internal readonly bool HasAdapter;
+
     internal readonly string UniqueName;
 
     internal readonly string DisplayName;
@@ -122,6 +127,7 @@ internal readonly struct ImposterTargetMethodMetadata
         HasReturnValue = !Model.ReturnType.IsVoid;
         KeepsResult = HasReturnValue && !Model.ReturnType.IsPassedThrough;
         SupportsBaseImplementation = Model.IsClassMember && !Model.IsAbstract;
+        HasAdapter = Model.IsGenericMethod && !Model.HasTypeParameterAllowingRefStructs;
         IsAsync = Model.IsAsync;
 
         Parameters = new ImposterTargetMethodParametersMetadata(Model.Parameters);

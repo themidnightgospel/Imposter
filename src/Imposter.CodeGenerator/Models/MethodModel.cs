@@ -30,6 +30,9 @@ internal sealed record MethodModel(
 {
     internal bool IsGenericMethod => TypeParameters.Count > 0;
 
+    internal bool HasTypeParameterAllowingRefStructs =>
+        TypeParameters.Any(typeParameter => typeParameter.AllowsRefStructs);
+
     internal static MethodModel From(
         IMethodSymbol method,
         MemberAccess memberAccess,

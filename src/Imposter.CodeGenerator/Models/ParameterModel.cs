@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
@@ -9,9 +10,9 @@ namespace Imposter.CodeGenerator.Models;
 /// A parameter as generated code declares and passes it. <see cref="ReferencesMethodTypeParameter"/> is true
 /// when the type uses a type parameter of the generic method that declares the parameter.
 /// <see cref="Span"/> is set for a <c>Span&lt;T&gt;</c> or <c>ReadOnlySpan&lt;T&gt;</c> parameter of any ref kind.
-/// <see cref="IsPassedThrough"/> is true for another <c>ref struct</c>, which an imposter can't keep or match: its
-/// setups, verification and history leave the argument out, and it only passes it on to the delegates and the base
-/// implementation.
+/// <see cref="IsPassedThrough"/> is true for another <c>ref struct</c>, or a value of a method's type parameter that
+/// allows ref structs, which an imposter can't keep or match: its setups, verification and history leave the argument
+/// out, and it only passes it on to the delegates and the base implementation.
 /// </summary>
 internal sealed record ParameterModel(
     string Name,
@@ -34,13 +35,16 @@ internal sealed record ParameterModel(
             parameter.ContainingSymbol is IMethodSymbol method
                 && parameter.Type.ReferencesTypeParameterOf(method),
             SpanModel.From(parameter),
-            IsCustomRefStruct(parameter)
+            PassesThrough(parameter)
         );
 
-    // The parameters a setup matches: all but the custom ref structs it only passes through.
+    // The parameters a setup matches: all but those it only passes through.
     internal static ImmutableArray<IParameterSymbol> MatchedParameters(
         ImmutableArray<IParameterSymbol> parameters
-    ) => parameters.Where(parameter => !IsCustomRefStruct(parameter)).ToImmutableArray();
+    ) => parameters.Where(parameter => !PassesThrough(parameter)).ToImmutableArray();
+
+    internal static bool PassesThrough(IParameterSymbol parameter) =>
+        IsCustomRefStruct(parameter) || parameter.Type.IsMethodTypeParameterAllowingRefStructs();
 
     internal static bool IsCustomRefStruct(IParameterSymbol parameter) =>
         parameter.Type.IsRefLikeType && SpanModel.From(parameter) is null;

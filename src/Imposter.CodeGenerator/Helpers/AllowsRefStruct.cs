@@ -19,4 +19,9 @@ internal static class AllowsRefStruct
     internal static bool AllowsRefStructs(this ITypeParameterSymbol typeParameter) =>
         AllowsRefLikeTypeProperty?.GetValue(typeParameter) is true;
 #endif
+
+    // A value of a method's type parameter that allows ref structs may be a ref struct.
+    internal static bool IsMethodTypeParameterAllowingRefStructs(this ITypeSymbol type) =>
+        type is ITypeParameterSymbol { TypeParameterKind: TypeParameterKind.Method } typeParameter
+        && typeParameter.AllowsRefStructs();
 }

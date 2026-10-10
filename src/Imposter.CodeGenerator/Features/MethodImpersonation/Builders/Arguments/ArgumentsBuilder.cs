@@ -46,7 +46,8 @@ internal static class ArgumentsBuilder
                     .Build()
             );
 
-        if (method.Model.IsGenericMethod)
+        // Only the adapter converts the arguments to its type arguments.
+        if (method.HasAdapter)
         {
             argumentsClassBuilder.AddMember(BuildArgumentsAsMethod(method));
         }
