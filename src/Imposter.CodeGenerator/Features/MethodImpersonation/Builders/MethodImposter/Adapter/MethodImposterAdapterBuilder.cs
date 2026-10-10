@@ -240,6 +240,13 @@ internal static class MethodImposterAdapterBuilder
                 : AdaptedSpan(result, elementsType, targetElementsType);
         }
 
+        // A ref struct result passes back as it is: its type doesn't use the method's type parameters (IMP009
+        // otherwise).
+        if (method.Model.ReturnType.IsPassedThrough)
+        {
+            return IdentifierName(adapterNames.InvokeResultVariableName);
+        }
+
         var returnType = method.NullableAwareReturnTypeSyntax;
         return TypeCasterSyntaxHelper.CastExpression(
             adapterNames.InvokeResultVariableName,

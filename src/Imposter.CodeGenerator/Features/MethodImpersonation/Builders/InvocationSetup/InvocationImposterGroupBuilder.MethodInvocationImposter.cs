@@ -32,7 +32,7 @@ internal static partial class InvocationImposterGroupBuilder
             .AddMember(InvokeInvocationMethod(method))
             .AddMember(CallbackMethod(method))
             .AddMember(method.HasReturnValue ? ReturnsDelegateMethod(method) : null)
-            .AddMember(method.HasReturnValue ? ReturnsValueMethod(method) : null)
+            .AddMember(method.KeepsResult ? ReturnsValueMethod(method) : null)
             .AddMember(
                 method.MethodInvocationImposterGroup.ReturnsAsyncMethod.HasValue
                     ? ReturnsAsyncMethod(method)

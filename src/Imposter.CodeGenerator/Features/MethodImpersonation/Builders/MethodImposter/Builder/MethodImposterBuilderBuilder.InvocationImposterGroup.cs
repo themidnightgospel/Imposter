@@ -21,6 +21,11 @@ internal static partial class MethodImposterBuilderBuilder
         if (method.HasReturnValue)
         {
             implementations.Add(BuildReturnsDelegateImplementation(method));
+        }
+
+        // A ref struct result can't be kept, so only a Returns delegate produces it.
+        if (method.KeepsResult)
+        {
             implementations.Add(BuildReturnsValueImplementation(method));
         }
 

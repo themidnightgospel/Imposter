@@ -61,6 +61,9 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly bool HasReturnValue;
 
+    // Returns(value) and the invocation history keep the result, which a ref struct result can't be.
+    internal readonly bool KeepsResult;
+
     internal readonly bool SupportsBaseImplementation;
 
     internal readonly string UniqueName;
@@ -117,6 +120,7 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         ReturnType = new ReturnTypeMetadata(Model.ReturnType, NullableAwareReturnTypeSyntax);
         HasReturnValue = !Model.ReturnType.IsVoid;
+        KeepsResult = HasReturnValue && !Model.ReturnType.IsPassedThrough;
         SupportsBaseImplementation = Model.IsClassMember && !Model.IsAbstract;
         IsAsync = Model.IsAsync;
 

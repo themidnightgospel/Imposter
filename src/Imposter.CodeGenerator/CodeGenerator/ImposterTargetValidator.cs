@@ -199,7 +199,8 @@ internal static class ImposterTargetValidator
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A method's
-    // parameter of another ref struct type isn't kept at all, only passed through (see IsPassedThrough).
+    // parameter or result of another ref struct type isn't kept at all, only passed through (see IsPassedThrough and
+    // ReturnsPassedThrough).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -242,7 +243,7 @@ internal static class ImposterTargetValidator
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IMethodSymbol method)
     {
-        if (SpanModel.FromReturnType(method) is null)
+        if (SpanModel.FromReturnType(method) is null && !ReturnsPassedThrough(method))
         {
             yield return method.ReturnType;
         }
@@ -261,6 +262,18 @@ internal static class ImposterTargetValidator
     private static bool IsPassedThrough(IParameterSymbol parameter, IMethodSymbol method) =>
         ParameterModel.IsCustomRefStruct(parameter)
         && !parameter.Type.ReferencesTypeParameterOf(method);
+
+    // A ref struct result passes back from a Returns delegate or the base implementation, on the same condition. A
+    // generic method's adapter also passes by-reference arguments through locals, which the result could refer to
+    // (CS8352), so it can't take any but the ref structs it forwards as they are.
+    private static bool ReturnsPassedThrough(IMethodSymbol method) =>
+        ReturnTypeModel.ReturnsCustomRefStruct(method)
+        && !method.ReturnType.ReferencesTypeParameterOf(method)
+        && !(method.IsGenericMethod && method.Parameters.Any(PassesThroughAdapterLocal));
+
+    private static bool PassesThroughAdapterLocal(IParameterSymbol parameter) =>
+        parameter.RefKind is RefKind.Ref or RefKind.In or RefKinds.RefReadOnlyParameter
+        && !ParameterModel.IsCustomRefStruct(parameter);
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
     {

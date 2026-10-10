@@ -63,7 +63,7 @@ internal static partial class InvocationHistoryBuilder
             .Add(argumentsExpression)
             .Add(closingLiteral);
 
-        if (method.HasReturnValue)
+        if (method.KeepsResult)
         {
             description = description.Add(
                 " => "

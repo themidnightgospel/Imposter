@@ -6,7 +6,9 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// A method's return type. <see cref="AwaitableResultType"/> is the T of an awaited Task&lt;T&gt; or
 /// ValueTask&lt;T&gt;. <see cref="Span"/> is set when the method returns a <c>Span&lt;T&gt;</c> or
-/// <c>ReadOnlySpan&lt;T&gt;</c> by value.
+/// <c>ReadOnlySpan&lt;T&gt;</c> by value. <see cref="IsPassedThrough"/> is true when it returns another
+/// <c>ref struct</c> by value, which an imposter can't keep: only a <c>Returns</c> delegate or the base
+/// implementation produces it, and the history doesn't record it.
 /// </summary>
 internal sealed record ReturnTypeModel(
     TypeModel Type,
@@ -14,7 +16,8 @@ internal sealed record ReturnTypeModel(
     bool IsAwaitable,
     TypeModel? AwaitableResultType,
     bool ReferencesMethodTypeParameter,
-    SpanModel? Span
+    SpanModel? Span,
+    bool IsPassedThrough
 )
 {
     internal static ReturnTypeModel From(IMethodSymbol method)
@@ -30,7 +33,13 @@ internal sealed record ReturnTypeModel(
                 ? TypeModel.From(resultType)
                 : null,
             returnType.ReferencesTypeParameterOf(method),
-            SpanModel.FromReturnType(method)
+            SpanModel.FromReturnType(method),
+            ReturnsCustomRefStruct(method)
         );
     }
+
+    internal static bool ReturnsCustomRefStruct(IMethodSymbol method) =>
+        method.RefKind == RefKind.None
+        && method.ReturnType.IsRefLikeType
+        && SpanModel.FromReturnType(method) is null;
 }
