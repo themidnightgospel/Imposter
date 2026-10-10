@@ -140,6 +140,49 @@ public class PointerMemberDiagnosticTests
             );
     }
 
+    // The imposter forwards the class's other constructors, and leaves out one that takes a pointer.
+    [Fact]
+    public async Task GivenClassWithPointerConstructorBesideAnother_WhenGeneratorRuns_ShouldLeaveItOut()
+    {
+        var result = await RunGenerator(
+            "public unsafe class Service { public Service(int* value) { } public Service(int value) { } public virtual int Get() => 0; }",
+            "Sample.Service"
+        );
+
+        result.Diagnostics.ShouldBeEmpty();
+        result
+            .GeneratedSources.ShouldHaveSingleItem()
+            .SourceText.ToString()
+            .ShouldNotContain("int*");
+    }
+
+    [Fact]
+    public async Task GivenClassWhoseOnlyConstructorTakesPointer_WhenGeneratorRuns_ShouldReportIMP013NamingIt()
+    {
+        var result = await RunGenerator(
+            "public unsafe class Service { public Service(int* value) { } public virtual int Get() => 0; }",
+            "Sample.Service"
+        );
+
+        result
+            .Diagnostics.ShouldHaveSingleItem()
+            .GetMessage()
+            .ShouldBe(
+                "'Sample.Service' has the member 'Sample.Service.Service(int*)', whose signature uses the pointer type 'int*', which an imposter cannot store or match"
+            );
+    }
+
+    [Fact]
+    public async Task GivenClassWhoseOnlyConstructorTakesFunctionPointer_WhenGeneratorRuns_ShouldReportIMP013()
+    {
+        var result = await RunGenerator(
+            "public unsafe class Service { protected Service(delegate*<int, void> callback) { } public virtual int Get() => 0; }",
+            "Sample.Service"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(PointerMemberId);
+    }
+
     private static Task<GeneratorRunResult> RunGenerator(
         string targetDeclaration,
         string targetType = "Sample.IService"

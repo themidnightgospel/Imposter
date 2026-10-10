@@ -55,6 +55,7 @@ explicit-mode checks apply.
 ## Pointer types
 
 - Methods, properties, indexers and events whose signature uses a pointer or function pointer type, such as `int*` or `delegate*<int, void>`, can't be impersonated, because a pointer can't be a type argument. A target with such a member reports [IMP013](diagnostics.md#imp013) and gets no imposter.
+- A class imposter has no constructor for a target constructor that takes a pointer. A class whose accessible constructors all take one reports [IMP013](diagnostics.md#imp013).
 
 ## Async behavior
 

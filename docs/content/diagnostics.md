@@ -109,7 +109,7 @@ Register an interface without the member, such as one that declares only the ins
 
 ## IMP013: Member with a pointer type { #imp013 }
 
-An imposter keeps the arguments and results of the members it impersonates, and matches arguments with `Arg<T>`. A pointer such as `int*`, or a function pointer such as `delegate*<int, void>`, can't be a type argument, so the imposter can't impersonate a method, property, indexer or event whose signature uses one, including as an array's element type. IMP013 names the first such member and type, and no imposter is generated.
+An imposter keeps the arguments and results of the members it impersonates, and matches arguments with `Arg<T>`. A pointer such as `int*`, or a function pointer such as `delegate*<int, void>`, can't be a type argument, so the imposter can't impersonate a method, property, indexer or event whose signature uses one, including as an array's element type. Nor can it forward a class's constructor that takes one: it leaves that constructor out, and reports IMP013 when every accessible constructor of the class takes one. IMP013 names the first such member and type, and no imposter is generated.
 
 Change the member to take or return a type the imposter can store, such as `nint` or `Span<T>`, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a pointer type doesn't cause IMP013.
 
