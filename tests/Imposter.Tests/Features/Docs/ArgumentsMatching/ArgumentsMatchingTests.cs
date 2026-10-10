@@ -223,5 +223,22 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
             reader.TryRead(out var data).ShouldBeTrue();
             data.ToArray().ShouldBe(new byte[] { 1, 2 });
         }
+
+#if USE_CSHARP14
+        [Fact]
+        public void GivenScopedSpanParameter_WhenTheReturnsDelegateDeclaresScoped_ShouldReturnItsResult()
+        {
+            var imposter = new IScopedSpanReaderImposter();
+            var reader = imposter.Instance();
+
+            imposter
+                .Trim(ReadOnlySpanArg<char>.Any())
+                .Returns(
+                    (scoped System.ReadOnlySpan<char> text) => text.ToString().Trim().ToCharArray()
+                );
+
+            reader.Trim(" a ".ToCharArray()).ToString().ShouldBe("a");
+        }
+#endif
     }
 }

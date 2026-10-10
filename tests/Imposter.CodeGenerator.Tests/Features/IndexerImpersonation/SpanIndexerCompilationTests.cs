@@ -1,6 +1,9 @@
 using System.Threading.Tasks;
 using Xunit;
 using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
+#if ROSLYN4_4_OR_GREATER
+using Microsoft.CodeAnalysis.CSharp;
+#endif
 
 namespace Imposter.CodeGenerator.Tests.Features.IndexerImpersonation;
 
@@ -101,4 +104,46 @@ public class SpanIndexerCompilationTests
             nameof(SpanIndexerCompilationTests)
         );
     }
+
+#if ROSLYN4_4_OR_GREATER
+    // The implementation repeats the key's scoped modifier (CS8987), and so do the imposter's own methods the key
+    // passes through, so the span value they hand back can still be returned.
+    [Fact]
+    public async Task GivenIndexerOfSpanValueWithScopedSpanKey_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { System.ReadOnlySpan<char> this[scoped System.ReadOnlySpan<char> key] { get; set; } }",
+            "var imposter = new Sample.IServiceImposter(); imposter[ReadOnlySpanArg<char>.Is('k')].Getter().Returns(new[] { 'v' }); imposter[ReadOnlySpanArg<char>.Any()].Setter().Callback((key, value) => { }); imposter.Instance()[System.MemoryExtensions.AsSpan(\"k\")] = imposter.Instance()[System.MemoryExtensions.AsSpan(\"k\")];",
+            nameof(SpanIndexerCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+
+    [Fact]
+    public async Task GivenVirtualClassIndexerOfSpanValueWithScopedSpanKey_WhenBaseImplementationIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public class Service { public virtual System.ReadOnlySpan<char> this[scoped System.ReadOnlySpan<char> key] { get => System.MemoryExtensions.AsSpan(\"base\"); set { } } }",
+            "var imposter = new Sample.ServiceImposter(); imposter[ReadOnlySpanArg<char>.Any()].Getter().UseBaseImplementation(); imposter[ReadOnlySpanArg<char>.Any()].Setter().UseBaseImplementation(); imposter.Instance()[System.MemoryExtensions.AsSpan(\"k\")] = imposter.Instance()[System.MemoryExtensions.AsSpan(\"k\")];",
+            nameof(SpanIndexerCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+#endif
+
+#if ROSLYN4_14_OR_GREATER
+    [Fact]
+    public async Task GivenIndexerOfSpanValueWithParamsSpanKey_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { System.Span<int> this[params System.ReadOnlySpan<int> keys] { get; set; } }",
+            "var imposter = new Sample.IServiceImposter(); imposter[ReadOnlySpanArg<int>.Is(1, 2)].Getter().Returns(new int[1]); imposter.Instance()[1, 2] = imposter.Instance()[1, 2];",
+            nameof(SpanIndexerCompilationTests),
+            LanguageVersion.CSharp13
+        );
+    }
+#endif
 }
