@@ -6,6 +6,12 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerGetterImposterMetadata
 {
+    // The getter invocation imposter's AddReturnValue takes the generator, and Invoke loops over the callbacks, under
+    // these names.
+    internal const string GeneratorVariableName = "generator";
+
+    internal const string CallbackVariableName = "callback";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;
@@ -65,17 +71,17 @@ internal readonly struct IndexerGetterImposterMetadata
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
         EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
-        var returnGeneratorType = indexer.Core.IsPassedThrough
+        var returnGeneratorType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnGeneratorDelegateType
             : WellKnownTypes.System.Func(
                 indexer.Arguments.TypeSyntax,
                 indexer.Core.NullableAwareStoredTypeSyntax
             );
-        ReturnHandlerType = indexer.Core.IsPassedThrough
+        ReturnHandlerType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnHandlerDelegateType
             : WellKnownTypes.System.Func(
                 indexer.Arguments.TypeSyntax,
-                indexer.Core.ValueGeneratorType.ToNullableType(),
+                indexer.Core.BaseGetterType.ToNullableType(),
                 indexer.Core.NullableAwareStoredTypeSyntax
             );
         Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);

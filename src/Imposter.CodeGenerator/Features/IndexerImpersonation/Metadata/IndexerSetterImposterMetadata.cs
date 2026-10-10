@@ -67,7 +67,7 @@ internal readonly struct IndexerSetterImposterMetadata
             )
         );
         // A value passed through can't be kept, so the history keeps the keys alone.
-        TypeSyntax invocationHistoryEntryType = !indexer.Core.IsPassedThrough
+        TypeSyntax invocationHistoryEntryType = !indexer.Core.IsValuePassedThrough
             ? TupleType(
                 SeparatedList<TupleElementSyntax>(
                     new SyntaxNodeOrToken[]
@@ -85,7 +85,7 @@ internal readonly struct IndexerSetterImposterMetadata
             names.Use("_invocationHistory"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
         );
-        DefaultBehaviourField = !indexer.Core.IsPassedThrough
+        DefaultBehaviourField = !indexer.Core.IsValuePassedThrough
             ? new FieldMetadata(
                 names.Use("_defaultBehaviour"),
                 indexer.DefaultIndexerBehaviour.TypeSyntax

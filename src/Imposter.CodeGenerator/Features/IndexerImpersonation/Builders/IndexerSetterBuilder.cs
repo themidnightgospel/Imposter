@@ -180,7 +180,7 @@ internal static class IndexerSetterBuilder
         var invocationCount = IdentifierName("invocationCount");
         var entryIdentifier = IdentifierName("entry");
         // An entry is the keys alone for a value passed through, which the history can't keep.
-        ExpressionSyntax entryArguments = !indexer.Core.IsPassedThrough
+        ExpressionSyntax entryArguments = !indexer.Core.IsValuePassedThrough
             ? entryIdentifier.Dot(
                 IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
             )
@@ -207,7 +207,7 @@ internal static class IndexerSetterBuilder
             .StringLiteral()
             .Add(IdentifierName(indexer.SetterImplementation.PropertyDisplayNameField.Name))
             .Add(BuildIndices(indexer, entryArguments));
-        var descriptionExpression = !indexer.Core.IsPassedThrough
+        var descriptionExpression = !indexer.Core.IsValuePassedThrough
             ? setDescription
                 .Add(" = ".StringLiteral())
                 .Add(
@@ -307,6 +307,7 @@ internal static class IndexerSetterBuilder
                                     BuildDelegateInvocationArgumentsWithValue(
                                         argumentsVariable,
                                         indexer,
+                                        indexer.Core.PassedThroughKeyNames,
                                         value
                                     )
                                 )
@@ -332,11 +333,14 @@ internal static class IndexerSetterBuilder
             invokedBaseIdentifier = defaultBehaviourField is null
                 ? null
                 : IdentifierName(setter.InvokedBaseImplementationVariableName);
-            // A base setter that takes the value gets it as an argument instead of capturing it.
+            // A generated base setter takes the keys passed through and the value instead of capturing them.
             var baseImplementationCall = IdentifierName(setter.BaseImplementationParameter.Name)
                 .Call(
-                    indexer.Core.IsPassedThrough
-                        ? Argument(value).ToSingleArgumentList()
+                    indexer.Core.HasGeneratedValueDelegates
+                        ? ArgumentListSyntax([
+                            .. PassedThroughKeyArguments(indexer.Core.PassedThroughKeyNames),
+                            Argument(value),
+                        ])
                         : EmptyArgumentListSyntax
                 );
 
@@ -426,11 +430,17 @@ internal static class IndexerSetterBuilder
                         IdentifierName(field.Name)
                             .Dot(IdentifierName("Set"))
                             .Call(
-                                ArgumentListSyntax([
-                                    Argument(argumentsVariable),
-                                    Argument(value),
-                                    Argument(Null),
-                                ])
+                                // The default behaviour's Set takes no base setter where it would be generated.
+                                indexer.Core.HasGeneratedValueDelegates
+                                    ? ArgumentListSyntax([
+                                        Argument(argumentsVariable),
+                                        Argument(value),
+                                    ])
+                                    : ArgumentListSyntax([
+                                        Argument(argumentsVariable),
+                                        Argument(value),
+                                        Argument(Null),
+                                    ])
                             )
                             .ToStatementSyntax()
                     )
@@ -451,7 +461,7 @@ internal static class IndexerSetterBuilder
         ExpressionSyntax arguments,
         ExpressionSyntax value
     ) =>
-        !indexer.Core.IsPassedThrough
+        !indexer.Core.IsValuePassedThrough
             ? TupleExpression(
                 SeparatedList<ArgumentSyntax>(
                     new SyntaxNodeOrToken[]

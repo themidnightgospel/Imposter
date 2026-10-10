@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
@@ -137,11 +137,18 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var invocation = getter.Invocation;
-        var generator = ParameterSyntax(getter.Builder.ReturnGeneratorType, "generator");
-        var handler = ReturnHandler(getter)
+        var generator = ParameterSyntax(
+            getter.Builder.ReturnGeneratorType,
+            IndexerGetterImposterMetadata.GeneratorVariableName
+        );
+        var handler = ReturnHandler(indexer)
             .WithExpressionBody(
                 IdentifierName(generator.Identifier)
-                    .Call(Argument(IdentifierName(getter.ArgumentsVariableName)))
+                    .Call(
+                        ArgumentListSyntax(
+                            HandlerArguments(indexer, indexer.GetterPassedThroughKeyNames)
+                        )
+                    )
             );
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddReturnValue")
@@ -192,26 +199,32 @@ internal static partial class IndexerGetterBuilder
 
         var invokeCallbacks = ForEachStatement(
             Var,
-            Identifier("callback"),
+            Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
             IdentifierName(getter.Invocation.CallbacksField.Name),
             Block(
-                IdentifierName("callback")
-                    .Call(BuildDelegateInvocationArguments(arguments, indexer))
+                IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
+                    .Call(
+                        BuildDelegateInvocationArguments(
+                            arguments,
+                            indexer,
+                            indexer.GetterPassedThroughKeyNames
+                        )
+                    )
                     .ToStatementSyntax()
             )
         );
 
         var generatorDeclaration = LocalVariableDeclarationSyntax(
             getter.ReturnHandlerType,
-            "generator",
+            IndexerGetterImposterMetadata.GeneratorVariableName,
             IdentifierName("ResolveNextGenerator").Call(Argument(arguments))
         );
 
         var returnGenerated = ReturnStatement(
-            IdentifierName("generator")
+            IdentifierName(IndexerGetterImposterMetadata.GeneratorVariableName)
                 .Call(
                     ArgumentListSyntax([
-                        Argument(arguments),
+                        .. HandlerArguments(indexer, indexer.GetterPassedThroughKeyNames),
                         Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                     ])
                 )
@@ -222,6 +235,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
             )
+            .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
             .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
             .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
             .Build();
@@ -238,7 +252,7 @@ internal static partial class IndexerGetterBuilder
         var returnDefaultBehaviourWhileOn = IfStatement(
             IdentifierName(invocation.DefaultBehaviourField.Name)
                 .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
-            Block(ReturnStatement(DefaultBehaviourHandler(getter)))
+            Block(ReturnStatement(DefaultBehaviourHandler(indexer)))
         );
 
         var declareNextReturnValue = LocalVariableDeclarationSyntax(
@@ -276,19 +290,23 @@ internal static partial class IndexerGetterBuilder
 
     // A handler that gets the value from the default behaviour.
     private static ParenthesizedLambdaExpressionSyntax DefaultBehaviourHandler(
-        in IndexerGetterImposterMetadata getter
-    ) =>
-        ReturnHandler(getter)
+        in ImposterIndexerMetadata indexer
+    )
+    {
+        var getter = indexer.GetterImplementation;
+
+        return ReturnHandler(indexer)
             .WithExpressionBody(
                 IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
                     .Dot(IdentifierName("Get"))
                     .Call(
                         ArgumentListSyntax([
-                            Argument(IdentifierName(getter.ArgumentsVariableName)),
+                            .. HandlerArguments(indexer, indexer.GetterPassedThroughKeyNames),
                             Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                         ])
                     )
             );
+    }
 
     private static MethodDeclarationSyntax BuildGetterInvocationNextReturnValueMethod(
         in IndexerGetterImposterMetadata.GetterInvocationMetadata invocation
@@ -328,7 +346,7 @@ internal static partial class IndexerGetterBuilder
                     TurnDefaultBehaviourOff(indexer),
                     IdentifierName(invocation.ReturnValuesField.Name)
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                        .Call(Argument(BaseImplementationHandler(indexer.GetterImplementation)))
+                        .Call(Argument(BaseImplementationHandler(indexer)))
                         .ToStatementSyntax(),
                     IdentifierName(invocation.LastReturnValueField.Name)
                         .Assign(Null)
@@ -338,14 +356,16 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
-    // A handler that calls the base implementation, and throws a missing imposter when there's none.
+    // A handler that calls the base implementation with the keys passed through, and throws a missing imposter when
+    // there's none.
     private static ParenthesizedLambdaExpressionSyntax BaseImplementationHandler(
-        in IndexerGetterImposterMetadata getter
+        in ImposterIndexerMetadata indexer
     )
     {
+        var getter = indexer.GetterImplementation;
         var baseImplementation = IdentifierName(getter.BaseImplementationParameter.Name);
 
-        return ReturnHandler(getter)
+        return ReturnHandler(indexer)
             .WithBlock(
                 Block(
                     IfStatement(
@@ -357,28 +377,45 @@ internal static partial class IndexerGetterBuilder
                             )
                         )
                     ),
-                    ReturnStatement(baseImplementation.Call(EmptyArgumentListSyntax))
+                    ReturnStatement(
+                        baseImplementation.Call(
+                            ArgumentListSyntax(
+                                PassedThroughKeyArguments(indexer.GetterPassedThroughKeyNames)
+                            )
+                        )
+                    )
                 )
             );
     }
 
-    // A lambda with the return handlers' (arguments, baseImplementation) parameters.
+    // A lambda with the return handlers' (arguments, the keys passed through, baseImplementation) parameters.
     private static ParenthesizedLambdaExpressionSyntax ReturnHandler(
-        in IndexerGetterImposterMetadata getter
-    ) =>
-        ParenthesizedLambdaExpression()
+        in ImposterIndexerMetadata indexer
+    )
+    {
+        var getter = indexer.GetterImplementation;
+
+        return ParenthesizedLambdaExpression()
             .WithParameterList(
                 ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(Identifier(getter.ArgumentsVariableName)),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(Identifier(getter.BaseImplementationParameter.Name)),
-                        }
-                    )
+                    SeparatedList([
+                        Parameter(Identifier(getter.ArgumentsVariableName)),
+                        .. PassedThroughKeyLambdaParameters(indexer.GetterPassedThroughKeyNames),
+                        Parameter(Identifier(getter.BaseImplementationParameter.Name)),
+                    ])
                 )
             );
+    }
+
+    // The arguments a return handler passes on: the arguments class, and the keys passed through.
+    private static IEnumerable<ArgumentSyntax> HandlerArguments(
+        in ImposterIndexerMetadata indexer,
+        IReadOnlyList<string> passedThroughKeyNames
+    ) =>
+        [
+            Argument(IdentifierName(indexer.GetterImplementation.ArgumentsVariableName)),
+            .. PassedThroughKeyArguments(passedThroughKeyNames),
+        ];
 
     private static ExpressionStatementSyntax TurnDefaultBehaviourOff(
         in ImposterIndexerMetadata indexer

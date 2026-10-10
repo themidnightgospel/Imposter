@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
@@ -27,12 +28,15 @@ internal readonly struct ReturnsMethodMetadata
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        ValueParameter = core.IsPassedThrough
+        ValueParameter = core.IsValuePassedThrough
             ? null
             : new ParameterMetadata("value", core.NullableAwareStoredTypeSyntax);
-        FuncParameter = core.IsPassedThrough
+        FuncParameter = core.IsValuePassedThrough
             ? null
-            : new ParameterMetadata("valueGenerator", core.ValueGeneratorType);
+            : new ParameterMetadata(
+                "valueGenerator",
+                WellKnownTypes.System.Func(core.NullableAwareStoredTypeSyntax)
+            );
         DelegateParameter = new ParameterMetadata(
             "valueGenerator",
             delegatesMetadata.ValueDelegateType

@@ -46,6 +46,7 @@ internal sealed record ImposterTargetModel(
         );
         var properties = GetProperties(target, memberAccess);
         var indexers = properties.Where(property => property.IsIndexer).ToArray();
+        var indexersWithTheSameSetup = FindIndexersWithTheSameSetup(indexers);
         var nonIndexers = properties.Where(property => !property.IsIndexer).ToArray();
         var events = GetEvents(target, memberAccess);
 
@@ -77,13 +78,18 @@ internal sealed record ImposterTargetModel(
             ToTargetMembers(
                 InEmitOrder(nonIndexers),
                 isInterface ? DetectCollisions(nonIndexers, property => property.Name) : null,
-                property => PropertyModel.From(property, memberAccess),
+                property => PropertyModel.From(property, memberAccess, false),
                 isInterface
             ),
             ToTargetMembers(
                 InEmitOrder(indexers),
                 isInterface ? DetectCollisions(indexers, IndexerKey) : null,
-                indexer => PropertyModel.From(indexer, memberAccess),
+                indexer =>
+                    PropertyModel.From(
+                        indexer,
+                        memberAccess,
+                        indexersWithTheSameSetup.Contains(indexer)
+                    ),
                 isInterface
             ),
             ToTargetMembers(
@@ -208,6 +214,26 @@ internal sealed record ImposterTargetModel(
                 ParameterModel.MatchedParameters(otherParameters)
             ) && !HaveTheSameSignature(method.Parameters, otherParameters);
     }
+
+    // Indexers whose setups match the same keys, leaving out the ref structs they only pass through, would share a
+    // setup indexer. An imposter sets all of a target's indexers up side by side, and an interface's setup view
+    // declares an inherited interface's indexers too. Indexers of the same key types already get set up apart (see
+    // IndexerKey).
+    private static HashSet<IPropertySymbol> FindIndexersWithTheSameSetup(
+        IReadOnlyCollection<IPropertySymbol> indexers
+    ) =>
+        new(
+            indexers.Where(indexer =>
+                indexers.Any(other =>
+                    HaveTheSameMatchers(
+                        ParameterModel.MatchedParameters(indexer.Parameters),
+                        ParameterModel.MatchedParameters(other.Parameters)
+                    )
+                    && IndexerKey(indexer) != IndexerKey(other)
+                )
+            ),
+            SymbolEqualityComparer.Default
+        );
 
     private static bool HaveTheSameMatchers(
         ImmutableArray<IParameterSymbol> parameters,

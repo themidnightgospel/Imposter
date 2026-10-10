@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -23,7 +24,7 @@ internal static class IndexerImposterBuilderCommon
     ) =>
         ArgumentList(
             SeparatedList(
-                indexer.Core.Parameters.Select(parameter => parameter.ConstructorArgument)
+                indexer.Core.MatchedParameters.Select(parameter => parameter.ConstructorArgument)
             )
         );
 
@@ -37,35 +38,72 @@ internal static class IndexerImposterBuilderCommon
             indexer.Arguments.TypeSyntax.New(BuildIndexerArgumentsArgumentList(indexer))
         );
 
+    // The keys a delegate gets: the matched keys from source, an arguments class, and the keys passed through under the
+    // names they're in scope by.
     internal static ArgumentListSyntax BuildDelegateInvocationArguments(
         ExpressionSyntax source,
-        in ImposterIndexerMetadata indexer
+        in ImposterIndexerMetadata indexer,
+        IReadOnlyList<string> passedThroughKeyNames
     )
     {
-        var arguments = indexer.Core.Parameters.Select(parameter =>
-            Argument(source.Dot(IdentifierName(parameter.FieldName)))
-        );
+        var arguments = new List<ArgumentSyntax>();
+        var passedThroughKeyNameIndex = 0;
+        foreach (var parameter in indexer.Core.Parameters)
+        {
+            arguments.Add(
+                parameter.IsPassedThrough
+                    ? Argument(IdentifierName(passedThroughKeyNames[passedThroughKeyNameIndex++]))
+                    : Argument(source.Dot(IdentifierName(parameter.FieldName)))
+            );
+        }
 
         return ArgumentList(SeparatedList(arguments));
     }
 
+    // The keys passed through, which members and handlers take beside the arguments class under the given names, as
+    // parameters...
+    internal static IEnumerable<ParameterSyntax> PassedThroughKeyParameters(
+        in ImposterIndexerMetadata indexer,
+        IReadOnlyList<string> names
+    ) =>
+        indexer.Core.PassedThroughParameters.Select(
+            (parameter, index) => ParameterSyntax(parameter.TypeSyntax, names[index])
+        );
+
+    // ...as the parameters of a lambda, whose delegate gives their types...
+    internal static IEnumerable<ParameterSyntax> PassedThroughKeyLambdaParameters(
+        IReadOnlyList<string> names
+    ) => names.Select(name => Parameter(Identifier(name)));
+
+    // ...and as the arguments that pass them on.
+    internal static IEnumerable<ArgumentSyntax> PassedThroughKeyArguments(
+        IReadOnlyList<string> names
+    ) => names.Select(name => Argument(IdentifierName(name)));
+
     internal static ArgumentListSyntax BuildDelegateInvocationArgumentsWithValue(
         ExpressionSyntax source,
         in ImposterIndexerMetadata indexer,
+        IReadOnlyList<string> passedThroughKeyNames,
         ExpressionSyntax valueExpression
     )
     {
-        var arguments = BuildDelegateInvocationArguments(source, indexer)
+        var arguments = BuildDelegateInvocationArguments(source, indexer, passedThroughKeyNames)
             .Arguments.Add(Argument(valueExpression));
 
         return ArgumentList(arguments);
     }
 
+    // The keys a setup matches, formatted as an index list. An indexer whose keys all pass through has none.
     internal static ExpressionSyntax BuildIndices(
         in ImposterIndexerMetadata indexer,
         ExpressionSyntax source
     )
     {
+        if (indexer.Core.MatchedParameters.Length == 0)
+        {
+            return "[]".StringLiteral();
+        }
+
         var formattedValues = IdentifierName("string")
             .Dot(IdentifierName("Join"))
             .Call(
@@ -80,7 +118,7 @@ internal static class IndexerImposterBuilderCommon
                                     InitializerExpression(
                                         SyntaxKind.ArrayInitializerExpression,
                                         SeparatedList(
-                                            indexer.Core.Parameters.Select(
+                                            indexer.Core.MatchedParameters.Select(
                                                 ExpressionSyntax (parameter) =>
                                                     Invocation(
                                                         source.Dot(

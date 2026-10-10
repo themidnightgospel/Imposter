@@ -86,12 +86,7 @@ internal static partial class IndexerGetterBuilder
             ? new MethodDeclarationBuilder(returns.ReturnType, returns.Name)
                 .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
                 .AddParameter(ParameterSyntax(value))
-                .WithBody(
-                    AddReturnValueAndReturnThis(
-                        indexer.GetterImplementation,
-                        IdentifierName(value.Name)
-                    )
-                )
+                .WithBody(AddReturnValueAndReturnThis(indexer, IdentifierName(value.Name)))
                 .Build()
             : null;
 
@@ -104,10 +99,7 @@ internal static partial class IndexerGetterBuilder
                 .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
                 .AddParameter(ParameterSyntax(valueGenerator))
                 .WithBody(
-                    AddReturnValueAndReturnThis(
-                        indexer.GetterImplementation,
-                        IdentifierName(valueGenerator.Name).Call()
-                    )
+                    AddReturnValueAndReturnThis(indexer, IdentifierName(valueGenerator.Name).Call())
                 )
                 .Build()
             : null;
@@ -121,7 +113,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(ParameterSyntax(returns.DelegateParameter))
             .WithBody(
                 AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
+                    indexer,
                     IdentifierName(returns.DelegateParameter.Name).Call(DelegateArguments(indexer))
                 )
             )
@@ -136,7 +128,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(ParameterSyntax(throws.ExceptionParameter))
             .WithBody(
                 AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
+                    indexer,
                     ThrowExpression(IdentifierName(throws.ExceptionParameter.Name))
                 )
             )
@@ -151,7 +143,7 @@ internal static partial class IndexerGetterBuilder
             .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
             .WithBody(
                 AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
+                    indexer,
                     ThrowExpression(IdentifierName(throws.ExceptionTypeParameter.Name).New())
                 )
             )
@@ -166,7 +158,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(ParameterSyntax(throws.DelegateParameter))
             .WithBody(
                 AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
+                    indexer,
                     ThrowExpression(
                         IdentifierName(throws.DelegateParameter.Name)
                             .Call(DelegateArguments(indexer))
@@ -175,33 +167,47 @@ internal static partial class IndexerGetterBuilder
             )
             .Build();
 
-    // The arguments the user's Returns and Throws delegates get: the indexer's keys, read from the arguments.
+    // The arguments the user's Returns and Throws delegates get: the indexer's keys, read from the arguments, and the
+    // keys passed through, which the generator takes beside them.
     private static ArgumentListSyntax DelegateArguments(in ImposterIndexerMetadata indexer) =>
         BuildDelegateInvocationArguments(
             IdentifierName(indexer.GetterImplementation.ArgumentsVariableName),
-            indexer
+            indexer,
+            indexer.GetterPassedThroughKeyNames
         );
 
-    // Adds a return value to the invocation imposter: a generator that takes the arguments and yields outcome. Then
-    // returns this for chaining.
+    // Adds a return value to the invocation imposter: a generator that takes the arguments, and the keys passed
+    // through, and yields outcome. Then returns this for chaining.
     private static BlockSyntax AddReturnValueAndReturnThis(
-        in IndexerGetterImposterMetadata getter,
+        in ImposterIndexerMetadata indexer,
         ExpressionSyntax outcome
-    ) =>
-        Block(
+    )
+    {
+        var getter = indexer.GetterImplementation;
+        var arguments = Parameter(Identifier(getter.ArgumentsVariableName));
+        LambdaExpressionSyntax generator =
+            indexer.Core.PassedThroughParameters.Length == 0
+                ? SimpleLambdaExpression(arguments, outcome)
+                : ParenthesizedLambdaExpression(
+                    ParameterList(
+                        SeparatedList([
+                            arguments,
+                            .. PassedThroughKeyLambdaParameters(
+                                indexer.GetterPassedThroughKeyNames
+                            ),
+                        ])
+                    ),
+                    outcome
+                );
+
+        return Block(
             IdentifierName(getter.Builder.InvocationImposterPropertyName)
                 .Dot(IdentifierName("AddReturnValue"))
-                .Call(
-                    Argument(
-                        SimpleLambdaExpression(
-                            Parameter(Identifier(getter.ArgumentsVariableName)),
-                            outcome
-                        )
-                    )
-                )
+                .Call(Argument(generator))
                 .ToStatementSyntax(),
             ReturnThis
         );
+    }
 
     private static MethodDeclarationSyntax BuildGetterBuilderCallbackMethod(
         in ImposterIndexerMetadata indexer

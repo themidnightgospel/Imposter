@@ -104,13 +104,22 @@ internal readonly ref struct ImposterBuilder
         InterfaceSetupMemberModel? member,
         string setupName,
         TypeSyntax returnType,
-        bool isSetUpByMethod = false
+        bool isSetUpByMethod = false,
+        bool hasSetupMethod = false
     )
     {
         if (member is not null)
         {
+            // The view declares an indexer with a setup method of its own as that method.
             _interfaceSetupMembers.Add(
-                new InterfaceSetupMemberMetadata(member, setupName, returnType, isSetUpByMethod)
+                new InterfaceSetupMemberMetadata(
+                    member,
+                    setupName,
+                    returnType,
+                    isSetUpByMethod,
+                    viewName: hasSetupMethod ? setupName : null,
+                    isDeclaredAsMethod: hasSetupMethod
+                )
             );
         }
         return this;

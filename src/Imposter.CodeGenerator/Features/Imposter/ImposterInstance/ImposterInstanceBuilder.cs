@@ -183,7 +183,8 @@ internal readonly ref struct ImposterInstanceBuilder
             statements.AddRange(lambdaCopies.KeyCopies);
             arguments.Add(
                 Argument(
-                    EmptyParametersGoesTo(
+                    ParenthesizedLambdaExpression(
+                        ParameterList(SeparatedList(lambdaCopies.KeyParameters)),
                         indexer.Core.StoredValue(BaseIndexerAccess(lambdaCopies.LambdaArguments))
                     )
                 )
@@ -230,11 +231,23 @@ internal readonly ref struct ImposterInstanceBuilder
                 statements.Add(valueCopy);
             }
 
-            // A lambda can't capture a value passed through, so the base setter takes it as an argument.
+            // A generated base setter takes the keys passed through and the value as arguments.
+            var setterValue = IdentifierName(lambdaCopies.SetterValueParameterName);
             arguments.Add(
                 Argument(
-                    indexer.Core.IsPassedThrough
-                        ? BaseSetterLambda(BaseIndexerAccess(lambdaCopies.LambdaArguments))
+                    indexer.Core.HasGeneratedValueDelegates
+                        ? ParenthesizedLambdaExpression(
+                            ParameterList(
+                                SeparatedList([
+                                    .. lambdaCopies.KeyParameters,
+                                    Parameter(setterValue.Identifier),
+                                ])
+                            ),
+                            Block(
+                                BaseIndexerAssignment(lambdaCopies.LambdaArguments, setterValue)
+                                    .ToStatementSyntax()
+                            )
+                        )
                         : EmptyParametersGoesTo(
                             Block(
                                 BaseIndexerAssignment(
@@ -270,12 +283,16 @@ internal readonly ref struct ImposterInstanceBuilder
     ) => indexer.Core.Parameters.Select(parameter => parameter.ImposterArgument);
 
     // A lambda cannot capture an `in` or `ref readonly` parameter or a span, so the base-call lambdas read local copies
-    // of them. A span's copy is the array of its elements, which converts back to the span.
+    // of them. A span's copy is the array of its elements, which converts back to the span. Nor can it capture
+    // another ref struct, so the lambdas take a key passed through as a parameter of their own, and a generated base
+    // setter takes the value as one too.
     private readonly record struct LambdaCopies(
         IReadOnlyList<StatementSyntax> KeyCopies,
+        IReadOnlyList<ParameterSyntax> KeyParameters,
         IReadOnlyList<ArgumentSyntax> LambdaArguments,
         StatementSyntax? ValueCopy,
-        ExpressionSyntax LambdaValue
+        ExpressionSyntax LambdaValue,
+        string SetterValueParameterName
     );
 
     private static LambdaCopies CopyForLambdas(in ImposterIndexerMetadata indexer)
@@ -284,12 +301,18 @@ internal readonly ref struct ImposterInstanceBuilder
             indexer.Core.Parameters.Select(parameter => parameter.Name).Append("value")
         );
         var keyCopies = new List<StatementSyntax>();
+        var keyParameters = new List<ParameterSyntax>();
         var lambdaArguments = new List<ArgumentSyntax>();
 
         foreach (var parameter in indexer.Core.Parameters)
         {
             var argumentName = parameter.Name;
-            if (
+            if (parameter.IsPassedThrough)
+            {
+                argumentName = localNames.Use($"{parameter.Name}Argument");
+                keyParameters.Add(Parameter(Identifier(argumentName)));
+            }
+            else if (
                 parameter.Model.Span is not null
                 || parameter.Model.RefKind is RefKind.In or RefKinds.RefReadOnlyParameter
             )
@@ -309,9 +332,17 @@ internal readonly ref struct ImposterInstanceBuilder
             lambdaArguments.Add(parameter.ForwardingArgument(argumentName));
         }
 
+        var setterValueParameterName = localNames.Use("baseSetterValue");
         if (!indexer.Core.HasSpanValue)
         {
-            return new LambdaCopies(keyCopies, lambdaArguments, null, IdentifierName("value"));
+            return new LambdaCopies(
+                keyCopies,
+                keyParameters,
+                lambdaArguments,
+                null,
+                IdentifierName("value"),
+                setterValueParameterName
+            );
         }
 
         var valueCopyName = localNames.Use("valueCopy");
@@ -323,9 +354,11 @@ internal readonly ref struct ImposterInstanceBuilder
 
         return new LambdaCopies(
             keyCopies,
+            keyParameters,
             lambdaArguments,
             valueCopy,
-            IdentifierName(valueCopyName)
+            IdentifierName(valueCopyName),
+            setterValueParameterName
         );
     }
 

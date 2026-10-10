@@ -1,3 +1,4 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.SetterImposterBuilderInterface;
@@ -41,7 +42,19 @@ internal readonly ref struct ImposterIndexerMetadata
 
     internal readonly bool RequiresExplicitInterfaceImplementation;
 
+    // An indexer without keys to match, or whose keys to match another indexer's, can't have a this[...] of its own
+    // on the imposter or its interface's setup view, so it's set up by a method named after its unique name.
+    internal readonly bool HasSetupMethod;
+
+    // An indexer the imposter sets up by a method: one with a setup method, or one that collides with another
+    // interface's indexer and is set up through its interface's view, which calls a private method.
+    internal readonly bool IsSetUpByMethod;
+
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
+
+    // The keys passed through, as the getter's handlers and setup methods take them: under names that don't hide the
+    // parameters and locals those declare.
+    internal readonly string[] GetterPassedThroughKeyNames;
 
     internal ImposterIndexerMetadata(
         PropertyModel indexer,
@@ -74,6 +87,25 @@ internal readonly ref struct ImposterIndexerMetadata
             GetterBuilderInterface
         );
         Builder = new IndexerImposterBuilderMetadata(this, defaultIndexerBehaviourField);
+        ParameterMetadata?[] returnsParameters =
+        [
+            GetterBuilderInterface.ReturnsMethod.ValueParameter,
+            GetterBuilderInterface.ReturnsMethod.FuncParameter,
+            GetterBuilderInterface.ReturnsMethod.DelegateParameter,
+        ];
+        var getterNames = new NameSet([
+            GetterImplementation.ArgumentsVariableName,
+            GetterImplementation.BaseImplementationParameter.Name,
+            IndexerGetterImposterMetadata.GeneratorVariableName,
+            IndexerGetterImposterMetadata.CallbackVariableName,
+            GetterBuilderInterface.ThrowsMethod.ExceptionParameter.Name,
+            GetterBuilderInterface.ThrowsMethod.DelegateParameter.Name,
+            GetterBuilderInterface.ThrowsMethod.ExceptionTypeParameter.Name,
+            .. returnsParameters.OfType<ParameterMetadata>().Select(parameter => parameter.Name),
+        ]);
+        GetterPassedThroughKeyNames = Core
+            .PassedThroughParameters.Select(parameter => getterNames.Use(parameter.Name))
+            .ToArray();
         // The setup indexer uses the field by its bare name, so the name avoids the indexer's parameter names, as well
         // as the imposter's other members.
         BuilderField = new FieldMetadata(
@@ -81,6 +113,8 @@ internal readonly ref struct ImposterIndexerMetadata
             Builder.TypeSyntax
         );
         RequiresExplicitInterfaceImplementation = requiresExplicitInterfaceImplementation;
+        HasSetupMethod = Core.MatchedParameters.Length == 0 || indexer.HasIndexerWithTheSameSetup;
+        IsSetUpByMethod = HasSetupMethod || requiresExplicitInterfaceImplementation;
         if (requiresExplicitInterfaceImplementation)
         {
             ExplicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(

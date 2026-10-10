@@ -64,6 +64,10 @@ public class PropertyModelTests
             .OfType<IPropertySymbol>()
             .Single();
 
-        return PropertyModel.From(property, new MemberAccess(compilation.Assembly));
+        return PropertyModel.From(
+            property,
+            new MemberAccess(compilation.Assembly),
+            hasIndexerWithTheSameSetup: false
+        );
     }
 }

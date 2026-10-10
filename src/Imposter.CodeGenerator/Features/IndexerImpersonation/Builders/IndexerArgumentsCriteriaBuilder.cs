@@ -16,7 +16,7 @@ internal static class IndexerArgumentsCriteriaBuilder
             Token(SyntaxKind.InternalKeyword)
         );
 
-        foreach (var parameter in indexer.Core.Parameters)
+        foreach (var parameter in indexer.Core.MatchedParameters)
         {
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
@@ -38,7 +38,7 @@ internal static class IndexerArgumentsCriteriaBuilder
             indexer.ArgumentsCriteria.Name
         ).WithModifiers(Token(SyntaxKind.InternalKeyword));
 
-        foreach (var parameter in indexer.Core.Parameters)
+        foreach (var parameter in indexer.Core.MatchedParameters)
         {
             constructor.AddParameter(
                 new ParameterMetadata(parameter.Name, parameter.ArgTypeSyntax),
@@ -54,7 +54,7 @@ internal static class IndexerArgumentsCriteriaBuilder
         var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
         ExpressionSyntax? comparison = null;
 
-        foreach (var parameter in indexer.Core.Parameters)
+        foreach (var parameter in indexer.Core.MatchedParameters)
         {
             var parameterComparison = ThisExpression()
                 .Dot(IdentifierName(parameter.FieldName))

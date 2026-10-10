@@ -92,3 +92,29 @@ An indexer whose value is another `ref struct` can be impersonated too. The impo
 - Without a setup, the getter returns what the base getter returns, for a class indexer that has one, or the default otherwise. Setting the indexer doesn't change what it returns.
 
 A class indexer with a key taken by `in` or `ref readonly` and a getter with a base implementation still reports [IMP009](../diagnostics.md#imp009): its base getter reads the base indexer through a copy of the key, which the value could refer to.
+
+## Ref struct keys
+
+A key of another `ref struct` type can't be kept or matched either, so setups and verification match the other keys only, as a method's [ref struct parameters](../arguments-matching.md#ref-struct-parameters) are. The delegates passed to `Returns`, `Callback` and `Throws`, and the base implementation, still get the key:
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/RefStructIndexerKeyTests.cs#L17"}
+    // int this[int row, Locator locator] { get; set; }, where Locator is a ref struct
+    imposter[Arg<int>.Any()].Getter().Returns((row, locator) => row + locator.Offset);
+
+    var value = imposter.Instance()[2, new Locator(3)]; // 5
+    ```
+
+The default behaviour keeps a value set by the other keys, whatever the ref struct key.
+
+An indexer whose keys are all ref structs has no keys left to match, and two indexers whose other keys are the same would share one setup indexer. Such an indexer is set up by a method named after it instead: `Indexer()`, or `Indexer_1()` and so on when the target has more than one indexer. Its interface's [setup view](../interface-setup.md) declares the same method.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/IndexerImpersonation/RefStructIndexerKeyTests.cs#L89"}
+    // string this[Locator locator] { get; set; }, the target's second indexer
+    imposter.Indexer_1().Getter().Returns(locator => locator.Offset.ToString());
+
+    var value = imposter.Instance()[new Locator(8)]; // "8"
+    ```
+
+A ref struct key taken by `in` still reports [IMP009](../diagnostics.md#imp009).

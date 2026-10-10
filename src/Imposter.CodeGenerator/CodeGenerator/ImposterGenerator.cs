@@ -393,7 +393,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     targetIndexer.Setup,
                     indexer.Core.UniqueName,
                     indexer.BuilderInterface.TypeSyntax,
-                    isSetUpByMethod: indexer.RequiresExplicitInterfaceImplementation
+                    isSetUpByMethod: indexer.IsSetUpByMethod,
+                    hasSetupMethod: indexer.HasSetupMethod
                 )
                 .AddMemberTypes(
                     indexer.Core.UniqueName,

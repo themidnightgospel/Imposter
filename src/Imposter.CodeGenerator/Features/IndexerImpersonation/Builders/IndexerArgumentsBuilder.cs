@@ -20,7 +20,7 @@ internal static class IndexerArgumentsBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(equatableType));
 
-        foreach (var parameter in indexer.Core.Parameters)
+        foreach (var parameter in indexer.Core.MatchedParameters)
         {
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
@@ -46,7 +46,7 @@ internal static class IndexerArgumentsBuilder
 
         var bodyBuilder = new BlockBuilder();
 
-        foreach (var parameter in indexer.Core.Parameters)
+        foreach (var parameter in indexer.Core.MatchedParameters)
         {
             constructorBuilder = constructorBuilder.AddParameter(parameter.ParameterSyntax);
             bodyBuilder.AddStatement(
@@ -71,7 +71,7 @@ internal static class IndexerArgumentsBuilder
         // A comparer keeps Equals consistent with the generated GetHashCode and with Arg<T>.Is, and works for type
         // parameters and structs without ==.
         var comparison = indexer
-            .Core.Parameters.Select(parameter =>
+            .Core.MatchedParameters.Select(parameter =>
                 (ExpressionSyntax)
                     parameter
                         .EqualityComparer.Dot(IdentifierName("Equals"))
@@ -144,7 +144,7 @@ internal static class IndexerArgumentsBuilder
         };
 
         statements.AddRange(
-            indexer.Core.Parameters.Select(parameter =>
+            indexer.Core.MatchedParameters.Select(parameter =>
                 hash.Assign(
                         BinaryExpression(
                             SyntaxKind.AddExpression,
