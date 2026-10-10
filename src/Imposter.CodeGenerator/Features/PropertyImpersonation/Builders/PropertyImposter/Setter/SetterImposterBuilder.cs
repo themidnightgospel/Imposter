@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -92,48 +93,26 @@ internal static class SetterImposterBuilder
         in ImposterPropertyMetadata property
     )
     {
-        var constructor = new ConstructorBuilder(property.SetterImposter.Name).WithModifiers(
-            TokenList(Token(SyntaxKind.InternalKeyword))
-        );
-        var body = new BlockBuilder();
+        var setterImposter = property.SetterImposter;
+        var constructor = new ConstructorWithFieldInitializationBuilder(
+            setterImposter.Name
+        ).WithModifiers(Token(SyntaxKind.InternalKeyword));
 
         if (property.Core.HasGetter)
         {
-            constructor.AddParameter(
-                ParameterSyntax(
-                    property.SetterImposter.DefaultPropertyBehaviourField.Type,
-                    property.SetterImposter.DefaultPropertyBehaviourField.Name
-                )
-            );
-            body.AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name))
-                    .Assign(
-                        IdentifierName(property.SetterImposter.DefaultPropertyBehaviourField.Name)
-                    )
-                    .ToStatementSyntax()
-            );
+            constructor.AddParameter(setterImposter.DefaultPropertyBehaviourField);
         }
 
-        var setterImposter = property.SetterImposter;
-        constructor
-            .AddParameter(ParameterSyntax(setterImposter.InvocationBehaviorParameter))
-            .AddParameter(ParameterSyntax(setterImposter.PropertyDisplayNameParameter));
-
-        body.AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(setterImposter.InvocationBehaviorField.Name))
-                    .Assign(IdentifierName(setterImposter.InvocationBehaviorParameter.Name))
-                    .ToStatementSyntax()
+        return constructor
+            .AddParameter(
+                setterImposter.InvocationBehaviorParameter,
+                setterImposter.InvocationBehaviorField.Name
             )
-            .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(setterImposter.PropertyDisplayNameField.Name))
-                    .Assign(IdentifierName(setterImposter.PropertyDisplayNameParameter.Name))
-                    .ToStatementSyntax()
-            );
-
-        return constructor.WithBody(body.Build()).Build();
+            .AddParameter(
+                setterImposter.PropertyDisplayNameParameter,
+                setterImposter.PropertyDisplayNameField.Name
+            )
+            .Build();
     }
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
@@ -322,106 +301,41 @@ internal static class SetterImposterBuilder
         in PropertySetterImposterMetadata setterImposter
     )
     {
-        var invocationHistoryIdentifier = IdentifierName(
-            setterImposter.InvocationHistoryField.Name
-        );
-        var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
-        var propertyDisplayName = IdentifierName(setterImposter.PropertyDisplayNameField.Name);
+        var called = setterImposter.CalledMethod;
+        var invocationHistory = IdentifierName(setterImposter.InvocationHistoryField.Name);
+        var invocationCount = IdentifierName(called.InvocationCountVariableName);
+        var value = IdentifierName("value");
+        var valueDescription = "set "
+            .StringLiteral()
+            .Add(IdentifierName(setterImposter.PropertyDisplayNameField.Name))
+            .Add(" = ".StringLiteral())
+            .Add(Invocation(value));
 
-        return new MethodDeclarationBuilder(
-            setterImposter.CalledMethod.ReturnType,
-            setterImposter.CalledMethod.Name
-        )
-            .AddParameter(ParameterSyntax(setterImposter.CalledMethod.CriteriaParameter))
-            .AddParameter(ParameterSyntax(setterImposter.CalledMethod.CountParameter))
+        return new MethodDeclarationBuilder(called.ReturnType, called.Name)
+            .AddParameter(ParameterSyntax(called.CriteriaParameter))
+            .AddParameter(ParameterSyntax(called.CountParameter))
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
-                        setterImposter.CalledMethod.InvocationCountVariableName,
-                        invocationHistoryIdentifier
+                        invocationCount.Identifier.Text,
+                        invocationHistory
                             .Dot(IdentifierName("Count"))
                             .Call(
                                 Argument(
-                                    IdentifierName(
-                                            setterImposter.CalledMethod.CriteriaParameter.Name
-                                        )
+                                    IdentifierName(called.CriteriaParameter.Name)
                                         .Dot(IdentifierName("Matches"))
                                 )
                             )
                     ),
-                    IfStatement(
-                        Not(
-                            IdentifierName(setterImposter.CalledMethod.CountParameter.Name)
-                                .Dot(IdentifierName("Matches"))
-                                .Call(
-                                    Argument(
-                                        IdentifierName(
-                                            setterImposter.CalledMethod.InvocationCountVariableName
-                                        )
-                                    )
-                                )
-                        ),
-                        Block(
-                            LocalVariableDeclarationSyntax(
-                                Var,
-                                "performedInvocations",
-                                stringListType.New()
-                            ),
-                            ForEachStatement(
-                                Var,
-                                Identifier("value"),
-                                invocationHistoryIdentifier,
-                                Block(
-                                    IdentifierName("performedInvocations")
-                                        .Dot(IdentifierName("Add"))
-                                        .Call(
-                                            Argument(
-                                                BuildInvocationDescription(IdentifierName("value"))
-                                            )
-                                        )
-                                        .ToStatementSyntax()
-                                )
-                            ),
-                            ThrowStatement(
-                                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                                    ArgumentList(
-                                        SeparatedList([
-                                            Argument(
-                                                IdentifierName(
-                                                    setterImposter.CalledMethod.CountParameter.Name
-                                                )
-                                            ),
-                                            Argument(
-                                                IdentifierName(
-                                                    setterImposter
-                                                        .CalledMethod
-                                                        .InvocationCountVariableName
-                                                )
-                                            ),
-                                            Argument(
-                                                JoinWithNewLines(
-                                                    IdentifierName("performedInvocations")
-                                                )
-                                            ),
-                                        ])
-                                    )
-                                )
-                            )
-                        )
+                    ThrowIfCountDoesNotMatch(
+                        IdentifierName(called.CountParameter.Name),
+                        invocationCount,
+                        new PerformedInvocations(invocationHistory, value, valueDescription)
                     )
                 )
             )
             .Build();
-
-        ExpressionSyntax BuildInvocationDescription(IdentifierNameSyntax valueIdentifier)
-        {
-            var prefix = "set ".StringLiteral().Add(propertyDisplayName);
-
-            var assignment = prefix.Add(" = ".StringLiteral());
-
-            return assignment.Add(Invocation(valueIdentifier));
-        }
     }
 
     internal static MethodDeclarationSyntax? BuildSetterCallbackMethod(
@@ -471,29 +385,13 @@ internal static class SetterImposterBuilder
 
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
         in PropertySetterImposterMetadata setterImposter
-    )
-    {
-        var condition = IsExplicit(IdentifierName(setterImposter.InvocationBehaviorField.Name))
-            .And(Not(IdentifierName(setterImposter.HasConfiguredSetterField.Name)));
-
-        return new MethodDeclarationBuilder(
-            setterImposter.EnsureConfiguredMethod.ReturnType,
-            setterImposter.EnsureConfiguredMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithBody(
-                Block(
-                    IfStatement(
-                        condition,
-                        ThrowMissingImposter(
-                            setterImposter.PropertyDisplayNameField.Name,
-                            " (setter)"
-                        )
-                    )
-                )
-            )
-            .Build();
-    }
+    ) =>
+        EnsureConfiguredMethod(
+            setterImposter.EnsureConfiguredMethod.Name,
+            setterImposter.InvocationBehaviorField.Name,
+            IdentifierName(setterImposter.HasConfiguredSetterField.Name),
+            ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")
+        );
 
     private static MethodDeclarationSyntax BuildMarkConfiguredMethod(
         in PropertySetterImposterMetadata setterImposter

@@ -7,6 +7,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -62,7 +63,7 @@ internal static class GetterImposterBuilderBuilder
                     SyntaxKind.PrivateKeyword
                 )
             )
-            .AddMember(BuildConstructor(property))
+            .AddMember(BuildConstructor(property.GetterImposterBuilder))
             .AddMember(
                 BuildAddGetterReturnValueMethod(
                     property.GetterImposterBuilder,
@@ -133,43 +134,17 @@ internal static class GetterImposterBuilderBuilder
     }
 
     private static ConstructorDeclarationSyntax BuildConstructor(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var builder = property.GetterImposterBuilder;
-        var constructor = new ConstructorBuilder(builder.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+        in PropertyGetterImposterBuilderMetadata builder
+    ) =>
+        new ConstructorWithFieldInitializationBuilder(builder.Name)
+            .WithModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(builder.DefaultPropertyBehaviourField)
+            .AddParameter(builder.InvocationBehaviorParameter, builder.InvocationBehaviorField.Name)
             .AddParameter(
-                ParameterSyntax(
-                    builder.DefaultPropertyBehaviourField.Type,
-                    builder.DefaultPropertyBehaviourField.Name
-                )
+                builder.PropertyDisplayNameParameter,
+                builder.PropertyDisplayNameField.Name
             )
-            .AddParameter(ParameterSyntax(builder.InvocationBehaviorParameter))
-            .AddParameter(ParameterSyntax(builder.PropertyDisplayNameParameter));
-
-        var body = new BlockBuilder()
-            .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(builder.DefaultPropertyBehaviourField.Name))
-                    .Assign(IdentifierName(builder.DefaultPropertyBehaviourField.Name))
-                    .ToStatementSyntax()
-            )
-            .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(builder.InvocationBehaviorField.Name))
-                    .Assign(IdentifierName(builder.InvocationBehaviorParameter.Name))
-                    .ToStatementSyntax()
-            )
-            .AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(builder.PropertyDisplayNameField.Name))
-                    .Assign(IdentifierName(builder.PropertyDisplayNameParameter.Name))
-                    .ToStatementSyntax()
-            );
-
-        return constructor.WithBody(body.Build()).Build();
-    }
+            .Build();
 
     private static FieldDeclarationSyntax BuildGetterReturnValuesField(
         in PropertyGetterImposterBuilderMetadata getterImposterBuilder
@@ -401,8 +376,12 @@ internal static class GetterImposterBuilderBuilder
     internal static MethodDeclarationSyntax BuildGetterCalledMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
-    ) =>
-        new MethodDeclarationBuilder(
+    )
+    {
+        var count = IdentifierName(builderInterface.CalledMethod.CountParameter.Name);
+        var invocationCount = IdentifierName(builder.InvocationCountField.Name);
+
+        return new MethodDeclarationBuilder(
             builderInterface.CalledMethod.ReturnType,
             builderInterface.CalledMethod.Name
         )
@@ -411,29 +390,13 @@ internal static class GetterImposterBuilderBuilder
             .WithBody(
                 Block(
                     IfStatement(
-                        Not(
-                            IdentifierName(builderInterface.CalledMethod.CountParameter.Name)
-                                .Dot(IdentifierName("Matches"))
-                                .Call(Argument(IdentifierName(builder.InvocationCountField.Name)))
-                        ),
-                        ThrowStatement(
-                            WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                                ArgumentList(
-                                    SeparatedList([
-                                        Argument(
-                                            IdentifierName(
-                                                builderInterface.CalledMethod.CountParameter.Name
-                                            )
-                                        ),
-                                        Argument(IdentifierName(builder.InvocationCountField.Name)),
-                                    ])
-                                )
-                            )
-                        )
+                        CountDoesNotMatch(count, invocationCount),
+                        ThrowVerificationFailed(count, invocationCount)
                     )
                 )
             )
             .Build();
+    }
 
     private static MethodDeclarationSyntax BuildThenMethod(
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
@@ -659,24 +622,11 @@ internal static class GetterImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
         in PropertyGetterImposterBuilderMetadata builder
-    )
-    {
-        var condition = IsExplicit(IdentifierName(builder.InvocationBehaviorField.Name))
-            .And(Not(IdentifierName(builder.HasConfiguredReturnField.Name)));
-
-        return new MethodDeclarationBuilder(
-            builder.EnsureConfiguredMethod.ReturnType,
-            builder.EnsureConfiguredMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithBody(
-                Block(
-                    IfStatement(
-                        condition,
-                        ThrowMissingImposter(builder.PropertyDisplayNameField.Name, " (getter)")
-                    )
-                )
-            )
-            .Build();
-    }
+    ) =>
+        EnsureConfiguredMethod(
+            builder.EnsureConfiguredMethod.Name,
+            builder.InvocationBehaviorField.Name,
+            IdentifierName(builder.HasConfiguredReturnField.Name),
+            ThrowMissingImposter(builder.PropertyDisplayNameField.Name, " (getter)")
+        );
 }

@@ -6,7 +6,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Imposter.CodeGenerator.SyntaxHelpers.VolatileSyntaxHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -304,10 +306,11 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var invocationHistory = IdentifierName(getter.InvocationHistoryField.Name);
         var count = IdentifierName(getter.CountParameterName);
+        var invocationCount = IdentifierName("invocationCount");
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
-            "invocationCount",
+            invocationCount.Identifier.Text,
             invocationHistory
                 .Dot(IdentifierName("Count"))
                 .Call(
@@ -317,14 +320,11 @@ internal static partial class IndexerGetterBuilder
                 )
         );
 
-        var condition = Not(
-            count.Dot(IdentifierName("Matches")).Call(Argument(IdentifierName("invocationCount")))
-        );
-
-        var descriptionExpression = "get "
+        var entry = IdentifierName("entry");
+        var entryDescription = "get "
             .StringLiteral()
             .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
-            .Add(BuildIndices(indexer, IdentifierName("entry")));
+            .Add(BuildIndices(indexer, entry));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
@@ -340,11 +340,10 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 Block(
                     invocationCountDeclaration,
-                    BuildCalledVerificationBlock(
-                        condition,
-                        invocationHistory,
+                    ThrowIfCountDoesNotMatch(
                         count,
-                        descriptionExpression
+                        invocationCount,
+                        new PerformedInvocations(invocationHistory, entry, entryDescription)
                     )
                 )
             )
@@ -374,11 +373,10 @@ internal static partial class IndexerGetterBuilder
     private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
         in IndexerGetterImposterMetadata getter
     ) =>
-        BuildEnsureConfiguredMethod(
+        EnsureConfiguredMethod(
             getter.EnsureGetterConfiguredMethodName,
             getter.InvocationBehaviorField.Name,
-            getter.HasConfiguredReturnField.Name,
-            getter.PropertyDisplayNameField.Name,
-            getter.GetterSuffix
+            VolatileRead(getter.HasConfiguredReturnField.Name),
+            Block(ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix))
         );
 }

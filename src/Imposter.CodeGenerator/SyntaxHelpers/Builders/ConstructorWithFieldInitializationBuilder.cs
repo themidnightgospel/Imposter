@@ -15,13 +15,26 @@ internal class ConstructorWithFieldInitializationBuilder
         _constructorBuilder = new ConstructorBuilder(className);
     }
 
-    internal ConstructorWithFieldInitializationBuilder AddParameter(in FieldMetadata fieldMetadata)
+    internal ConstructorWithFieldInitializationBuilder AddParameter(
+        in FieldMetadata fieldMetadata
+    ) => AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name), fieldMetadata.Name);
+
+    // For a parameter named apart from the field it's stored in.
+    internal ConstructorWithFieldInitializationBuilder AddParameter(
+        in ParameterMetadata parameter,
+        string fieldName
+    ) => AddParameter(ParameterSyntax(parameter), fieldName);
+
+    private ConstructorWithFieldInitializationBuilder AddParameter(
+        ParameterSyntax parameter,
+        string fieldName
+    )
     {
-        _constructorBuilder.AddParameter(ParameterSyntax(fieldMetadata.Type, fieldMetadata.Name));
+        _constructorBuilder.AddParameter(parameter);
         _bodyBuilder.AddStatement(
             ThisExpression()
-                .Dot(IdentifierName(fieldMetadata.Name))
-                .Assign(IdentifierName(fieldMetadata.Name))
+                .Dot(IdentifierName(fieldName))
+                .Assign(IdentifierName(parameter.Identifier.Text))
                 .ToStatementSyntax()
         );
         return this;

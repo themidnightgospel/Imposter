@@ -1,6 +1,8 @@
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Shared.Builders;
@@ -9,6 +11,26 @@ namespace Imposter.CodeGenerator.Features.Shared.Builders;
 // base implementation to fall back to.
 internal static class MissingImposterBuilder
 {
+    // An accessor that was never set up throws in Explicit mode. The caller passes how it reads its configured flag and
+    // the statement that throws, so each feature keeps the code it generates.
+    internal static MethodDeclarationSyntax EnsureConfiguredMethod(
+        string methodName,
+        string modeFieldName,
+        ExpressionSyntax isConfigured,
+        StatementSyntax throwMissingImposter
+    ) =>
+        new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .WithBody(
+                Block(
+                    IfStatement(
+                        IsExplicit(IdentifierName(modeFieldName)).And(Not(isConfigured)),
+                        throwMissingImposter
+                    )
+                )
+            )
+            .Build();
+
     internal static IfStatementSyntax ThrowIfExplicit(
         ExpressionSyntax mode,
         ExpressionSyntax memberDisplayName

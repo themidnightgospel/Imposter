@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHis
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -40,6 +41,9 @@ internal static partial class MethodImposterBuilderBuilder
     private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
     {
         var called = method.InvocationVerifierInterface.CalledMethod;
+        var count = IdentifierName(called.CountParameter.Name);
+        var invocationCount = IdentifierName("invocationCount");
+        var invocationHistory = IdentifierName(method.InvocationHistory.Collection.AsField.Name);
 
         return new MethodDeclarationBuilder(called.ReturnType, called.Name)
             .AddParameter(ParameterSyntax(called.CountParameter))
@@ -48,47 +52,21 @@ internal static partial class MethodImposterBuilderBuilder
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
-                        "invocationCount",
+                        invocationCount.Identifier.Text,
                         BuildInvocationCountExpression(method)
                     ),
-                    ThrowIfCountDoesNotMatch(method)
-                )
-            )
-            .Build();
-
-        static IfStatementSyntax ThrowIfCountDoesNotMatch(in ImposterTargetMethodMetadata method)
-        {
-            var invocationHistoryIdentifier = IdentifierName(
-                method.InvocationHistory.Collection.AsField.Name
-            );
-            var count = IdentifierName(
-                method.InvocationVerifierInterface.CalledMethod.CountParameter.Name
-            );
-
-            return IfStatement(
-                Not(
-                    count
-                        .Dot(IdentifierName("Matches"))
-                        .Call(Argument(IdentifierName("invocationCount")))
-                ),
-                Block(
-                    ThrowStatement(
-                        WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>([
-                                    Argument(count),
-                                    Argument(IdentifierName("invocationCount")),
-                                    Argument(
-                                        invocationHistoryIdentifier
-                                            .Dot(IdentifierName("ToString"))
-                                            .Call()
-                                    ),
-                                ])
+                    IfStatement(
+                        CountDoesNotMatch(count, invocationCount),
+                        Block(
+                            ThrowVerificationFailed(
+                                count,
+                                invocationCount,
+                                invocationHistory.Dot(IdentifierName("ToString")).Call()
                             )
                         )
                     )
                 )
-            );
-        }
+            )
+            .Build();
     }
 }
