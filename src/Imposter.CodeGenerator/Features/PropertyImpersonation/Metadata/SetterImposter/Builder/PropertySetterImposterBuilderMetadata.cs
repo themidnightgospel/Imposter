@@ -11,7 +11,7 @@ internal readonly struct PropertySetterImposterBuilderMetadata
 
     internal readonly FieldMetadata SetterImposterField;
 
-    internal readonly FieldMetadata CriteriaField;
+    internal readonly FieldMetadata? CriteriaField;
 
     public PropertySetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
@@ -23,6 +23,8 @@ internal readonly struct PropertySetterImposterBuilderMetadata
             SyntaxFactory.IdentifierName(Name)
         );
         SetterImposterField = new FieldMetadata("_setterImposter", setterImposterTypeSyntax);
-        CriteriaField = new FieldMetadata("_criteria", property.AsArgType);
+        CriteriaField = property.AsArgType is { } argType
+            ? new FieldMetadata("_criteria", argType)
+            : null;
     }
 }

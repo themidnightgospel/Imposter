@@ -9,6 +9,8 @@ namespace Imposter.CodeGenerator.Models;
 /// <see cref="Span"/> is set for a property or indexer whose type is a span.
 /// <see cref="OverrideAccessibility"/> is the accessibility an override in the imposter's assembly must declare.
 /// <see cref="IsRequired"/> is true for a C# 11 <c>required</c> property, whose override must be required too.
+/// <see cref="IsPassedThrough"/> is true for a property of another <c>ref struct</c> type, which an imposter can't keep
+/// or match: it only passes the value between the instance and the delegates and the base implementation.
 /// </summary>
 internal sealed record PropertyModel(
     string Name,
@@ -21,7 +23,8 @@ internal sealed record PropertyModel(
     PropertyAccessorModel? Getter,
     PropertyAccessorModel? Setter,
     EquatableArray<ParameterModel> Parameters,
-    bool IsRequired
+    bool IsRequired,
+    bool IsPassedThrough
 )
 {
     internal static PropertyModel From(IPropertySymbol property, MemberAccess memberAccess) =>
@@ -36,8 +39,16 @@ internal sealed record PropertyModel(
             PropertyAccessorModel.FromAccessible(property.GetMethod, memberAccess),
             PropertyAccessorModel.FromAccessible(property.SetMethod, memberAccess),
             property.Parameters.Select(ParameterModel.From).ToEquatableArray(),
-            property.IsRequiredMember()
+            property.IsRequiredMember(),
+            PassesValueThrough(property)
         );
+
+    // A property's value only: an indexer of another ref struct type still gets IMP009.
+    internal static bool PassesValueThrough(IPropertySymbol property) =>
+        !property.IsIndexer
+        && property.RefKind == RefKind.None
+        && property.Type.IsRefLikeType
+        && SpanModel.FromProperty(property) is null;
 
     private static string GetDisplayName(IPropertySymbol property)
     {

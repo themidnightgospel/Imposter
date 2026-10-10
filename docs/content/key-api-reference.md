@@ -83,6 +83,7 @@ A compact list of the core types and fluent members you’ll use most. This is n
 
 - Getter: `imposter.Property.Getter()` → supports `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)`
 - Setter: `imposter.Property.Setter(Arg<T> valueMatcher)` → supports `Callback(...)`, `Called(Count)`
+- A property of another `ref struct` type: the getter's `Returns` takes only a delegate, and `Setter()` takes no matcher (see [Ref struct properties](properties/index.md#ref-struct-properties))
 - Base implementation: `UseBaseImplementation()` (when applicable for classes)
 
 !!! tip "Pro tip"

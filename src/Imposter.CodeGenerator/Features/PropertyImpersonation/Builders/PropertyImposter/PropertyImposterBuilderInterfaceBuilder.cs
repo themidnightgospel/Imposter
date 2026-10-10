@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.ImposterBuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,11 +21,7 @@ internal static class PropertyImposterBuilderInterfaceBuilder
             .AddMember(
                 property.Core.HasGetter ? InterfaceMethod(getter.ReturnType, getter.Name) : null
             )
-            .AddMember(
-                property.Core.HasSetter
-                    ? InterfaceMethod(setter.ReturnType, setter.Name, setter.CriteriaParameter)
-                    : null
-            )
+            .AddMember(property.Core.HasSetter ? SetterMethod(setter) : null)
             .AddMember(
                 builderInterface.UseBaseImplementationMethod is { } useBaseImplementation
                     ? InterfaceMethod(useBaseImplementation.ReturnType, useBaseImplementation.Name)
@@ -32,4 +29,9 @@ internal static class PropertyImposterBuilderInterfaceBuilder
             )
             .Build();
     }
+
+    private static MethodDeclarationSyntax SetterMethod(in SetterMethodMetadata setter) =>
+        setter.CriteriaParameter is { } criteria
+            ? InterfaceMethod(setter.ReturnType, setter.Name, criteria)
+            : InterfaceMethod(setter.ReturnType, setter.Name);
 }

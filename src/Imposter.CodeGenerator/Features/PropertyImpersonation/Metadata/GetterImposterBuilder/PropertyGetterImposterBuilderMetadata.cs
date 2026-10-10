@@ -47,18 +47,14 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
     {
         Name = "GetterImposterBuilder";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
-        var returnHandlerType = WellKnownTypes.System.Func(
-            property.AsSystemFuncType.ToNullableType(),
-            property.NullableAwareStoredTypeSyntax
-        );
-        ReturnValuesField = new ReturnValuesFieldMetadata(returnHandlerType);
+        ReturnValuesField = new ReturnValuesFieldMetadata(property.ReturnHandlerType);
         CallbacksField = new CallbacksFieldMetadata();
-        LastReturnValueField = new LastReturnValueFieldMetadata(returnHandlerType);
+        LastReturnValueField = new LastReturnValueFieldMetadata(property.ReturnHandlerType);
         InvocationCountField = new InvocationCountFieldMetadata();
         DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
-        AddReturnValueMethod = new AddReturnValueMethodMetadata(returnHandlerType);
+        AddReturnValueMethod = new AddReturnValueMethodMetadata(property.ReturnHandlerType);
         GetMethod = new GetMethodMetadata(property);
-        NextReturnValueMethod = new NextReturnValueMethodMetadata(returnHandlerType);
+        NextReturnValueMethod = new NextReturnValueMethodMetadata(property.ReturnHandlerType);
         InvocationBehaviorField = new FieldMetadata(
             "_invocationBehavior",
             WellKnownTypes.Imposter.Abstractions.ImposterMode

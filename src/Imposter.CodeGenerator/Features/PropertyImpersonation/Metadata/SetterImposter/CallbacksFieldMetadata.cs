@@ -9,15 +9,16 @@ internal readonly struct CallbacksFieldMetadata
 
     public TypeSyntax Type { get; }
 
-    internal readonly TypeSyntax TupleTypeSyntax;
+    // A callback with the criteria the value has to match, or a bare callback for a value passed through.
+    internal readonly TypeSyntax? TupleTypeSyntax;
 
     internal CallbacksFieldMetadata(in ImposterPropertyCoreMetadata property)
     {
+        TupleTypeSyntax = property.AsArgType is { } argType
+            ? WellKnownTypes.System.Tuple(argType, property.SetterCallbackType)
+            : null;
         Type = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-            TupleTypeSyntax = WellKnownTypes.System.Tuple(
-                property.AsArgType,
-                property.AsSystemActionType
-            )
+            TupleTypeSyntax ?? property.SetterCallbackType
         );
     }
 }

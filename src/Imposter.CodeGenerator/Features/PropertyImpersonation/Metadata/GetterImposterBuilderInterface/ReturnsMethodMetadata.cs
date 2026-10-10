@@ -10,7 +10,8 @@ internal readonly struct ReturnsMethodMetadata
 
     internal readonly NameSyntax InterfaceSyntax;
 
-    internal readonly ParameterMetadata ValueParameter;
+    // Returns(value) keeps the value, so there's none for a value passed through.
+    internal readonly ParameterMetadata? ValueParameter;
 
     internal readonly ParameterMetadata ValueGeneratorParameter;
 
@@ -22,10 +23,12 @@ internal readonly struct ReturnsMethodMetadata
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        ValueParameter = new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
+        ValueParameter = property.IsPassedThrough
+            ? null
+            : new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
         ValueGeneratorParameter = new ParameterMetadata(
             "valueGenerator",
-            property.AsSystemFuncType
+            property.ValueGeneratorType
         );
     }
 }

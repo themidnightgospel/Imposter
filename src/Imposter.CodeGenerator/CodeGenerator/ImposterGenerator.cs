@@ -303,6 +303,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     property.SetupName,
                     property.ImposterBuilderInterface.Syntax
                 )
+                .AddMembers(PropertyDelegatesBuilder.Build(property))
                 .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMembers(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
                 .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))

@@ -119,6 +119,34 @@ A property of type `Span<T>` or `ReadOnlySpan<T>` can be impersonated. A span ca
 - Without a setup, the property keeps a copy of the elements it's set to, and a read returns a span over that copy.
 - With `UseBaseImplementation()`, the getter returns a copy of the base property's span, so writes to it don't reach the base class's memory.
 
+## Ref struct properties
+
+A property of another `ref struct` type can be impersonated too. The imposter can't keep or match its value, so it only passes the value between the property and your delegates:
+
+- `Getter().Returns` takes only a delegate; there's no `Returns(value)`. `Throws`, callbacks, `Then()` sequences and `UseBaseImplementation()` work as usual.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/RefStructPropertyTests.cs#L16"}
+    // Bookmark Current { get; set; }, where Bookmark is a ref struct
+    imposter.Current.Getter().Returns(() => new Bookmark(3));
+
+    var page = imposter.Instance().Current.Page; // 3
+    ```
+
+- `Setter()` takes no criteria: its callbacks get every value set, and `Called` counts every set.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/RefStructPropertyTests.cs#L68"}
+    var pages = new List<int>();
+    imposter.Current.Setter().Callback(value => pages.Add(value.Page));
+
+    imposter.Instance().Current = new Bookmark(4); // pages is { 4 }
+    ```
+
+- Without a setup, the getter returns the default, even after the property is set, because there's nowhere to keep the value. A class property doesn't fall back to its base implementation either; set up `UseBaseImplementation()` for that.
+
+An indexer of another `ref struct` type still reports [IMP009](../diagnostics.md#imp009).
+
 ## Base Implementation
 
 Forward to the base implementation for overridable class members:

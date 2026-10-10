@@ -9,7 +9,7 @@ internal readonly struct CalledMethodMetadata
 
     internal readonly TypeSyntax ReturnType;
 
-    internal readonly ParameterMetadata CriteriaParameter;
+    internal readonly ParameterMetadata? CriteriaParameter;
 
     internal readonly ParameterMetadata CountParameter;
 
@@ -18,7 +18,7 @@ internal readonly struct CalledMethodMetadata
     internal CalledMethodMetadata(in ImposterPropertyCoreMetadata property)
     {
         ReturnType = WellKnownTypes.Void;
-        CriteriaParameter = new ParameterMetadata("criteria", property.AsArgType);
+        CriteriaParameter = property.SetterCriteriaParameter;
         CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
     }
 }
