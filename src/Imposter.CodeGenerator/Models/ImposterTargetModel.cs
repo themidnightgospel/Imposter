@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -261,10 +262,10 @@ internal sealed record ImposterTargetModel(
         (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
         && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type);
 
-    // Methods collide on the instance when their parameter types match, and their setups, which leave out the ref
-    // structs they only pass through, collide on the imposter.
+    // Methods collide on the instance when their type parameter counts and parameter types match, and their setups,
+    // which leave out the ref structs they only pass through, collide on the imposter.
     private static string MethodKey(IMethodSymbol method) =>
-        $"{method.Name}({ParameterTypesKey(ParameterModel.MatchedParameters(method.Parameters))})";
+        $"{method.Name}`{method.Arity}({ParameterTypesKey(ParameterModel.MatchedParameters(method.Parameters))})";
 
     // Indexers with the same parameter types collide on the instance, and their setup indexers, which take Arg<T>
     // whatever the ref kind, would collide on the imposter.
@@ -272,12 +273,7 @@ internal sealed record ImposterTargetModel(
         ParameterTypesKey(indexer.Parameters);
 
     private static string ParameterTypesKey(IEnumerable<IParameterSymbol> parameters) =>
-        string.Join(
-            ",",
-            parameters.Select(parameter =>
-                parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-            )
-        );
+        string.Join(",", parameters.Select(parameter => parameter.Type.ToSignatureKey()));
 
     private static EquatableArray<ConstructorModel> GetAccessibleConstructors(
         INamedTypeSymbol target,

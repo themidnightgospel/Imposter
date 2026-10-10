@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -47,6 +48,39 @@ internal static class TypeSymbolExtensions
             IArrayTypeSymbol arrayType => arrayType.ElementType.Contains(typeParameter),
             _ => false,
         };
+
+    // A type's fully qualified name with a method's own type parameters written by position (!!0, as in IL), so the
+    // parameter types of two methods compare the same whatever the methods name their type parameters.
+    internal static string ToSignatureKey(this ITypeSymbol type) =>
+        type switch
+        {
+            ITypeParameterSymbol { TypeParameterKind: TypeParameterKind.Method } typeParameter =>
+                $"!!{typeParameter.Ordinal}",
+            IArrayTypeSymbol arrayType =>
+                $"{arrayType.ElementType.ToSignatureKey()}[{new string(',', arrayType.Rank - 1)}]",
+            IPointerTypeSymbol pointerType => $"{pointerType.PointedAtType.ToSignatureKey()}*",
+            INamedTypeSymbol namedType when AllTypeArguments(namedType).Any() => ConstructedTypeKey(
+                namedType
+            ),
+            _ => type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+        };
+
+    // A constructed type's definition, followed by its type arguments.
+    private static string ConstructedTypeKey(INamedTypeSymbol type)
+    {
+        var definition = type.OriginalDefinition.ToDisplayString(
+            SymbolDisplayFormat.FullyQualifiedFormat
+        );
+        var typeArguments = AllTypeArguments(type).Select(it => it.ToSignatureKey());
+
+        return $"{definition}[{string.Join(",", typeArguments)}]";
+    }
+
+    // The type arguments of a type and of the types it's nested in, such as Outer<T>.Inner<U>.
+    private static IEnumerable<ITypeSymbol> AllTypeArguments(INamedTypeSymbol type) =>
+        type.ContainingType is { } containingType
+            ? AllTypeArguments(containingType).Concat(type.TypeArguments)
+            : type.TypeArguments;
 
     // Matches by metadata name and namespace only: depending on the target framework these types live in
     // System.Private.CoreLib, System.Runtime, mscorlib, netstandard or System.Threading.Tasks.Extensions.

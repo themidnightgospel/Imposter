@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -79,7 +80,6 @@ internal sealed record InterfaceSetupMemberModel(
         (left.RefKind == RefKind.Out) == (right.RefKind == RefKind.Out)
         && (
             SymbolEqualityComparer.Default.Equals(left.Type, right.Type)
-            || left.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                == right.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+            || left.Type.ToSignatureKey() == right.Type.ToSignatureKey()
         );
 }
