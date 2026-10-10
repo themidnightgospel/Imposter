@@ -135,5 +135,19 @@ public class AllowsRefStructCompilationTests
             LanguageVersion.CSharp13
         );
     }
+
+    // Each overload's own declaration says which of its parameters its setup matches, whatever the type parameters it's
+    // compared in.
+    [Fact]
+    public async Task GivenOverloadThatDiffersOnlyInAValueOfItsTypeParameter_WhenSetUpThroughTheView_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            Slot
+                + "public interface IService { int Use<T>(T value, int x) where T : allows ref struct; int Use<T>(int x); }",
+            "imposter.Use<Sample.Slot>(Arg<int>.Any()).Returns((value, x) => x); imposter.Use_1<int>(Arg<int>.Any()).Returns(x => x); var view = imposter.For(default(Sample.IService)); view.Use<Sample.Slot>(Arg<int>.Any()).Returns((value, x) => x); view.Use_1<int>(Arg<int>.Any()).Returns(x => x); _ = imposter.Instance().Use(new Sample.Slot(), 1) + imposter.Instance().Use<int>(1);",
+            nameof(AllowsRefStructCompilationTests),
+            LanguageVersion.CSharp13
+        );
+    }
 }
 #endif

@@ -204,14 +204,19 @@ internal sealed record ImposterTargetModel(
             return false;
         }
 
-        // A generic overload compares with the other one written in terms of its own type parameters.
+        // A generic overload compares with the other one written in terms of its own type parameters. Which of the
+        // other's parameters its setup matches comes from its own declaration: written in this method's type
+        // parameters, a value of one that allows ref structs could count as matched.
         var otherParameters = other.TypeParameters.IsEmpty
             ? other.Parameters
             : other.Construct([.. method.TypeParameters]).Parameters;
+        var otherMatchedParameters = otherParameters
+            .Where((_, index) => !ParameterModel.PassesThrough(other.Parameters[index]))
+            .ToImmutableArray();
 
         return HaveTheSameMatchers(
                 ParameterModel.MatchedParameters(method.Parameters),
-                ParameterModel.MatchedParameters(otherParameters)
+                otherMatchedParameters
             ) && !HaveTheSameSignature(method.Parameters, otherParameters);
     }
 

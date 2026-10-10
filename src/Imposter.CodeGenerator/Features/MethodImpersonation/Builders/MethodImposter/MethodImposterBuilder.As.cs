@@ -29,7 +29,7 @@ internal static partial class MethodImposterBuilder
         )
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
-            .WithBody(method.HasAdapter ? AdapterBody(method) : SameTypeArgumentsBody(method))
+            .WithBody(method.Model.HasAdapter ? AdapterBody(method) : SameTypeArgumentsBody(method))
             .Build();
     }
 

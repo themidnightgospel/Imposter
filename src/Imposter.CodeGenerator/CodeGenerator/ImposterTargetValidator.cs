@@ -266,26 +266,23 @@ internal static class ImposterTargetValidator
 
     // A method passes another ref struct, or a value of its type parameter that allows ref structs, on to its
     // delegates, unless the value's type uses the method's type parameters and the method has an adapter, which would
-    // have to convert it between type arguments (see ImposterTargetMethodMetadata.HasAdapter).
+    // have to convert it between type arguments (see MethodModel.NeedsAdapter).
     private static bool IsPassedThrough(IParameterSymbol parameter, IMethodSymbol method) =>
         ParameterModel.PassesThrough(parameter)
-        && (!HasAdapter(method) || !parameter.Type.ReferencesTypeParameterOf(method));
+        && (!MethodModel.NeedsAdapter(method) || !parameter.Type.ReferencesTypeParameterOf(method));
 
     // A ref struct result passes back from a Returns delegate or the base implementation, on the same condition. An
     // adapter also passes by-reference arguments through locals, which the result could refer to (CS8352), so it can't
     // take any but the ref structs it forwards as they are.
     private static bool ReturnsPassedThrough(IMethodSymbol method) =>
-        ReturnTypeModel.ReturnsPassedThrough(method)
+        ReturnTypeModel.PassesThrough(method)
         && (
-            !HasAdapter(method)
+            !MethodModel.NeedsAdapter(method)
             || (
                 !method.ReturnType.ReferencesTypeParameterOf(method)
                 && !method.Parameters.Any(PassesThroughAdapterLocal)
             )
         );
-
-    private static bool HasAdapter(IMethodSymbol method) =>
-        method.IsGenericMethod && !method.TypeParameters.Any(AllowsRefStruct.AllowsRefStructs);
 
     private static bool PassesThroughAdapterLocal(IParameterSymbol parameter) =>
         parameter.RefKind is RefKind.Ref or RefKind.In or RefKinds.RefReadOnlyParameter

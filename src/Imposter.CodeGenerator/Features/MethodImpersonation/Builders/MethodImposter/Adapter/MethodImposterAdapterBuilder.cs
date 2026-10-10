@@ -18,7 +18,7 @@ internal static class MethodImposterAdapterBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
-        if (!method.HasAdapter)
+        if (!method.Model.HasAdapter)
         {
             return null;
         }

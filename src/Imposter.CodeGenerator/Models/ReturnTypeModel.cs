@@ -35,19 +35,16 @@ internal sealed record ReturnTypeModel(
                 : null,
             returnType.ReferencesTypeParameterOf(method),
             SpanModel.FromReturnType(method),
-            ReturnsPassedThrough(method)
+            PassesThrough(method)
         );
     }
 
-    internal static bool ReturnsPassedThrough(IMethodSymbol method) =>
-        ReturnsCustomRefStruct(method)
-        || (
-            method.RefKind == RefKind.None
-            && method.ReturnType.IsMethodTypeParameterAllowingRefStructs()
-        );
-
-    internal static bool ReturnsCustomRefStruct(IMethodSymbol method) =>
+    // A result returned by value of a ref struct type other than a span, or of the method's type parameter that allows
+    // ref structs.
+    internal static bool PassesThrough(IMethodSymbol method) =>
         method.RefKind == RefKind.None
-        && method.ReturnType.IsRefLikeType
-        && SpanModel.FromReturnType(method) is null;
+        && (
+            (method.ReturnType.IsRefLikeType && SpanModel.FromReturnType(method) is null)
+            || method.ReturnType.IsMethodTypeParameterAllowingRefStructs()
+        );
 }
