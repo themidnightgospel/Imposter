@@ -134,31 +134,32 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         try
         {
             var supportedCSharpFeatures = new SupportedCSharpFeatures(options.LanguageVersion);
-            var imposterGenerationContext = new ImposterGenerationContext(
-                target,
-                supportedCSharpFeatures,
-                []
-            );
-            var imposter = BuildImposter(
-                imposterGenerationContext,
-                sourceProductionContext.CancellationToken,
-                out var clashingUniqueNames
-            );
+            var avoidedUniqueNames = new HashSet<string>();
+            ImposterGenerationContext imposterGenerationContext;
+            CompilationUnitSyntax imposter;
 
             // A member whose types would clash with another member's name takes another unique name to name them
-            // after, so only a target with such a member is built twice.
-            if (clashingUniqueNames.Count > 0)
+            // after, which can clash in turn, so the imposter is built until none does. Only a target with such a
+            // member is built more than once. An avoided name is never given out again, so every build avoids new
+            // ones, and the target has only so many names they can clash with.
+            while (true)
             {
                 imposterGenerationContext = new ImposterGenerationContext(
                     target,
                     supportedCSharpFeatures,
-                    clashingUniqueNames
+                    avoidedUniqueNames
                 );
                 imposter = BuildImposter(
                     imposterGenerationContext,
                     sourceProductionContext.CancellationToken,
-                    out _
+                    out var clashingUniqueNames
                 );
+                if (clashingUniqueNames.Count == 0)
+                {
+                    break;
+                }
+
+                avoidedUniqueNames.UnionWith(clashingUniqueNames);
             }
 
             sourceProductionContext.AddSource(

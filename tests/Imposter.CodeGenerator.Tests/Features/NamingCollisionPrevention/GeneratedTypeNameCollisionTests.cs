@@ -39,6 +39,17 @@ public class GeneratedTypeNameCollisionTests
         );
     }
 
+    // Create's types are renamed after Create_1, whose delegate Create_1Delegate is taken too, so they're renamed again.
+    [Fact]
+    public async Task GivenMethodNamedLikeTheRenamedDelegate_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Create(); int CreateDelegate(); int Create_1Delegate(); }",
+            "imposter.Create().Returns(1); imposter.CreateDelegate().Returns(2); imposter.Create_1Delegate().Returns(3); var service = imposter.Instance(); _ = service.Create() + service.CreateDelegate() + service.Create_1Delegate();",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
     // Foo's callback delegate and FooCallback's delegate would both be FooCallbackDelegate.
     [Fact]
     public async Task GivenMethodsDerivingTheSameTypeName_WhenImposterIsUsed_ShouldCompile()
