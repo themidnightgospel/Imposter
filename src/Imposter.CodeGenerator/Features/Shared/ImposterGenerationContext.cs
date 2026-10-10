@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Imposter.CodeGenerator.Models;
@@ -22,14 +23,17 @@ internal readonly struct ImposterGenerationContext
     // another arity shares the namespace, e.g. IFooImposterExtensions1: no other target's class name can end that way.
     internal readonly string ExtensionClassName;
 
+    // A member whose generated types would clash with another member's name names them after a unique name other than
+    // those in avoidedUniqueNames (see ImposterBuilder.UniqueNamesOfClashingTypes).
     internal ImposterGenerationContext(
         in ImposterGenerationTarget generationTarget,
-        in SupportedCSharpFeatures supportedCSharpFeatures
+        in SupportedCSharpFeatures supportedCSharpFeatures,
+        IEnumerable<string> avoidedUniqueNames
     )
     {
         Target = generationTarget.Target;
         var putInTheSameNamespace = generationTarget.PutInTheSameNamespace;
-        Imposter = new ImposterTargetMetadata(Target);
+        Imposter = new ImposterTargetMetadata(Target, avoidedUniqueNames);
         var arity = generationTarget.ExtensionClassNameIncludesArity
             ? Target.TypeParameters.Count.ToString(CultureInfo.InvariantCulture)
             : "";

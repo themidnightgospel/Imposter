@@ -31,6 +31,7 @@ internal readonly ref struct ImposterBuilder
     private readonly ImposterTargetConstructorMetadata[] _accessibleConstructors;
     private readonly NameSet _memberNameSet;
     private readonly List<InterfaceSetupMemberMetadata> _interfaceSetupMembers = [];
+    private readonly MemberTypes _memberTypes = new();
 
     private ImposterBuilder(
         ClassDeclarationBuilder imposterBuilder,
@@ -66,6 +67,25 @@ internal readonly ref struct ImposterBuilder
         _imposterBuilder.AddMember(member);
         return this;
     }
+
+    // The types a member declares, named after its unique name.
+    internal ImposterBuilder AddMemberTypes(
+        string uniqueName,
+        IEnumerable<MemberDeclarationSyntax?> types
+    )
+    {
+        foreach (var type in types.OfType<MemberDeclarationSyntax>())
+        {
+            _memberTypes.Add(uniqueName, type);
+            _imposterBuilder.AddMember(type);
+        }
+
+        return this;
+    }
+
+    // The unique names of the members whose types clash with another member of the built imposter.
+    internal HashSet<string> UniqueNamesOfClashingTypes(ClassDeclarationSyntax imposter) =>
+        _memberTypes.UniqueNamesOfClashingTypes(imposter);
 
     internal ImposterBuilder AddPropertyImposter(in ImposterPropertyMetadata property)
     {
