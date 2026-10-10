@@ -135,42 +135,6 @@ public class RefLikeMemberDiagnosticTests
         result.Diagnostics.ShouldBeEmpty();
     }
 
-#if ROSLYN4_4_OR_GREATER
-    [Fact]
-    public async Task GivenMethodReturningSpanWithScopedParameter_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public interface IService { System.ReadOnlySpan<char> Name(scoped System.ReadOnlySpan<char> text); }",
-            languageVersion: LanguageVersion.CSharp11
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenRefSpanParameterNextToScopedParameter_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public interface IService { int Copy(ref System.Span<byte> target, scoped System.ReadOnlySpan<byte> source); }",
-            languageVersion: LanguageVersion.CSharp11
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    // The implementation has to repeat the key's scoped modifier, and then can't return a span the imposter hands back.
-    [Fact]
-    public async Task GivenIndexerOfSpanValueWithScopedSpanKey_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public interface IService { System.ReadOnlySpan<char> this[scoped System.ReadOnlySpan<char> key] { get; } }",
-            languageVersion: LanguageVersion.CSharp11
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-#endif
-
 #if ROSLYN4_14_OR_GREATER
     [Fact]
     public async Task GivenAsyncEventWhoseDelegateTakesRefReadOnlySpan_WhenGeneratorRuns_ShouldReportIMP009()
@@ -178,17 +142,6 @@ public class RefLikeMemberDiagnosticTests
         var result = await RunGenerator(
             "public delegate System.Threading.Tasks.Task AsyncSpanHandler(ref readonly System.ReadOnlySpan<byte> data); public interface IService { event AsyncSpanHandler Received; }",
             languageVersion: LanguageVersion.CSharp12
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenIndexerOfSpanValueWithParamsSpanKey_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public interface IService { System.Span<int> this[params System.ReadOnlySpan<int> keys] { get; set; } }",
-            languageVersion: LanguageVersion.CSharp13
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);

@@ -144,6 +144,14 @@ internal static partial class SyntaxFactoryHelper
     {
         var parameterBuilder = new ParameterBuilder(parameterType, EscapeKeyword(parameter.Name));
 
+#if ROSLYN4_4_OR_GREATER
+        // A scoped ref parameter declared without its ref kind is a plain value, which can't be scoped.
+        if (parameter.IsScoped && (includeRefKind || parameter.RefKind == RefKind.None))
+        {
+            parameterBuilder.AddModifier(Token(SyntaxKind.ScopedKeyword));
+        }
+#endif
+
         if (includeRefKind)
         {
             foreach (var modifier in RefKindModifiers(parameter.RefKind))

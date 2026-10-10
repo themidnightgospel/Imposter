@@ -1,6 +1,9 @@
 using System.Threading.Tasks;
 using Xunit;
 using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
+#if ROSLYN4_4_OR_GREATER
+using Microsoft.CodeAnalysis.CSharp;
+#endif
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
@@ -98,4 +101,19 @@ public class SpanRefOutParameterCompilationTests
             nameof(SpanRefOutParameterCompilationTests)
         );
     }
+
+#if ROSLYN4_4_OR_GREATER
+    // The delegates take the scoped parameter as scoped too, so an explicitly typed lambda repeats the modifier.
+    [Fact]
+    public async Task GivenRefSpanParameterNextToScopedParameter_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { int Copy(ref System.Span<byte> target, scoped System.ReadOnlySpan<byte> source); }",
+            "var imposter = new Sample.IServiceImposter(); imposter.Copy(SpanArg<byte>.Any(), ReadOnlySpanArg<byte>.Any()).Returns((ref System.Span<byte> target, scoped System.ReadOnlySpan<byte> source) => { source.CopyTo(target); return source.Length; }); var target = new System.Span<byte>(new byte[1]); imposter.Instance().Copy(ref target, new byte[1]);",
+            nameof(SpanRefOutParameterCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+#endif
 }
