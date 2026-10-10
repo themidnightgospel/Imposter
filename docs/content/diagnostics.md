@@ -15,6 +15,7 @@ What each Imposter diagnostic means and how to resolve it. The help link of ever
 | [IMP010](#imp010) | Error | The target class has required members, and `SetsRequiredMembersAttribute` is missing |
 | [IMP011](#imp011) | Error | The target has a member that returns by reference |
 | [IMP012](#imp012) | Error | The target interface has a static abstract member without an implementation |
+| [IMP013](#imp013) | Error | The target has a member whose signature uses a pointer type |
 | [IMPLOG001](#implog001) | Info | Generator log message |
 
 ## IMP002: Invalid imposter target { #imp002 }
@@ -105,6 +106,12 @@ Change the member to return by value, or register an interface without the membe
 An imposter passes its target interface as a type argument, as in `IHaveImposterInstance<IService>`. C# doesn't allow an interface as a type argument while one of its static abstract members, declared or inherited, has no implementation in the interface (CS8920). IMP012 names the first such member, and no imposter is generated.
 
 Register an interface without the member, such as one that declares only the instance members your tests need, or give the member a body with `static virtual`. Static virtual members don't cause IMP012, and neither does a class target that implements the interface.
+
+## IMP013: Member with a pointer type { #imp013 }
+
+An imposter keeps the arguments and results of the members it impersonates, and matches arguments with `Arg<T>`. A pointer such as `int*`, or a function pointer such as `delegate*<int, void>`, can't be a type argument, so the imposter can't impersonate a method, property, indexer or event whose signature uses one, including as an array's element type. IMP013 names the first such member and type, and no imposter is generated.
+
+Change the member to take or return a type the imposter can store, such as `nint` or `Span<T>`, or register an interface without the member. On a class target, only virtual and abstract members are impersonated, so a non-virtual member with a pointer type doesn't cause IMP013.
 
 ## IMPLOG001: Generator log { #implog001 }
 

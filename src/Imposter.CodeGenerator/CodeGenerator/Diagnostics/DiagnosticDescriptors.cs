@@ -119,6 +119,17 @@ public static class DiagnosticDescriptors
         helpLinkUri: HelpUrl + "#imp012"
     );
 
+    public static readonly DiagnosticDescriptor ImposterTargetHasPointerMember = new(
+        "IMP013",
+        "Imposter target has a member with a pointer type",
+        "'{0}' has the member '{1}', whose signature uses the pointer type '{2}', which an imposter cannot store or match",
+        DiagnosticCategories.Imposter,
+        DiagnosticSeverity.Error,
+        true,
+        description: "An imposter keeps arguments and results in fields, delegates and argument matchers such as Arg<T>. A pointer or function pointer can't be a type argument, and the imposter's code isn't unsafe, so it cannot impersonate a member whose signature uses one, and no imposter is generated.",
+        helpLinkUri: HelpUrl + "#imp013"
+    );
+
     public static readonly DiagnosticDescriptor GeneratorCrash = new(
         "IMP005",
         "Generator crash",

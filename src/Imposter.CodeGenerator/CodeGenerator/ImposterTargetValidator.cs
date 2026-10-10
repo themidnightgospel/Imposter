@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 
 internal static class ImposterTargetValidator
 {
-    // IMP002, IMP004 and IMP008 to IMP012 stop the target's generation; IMP006 only warns. Collisions between targets
+    // IMP002, IMP004 and IMP008 to IMP013 stop the target's generation; IMP006 only warns. Collisions between targets
     // (IMP007) are found once all targets are known.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol target,
@@ -108,6 +108,20 @@ internal static class ImposterTargetValidator
                     location,
                     targetDisplayName,
                     refReturningMember.ToDisplayString()
+                ),
+                false
+            );
+        }
+
+        if (FindPointerMember(target, memberAccess) is { } pointerMember)
+        {
+            return (
+                Single(
+                    DiagnosticDescriptors.ImposterTargetHasPointerMember,
+                    location,
+                    targetDisplayName,
+                    pointerMember.Member.ToDisplayString(),
+                    pointerMember.Type.ToDisplayString()
                 ),
                 false
             );
@@ -358,4 +372,57 @@ internal static class ImposterTargetValidator
                     is IMethodSymbol { RefKind: not RefKind.None }
                         or IPropertySymbol { RefKind: not RefKind.None }
             );
+
+    // A pointer or function pointer can't be a type argument, as the imposter's matchers and history need, and the
+    // imposter's code isn't unsafe, so it can't impersonate a member whose signature uses one.
+    private static (ISymbol Member, ITypeSymbol Type)? FindPointerMember(
+        INamedTypeSymbol target,
+        MemberAccess memberAccess
+    )
+    {
+        foreach (var method in ImposterTargetModel.GetMethods(target, memberAccess))
+        {
+            if (SignatureTypes(method).FirstOrDefault(ContainsPointer) is { } type)
+            {
+                return (method, type);
+            }
+        }
+
+        foreach (var property in ImposterTargetModel.GetProperties(target, memberAccess))
+        {
+            if (SignatureTypes(property).FirstOrDefault(ContainsPointer) is { } type)
+            {
+                return (property, type);
+            }
+        }
+
+        foreach (var @event in ImposterTargetModel.GetEvents(target, memberAccess))
+        {
+            if (
+                @event.Type is INamedTypeSymbol { DelegateInvokeMethod: { } invoke }
+                && SignatureTypes(invoke).FirstOrDefault(ContainsPointer) is { } type
+            )
+            {
+                return (@event, type);
+            }
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<ITypeSymbol> SignatureTypes(IMethodSymbol method) =>
+        method.Parameters.Select(it => it.Type).Prepend(method.ReturnType);
+
+    private static IEnumerable<ITypeSymbol> SignatureTypes(IPropertySymbol property) =>
+        property.Parameters.Select(it => it.Type).Prepend(property.Type);
+
+    // A pointer or function pointer, or a type built from one, such as an array of pointers.
+    private static bool ContainsPointer(ITypeSymbol type) =>
+        type switch
+        {
+            IPointerTypeSymbol or IFunctionPointerTypeSymbol => true,
+            IArrayTypeSymbol arrayType => ContainsPointer(arrayType.ElementType),
+            INamedTypeSymbol namedType => namedType.TypeArguments.Any(ContainsPointer),
+            _ => false,
+        };
 }
