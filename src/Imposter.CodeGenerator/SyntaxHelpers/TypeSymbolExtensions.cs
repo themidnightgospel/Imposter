@@ -49,13 +49,15 @@ internal static class TypeSymbolExtensions
             _ => false,
         };
 
-    // A type's fully qualified name with a method's own type parameters written by position (!!0, as in IL), so the
-    // parameter types of two methods compare the same whatever the methods name their type parameters.
+    // A type's fully qualified name with a method's own type parameters written by position (!!0, as in IL), and dynamic
+    // written as the object it is at runtime, so the parameter types of two methods compare the same whatever the
+    // methods call them.
     internal static string ToSignatureKey(this ITypeSymbol type) =>
         type switch
         {
             ITypeParameterSymbol { TypeParameterKind: TypeParameterKind.Method } typeParameter =>
                 $"!!{typeParameter.Ordinal}",
+            IDynamicTypeSymbol => "object",
             IArrayTypeSymbol arrayType =>
                 $"{arrayType.ElementType.ToSignatureKey()}[{new string(',', arrayType.Rank - 1)}]",
             IPointerTypeSymbol pointerType => $"{pointerType.PointedAtType.ToSignatureKey()}*",
