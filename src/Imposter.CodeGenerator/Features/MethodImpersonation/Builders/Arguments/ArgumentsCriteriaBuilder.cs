@@ -105,14 +105,14 @@ public static class ArgumentsCriteriaBuilder
             IdentifierNameSyntax matcherLambdaParameter
         )
         {
-            var targetMatcherType = (TypeSyntax)renamer.Visit(parameter.ArgTypeSyntax);
+            var targetMatcherType = (TypeSyntax)renamer.Visit(parameter.KeptArgTypeSyntax);
 
             if (parameter.Model.RefKind is RefKind.Out)
             {
                 return Argument(targetMatcherType.Dot(IdentifierName("Any")).Call());
             }
 
-            var sourceType = parameter.NullableAwareStoredTypeSyntax;
+            var sourceType = parameter.NullableAwareKeptTypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
             return Argument(
                 targetMatcherType

@@ -19,8 +19,9 @@ internal readonly struct ReturnTypeMetadata
     // The type Returns takes the result as: the return type, or the array a returned span covers.
     internal readonly TypeSyntax ValueTypeSyntax;
 
-    // The type the invocation history keeps the result as: the nullable return type, or a copy of a span's elements.
-    internal readonly TypeSyntax StoredTypeSyntax;
+    // The type the invocation history keeps the result as: the nullable return type, a copy of a span's elements, or
+    // the object a dynamic result is.
+    internal readonly TypeSyntax KeptTypeSyntax;
 
     internal ReturnTypeMetadata(ReturnTypeModel returnType, TypeSyntax returnTypeSyntax)
     {
@@ -40,13 +41,18 @@ internal readonly struct ReturnTypeMetadata
         ValueTypeSyntax = returnType.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : returnTypeSyntax;
-        StoredTypeSyntax = IsSpan
-            ? ValueTypeSyntax.ToNullableType()
+        KeptTypeSyntax =
+            IsSpan ? ValueTypeSyntax.ToNullableType()
+            : returnType.Type.IsDynamic
+                ? NullableReturnTypeSyntax(
+                    returnType,
+                    SyntaxFactoryHelper.RuntimeTypeSyntax(returnType.Type)
+                )
             : TypeSymbolMetadata.NullableTypeSyntax;
     }
 
-    internal ExpressionSyntax StoredValue(ExpressionSyntax result) =>
-        SyntaxFactoryHelper.StoredValue(result, _returnType.Span, _returnType.Type);
+    internal ExpressionSyntax KeptValue(ExpressionSyntax result) =>
+        SyntaxFactoryHelper.KeptValue(result, _returnType.Span, _returnType.Type);
 
     private static TypeSyntax NullableReturnTypeSyntax(
         ReturnTypeModel returnType,

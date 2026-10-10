@@ -46,6 +46,10 @@ internal readonly ref struct ImposterIndexerCoreMetadata
     // The type the imposter gets and sets the value as: the indexer's type, or the array that keeps a span's elements.
     internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
 
+    // The type the setter passes a set value on and keeps it as: the stored type, or the object a dynamic is, so the
+    // setter's own calls bind when the imposter compiles (see SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable).
+    internal readonly TypeSyntax NullableAwareKeptTypeSyntax;
+
     internal readonly IndexerDelegateMetadata Delegates;
 
     // A value passed through isn't kept: the default behaviour, the setter's history and Returns leave it out.
@@ -88,6 +92,10 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareStoredTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
+        NullableAwareKeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
+            indexer.Span,
+            indexer.Type
+        );
         var fieldNames = new NameSet(
             indexer.Parameters.Select(parameter =>
                 SyntaxFactoryHelper.EscapeKeyword(parameter.Name)
@@ -124,8 +132,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         DisplayName = indexer.DisplayName;
     }
 
-    internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
-        SyntaxFactoryHelper.StoredValue(value, _valueSpan, _valueType);
+    internal ExpressionSyntax KeptValue(ExpressionSyntax value) =>
+        SyntaxFactoryHelper.KeptValue(value, _valueSpan, _valueType);
 
     internal NameSet CreateParameterNameSet() =>
         new(Parameters.Select(parameter => parameter.Name));

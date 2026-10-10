@@ -38,7 +38,7 @@ internal static class ArgumentsBuilder
                             method.Parameters.InputParameterMetadata.Select(parameter =>
                                 ThisExpression()
                                     .Dot(IdentifierName(parameter.Name))
-                                    .Assign(parameter.StoredValue)
+                                    .Assign(parameter.KeptValue)
                                     .ToStatementSyntax()
                             )
                         )
@@ -58,7 +58,7 @@ internal static class ArgumentsBuilder
     // A public field that keeps an argument, or the array a span argument is copied into.
     private static FieldDeclarationSyntax ArgumentField(MethodParameterMetadata parameter) =>
         SyntaxFactoryHelper.SingleVariableField(
-            parameter.NullableAwareStoredTypeSyntax,
+            parameter.NullableAwareKeptTypeSyntax,
             parameter.Name,
             TokenList(Token(SyntaxKind.PublicKeyword))
         );
@@ -77,7 +77,7 @@ internal static class ArgumentsBuilder
         );
         var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
         {
-            var sourceType = p.NullableAwareStoredTypeSyntax;
+            var sourceType = p.NullableAwareKeptTypeSyntax;
             var targetType = (TypeSyntax)renamer.Visit(sourceType);
 
             return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));

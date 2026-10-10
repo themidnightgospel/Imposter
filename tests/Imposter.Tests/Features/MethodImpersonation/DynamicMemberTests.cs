@@ -65,5 +65,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
             ((string)sut.Instance()[2]).ShouldBe("key 2");
         }
+
+        [Fact]
+        public void GivenIndexerReturnsDelegate_WhenInvoked_ShouldPassItTheDynamicKey()
+        {
+            var sut = new DynamicMemberClassImposter();
+            sut[Arg<dynamic>.Any()].Getter().Returns(key => key + 1);
+
+            ((int)sut.Instance()[2]).ShouldBe(3);
+        }
     }
 }

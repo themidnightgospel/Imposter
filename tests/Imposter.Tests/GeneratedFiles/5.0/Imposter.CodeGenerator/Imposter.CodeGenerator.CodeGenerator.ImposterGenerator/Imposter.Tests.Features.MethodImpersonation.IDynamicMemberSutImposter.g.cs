@@ -41,10 +41,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class EchoArguments
 		{
-			public dynamic value;
+			public object value;
 			internal EchoArguments(dynamic value)
 			{
-				this.value = value;
+				this.value = (object)value;
 			}
 		}
 
@@ -74,9 +74,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal class EchoMethodInvocationHistory : IEchoMethodInvocationHistory
 		{
 			internal EchoArguments Arguments;
-			internal dynamic? Result;
+			internal object? Result;
 			internal global::System.Exception? Exception;
-			public EchoMethodInvocationHistory(EchoArguments Arguments, dynamic? Result, global::System.Exception? Exception)
+			public EchoMethodInvocationHistory(EchoArguments Arguments, object? Result, global::System.Exception? Exception)
 			{
 				this.Arguments = Arguments;
 				this.Result = Result;
@@ -389,7 +389,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IEchoMethodInvocationImposterGroupContinuation IEchoMethodInvocationImposterGroup.Returns(dynamic value_1)
 				{
-					_currentInvocationImposter.Returns(value_1);
+					_currentInvocationImposter.Returns((object)value_1);
 					return this;
 				}
 
@@ -422,16 +422,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public class UseArguments<T>
 		{
 			public T first;
-			public dynamic second;
+			public object second;
 			internal UseArguments(T first, dynamic second)
 			{
 				this.first = first;
-				this.second = second;
+				this.second = (object)second;
 			}
 
 			public UseArguments<TTarget> As<TTarget>()
 			{
-				return new UseArguments<TTarget>(global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(first), global::Imposter.Abstractions.TypeCaster.Cast<dynamic, dynamic>(second));
+				return new UseArguments<TTarget>(global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(first), global::Imposter.Abstractions.TypeCaster.Cast<object, object>(second));
 			}
 		}
 
@@ -454,7 +454,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public UseArgumentsCriteria<TTarget> As<TTarget>()
 			{
-				return new UseArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T firstTarget) && first.Matches(firstTarget)), global::Imposter.Abstractions.Arg<dynamic>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<dynamic, dynamic>(it, out dynamic secondTarget) && second.Matches(secondTarget)));
+				return new UseArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T firstTarget) && first.Matches(firstTarget)), global::Imposter.Abstractions.Arg<object>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<object, object>(it, out object secondTarget) && second.Matches(secondTarget)));
 			}
 		}
 
@@ -740,7 +740,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				public void Invoke(TTarget first, dynamic second)
 				{
-					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(first), global::Imposter.Abstractions.TypeCaster.Cast<dynamic, dynamic>(second));
+					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(first), (object)second);
 				}
 
 				public bool HasMatchingInvocationImposterGroup(UseArguments<TTarget> arguments)

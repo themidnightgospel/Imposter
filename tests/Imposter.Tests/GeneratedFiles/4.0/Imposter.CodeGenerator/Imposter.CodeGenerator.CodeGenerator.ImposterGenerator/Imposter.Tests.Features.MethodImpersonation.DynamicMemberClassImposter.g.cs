@@ -34,10 +34,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class DescribeArguments
 		{
-			public dynamic value;
+			public object value;
 			internal DescribeArguments(dynamic value)
 			{
-				this.value = value;
+				this.value = (object)value;
 			}
 		}
 
@@ -67,9 +67,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal class DescribeMethodInvocationHistory : IDescribeMethodInvocationHistory
 		{
 			internal DescribeArguments Arguments;
-			internal dynamic? Result;
+			internal object? Result;
 			internal global::System.Exception? Exception;
-			public DescribeMethodInvocationHistory(DescribeArguments Arguments, dynamic? Result, global::System.Exception? Exception)
+			public DescribeMethodInvocationHistory(DescribeArguments Arguments, object? Result, global::System.Exception? Exception)
 			{
 				this.Arguments = Arguments;
 				this.Result = Result;
@@ -398,7 +398,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IDescribeMethodInvocationImposterGroupContinuation IDescribeMethodInvocationImposterGroup.Returns(dynamic value_1)
 				{
-					_currentInvocationImposter.Returns(value_1);
+					_currentInvocationImposter.Returns((object)value_1);
 					return this;
 				}
 
@@ -692,7 +692,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal class SetterImposter
 			{
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<dynamic?>, global::System.Action<dynamic?>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<dynamic?>, global::System.Action<dynamic?>>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<dynamic?> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<dynamic?>();
+				private readonly global::System.Collections.Concurrent.ConcurrentStack<object?> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<object?>();
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -731,7 +731,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_useBaseImplementation = true;
 				}
 
-				internal void Set(dynamic? value, global::System.Action<dynamic?>? baseImplementation = null)
+				internal void Set(object? value, global::System.Action<dynamic?>? baseImplementation = null)
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
@@ -838,7 +838,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
 		{
-			public dynamic key;
+			public object key;
 			internal IndexerIndexerArguments(dynamic key)
 			{
 				this.key = key;
@@ -851,7 +851,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return false;
 				}
 
-				return global::System.Collections.Generic.EqualityComparer<dynamic>.Default.Equals(key, other.key);
+				return global::System.Collections.Generic.EqualityComparer<object>.Default.Equals(key, other.key);
 			}
 
 			public override bool Equals(object? obj)
@@ -864,7 +864,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				unchecked
 				{
 					var hash = 17;
-					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<dynamic>.Default.GetHashCode(key!);
+					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<object>.Default.GetHashCode(key!);
 					return hash;
 				}
 			}
@@ -974,7 +974,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return _getterImposter.Get((object)key, baseImplementation);
 			}
 
-			internal void Set(dynamic key, dynamic value, global::System.Action? baseImplementation = null)
+			internal void Set(dynamic key, object value, global::System.Action? baseImplementation = null)
 			{
 				_setterImposter.Set((object)key, value, baseImplementation);
 			}
@@ -1251,7 +1251,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private sealed class SetterImposter
 			{
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, dynamic Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, dynamic Value)>();
+				private readonly global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, object Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, object Value)>();
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria> _baseCriteria = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerArgumentsCriteria>();
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1284,7 +1284,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 				}
 
-				internal void Set(dynamic key, dynamic value, global::System.Action? baseImplementation = null)
+				internal void Set(dynamic key, object value, global::System.Action? baseImplementation = null)
 				{
 					EnsureSetterConfigured();
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments((object)key);

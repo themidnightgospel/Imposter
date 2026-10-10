@@ -120,7 +120,7 @@ internal partial class MethodImposterBuilder
                     threwException
                         ? Argument(DefaultNonNullable)
                         : Argument(
-                            method.ReturnType.StoredValue(
+                            method.ReturnType.KeptValue(
                                 IdentifierName(
                                     method.MethodImposter.InvokeMethod.ResultVariableName
                                 )

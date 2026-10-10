@@ -24,7 +24,7 @@ internal static class IndexerArgumentsBuilder
         {
             classBuilder = classBuilder.AddMember(
                 SingleVariableField(
-                    new FieldMetadata(parameter.FieldName, parameter.TypeSyntax),
+                    new FieldMetadata(parameter.FieldName, parameter.KeptTypeSyntax),
                     SyntaxKind.PublicKeyword
                 )
             );

@@ -68,9 +68,7 @@ internal static class EventImposterRaiseBuilder
         in ImposterEventMetadata @event
     ) =>
         IdentifierName(@event.Builder.Methods.RaiseCoreAsync.Name)
-            .Call(
-                @event.Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
-            )
+            .Call(@event.Core.Parameters.Select(parameter => Argument(parameter.RuntimeValue)))
             .Dot(IdentifierName("ConfigureAwait"))
             .Call(Argument(False))
             .Await()

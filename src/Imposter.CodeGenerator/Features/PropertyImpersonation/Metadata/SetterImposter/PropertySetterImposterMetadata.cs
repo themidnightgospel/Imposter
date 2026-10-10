@@ -60,7 +60,7 @@ internal readonly struct PropertySetterImposterMetadata
             : new FieldMetadata(
                 "_invocationHistory",
                 WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
-                    property.NullableAwareStoredTypeSyntax
+                    property.NullableAwareKeptTypeSyntax
                 )
             );
         InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);

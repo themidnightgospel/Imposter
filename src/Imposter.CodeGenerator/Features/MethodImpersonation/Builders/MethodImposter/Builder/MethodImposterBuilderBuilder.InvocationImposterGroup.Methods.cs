@@ -147,7 +147,12 @@ internal static partial class MethodImposterBuilderBuilder
                 ForwardToCurrentInvocationImposter(
                     method,
                     returns.Name,
-                    returns.ValueParameter.Name.ToArgument()
+                    Argument(
+                        RuntimeValue(
+                            IdentifierName(returns.ValueParameter.Name),
+                            method.Model.ReturnType.Type
+                        )
+                    )
                 )
             )
             .Build();
@@ -166,7 +171,12 @@ internal static partial class MethodImposterBuilderBuilder
                 ForwardToCurrentInvocationImposter(
                     method,
                     returnsAsync.Name,
-                    returnsAsync.ValueParameter.Name.ToArgument()
+                    Argument(
+                        RuntimeValue(
+                            IdentifierName(returnsAsync.ValueParameter.Name),
+                            method.Model.ReturnType.AwaitableResultType!
+                        )
+                    )
                 )
             )
             .Build();

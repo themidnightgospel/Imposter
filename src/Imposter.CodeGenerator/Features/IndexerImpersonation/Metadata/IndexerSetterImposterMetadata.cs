@@ -75,7 +75,7 @@ internal readonly struct IndexerSetterImposterMetadata
                         TupleElement(indexer.Arguments.TypeSyntax)
                             .WithIdentifier(Identifier(HistoryArgumentsElementName)),
                         Token(SyntaxKind.CommaToken),
-                        TupleElement(indexer.Core.NullableAwareStoredTypeSyntax)
+                        TupleElement(indexer.Core.NullableAwareKeptTypeSyntax)
                             .WithIdentifier(Identifier(HistoryValueElementName)),
                     }
                 )

@@ -73,7 +73,7 @@ internal readonly ref struct ImposterInstanceBuilder
             : null;
         var getterCall = baseGetter is null
             ? getter.Call()
-            : getter.Call(Argument(EmptyParametersGoesTo(property.Core.StoredValue(baseGetter))));
+            : getter.Call(Argument(EmptyParametersGoesTo(property.Core.KeptValue(baseGetter))));
 
         return WithConstructorFallback(
             Block(ReturnStatement(getterCall)),
@@ -90,7 +90,7 @@ internal readonly ref struct ImposterInstanceBuilder
             : null;
         var setterArguments = new List<ArgumentSyntax>
         {
-            Argument(property.Core.StoredValue(IdentifierName("value"))),
+            Argument(property.Core.KeptValue(IdentifierName("value"))),
         };
         if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
         {
@@ -185,7 +185,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 Argument(
                     ParenthesizedLambdaExpression(
                         ParameterList(SeparatedList(lambdaCopies.KeyParameters)),
-                        indexer.Core.StoredValue(BaseIndexerAccess(lambdaCopies.LambdaArguments))
+                        indexer.Core.KeptValue(BaseIndexerAccess(lambdaCopies.LambdaArguments))
                     )
                 )
             );
@@ -218,7 +218,7 @@ internal readonly ref struct ImposterInstanceBuilder
         var statements = new List<StatementSyntax>();
         var arguments = new List<ArgumentSyntax>(ImposterArguments(indexer))
         {
-            Argument(indexer.Core.StoredValue(IdentifierName("value"))),
+            Argument(indexer.Core.KeptValue(IdentifierName("value"))),
         };
         var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
             ? BaseIndexerAssignment(indexer.Core.ParameterArguments, IdentifierName("value"))

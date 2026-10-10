@@ -20,7 +20,7 @@ internal readonly struct SetMethodMetadata
     {
         RequiresDirectBaseAssignment = property.SetterRequiresDirectBaseAssignment;
         ReturnType = RequiresDirectBaseAssignment ? WellKnownTypes.Bool : WellKnownTypes.Void;
-        ValueParameter = new ParameterMetadata("value", property.NullableAwareStoredTypeSyntax);
+        ValueParameter = new ParameterMetadata("value", property.NullableAwareKeptTypeSyntax);
         BaseImplementationParameter = new ParameterMetadata(
             "baseImplementation",
             property.SetterCallbackType.ToNullableType(),

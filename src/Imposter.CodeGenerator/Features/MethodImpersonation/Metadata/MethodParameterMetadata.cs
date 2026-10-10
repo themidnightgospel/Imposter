@@ -16,10 +16,13 @@ internal readonly struct MethodParameterMetadata
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
     // The type the arguments, the criteria and the invocation history keep this parameter as: the parameter's own
-    // type, or the array a span argument is copied into.
-    internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
+    // type, the array a span argument is copied into, or the object a dynamic is.
+    internal readonly TypeSyntax NullableAwareKeptTypeSyntax;
 
     internal readonly TypeSyntax ArgTypeSyntax;
+
+    // The matcher the imposter's own code builds for the parameter, of the type it keeps the argument as.
+    internal readonly TypeSyntax KeptArgTypeSyntax;
 
     internal MethodParameterMetadata(ParameterModel model)
     {
@@ -27,15 +30,16 @@ internal readonly struct MethodParameterMetadata
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
         TypeSyntax = SyntaxFactoryHelper.TypeSyntax(model.Type);
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(model.Type);
-        NullableAwareStoredTypeSyntax = SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(
-            model
+        NullableAwareKeptTypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(
+            model.Span,
+            model.Type
         );
         ArgTypeSyntax = SyntaxFactoryHelper.ArgType(model);
+        KeptArgTypeSyntax = SyntaxFactoryHelper.KeptArgType(model);
     }
 
     internal bool IsSpan => Model.Span is not null;
 
-    // The parameter's value as the stored type: a copy of a span's elements, or the parameter itself.
-    internal ExpressionSyntax StoredValue =>
-        IsSpan ? SyntaxFactoryHelper.SpanElementsCopy(IdentifierName(Name)) : IdentifierName(Name);
+    internal ExpressionSyntax KeptValue =>
+        SyntaxFactoryHelper.KeptValue(IdentifierName(Name), Model.Span, Model.Type);
 }

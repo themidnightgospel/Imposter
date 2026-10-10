@@ -23,7 +23,7 @@ internal static class IndexerSetterBuilder
 
         var setterValueParameterName = indexer.SetterImplementation.ValueParameterName;
         parameters.Add(
-            ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, setterValueParameterName)
+            ParameterSyntax(indexer.Core.NullableAwareKeptTypeSyntax, setterValueParameterName)
         );
 
         ParameterSyntax? setterBaseImplementationParameter = null;
@@ -272,7 +272,7 @@ internal static class IndexerSetterBuilder
         var value = IdentifierName(setter.ValueParameterName);
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
-            ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, setter.ValueParameterName),
+            ParameterSyntax(indexer.Core.NullableAwareKeptTypeSyntax, setter.ValueParameterName),
             ParameterSyntax(setter.BaseImplementationParameter),
         };
 
