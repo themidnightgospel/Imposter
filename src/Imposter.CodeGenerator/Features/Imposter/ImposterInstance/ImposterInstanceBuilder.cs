@@ -230,17 +230,20 @@ internal readonly ref struct ImposterInstanceBuilder
                 statements.Add(valueCopy);
             }
 
+            // A lambda can't capture a value passed through, so the base setter takes it as an argument.
             arguments.Add(
                 Argument(
-                    EmptyParametersGoesTo(
-                        Block(
-                            BaseIndexerAssignment(
-                                    lambdaCopies.LambdaArguments,
-                                    lambdaCopies.LambdaValue
-                                )
-                                .ToStatementSyntax()
+                    indexer.Core.IsPassedThrough
+                        ? BaseSetterLambda(BaseIndexerAccess(lambdaCopies.LambdaArguments))
+                        : EmptyParametersGoesTo(
+                            Block(
+                                BaseIndexerAssignment(
+                                        lambdaCopies.LambdaArguments,
+                                        lambdaCopies.LambdaValue
+                                    )
+                                    .ToStatementSyntax()
+                            )
                         )
-                    )
                 )
             );
         }

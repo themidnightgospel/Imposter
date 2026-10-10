@@ -199,9 +199,9 @@ internal static class ImposterTargetValidator
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A
-    // method's parameter or result, a property's value, or a sync event delegate's parameter, of another ref struct
-    // type isn't kept at all, only passed through (see IsPassedThrough, ReturnsPassedThrough,
-    // PropertyModel.PassesValueThrough and UncopiedEventTypes).
+    // method's parameter or result, a property's or indexer's value, or a sync event delegate's parameter, of another
+    // ref struct type isn't kept at all, only passed through (see IsPassedThrough, ReturnsPassedThrough,
+    // PassesValueThrough and UncopiedEventTypes).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -278,7 +278,7 @@ internal static class ImposterTargetValidator
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
     {
-        if (SpanModel.FromProperty(property) is null && !PropertyModel.PassesValueThrough(property))
+        if (SpanModel.FromProperty(property) is null && !PassesValueThrough(property))
         {
             yield return property.Type;
         }
@@ -288,6 +288,19 @@ internal static class ImposterTargetValidator
             yield return parameter.Type;
         }
     }
+
+    // A class indexer's base getter is a lambda that reads the base indexer with copies of the keys. Its value could
+    // refer to the copy of a key taken by in or ref readonly (CS8347), so the lambda couldn't return a value passed
+    // through.
+    private static bool PassesValueThrough(IPropertySymbol property) =>
+        PropertyModel.PassesValueThrough(property)
+        && !(
+            property.ContainingType.TypeKind == TypeKind.Class
+            && property.GetMethod is { IsAbstract: false }
+            && property.Parameters.Any(it =>
+                it.RefKind is RefKind.In or RefKinds.RefReadOnlyParameter
+            )
+        );
 
     // An event's raise copies a span argument's elements into its history and passes the span itself on, and passes
     // another ref struct on without keeping it. An async event's raise can't take a ref struct at all, so it takes the

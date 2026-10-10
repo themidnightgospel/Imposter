@@ -88,7 +88,11 @@ internal static class IndexerSetterBuilder
                     )
                     : null
             )
-            .AddMember(SinglePrivateReadonlyVariableField(setter.DefaultBehaviourField))
+            .AddMember(
+                setter.DefaultBehaviourField is { } defaultBehaviourField
+                    ? SinglePrivateReadonlyVariableField(defaultBehaviourField)
+                    : null
+            )
             .AddMember(SinglePrivateReadonlyVariableField(setter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(setter.PropertyDisplayNameField))
             .AddMember(
@@ -121,8 +125,7 @@ internal static class IndexerSetterBuilder
 
         return BuildImposterConstructor(
             setter.Name,
-            indexer.DefaultIndexerBehaviour.TypeSyntax,
-            setter.DefaultBehaviourField.Name,
+            setter.DefaultBehaviourField,
             setter.InvocationBehaviorField.Name,
             setter.PropertyDisplayNameField.Name
         );
@@ -175,6 +178,13 @@ internal static class IndexerSetterBuilder
         );
         var invocationHistoryIdentifier = IdentifierName(setter.InvocationHistoryField.Name);
         var invocationCount = IdentifierName("invocationCount");
+        var entryIdentifier = IdentifierName("entry");
+        // An entry is the keys alone for a value passed through, which the history can't keep.
+        ExpressionSyntax entryArguments = !indexer.Core.IsPassedThrough
+            ? entryIdentifier.Dot(
+                IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
+            )
+            : entryIdentifier;
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
@@ -184,30 +194,30 @@ internal static class IndexerSetterBuilder
                 .Call(
                     Argument(
                         SimpleLambdaExpression(
-                            Parameter(Identifier("entry")),
+                            Parameter(entryIdentifier.Identifier),
                             IdentifierName(setter.CriteriaParameterName)
                                 .Dot(IdentifierName("Matches"))
-                                .Call(
-                                    Argument(
-                                        IdentifierName("entry").Dot(IdentifierName("Arguments"))
-                                    )
-                                )
+                                .Call(Argument(entryArguments))
                         )
                     )
                 )
         );
 
-        var entryIdentifier = IdentifierName("entry");
-        var argumentsIdentifier = entryIdentifier.Dot(IdentifierName("Arguments"));
-        var prefix = "set "
+        var setDescription = "set "
             .StringLiteral()
-            .Add(IdentifierName(indexer.SetterImplementation.PropertyDisplayNameField.Name));
-        var indices = BuildIndices(indexer, argumentsIdentifier);
-        var withIndices = prefix.Add(indices);
-        var assignment = withIndices.Add(" = ".StringLiteral());
-        var descriptionExpression = assignment.Add(
-            Invocation(entryIdentifier.Dot(IdentifierName("Value")))
-        );
+            .Add(IdentifierName(indexer.SetterImplementation.PropertyDisplayNameField.Name))
+            .Add(BuildIndices(indexer, entryArguments));
+        var descriptionExpression = !indexer.Core.IsPassedThrough
+            ? setDescription
+                .Add(" = ".StringLiteral())
+                .Add(
+                    Invocation(
+                        entryIdentifier.Dot(
+                            IdentifierName(IndexerSetterImposterMetadata.HistoryValueElementName)
+                        )
+                    )
+                )
+            : setDescription;
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
@@ -259,12 +269,16 @@ internal static class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
         var argumentsVariable = IdentifierName(setter.ArgumentsVariableName);
+        var value = IdentifierName(setter.ValueParameterName);
         var parameters = new List<ParameterSyntax>(indexer.Core.ParameterSyntaxes)
         {
             ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, setter.ValueParameterName),
             ParameterSyntax(setter.BaseImplementationParameter),
         };
 
+        // The default behaviour keeps a value that no callback or base setter took. Without one, as for a value passed
+        // through, nothing has to know whether they did.
+        var defaultBehaviourField = setter.DefaultBehaviourField;
         var callbackMatchedIdentifier = IdentifierName(setter.MatchedCallbackVariableName);
 
         var foreachStatement = ForEachStatement(
@@ -281,35 +295,33 @@ internal static class IndexerSetterBuilder
                         )
                         .Dot(IdentifierName("Matches"))
                         .Call(Argument(argumentsVariable)),
-                    Block(
-                        IdentifierName(setter.RegistrationVariableName)
-                            .Dot(
-                                IdentifierName(
-                                    IndexerSetterImposterMetadata.RegistrationCallbackElementName
+                    new BlockBuilder()
+                        .AddExpression(
+                            IdentifierName(setter.RegistrationVariableName)
+                                .Dot(
+                                    IdentifierName(
+                                        IndexerSetterImposterMetadata.RegistrationCallbackElementName
+                                    )
                                 )
-                            )
-                            .Call(
-                                BuildDelegateInvocationArgumentsWithValue(
-                                    argumentsVariable,
-                                    indexer,
-                                    IdentifierName(setter.ValueParameterName)
+                                .Call(
+                                    BuildDelegateInvocationArgumentsWithValue(
+                                        argumentsVariable,
+                                        indexer,
+                                        value
+                                    )
                                 )
-                            )
-                            .ToStatementSyntax(),
-                        callbackMatchedIdentifier.Assign(True).ToStatementSyntax()
-                    )
+                        )
+                        .AddExpression(
+                            defaultBehaviourField is null
+                                ? null
+                                : callbackMatchedIdentifier.Assign(True)
+                        )
+                        .Build()
                 )
             )
         );
 
-        ExpressionSyntax defaultBehaviourCondition = IdentifierName(
-                setter.DefaultBehaviourField.Name
-            )
-            .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName));
-
-        defaultBehaviourCondition = Not(callbackMatchedIdentifier).And(defaultBehaviourCondition);
-
-        ExpressionSyntax? invokedBaseIdentifier = null;
+        IdentifierNameSyntax? invokedBaseIdentifier = null;
         StatementSyntax? baseCriteriaLoop = null;
 
         if (
@@ -317,7 +329,16 @@ internal static class IndexerSetterBuilder
             && setter.BaseImplementationCriteriaField.HasValue
         )
         {
-            invokedBaseIdentifier = IdentifierName(setter.InvokedBaseImplementationVariableName);
+            invokedBaseIdentifier = defaultBehaviourField is null
+                ? null
+                : IdentifierName(setter.InvokedBaseImplementationVariableName);
+            // A base setter that takes the value gets it as an argument instead of capturing it.
+            var baseImplementationCall = IdentifierName(setter.BaseImplementationParameter.Name)
+                .Call(
+                    indexer.Core.IsPassedThrough
+                        ? Argument(value).ToSingleArgumentList()
+                        : EmptyArgumentListSyntax
+                );
 
             baseCriteriaLoop = ForEachStatement(
                 Var,
@@ -328,44 +349,27 @@ internal static class IndexerSetterBuilder
                         IdentifierName(setter.CriteriaParameterName)
                             .Dot(IdentifierName("Matches"))
                             .Call(Argument(argumentsVariable)),
-                        Block(
-                            IfStatement(
-                                IdentifierName(setter.BaseImplementationParameter.Name).IsNull(),
-                                Block(
-                                    ThrowMissingImposter(
-                                        setter.PropertyDisplayNameField.Name,
-                                        setter.SetterSuffix
+                        new BlockBuilder()
+                            .AddStatement(
+                                IfStatement(
+                                    IdentifierName(setter.BaseImplementationParameter.Name)
+                                        .IsNull(),
+                                    Block(
+                                        ThrowMissingImposter(
+                                            setter.PropertyDisplayNameField.Name,
+                                            setter.SetterSuffix
+                                        )
                                     )
                                 )
-                            ),
-                            IdentifierName(setter.BaseImplementationParameter.Name)
-                                .Call(EmptyArgumentListSyntax)
-                                .ToStatementSyntax(),
-                            invokedBaseIdentifier.Assign(True).ToStatementSyntax(),
-                            BreakStatement()
-                        )
+                            )
+                            .AddExpression(baseImplementationCall)
+                            .AddExpression(invokedBaseIdentifier?.Assign(True))
+                            .AddStatement(BreakStatement())
+                            .Build()
                     )
                 )
             );
-
-            defaultBehaviourCondition = Not(invokedBaseIdentifier).And(defaultBehaviourCondition);
         }
-
-        var defaultBehaviourBlock = IfStatement(
-            defaultBehaviourCondition,
-            Block(
-                IdentifierName(setter.DefaultBehaviourField.Name)
-                    .Dot(IdentifierName("Set"))
-                    .Call(
-                        ArgumentListSyntax([
-                            Argument(argumentsVariable),
-                            Argument(IdentifierName(setter.ValueParameterName)),
-                            Argument(Null),
-                        ])
-                    )
-                    .ToStatementSyntax()
-            )
-        );
 
         var bodyBuilder = new BlockBuilder()
             .AddStatement(
@@ -375,44 +379,64 @@ internal static class IndexerSetterBuilder
             .AddStatement(
                 IdentifierName(setter.InvocationHistoryField.Name)
                     .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(
-                        Argument(
-                            TupleExpression(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(argumentsVariable),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(IdentifierName(setter.ValueParameterName)),
-                                    }
-                                )
-                            )
-                        )
-                    )
+                    .Call(Argument(HistoryEntry(indexer, argumentsVariable, value)))
                     .ToStatementSyntax()
             )
             .AddStatement(
-                LocalVariableDeclarationSyntax(
-                    WellKnownTypes.Bool,
-                    callbackMatchedIdentifier.Identifier.Text,
-                    False
-                )
+                defaultBehaviourField is null
+                    ? null
+                    : LocalVariableDeclarationSyntax(
+                        WellKnownTypes.Bool,
+                        callbackMatchedIdentifier.Identifier.Text,
+                        False
+                    )
             )
             .AddStatement(foreachStatement);
 
-        if (invokedBaseIdentifier is not null && baseCriteriaLoop is not null)
+        if (invokedBaseIdentifier is not null)
         {
             bodyBuilder.AddStatement(
                 LocalVariableDeclarationSyntax(
                     WellKnownTypes.Bool,
-                    ((IdentifierNameSyntax)invokedBaseIdentifier).Identifier.Text,
+                    invokedBaseIdentifier.Identifier.Text,
                     False
                 )
             );
-            bodyBuilder.AddStatement(baseCriteriaLoop);
         }
 
-        bodyBuilder.AddStatement(defaultBehaviourBlock);
+        bodyBuilder.AddStatement(baseCriteriaLoop);
+
+        if (defaultBehaviourField is { } field)
+        {
+            ExpressionSyntax defaultBehaviourCondition = Not(callbackMatchedIdentifier)
+                .And(
+                    IdentifierName(field.Name)
+                        .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName))
+                );
+            if (invokedBaseIdentifier is not null)
+            {
+                defaultBehaviourCondition = Not(invokedBaseIdentifier)
+                    .And(defaultBehaviourCondition);
+            }
+
+            bodyBuilder.AddStatement(
+                IfStatement(
+                    defaultBehaviourCondition,
+                    Block(
+                        IdentifierName(field.Name)
+                            .Dot(IdentifierName("Set"))
+                            .Call(
+                                ArgumentListSyntax([
+                                    Argument(argumentsVariable),
+                                    Argument(value),
+                                    Argument(Null),
+                                ])
+                            )
+                            .ToStatementSyntax()
+                    )
+                )
+            );
+        }
 
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -420,6 +444,25 @@ internal static class IndexerSetterBuilder
             .WithBody(bodyBuilder.Build())
             .Build();
     }
+
+    // The history keeps the keys with the value, or the keys alone for a value passed through.
+    private static ExpressionSyntax HistoryEntry(
+        in ImposterIndexerMetadata indexer,
+        ExpressionSyntax arguments,
+        ExpressionSyntax value
+    ) =>
+        !indexer.Core.IsPassedThrough
+            ? TupleExpression(
+                SeparatedList<ArgumentSyntax>(
+                    new SyntaxNodeOrToken[]
+                    {
+                        Argument(arguments),
+                        Token(SyntaxKind.CommaToken),
+                        Argument(value),
+                    }
+                )
+            )
+            : arguments;
 
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
         in ImposterIndexerMetadata indexer

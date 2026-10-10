@@ -16,7 +16,8 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly FieldMetadata InvocationHistoryField;
 
-    internal readonly FieldMetadata DefaultBehaviourField;
+    // The setter keeps the values set in the default behaviour: none for a value passed through.
+    internal readonly FieldMetadata? DefaultBehaviourField;
 
     internal readonly FieldMetadata InvocationBehaviorField;
 
@@ -65,26 +66,31 @@ internal readonly struct IndexerSetterImposterMetadata
                 BuildRegistrationTuple(indexer)
             )
         );
-        var invocationHistoryEntryType = TupleType(
-            SeparatedList<TupleElementSyntax>(
-                new SyntaxNodeOrToken[]
-                {
-                    TupleElement(indexer.Arguments.TypeSyntax)
-                        .WithIdentifier(Identifier("Arguments")),
-                    Token(SyntaxKind.CommaToken),
-                    TupleElement(indexer.Core.NullableAwareStoredTypeSyntax)
-                        .WithIdentifier(Identifier("Value")),
-                }
+        // A value passed through can't be kept, so the history keeps the keys alone.
+        TypeSyntax invocationHistoryEntryType = !indexer.Core.IsPassedThrough
+            ? TupleType(
+                SeparatedList<TupleElementSyntax>(
+                    new SyntaxNodeOrToken[]
+                    {
+                        TupleElement(indexer.Arguments.TypeSyntax)
+                            .WithIdentifier(Identifier(HistoryArgumentsElementName)),
+                        Token(SyntaxKind.CommaToken),
+                        TupleElement(indexer.Core.NullableAwareStoredTypeSyntax)
+                            .WithIdentifier(Identifier(HistoryValueElementName)),
+                    }
+                )
             )
-        );
+            : indexer.Arguments.TypeSyntax;
         InvocationHistoryField = new FieldMetadata(
             names.Use("_invocationHistory"),
             WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
         );
-        DefaultBehaviourField = new FieldMetadata(
-            names.Use("_defaultBehaviour"),
-            indexer.DefaultIndexerBehaviour.TypeSyntax
-        );
+        DefaultBehaviourField = !indexer.Core.IsPassedThrough
+            ? new FieldMetadata(
+                names.Use("_defaultBehaviour"),
+                indexer.DefaultIndexerBehaviour.TypeSyntax
+            )
+            : null;
         InvocationBehaviorField = new FieldMetadata(
             names.Use("_invocationBehavior"),
             WellKnownTypes.Imposter.Abstractions.ImposterMode
@@ -116,6 +122,11 @@ internal readonly struct IndexerSetterImposterMetadata
         Builder = new SetterBuilderMetadata();
         MarkConfiguredMethod = new MethodMetadata("MarkConfigured", WellKnownTypes.Void);
     }
+
+    // The elements of a history entry that keeps the value: the keys and the value.
+    internal const string HistoryArgumentsElementName = "Arguments";
+
+    internal const string HistoryValueElementName = "Value";
 
     // The elements of a callback registration: the criteria a set must match, and the callback.
     internal const string RegistrationCriteriaElementName = "Criteria";

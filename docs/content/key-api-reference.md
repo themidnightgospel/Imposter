@@ -95,6 +95,7 @@ A compact list of the core types and fluent members you’ll use most. This is n
   - Getter: `.Getter()` → `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)`
   - Setter: `.Setter()` / `.Setter(Arg<TValue> valueMatcher)` → `Callback(...)`, `Called(Count)`
   - Base implementation: `UseBaseImplementation()`
+  - An indexer of another `ref struct` type: the getter's `Returns` takes only the delegate that gets the keys (see [Ref struct values](indexers/index.md#ref-struct-values))
 
 ## Event Helpers (generated)
 

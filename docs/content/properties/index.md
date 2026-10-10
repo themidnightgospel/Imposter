@@ -145,7 +145,7 @@ A property of another `ref struct` type can be impersonated too. The imposter ca
 
 - Without a setup, the getter returns what the base getter returns, for a class property that has one, or the default otherwise. There's nowhere to keep a value, so the getter reads the base getter on every read, and setting the property doesn't change what it returns.
 
-An indexer of another `ref struct` type still reports [IMP009](../diagnostics.md#imp009).
+An indexer of another `ref struct` type works the same way (see [Ref struct values](../indexers/index.md#ref-struct-values)).
 
 ## Base Implementation
 

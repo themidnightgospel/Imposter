@@ -78,35 +78,39 @@ internal static partial class IndexerGetterBuilder
             )
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-    private static MethodDeclarationSyntax BuildGetterBuilderReturnsValueMethod(
+    private static MethodDeclarationSyntax? BuildGetterBuilderReturnsValueMethod(
         in ImposterIndexerMetadata indexer,
         GetterReturnsMetadata returns
     ) =>
-        new MethodDeclarationBuilder(returns.ReturnType, returns.Name)
-            .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
-            .AddParameter(ParameterSyntax(returns.ValueParameter))
-            .WithBody(
-                AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
-                    IdentifierName(returns.ValueParameter.Name)
+        returns.ValueParameter is { } value
+            ? new MethodDeclarationBuilder(returns.ReturnType, returns.Name)
+                .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
+                .AddParameter(ParameterSyntax(value))
+                .WithBody(
+                    AddReturnValueAndReturnThis(
+                        indexer.GetterImplementation,
+                        IdentifierName(value.Name)
+                    )
                 )
-            )
-            .Build();
+                .Build()
+            : null;
 
-    private static MethodDeclarationSyntax BuildGetterBuilderReturnsFuncMethod(
+    private static MethodDeclarationSyntax? BuildGetterBuilderReturnsFuncMethod(
         in ImposterIndexerMetadata indexer,
         GetterReturnsMetadata returns
     ) =>
-        new MethodDeclarationBuilder(returns.ReturnType, returns.Name)
-            .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
-            .AddParameter(ParameterSyntax(returns.FuncParameter))
-            .WithBody(
-                AddReturnValueAndReturnThis(
-                    indexer.GetterImplementation,
-                    IdentifierName(returns.FuncParameter.Name).Call()
+        returns.FuncParameter is { } valueGenerator
+            ? new MethodDeclarationBuilder(returns.ReturnType, returns.Name)
+                .WithExplicitInterfaceSpecifier(returns.InterfaceSyntax)
+                .AddParameter(ParameterSyntax(valueGenerator))
+                .WithBody(
+                    AddReturnValueAndReturnThis(
+                        indexer.GetterImplementation,
+                        IdentifierName(valueGenerator.Name).Call()
+                    )
                 )
-            )
-            .Build();
+                .Build()
+            : null;
 
     private static MethodDeclarationSyntax BuildGetterBuilderReturnsDelegateMethod(
         in ImposterIndexerMetadata indexer,

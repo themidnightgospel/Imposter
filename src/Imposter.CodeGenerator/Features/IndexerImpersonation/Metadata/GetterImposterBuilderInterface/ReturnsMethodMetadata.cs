@@ -10,9 +10,11 @@ internal readonly struct ReturnsMethodMetadata
 
     internal readonly NameSyntax InterfaceSyntax;
 
-    internal readonly ParameterMetadata ValueParameter;
+    // Returns(value) keeps the value, and Func<T> can't return a ref struct, so neither is there for a value passed
+    // through.
+    internal readonly ParameterMetadata? ValueParameter;
 
-    internal readonly ParameterMetadata FuncParameter;
+    internal readonly ParameterMetadata? FuncParameter;
 
     internal readonly ParameterMetadata DelegateParameter;
 
@@ -25,8 +27,12 @@ internal readonly struct ReturnsMethodMetadata
     {
         ReturnType = returnType;
         InterfaceSyntax = interfaceSyntax;
-        ValueParameter = new ParameterMetadata("value", core.NullableAwareStoredTypeSyntax);
-        FuncParameter = new ParameterMetadata("valueGenerator", core.AsSystemFuncType);
+        ValueParameter = core.IsPassedThrough
+            ? null
+            : new ParameterMetadata("value", core.NullableAwareStoredTypeSyntax);
+        FuncParameter = core.IsPassedThrough
+            ? null
+            : new ParameterMetadata("valueGenerator", core.ValueGeneratorType);
         DelegateParameter = new ParameterMetadata(
             "valueGenerator",
             delegatesMetadata.ValueDelegateType

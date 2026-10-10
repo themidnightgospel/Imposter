@@ -107,8 +107,7 @@ internal static partial class IndexerGetterBuilder
     ) =>
         BuildImposterConstructor(
             indexer.GetterImplementation.Name,
-            indexer.DefaultIndexerBehaviour.TypeSyntax,
-            indexer.GetterImplementation.DefaultBehaviourField.Name,
+            indexer.GetterImplementation.DefaultBehaviourField,
             indexer.GetterImplementation.InvocationBehaviorField.Name,
             indexer.GetterImplementation.PropertyDisplayNameField.Name
         );
