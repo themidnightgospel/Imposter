@@ -54,6 +54,7 @@ Define the target interface and enable generation:
     - Callbacks registered with `Callback(...)` run before the subscribed handlers, for both `Raise` and `RaiseAsync`.
     - If no one is subscribed, `Raise` is a no-op.
     - Exceptions thrown by a handler bubble up and stop further handlers unless your SUT or test catches them (see Event Exceptions).
+    - When the delegate takes a `ref` argument, `Raise` passes it to the callbacks and handlers by reference, so their changes reach the raiser. An `out` argument starts as the default and ends with the value assigned to it last. `RaiseAsync` takes such arguments by value, since an async method can't take them by reference, so changes stay inside the raise.
 
 ## Interceptors and Invocation Counts
 

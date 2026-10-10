@@ -1,6 +1,7 @@
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -23,6 +24,8 @@ internal readonly struct EventParameterMetadata
     // Passes this parameter on to a member that declares it the same way: a handler, a callback or the sync raise.
     internal readonly ArgumentSyntax ForwardingArgument;
 
+    internal readonly bool IsOut;
+
     // This parameter's element in the raise and handler-invocation history tuples: the parameter name, unless C#
     // reserves it for tuple elements.
     internal readonly string TupleElementName;
@@ -43,6 +46,7 @@ internal readonly struct EventParameterMetadata
         }
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
         ForwardingArgument = SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
+        IsOut = model.RefKind == RefKind.Out;
         TupleElementName = TupleElementNames.IsReserved(Name) ? tupleElementNames.Use(Name) : Name;
     }
 }
