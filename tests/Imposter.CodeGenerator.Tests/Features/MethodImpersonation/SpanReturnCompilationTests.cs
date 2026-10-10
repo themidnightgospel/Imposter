@@ -1,6 +1,9 @@
 using System.Threading.Tasks;
 using Xunit;
 using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
+#if ROSLYN4_4_OR_GREATER
+using Microsoft.CodeAnalysis.CSharp;
+#endif
 
 namespace Imposter.CodeGenerator.Tests.Features.MethodImpersonation;
 
@@ -107,4 +110,60 @@ public class SpanReturnCompilationTests
             nameof(SpanReturnCompilationTests)
         );
     }
+
+#if ROSLYN4_4_OR_GREATER
+    // The implementation repeats the scoped modifier (CS8987), and so do the imposter's own methods and delegates the
+    // argument passes through, so the span they hand back can still be returned. C# doesn't infer scoped for an
+    // implicitly typed lambda, so a Returns delegate states it (CS8986).
+    [Fact]
+    public async Task GivenSpanReturningMethodWithScopedSpanParameter_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { System.ReadOnlySpan<char> Name(scoped System.ReadOnlySpan<char> text); }",
+            "var imposter = new Sample.IServiceImposter(); imposter.Name(ReadOnlySpanArg<char>.Is('a')).Returns((scoped System.ReadOnlySpan<char> text) => text.ToArray()).Callback(text => { }); imposter.Name(ReadOnlySpanArg<char>.Any()).Returns(new[] { 'b' }); imposter.Instance().Name(System.MemoryExtensions.AsSpan(\"a\"));",
+            nameof(SpanReturnCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+
+    [Fact]
+    public async Task GivenSpanReturningMethodWithScopedRefParameter_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { System.Span<int> Slice(scoped ref int start); }",
+            "var imposter = new Sample.IServiceImposter(); imposter.Slice(Arg<int>.Any()).Returns(new int[2]); var start = 0; imposter.Instance().Slice(ref start);",
+            nameof(SpanReturnCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+
+    [Fact]
+    public async Task GivenVirtualClassMethodReturningSpanWithScopedParameter_WhenBaseImplementationIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public class Service { public virtual System.ReadOnlySpan<char> Name(scoped System.ReadOnlySpan<char> text) => System.MemoryExtensions.AsSpan(\"base\"); }",
+            "var imposter = new Sample.ServiceImposter(); imposter.Name(ReadOnlySpanArg<char>.Any()).UseBaseImplementation(); imposter.Instance().Name(System.MemoryExtensions.AsSpan(\"a\"));",
+            nameof(SpanReturnCompilationTests),
+            LanguageVersion.CSharp11
+        );
+    }
+#endif
+
+#if ROSLYN4_14_OR_GREATER
+    // A params span is scoped implicitly, and the implementation, which doesn't repeat params, says scoped instead.
+    [Fact]
+    public async Task GivenSpanReturningMethodWithParamsSpanParameter_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IService { System.ReadOnlySpan<int> First(params System.ReadOnlySpan<int> values); }",
+            "var imposter = new Sample.IServiceImposter(); imposter.First(ReadOnlySpanArg<int>.Is(1, 2)).Returns(new[] { 1 }); imposter.Instance().First(1, 2);",
+            nameof(SpanReturnCompilationTests),
+            LanguageVersion.CSharp13
+        );
+    }
+#endif
 }
