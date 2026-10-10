@@ -108,7 +108,7 @@ internal static class GeneratorTestHelper
             new ReferenceAssemblies(
                 "net9.0",
                 new PackageIdentity("Microsoft.NETCore.App.Ref", "9.0.0"),
-                Path.Combine("ref", "net9.0")
+                Path.Join("ref", "net9.0")
             )
         );
 
