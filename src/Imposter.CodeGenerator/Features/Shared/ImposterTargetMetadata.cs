@@ -54,10 +54,16 @@ internal readonly struct ImposterTargetMetadata
     // avoids the names of the target's.
     private readonly ExceptionTypeParameterMetadata _getterExceptionTypeParameter;
 
-    private readonly NameSet _symbolNameNamespace = new([]);
+    // The unique names each member's generated types are named after. A name in avoidedUniqueNames is taken already,
+    // so a member that would get it gets another.
+    private readonly NameSet _symbolNameNamespace;
 
-    internal ImposterTargetMetadata(ImposterTargetModel target)
+    internal ImposterTargetMetadata(
+        ImposterTargetModel target,
+        IEnumerable<string> avoidedUniqueNames
+    )
     {
+        _symbolNameNamespace = new NameSet(avoidedUniqueNames);
         Name = GetImposterName(target.Name);
         TypeParameters = new ImposterTargetTypeParametersMetadata(target.TypeParameters);
         ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
