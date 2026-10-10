@@ -58,24 +58,19 @@ internal static class InterfaceSetupViewBuilder
     private static MemberDeclarationSyntax BuildDeclaration(
         in InterfaceSetupMemberMetadata member
     ) =>
-        member.Model.Kind switch
-        {
-            InterfaceSetupMemberKind.Method => BuildMethodDeclaration(member),
-            InterfaceSetupMemberKind.Indexer => BuildIndexerDeclaration(member),
-            _ => BuildPropertyDeclaration(member),
-        };
+        member.IsDeclaredAsMethod ? BuildMethodDeclaration(member)
+        : member.Model.Kind == InterfaceSetupMemberKind.Indexer ? BuildIndexerDeclaration(member)
+        : BuildPropertyDeclaration(member);
 
     // The imposter implements each member of the view explicitly, by forwarding it to the member's setup.
     private static MemberDeclarationSyntax BuildImplementation(
         in InterfaceSetupMemberMetadata member,
         ExplicitInterfaceSpecifierSyntax specifier
     ) =>
-        member.Model.Kind switch
-        {
-            InterfaceSetupMemberKind.Method => BuildMethodImplementation(member, specifier),
-            InterfaceSetupMemberKind.Indexer => BuildIndexerImplementation(member, specifier),
-            _ => BuildPropertyImplementation(member, specifier),
-        };
+        member.IsDeclaredAsMethod ? BuildMethodImplementation(member, specifier)
+        : member.Model.Kind == InterfaceSetupMemberKind.Indexer
+            ? BuildIndexerImplementation(member, specifier)
+        : BuildPropertyImplementation(member, specifier);
 
     private static MethodDeclarationSyntax BuildMethodDeclaration(
         in InterfaceSetupMemberMetadata member

@@ -35,7 +35,7 @@ internal readonly ref struct IndexerImposterMembersBuilder(
                 Argument(
                     indexer.ArgumentsCriteria.TypeSyntax.New(
                         SyntaxFactoryHelper.ArgumentListSyntax(
-                            indexer.Core.Parameters.Select(parameter =>
+                            indexer.Core.MatchedParameters.Select(parameter =>
                                 Argument(IdentifierName(parameter.Name))
                             )
                         )
@@ -45,20 +45,27 @@ internal readonly ref struct IndexerImposterMembersBuilder(
         );
 
         var setupParameters = SeparatedList(
-            indexer.Core.Parameters.Select(parameter =>
+            indexer.Core.MatchedParameters.Select(parameter =>
                 SyntaxFactoryHelper.ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name)
             )
         );
 
         // Indexers that collide with another interface's indexer can't share the imposter's this[...]. Each is set
-        // up through its interface's view, which calls this method instead.
+        // up through its interface's view, which calls this method instead. An indexer with a setup method of its
+        // own is set up by calling it directly.
         _imposterBuilder.AddMember(
-            indexer.RequiresExplicitInterfaceImplementation
+            indexer.IsSetUpByMethod
                 ? new MethodDeclarationBuilder(
                     indexer.BuilderInterface.TypeSyntax,
                     indexer.Core.UniqueName
                 )
-                    .AddModifier(Token(SyntaxKind.PrivateKeyword))
+                    .AddModifier(
+                        Token(
+                            indexer.RequiresExplicitInterfaceImplementation
+                                ? SyntaxKind.PrivateKeyword
+                                : SyntaxKind.PublicKeyword
+                        )
+                    )
                     .WithParameterList(ParameterList(setupParameters))
                     .WithExpressionBody(ArrowExpressionClause(invocationBuilderCreation))
                     .WithSemicolon()

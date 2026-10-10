@@ -30,7 +30,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
         TypeSyntax = IdentifierName(Name);
         IsOnPropertyName = "IsOn";
         IsOnBackingField = new FieldMetadata("_isOn", WellKnownTypes.Bool);
-        BackingField = core.IsPassedThrough
+        BackingField = core.IsValuePassedThrough
             ? null
             : new FieldMetadata(
                 "BackingField",

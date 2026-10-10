@@ -20,15 +20,19 @@ internal readonly struct InterfaceSetupMemberMetadata
     internal readonly bool IsSetUpByMethod;
 
     // The name the view declares the member under: its own, or the setup name of an overload whose setup signature
-    // another overload shares.
+    // another overload shares, or of an indexer with a setup method.
     internal readonly string ViewName;
+
+    // True for a method, and for an indexer with a setup method, which the view declares as that method.
+    internal readonly bool IsDeclaredAsMethod;
 
     internal InterfaceSetupMemberMetadata(
         InterfaceSetupMemberModel model,
         string setupName,
         TypeSyntax returnType,
         bool isSetUpByMethod = false,
-        string? viewName = null
+        string? viewName = null,
+        bool isDeclaredAsMethod = false
     )
     {
         Model = model;
@@ -36,6 +40,7 @@ internal readonly struct InterfaceSetupMemberMetadata
         ReturnType = returnType;
         IsSetUpByMethod = isSetUpByMethod;
         ViewName = viewName ?? model.Name;
+        IsDeclaredAsMethod = isDeclaredAsMethod || model.Kind == InterfaceSetupMemberKind.Method;
         ImplementationConstraints =
             model.Kind == InterfaceSetupMemberKind.Method
                 ? GetImplementationConstraints(model)

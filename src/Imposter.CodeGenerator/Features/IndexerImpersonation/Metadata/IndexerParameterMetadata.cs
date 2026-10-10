@@ -23,6 +23,9 @@ internal readonly struct IndexerParameterMetadata
     // those classes declares a member of that name.
     internal readonly string FieldName;
 
+    // A custom ref struct key isn't kept or matched: it goes to the delegates and the base accessors as it is.
+    internal bool IsPassedThrough => Model.IsPassedThrough;
+
     internal IndexerParameterMetadata(ParameterModel model, NameSet fieldNames)
     {
         Model = model;

@@ -1,4 +1,6 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -91,9 +93,23 @@ internal static class DefaultIndexerBehaviourBuilder
             )
             : null;
 
+        // The base getter takes the keys passed through, which Get takes beside the arguments, under names of their
+        // own.
+        var keyNames = new NameSet([
+            argumentsParam.Identifier.Text,
+            baseImplementationParam.Identifier.Text,
+            valueIdentifier.Identifier.Text,
+        ]);
+        var passedThroughKeys = indexer
+            .Core.PassedThroughParameters.Select(parameter =>
+                ParameterSyntax(parameter.TypeSyntax, keyNames.Use(parameter.Name))
+            )
+            .ToArray();
+
         return new MethodDeclarationBuilder(indexer.Core.NullableAwareStoredTypeSyntax, "Get")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
+            .AddParameters(passedThroughKeys)
             .AddParameter(baseImplementationParam)
             .WithBody(
                 new BlockBuilder()
@@ -103,7 +119,13 @@ internal static class DefaultIndexerBehaviourBuilder
                             IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
                             ReturnStatement(
                                 IdentifierName(baseImplementationParam.Identifier)
-                                    .Call(EmptyArgumentListSyntax)
+                                    .Call(
+                                        ArgumentListSyntax(
+                                            passedThroughKeys.Select(key =>
+                                                Argument(IdentifierName(key.Identifier))
+                                            )
+                                        )
+                                    )
                             )
                         )
                     )
@@ -131,6 +153,18 @@ internal static class DefaultIndexerBehaviourBuilder
             .Assign(IdentifierName("value"))
             .ToStatementSyntax();
 
+        var method = new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(argumentsParameter)
+            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"));
+
+        // The setter never gives Set a base setter. A generated one takes the keys passed through, which Set doesn't
+        // have, so Set doesn't take one at all.
+        if (indexer.Core.HasGeneratedValueDelegates)
+        {
+            return method.WithBody(Block(assignment)).Build();
+        }
+
         var baseInvocation = IfStatement(
             IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
             Block(
@@ -139,10 +173,7 @@ internal static class DefaultIndexerBehaviourBuilder
             )
         );
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(argumentsParameter)
-            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"))
+        return method
             .AddParameter(baseImplementationParam)
             .WithBody(Block(baseInvocation, assignment))
             .Build();

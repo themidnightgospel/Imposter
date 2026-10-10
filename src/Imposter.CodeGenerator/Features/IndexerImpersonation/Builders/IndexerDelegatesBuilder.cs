@@ -16,17 +16,18 @@ internal static class IndexerDelegatesBuilder
             BuildGetterCallbackDelegate(indexer),
             BuildSetterCallbackDelegate(indexer),
             BuildExceptionDelegate(indexer),
-            .. BuildPassedThroughValueDelegates(indexer),
+            .. BuildGeneratedValueDelegates(indexer),
         ];
 
-    // The delegates that stand in for Func<T> and Action when the value is passed through (see
-    // IndexerDelegateMetadata). They take the internal arguments class, so they're internal too.
-    private static List<DelegateDeclarationSyntax> BuildPassedThroughValueDelegates(
+    // The delegates that stand in for Func<T> and Action when the value or a key is passed through (see
+    // IndexerDelegateMetadata). They take the internal arguments class, so they're internal too, and they take the
+    // keys passed through beside it.
+    private static List<DelegateDeclarationSyntax> BuildGeneratedValueDelegates(
         in ImposterIndexerMetadata indexer
     )
     {
         var delegates = new List<DelegateDeclarationSyntax>();
-        if (!indexer.Core.IsPassedThrough)
+        if (!indexer.Core.HasGeneratedValueDelegates)
         {
             return delegates;
         }
@@ -36,21 +37,33 @@ internal static class IndexerDelegatesBuilder
             indexer.Arguments.TypeSyntax,
             indexer.GetterImplementation.ArgumentsVariableName
         );
+        var passedThroughKeys = IndexerImposterBuilderCommon
+            .PassedThroughKeyParameters(indexer, indexer.Core.PassedThroughKeyNames)
+            .ToArray();
         if (indexer.Core.HasGetter)
         {
-            delegates.Add(InternalDelegate(value, indexer.Delegates.BaseGetterDelegateName));
             delegates.Add(
-                InternalDelegate(value, indexer.Delegates.ReturnGeneratorDelegateName, arguments)
+                InternalDelegate(value, indexer.Delegates.BaseGetterDelegateName, passedThroughKeys)
+            );
+            delegates.Add(
+                InternalDelegate(
+                    value,
+                    indexer.Delegates.ReturnGeneratorDelegateName,
+                    [arguments, .. passedThroughKeys]
+                )
             );
             delegates.Add(
                 InternalDelegate(
                     value,
                     indexer.Delegates.ReturnHandlerDelegateName,
-                    arguments,
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        indexer.GetterImplementation.BaseImplementationParameter.Type,
-                        indexer.GetterImplementation.BaseImplementationParameter.Name
-                    )
+                    [
+                        arguments,
+                        .. passedThroughKeys,
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            indexer.GetterImplementation.BaseImplementationParameter.Type,
+                            indexer.GetterImplementation.BaseImplementationParameter.Name
+                        ),
+                    ]
                 )
             );
         }
@@ -61,10 +74,13 @@ internal static class IndexerDelegatesBuilder
                 InternalDelegate(
                     WellKnownTypes.Void,
                     indexer.Delegates.BaseSetterDelegateName,
-                    SyntaxFactoryHelper.ParameterSyntax(
-                        value,
-                        indexer.SetterImplementation.ValueParameterName
-                    )
+                    [
+                        .. passedThroughKeys,
+                        SyntaxFactoryHelper.ParameterSyntax(
+                            value,
+                            indexer.SetterImplementation.ValueParameterName
+                        ),
+                    ]
                 )
             );
         }

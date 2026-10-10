@@ -89,7 +89,7 @@ internal static class IndexerImposterBuilder
 
         // The setter keeps the values set in the default behaviour, unless it can't keep them.
         var setterArguments = new List<ArgumentSyntax>();
-        if (!indexer.Core.IsPassedThrough)
+        if (!indexer.Core.IsValuePassedThrough)
         {
             setterArguments.Add(
                 Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name))

@@ -199,9 +199,9 @@ internal static class ImposterTargetValidator
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A
-    // method's parameter or result, a property's or indexer's value, or a sync event delegate's parameter, of another
-    // ref struct type isn't kept at all, only passed through (see IsPassedThrough, ReturnsPassedThrough,
-    // PassesValueThrough and UncopiedEventTypes).
+    // method's parameter or result, a property's or indexer's value or key, or a sync event delegate's parameter, of
+    // another ref struct type isn't kept at all, only passed through (see IsPassedThrough, ReturnsPassedThrough,
+    // PassesValueThrough, UncopiedTypes and UncopiedEventTypes).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -283,7 +283,13 @@ internal static class ImposterTargetValidator
             yield return property.Type;
         }
 
-        foreach (var parameter in property.Parameters.Where(it => SpanModel.From(it) is null))
+        // A custom ref struct key passed by value goes to the delegates as it is; one taken by in can't be copied for
+        // them.
+        var uncopiedParameters = property.Parameters.Where(it =>
+            SpanModel.From(it) is null
+            && !(ParameterModel.IsCustomRefStruct(it) && it.RefKind == RefKind.None)
+        );
+        foreach (var parameter in uncopiedParameters)
         {
             yield return parameter.Type;
         }

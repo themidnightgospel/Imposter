@@ -21,6 +21,16 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly IndexerParameterMetadata[] Parameters;
 
+    // The keys a setup matches, which the arguments class keeps: all but the custom ref structs.
+    internal readonly IndexerParameterMetadata[] MatchedParameters;
+
+    // The custom ref struct keys, which only pass through: the delegates and the base accessors take them beside the
+    // arguments class.
+    internal readonly IndexerParameterMetadata[] PassedThroughParameters;
+
+    // Their names, as the accessors' own parameters.
+    internal readonly string[] PassedThroughKeyNames;
+
     internal readonly ParameterSyntax[] ParameterSyntaxes;
 
     internal readonly ArgumentSyntax[] ParameterArguments;
@@ -35,16 +45,21 @@ internal readonly ref struct ImposterIndexerCoreMetadata
     internal readonly IndexerDelegateMetadata Delegates;
 
     // A value passed through isn't kept: the default behaviour, the setter's history and Returns leave it out.
-    internal readonly bool IsPassedThrough;
+    internal readonly bool IsValuePassedThrough;
 
     // The default behaviour keeps the values set, and also falls back on the base getter, so a getter has it for a
     // value passed through too.
     internal readonly bool HasDefaultBehaviour;
 
-    // Func<T>, or the generated base getter delegate for a value passed through.
-    internal readonly TypeSyntax ValueGeneratorType;
+    // Func<T>, Action and the getter's outcome types can't take a ref struct value or key, so with either the indexer
+    // generates delegates of its own (see IndexerDelegateMetadata).
+    internal readonly bool HasGeneratedValueDelegates;
 
-    // Action, or the generated base setter delegate, which takes a value passed through instead of capturing it.
+    // Func<T>, or the generated base getter delegate.
+    internal readonly TypeSyntax BaseGetterType;
+
+    // Action, or the generated base setter delegate, which takes the ref struct keys and the value instead of
+    // capturing them.
     internal readonly TypeSyntax BaseSetterType;
 
     internal readonly bool GetterSupportsBaseImplementation;
@@ -67,15 +82,6 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareStoredTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
-        Delegates = new IndexerDelegateMetadata(uniqueName);
-        IsPassedThrough = indexer.IsPassedThrough;
-        HasDefaultBehaviour = !IsPassedThrough || HasGetter;
-        ValueGeneratorType = IsPassedThrough
-            ? Delegates.BaseGetterDelegateType
-            : WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
-        BaseSetterType = IsPassedThrough
-            ? Delegates.BaseSetterDelegateType
-            : WellKnownTypes.System.Action;
         var fieldNames = new NameSet(
             indexer.Parameters.Select(parameter =>
                 SyntaxFactoryHelper.EscapeKeyword(parameter.Name)
@@ -84,6 +90,23 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         Parameters = indexer
             .Parameters.Select(parameter => new IndexerParameterMetadata(parameter, fieldNames))
             .ToArray();
+        MatchedParameters = Parameters.Where(parameter => !parameter.IsPassedThrough).ToArray();
+        PassedThroughParameters = Parameters
+            .Where(parameter => parameter.IsPassedThrough)
+            .ToArray();
+        PassedThroughKeyNames = PassedThroughParameters
+            .Select(parameter => parameter.Name)
+            .ToArray();
+        Delegates = new IndexerDelegateMetadata(uniqueName);
+        IsValuePassedThrough = indexer.IsPassedThrough;
+        HasDefaultBehaviour = !IsValuePassedThrough || HasGetter;
+        HasGeneratedValueDelegates = IsValuePassedThrough || PassedThroughParameters.Length > 0;
+        BaseGetterType = HasGeneratedValueDelegates
+            ? Delegates.BaseGetterDelegateType
+            : WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
+        BaseSetterType = HasGeneratedValueDelegates
+            ? Delegates.BaseSetterDelegateType
+            : WellKnownTypes.System.Action;
         ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
         ParameterArguments = Parameters
             .Select(parameter => parameter.ForwardingArgument(parameter.Name))
@@ -104,7 +127,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     // An accessor's optional base implementation, which the imposter calls when it's set up to use it.
     internal ParameterMetadata GetterBaseImplementationParameter(string name) =>
-        new(name, ValueGeneratorType.ToNullableType(), SyntaxFactoryHelper.Null);
+        new(name, BaseGetterType.ToNullableType(), SyntaxFactoryHelper.Null);
 
     internal ParameterMetadata SetterBaseImplementationParameter(string name) =>
         new(name, BaseSetterType.ToNullableType(), SyntaxFactoryHelper.Null);

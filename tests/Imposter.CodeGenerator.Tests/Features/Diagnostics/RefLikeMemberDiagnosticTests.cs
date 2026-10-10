@@ -110,10 +110,11 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldReportIMP009()
+    // A ref struct key passed by value reaches the delegates; one taken by in would have to be copied for them.
+    public async Task GivenIndexerWithCustomRefStructKeyTakenByIn_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int this[RefLike key] { get; } }"
+            "public interface IService { int this[in RefLike key] { get; } }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
@@ -142,25 +143,25 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
+    public async Task GivenIndexerWithCustomRefStructKeyTakenByIn_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
     {
         var result = await RunGenerator(
-            "public interface IService { int this[RefLike key] { get; } }"
+            "public interface IService { int this[in RefLike key] { get; } }"
         );
 
         result
             .Diagnostics.ShouldHaveSingleItem()
             .GetMessage()
             .ShouldBe(
-                "'Sample.IService' has the member 'Sample.IService.this[Sample.RefLike]', whose signature uses the ref-like type 'Sample.RefLike', which an imposter cannot store or match"
+                "'Sample.IService' has the member 'Sample.IService.this[in Sample.RefLike]', whose signature uses the ref-like type 'Sample.RefLike', which an imposter cannot store or match"
             );
     }
 
     [Fact]
-    public async Task GivenIndexerWithCustomRefStructKey_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
+    public async Task GivenIndexerWithCustomRefStructKeyTakenByIn_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
     {
         var result = await RunGenerator(
-            "public interface IService { int this[RefLike key] { get; } }"
+            "public interface IService { int this[in RefLike key] { get; } }"
         );
 
         result.GeneratedSources.ShouldBeEmpty();

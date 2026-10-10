@@ -127,7 +127,7 @@ internal static partial class IndexerGetterBuilder
                 .Dot(IdentifierName("Invoke"))
                 .Call(
                     ArgumentListSyntax([
-                        Argument(arguments),
+                        .. HandlerArguments(indexer, indexer.Core.PassedThroughKeyNames),
                         Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                     ])
                 )
@@ -185,7 +185,7 @@ internal static partial class IndexerGetterBuilder
                         .Dot(IdentifierName("Get"))
                         .Call(
                             ArgumentListSyntax([
-                                Argument(IdentifierName(getter.ArgumentsVariableName)),
+                                .. HandlerArguments(indexer, indexer.Core.PassedThroughKeyNames),
                                 Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                             ])
                         )

@@ -11,6 +11,8 @@ namespace Imposter.CodeGenerator.Models;
 /// <see cref="IsRequired"/> is true for a C# 11 <c>required</c> property, whose override must be required too.
 /// <see cref="IsPassedThrough"/> is true for a property or indexer of another <c>ref struct</c> type, which an imposter
 /// can't keep or match: it only passes the value between the instance and the delegates and the base implementation.
+/// <see cref="HasIndexerWithTheSameSetup"/> is true for an indexer whose keys, besides its ref struct ones, are another
+/// indexer's too, so both setups would match the same keys.
 /// </summary>
 internal sealed record PropertyModel(
     string Name,
@@ -24,10 +26,15 @@ internal sealed record PropertyModel(
     PropertyAccessorModel? Setter,
     EquatableArray<ParameterModel> Parameters,
     bool IsRequired,
-    bool IsPassedThrough
+    bool IsPassedThrough,
+    bool HasIndexerWithTheSameSetup
 )
 {
-    internal static PropertyModel From(IPropertySymbol property, MemberAccess memberAccess) =>
+    internal static PropertyModel From(
+        IPropertySymbol property,
+        MemberAccess memberAccess,
+        bool hasIndexerWithTheSameSetup
+    ) =>
         new(
             property.Name,
             GetDisplayName(property),
@@ -40,7 +47,8 @@ internal sealed record PropertyModel(
             PropertyAccessorModel.FromAccessible(property.SetMethod, memberAccess),
             property.Parameters.Select(ParameterModel.From).ToEquatableArray(),
             property.IsRequiredMember(),
-            PassesValueThrough(property)
+            PassesValueThrough(property),
+            hasIndexerWithTheSameSetup
         );
 
     internal static bool PassesValueThrough(IPropertySymbol property) =>
