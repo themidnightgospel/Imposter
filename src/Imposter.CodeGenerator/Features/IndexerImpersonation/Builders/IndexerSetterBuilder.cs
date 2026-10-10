@@ -429,19 +429,7 @@ internal static class IndexerSetterBuilder
                     Block(
                         IdentifierName(field.Name)
                             .Dot(IdentifierName("Set"))
-                            .Call(
-                                // The default behaviour's Set takes no base setter where it would be generated.
-                                indexer.Core.HasGeneratedValueDelegates
-                                    ? ArgumentListSyntax([
-                                        Argument(argumentsVariable),
-                                        Argument(value),
-                                    ])
-                                    : ArgumentListSyntax([
-                                        Argument(argumentsVariable),
-                                        Argument(value),
-                                        Argument(Null),
-                                    ])
-                            )
+                            .Call([Argument(argumentsVariable), Argument(value)])
                             .ToStatementSyntax()
                     )
                 )

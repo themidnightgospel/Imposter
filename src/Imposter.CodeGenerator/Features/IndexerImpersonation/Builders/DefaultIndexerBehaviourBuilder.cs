@@ -135,47 +135,26 @@ internal static class DefaultIndexerBehaviourBuilder
             .Build();
     }
 
+    // The setter calls the base setter itself, so Set only keeps the value.
     private static MethodDeclarationSyntax BuildSetMethod(
         in ImposterIndexerMetadata indexer,
         in FieldMetadata backingField
-    )
-    {
-        var baseImplementationParam = ParameterSyntax(
-            indexer.DefaultIndexerBehaviour.SetBaseImplementationParameter
-        );
-
-        var argumentsParameter = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
-
-        var assignment = ElementAccessExpression(IdentifierName(backingField.Name))
-            .WithArgumentList(
-                BracketedArgumentList(SingletonSeparatedList(Argument(IdentifierName("arguments"))))
-            )
-            .Assign(IdentifierName("value"))
-            .ToStatementSyntax();
-
-        var method = new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+    ) =>
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(argumentsParameter)
-            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"));
-
-        // The setter never gives Set a base setter. A generated one takes the keys passed through, which Set doesn't
-        // have, so Set doesn't take one at all.
-        if (indexer.Core.HasGeneratedValueDelegates)
-        {
-            return method.WithBody(Block(assignment)).Build();
-        }
-
-        var baseInvocation = IfStatement(
-            IdentifierName(baseImplementationParam.Identifier).IsNotNull(),
-            Block(
-                IdentifierName(baseImplementationParam.Identifier).Call().ToStatementSyntax(),
-                ReturnStatement()
+            .AddParameter(ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments"))
+            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareStoredTypeSyntax, "value"))
+            .WithBody(
+                Block(
+                    ElementAccessExpression(IdentifierName(backingField.Name))
+                        .WithArgumentList(
+                            BracketedArgumentList(
+                                SingletonSeparatedList(Argument(IdentifierName("arguments")))
+                            )
+                        )
+                        .Assign(IdentifierName("value"))
+                        .ToStatementSyntax()
+                )
             )
-        );
-
-        return method
-            .AddParameter(baseImplementationParam)
-            .WithBody(Block(baseInvocation, assignment))
             .Build();
-    }
 }
