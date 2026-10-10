@@ -266,15 +266,19 @@ internal static class ImposterTargetValidator
         }
     }
 
-    // An event's raise copies a span argument's elements into its history, but an async event's raise can't take a
-    // span, and a ref or out span can't be copied back to the raise's caller.
+    // An event's raise copies a span argument's elements into its history and passes the span itself on. An async
+    // event's raise takes the array a span covers and passes the delegates a span over it, which a ref, out or ref
+    // readonly parameter can't take: it needs a span variable, which an async method can't declare.
     private static IEnumerable<ITypeSymbol> UncopiedEventTypes(IMethodSymbol invoke)
     {
         yield return invoke.ReturnType;
 
-        var copiesSpans = !invoke.ReturnType.IsAwaitable();
+        var isAsync = invoke.ReturnType.IsAwaitable();
         var uncopiedParameters = invoke.Parameters.Where(it =>
-            !copiesSpans || it.RefKind is RefKind.Ref or RefKind.Out || SpanModel.From(it) is null
+            SpanModel.From(it) is null
+            || (
+                isAsync && it.RefKind is RefKind.Ref or RefKind.Out or RefKinds.RefReadOnlyParameter
+            )
         );
         foreach (var parameter in uncopiedParameters)
         {

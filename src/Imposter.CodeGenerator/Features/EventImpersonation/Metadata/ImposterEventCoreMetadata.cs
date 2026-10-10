@@ -26,8 +26,9 @@ internal readonly ref struct ImposterEventCoreMetadata
     // The handler's element in the handler-invocation history tuple, next to the parameters' elements.
     internal readonly string HandlerTupleElementName;
 
-    // An async method cannot take `in` parameters (CS1988), so an async event's raise methods take the delegate's
-    // parameters by value. The handlers and callbacks they call keep the delegate's own modifiers.
+    // An async method cannot take `in` parameters (CS1988) or a span (CS4012), so an async event's raise methods take
+    // the delegate's parameters by value, and a span as the array it covers. The handlers and callbacks they call keep
+    // the delegate's own modifiers, and get a span over the array.
     internal readonly ParameterSyntax[] RaiseParameterSyntaxes;
 
     internal readonly bool IsAsync;
@@ -56,14 +57,23 @@ internal readonly ref struct ImposterEventCoreMetadata
         HandlerTupleElementName = tupleElementNames.Use("Handler");
         IsAsync = @event.IsAsync;
         ReturnsNonGenericValueTask = @event.ReturnsNonGenericValueTask;
-        var includeRefKind = !IsAsync;
-        RaiseParameterSyntaxes = @event
-            .DelegateParameters.Select(model =>
-                SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model, includeRefKind)
-            )
-            .ToArray();
+        RaiseParameterSyntaxes = IsAsync
+            ? @event.DelegateParameters.Select(AsyncRaiseParameterSyntax).ToArray()
+            : @event
+                .DelegateParameters.Select(model =>
+                    SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model)
+                )
+                .ToArray();
         SupportsBaseImplementation = @event.IsClassMember && @event.HasConcreteAccessors;
     }
+
+    private static ParameterSyntax AsyncRaiseParameterSyntax(ParameterModel model) =>
+        model.Span is null
+            ? SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model, includeRefKind: false)
+            : SyntaxFactoryHelper.ParameterSyntax(
+                SyntaxFactoryHelper.StoredTypeSyntaxIncludingNullable(model),
+                SyntaxFactoryHelper.EscapeKeyword(model.Name)
+            );
 
     // The builder's raise methods take the delegate's parameters, so the names they declare or refer to avoid these.
     internal NameSet CreateParameterNameSet() =>
