@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -132,22 +133,37 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         try
         {
+            var supportedCSharpFeatures = new SupportedCSharpFeatures(options.LanguageVersion);
             var imposterGenerationContext = new ImposterGenerationContext(
                 target,
-                new SupportedCSharpFeatures(options.LanguageVersion)
+                supportedCSharpFeatures,
+                []
             );
+            var imposter = BuildImposter(
+                imposterGenerationContext,
+                sourceProductionContext.CancellationToken,
+                out var clashingUniqueNames
+            );
+
+            // A member whose types would clash with another member's name takes another unique name to name them
+            // after, so only a target with such a member is built twice.
+            if (clashingUniqueNames.Count > 0)
+            {
+                imposterGenerationContext = new ImposterGenerationContext(
+                    target,
+                    supportedCSharpFeatures,
+                    clashingUniqueNames
+                );
+                imposter = BuildImposter(
+                    imposterGenerationContext,
+                    sourceProductionContext.CancellationToken,
+                    out _
+                );
+            }
 
             sourceProductionContext.AddSource(
                 imposterGenerationContext.HintName,
-                SourceText.From(
-                    GeneratedCodeWriter.Write(
-                        BuildImposter(
-                            imposterGenerationContext,
-                            sourceProductionContext.CancellationToken
-                        )
-                    ),
-                    Encoding.UTF8
-                )
+                SourceText.From(GeneratedCodeWriter.Write(imposter), Encoding.UTF8)
             );
 
             new DiagnosticLogger(sourceProductionContext, options.IsLoggingEnabled).LogImposter(
@@ -167,7 +183,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
     private static CompilationUnitSyntax BuildImposter(
         in ImposterGenerationContext imposterGenerationContext,
-        in CancellationToken cancellationToken
+        in CancellationToken cancellationToken,
+        out HashSet<string> clashingUniqueNames
     )
     {
         var imposterBuilder = ImposterBuilder.Create(imposterGenerationContext);
@@ -183,7 +200,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         if (imposterGenerationContext.ImposterNamespaceName is null)
         {
-            var globalMembers = new System.Collections.Generic.List<MemberDeclarationSyntax>();
+            var globalMembers = new List<MemberDeclarationSyntax>();
 
             AddMember = globalMembers.Add;
             GetTopLevelMembers = globalMembers.ToArray;
@@ -198,7 +215,9 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             GetTopLevelMembers = () => [imposterNamespaceBuilder.Build()];
         }
 
-        AddMember(imposterBuilder.Build());
+        var imposter = imposterBuilder.Build();
+        clashingUniqueNames = imposterBuilder.UniqueNamesOfClashingTypes(imposter);
+        AddMember(imposter);
 
 #if ROSLYN4_14_OR_GREATER
         if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
@@ -261,23 +280,27 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            imposterBuilder
-                .AddMembers(MethodDelegateTypeBuilder.Build(method))
-                .AddMember(ArgumentsBuilder.Build(method))
-                .AddMember(ArgumentsCriteriaBuilder.Build(method))
-                .AddMember(InvocationHistoryInterfaceBuilder.Build(method))
-                .AddMember(InvocationHistoryBuilder.Build(method))
-                .AddMember(InvocationHistoryCollectionBuilder.Build(method))
-                .AddMember(MethodImposterCollectionBuilder.Build(method))
-                .AddMember(InvocationImposterGroupBuilder.Build(method))
-                .AddMembers(
-                    InvocationImposterGroupBuilder.BuildInvocationImposterGroupInterfaces(method)
-                )
-                .AddMember(MethodImposterNonGenericInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterGenericInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterInvocationVerifierInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterBuilderInterfaceBuilder.Build(method))
-                .AddMember(MethodImposterBuilder.Build(method));
+            imposterBuilder.AddMemberTypes(
+                method.UniqueName,
+                [
+                    .. MethodDelegateTypeBuilder.Build(method),
+                    ArgumentsBuilder.Build(method),
+                    ArgumentsCriteriaBuilder.Build(method),
+                    InvocationHistoryInterfaceBuilder.Build(method),
+                    InvocationHistoryBuilder.Build(method),
+                    InvocationHistoryCollectionBuilder.Build(method),
+                    MethodImposterCollectionBuilder.Build(method),
+                    InvocationImposterGroupBuilder.Build(method),
+                    .. InvocationImposterGroupBuilder.BuildInvocationImposterGroupInterfaces(
+                        method
+                    ),
+                    MethodImposterNonGenericInterfaceBuilder.Build(method),
+                    MethodImposterGenericInterfaceBuilder.Build(method),
+                    MethodImposterInvocationVerifierInterfaceBuilder.Build(method),
+                    MethodImposterBuilderInterfaceBuilder.Build(method),
+                    MethodImposterBuilder.Build(method),
+                ]
+            );
         }
     }
 
@@ -303,11 +326,16 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     property.SetupName,
                     property.ImposterBuilderInterface.Syntax
                 )
-                .AddMembers(PropertyDelegatesBuilder.Build(property))
-                .AddMembers(PropertyGetterImposterBuilderInterfaceBuilder.Build(property))
-                .AddMembers(PropertySetterImposterBuilderInterfaceBuilder.Build(property))
-                .AddMember(PropertyImposterBuilderInterfaceBuilder.Build(property))
-                .AddMember(PropertyImposterBuilder.Build(property));
+                .AddMemberTypes(
+                    property.Core.UniqueName,
+                    [
+                        .. PropertyDelegatesBuilder.Build(property),
+                        .. PropertyGetterImposterBuilderInterfaceBuilder.Build(property),
+                        .. PropertySetterImposterBuilderInterfaceBuilder.Build(property),
+                        PropertyImposterBuilderInterfaceBuilder.Build(property),
+                        PropertyImposterBuilder.Build(property),
+                    ]
+                );
         }
     }
 
@@ -330,8 +358,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     @event.SetupName,
                     @event.BuilderInterface.TypeSyntax
                 )
-                .AddMembers(EventImposterBuilderInterfaceBuilder.Build(@event))
-                .AddMember(EventImposterBuilder.Build(@event));
+                .AddMemberTypes(
+                    @event.Core.UniqueName,
+                    [
+                        .. EventImposterBuilderInterfaceBuilder.Build(@event),
+                        EventImposterBuilder.Build(@event),
+                    ]
+                );
         }
     }
 
@@ -355,13 +388,18 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     indexer.BuilderInterface.TypeSyntax,
                     isSetUpByMethod: indexer.RequiresExplicitInterfaceImplementation
                 )
-                .AddMembers(IndexerDelegatesBuilder.Build(indexer))
-                .AddMember(IndexerArgumentsBuilder.Build(indexer))
-                .AddMember(IndexerArgumentsCriteriaBuilder.Build(indexer))
-                .AddMember(IndexerImposterBuilder.Build(indexer))
-                .AddMembers(IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer))
-                .AddMembers(IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer))
-                .AddMember(IndexerImposterBuilderInterfaceBuilder.Build(indexer));
+                .AddMemberTypes(
+                    indexer.Core.UniqueName,
+                    [
+                        .. IndexerDelegatesBuilder.Build(indexer),
+                        IndexerArgumentsBuilder.Build(indexer),
+                        IndexerArgumentsCriteriaBuilder.Build(indexer),
+                        IndexerImposterBuilder.Build(indexer),
+                        .. IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer),
+                        .. IndexerSetterImposterBuilderInterfaceBuilder.Build(indexer),
+                        IndexerImposterBuilderInterfaceBuilder.Build(indexer),
+                    ]
+                );
         }
     }
 }
