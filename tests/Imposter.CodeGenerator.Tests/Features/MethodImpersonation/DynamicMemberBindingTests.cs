@@ -39,7 +39,8 @@ public class DynamicMemberBindingTests
     }
 
     // The types of the runtime binder the emitted assembly refers to: the call sites it creates and the binder that
-    // resolves them.
+    // resolves them. The scan covers the target's own code too, so a target mustn't bind itself:
+    // Task.FromResult<dynamic>(value) does, Task.FromResult<dynamic>((object)value) doesn't.
     private static async Task<IReadOnlyList<string>> RuntimeBinderReferences(
         string targetDeclaration,
         string targetType
