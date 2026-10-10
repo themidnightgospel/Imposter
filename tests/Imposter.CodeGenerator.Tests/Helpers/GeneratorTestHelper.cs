@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -100,8 +101,16 @@ internal static class GeneratorTestHelper
         );
     }
 
+    // ReferenceAssemblies.Net.Net90 is a .NET 9 preview, which can't compile a type parameter that allows ref structs
+    // (CS9240).
     private static Task<MetadataReference[]> ResolveReferencesAsync() =>
-        ResolveReferencesAsync(ReferenceAssemblies.Net.Net90);
+        ResolveReferencesAsync(
+            new ReferenceAssemblies(
+                "net9.0",
+                new PackageIdentity("Microsoft.NETCore.App.Ref", "9.0.0"),
+                Path.Join("ref", "net9.0")
+            )
+        );
 
     private static async Task<MetadataReference[]> ResolveReferencesAsync(
         ReferenceAssemblies referenceAssemblies

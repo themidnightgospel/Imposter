@@ -189,54 +189,16 @@ public class RefLikeMemberDiagnosticTests
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
 
+    // A value of a method's type parameter that allows ref structs passes through, as another ref struct does.
     [Fact]
-    public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodsWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldNotReportDiagnostics()
     {
         var result = await RunGenerator(
-            "public interface IService { void Use<T>(T value) where T : allows ref struct; }",
+            "public interface IService { void Use<T>(T value) where T : allows ref struct; int Count<T>() where T : allows ref struct; }",
             languageVersion: LanguageVersion.CSharp13
         );
 
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenMethodWithoutValuesWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public interface IService { int Count<T>() where T : allows ref struct; }",
-            languageVersion: LanguageVersion.CSharp13
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenVirtualClassMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator(
-            "public class Service { public virtual void Use<T>(T value) where T : allows ref struct { } }",
-            "Sample.Service",
-            LanguageVersion.CSharp13
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenMethodWhoseTypeParameterAllowsRefStruct_WhenGeneratorRuns_ShouldNameTheTypeParameter()
-    {
-        var result = await RunGenerator(
-            "public interface IService { void Use<T>(T value) where T : allows ref struct; }",
-            languageVersion: LanguageVersion.CSharp13
-        );
-
-        result
-            .Diagnostics.ShouldHaveSingleItem()
-            .GetMessage()
-            .ShouldBe(
-                "'Sample.IService' has the member 'Sample.IService.Use<T>(T)', whose signature uses the ref-like type 'T', which an imposter cannot store or match"
-            );
+        result.Diagnostics.ShouldBeEmpty();
     }
 
     // The imposter of a generic interface leaves out the anti-constraint, so its type argument can't be a ref struct.

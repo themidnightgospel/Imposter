@@ -229,7 +229,7 @@ A `scoped` parameter, or a `params` span, which is scoped implicitly, stays `sco
     ```
 
 !!! warning
-    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, any other `ref struct` except a method's [parameter](#ref-struct-parameters) or [result](methods/index.md#setup-return-values), a [property's](properties/index.md#ref-struct-properties) or [indexer's](indexers/index.md#ref-struct-values) value, an indexer's [key](indexers/index.md#ref-struct-keys) and a sync event delegate's [parameter](events/index.md#ref-struct-parameters), and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, and any other `ref struct` except a method's [parameter](#ref-struct-parameters) or [result](methods/index.md#setup-return-values), a [property's](properties/index.md#ref-struct-properties) or [indexer's](indexers/index.md#ref-struct-values) value, an indexer's [key](indexers/index.md#ref-struct-keys) and a sync event delegate's [parameter](events/index.md#ref-struct-parameters) still report [IMP009](diagnostics.md#imp009). A value of a method's [type parameter that allows ref structs](generics.md#type-parameters-that-allow-ref-structs) passes through like a ref struct parameter. See [Limitations](limitations.md#ref-like-types).
 
 ## Ref struct parameters
 
@@ -243,7 +243,7 @@ An imposter can't keep or match an argument of a custom `ref struct` type, so se
     service.Read(1, new Cursor(5)); // 5
     ```
 
-Overloads that differ only in their ref struct parameters would get the same setup, so each after the first gets a numbered one (`Read_1`), as overloads that differ only in passing a parameter by reference do. A ref struct whose type uses the method's own type parameters still reports [IMP009](diagnostics.md#imp009).
+Overloads that differ only in their ref struct parameters would get the same setup, so each after the first gets a numbered one (`Read_1`), as overloads that differ only in passing a parameter by reference do. A value of a method's type parameter that allows ref structs passes through the same way (see [Generics](generics.md#type-parameters-that-allow-ref-structs)). A ref struct whose type uses the method's own type parameters still reports [IMP009](diagnostics.md#imp009), unless one of them allows ref structs.
 
 ## Arg API reference
 

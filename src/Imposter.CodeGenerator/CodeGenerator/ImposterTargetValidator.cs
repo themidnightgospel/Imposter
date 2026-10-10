@@ -200,8 +200,9 @@ internal static class ImposterTargetValidator
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A
     // method's parameter or result, a property's or indexer's value or key, or a sync event delegate's parameter, of
-    // another ref struct type isn't kept at all, only passed through (see IsPassedThrough, ReturnsPassedThrough,
-    // PassesValueThrough, UncopiedTypes and UncopiedEventTypes).
+    // another ref struct type isn't kept at all, only passed through, and neither is a method's value of its type
+    // parameter that allows ref structs (see IsPassedThrough, ReturnsPassedThrough, PassesValueThrough, UncopiedTypes
+    // and UncopiedEventTypes).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -237,10 +238,15 @@ internal static class ImposterTargetValidator
         return null;
     }
 
-    // A type parameter that allows ref structs may stand for a ref struct.
+    // A type parameter that allows ref structs may stand for a ref struct. The builds older than 4.14 can't declare the
+    // anti-constraint the imposter repeats for it.
     private static ITypeSymbol? FindMethodRefLikeType(IMethodSymbol method) =>
+#if ROSLYN4_14_OR_GREATER
+        FindRefLikeType(UncopiedTypes(method));
+#else
         FindRefLikeType(UncopiedTypes(method))
         ?? method.TypeParameters.FirstOrDefault(AllowsRefStruct.AllowsRefStructs);
+#endif
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IMethodSymbol method)
     {
@@ -258,19 +264,25 @@ internal static class ImposterTargetValidator
         }
     }
 
-    // A method passes another ref struct on to its delegates, unless the ref struct's type uses the method's type
-    // parameters: a generic method's adapter would have to convert it between type arguments.
+    // A method passes another ref struct, or a value of its type parameter that allows ref structs, on to its
+    // delegates, unless the value's type uses the method's type parameters and the method has an adapter, which would
+    // have to convert it between type arguments (see MethodModel.NeedsAdapter).
     private static bool IsPassedThrough(IParameterSymbol parameter, IMethodSymbol method) =>
-        ParameterModel.IsCustomRefStruct(parameter)
-        && !parameter.Type.ReferencesTypeParameterOf(method);
+        ParameterModel.PassesThrough(parameter)
+        && (!MethodModel.NeedsAdapter(method) || !parameter.Type.ReferencesTypeParameterOf(method));
 
-    // A ref struct result passes back from a Returns delegate or the base implementation, on the same condition. A
-    // generic method's adapter also passes by-reference arguments through locals, which the result could refer to
-    // (CS8352), so it can't take any but the ref structs it forwards as they are.
+    // A ref struct result passes back from a Returns delegate or the base implementation, on the same condition. An
+    // adapter also passes by-reference arguments through locals, which the result could refer to (CS8352), so it can't
+    // take any but the ref structs it forwards as they are.
     private static bool ReturnsPassedThrough(IMethodSymbol method) =>
-        ReturnTypeModel.ReturnsCustomRefStruct(method)
-        && !method.ReturnType.ReferencesTypeParameterOf(method)
-        && !(method.IsGenericMethod && method.Parameters.Any(PassesThroughAdapterLocal));
+        ReturnTypeModel.PassesThrough(method)
+        && (
+            !MethodModel.NeedsAdapter(method)
+            || (
+                !method.ReturnType.ReferencesTypeParameterOf(method)
+                && !method.Parameters.Any(PassesThroughAdapterLocal)
+            )
+        );
 
     private static bool PassesThroughAdapterLocal(IParameterSymbol parameter) =>
         parameter.RefKind is RefKind.Ref or RefKind.In or RefKinds.RefReadOnlyParameter

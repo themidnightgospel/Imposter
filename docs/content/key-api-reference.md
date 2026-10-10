@@ -78,6 +78,7 @@ A compact list of the core types and fluent members you’ll use most. This is n
   - `Callback(Action action)` / `Callback(Action<...parameters...> action)`
   - `Then()` — chain next behavior (return/throw/etc.) for subsequent matching calls
   - `Called(Count count)` — verify invocation frequency
+- A method whose type parameter allows ref structs: the setup takes matchers for the other parameters only, as in `imposter.Measure<Gauge>(Arg<int>.Any())`, and applies to calls with the same type arguments only (see [Type parameters that allow ref structs](generics.md#type-parameters-that-allow-ref-structs))
 
 ## Property Setups (generated)
 
