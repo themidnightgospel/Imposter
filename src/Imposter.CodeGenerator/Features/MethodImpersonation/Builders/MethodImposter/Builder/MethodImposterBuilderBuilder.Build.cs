@@ -34,16 +34,14 @@ internal static partial class MethodImposterBuilderBuilder
                 )
             );
 
-        var constructor = BuildConstructorAndInitializeMembers(
-            method.MethodImposter.Builder.Name,
-            fields,
-            [ParameterSyntax(method.MethodImposter.Builder.ImposterParameter)]
-        );
-        constructor = constructor.WithBody(
-            constructor.Body!.AddStatements(
-                BuildInvocationImposterGroupInitializationStatements(method).ToArray()
-            )
-        );
+        var constructor = new ConstructorWithFieldInitializationBuilder(
+            method.MethodImposter.Builder.Name
+        )
+            .WithModifiers(Token(SyntaxKind.PublicKeyword))
+            .AddParameterWithoutField(method.MethodImposter.Builder.ImposterParameter)
+            .AddParameters(fields)
+            .AddStatements(BuildInvocationImposterGroupInitializationStatements(method))
+            .Build();
 
         return builderClass
             .AddMember(constructor)

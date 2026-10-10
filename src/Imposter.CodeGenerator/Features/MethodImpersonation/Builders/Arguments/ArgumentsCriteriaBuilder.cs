@@ -27,22 +27,7 @@ public static class ArgumentsCriteriaBuilder
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Parameters.AllParameterMetadata.Select(ArgProperty))
-            .AddMember(
-                new ConstructorBuilder(method.ArgumentsCriteria.Name)
-                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .WithParameterList(method.Parameters.ArgParameterListSyntax)
-                    .WithBody(
-                        Block(
-                            method.Parameters.AllParameterMetadata.Select(parameter =>
-                                ThisExpression()
-                                    .Dot(IdentifierName(parameter.Name))
-                                    .Assign(IdentifierName(parameter.Name))
-                                    .ToStatementSyntax()
-                            )
-                        )
-                    )
-                    .Build()
-            )
+            .AddMember(BuildConstructor(method))
             .AddMember(MatchesMethod(method));
 
         if (method.Model.IsGenericMethod)
@@ -64,6 +49,25 @@ public static class ArgumentsCriteriaBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithGetter()
             .Build();
+
+    private static ConstructorDeclarationSyntax BuildConstructor(
+        in ImposterTargetMethodMetadata method
+    )
+    {
+        var constructor = new ConstructorWithFieldInitializationBuilder(
+            method.ArgumentsCriteria.Name
+        ).WithModifiers(Token(SyntaxKind.PublicKeyword));
+
+        foreach (var parameter in method.Parameters.AllParameterMetadata)
+        {
+            constructor.AddParameter(
+                new ParameterMetadata(parameter.Name, parameter.ArgTypeSyntax),
+                parameter.Name
+            );
+        }
+
+        return constructor.Build();
+    }
 
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {

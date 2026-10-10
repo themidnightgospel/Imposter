@@ -450,54 +450,26 @@ internal static class IndexerSetterBuilder
     private static ClassDeclarationSyntax BuildSetterBuilder(in ImposterIndexerMetadata indexer)
     {
         var builderMetadata = indexer.SetterImplementation.Builder;
+        var imposterField = new FieldMetadata(
+            builderMetadata.ImposterFieldName,
+            indexer.SetterImplementation.TypeSyntax
+        );
+        var criteriaField = new FieldMetadata(
+            builderMetadata.CriteriaFieldName,
+            indexer.ArgumentsCriteria.TypeSyntax
+        );
 
         return new ClassDeclarationBuilder(builderMetadata.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax))
+            .AddMember(SinglePrivateReadonlyVariableField(imposterField))
+            .AddMember(SinglePrivateReadonlyVariableField(criteriaField))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.SetterImplementation.TypeSyntax,
-                    builderMetadata.ImposterFieldName
-                )
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.ArgumentsCriteria.TypeSyntax,
-                    builderMetadata.CriteriaFieldName
-                )
-            )
-            .AddMember(
-                new ConstructorBuilder(builderMetadata.Name)
-                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .AddParameter(
-                        ParameterSyntax(
-                            indexer.SetterImplementation.TypeSyntax,
-                            builderMetadata.ImposterFieldName
-                        )
-                    )
-                    .AddParameter(
-                        ParameterSyntax(
-                            indexer.ArgumentsCriteria.TypeSyntax,
-                            builderMetadata.CriteriaFieldName
-                        )
-                    )
-                    .WithBody(
-                        new BlockBuilder()
-                            .AddStatement(
-                                ThisExpression()
-                                    .Dot(IdentifierName(builderMetadata.ImposterFieldName))
-                                    .Assign(IdentifierName(builderMetadata.ImposterFieldName))
-                                    .ToStatementSyntax()
-                            )
-                            .AddStatement(
-                                ThisExpression()
-                                    .Dot(IdentifierName(builderMetadata.CriteriaFieldName))
-                                    .Assign(IdentifierName(builderMetadata.CriteriaFieldName))
-                                    .ToStatementSyntax()
-                            )
-                            .Build()
-                    )
+                new ConstructorWithFieldInitializationBuilder(builderMetadata.Name)
+                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(imposterField)
+                    .AddParameter(criteriaField)
                     .Build()
             )
             .AddMember(BuildSetterBuilderCallbackMethod(indexer))
