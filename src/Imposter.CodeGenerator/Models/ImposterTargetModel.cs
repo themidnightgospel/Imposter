@@ -198,14 +198,8 @@ internal sealed record ImposterTargetModel(
             SymbolEqualityComparer.Default
         );
 
-    // Each overload's setup matches the parameters its own declaration doesn't pass through, and the overloads' type
-    // parameters compare by position (see TypeSymbolExtensions.ToSignatureKey).
     private static bool HaveTheSameSetupButDiffer(IMethodSymbol method, IMethodSymbol other) =>
-        method.Arity == other.Arity
-        && HaveTheSameMatchers(
-            ParameterModel.MatchedParameters(method.Parameters),
-            ParameterModel.MatchedParameters(other.Parameters)
-        )
+        MethodModel.HaveTheSameSetup(method, other)
         && !HaveTheSameSignature(method.Parameters, other.Parameters);
 
     // Indexers whose setups match the same keys, leaving out the ref structs they only pass through, would share a
@@ -218,7 +212,7 @@ internal sealed record ImposterTargetModel(
         new(
             indexers.Where(indexer =>
                 indexers.Any(other =>
-                    HaveTheSameMatchers(
+                    ParameterModel.HaveTheSameMatchers(
                         ParameterModel.MatchedParameters(indexer.Parameters),
                         ParameterModel.MatchedParameters(other.Parameters)
                     )
@@ -227,13 +221,6 @@ internal sealed record ImposterTargetModel(
             ),
             SymbolEqualityComparer.Default
         );
-
-    private static bool HaveTheSameMatchers(
-        ImmutableArray<IParameterSymbol> parameters,
-        ImmutableArray<IParameterSymbol> others
-    ) =>
-        parameters.Length == others.Length
-        && parameters.Zip(others, HaveTheSameMatcher).All(same => same);
 
     private static bool HaveTheSameSignature(
         ImmutableArray<IParameterSymbol> parameters,
@@ -244,17 +231,10 @@ internal sealed record ImposterTargetModel(
             .Zip(
                 others,
                 (parameter, other) =>
-                    parameter.RefKind == other.RefKind && HaveTheSameType(parameter, other)
+                    parameter.RefKind == other.RefKind
+                    && parameter.Type.ToSignatureKey() == other.Type.ToSignatureKey()
             )
             .All(same => same);
-
-    // Only out gets a matcher of its own (OutArg<T>).
-    private static bool HaveTheSameMatcher(IParameterSymbol parameter, IParameterSymbol other) =>
-        (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
-        && HaveTheSameType(parameter, other);
-
-    private static bool HaveTheSameType(IParameterSymbol parameter, IParameterSymbol other) =>
-        parameter.Type.ToSignatureKey() == other.Type.ToSignatureKey();
 
     // Methods collide on the instance when their type parameter counts and parameter types match, and their setups,
     // which leave out the ref structs they only pass through, collide on the imposter.

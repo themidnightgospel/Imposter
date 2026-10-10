@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -56,30 +55,15 @@ internal sealed record InterfaceSetupMemberModel(
     private static bool Hides(ISymbol member, ISymbol inherited) =>
         (member, inherited) switch
         {
-            (IMethodSymbol method, IMethodSymbol parent) => method.Arity == parent.Arity
-                && SameArgumentTypes(
-                    ParameterModel.MatchedParameters(method.Parameters),
-                    ParameterModel.MatchedParameters(parent.Parameters)
-                ),
+            (IMethodSymbol method, IMethodSymbol parent) => MethodModel.HaveTheSameSetup(
+                method,
+                parent
+            ),
             (
                 IPropertySymbol { IsIndexer: true } indexer,
                 IPropertySymbol { IsIndexer: true } parent
-            ) => SameArgumentTypes(indexer.Parameters, parent.Parameters),
+            ) => ParameterModel.HaveTheSameMatchers(indexer.Parameters, parent.Parameters),
             (IMethodSymbol, _) or (IPropertySymbol { IsIndexer: true }, _) => false,
             _ => true,
         };
-
-    private static bool SameArgumentTypes(
-        ImmutableArray<IParameterSymbol> parameters,
-        ImmutableArray<IParameterSymbol> inheritedParameters
-    ) =>
-        parameters.Length == inheritedParameters.Length
-        && parameters.Zip(inheritedParameters, SameArgumentType).All(matches => matches);
-
-    private static bool SameArgumentType(IParameterSymbol left, IParameterSymbol right) =>
-        (left.RefKind == RefKind.Out) == (right.RefKind == RefKind.Out)
-        && (
-            SymbolEqualityComparer.Default.Equals(left.Type, right.Type)
-            || left.Type.ToSignatureKey() == right.Type.ToSignatureKey()
-        );
 }

@@ -60,4 +60,12 @@ internal sealed record MethodModel(
     // structs has none, and its setups apply to calls with the same type arguments only.
     internal static bool NeedsAdapter(IMethodSymbol method) =>
         method.IsGenericMethod && !method.TypeParameters.Any(AllowsRefStruct.AllowsRefStructs);
+
+    // Methods whose setups take the same matchers, for the parameters each one's own declaration doesn't pass through.
+    internal static bool HaveTheSameSetup(IMethodSymbol method, IMethodSymbol other) =>
+        method.Arity == other.Arity
+        && ParameterModel.HaveTheSameMatchers(
+            ParameterModel.MatchedParameters(method.Parameters),
+            ParameterModel.MatchedParameters(other.Parameters)
+        );
 }

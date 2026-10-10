@@ -49,6 +49,19 @@ internal sealed record ParameterModel(
     internal static bool IsCustomRefStruct(IParameterSymbol parameter) =>
         parameter.Type.IsRefLikeType && SpanModel.From(parameter) is null;
 
+    // Setups take the same matchers for parameters of the same types, whatever their ref kinds, except out, which gets
+    // OutArg<T>. A method's own type parameters compare by position (see TypeSymbolExtensions.ToSignatureKey).
+    internal static bool HaveTheSameMatchers(
+        ImmutableArray<IParameterSymbol> parameters,
+        ImmutableArray<IParameterSymbol> others
+    ) =>
+        parameters.Length == others.Length
+        && parameters.Zip(others, HaveTheSameMatcher).All(same => same);
+
+    private static bool HaveTheSameMatcher(IParameterSymbol parameter, IParameterSymbol other) =>
+        (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
+        && parameter.Type.ToSignatureKey() == other.Type.ToSignatureKey();
+
     // Generated code that declares the parameter again repeats scoped: an implementation has to (CS8987), and so do the
     // imposter's methods and delegates the argument passes through, or what they return couldn't leave the
     // implementation. A params span is scoped implicitly, and generated code, which doesn't repeat params, says so. An
