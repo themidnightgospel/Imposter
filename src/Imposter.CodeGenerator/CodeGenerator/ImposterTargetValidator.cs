@@ -199,8 +199,8 @@ internal static class ImposterTargetValidator
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A method's
-    // parameter or result of another ref struct type isn't kept at all, only passed through (see IsPassedThrough and
-    // ReturnsPassedThrough).
+    // parameter or result, or a sync event delegate's parameter, of another ref struct type isn't kept at all, only
+    // passed through (see IsPassedThrough, ReturnsPassedThrough and UncopiedEventTypes).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -288,9 +288,10 @@ internal static class ImposterTargetValidator
         }
     }
 
-    // An event's raise copies a span argument's elements into its history and passes the span itself on. An async
-    // event's raise takes the array a span covers and passes the delegates a span over it, which a ref, out or ref
-    // readonly parameter can't take: it needs a span variable, which an async method can't declare.
+    // An event's raise copies a span argument's elements into its history and passes the span itself on, and passes
+    // another ref struct on without keeping it. An async event's raise can't take a ref struct at all, so it takes the
+    // array a span covers and passes the delegates a span over it, which a ref, out or ref readonly parameter can't
+    // take: it needs a span variable, which an async method can't declare.
     private static IEnumerable<ITypeSymbol> UncopiedEventTypes(IMethodSymbol invoke)
     {
         yield return invoke.ReturnType;
@@ -298,9 +299,9 @@ internal static class ImposterTargetValidator
         var isAsync = invoke.ReturnType.IsAwaitable();
         var uncopiedParameters = invoke.Parameters.Where(it =>
             SpanModel.From(it) is null
-            || (
-                isAsync && it.RefKind is RefKind.Ref or RefKind.Out or RefKinds.RefReadOnlyParameter
-            )
+                ? isAsync || !ParameterModel.IsCustomRefStruct(it)
+                : isAsync
+                    && it.RefKind is RefKind.Ref or RefKind.Out or RefKinds.RefReadOnlyParameter
         );
         foreach (var parameter in uncopiedParameters)
         {

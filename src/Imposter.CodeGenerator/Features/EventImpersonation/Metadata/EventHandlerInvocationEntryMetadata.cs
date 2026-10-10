@@ -17,7 +17,7 @@ internal readonly struct EventHandlerInvocationEntryMetadata
 
     internal EventHandlerInvocationEntryMetadata(in ImposterEventCoreMetadata core)
     {
-        _parameters = core.Parameters;
+        _parameters = core.MatchedParameters;
         _handlerElementName = core.HandlerTupleElementName;
         Type =
             _parameters.Length == 0

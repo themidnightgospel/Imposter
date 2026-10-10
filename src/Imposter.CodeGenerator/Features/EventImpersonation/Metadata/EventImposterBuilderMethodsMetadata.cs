@@ -58,7 +58,7 @@ internal readonly struct EventImposterBuilderMethodsMetadata
         CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
 
         RaisedCriteriaParameters = core
-            .Parameters.Select(parameter => new ParameterMetadata(
+            .MatchedParameters.Select(parameter => new ParameterMetadata(
                 $"{parameter.Name}Criteria",
                 parameter.ArgTypeSyntax
             ))

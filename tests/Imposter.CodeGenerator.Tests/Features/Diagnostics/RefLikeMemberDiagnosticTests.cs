@@ -88,10 +88,11 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenEventWhoseDelegateTakesCustomRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    // RaiseAsync is an async method, which can't take a ref struct (CS4012).
+    public async Task GivenAsyncEventWhoseDelegateTakesCustomRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public delegate void RefLikeHandler(RefLike value); public interface IService { event RefLikeHandler Received; }"
+            "public delegate System.Threading.Tasks.Task RefLikeHandler(RefLike value); public interface IService { event RefLikeHandler Received; }"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);

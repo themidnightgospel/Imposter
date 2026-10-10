@@ -229,7 +229,7 @@ A `scoped` parameter, or a `params` span, which is scoped implicitly, stays `sco
     ```
 
 !!! warning
-    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, any other `ref struct` except a method's [parameter](#ref-struct-parameters) or [result](methods/index.md#setup-return-values), and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, any other `ref struct` except a method's [parameter](#ref-struct-parameters) or [result](methods/index.md#setup-return-values) and a sync event delegate's [parameter](events/index.md#ref-struct-parameters), and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
 
 ## Ref struct parameters
 

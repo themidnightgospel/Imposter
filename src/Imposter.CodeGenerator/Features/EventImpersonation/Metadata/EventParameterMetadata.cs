@@ -26,6 +26,9 @@ internal readonly struct EventParameterMetadata
 
     internal readonly bool IsOut;
 
+    // A ref struct the raise passes on to the callbacks and handlers, which the histories and Raised leave out.
+    internal readonly bool IsPassedThrough;
+
     // This parameter's element in the raise and handler-invocation history tuples: the parameter name, unless C#
     // reserves it for tuple elements.
     internal readonly string TupleElementName;
@@ -47,6 +50,7 @@ internal readonly struct EventParameterMetadata
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
         ForwardingArgument = SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
         IsOut = model.RefKind == RefKind.Out;
+        IsPassedThrough = model.IsPassedThrough;
         TupleElementName = TupleElementNames.IsReserved(Name) ? tupleElementNames.Use(Name) : Name;
     }
 }
