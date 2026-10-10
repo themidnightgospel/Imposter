@@ -56,4 +56,25 @@ public class ImposterBuilderFieldNameCollisionTests
             nameof(ImposterBuilderFieldNameCollisionTests)
         );
     }
+
+    // The builder fields share the imposter with the setup members, so they avoid the target's member names.
+    [Fact]
+    public async Task GivenPropertyNamedLikeTheEventField_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { event System.EventHandler Changed; int _Changed { get; } }",
+            "imposter._Changed.Getter().Returns(1); imposter.Changed.Raise(new object(), System.EventArgs.Empty); _ = imposter.Instance()._Changed;",
+            nameof(ImposterBuilderFieldNameCollisionTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenPropertyNamedLikeTheIndexerField_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int this[int key] { get; } int _IndexerIndexer { get; } }",
+            "imposter._IndexerIndexer.Getter().Returns(1); imposter[Arg<int>.Any()].Getter().Returns(2); _ = imposter.Instance()[0] + imposter.Instance()._IndexerIndexer;",
+            nameof(ImposterBuilderFieldNameCollisionTests)
+        );
+    }
 }
