@@ -81,7 +81,7 @@ internal static class MethodImposterMembersBuilder
     ) =>
         method.ArgumentsCriteria.Syntax.New(
             SyntaxFactoryHelper.ArgumentListSyntax(
-                method.Parameters.AllParameterMetadata.Select(parameter =>
+                method.Parameters.MatchedParameterMetadata.Select(parameter =>
                     Argument(IdentifierName(parameter.Name))
                 )
             )

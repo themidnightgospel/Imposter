@@ -198,7 +198,8 @@ internal static class ImposterTargetValidator
     // The imposter keeps the arguments and results of every member it impersonates in fields, delegates and Arg<T>
     // matchers, none of which can hold a ref-like value. A Span<T> or ReadOnlySpan<T> is the exception where the
     // imposter keeps its elements in an array: a method's span parameter or a span it returns by value, a property's
-    // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes).
+    // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A method's
+    // parameter of another ref struct type isn't kept at all, only passed through (see IsPassedThrough).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
         MemberAccess memberAccess
@@ -246,11 +247,20 @@ internal static class ImposterTargetValidator
             yield return method.ReturnType;
         }
 
-        foreach (var parameter in method.Parameters.Where(it => SpanModel.From(it) is null))
+        var uncopiedParameters = method.Parameters.Where(it =>
+            SpanModel.From(it) is null && !IsPassedThrough(it, method)
+        );
+        foreach (var parameter in uncopiedParameters)
         {
             yield return parameter.Type;
         }
     }
+
+    // A method passes another ref struct on to its delegates, unless the ref struct's type uses the method's type
+    // parameters: a generic method's adapter would have to convert it between type arguments.
+    private static bool IsPassedThrough(IParameterSymbol parameter, IMethodSymbol method) =>
+        ParameterModel.IsCustomRefStruct(parameter)
+        && !parameter.Type.ReferencesTypeParameterOf(method);
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
     {

@@ -18,11 +18,13 @@ internal static class MethodSetupSignature
                 .TypeParameters.Select((_, index) => (NameSyntax)IdentifierName("T" + index))
                 .ToArray()
         );
-        var parameterTypes = method.Parameters.Select(parameter =>
-            positionalTypeParameters
-                .Visit(SyntaxFactoryHelper.ArgType(WithoutNullableAnnotations(parameter)))
-                .ToString()
-        );
+        var parameterTypes = method
+            .Parameters.Where(parameter => !parameter.IsPassedThrough)
+            .Select(parameter =>
+                positionalTypeParameters
+                    .Visit(SyntaxFactoryHelper.ArgType(WithoutNullableAnnotations(parameter)))
+                    .ToString()
+            );
 
         return method.TypeParameters.Count + "(" + string.Join(",", parameterTypes) + ")";
     }

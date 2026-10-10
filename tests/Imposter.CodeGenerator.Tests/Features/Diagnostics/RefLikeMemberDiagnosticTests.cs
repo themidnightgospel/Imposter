@@ -17,27 +17,21 @@ public class RefLikeMemberDiagnosticTests
         .Id;
 
     [Fact]
-    public async Task GivenMethodWithOutCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodReturningCustomRefStruct_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator("public interface IService { RefLike Get(); }");
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
+    }
+
+    // The generic method's adapter would have to convert the argument between type arguments, which it can't do
+    // without a copy.
+    [Fact]
+    public async Task GivenGenericMethodWithRefStructOfItsTypeParameter_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { int Get(out RefLike output); }"
+            "public ref struct Wrapper<T> { } public interface IService { int Get<T>(Wrapper<T> value); }"
         );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenMethodWithCustomRefStructInParameter_WhenGeneratorRuns_ShouldReportIMP009()
-    {
-        var result = await RunGenerator("public interface IService { int Get(in RefLike input); }");
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
     }
@@ -94,33 +88,22 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenVirtualClassMethodWithRefCustomRefStructParameter_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenMethodReturningCustomRefStruct_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
     {
-        var result = await RunGenerator(
-            "public class Service { public virtual int Get(ref RefLike input) => 0; }",
-            "Sample.Service"
-        );
-
-        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);
-    }
-
-    [Fact]
-    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldNameTheMemberAndTheType()
-    {
-        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
+        var result = await RunGenerator("public interface IService { RefLike Get(); }");
 
         result
             .Diagnostics.ShouldHaveSingleItem()
             .GetMessage()
             .ShouldBe(
-                "'Sample.IService' has the member 'Sample.IService.Get(Sample.RefLike)', whose signature uses the ref-like type 'Sample.RefLike', which an imposter cannot store or match"
+                "'Sample.IService' has the member 'Sample.IService.Get()', whose signature uses the ref-like type 'Sample.RefLike', which an imposter cannot store or match"
             );
     }
 
     [Fact]
-    public async Task GivenMethodWithCustomRefStructParameter_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
+    public async Task GivenMethodReturningCustomRefStruct_WhenGeneratorRuns_ShouldNotGenerateTheImposter()
     {
-        var result = await RunGenerator("public interface IService { int Get(RefLike input); }");
+        var result = await RunGenerator("public interface IService { RefLike Get(); }");
 
         result.GeneratedSources.ShouldBeEmpty();
     }

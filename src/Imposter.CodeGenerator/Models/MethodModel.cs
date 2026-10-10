@@ -7,9 +7,9 @@ namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
 /// A method the imposter implements or overrides. <see cref="OverrideAccessibility"/> is the accessibility an
-/// override in the imposter's assembly must declare. <see cref="HasRefKindOverload"/> is true when an overload set up
-/// beside it, on a class's imposter or in its interface's setup view, differs from it only in passing a parameter by
-/// value or by in, ref or ref readonly, which their setups can't tell apart.
+/// override in the imposter's assembly must declare. <see cref="HasOverloadWithTheSameSetup"/> is true when an overload
+/// set up beside it, on a class's imposter or in its interface's setup view, differs from it only in what their setups
+/// can't tell apart: passing a parameter by value or by in, ref or ref readonly, and the ref structs they leave out.
 /// </summary>
 internal sealed record MethodModel(
     string Name,
@@ -25,7 +25,7 @@ internal sealed record MethodModel(
     EquatableArray<TypeParameterModel> TypeParameters,
     EquatableArray<ParameterModel> Parameters,
     ReturnTypeModel ReturnType,
-    bool HasRefKindOverload
+    bool HasOverloadWithTheSameSetup
 )
 {
     internal bool IsGenericMethod => TypeParameters.Count > 0;
@@ -33,7 +33,7 @@ internal sealed record MethodModel(
     internal static MethodModel From(
         IMethodSymbol method,
         MemberAccess memberAccess,
-        bool hasRefKindOverload
+        bool hasOverloadWithTheSameSetup
     ) =>
         new(
             method.Name,
@@ -49,6 +49,6 @@ internal sealed record MethodModel(
             method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
             method.Parameters.Select(ParameterModel.From).ToEquatableArray(),
             ReturnTypeModel.From(method),
-            hasRefKindOverload
+            hasOverloadWithTheSameSetup
         );
 }
