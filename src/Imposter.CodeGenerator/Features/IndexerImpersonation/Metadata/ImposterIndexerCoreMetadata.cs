@@ -32,9 +32,20 @@ internal readonly ref struct ImposterIndexerCoreMetadata
     // The type the imposter gets and sets the value as: the indexer's type, or the array that keeps a span's elements.
     internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
 
-    internal readonly TypeSyntax AsSystemFuncType;
+    internal readonly IndexerDelegateMetadata Delegates;
 
-    internal readonly TypeSyntax AsSystemActionType;
+    // A value passed through isn't kept: the default behaviour, the setter's history and Returns leave it out.
+    internal readonly bool IsPassedThrough;
+
+    // The default behaviour keeps the values set, and also falls back on the base getter, so a getter has it for a
+    // value passed through too.
+    internal readonly bool HasDefaultBehaviour;
+
+    // Func<T>, or the generated base getter delegate for a value passed through.
+    internal readonly TypeSyntax ValueGeneratorType;
+
+    // Action, or the generated base setter delegate, which takes a value passed through instead of capturing it.
+    internal readonly TypeSyntax BaseSetterType;
 
     internal readonly bool GetterSupportsBaseImplementation;
 
@@ -56,8 +67,15 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         NullableAwareStoredTypeSyntax = indexer.Span is { } span
             ? SyntaxFactoryHelper.SpanElementsArrayType(span)
             : NullableAwareTypeSyntax;
-        AsSystemFuncType = WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
-        AsSystemActionType = WellKnownTypes.System.Action;
+        Delegates = new IndexerDelegateMetadata(uniqueName);
+        IsPassedThrough = indexer.IsPassedThrough;
+        HasDefaultBehaviour = !IsPassedThrough || HasGetter;
+        ValueGeneratorType = IsPassedThrough
+            ? Delegates.BaseGetterDelegateType
+            : WellKnownTypes.System.Func(NullableAwareStoredTypeSyntax);
+        BaseSetterType = IsPassedThrough
+            ? Delegates.BaseSetterDelegateType
+            : WellKnownTypes.System.Action;
         var fieldNames = new NameSet(
             indexer.Parameters.Select(parameter =>
                 SyntaxFactoryHelper.EscapeKeyword(parameter.Name)
@@ -86,8 +104,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     // An accessor's optional base implementation, which the imposter calls when it's set up to use it.
     internal ParameterMetadata GetterBaseImplementationParameter(string name) =>
-        new(name, AsSystemFuncType.ToNullableType(), SyntaxFactoryHelper.Null);
+        new(name, ValueGeneratorType.ToNullableType(), SyntaxFactoryHelper.Null);
 
     internal ParameterMetadata SetterBaseImplementationParameter(string name) =>
-        new(name, AsSystemActionType.ToNullableType(), SyntaxFactoryHelper.Null);
+        new(name, BaseSetterType.ToNullableType(), SyntaxFactoryHelper.Null);
 }

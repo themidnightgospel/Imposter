@@ -21,15 +21,42 @@ internal readonly struct IndexerDelegateMetadata
 
     internal readonly NameSyntax ExceptionDelegateType;
 
-    internal IndexerDelegateMetadata(in ImposterIndexerCoreMetadata core)
+    // An indexer of another ref struct type also gets these in place of Func<T>, Action, Func<Arguments, T> and
+    // Func<Arguments, Func<T>?, T>, whose type arguments can't be a ref struct. Its base setter takes the value, which
+    // a lambda can't capture.
+    internal readonly string BaseGetterDelegateName;
+
+    internal readonly NameSyntax BaseGetterDelegateType;
+
+    internal readonly string BaseSetterDelegateName;
+
+    internal readonly NameSyntax BaseSetterDelegateType;
+
+    internal readonly string ReturnGeneratorDelegateName;
+
+    internal readonly NameSyntax ReturnGeneratorDelegateType;
+
+    internal readonly string ReturnHandlerDelegateName;
+
+    internal readonly NameSyntax ReturnHandlerDelegateType;
+
+    internal IndexerDelegateMetadata(string uniqueName)
     {
-        ValueDelegateName = $"{core.UniqueName}IndexerDelegate";
+        ValueDelegateName = $"{uniqueName}IndexerDelegate";
         ValueDelegateType = IdentifierName(ValueDelegateName);
-        GetterCallbackDelegateName = $"{core.UniqueName}IndexerGetterCallback";
+        GetterCallbackDelegateName = $"{uniqueName}IndexerGetterCallback";
         GetterCallbackDelegateType = IdentifierName(GetterCallbackDelegateName);
-        SetterCallbackDelegateName = $"{core.UniqueName}IndexerSetterCallback";
+        SetterCallbackDelegateName = $"{uniqueName}IndexerSetterCallback";
         SetterCallbackDelegateType = IdentifierName(SetterCallbackDelegateName);
-        ExceptionDelegateName = $"{core.UniqueName}IndexerExceptionGenerator";
+        ExceptionDelegateName = $"{uniqueName}IndexerExceptionGenerator";
         ExceptionDelegateType = IdentifierName(ExceptionDelegateName);
+        BaseGetterDelegateName = $"{uniqueName}IndexerBaseGetter";
+        BaseGetterDelegateType = IdentifierName(BaseGetterDelegateName);
+        BaseSetterDelegateName = $"{uniqueName}IndexerBaseSetter";
+        BaseSetterDelegateType = IdentifierName(BaseSetterDelegateName);
+        ReturnGeneratorDelegateName = $"{uniqueName}IndexerReturnGenerator";
+        ReturnGeneratorDelegateType = IdentifierName(ReturnGeneratorDelegateName);
+        ReturnHandlerDelegateName = $"{uniqueName}IndexerReturnHandler";
+        ReturnHandlerDelegateType = IdentifierName(ReturnHandlerDelegateName);
     }
 }

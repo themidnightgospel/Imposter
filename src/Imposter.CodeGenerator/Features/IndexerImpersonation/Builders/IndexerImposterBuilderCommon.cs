@@ -102,17 +102,23 @@ internal static class IndexerImposterBuilderCommon
 
     internal static ConstructorDeclarationSyntax BuildImposterConstructor(
         string className,
-        TypeSyntax defaultBehaviourType,
-        string defaultBehaviourFieldName,
+        in FieldMetadata? defaultBehaviourField,
         string invocationBehaviorFieldName,
         string propertyDisplayNameFieldName
-    ) =>
-        new ConstructorWithFieldInitializationBuilder(className)
-            .WithModifiers(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                new ParameterMetadata(DefaultBehaviourParameterName, defaultBehaviourType),
-                defaultBehaviourFieldName
-            )
+    )
+    {
+        var constructor = new ConstructorWithFieldInitializationBuilder(className).WithModifiers(
+            Token(SyntaxKind.InternalKeyword)
+        );
+        if (defaultBehaviourField is { } field)
+        {
+            constructor.AddParameter(
+                new ParameterMetadata(DefaultBehaviourParameterName, field.Type),
+                field.Name
+            );
+        }
+
+        return constructor
             .AddParameter(
                 new ParameterMetadata(
                     InvocationBehaviorParameterName,
@@ -125,6 +131,7 @@ internal static class IndexerImposterBuilderCommon
                 propertyDisplayNameFieldName
             )
             .Build();
+    }
 
     internal static MethodDeclarationSyntax BuildMarkConfiguredMethod(
         string methodName,

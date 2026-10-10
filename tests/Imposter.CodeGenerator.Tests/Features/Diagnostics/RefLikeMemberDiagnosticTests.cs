@@ -88,10 +88,22 @@ public class RefLikeMemberDiagnosticTests
     }
 
     [Fact]
-    public async Task GivenIndexerOfCustomRefStructType_WhenGeneratorRuns_ShouldReportIMP009()
+    public async Task GivenIndexerReturningCustomRefStructByReference_WhenGeneratorRuns_ShouldReportIMP009()
     {
         var result = await RunGenerator(
-            "public interface IService { RefLike this[int index] { get; } }"
+            "public interface IService { ref RefLike this[int index] { get; } }"
+        );
+
+        result.Diagnostics.ShouldContain(diagnostic => diagnostic.Id == RefLikeMemberId);
+    }
+
+    // The base getter's lambda reads the base indexer with a copy of the key, which the value could refer to (CS8347).
+    [Fact]
+    public async Task GivenClassIndexerOfCustomRefStructTypeWithInKey_WhenGeneratorRuns_ShouldReportIMP009()
+    {
+        var result = await RunGenerator(
+            "public class Service { public virtual RefLike this[in int key] => default; }",
+            "Sample.Service"
         );
 
         result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefLikeMemberId);

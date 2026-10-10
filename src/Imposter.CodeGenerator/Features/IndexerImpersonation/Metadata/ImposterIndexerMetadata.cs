@@ -59,7 +59,7 @@ internal readonly ref struct ImposterIndexerMetadata
             $"_{Core.UniqueName}DefaultIndexerBehaviour",
             DefaultIndexerBehaviour.TypeSyntax
         );
-        Delegates = new IndexerDelegateMetadata(Core);
+        Delegates = Core.Delegates;
         GetterImplementation = new IndexerGetterImposterMetadata(this);
         SetterImplementation = new IndexerSetterImposterMetadata(this);
         GetterBuilderInterface = new IndexerGetterImposterBuilderInterfaceMetadata(
@@ -74,8 +74,8 @@ internal readonly ref struct ImposterIndexerMetadata
             GetterBuilderInterface
         );
         Builder = new IndexerImposterBuilderMetadata(this, defaultIndexerBehaviourField);
-        // The setup indexer uses the field by its bare name, so the name avoids the indexer's parameter names, as well as
-        // the imposter's other members.
+        // The setup indexer uses the field by its bare name, so the name avoids the indexer's parameter names, as well
+        // as the imposter's other members.
         BuilderField = new FieldMetadata(
             memberNameSet.Use(Core.CreateParameterNameSet().Use($"_{Core.UniqueName}Indexer")),
             Builder.TypeSyntax

@@ -1,3 +1,4 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -120,12 +121,18 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
     )
     {
         var returns = getterInterface.ReturnsMethod;
+        ParameterMetadata?[] parameters =
+        [
+            returns.ValueParameter,
+            returns.FuncParameter,
+            returns.DelegateParameter,
+        ];
 
         return
         [
-            InterfaceMethod(returns.ReturnType, returns.Name, returns.ValueParameter),
-            InterfaceMethod(returns.ReturnType, returns.Name, returns.FuncParameter),
-            InterfaceMethod(returns.ReturnType, returns.Name, returns.DelegateParameter),
+            .. parameters
+                .OfType<ParameterMetadata>()
+                .Select(it => InterfaceMethod(returns.ReturnType, returns.Name, it)),
         ];
     }
 

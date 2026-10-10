@@ -14,7 +14,8 @@ internal readonly struct DefaultIndexerBehaviourMetadata
 
     internal readonly FieldMetadata IsOnBackingField;
 
-    internal readonly FieldMetadata BackingField;
+    // The values set, by their keys: none for a value passed through, which can't be kept.
+    internal readonly FieldMetadata? BackingField;
 
     internal readonly ParameterMetadata GetBaseImplementationParameter;
 
@@ -29,13 +30,15 @@ internal readonly struct DefaultIndexerBehaviourMetadata
         TypeSyntax = IdentifierName(Name);
         IsOnPropertyName = "IsOn";
         IsOnBackingField = new FieldMetadata("_isOn", WellKnownTypes.Bool);
-        BackingField = new FieldMetadata(
-            "BackingField",
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
-                arguments.TypeSyntax,
-                core.NullableAwareStoredTypeSyntax
-            )
-        );
+        BackingField = core.IsPassedThrough
+            ? null
+            : new FieldMetadata(
+                "BackingField",
+                WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
+                    arguments.TypeSyntax,
+                    core.NullableAwareStoredTypeSyntax
+                )
+            );
         GetBaseImplementationParameter = core.GetterBaseImplementationParameter(
             ImposterIndexerCoreMetadata.BaseImplementationParameterName
         );

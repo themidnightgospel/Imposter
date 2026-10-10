@@ -65,15 +65,19 @@ internal readonly struct IndexerGetterImposterMetadata
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
         EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
-        var returnGeneratorType = WellKnownTypes.System.Func(
-            indexer.Arguments.TypeSyntax,
-            indexer.Core.NullableAwareStoredTypeSyntax
-        );
-        ReturnHandlerType = WellKnownTypes.System.Func(
-            indexer.Arguments.TypeSyntax,
-            indexer.Core.AsSystemFuncType.ToNullableType(),
-            indexer.Core.NullableAwareStoredTypeSyntax
-        );
+        var returnGeneratorType = indexer.Core.IsPassedThrough
+            ? indexer.Delegates.ReturnGeneratorDelegateType
+            : WellKnownTypes.System.Func(
+                indexer.Arguments.TypeSyntax,
+                indexer.Core.NullableAwareStoredTypeSyntax
+            );
+        ReturnHandlerType = indexer.Core.IsPassedThrough
+            ? indexer.Delegates.ReturnHandlerDelegateType
+            : WellKnownTypes.System.Func(
+                indexer.Arguments.TypeSyntax,
+                indexer.Core.ValueGeneratorType.ToNullableType(),
+                indexer.Core.NullableAwareStoredTypeSyntax
+            );
         Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(

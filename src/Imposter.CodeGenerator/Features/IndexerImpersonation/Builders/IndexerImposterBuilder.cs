@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -17,10 +18,12 @@ internal static class IndexerImposterBuilder
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.Builder.DefaultBehaviourField,
-                    indexer.DefaultIndexerBehaviour.TypeSyntax.New()
-                )
+                indexer.Core.HasDefaultBehaviour
+                    ? SinglePrivateReadonlyVariableField(
+                        indexer.Builder.DefaultBehaviourField,
+                        indexer.DefaultIndexerBehaviour.TypeSyntax.New()
+                    )
+                    : null
             )
             .AddMember(
                 indexer.Core.HasGetter
@@ -32,7 +35,11 @@ internal static class IndexerImposterBuilder
                     ? SinglePrivateReadonlyVariableField(indexer.Builder.SetterImposterField)
                     : null
             )
-            .AddMember(DefaultIndexerBehaviourBuilder.Build(indexer))
+            .AddMember(
+                indexer.Core.HasDefaultBehaviour
+                    ? DefaultIndexerBehaviourBuilder.Build(indexer)
+                    : null
+            )
             .AddMember(BuildConstructor(indexer))
             .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildCreateSetterMethod(indexer) : null)
@@ -80,17 +87,22 @@ internal static class IndexerImposterBuilder
                 .ToStatementSyntax()
             : null;
 
+        // The setter keeps the values set in the default behaviour, unless it can't keep them.
+        var setterArguments = new List<ArgumentSyntax>();
+        if (!indexer.Core.IsPassedThrough)
+        {
+            setterArguments.Add(
+                Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name))
+            );
+        }
+
+        setterArguments.Add(Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)));
+        setterArguments.Add(Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)));
         var setterInitialization = indexer.Core.HasSetter
             ? ThisExpression()
                 .Dot(IdentifierName(indexer.Builder.SetterImposterField.Name))
                 .Assign(
-                    indexer.SetterImplementation.TypeSyntax.New(
-                        ArgumentListSyntax([
-                            Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
-                            Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
-                            Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)),
-                        ])
-                    )
+                    indexer.SetterImplementation.TypeSyntax.New(ArgumentListSyntax(setterArguments))
                 )
                 .ToStatementSyntax()
             : null;
