@@ -22,9 +22,9 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal readonly TypeSyntax NullableAwareTypeSyntax;
 
-    private readonly bool _isSpan;
+    private readonly SpanModel? _span;
 
-    private readonly TypeModel? _dynamicType;
+    private readonly TypeModel _type;
 
     // The type the imposter gets and sets the value as: the property's type, or the array that keeps a span's elements.
     internal readonly TypeSyntax NullableAwareStoredTypeSyntax;
@@ -75,8 +75,8 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         Name = property.Name;
         NullableAwareTypeSyntax = SyntaxFactoryHelper.TypeSyntaxIncludingNullable(property.Type);
         var span = property.Span;
-        _isSpan = span is not null;
-        _dynamicType = property.Type.IsDynamic ? property.Type : null;
+        _span = span;
+        _type = property.Type;
         NullableAwareStoredTypeSyntax = span is null
             ? NullableAwareTypeSyntax
             : SyntaxFactoryHelper.SpanElementsArrayType(span);
@@ -118,10 +118,6 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         DisplayName = property.DisplayName;
     }
 
-    // The property's value as the imposter keeps it: a copy of a span's elements, the object a dynamic value is (see
-    // SyntaxFactoryHelper.AsObject), or the value itself.
     internal ExpressionSyntax StoredValue(ExpressionSyntax value) =>
-        _isSpan ? SyntaxFactoryHelper.SpanElementsCopy(value)
-        : _dynamicType is { } dynamicType ? SyntaxFactoryHelper.AsObject(value, dynamicType)
-        : value;
+        SyntaxFactoryHelper.StoredValue(value, _span, _type);
 }

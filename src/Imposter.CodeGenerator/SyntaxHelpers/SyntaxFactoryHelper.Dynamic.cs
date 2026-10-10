@@ -22,9 +22,31 @@ internal static partial class SyntaxFactoryHelper
             dynamicValue
         );
 
-    // typeof doesn't take dynamic (CS1962).
-    internal static TypeOfExpressionSyntax RuntimeTypeOf(TypeSyntax type) =>
-        TypeOfExpression((TypeSyntax)new DynamicAsObjectRewriter().Visit(type));
+    // A dynamic passed by value, or to an in parameter, which takes a value too, passes as an object. One passed by
+    // ref or out stays dynamic.
+    internal static bool PassesAsObject(ParameterModel parameter, bool includeRefKind = true) =>
+        parameter.Type.IsDynamic
+        && (!includeRefKind || parameter.RefKind is RefKind.None or RefKind.In);
+
+    // A value as the imposter keeps it: a copy of a span's elements, the object a dynamic value is, or the value
+    // itself.
+    internal static ExpressionSyntax StoredValue(
+        ExpressionSyntax value,
+        SpanModel? span,
+        TypeModel type
+    ) =>
+        span is not null ? SpanElementsCopy(value)
+        : type.IsDynamic ? AsObject(value, type)
+        : value;
+
+    // typeof doesn't take dynamic (CS1962). Only a type the model says contains dynamic is rewritten: written in
+    // syntax, a type parameter named dynamic looks the same.
+    internal static TypeOfExpressionSyntax RuntimeTypeOf(TypeSyntax typeSyntax, TypeModel type) =>
+        TypeOfExpression(
+            type.ContainsDynamic
+                ? (TypeSyntax)new DynamicAsObjectRewriter().Visit(typeSyntax)
+                : typeSyntax
+        );
 
     // Writes the dynamic keyword as object. A type named dynamic is written qualified, so it keeps its name.
     private sealed class DynamicAsObjectRewriter : CSharpSyntaxRewriter

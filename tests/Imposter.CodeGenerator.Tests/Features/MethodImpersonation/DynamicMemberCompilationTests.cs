@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Imposter.CodeGenerator.Tests.Features.Diagnostics;
+using Shouldly;
 using Xunit;
 using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
 
@@ -48,6 +50,31 @@ public class DynamicMemberCompilationTests
             "imposter.Use<int>(Arg<int>.Any(), Arg<dynamic>.Any()).Callback((first, second) => { }); imposter.Get<int>(Arg<System.Collections.Generic.List<dynamic>>.Any()).Returns(values => values.Count); imposter.Instance().Use(1, \"second\"); _ = imposter.Instance().Get<int>(new System.Collections.Generic.List<dynamic>());",
             nameof(DynamicMemberCompilationTests)
         );
+    }
+
+    // Written in syntax, a type parameter named dynamic looks like the keyword. Its type checks compare the type
+    // arguments, so writing it as object would make the method's setups and verification ignore them.
+    [Fact]
+    public async Task GivenTypeParameterNamedDynamic_WhenGeneratorRuns_ShouldKeepItInTheTypeChecks()
+    {
+        var result = await TargetGeneratorRun.RunAsync(
+            /*lang=csharp*/
+            """
+            using Imposter.Abstractions;
+
+            [assembly: GenerateImposter(typeof(Sample.IService))]
+
+            namespace Sample
+            {
+                public interface IService { int Tally<dynamic>(dynamic value); }
+            }
+            """,
+            nameof(DynamicMemberCompilationTests)
+        );
+
+        var source = result.GeneratedSources.ShouldHaveSingleItem().SourceText.ToString();
+        source.ShouldContain("typeof(dynamic)");
+        source.ShouldNotContain("typeof(object)");
     }
 
     [Fact]

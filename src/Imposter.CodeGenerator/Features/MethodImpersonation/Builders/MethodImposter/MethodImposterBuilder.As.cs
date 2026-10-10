@@ -89,9 +89,10 @@ internal static partial class MethodImposterBuilder
             )
         )
         {
-            var sourceTypeOf = RuntimeTypeOf(parameter.TypeSyntax);
+            var sourceTypeOf = RuntimeTypeOf(parameter.TypeSyntax, parameter.Model.Type);
             var targetTypeOf = RuntimeTypeOf(
-                (TypeSyntax)typeParamRenamer.Visit(parameter.TypeSyntax)
+                (TypeSyntax)typeParamRenamer.Visit(parameter.TypeSyntax),
+                parameter.Model.Type
             );
 
             conditions.Add(
@@ -110,9 +111,11 @@ internal static partial class MethodImposterBuilder
 
         if (method.HasReturnValue && method.Model.ReturnType.ReferencesMethodTypeParameter)
         {
-            var sourceTypeOf = RuntimeTypeOf(method.ReturnTypeSyntax);
+            var returnType = method.Model.ReturnType.Type;
+            var sourceTypeOf = RuntimeTypeOf(method.ReturnTypeSyntax, returnType);
             var targetTypeOf = RuntimeTypeOf(
-                (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax)
+                (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax),
+                returnType
             );
 
             conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));

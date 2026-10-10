@@ -1,7 +1,6 @@
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -66,7 +65,7 @@ internal readonly struct IndexerParameterMetadata
     // converts to the span by itself, and a dynamic key passes as an object (see SyntaxFactoryHelper.AsObject).
     internal ArgumentSyntax ForwardingArgument(string variableName) =>
         Model.Span is not null ? Argument(IdentifierName(variableName))
-        : Model.Type.IsDynamic && Model.RefKind is RefKind.None or RefKind.In
+        : SyntaxFactoryHelper.PassesAsObject(Model)
             ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(variableName), Model.Type))
         : SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind);
 }
