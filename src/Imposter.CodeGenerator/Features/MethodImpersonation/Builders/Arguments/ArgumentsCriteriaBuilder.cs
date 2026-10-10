@@ -26,7 +26,7 @@ public static class ArgumentsCriteriaBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMembers(method.Parameters.AllParameterMetadata.Select(ArgProperty))
+            .AddMembers(method.Parameters.MatchedParameterMetadata.Select(ArgProperty))
             .AddMember(BuildConstructor(method))
             .AddMember(MatchesMethod(method));
 
@@ -58,7 +58,7 @@ public static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.Name
         ).WithModifiers(Token(SyntaxKind.PublicKeyword));
 
-        foreach (var parameter in method.Parameters.AllParameterMetadata)
+        foreach (var parameter in method.Parameters.MatchedParameterMetadata)
         {
             constructor.AddParameter(
                 new ParameterMetadata(parameter.Name, parameter.ArgTypeSyntax),
@@ -93,7 +93,7 @@ public static class ArgumentsCriteriaBuilder
             var matcherLambdaParameter = metadata.ArgumentsCriteria.AsMethod.MatcherLambdaParameter;
 
             return SeparatedList(
-                metadata.Parameters.AllParameterMetadata.Select(parameter =>
+                metadata.Parameters.MatchedParameterMetadata.Select(parameter =>
                     BuildArgForParameter(parameter, renamer, matcherLambdaParameter)
                 )
             );

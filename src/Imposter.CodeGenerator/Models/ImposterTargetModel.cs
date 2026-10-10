@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
@@ -38,7 +39,7 @@ internal sealed record ImposterTargetModel(
         // A class's imposter sets all its methods up side by side. An interface's setup view lists only the methods
         // its interface declares, and DetectCollisions already names them apart on the imposter, so there they
         // collide only within one interface.
-        var refKindOverloads = FindRefKindOverloads(
+        var overloadsWithTheSameSetup = FindOverloadsWithTheSameSetup(
             isInterface
                 ? methods.GroupBy(method => method.ContainingType, SymbolEqualityComparer.Default)
                 : [methods]
@@ -65,7 +66,12 @@ internal sealed record ImposterTargetModel(
             ToTargetMembers(
                 methods,
                 isInterface ? DetectCollisions(methods, MethodKey) : null,
-                method => MethodModel.From(method, memberAccess, refKindOverloads.Contains(method)),
+                method =>
+                    MethodModel.From(
+                        method,
+                        memberAccess,
+                        overloadsWithTheSameSetup.Contains(method)
+                    ),
                 isInterface
             ),
             ToTargetMembers(
@@ -169,9 +175,9 @@ internal sealed record ImposterTargetModel(
             SymbolEqualityComparer.Default
         );
 
-    // A setup matches a parameter passed by value, in, ref or ref readonly with the same Arg<T>, so overloads that
-    // differ only in that would get setups with the same signature.
-    private static HashSet<IMethodSymbol> FindRefKindOverloads(
+    // A setup matches a parameter passed by value, in, ref or ref readonly with the same Arg<T>, and leaves out the ref
+    // structs it only passes through, so overloads that differ only in those would get setups with the same signature.
+    private static HashSet<IMethodSymbol> FindOverloadsWithTheSameSetup(
         IEnumerable<IEnumerable<IMethodSymbol>> setupScopes
     ) =>
         new(
@@ -179,18 +185,15 @@ internal sealed record ImposterTargetModel(
                 .SelectMany(scope => scope.GroupBy(method => method.Name))
                 .SelectMany(overloads =>
                     overloads.Where(method =>
-                        overloads.Any(other => DifferOnlyInPassingByReference(method, other))
+                        overloads.Any(other => HaveTheSameSetupButDiffer(method, other))
                     )
                 ),
             SymbolEqualityComparer.Default
         );
 
-    private static bool DifferOnlyInPassingByReference(IMethodSymbol method, IMethodSymbol other)
+    private static bool HaveTheSameSetupButDiffer(IMethodSymbol method, IMethodSymbol other)
     {
-        if (
-            method.TypeParameters.Length != other.TypeParameters.Length
-            || method.Parameters.Length != other.Parameters.Length
-        )
+        if (method.TypeParameters.Length != other.TypeParameters.Length)
         {
             return false;
         }
@@ -199,19 +202,43 @@ internal sealed record ImposterTargetModel(
         var otherParameters = other.TypeParameters.IsEmpty
             ? other.Parameters
             : other.Construct([.. method.TypeParameters]).Parameters;
-        var parameterPairs = method.Parameters.Zip(otherParameters, (a, b) => (a, b)).ToArray();
 
-        return parameterPairs.All(it => HaveTheSameMatcher(it.a, it.b))
-            && parameterPairs.Any(it => it.a.RefKind != it.b.RefKind);
+        return HaveTheSameMatchers(
+                ParameterModel.MatchedParameters(method.Parameters),
+                ParameterModel.MatchedParameters(otherParameters)
+            ) && !HaveTheSameSignature(method.Parameters, otherParameters);
     }
+
+    private static bool HaveTheSameMatchers(
+        ImmutableArray<IParameterSymbol> parameters,
+        ImmutableArray<IParameterSymbol> others
+    ) =>
+        parameters.Length == others.Length
+        && parameters.Zip(others, HaveTheSameMatcher).All(same => same);
+
+    private static bool HaveTheSameSignature(
+        ImmutableArray<IParameterSymbol> parameters,
+        ImmutableArray<IParameterSymbol> others
+    ) =>
+        parameters.Length == others.Length
+        && parameters
+            .Zip(
+                others,
+                (parameter, other) =>
+                    parameter.RefKind == other.RefKind
+                    && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type)
+            )
+            .All(same => same);
 
     // Only out gets a matcher of its own (OutArg<T>).
     private static bool HaveTheSameMatcher(IParameterSymbol parameter, IParameterSymbol other) =>
         (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
         && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type);
 
+    // Methods collide on the instance when their parameter types match, and their setups, which leave out the ref
+    // structs they only pass through, collide on the imposter.
     private static string MethodKey(IMethodSymbol method) =>
-        $"{method.Name}({ParameterTypesKey(method.Parameters)})";
+        $"{method.Name}({ParameterTypesKey(ParameterModel.MatchedParameters(method.Parameters))})";
 
     // Indexers with the same parameter types collide on the instance, and their setup indexers, which take Arg<T>
     // whatever the ref kind, would collide on the imposter.

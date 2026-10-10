@@ -229,7 +229,21 @@ A `scoped` parameter, or a `params` span, which is scoped implicitly, stays `sco
     ```
 
 !!! warning
-    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, any other `ref struct`, and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+    Imposters support span parameters, spans a method [returns](methods/index.md#setup-return-values) by value, [span properties](properties/index.md#span-properties), span [indexer keys and values](indexers/index.md#span-keys-and-values), and the spans an [event's delegate](events/index.md#span-parameters) takes. A span returned by reference, a span an async event's delegate takes by `ref`, `out` or `ref readonly`, any other `ref struct` except a method's [parameter](#ref-struct-parameters), and a method type parameter that allows ref structs still report [IMP009](diagnostics.md#imp009). See [Limitations](limitations.md#ref-like-types).
+
+## Ref struct parameters
+
+An imposter can't keep or match an argument of a custom `ref struct` type, so setups and verification take matchers for the method's other parameters only, and the invocation history leaves the argument out. The delegates you pass to `Returns`, `Callback` and `Throws` receive the argument itself, by reference when the method takes it by `ref` or `out`, and so does the base implementation.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/ArgumentsMatching/ArgumentsMatchingTests.cs#L245"}
+    // int Read(int id, Cursor cursor);
+    imposter.Read(Arg<int>.Is(1)).Returns((id, cursor) => cursor.Position);
+
+    service.Read(1, new Cursor(5)); // 5
+    ```
+
+Overloads that differ only in their ref struct parameters would get the same setup, so each after the first gets a numbered one (`Read_1`), as overloads that differ only in passing a parameter by reference do. A ref struct whose type uses the method's own type parameters still reports [IMP009](diagnostics.md#imp009).
 
 ## Arg API reference
 

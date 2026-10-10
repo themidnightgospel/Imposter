@@ -86,6 +86,13 @@ internal static class MethodImposterAdapterBuilder
         var adaptedParameterNames = adapterNames.AdaptedParameterNames;
         foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
+            // A ref struct passes on as it is: its type doesn't use the method's type parameters (IMP009 otherwise).
+            if (parameter.Model.IsPassedThrough)
+            {
+                invokeArguments.Add(ForwardingArgument(parameter.Name, parameter.Model.RefKind));
+                continue;
+            }
+
             var parameterType = parameter.NullableAwareTypeSyntax;
             var castArgument = parameter.IsSpan
                 ? AdaptedSpan(

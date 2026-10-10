@@ -58,9 +58,12 @@ internal static partial class SyntaxFactoryHelper
     internal static ExpressionSyntax SpanElementsCopy(ExpressionSyntax span) =>
         span.Dot(IdentifierName("ToArray")).Call();
 
+    // A setup's matchers, which leave out the arguments the imposter only passes through.
     internal static ParameterListSyntax ArgParameters(IEnumerable<ParameterModel> parameters) =>
-        ParameterList(SeparatedList(parameters.Select(ArgParameter)));
+        ParameterList(
+            SeparatedList(parameters.Where(it => !it.IsPassedThrough).Select(ArgParameter))
+        );
 
-    internal static ParameterSyntax ArgParameter(ParameterModel parameter) =>
+    private static ParameterSyntax ArgParameter(ParameterModel parameter) =>
         ParameterSyntax(ArgType(parameter), EscapeKeyword(parameter.Name));
 }

@@ -240,5 +240,16 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
             reader.Trim(" a ".ToCharArray()).ToString().ShouldBe("a");
         }
 #endif
+
+        [Fact]
+        public void GivenRefStructParameter_WhenSetUpByTheOtherArguments_ShouldPassTheRefStructToTheDelegate()
+        {
+            var imposter = new IRefStructArgumentServiceImposter();
+            var service = imposter.Instance();
+
+            imposter.Read(Arg<int>.Is(1)).Returns((id, cursor) => cursor.Position);
+
+            service.Read(1, new Cursor(5)).ShouldBe(5);
+        }
     }
 }

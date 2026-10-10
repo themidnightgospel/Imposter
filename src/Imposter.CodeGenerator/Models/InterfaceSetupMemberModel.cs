@@ -56,7 +56,10 @@ internal sealed record InterfaceSetupMemberModel(
         (member, inherited) switch
         {
             (IMethodSymbol method, IMethodSymbol parent) => method.Arity == parent.Arity
-                && SameArgumentTypes(method.Parameters, parent.Parameters),
+                && SameArgumentTypes(
+                    ParameterModel.MatchedParameters(method.Parameters),
+                    ParameterModel.MatchedParameters(parent.Parameters)
+                ),
             (
                 IPropertySymbol { IsIndexer: true } indexer,
                 IPropertySymbol { IsIndexer: true } parent

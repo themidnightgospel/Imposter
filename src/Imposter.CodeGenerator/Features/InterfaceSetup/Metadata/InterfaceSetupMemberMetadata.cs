@@ -48,7 +48,7 @@ internal readonly struct InterfaceSetupMemberMetadata
             method.InterfaceSetupMember!,
             method.SetupName,
             method.MethodImposter.BuilderInterface.Syntax,
-            viewName: method.Model.HasRefKindOverload ? method.SetupName : null
+            viewName: method.Model.HasOverloadWithTheSameSetup ? method.SetupName : null
         ) { }
 
     private static List<TypeParameterConstraintClauseSyntax> GetImplementationConstraints(

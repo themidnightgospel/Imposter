@@ -241,7 +241,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     // A method another member's setup would collide with is set up by its unique name.
     internal static bool NeedsNumberedSetup(TargetMemberModel<MethodModel> method) =>
-        method.RequiresExplicitInterfaceImplementation || method.Member.HasRefKindOverload;
+        method.RequiresExplicitInterfaceImplementation || method.Member.HasOverloadWithTheSameSetup;
 
     // The names of the type parameters written as T? in the parameter or return types.
     private static HashSet<string> TypeParametersUsedAsNullable(

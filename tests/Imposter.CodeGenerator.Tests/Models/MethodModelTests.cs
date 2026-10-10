@@ -59,7 +59,7 @@ public class MethodModelTests
         return MethodModel.From(
             method,
             new MemberAccess(compilation.Assembly),
-            hasRefKindOverload: false
+            hasOverloadWithTheSameSetup: false
         );
     }
 }
