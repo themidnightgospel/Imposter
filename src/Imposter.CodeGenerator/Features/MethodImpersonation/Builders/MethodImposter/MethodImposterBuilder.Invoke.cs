@@ -114,7 +114,7 @@ internal partial class MethodImposterBuilder
                 );
             }
 
-            if (method.HasReturnValue)
+            if (method.KeepsResult)
             {
                 arguments.Add(
                     threwException

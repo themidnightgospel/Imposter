@@ -123,13 +123,20 @@ internal static partial class InvocationImposterGroupBuilder
                     )
                 )
             );
-            methods.Add(
-                InterfaceMethod(
-                    returns.ReturnType,
-                    returns.Name,
-                    InterfaceParameter(returns.ValueParameter, returns.InterfaceValueParameterName)
-                )
-            );
+
+            if (method.KeepsResult)
+            {
+                methods.Add(
+                    InterfaceMethod(
+                        returns.ReturnType,
+                        returns.Name,
+                        InterfaceParameter(
+                            returns.ValueParameter,
+                            returns.InterfaceValueParameterName
+                        )
+                    )
+                );
+            }
         }
 
         if (method.MethodInvocationImposterGroup.ReturnsAsyncMethod is { } returnsAsync)

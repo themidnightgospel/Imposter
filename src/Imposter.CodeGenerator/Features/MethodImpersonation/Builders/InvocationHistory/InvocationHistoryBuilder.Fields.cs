@@ -26,7 +26,7 @@ internal static partial class InvocationHistoryBuilder
             );
         }
 
-        if (method.HasReturnValue)
+        if (method.KeepsResult)
         {
             fields.Add(
                 SingleVariableField(

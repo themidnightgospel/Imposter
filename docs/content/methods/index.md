@@ -53,6 +53,7 @@ Define the target interface and enable generation:
        var span = imposter.Instance().Rent(4); // a span over buffer
        span[0] = 42; // buffer[0] is now 42
        ```
+ - Return another `ref struct`: an imposter can't keep such a value, so `Returns` takes only a delegate, as in `Returns(size => new Slot(size))`, and the invocation history doesn't record the result. Without a setup the method returns `default`. A method's `ref struct` parameters are passed to the delegate the same way (see [Ref struct parameters](../arguments-matching.md#ref-struct-parameters)).
  - Sequence multiple outcomes with `Then()`:
   
 !!! example
