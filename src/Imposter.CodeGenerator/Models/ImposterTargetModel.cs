@@ -198,28 +198,15 @@ internal sealed record ImposterTargetModel(
             SymbolEqualityComparer.Default
         );
 
-    private static bool HaveTheSameSetupButDiffer(IMethodSymbol method, IMethodSymbol other)
-    {
-        if (method.TypeParameters.Length != other.TypeParameters.Length)
-        {
-            return false;
-        }
-
-        // A generic overload compares with the other one written in terms of its own type parameters. Which of the
-        // other's parameters its setup matches comes from its own declaration: written in this method's type
-        // parameters, a value of one that allows ref structs could count as matched.
-        var otherParameters = other.TypeParameters.IsEmpty
-            ? other.Parameters
-            : other.Construct([.. method.TypeParameters]).Parameters;
-        var otherMatchedParameters = otherParameters
-            .Where((_, index) => !ParameterModel.PassesThrough(other.Parameters[index]))
-            .ToImmutableArray();
-
-        return HaveTheSameMatchers(
-                ParameterModel.MatchedParameters(method.Parameters),
-                otherMatchedParameters
-            ) && !HaveTheSameSignature(method.Parameters, otherParameters);
-    }
+    // Each overload's setup matches the parameters its own declaration doesn't pass through, and the overloads' type
+    // parameters compare by position (see TypeSymbolExtensions.ToSignatureKey).
+    private static bool HaveTheSameSetupButDiffer(IMethodSymbol method, IMethodSymbol other) =>
+        method.Arity == other.Arity
+        && HaveTheSameMatchers(
+            ParameterModel.MatchedParameters(method.Parameters),
+            ParameterModel.MatchedParameters(other.Parameters)
+        )
+        && !HaveTheSameSignature(method.Parameters, other.Parameters);
 
     // Indexers whose setups match the same keys, leaving out the ref structs they only pass through, would share a
     // setup indexer. An imposter sets all of a target's indexers up side by side, and an interface's setup view
@@ -257,15 +244,17 @@ internal sealed record ImposterTargetModel(
             .Zip(
                 others,
                 (parameter, other) =>
-                    parameter.RefKind == other.RefKind
-                    && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type)
+                    parameter.RefKind == other.RefKind && HaveTheSameType(parameter, other)
             )
             .All(same => same);
 
     // Only out gets a matcher of its own (OutArg<T>).
     private static bool HaveTheSameMatcher(IParameterSymbol parameter, IParameterSymbol other) =>
         (parameter.RefKind == RefKind.Out) == (other.RefKind == RefKind.Out)
-        && SymbolEqualityComparer.Default.Equals(parameter.Type, other.Type);
+        && HaveTheSameType(parameter, other);
+
+    private static bool HaveTheSameType(IParameterSymbol parameter, IParameterSymbol other) =>
+        parameter.Type.ToSignatureKey() == other.Type.ToSignatureKey();
 
     // Methods collide on the instance when their type parameter counts and parameter types match, and their setups,
     // which leave out the ref structs they only pass through, collide on the imposter.
