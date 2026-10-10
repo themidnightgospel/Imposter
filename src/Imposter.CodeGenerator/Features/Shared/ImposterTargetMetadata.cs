@@ -167,19 +167,25 @@ internal readonly struct ImposterTargetMetadata
         );
 
     internal ImposterIndexerMetadata CreateIndexerMetadata(
-        TargetMemberModel<PropertyModel> indexer
+        TargetMemberModel<PropertyModel> indexer,
+        NameSet memberNameSet
     ) =>
         new(
             indexer.Member,
             _symbolNameNamespace.Use(IndexerMemberName),
+            memberNameSet,
             indexer.RequiresExplicitInterfaceImplementation,
             _getterExceptionTypeParameter
         );
 
-    internal ImposterEventMetadata CreateEventMetadata(TargetMemberModel<EventModel> @event) =>
+    internal ImposterEventMetadata CreateEventMetadata(
+        TargetMemberModel<EventModel> @event,
+        NameSet memberNameSet
+    ) =>
         new(
             @event.Member,
             _symbolNameNamespace.Use(@event.Member.Name),
+            memberNameSet,
             @event.RequiresExplicitInterfaceImplementation
         );
 }

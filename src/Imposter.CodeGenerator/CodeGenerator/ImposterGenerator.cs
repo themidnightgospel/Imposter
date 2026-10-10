@@ -350,7 +350,10 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var @event = imposterGenerationContext.Imposter.CreateEventMetadata(targetEvent);
+            var @event = imposterGenerationContext.Imposter.CreateEventMetadata(
+                targetEvent,
+                imposterBuilder.MemberNameSet
+            );
 
             imposterBuilder
                 .AddEventImposter(@event)
@@ -379,7 +382,10 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(targetIndexer);
+            var indexer = imposterGenerationContext.Imposter.CreateIndexerMetadata(
+                targetIndexer,
+                imposterBuilder.MemberNameSet
+            );
 
             imposterBuilder
                 .AddIndexerImposter(indexer)

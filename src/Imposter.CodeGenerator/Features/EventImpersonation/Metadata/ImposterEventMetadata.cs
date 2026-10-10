@@ -28,13 +28,17 @@ internal readonly ref struct ImposterEventMetadata
     internal ImposterEventMetadata(
         EventModel @event,
         string uniqueName,
+        NameSet memberNameSet,
         bool requiresExplicitInterfaceImplementation
     )
     {
         Core = new ImposterEventCoreMetadata(@event, uniqueName);
         BuilderInterface = new EventImposterBuilderInterfaceMetadata(Core);
         Builder = new EventImposterBuilderMetadata(Core);
-        BuilderField = new FieldMetadata($"_{Core.UniqueName}", Builder.TypeSyntax);
+        BuilderField = new FieldMetadata(
+            memberNameSet.Use($"_{Core.UniqueName}"),
+            Builder.TypeSyntax
+        );
 
         SetupName = requiresExplicitInterfaceImplementation ? Core.UniqueName : Core.Name;
         if (requiresExplicitInterfaceImplementation)
