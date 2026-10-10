@@ -178,8 +178,6 @@ internal static class IndexerImposterBuilder
     private static ClassDeclarationSyntax BuildInvocationBuilder(in ImposterIndexerMetadata indexer)
     {
         var invocationBuilder = indexer.Builder.InvocationBuilder;
-        var builderParameter = ParameterSyntax(invocationBuilder.BuilderField.Type, "builder");
-        var criteriaParameter = ParameterSyntax(invocationBuilder.CriteriaField.Type, "criteria");
 
         return new ClassDeclarationBuilder(invocationBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
@@ -187,25 +185,15 @@ internal static class IndexerImposterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(invocationBuilder.BuilderField))
             .AddMember(SinglePrivateReadonlyVariableField(invocationBuilder.CriteriaField))
             .AddMember(
-                new ConstructorBuilder(invocationBuilder.Name)
-                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-                    .AddParameter(builderParameter)
-                    .AddParameter(criteriaParameter)
-                    .WithBody(
-                        new BlockBuilder()
-                            .AddStatement(
-                                ThisExpression()
-                                    .Dot(IdentifierName(invocationBuilder.BuilderField.Name))
-                                    .Assign(IdentifierName(builderParameter.Identifier))
-                                    .ToStatementSyntax()
-                            )
-                            .AddStatement(
-                                ThisExpression()
-                                    .Dot(IdentifierName(invocationBuilder.CriteriaField.Name))
-                                    .Assign(IdentifierName(criteriaParameter.Identifier))
-                                    .ToStatementSyntax()
-                            )
-                            .Build()
+                new ConstructorWithFieldInitializationBuilder(invocationBuilder.Name)
+                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(
+                        new ParameterMetadata("builder", invocationBuilder.BuilderField.Type),
+                        invocationBuilder.BuilderField.Name
+                    )
+                    .AddParameter(
+                        new ParameterMetadata("criteria", invocationBuilder.CriteriaField.Type),
+                        invocationBuilder.CriteriaField.Name
                     )
                     .Build()
             )

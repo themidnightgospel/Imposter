@@ -34,26 +34,19 @@ internal static class IndexerArgumentsCriteriaBuilder
 
     private static ConstructorDeclarationSyntax BuildConstructor(in ImposterIndexerMetadata indexer)
     {
-        var constructorBuilder = new ConstructorBuilder(
+        var constructor = new ConstructorWithFieldInitializationBuilder(
             indexer.ArgumentsCriteria.Name
-        ).WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)));
-
-        var bodyBuilder = new BlockBuilder();
+        ).WithModifiers(Token(SyntaxKind.InternalKeyword));
 
         foreach (var parameter in indexer.Core.Parameters)
         {
-            constructorBuilder = constructorBuilder.AddParameter(
-                ParameterSyntax(parameter.ArgTypeSyntax, parameter.Name)
-            );
-            bodyBuilder.AddStatement(
-                ThisExpression()
-                    .Dot(IdentifierName(parameter.FieldName))
-                    .Assign(IdentifierName(parameter.Name))
-                    .ToStatementSyntax()
+            constructor.AddParameter(
+                new ParameterMetadata(parameter.Name, parameter.ArgTypeSyntax),
+                parameter.FieldName
             );
         }
 
-        return constructorBuilder.WithBody(bodyBuilder.Build()).Build();
+        return constructor.Build();
     }
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterIndexerMetadata indexer)

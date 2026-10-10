@@ -19,24 +19,28 @@ internal static partial class IndexerGetterBuilder
         var builder = indexer.GetterImplementation.Builder;
         var returns = indexer.GetterBuilderInterface.ReturnsMethod;
         var throws = indexer.GetterBuilderInterface.ThrowsMethod;
+        var imposterField = new FieldMetadata(
+            builder.ImposterFieldName,
+            indexer.GetterImplementation.TypeSyntax
+        );
+        var criteriaField = new FieldMetadata(
+            builder.CriteriaFieldName,
+            indexer.ArgumentsCriteria.TypeSyntax
+        );
 
         return new ClassDeclarationBuilder(builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax))
+            .AddMember(SinglePrivateReadonlyVariableField(imposterField))
+            .AddMember(SinglePrivateReadonlyVariableField(criteriaField))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.GetterImplementation.TypeSyntax,
-                    builder.ImposterFieldName
-                )
+                new ConstructorWithFieldInitializationBuilder(builder.Name)
+                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(imposterField)
+                    .AddParameter(criteriaField)
+                    .Build()
             )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    indexer.ArgumentsCriteria.TypeSyntax,
-                    builder.CriteriaFieldName
-                )
-            )
-            .AddMember(BuildGetterBuilderConstructor(indexer))
             .AddMember(BuildGetterBuilderInvocationProperty(indexer.GetterImplementation))
             .AddMember(BuildGetterBuilderReturnsValueMethod(indexer, returns))
             .AddMember(BuildGetterBuilderReturnsFuncMethod(indexer, returns))
@@ -51,39 +55,6 @@ internal static partial class IndexerGetterBuilder
                 indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildGetterBuilderUseBaseImplementationMethod(indexer)
                     : null
-            )
-            .Build();
-    }
-
-    private static ConstructorDeclarationSyntax BuildGetterBuilderConstructor(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var builder = indexer.GetterImplementation.Builder;
-
-        return new ConstructorBuilder(builder.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(
-                ParameterSyntax(indexer.GetterImplementation.TypeSyntax, builder.ImposterFieldName)
-            )
-            .AddParameter(
-                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, builder.CriteriaFieldName)
-            )
-            .WithBody(
-                new BlockBuilder()
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(builder.ImposterFieldName))
-                            .Assign(IdentifierName(builder.ImposterFieldName))
-                            .ToStatementSyntax()
-                    )
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(builder.CriteriaFieldName))
-                            .Assign(IdentifierName(builder.CriteriaFieldName))
-                            .ToStatementSyntax()
-                    )
-                    .Build()
             )
             .Build();
     }
