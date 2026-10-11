@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
@@ -241,6 +242,53 @@ public class ImposterHintNameTests
         );
 
         hintNames.ShouldBe(["Sample.HintNames.Legacy_ServiceImposter.a5af509b.g.cs"]);
+    }
+
+    // Roslyn compares hint names ignoring case, while C# tells `IFoo` and `Ifoo` apart.
+    private const string TargetsDifferingOnlyInCase = /*lang=csharp*/
+        """
+        namespace Sample.HintNames.Case
+        {
+            public interface IFoo
+            {
+                void Run();
+            }
+
+            public interface Ifoo
+            {
+                int Count();
+            }
+        }
+        """;
+
+    [Fact]
+    public async Task GivenTargetsWhoseNamesDifferOnlyInCase_WhenGenerated_ShouldGenerateBoth()
+    {
+        var hintNames = await GenerateHintNames( /*lang=csharp*/
+            """
+            [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Case.IFoo))]
+            [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Case.Ifoo))]
+
+            """ + TargetsDifferingOnlyInCase,
+            "CaseCollision"
+        );
+
+        hintNames.Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task GivenDedicatedNamespaceTargetsWhoseNamesDifferOnlyInCase_WhenGenerated_ShouldGenerateBoth()
+    {
+        var hintNames = await GenerateHintNames( /*lang=csharp*/
+            """
+            [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Case.IFoo), false)]
+            [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Case.Ifoo), false)]
+
+            """ + TargetsDifferingOnlyInCase,
+            "DedicatedCaseCollision"
+        );
+
+        hintNames.Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(2);
     }
 
     private static async Task<string[]> GenerateHintNames(string source, string name)

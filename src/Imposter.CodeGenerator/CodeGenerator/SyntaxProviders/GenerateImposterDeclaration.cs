@@ -28,6 +28,12 @@ internal sealed record GenerateImposterDeclaration(
     /// </summary>
     internal bool ExtensionClassNameIncludesArity { get; init; }
 
+    /// <summary>
+    /// Whether the imposter's file is named with a hash of the target's name, because another target's file name
+    /// differs from it only in letter case, which Roslyn ignores when it compares them.
+    /// </summary>
+    internal bool HintNameIncludesHash { get; init; }
+
     internal static GenerateImposterDeclaration From(
         INamedTypeSymbol target,
         bool putInTheSameNamespace,

@@ -81,7 +81,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     new ImposterGenerationTarget(
                         declaration.Target!,
                         declaration.PutInTheSameNamespace,
-                        declaration.ExtensionClassNameIncludesArity
+                        declaration.ExtensionClassNameIncludesArity,
+                        declaration.HintNameIncludesHash
                     )
             )
 #if ROSLYN4_4_OR_GREATER

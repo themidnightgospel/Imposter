@@ -9,5 +9,6 @@ namespace Imposter.CodeGenerator.Features.Shared;
 internal readonly record struct ImposterGenerationTarget(
     ImposterTargetModel Target,
     bool PutInTheSameNamespace,
-    bool ExtensionClassNameIncludesArity
+    bool ExtensionClassNameIncludesArity,
+    bool HintNameIncludesHash
 );

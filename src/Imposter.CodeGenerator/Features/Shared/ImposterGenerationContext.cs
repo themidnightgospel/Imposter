@@ -14,7 +14,8 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly string? ImposterNamespaceName;
 
-    // Derived from the target alone, so it does not depend on the order in which targets are processed.
+    // Derived from the target, and from whether another target's differs from it only in letter case, so it does not
+    // depend on the order in which targets are processed.
     internal readonly string HintName;
 
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
@@ -39,20 +40,32 @@ internal readonly struct ImposterGenerationContext
             : "";
         ExtensionClassName = $"{Target.Name}ImposterExtensions{arity}";
 
-        var targetName = GetTargetName(Target.Type);
-        var sanitizedTargetName = SanitizeForNamespace(targetName);
-        var hintNameSuffix = GetHintNameSuffix(targetName, sanitizedTargetName);
-
         ImposterNamespaceName = GetImposterNamespaceName(
             putInTheSameNamespace,
             Target.Type,
             Target.ContainingNamespace
         );
-        HintName = putInTheSameNamespace
-            ? $"{sanitizedTargetName}{hintNameSuffix}"
-            : $"{DedicatedNamespacePrefix}.{sanitizedTargetName}{hintNameSuffix}";
+        HintName = GetHintName(
+            Target.Type,
+            putInTheSameNamespace,
+            generationTarget.HintNameIncludesHash
+        );
 
         SupportedCSharpFeatures = supportedCSharpFeatures;
+    }
+
+    internal static string GetHintName(
+        TypeModel target,
+        bool putInTheSameNamespace,
+        bool includesHash
+    )
+    {
+        var targetName = GetTargetName(target);
+        var sanitizedTargetName = SanitizeForNamespace(targetName);
+        var hintName =
+            $"{sanitizedTargetName}{GetHintNameSuffix(targetName, sanitizedTargetName, includesHash)}";
+
+        return putInTheSameNamespace ? hintName : $"{DedicatedNamespacePrefix}.{hintName}";
     }
 
     private const string DedicatedNamespacePrefix = "Imposters";
@@ -79,11 +92,16 @@ internal readonly struct ImposterGenerationContext
     }
 
     // Sanitizing is lossy (`IFoo<int>` and `IFoo_int_` both become `IFoo_int_`), and duplicate hint names make
-    // Roslyn drop every source of the generator. A sanitized name without `_` lost nothing, so it is used as is
-    // and plain names cannot collide. Any other name gets a hash of the original name, so it differs from every
+    // Roslyn drop every source of the generator. A sanitized name without `_` lost nothing, so it is used as is,
+    // unless another target's plain name differs from it only in letter case, which Roslyn's comparison of hint names
+    // ignores (see ImposterTypeCollisions). Any other name gets a hash of the original name, so it differs from every
     // plain name and only collides with another hashed name on a hash collision.
-    private static string GetHintNameSuffix(string targetName, string sanitizedTargetName) =>
-        sanitizedTargetName.IndexOf('_') < 0
+    private static string GetHintNameSuffix(
+        string targetName,
+        string sanitizedTargetName,
+        bool includesHash
+    ) =>
+        !includesHash && sanitizedTargetName.IndexOf('_') < 0
             ? "Imposter.g.cs"
             : $"Imposter.{Fnv1aHash(targetName).ToString("x8", CultureInfo.InvariantCulture)}.g.cs";
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
@@ -10,7 +11,10 @@ internal static class ImposterTypeCollisions
 {
     internal static IEnumerable<GenerateImposterDeclaration> Mark(
         IReadOnlyList<GenerateImposterDeclaration> declarations
-    ) => NameExtensionClassesApart(MarkSameImposterTypes(declarations).ToArray());
+    ) =>
+        NameFilesApart(
+            NameExtensionClassesApart(MarkSameImposterTypes(declarations).ToArray()).ToArray()
+        );
 
     // Same-named types nested in different classes, for example, would get imposters of the same type in the same
     // namespace. Each such declaration reports IMP007, naming another target of its group, and is not generated.
@@ -80,6 +84,40 @@ internal static class ImposterTypeCollisions
                 }
                 : declaration
         );
+    }
+
+    // Roslyn compares hint names ignoring case, so the files of targets such as IFoo and Ifoo, whose names differ only
+    // in letter case, would make it drop every generated source. Their files are named with a hash of the target name.
+    private static IEnumerable<GenerateImposterDeclaration> NameFilesApart(
+        IReadOnlyList<GenerateImposterDeclaration> declarations
+    )
+    {
+        var hintNamesDifferingOnlyInCase = new HashSet<string>(
+            declarations
+                .Where(it => it.Target is not null)
+                .Select(PlainHintName)
+                .Distinct()
+                .GroupBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .Where(group => group.Count() > 1)
+                .SelectMany(group => group)
+        );
+
+        return declarations.Select(declaration =>
+            declaration.Target is not null
+            && hintNamesDifferingOnlyInCase.Contains(PlainHintName(declaration))
+                ? declaration with
+                {
+                    HintNameIncludesHash = true,
+                }
+                : declaration
+        );
+
+        static string PlainHintName(GenerateImposterDeclaration declaration) =>
+            ImposterGenerationContext.GetHintName(
+                declaration.Target!.Type,
+                declaration.PutInTheSameNamespace,
+                includesHash: false
+            );
     }
 
     private const char ArityMark = '`';
