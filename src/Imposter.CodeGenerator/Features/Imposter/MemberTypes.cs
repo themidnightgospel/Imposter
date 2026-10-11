@@ -6,8 +6,8 @@ namespace Imposter.CodeGenerator.Features.Imposter;
 
 // The types the imposter declares for each member, by the unique name of the member they're named after, such as
 // ICurrentPropertyBuilder or GetDelegate. C# doesn't let a nested type share its name with a member that isn't a type,
-// or with another type of the same arity, which a target member named like one of them, or two members deriving the
-// same name, would make it do.
+// with another type of the same arity, or with a type parameter of the imposter, which a target member or type
+// parameter named like one of them, or two members deriving the same name, would make it do.
 internal sealed class MemberTypes
 {
     private readonly List<(string UniqueName, MemberDeclarationSyntax Type)> _types = [];
@@ -18,7 +18,10 @@ internal sealed class MemberTypes
     // The unique names of the members whose types clash with another member of the imposter.
     internal HashSet<string> UniqueNamesOfClashingTypes(ClassDeclarationSyntax imposter)
     {
-        var declarations = imposter.Members.SelectMany(Declarations).ToLookup(it => it.Name);
+        var declarations = imposter
+            .Members.SelectMany(Declarations)
+            .Concat(TypeParameters(imposter))
+            .ToLookup(it => it.Name);
 
         return
         [
@@ -64,6 +67,13 @@ internal sealed class MemberTypes
             _ => [],
         };
 
-    // TypeArity is null for a member that isn't a type.
+    // The imposter's type parameters, the target's, which a nested type of any arity can't be named after.
+    private static IEnumerable<Declaration> TypeParameters(ClassDeclarationSyntax imposter) =>
+        imposter.TypeParameterList?.Parameters.Select(it => new Declaration(
+            it.Identifier.Text,
+            null
+        )) ?? [];
+
+    // TypeArity is null for a member that isn't a type, or for a type parameter.
     private readonly record struct Declaration(string Name, int? TypeArity);
 }

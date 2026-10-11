@@ -81,6 +81,52 @@ public class GeneratedTypeNameCollisionTests
         );
     }
 
+    // The imposter declares the target's type parameters, and a nested type can't share a type parameter's name.
+    [Fact]
+    public async Task GivenTypeParameterNamedLikeAMethodsDelegate_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IRepo<>",
+            "public interface IRepo<GetDelegate> { int Get(); }",
+            "var imposter = new Sample.IRepoImposter<string>(); imposter.Get().Returns(1); _ = imposter.Instance().Get();",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenTypeParameterNamedLikeAMethodsBuilderInterface_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IRepo<>",
+            "public interface IRepo<IGetMethodImposterBuilder> { int Get(); }",
+            "var imposter = new Sample.IRepoImposter<string>(); imposter.Get().Returns(1); _ = imposter.Instance().Get();",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenTypeParameterNamedLikeAMethodsArguments_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IRepo<>",
+            "public interface IRepo<GetArguments> { int Get(int x); }",
+            "var imposter = new Sample.IRepoImposter<string>(); imposter.Get(Arg<int>.Any()).Returns(1); _ = imposter.Instance().Get(0);",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    // The class that implements the target is named ImposterTargetInstance unless that name is taken.
+    [Fact]
+    public async Task GivenTypeParameterNamedLikeTheInstanceClass_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IRepo<>",
+            "public interface IRepo<ImposterTargetInstance> { int Get(); }",
+            "var imposter = new Sample.IRepoImposter<string>(); imposter.Get().Returns(1); _ = imposter.Instance().Get();",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
     // CurrentProperty's delegate and the ref struct property Current's would both be CurrentPropertyDelegate.
     [Fact]
     public async Task GivenMethodDerivingARefStructPropertysDelegateName_WhenImposterIsUsed_ShouldCompile()

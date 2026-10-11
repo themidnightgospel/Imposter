@@ -291,9 +291,11 @@ internal readonly ref struct ImposterBuilder
     {
         var futureMemberNames = GetMemberNames(imposterGenerationContext);
 
+        // The imposter declares the target's type parameters, which none of its members can be named after.
         var memberNameSeeds = MemberNamesHelper
             .GetNames(imposterBuilderMembers)
-            .Concat(futureMemberNames);
+            .Concat(futureMemberNames)
+            .Concat(imposterGenerationContext.Target.TypeParameters.Select(it => it.Name));
 
         return new NameSet(memberNameSeeds);
     }
