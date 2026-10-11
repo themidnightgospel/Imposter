@@ -72,8 +72,9 @@ internal readonly struct ImposterTargetMetadata
         );
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
         var memberNames = _symbolNameNamespace;
-        var ownMethodSetups = OwnMethodSetups(target);
-        var ownPropertyAndEventSetupNames = OwnPropertyAndEventSetupNames(target);
+        // Built for the first method that needs a numbered setup: most targets have none.
+        HashSet<(string Name, string Signature)>? ownMethodSetups = null;
+        HashSet<string>? ownPropertyAndEventSetupNames = null;
         var typeParameterNames = target.TypeParameters.Select(it => it.Name).ToArray();
         Methods = target
             .Methods.Select(method => new ImposterTargetMethodMetadata(
@@ -123,6 +124,8 @@ internal readonly struct ImposterTargetMetadata
             }
 
             var signature = MethodSetupSignature.Of(method.Member);
+            ownMethodSetups ??= OwnMethodSetups(target);
+            ownPropertyAndEventSetupNames ??= OwnPropertyAndEventSetupNames(target);
             while (
                 ownPropertyAndEventSetupNames.Contains(name)
                 || ownMethodSetups.Contains((name, signature))
