@@ -148,19 +148,25 @@ internal sealed record ImposterTargetModel(
             _ => [],
         };
 
+    // An event whose type doesn't bind, as in code being edited, is a compile error the user already sees, so the
+    // imposter leaves it out.
     internal static IReadOnlyCollection<IEventSymbol> GetEvents(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
         target.TypeKind switch
         {
-            TypeKind.Interface => target.GetAllInterfaceEvents(),
+            TypeKind.Interface => target.GetAllInterfaceEvents().Where(HasDelegateType).ToArray(),
             TypeKind.Class => target
                 .GetAllOverridableEvents()
                 .Where(memberAccess.IsAccessible)
+                .Where(HasDelegateType)
                 .ToArray(),
             _ => [],
         };
+
+    private static bool HasDelegateType(IEventSymbol @event) =>
+        @event.Type is INamedTypeSymbol { DelegateInvokeMethod: not null };
 
     private static IEnumerable<TSymbol> InEmitOrder<TSymbol>(IEnumerable<TSymbol> members)
         where TSymbol : ISymbol =>
