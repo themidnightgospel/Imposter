@@ -115,6 +115,19 @@ public class RefKindOverloadCompilationTests
         );
     }
 
+    // A numbered setup skips a name another setup keeps, whatever its parameters, so a name sets up one member only:
+    // Count_1 and Count_3 are methods' setups and Count_2 a property's.
+    [Fact]
+    public async Task GivenOverloadsNextToMembersNamedLikeTheNumberedSetups_WhenImposterIsUsed_ShouldTakeAFreeName()
+    {
+        await AssertCompiles(
+            "Sample.Service",
+            "public abstract class Service { public abstract int Count_1(int x); public abstract int Count(int x); public abstract int Count(in int x); public abstract int Count_2 { get; } public abstract int Count_3(string x); }",
+            "var imposter = new Sample.ServiceImposter(); imposter.Count_4(Arg<int>.Any()).Returns(1);",
+            nameof(RefKindOverloadCompilationTests)
+        );
+    }
+
     [Fact]
     public async Task GivenExplicitlyImplementedMethodsNextToAnOverloadKeepingTheirName_WhenImposterIsUsed_ShouldKeepTheirSetupNames()
     {

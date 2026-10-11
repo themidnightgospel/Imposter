@@ -113,8 +113,9 @@ internal readonly struct ImposterTargetMetadata
         );
         ExtensionParameterName = constructorParameterNames.Use("imposter");
 
-        // A method set up by its unique name skips a name another setup keeps as its own when the two would clash: a
-        // method's setup with the same signature, or a property's or an event's of any kind.
+        // A method set up by its unique name skips a name another setup keeps as its own: a property's or an event's,
+        // and a method's when the two would clash. The method's own name clashes only with a method setup of the same
+        // signature, as an overload doesn't, but a numbered name with any method's, so it never sets up another member.
         string UniqueName(TargetMemberModel<MethodModel> method)
         {
             var name = memberNames.Use(method.Member.Name);
@@ -128,7 +129,11 @@ internal readonly struct ImposterTargetMetadata
             ownPropertyAndEventSetupNames ??= OwnPropertyAndEventSetupNames(target);
             while (
                 ownPropertyAndEventSetupNames.Contains(name)
-                || ownMethodSetups.Contains((name, signature))
+                || (
+                    name == method.Member.Name
+                        ? ownMethodSetups.Contains((name, signature))
+                        : ownMethodSetups.Any(setup => setup.Name == name)
+                )
             )
             {
                 name = memberNames.Use(method.Member.Name);
