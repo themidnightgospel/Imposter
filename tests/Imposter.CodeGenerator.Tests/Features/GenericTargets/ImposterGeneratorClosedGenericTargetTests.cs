@@ -166,6 +166,63 @@ public class ImposterGeneratorClosedGenericTargetTests
         runResult.GeneratedTrees.Length.ShouldBe(1);
     }
 
+    // The imposter declares only the target's own type parameters, so a containing type's type arguments stay.
+    [Fact]
+    public async Task GivenClosedRegistrationOfTypeNestedInGenericClass_WhenImposterIsUsed_ShouldCompile()
+    {
+        var errors = await GeneratedCompilationErrors(
+            LanguageVersion.CSharp10,
+            /*lang=csharp*/
+            """
+            using Imposter.Abstractions;
+
+            [assembly: GenerateImposter(typeof(Sample.Outer<int>.Inner))]
+
+            namespace Sample;
+
+            public class Outer<T> { public interface Inner { T Get(); } }
+
+            public static class Usage
+            {
+                public static Outer<int>.Inner Create() => new InnerImposter().Instance();
+            }
+            """,
+            nameof(
+                GivenClosedRegistrationOfTypeNestedInGenericClass_WhenImposterIsUsed_ShouldCompile
+            )
+        );
+
+        errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GivenClosedGenericTargetNestedInGenericClass_WhenImposterIsClosedWithAnotherTypeArgument_ShouldImpersonateThatType()
+    {
+        var errors = await GeneratedCompilationErrors(
+            LanguageVersion.CSharp10,
+            /*lang=csharp*/
+            """
+            using Imposter.Abstractions;
+
+            [assembly: GenerateImposter(typeof(Sample.Outer<int>.Inner<string>))]
+
+            namespace Sample;
+
+            public class Outer<T> { public interface Inner<U> { T Get(U value); } }
+
+            public static class Usage
+            {
+                public static Outer<int>.Inner<long> Create() => new InnerImposter<long>().Instance();
+            }
+            """,
+            nameof(
+                GivenClosedGenericTargetNestedInGenericClass_WhenImposterIsClosedWithAnotherTypeArgument_ShouldImpersonateThatType
+            )
+        );
+
+        errors.ShouldBeEmpty();
+    }
+
     private static async Task<GeneratorDriverRunResult> RunGenerator(
         string source,
         string assemblyName

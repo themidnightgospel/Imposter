@@ -12,19 +12,17 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 internal static class ImposterTargetValidator
 {
     // IMP002, IMP004 and IMP008 to IMP013 stop the target's generation; IMP006 only warns. Collisions between targets
-    // (IMP007) are found once all targets are known. A closed generic registration generates its open type's
-    // imposter, so the open type is what's validated.
+    // (IMP007) are found once all targets are known. The generated target is what's validated.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol registeredTarget,
         MemberAccess memberAccess
     )
     {
-        var (diagnostics, canGenerate) = ValidateTarget(
-            registeredTarget.OriginalDefinition,
-            memberAccess
-        );
+        var generatedTarget = GeneratedTarget(registeredTarget);
+        var (diagnostics, canGenerate) = ValidateTarget(generatedTarget, memberAccess);
 
-        return canGenerate && IsClosedGenericType(registeredTarget)
+        return
+            canGenerate && !SymbolEqualityComparer.Default.Equals(registeredTarget, generatedTarget)
             ? (
                 Single(
                     DiagnosticDescriptors.ClosedGenericImposterTarget,
@@ -165,9 +163,11 @@ internal static class ImposterTargetValidator
         params string[] arguments
     ) => new[] { DiagnosticModel.Create(descriptor, location, arguments) }.ToEquatableArray();
 
-    private static bool IsClosedGenericType(INamedTypeSymbol typeSymbol) =>
-        typeSymbol.IsGenericType
-        && !SymbolEqualityComparer.Default.Equals(typeSymbol, typeSymbol.OriginalDefinition);
+    // The type a registration generates the imposter of: the registered type with its own type parameters open, so a
+    // closed generic registration (IMP006) generates its open type's imposter. A containing type's type arguments stay
+    // as registered, since the imposter declares only the target's own type parameters.
+    internal static INamedTypeSymbol GeneratedTarget(INamedTypeSymbol registeredTarget) =>
+        registeredTarget.ConstructedFrom;
 
     // The imposter passes its target as a type argument, which an interface can't be while one of its static abstract
     // members, or an inherited one, has no implementation in it. A class target implements them itself. Accessors are
