@@ -9,11 +9,11 @@ using static Imposter.CodeGenerator.Tests.Features.ClassImpersonation.ClassImper
 
 namespace Imposter.CodeGenerator.Tests.Features.EventImpersonation;
 
-// An event whose type doesn't bind is a compile error the user already sees, as in code being edited. The imposter
-// leaves the event out instead of failing.
+// An event whose type doesn't bind, or isn't a delegate, is a compile error the user already sees, as in code being
+// edited. The imposter leaves the event out instead of failing.
 public class UnboundEventTypeTests
 {
-    private const string Source = /*lang=csharp*/
+    private const string UnboundEventSource = /*lang=csharp*/
         """
         using Imposter.Abstractions;
 
@@ -35,6 +35,7 @@ public class UnboundEventTypeTests
     public async Task GivenEventWhoseTypeDoesNotBind_WhenGeneratorRuns_ShouldNotReportACrash()
     {
         var runResult = await RunGenerator(
+            UnboundEventSource,
             nameof(GivenEventWhoseTypeDoesNotBind_WhenGeneratorRuns_ShouldNotReportACrash)
         );
 
@@ -45,17 +46,46 @@ public class UnboundEventTypeTests
     public async Task GivenEventWhoseTypeDoesNotBind_WhenGeneratorRuns_ShouldGenerateTheImposter()
     {
         var runResult = await RunGenerator(
+            UnboundEventSource,
             nameof(GivenEventWhoseTypeDoesNotBind_WhenGeneratorRuns_ShouldGenerateTheImposter)
         );
 
         runResult.GeneratedTrees.Length.ShouldBe(1);
     }
 
-    private static async Task<GeneratorDriverRunResult> RunGenerator(string assemblyName)
+    [Fact]
+    public async Task GivenEventOfANonDelegateType_WhenGeneratorRuns_ShouldNotReportACrash()
+    {
+        var runResult = await RunGenerator(
+            /*lang=csharp*/
+            """
+            using Imposter.Abstractions;
+
+            [assembly: GenerateImposter(typeof(Sample.IService))]
+
+            namespace Sample
+            {
+                public interface IService
+                {
+                    event int Changed;
+                    int Get();
+                }
+            }
+            """,
+            nameof(GivenEventOfANonDelegateType_WhenGeneratorRuns_ShouldNotReportACrash)
+        );
+
+        runResult.Diagnostics.ShouldBeEmpty();
+    }
+
+    private static async Task<GeneratorDriverRunResult> RunGenerator(
+        string source,
+        string assemblyName
+    )
     {
         var compilation = await CreateCompilationAsync(
             LanguageVersion.CSharp9,
-            Source,
+            source,
             assemblyName
         );
 
