@@ -4,7 +4,6 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTarge
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;

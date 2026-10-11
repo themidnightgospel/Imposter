@@ -1,4 +1,3 @@
-using System;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.MethodImpersonation;
 

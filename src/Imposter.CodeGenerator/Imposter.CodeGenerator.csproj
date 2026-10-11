@@ -44,6 +44,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <!-- An unused using (IDE0005, a warning in .editorconfig) fails the Release build. The compiler reports one only when
+       it generates documentation, which this project otherwise has no use for, so missing comments are ignored. -->
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>

@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>12</LangVersion>
+    <!-- An unused using (IDE0005, a warning in .editorconfig) fails the Release build. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

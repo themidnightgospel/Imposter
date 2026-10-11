@@ -147,3 +147,7 @@ resharper_suggest_var_or_type_simple_types_highlighting = hint
 resharper_web_config_module_not_resolved_highlighting = warning
 resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
+
+[*.cs]
+# Unused usings warn in the build of the projects that set EnforceCodeStyleInBuild, and fail their Release build.
+dotnet_diagnostic.IDE0005.severity = warning
